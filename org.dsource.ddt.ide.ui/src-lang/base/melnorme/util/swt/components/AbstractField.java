@@ -102,7 +102,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		return text;
 	}
 	
-	protected static Button createFieldButton(final AbstractConfigField<Boolean> field, Composite parent, 
+	protected static Button createFieldCheckbox(final AbstractConfigField<Boolean> field, Composite parent, 
 			int style) {
 		final Button checkBox = new Button(parent, SWT.CHECK | style);
 		checkBox.addSelectionListener(new SelectionAdapter() {

@@ -17,7 +17,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -52,11 +51,6 @@ public class TextConfigField extends AbstractConfigField<String> {
 	@Override
 	public Text getFieldControl() {
 		return textControl;
-	}
-	
-	@Override
-	public Control getLeftMostControl() {
-		return labelControl;
 	}
 	
 	@Override

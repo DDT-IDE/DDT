@@ -14,9 +14,6 @@ import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
 import melnorme.util.swt.components.AbstractField;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> implements IPreferencesComponent {
 	
@@ -27,16 +24,6 @@ public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> im
 		this.prefKey = prefKey;
 		this.label = label;
 	}
-	
-	/** @return the leftmost control */
-	public void createControl(Composite parent, int indentation) {
-		createComponentInlined(parent);
-		Control leftMostControl = getLeftMostControl();
-		
-		((GridData) leftMostControl.getLayoutData()).horizontalIndent = indentation;
-	}
-	
-	public abstract Control getLeftMostControl();
 	
 	@Override
 	public void resetToDefaults(IPreferenceStore store) {

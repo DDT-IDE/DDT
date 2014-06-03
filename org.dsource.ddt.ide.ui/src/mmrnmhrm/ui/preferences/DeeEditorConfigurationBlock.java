@@ -28,7 +28,7 @@ public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	
 	@Override
 	protected void createAppearanceGroup(Composite parent) {
-		addConfigComponent(parent, 0, new CheckBoxConfigField(
+		addConfigComponent(parent, new CheckBoxConfigField(
 				PreferencesMessages.EditorPreferencePage_matchingBrackets, 
 				PreferenceConstants.EDITOR_MATCHING_BRACKETS
 		));

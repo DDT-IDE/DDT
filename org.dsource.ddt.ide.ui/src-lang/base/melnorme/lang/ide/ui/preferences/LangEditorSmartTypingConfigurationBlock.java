@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
 import melnorme.lang.ide.ui.preferences.fields.ComboBoxConfigField;
 import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.util.swt.components.IFieldValueListener;
@@ -43,18 +44,18 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
 		
 		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings,
-				LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, 0);
+		addConfigComponent(group, new CheckBoxConfigField(
+			PreferencesMessages.LangSmartTypingConfigurationBlock_closeStrings, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS));
 		
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets,
-				LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, 0);
+		addConfigComponent(group, new CheckBoxConfigField(
+			PreferencesMessages.LangSmartTypingConfigurationBlock_closeBrackets, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS));
 		}
 		
-		addCheckBox(group,
-				PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces,
-				LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, 0);
+		addConfigComponent(group, new CheckBoxConfigField(
+			PreferencesMessages.LangSmartTypingConfigurationBlock_closeBraces, 
+			LangAutoEditPreferenceConstants.AE_CLOSE_BRACES));
 		
 	}
 	
@@ -62,19 +63,13 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		Composite group = createSubsection(parent, 
 			PreferencesMessages.EditorPreferencePage_AutoEdits);
 		
-		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
+		group.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).extendedMargins(0, 0, 0, 0).create());
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_smartIndent,
-				LangAutoEditPreferenceConstants.AE_SMART_INDENT, 2);
+		addConfigComponent(group, new CheckBoxConfigField(PreferencesMessages.EditorPreferencePage_smartIndent, LangAutoEditPreferenceConstants.AE_SMART_INDENT));
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_smartDeIndent,
-				LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, 2);
+		addConfigComponent(group, new CheckBoxConfigField(PreferencesMessages.EditorPreferencePage_smartDeIndent, LangAutoEditPreferenceConstants.AE_SMART_DEINDENT));
 		
-		addCheckBox(group,
-				PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks,
-				LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, 2);
+		addConfigComponent(group, new CheckBoxConfigField(PreferencesMessages.EditorPreferencePage_considerParenthesesAsBlocks, LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS));
 		
 		return group;
 	}
@@ -94,21 +89,21 @@ public class LangEditorSmartTypingConfigurationBlock extends AbstractPreferences
 		);
 		
 		final ComboBoxConfigField indentModeField = 
-		addConfigComponent(generalGroup, 0, new ComboBoxConfigField(
+		addConfigComponent(generalGroup, new ComboBoxConfigField(
 			FormatterMessages.IndentationGroup_tab_policy, 
 			CodeFormatterConstants.FORMATTER_INDENT_MODE, 
 			INDENT_MODE__LABELS, 
 			INDENT_MODE__VALUES
 		));
 		
-		addConfigComponent(generalGroup, 1, createNumberField(
+		addConfigComponent(generalGroup, createNumberField(
 			FormatterMessages.IndentationGroup_tab_size, 
 			CodeFormatterConstants.FORMATTER_TAB_SIZE, 
 			2
 		));
 		
 		final TextConfigField indentationSizeField = 
-		addConfigComponent(generalGroup, 1, createNumberField(
+		addConfigComponent(generalGroup, createNumberField(
 			FormatterMessages.IndentationGroup_indent_size, 
 			CodeFormatterConstants.FORMATTER_INDENTATION_SPACES_SIZE, 
 			2

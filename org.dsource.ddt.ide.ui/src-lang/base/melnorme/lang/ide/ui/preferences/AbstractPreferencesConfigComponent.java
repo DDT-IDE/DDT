@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
-import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
 import melnorme.lang.ide.ui.preferences.fields.NumberConfigField;
 import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.lang.ide.ui.utils.DialogPageUtils;
@@ -75,12 +74,7 @@ public abstract class AbstractPreferencesConfigComponent extends AbstractCompone
 	}
 	
 	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, T configControl) {
-		return addConfigComponent(parent, 0, configControl);
-	}
-	
-	protected <T extends AbstractConfigField<?>> T addConfigComponent(Composite parent, int indentation, 
-			T configControl) {
-		configControl.createControl(parent, indentation);
+		configControl.createComponentInlined(parent);
 		addConfigComponent(configControl);
 		return configControl;
 	}
@@ -94,10 +88,6 @@ public abstract class AbstractPreferencesConfigComponent extends AbstractCompone
 	protected Composite createSubsection(Composite parent, String label) {
 		return SWTFactoryUtil.createGroup(parent, label, 
 			new GridData(SWT.FILL, SWT.CENTER, true, false));
-	}
-	
-	protected CheckBoxConfigField addCheckBox(Composite parent, String label, String prefKey, int indentation) {
-		return addConfigComponent(parent, indentation, new CheckBoxConfigField(label, prefKey));
 	}
 	
 	protected TextConfigField createNumberField(String label, String key, int textLimit) {
