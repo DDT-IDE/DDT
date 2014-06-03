@@ -11,8 +11,6 @@
 package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
 import melnorme.util.swt.SWTUtil;
 
@@ -35,7 +33,6 @@ import org.eclipse.swt.widgets.Text;
 public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	
 	private VALUE value; // private to prevent direct modifications.
-	protected boolean runningUpdateControls;
 	
 	public AbstractField() {
 		this.value = assertNotNull(getDefaultFieldValue());
@@ -53,20 +50,17 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		if(value == null) {
 			value = getDefaultFieldValue();
 		}
-		setFieldValue(value, true);
+		doSetFieldValue(value, true);
 	}
 	
 	/** Update the field value from a control modification. */
-	protected void updateFieldValue(VALUE value) {
-		if(runningUpdateControls) {
-			assertTrue(areEqual(getFieldValue(), value));
-			return; // Field value already up to date
-		}
-		setFieldValue(value, false);
+	protected void setFieldValueFromControl(VALUE newValue) {
+		doSetFieldValue(newValue, false);
 	}
 	
-	protected void setFieldValue(VALUE value, boolean needsUpdateControls) {
-		this.value = value;
+	protected void doSetFieldValue(VALUE newValue, boolean needsUpdateControls) {
+		this.value = newValue;
+		
 		if(needsUpdateControls) {
 			updateComponentFromInput();
 		}
@@ -75,14 +69,8 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	
 	@Override
 	public void updateComponentFromInput() {
-		assertTrue(runningUpdateControls == false);
 		if(isCreated()) {
-			runningUpdateControls = true;
-			try {
-				doUpdateComponentFromValue();
-			} finally {
-				runningUpdateControls = false;
-			}
+			doUpdateComponentFromValue();
 		}
 	}
 	
@@ -108,7 +96,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		text.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				field.updateFieldValue(text.getText());
+				field.setFieldValueFromControl(text.getText());
 			}
 		});
 		return text;
@@ -120,7 +108,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		checkBox.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				field.updateFieldValue(checkBox.getSelection());
+				field.setFieldValueFromControl(checkBox.getSelection());
 			}
 		});
 		return checkBox;
@@ -132,7 +120,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		spinner.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				field.updateFieldValue(spinner.getDigits());
+				field.setFieldValueFromControl(spinner.getDigits());
 			}
 		});
 		return spinner;
@@ -144,7 +132,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int selectionIndex = combo.getSelectionIndex();
-				field.updateFieldValue(selectionIndex);
+				field.setFieldValueFromControl(selectionIndex);
 			}
 		});
 		return combo;

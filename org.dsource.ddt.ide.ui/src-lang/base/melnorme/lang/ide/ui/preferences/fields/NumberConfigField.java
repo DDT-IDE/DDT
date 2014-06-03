@@ -24,10 +24,14 @@ public class NumberConfigField extends TextConfigField {
 	}
 	
 	@Override
-	protected void updateFieldValue(String numberText) {
-		IStatus status = validatePositiveNumber(numberText);
+	protected void setFieldValueFromControl(String numberText) {
+	}
+	
+	@Override
+	protected void doSetFieldValue(String newValue, boolean needsUpdateControls) {
+		IStatus status = validatePositiveNumber(newValue);
 		if(status.isOK()) {
-			super.updateFieldValue(numberText);
+			super.doSetFieldValue(newValue, needsUpdateControls);
 		}
 		statusChanged(status);
 	}

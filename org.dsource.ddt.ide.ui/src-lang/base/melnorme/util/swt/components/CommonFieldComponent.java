@@ -36,6 +36,9 @@ public abstract class CommonFieldComponent<VALUE> extends AbstractComponentExt i
 	}
 	
 	protected final void fireFieldValueChanged() {
+		// We check allListenersUpToDate in case a listener modifies the value during notification.
+		// In that case a nested fireFieldValueChanged should have occurred and all listeners have been notified.
+		
 		fieldValueChanged();
 		for (IFieldValueListener listener : listeners.getListeners()) {
 			listener.fieldValueChanged();

@@ -18,6 +18,7 @@ import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
 
 public abstract class FieldComponent_Tests extends CommonTest {
 	
@@ -60,8 +61,62 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		protected void runTestWithCreatedComponent_extra() {
 			field.setFieldValue("blah");
 			field.getFieldControl().setTextLimit(5);
-			// TODO test non-identical value update
-//			field.setFieldValue("1234567");
+			valueChangeCount_expected = valueChangeCount;
+			controlsUpdateCount_expected = controlsUpdateCount;
+			// test non-identical value update
+			field.setFieldValue("1234567");
+			assertEquals(field.getFieldValue(), "12345");
+			
+			valueChangeCount_expected++; controlsUpdateCount_expected++;
+			__checkUpdatesInvariant();
+		}
+		
+	}
+	
+	public static class TextField_ExtTest extends TextFieldTest {
+		
+		@Override
+		public TextField createField() {
+			return field = new TextField("") {
+				
+				@Override
+				protected void doSetFieldValue(String value, boolean needsUpdateControls) {
+					if(value.contains("XXX")) {
+						return; // Cancel field update. Controls remain unused
+					}
+					super.doSetFieldValue(value, needsUpdateControls);
+				}
+				
+				@Override
+				protected void doUpdateComponentFromValue() {
+					controlsUpdateCount++;
+					super.doUpdateComponentFromValue();
+				};
+			};
+			
+		}
+		
+		@Override
+		protected void doRunTest(Shell shell) {
+			field.setFieldValue("aaa");
+			assertEquals(field.getFieldValue(), "aaa");
+			field.setFieldValue("aXXXa");
+			assertEquals(field.getFieldValue(), "aaa");
+			
+			field.createComponent(shell);
+			
+			field.setFieldValue("aXXXa");
+			assertEquals(field.getFieldValue(), "aaa");
+			assertEquals(field.getFieldControl().getText(), "aaa");
+			
+			field.getFieldControl().setText("aXXXa");
+			assertEquals(field.getFieldValue(), "aaa");
+			assertEquals(field.getFieldControl().getText(), "aXXXa");
+		}
+		
+		@Override
+		protected void runTestWithCreatedComponent() {
+			
 		}
 		
 	}
