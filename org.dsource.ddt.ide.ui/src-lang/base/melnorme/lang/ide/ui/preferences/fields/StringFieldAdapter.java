@@ -15,20 +15,20 @@ import melnorme.util.swt.components.AbstractField;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public abstract class AbstractConfigField<VALUE> extends AbstractField<VALUE> implements IPreferencesComponent {
+public class StringFieldAdapter extends AbstractFieldAdapter<String> implements IPreferencesComponent {
 	
-	protected final String prefKey;
-	protected final String label;
-	
-	public AbstractConfigField(String prefKey, String label) {
-		this.prefKey = prefKey;
-		this.label = label;
+	public StringFieldAdapter(String prefKey, AbstractField<String> field) {
+		super(prefKey, field);
 	}
 	
 	@Override
-	public void resetToDefaults(IPreferenceStore store) {
-		store.setToDefault(prefKey);
-		loadFromStore(store);
+	public void loadFromStore(IPreferenceStore store) {
+		field.setFieldValue(store.getString(prefKey));
+	}
+	
+	@Override
+	public void saveToStore(IPreferenceStore store) {
+		store.setValue(prefKey, field.getFieldValue());
 	}
 	
 }

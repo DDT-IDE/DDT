@@ -8,14 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package melnorme.util.swt.components.fields;
 
 
 public interface FieldMessages {
 	
-	String JavaEditorPreferencePage_empty_input =
+	String NumberField_empty_input =
 			"Empty input";
-	String JavaEditorPreferencePage_invalid_input =
+	String NumberField_invalid_input =
 		"''{0}'' is not a valid input.";
 	
 }

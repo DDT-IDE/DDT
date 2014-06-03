@@ -8,20 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.fields;
+package melnorme.util.swt.components.fields;
+
+import melnorme.util.swt.components.AbstractField;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
+public class CheckBoxField extends AbstractField<Boolean> {
 	
+	protected String labelText;
 	protected Button checkBox;
 	
-	public CheckBoxConfigField(String label, String prefKey) {
-		super(prefKey, label);
+	public CheckBoxField(String labelText) {
+		this.labelText = labelText;
 	}
 	
 	@Override
@@ -32,7 +34,7 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	@Override
 	protected void createContents(Composite topControl) {
 		checkBox = createFieldCheckbox(this, topControl, SWT.NONE);
-		checkBox.setText(label);
+		checkBox.setText(labelText);
 		checkBox.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
 	}
 	
@@ -44,16 +46,6 @@ public class CheckBoxConfigField extends AbstractConfigField<Boolean> {
 	@Override
 	protected void doUpdateComponentFromValue() {
 		checkBox.setSelection(getFieldValue());
-	}
-	
-	@Override
-	public void loadFromStore(IPreferenceStore store) {
-		setFieldValue(store.getBoolean(prefKey));
-	}
-	
-	@Override
-	public void saveToStore(IPreferenceStore store) {
-		store.setValue(prefKey, getFieldValue());
 	}
 	
 }

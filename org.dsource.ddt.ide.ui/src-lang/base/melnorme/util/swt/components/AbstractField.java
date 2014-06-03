@@ -11,7 +11,6 @@
 package melnorme.util.swt.components;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.ide.ui.preferences.fields.AbstractConfigField;
 import melnorme.util.swt.SWTUtil;
 
 import org.eclipse.swt.SWT;
@@ -33,6 +32,7 @@ import org.eclipse.swt.widgets.Text;
 public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	
 	private VALUE value; // private to prevent direct modifications.
+	protected boolean listenersNeedNotify;
 	
 	public AbstractField() {
 		this.value = assertNotNull(getDefaultFieldValue());
@@ -60,11 +60,15 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 	
 	protected void doSetFieldValue(VALUE newValue, boolean needsUpdateControls) {
 		this.value = newValue;
+		this.listenersNeedNotify = true;
 		
 		if(needsUpdateControls) {
 			updateComponentFromInput();
 		}
-		fireFieldValueChanged();
+		if(listenersNeedNotify) {
+			fireFieldValueChanged();
+		}
+		listenersNeedNotify = false;
 	}
 	
 	@Override
@@ -102,7 +106,7 @@ public abstract class AbstractField<VALUE> extends CommonFieldComponent<VALUE> {
 		return text;
 	}
 	
-	protected static Button createFieldCheckbox(final AbstractConfigField<Boolean> field, Composite parent, 
+	protected static Button createFieldCheckbox(final AbstractField<Boolean> field, Composite parent, 
 			int style) {
 		final Button checkBox = new Button(parent, SWT.CHECK | style);
 		checkBox.addSelectionListener(new SelectionAdapter() {

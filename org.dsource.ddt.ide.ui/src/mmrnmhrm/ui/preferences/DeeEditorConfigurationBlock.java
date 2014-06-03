@@ -13,7 +13,7 @@ package mmrnmhrm.ui.preferences;
 import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
 import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
+import melnorme.util.swt.components.fields.CheckBoxField;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.PreferencePage;
@@ -28,10 +28,9 @@ public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	
 	@Override
 	protected void createAppearanceGroup(Composite parent) {
-		addConfigComponent(parent, new CheckBoxConfigField(
-				PreferencesMessages.EditorPreferencePage_matchingBrackets, 
-				PreferenceConstants.EDITOR_MATCHING_BRACKETS
-		));
+		createBooleanField(parent,
+			PreferenceConstants.EDITOR_MATCHING_BRACKETS,
+			new CheckBoxField(PreferencesMessages.EditorPreferencePage_matchingBrackets));
 		
 		super.createAppearanceGroup(parent);
 	}

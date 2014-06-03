@@ -8,26 +8,28 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences.fields;
+package melnorme.util.swt.components.fields;
 
 import melnorme.util.swt.SWTFactoryUtil;
+import melnorme.util.swt.components.AbstractField;
 
 import org.eclipse.jface.layout.PixelConverter;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class TextConfigField extends AbstractConfigField<String> {
+public class TextField2 extends AbstractField<String> {
 	
+	protected final String label;
 	protected final int textLimit;
+	
 	protected Label labelControl;
 	protected Text textControl;
 	
-	public TextConfigField(String label, String prefKey, int textLimit) {
-		super(prefKey, label);
+	public TextField2(String label, int textLimit) {
+		this.label = label;
 		this.textLimit = textLimit;
 	}
 	
@@ -61,16 +63,6 @@ public class TextConfigField extends AbstractConfigField<String> {
 	public void setEnabled(boolean enabled) {
 		labelControl.setEnabled(enabled);
 		textControl.setEnabled(enabled);
-	}
-	
-	@Override
-	public void loadFromStore(IPreferenceStore store) {
-		setFieldValue(store.getString(prefKey));
-	}
-	
-	@Override
-	public void saveToStore(IPreferenceStore store) {
-		store.setValue(prefKey, getFieldValue());
 	}
 	
 }

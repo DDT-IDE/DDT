@@ -10,9 +10,6 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.lang.ide.ui.preferences.fields.CheckBoxConfigField;
-import melnorme.lang.ide.ui.preferences.fields.ComboBoxConfigField;
-import melnorme.lang.ide.ui.preferences.fields.TextConfigField;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
@@ -164,13 +161,13 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 	}
 	
-	public static class TextConfigFieldTest extends AbstractFieldTest {
+	public static class TextField2Test extends AbstractFieldTest {
 		
-		protected TextConfigField field;
+		protected TextField2 field;
 		
 		@Override
 		public AbstractField<?> createField() {
-			return field = new TextConfigField("blah", "blah", 20) {
+			return field = new TextField2("blah", 20) {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
@@ -201,13 +198,13 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 	}
 	
-	public static class CheckboxConfigFieldTest extends AbstractFieldTest {
+	public static class CheckBoxFieldTest extends AbstractFieldTest {
 		
-		protected CheckBoxConfigField field;
+		protected CheckBoxField field;
 		
 		@Override
 		public AbstractField<?> createField() {
-			return field = new CheckBoxConfigField("blah", "blah") {
+			return field = new CheckBoxField("blah") {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
@@ -239,16 +236,16 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 	}
 	
-	public static class ComboBoxConfigFieldTest extends AbstractFieldTest {
+	public static class ComboBoxFieldTest extends AbstractFieldTest {
 		
-		protected ComboBoxConfigField field;
+		protected ComboBoxField field;
 		
-		protected static String[] VALUES = array("1", "2", "3");
-		protected static String[] LABELS = array("one", "two", "three");
+		protected static String[] VALUES = array(":0", ":1", ":2");
+		protected static String[] LABELS = array("zero", "one", "two");
 		
 		@Override
 		public AbstractField<?> createField() {
-			return field = new ComboBoxConfigField("blah", "blah", LABELS, VALUES) {
+			return field = new ComboBoxField("blah", LABELS, VALUES) {
 				@Override
 				protected void doUpdateComponentFromValue() {
 					controlsUpdateCount++;
@@ -276,6 +273,18 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		public void doChangeFromControl() {
 			field.getFieldControl().setText("one");
 			field.getFieldControl().notifyListeners(SWT.Selection, null);
+		}
+		
+		@Override
+		protected void runTestWithCreatedComponent_extra() {
+			field.setFieldValue(0);
+			assertEquals(field.getFieldStringValue(), ":0");
+			field.setFieldStringValue(":2");
+			assertEquals(field.getFieldValue(), 2);
+			
+			field.setFieldValue(-1);
+			assertEquals(field.getFieldValue(), -1);
+			assertEquals(field.getFieldStringValue(), "");
 		}
 		
 	}
