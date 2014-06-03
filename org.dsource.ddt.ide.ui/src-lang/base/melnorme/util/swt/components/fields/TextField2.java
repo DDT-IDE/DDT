@@ -10,59 +10,32 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.SWTFactoryUtil;
-import melnorme.util.swt.components.AbstractField;
-
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
-public class TextField2 extends AbstractField<String> {
+public class TextField2 extends TextField {
 	
-	protected final String label;
 	protected final int textLimit;
 	
-	protected Label labelControl;
-	protected Text textControl;
-	
-	public TextField2(String label, int textLimit) {
-		this.label = label;
+	public TextField2(String labelText, int textLimit) {
+		super(labelText, SWT.BORDER | SWT.SINGLE);
 		this.textLimit = textLimit;
 	}
 	
 	@Override
-	public String getDefaultFieldValue() {
-		return "";
+	protected void createText(Composite parent) {
+		super.createText(parent);
+		text.setTextLimit(textLimit);
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		PixelConverter pixelConverter = new PixelConverter(topControl);
+	protected void createContents_layout() {
+		GridData textGD = layout2Controls(label, text, false);
 		
-		labelControl = SWTFactoryUtil.createLabel(topControl, SWT.NONE, label, new GridData()); 
-		textControl = createFieldText(this, topControl, SWT.BORDER | SWT.SINGLE);
-		GridData gd = new GridData();
-		gd.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
-		textControl.setLayoutData(gd);
-		textControl.setTextLimit(textLimit);
-	}
-	
-	@Override
-	public Text getFieldControl() {
-		return textControl;
-	}
-	
-	@Override
-	protected void doUpdateComponentFromValue() {
-		textControl.setText(getFieldValue());
-	}
-	
-	public void setEnabled(boolean enabled) {
-		labelControl.setEnabled(enabled);
-		textControl.setEnabled(enabled);
+		PixelConverter pixelConverter = new PixelConverter(text.getParent());
+		textGD.widthHint = pixelConverter.convertWidthInCharsToPixels(textLimit + 1);
 	}
 	
 }

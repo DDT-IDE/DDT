@@ -23,10 +23,6 @@ public class NumberField extends TextField2 {
 	}
 	
 	@Override
-	protected void setFieldValueFromControl(String numberText) {
-	}
-	
-	@Override
 	protected void doSetFieldValue(String newValue, boolean needsUpdateControls) {
 		IStatus status = validatePositiveNumber(newValue);
 		if(status.isOK()) {

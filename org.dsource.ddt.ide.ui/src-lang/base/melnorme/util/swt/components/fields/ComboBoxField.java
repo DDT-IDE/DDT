@@ -11,27 +11,25 @@
 package melnorme.util.swt.components.fields;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.AbstractFieldExt;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 
-public class ComboBoxField extends AbstractField<Integer> {
+public class ComboBoxField extends AbstractFieldExt<Integer> {
 	
-	protected final String[] labels;
+	protected final String[] valueLabels;
 	protected final String[] values;
 	
-	protected final String label;
-	protected Label labelControl;
+	protected Label label;
 	protected Combo combo;
 	
-	public ComboBoxField(String label, String[] labels, String[] values) {
-		this.label = label;
-		this.labels = labels;
+	public ComboBoxField(String labelText, String[] labels, String[] values) {
+		super(labelText);
+		this.valueLabels = labels;
 		this.values = values;
 		assertTrue(labels != null && values != null && labels.length == values.length);
 		assertTrue(labels.length > 0);
@@ -43,16 +41,25 @@ public class ComboBoxField extends AbstractField<Integer> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
-		labelControl = new Label(topControl, SWT.NONE);
-		labelControl.setText(label);
-		
+	protected void createContents_do(Composite topControl) {
+		createLabel(topControl);
+		createCombo(topControl);
+	}
+	
+	protected void createLabel(Composite topControl) {
+		label = new Label(topControl, SWT.NONE);
+		label.setText(labelText);
+	}
+	
+	protected void createCombo(Composite topControl) {
 		combo = createFieldCombo(this, topControl, SWT.SINGLE | SWT.READ_ONLY);
 		combo.setFont(topControl.getFont());
-		combo.setItems(labels);
-		
-		labelControl.setLayoutData(GridDataFactory.swtDefaults().create());
-		combo.setLayoutData(GridDataFactory.swtDefaults().create());
+		combo.setItems(valueLabels);
+	}
+	
+	@Override
+	protected void createContents_layout() {
+		layout2Controls(label, combo, false);
 	}
 	
 	@Override
@@ -66,7 +73,7 @@ public class ComboBoxField extends AbstractField<Integer> {
 		if(indexValue == -1) {
 			return;
 		}
-		String label = labels[indexValue];
+		String label = valueLabels[indexValue];
 		combo.setText(label);
 		assertTrue(combo.getSelectionIndex() == indexValue);
 	}

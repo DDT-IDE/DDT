@@ -13,23 +13,21 @@ package mmrnmhrm.ui.preferences;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.TextField;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 
 public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
 	protected IProject project;
 	
-	protected final TextField dubBuildExtraOptions = new TextField("Extra build options for dub build:") {
-		@Override
-		protected Text createText(Composite parent) {
-			return new Text(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		}
-	};
+	protected final TextField dubBuildExtraOptions = new TextField(
+		DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions,
+		SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
+	);
 	
 	public DubProjectOptionsBlock() {
 	}

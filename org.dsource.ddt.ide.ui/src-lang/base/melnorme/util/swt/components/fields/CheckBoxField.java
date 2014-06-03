@@ -10,20 +10,18 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import melnorme.util.swt.components.AbstractField;
+import melnorme.util.swt.components.AbstractFieldExt;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class CheckBoxField extends AbstractField<Boolean> {
+public class CheckBoxField extends AbstractFieldExt<Boolean> {
 	
-	protected String labelText;
 	protected Button checkBox;
 	
 	public CheckBoxField(String labelText) {
-		this.labelText = labelText;
+		super(labelText);
 	}
 	
 	@Override
@@ -32,10 +30,14 @@ public class CheckBoxField extends AbstractField<Boolean> {
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
+	protected void createContents_do(Composite topControl) {
 		checkBox = createFieldCheckbox(this, topControl, SWT.NONE);
 		checkBox.setText(labelText);
-		checkBox.setLayoutData(GridDataFactory.swtDefaults().span(2, 1).create());
+	}
+	
+	@Override
+	protected void createContents_layout() {
+		layout1Control(checkBox);
 	}
 	
 	@Override
