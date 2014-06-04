@@ -37,6 +37,8 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		
 		// DTLK default init
 		PreferenceConstants.initializeDefaultValues(store);
+		// Fix DLTK bug
+		store.setDefault(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT, true);
 		
 		DeeColorPreferenceInitializer.initializeDefaults(store);
 		DeeDoc_initializeDefaultValues(store);

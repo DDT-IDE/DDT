@@ -11,7 +11,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	private static final String PAGE_NAME = DeeProjectWizardBuildSettingsPage.class.getSimpleName();
 	
 	protected final DeeProjectWizard deeNewProjectWizard;
-	protected DubProjectOptionsBlock prjBuildOptionsBlock;
+	protected final DubProjectOptionsBlock prjBuildOptionsBlock = new DubProjectOptionsBlock();
 	
 	public DeeProjectWizardBuildSettingsPage(DeeProjectWizard deeNewProjectWizard) {
 		super(PAGE_NAME);
@@ -22,8 +22,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	
 	@Override
 	public void createControl(Composite parent) {
-		prjBuildOptionsBlock = new DubProjectOptionsBlock();
-		setControl(prjBuildOptionsBlock.createControl(parent));
+		setControl(prjBuildOptionsBlock.createComponent(parent));
 	}
 	
 	@Override
@@ -33,7 +32,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 		}
 		
 		if (visible) {
-			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getCreatedElement());
+			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getCreatedElement().getProject());
 		}
 		super.setVisible(visible);
 	}
@@ -44,10 +43,7 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	}
 	
 	public boolean performOk() {
-		if(prjBuildOptionsBlock != null && prjBuildOptionsBlock.hasBeenInitialized()) {
-			return prjBuildOptionsBlock.performOk();
-		}
-		return true;
+		return prjBuildOptionsBlock.performOk();
 	}
 	
 }

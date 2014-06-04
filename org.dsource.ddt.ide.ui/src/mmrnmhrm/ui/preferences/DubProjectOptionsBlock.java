@@ -10,81 +10,58 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
-import melnorme.lang.jdt.ui.wizards.dialogfields.DialogField;
-import melnorme.lang.jdt.ui.wizards.dialogfields.FieldLayoutUtilExt;
-import melnorme.lang.jdt.ui.wizards.dialogfields.IDialogFieldListener;
-import melnorme.lang.jdt.ui.wizards.dialogfields.StringDialogField;
-import melnorme.util.swt.GridComposite;
-import melnorme.util.swt.SWTLayoutUtil;
+import melnorme.util.swt.components.AbstractComponentExt;
+import melnorme.util.swt.components.fields.TextField;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
-import org.osgi.service.prefs.BackingStoreException;
 
-public class DubProjectOptionsBlock {
-	
-	private final class FieldListener implements IDialogFieldListener {
-		@Override
-		public void dialogFieldChanged(DialogField field) {
-		}
-	}
-	
-	protected final StringDialogField fExtraOptions;
+public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
 	protected IProject project;
 	
+	protected final TextField dubBuildExtraOptions = new TextField(
+		DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions,
+		SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
+	);
+	
 	public DubProjectOptionsBlock() {
-		fExtraOptions = new StringDialogField() {
-			@Override
-			protected Text createTextControl(Composite parent) {
-				return new Text(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-			}
-		};
-		fExtraOptions.setLabelText("Extra build options for dub build:");
-		fExtraOptions.setDialogFieldListener(new FieldListener());
 	}
 	
-	public void initializeFrom(IScriptProject scriptProject) {
-		project = scriptProject.getProject();
-		String dubBuildOptions = DeeCorePreferences.getDubBuildOptions(project);
-		
-		fExtraOptions.setTextWithoutUpdate(dubBuildOptions);
+	@Override
+	protected void createContents(Composite topControl) {
+		dubBuildExtraOptions.createComponentInlined(topControl);
+		dubBuildExtraOptions.getFieldControl().setLayoutData(
+			GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).create());
 	}
 	
-	public Composite createControl(Composite parent) {
-		Composite content = parent;
-		content = new GridComposite(parent);
-		
-		GridComposite rowComposite = new GridComposite(content);
-		SWTLayoutUtil.setWidthHint(rowComposite, 200);
-		SWTLayoutUtil.enableDiagonalExpand(rowComposite);
-
-		Composite comp;
-		
-		comp = FieldLayoutUtilExt.createCompose(rowComposite, true, fExtraOptions);
-		SWTLayoutUtil.enableDiagonalExpand(comp);
-		SWTLayoutUtil.enableDiagonalExpand(fExtraOptions.getTextControl(null));
-		SWTLayoutUtil.setHeightHint(fExtraOptions.getTextControl(null), 200);
-		
-		return content;
+	@Override
+	public void updateComponentFromInput() {
+		if(project != null) {
+			dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptions(project));
+		}
 	}
 	
-	public boolean hasBeenInitialized() {
-		return project != null;
+	// Note this can be called before the component is created
+	public void initializeFrom(IProject project) {
+		this.project = project;
+		updateComponentFromInput();
 	}
 	
 	public boolean performOk() {
-		DeeCorePreferences.putDubBuildOptions(project, fExtraOptions.getText());
-		try {
-			DeeCorePreferences.getProjectPreferences(project).flush();
-		} catch (BackingStoreException e) {
+		if(project == null) {
 			return false;
 		}
+		DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getFieldValue());
 		return true;
+	}
+	
+	public void restoreDefaults() {
+		dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptionsDefault());
 	}
 	
 }

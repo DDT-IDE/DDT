@@ -12,6 +12,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 
 	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
 	<property name="repoSrc" location="bin-maven/features.repository/repository" />
+	<property name="repoSrc.subdir" location="local-repo" />
 	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
 
 	<property name="gitLocation" value="git" />
@@ -20,8 +21,8 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 		<delete dir="${localUpdateSiteDir}" failonerror="true"/>
 	</target>
 	
-	<target name="CopyRepoToLocalUpdateSite">
-		<property name="repoDest" location="${localUpdateSiteDir}/local-repo" />
+	<target name="CopyBuiltRepoToLocalUpdateSite">
+		<property name="repoDest" location="${localUpdateSiteDir}/${repoSrc.subdir}" />
 		<copy verbose="true" todir="${repoDest}">
 			<fileset dir="${repoSrc}"/>
 		</copy>
@@ -32,7 +33,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 			<fileset dir="${updateSiteSkeleton.Dir}"/>
 		</copy>
 		
-		<antcall target="CopyRepoToLocalUpdateSite"/>
+		<antcall target="CopyBuiltRepoToLocalUpdateSite"/>
 	</target>
 	
 	<!-- ================================= -->
@@ -56,9 +57,10 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 		<exec dir="." executable="${gitLocation}" failonerror="true">
 			<arg line="clone ${updateSiteGitURL} ${localUpdateSiteDir}"/>
 		</exec>
-	
+		
+		<!-- Delete previous plugins. -->
 		<delete verbose="true">
-			<fileset dir="${repoDest}" erroronmissingdir="false" includes="**/*.jar"/>
+			<fileset dir="${localUpdateSiteDir}" erroronmissingdir="true" includes="**/*.jar"/>
 		</delete>
 		
 		<antcall target="CreateLocalUpdateSite"/>

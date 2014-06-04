@@ -24,4 +24,7 @@ public abstract class DeeUIMessages extends LangUIMessages {
 	public static final String DubAction_RemoveLocalPath = "Remove project from local packages";
 	public static final String DubAction_RunDubList = "Run 'dub list'";
 	
+	public static final String DUB_PROJECT_OPTIONS__ExtraBuildOptions = 
+			"Extra build options for dub build:";
+	
 }
