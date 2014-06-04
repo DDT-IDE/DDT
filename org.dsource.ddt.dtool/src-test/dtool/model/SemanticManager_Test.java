@@ -29,8 +29,8 @@ public class SemanticManager_Test extends DToolBaseTest {
 	
 	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
 	
-	public static final Path BASIC_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("basic_lib_foo");
-	public static final Path FOO_LIB_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("sm_test_foo");
+	public static final Path BASIC_LIB_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("basic_lib");
+	public static final Path FOO_LIB_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("smtest_foo");
 	
 	
 	@BeforeClass
@@ -55,8 +55,8 @@ public class SemanticManager_Test extends DToolBaseTest {
 		
 		SemanticManager mgr = new SemanticManager(DToolServer.getProcessAgent(), new Tests_DToolServer());
 		
-		SemanticContext semanticContext = mgr.getSemanticContext(BASIC_BUNDLE_PATH);
-		assertEquals(semanticContext.getBundleId(), "basic_lib_foo");
+		SemanticContext semanticContext = mgr.getSemanticContext(BASIC_LIB_BUNDLE_PATH);
+		assertEquals(semanticContext.getBundleId(), "basic_lib");
 		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
 			{
 				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
@@ -65,7 +65,7 @@ public class SemanticManager_Test extends DToolBaseTest {
 		}.run();
 		
 		semanticContext = mgr.getSemanticContext(FOO_LIB_BUNDLE_PATH);
-		assertEquals(semanticContext.getBundleId(), "sm_test_foo");
+		assertEquals(semanticContext.getBundleId(), "smtest_foo");
 		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
 			{
 				checkEntry("sm_test_foo", "src/sm_test_foo.d");

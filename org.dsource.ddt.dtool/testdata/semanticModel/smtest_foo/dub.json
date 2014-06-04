@@ -1,8 +1,8 @@
 {
-	"name": "sm_test_foo",
+	"name": "smtest_foo",
 	"description": "A more complex bundle",
 	"dependencies": {
-		"basic_lib_foo": "~master"
+		"basic_lib": "~master"
 	},
 	"sourcePaths": [ "src", "src2" ],
 	"sourceFiles": [ "src-extra/modA_src_extra.d"],
