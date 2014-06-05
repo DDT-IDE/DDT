@@ -73,7 +73,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
 		fixtureSourceOverlay = new TestsProjectFileOverlay(scriptProject, moduleName, testCase.source);
 		
-		mr = new DeeProjectModuleResolver(scriptProject);
+		mr = null; // Redundant
 		
 		sourceModule = (ISourceModule) DLTKCore.create(fixtureSourceOverlay.overlayedFile);
 		checkModuleSetupConsistency();

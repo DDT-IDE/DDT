@@ -58,8 +58,8 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
+import dtool.dub.DubHelper;
 import dtool.dub.DubManifestParser;
-import dtool.model.SemanticManager;
 
 /**
  * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
@@ -409,7 +409,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
-		DubBundleDescription bundleDesc = SemanticManager.parseDubDescribe(location, processHelper);
+		DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(location, processHelper);
 		
 		if(bundleDesc.hasErrors()) {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());

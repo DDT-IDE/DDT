@@ -44,7 +44,7 @@ import org.junit.BeforeClass;
 public abstract class CommonCoreTest extends CommonTest {
 	
 	static {
-		initializeWorkingDirAsEclipseInstanceLocation();
+		initializeWorkingDirToEclipseInstanceLocation();
 	}
 	
 	protected static ErrorLogListener logErrorListener;
@@ -69,7 +69,7 @@ public abstract class CommonCoreTest extends CommonTest {
 		logErrorListener.checkErrors();
 	}
 	
-	private static void initializeWorkingDirAsEclipseInstanceLocation() {
+	private static void initializeWorkingDirToEclipseInstanceLocation() {
 		Location instanceLocation = Platform.getInstanceLocation();
 		try {
 			URI uri = instanceLocation.getURL().toURI();

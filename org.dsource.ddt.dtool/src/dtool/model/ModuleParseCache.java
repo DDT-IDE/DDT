@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
@@ -33,7 +33,7 @@ import dtool.project.DeeNamingRules;
  */
 public class ModuleParseCache {
 	
-	protected SimpleLogger log = SimpleLogger.create("ModuleParseCache");
+	protected static SimpleLogger log = SimpleLogger.create("ModuleParseCache");
 	
 	protected static final ModuleParseCache defaultInstance = new ModuleParseCache();
 	
@@ -41,18 +41,16 @@ public class ModuleParseCache {
 		return defaultInstance;
 	}
 	
-	protected final ConcurrentHashMap<String, ModuleEntry> cache = new ConcurrentHashMap<>();
+	protected final HashMap<String, ModuleEntry> cache = new HashMap<>();
 	
 	/* -----------------  ----------------- */
 	
 	public ParsedModule getParsedModule(String freeformFilePath, String source) {
 		Path path = MiscUtil.createValidPath(freeformFilePath);
-		if(path != null && path.isAbsolute()) {
-			return getParsedModule(path, source);
+		if(path == null) {
+			return null;
 		}
-		String moduleNameFromFilePath = DeeNamingRules.getDefaultModuleName(path);
-		ModuleEntry entry = updateEntry(freeformFilePath, null, moduleNameFromFilePath);
-		return entry.getParsedModuleWithWorkingCopySource(source);
+		return getParsedModule(path, source);
 	}
 	
 	public ParsedModule getParsedModule(Path filePath, String source) {
@@ -83,13 +81,31 @@ public class ModuleParseCache {
 	/* -----------------  ----------------- */
 	
 	protected Path validatePath(Path filePath) {
-		return SemanticManager.validatePath(filePath);
+		assertNotNull(filePath);
+		//filePath can be relative
+		//assertTrue(filePath.isAbsolute());
+		assertTrue(filePath.getNameCount() > 0);
+		filePath = filePath.normalize();
+		return filePath;
 	}
 	
 	protected String getKeyFromPath(Path filePath) {
-		return filePath.toUri().toString();
+		return filePath.toString();
 	}
 	
+	protected ModuleEntry updateEntry(Path filePath) {
+		filePath = validatePath(filePath);
+		String key = getKeyFromPath(filePath);
+		
+		synchronized(this) {
+			ModuleEntry entry = cache.get(key);
+			if(entry == null) {
+				entry = new ModuleEntry(filePath);
+				cache.put(key, entry);
+			}
+			return entry;
+		}
+	}
 	
 	protected ParsedModule doGetParseResult(Path filePath) throws FileNotFoundException, IOException {
 		return updateEntry(filePath).getParsedModule();
@@ -99,23 +115,6 @@ public class ModuleParseCache {
 		assertNotNull(source);
 		
 		return updateEntry(filePath).getParsedModuleWithWorkingCopySource(source);
-	}
-	
-	protected ModuleEntry updateEntry(Path filePath) {
-		assertNotNull(filePath);
-		filePath = validatePath(filePath);
-		String key = getKeyFromPath(filePath);
-		String defaultModuleName = DeeNamingRules.getDefaultModuleName(filePath);
-		return updateEntry(key, filePath, defaultModuleName);
-	}
-	
-	protected ModuleEntry updateEntry(String key, Path filePath, String defaultModuleName) {
-		ModuleEntry entry = cache.get(key);
-		if(entry == null) {
-			entry = new ModuleEntry(filePath, defaultModuleName);
-			cache.put(key, entry);
-		}
-		return entry;
 	}
 	
 	public void discardWorkingCopy(Path filePath) {
@@ -128,7 +127,7 @@ public class ModuleParseCache {
 		}
 	}
 	
-	public class ModuleEntry {
+	public static class ModuleEntry {
 		
 		protected final Path filePath;
 		protected final String defaultModuleName;
@@ -138,11 +137,10 @@ public class ModuleParseCache {
 		protected long readTimestamp;
 		protected ParsedModule parsedModule = null;
 		
-		public ModuleEntry(Path filePath, String defaultModuleName) {
+		public ModuleEntry(Path filePath) {
 			this.filePath = filePath;
-			this.defaultModuleName = defaultModuleName;
-			
 			assertTrue(filePath != null);
+			this.defaultModuleName = DeeNamingRules.getDefaultModuleName(filePath);
 		}
 		
 		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
@@ -157,13 +155,16 @@ public class ModuleParseCache {
 		}
 		
 		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
-			File file = filePath.toFile();
 			if(isWorkingCopy) {
 				assertNotNull(source);
-			} else if(source == null) {
-				readSource(file);
-			} else if(file.lastModified() > readTimestamp){ //BUG here if modified twice in same millisecond  
-				readSource(file);
+			} else {
+				File file = filePath.toFile();
+				
+				if(source == null) {
+					readSource(file);
+				} else if(file.lastModified() > readTimestamp){ //BUG here if modified twice in same millisecond  
+					readSource(file);
+				}
 			}
 			
 			return doGetParseModule(source);
@@ -185,7 +186,7 @@ public class ModuleParseCache {
 		protected ParsedModule doGetParseModule(String source) {
 			if(parsedModule == null) {
 				parsedModule = DeeParser.parseSource(source, defaultModuleName);
-				log.println("ParseCache: Parsed Module ", filePath, " (", defaultModuleName, ")",
+				ModuleParseCache.log.println("ParseCache: Parsed Module ", filePath, " (", defaultModuleName, ")",
 					isWorkingCopy ? "[WC]" : "");
 			}
 			return parsedModule;

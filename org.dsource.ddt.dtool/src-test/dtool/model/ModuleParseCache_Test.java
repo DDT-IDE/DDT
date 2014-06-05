@@ -104,4 +104,12 @@ public class ModuleParseCache_Test {
 		assertTrue(parsedModule.source == source);
 	}
 	
+	@Test
+	public void testOther() throws Exception { testOther$(); }
+	public void testOther$() throws Exception {
+		mpm = new ModuleParseCache();
+		
+		assertTrue(mpm.getParsedModule("#freeFormPath", SOURCE1).source.equals(SOURCE1));
+	}
+	
 }

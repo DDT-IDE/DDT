@@ -1,5 +1,6 @@
 package dtool.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
@@ -43,6 +44,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 			existingMR.setExtraModule(null, null);
 		}
 		mr = existingMR;
+		assertNotNull(mr);
 	}
 	
 	@Override

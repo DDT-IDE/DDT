@@ -10,52 +10,29 @@
  *******************************************************************************/
 package dtool.model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Map;
 
 import melnorme.utilbox.misc.MiscUtil;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dtool.dub.CommonDubTest;
-import dtool.tests.DToolBaseTest;
-import dtool.tests.DToolTestResources;
+import dtool.dub.BundlePath;
+import dtool.model.SemanticManager.SemanticResolution;
 
-public class SemanticManager_Test extends DToolBaseTest {
+public class SemanticManager_Test extends CommonSemanticModelTest {
 	
-	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
-	
-	public static final Path BASIC_LIB_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("basic_lib");
-	public static final Path FOO_LIB_BUNDLE_PATH = SEMMODEL_TEST_BUNDLES.resolve("smtest_foo");
-	
-	
-	@BeforeClass
-	public static void initDubRepositoriesPath() {
-		CommonDubTest.dubAddPath(SEMMODEL_TEST_BUNDLES);
-	}
-	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES);
-	}
-	
-	public static class Tests_DToolServer extends DToolServer {
-		@Override
-		protected void logError(String message, Throwable throwable) {
-			assertFail();
-		}
-	}
+	protected SemanticManager mgr;
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		SemanticManager mgr = new SemanticManager(DToolServer.getProcessAgent(), new Tests_DToolServer());
+		mgr = new SemanticManager(new Tests_DToolServer());
 		
-		SemanticContext semanticContext = mgr.getSemanticContext(BASIC_LIB_BUNDLE_PATH);
+		SemanticContext semanticContext = mgr.getSemanticResolution(BASIC_LIB);
 		assertEquals(semanticContext.getBundleId(), "basic_lib");
 		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
 			{
@@ -64,7 +41,7 @@ public class SemanticManager_Test extends DToolBaseTest {
 			}
 		}.run();
 		
-		semanticContext = mgr.getSemanticContext(FOO_LIB_BUNDLE_PATH);
+		semanticContext = mgr.getSemanticResolution(SMTEST);
 		assertEquals(semanticContext.getBundleId(), "smtest_foo");
 		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
 			{
@@ -76,8 +53,13 @@ public class SemanticManager_Test extends DToolBaseTest {
 			}
 		}.run();
 		
+		assertEqualArrays(semanticContext.findModules("test."), 
+			array("test.fooLib"));
+		;
+//		assertEqualArrays(semanticContext.findModules("basic_lib"), 
+//			array("basic_lib_foo"));
+//		;
 		
-		// TODO: test caching
 	}
 	
 	public static class BundleFilesChecker extends MapChecker<ModuleFullName, Path> {
@@ -96,6 +78,82 @@ public class SemanticManager_Test extends DToolBaseTest {
 			});
 		}
 		
+	}
+	
+	protected static final Path BASIC_LIB_JSON = BASIC_LIB.path.resolve("dub.json");
+	
+	protected SemanticResolution smtestSR;
+	protected SemanticResolution basicLibSR;
+	protected SemanticResolution basicLib2SR;
+	
+	protected void getTestSemanticResolutions() {
+		smtestSR = testGetSemanticResolution(SMTEST);
+		basicLibSR = testGetSemanticResolution(BASIC_LIB);
+		basicLib2SR = testGetSemanticResolution(BASIC_LIB2);
+	}
+	
+	@Test
+	public void testCaching() throws Exception { testCaching$(); }
+	public void testCaching$() throws Exception {
+		mgr = new SemanticManager(new Tests_DToolServer());
+		
+		getTestSemanticResolutions();
+		
+		// Test json modify
+		mgr.notifyManifestFileChanged(BASIC_LIB2);
+		assertChanged(basicLibSR, BASIC_LIB, false);
+		assertChanged(basicLib2SR, BASIC_LIB2, true);
+		
+		
+		// Test json modify - a dependee is affected
+		getTestSemanticResolutions();
+		mgr.notifyManifestFileChanged(BASIC_LIB);
+		checkIsStale(BASIC_LIB, true, true);
+		checkIsStale(BASIC_LIB2, false);
+		checkIsStale(SMTEST, true); // Stale because it's a dep.
+		
+		testGetSemanticResolution(BASIC_LIB);
+		checkIsStale(BASIC_LIB, false);
+		checkIsStale(SMTEST, true); // Still stale because own copy of BASIC_LIB SR is stale
+		
+		// TODO: test cu modify
+		
+		// Test module add
+//		writeStringToFileUnchecked(BASIC_LIB.path.resolve("source/a_new_module.d").toFile(), "module a_new_module;");
+		
+	}
+	
+	protected void assertChanged(SemanticResolution previousSR, BundlePath bundlePath, boolean changed) {
+		assertChanged(previousSR, bundlePath, changed, changed);
+	}
+	
+	protected void assertChanged(SemanticResolution previousSR, BundlePath bundlePath, boolean changed,
+			boolean manifestChanged) {
+		checkIsStale(bundlePath, changed, manifestChanged);
+		SemanticResolution testGetSemanticResolution = testGetSemanticResolution(bundlePath);
+		assertEquals(previousSR != testGetSemanticResolution, changed);
+	}
+	
+	protected void checkManifestIsStale(BundlePath bundlePath, boolean changed) {
+		assertTrue(mgr.getEntry(bundlePath).checkIsStale() == changed);
+		assertTrue(mgr.getBundleManifestCache().getEntry(bundlePath).isInternallyStale() == changed);
+	}
+	protected void checkIsStale(BundlePath bundlePath, boolean changed) {
+		checkIsStale(bundlePath, changed, false);
+	}
+	
+	protected void checkIsStale(BundlePath bundlePath, boolean changed, boolean manifestChanged) {
+		assertTrue(mgr.getEntry(bundlePath).checkIsStale() == changed);
+		assertTrue(mgr.getBundleManifestCache().getEntry(bundlePath).isInternallyStale() == manifestChanged);
+	}
+	
+	protected SemanticResolution testGetSemanticResolution(BundlePath bundlePath) {
+		SemanticResolution sr = mgr.getSemanticResolution(bundlePath);
+		assertTrue(mgr.getEntry(bundlePath).checkIsStale() == false);
+		
+		// Test instance is the same.
+		assertTrue(sr == mgr.getSemanticResolution(bundlePath));
+		return sr;
 	}
 	
 }

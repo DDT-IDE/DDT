@@ -10,83 +10,131 @@
  *******************************************************************************/
 package dtool.model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 
-import melnorme.utilbox.concurrency.ITaskAgent;
-import melnorme.utilbox.core.fntypes.ICallable;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.process.ExternalProcessHelper;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import dtool.dub.BundlePath;
+import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubDescribeParser;
+import dtool.model.util.CachingEntry;
+import dtool.model.util.CachingRegistry;
 
 public class SemanticManager {
 	
-	protected final ITaskAgent processAgent;
 	protected final DToolServer dtoolServer;
+	
+	protected final SemanticManagerRegistry semanticResolutions = new SemanticManagerRegistry();
+	protected final ReentrantLock srEntriesLock = new ReentrantLock();
+	
+	
 	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
 	
-	protected final HashMap<Path, DubBundleDescription> bundleInfos = new HashMap<>();
 	
-	
-	public SemanticManager(ITaskAgent processAgent, DToolServer dtoolServer) {
-		this.processAgent = processAgent;
+	public SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = assertNotNull(dtoolServer);
 	}
 	
-	public static Path validatePath(Path filePath) {
-		assertTrue(filePath.isAbsolute());
-		assertTrue(filePath.getNameCount() > 0);
-		filePath = filePath.normalize();
-		return filePath;
+	protected BundleManifestRegistry getBundleManifestCache() {
+		return dtoolServer.getBundleManifestRegistry();
 	}
 	
-	public SemanticContext getSemanticContext(Path bundlePath) throws InterruptedException, ExecutionException {
-		
-		bundlePath = validatePath(bundlePath);
-		return processAgent.submit(new GetSemanticContextOperation(bundlePath)).get();
+	/* -----------------  ----------------- */
+	
+	public SemanticResolution getSemanticResolution(Path path) throws ExecutionException {
+		BundlePath bundlePath = new BundlePath(path);
+		return getSemanticResolution(bundlePath);
 	}
 	
-	protected class GetSemanticContextOperation implements ICallable<SemanticContext, Exception> {
+	public SemanticResolution getSemanticResolution(BundlePath bundlePath) {
+		try {
+			return semanticResolutions.getEntry(bundlePath).getValue();
+		} catch (ExecutionException e) {
+			/*BUG here store error in SR*/
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public SemanticResolutionEntry getEntry(BundlePath bundlePath) {
+		return semanticResolutions.getEntry(bundlePath);
+	}
+	
+	protected final class SemanticManagerRegistry extends CachingRegistry<BundlePath, SemanticResolutionEntry> {
+		@Override
+		protected SemanticResolutionEntry createEntry(BundlePath bundlePath) {
+			return new SemanticResolutionEntry(bundlePath);
+		}
+	}
+	
+	protected class SemanticResolutionEntry extends CachingEntry<SemanticResolution>{
 		
-		protected Path bundlePath;
-
-		public GetSemanticContextOperation(Path bundlePath) {
+		protected final BundlePath bundlePath;
+		
+		public SemanticResolutionEntry(BundlePath bundlePath) {
 			this.bundlePath = bundlePath;
 		}
-
+		
 		@Override
-		public SemanticContext call() throws IOException, InterruptedException {
-			ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(bundlePath.toFile());
-			ExternalProcessHelper extPH = new ExternalProcessHelper(pb);
-			ExternalProcessResult processResult;
-			try {
-				processResult = extPH.strictAwaitTermination();
-			} catch (TimeoutException e) {
-				throw assertFail();
-			}
+		protected synchronized boolean checkIsStale() {
 			
-			DubBundleDescription bundleDesc = parseDubDescribe(bundlePath, processResult);
-			return new SemanticContext(SemanticManager.this, bundleDesc);
+			srEntriesLock.lock();
+			try {
+				if(isInternallyStale()) {
+					return true;
+				}
+				SemanticResolution existingSR = getExistingValue();
+				DubBundle[] bundleDeps = existingSR.getBundleDeps();
+				
+				for (DubBundle bundle : bundleDeps) {
+					BundlePath depBundlePath = BundlePath.createUnchecked(bundle.getLocation());
+					SemanticResolutionEntry depSR = semanticResolutions.getEntry(depBundlePath);
+					
+					// Note: depSR can be internally stale, thats ok because we have our own copy of depSR.
+					// We just want to know if a newer on is available or not.
+					if(depSR.getLatestAvailableStamp() > getCreationStamp()) {
+						return true;
+					}
+				}
+				return false;
+			} finally {
+				srEntriesLock.unlock();
+			}
 		}
+		
+		@Override
+		public void makeStale() {
+			// Note: don't lock on SemanticResolutionEntry lock
+			getBundleManifestCache().getEntry(bundlePath).makeStale();
+			super.makeStale();
+		}
+		
+		
+		@Override
+		protected SemanticResolution doCreateNewValue() throws ExecutionException, InterruptedException {
+			DubBundleDescription bundleDesc = getBundleManifestCache().getManifest(bundlePath);
+			
+			return new SemanticResolution(SemanticManager.this, bundleDesc);
+		}
+		
 	}
 	
-	public static DubBundleDescription parseDubDescribe(Path location, ExternalProcessResult processResult) {
-		String describeOutput = processResult.stdout.toString(StringUtil.UTF8);
+	public void notifyManifestFileChanged(BundlePath bundlePath) {
+		semanticResolutions.getEntry(bundlePath).makeStale();
+	}
+	
+	
+	public static class SemanticResolution extends SemanticContext {
 		
-		// Trim leading characters. 
-		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
-		describeOutput = StringUtil.substringFromMatch('{', describeOutput);
+		public SemanticResolution(SemanticManager manager, DubBundleDescription bundleDesc) {
+			super(manager, bundleDesc);
+		}
 		
-		return DubDescribeParser.parseDescription(location, describeOutput);
+		protected DubBundle[] getBundleDeps() {
+			return bundleDesc.getBundleDependencies();
+		}
+		
 	}
 	
 }

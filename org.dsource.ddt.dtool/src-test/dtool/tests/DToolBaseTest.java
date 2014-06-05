@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -28,6 +29,7 @@ import java.util.Set;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.SimpleLogger;
+import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
@@ -80,6 +82,21 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
+	public static void writeStringToFileUnchecked(File file, String string) {
+		try {
+			StreamUtil.writeStringToStream(string, new FileOutputStream(file), DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public static void appendStringToFileUnchecked(File file, String string) {
+		try {
+			StreamUtil.writeStringToStream(string, new FileOutputStream(file, true), DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
 	
 	/* -------------  Module list stuff   ------------ */
 	

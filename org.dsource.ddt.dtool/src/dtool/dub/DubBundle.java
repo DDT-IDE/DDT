@@ -75,8 +75,12 @@ public class DubBundle {
 		return name;
 	}
 	
+	public Path getLocation() {
+		return location;
+	}
+	
 	public String getLocationString() {
-		return  location.toString();
+		return location.toString();
 	}
 	
 	public boolean hasErrors() {

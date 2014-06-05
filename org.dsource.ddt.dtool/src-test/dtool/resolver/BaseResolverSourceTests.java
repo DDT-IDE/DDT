@@ -137,7 +137,6 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		}
 		
 		prepareTestCase(testsModuleName, testsProjectDirName, testCase);
-		assertNotNull(mr);
 		
 		resolverTestsLog.println("-----");
 		processResolverTestMetadata(testCase);

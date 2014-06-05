@@ -1,0 +1,34 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package dtool.model.util;
+
+import java.util.HashMap;
+
+public abstract class CachingRegistry<KEY, ENTRY> {
+	
+	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
+	
+	public synchronized ENTRY getEntry(KEY key) {
+		ENTRY entry = map.get(key);
+		if(entry == null) {
+			entry = createEntry(key);
+			map.put(key, entry);
+		}
+		return entry;
+	}
+	
+	public synchronized ENTRY removeEntry(KEY key) {
+		return map.remove(key);
+	}
+	
+	protected abstract ENTRY createEntry(KEY key);
+	
+}
