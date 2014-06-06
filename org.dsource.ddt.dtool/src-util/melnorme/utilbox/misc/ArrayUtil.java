@@ -11,6 +11,7 @@
 package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -202,11 +203,11 @@ public class ArrayUtil {
 	}
 	
 	
-	/** Removes the given array the first element that equals given obj. */
-	public static<T> T[] remove(T[] array, T obj) {
+	/** Removes from the given array the first element that isEqual to given objToRemove. */
+	public static<T> T[] remove(T[] array, T objToRemove) {
 		for (int i = 0; i < array.length; i++) {
 			T elem = array[i];
-			if(elem.equals(obj))
+			if(areEqual(elem, objToRemove))
 				return removeAt(array, i);
 		}
 		return array;
@@ -227,6 +228,32 @@ public class ArrayUtil {
 		T[] newArray = ArrayUtil.copyFrom(array, array.length - count);
 		return newArray;
 	}
+	
+	/** Removes from the given array the first element that areEqual given objToRemove. 
+	 * @return a new array with elements removed, or the same array if no elements where removed. */
+	public static<T> T[] removeAll(T[] array, T objToRemove) {
+		int removeCount = 0;
+		for (T elem : array) {
+			if(areEqual(elem, objToRemove)) {
+				removeCount++;
+			}
+		}
+		if(removeCount == 0) {
+			return array;
+		}
+		int ix = 0;
+		T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length - removeCount); 
+		for (T elem : array) {
+			if(areEqual(elem, objToRemove)) {
+				continue;
+			}
+			newArray[ix] = elem;
+			ix++;
+		}
+		
+		return newArray;
+	}
+
 	
 	/* ====================== search/index ====================== */
 	

@@ -46,6 +46,7 @@ public class CommonSemanticModelTest extends DToolBaseTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
+		CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES); // Remove resources folder so as to not interfere.
 		CommonDubTest.dubRemovePath(WORKING_DIR); // workaround to remove duplicate entries
 		CommonDubTest.dubAddPath(WORKING_DIR);
 	}

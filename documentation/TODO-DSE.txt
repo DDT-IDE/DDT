@@ -1,0 +1,9 @@
+
+dtool.dub.DubBundleDescription.getDepRefToPathMapping()
+
+dtool.model.SemanticContext.getDepSR(Path)
+
+dtool.dub.BundlePath.createUnchecked(Path)
+
+
+SemanticManager depSRS

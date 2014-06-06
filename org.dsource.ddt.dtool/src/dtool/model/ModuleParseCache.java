@@ -185,7 +185,7 @@ public class ModuleParseCache {
 		
 		protected ParsedModule doGetParseModule(String source) {
 			if(parsedModule == null) {
-				parsedModule = DeeParser.parseSource(source, defaultModuleName);
+				parsedModule = DeeParser.parseSource(source, defaultModuleName, filePath);
 				ModuleParseCache.log.println("ParseCache: Parsed Module ", filePath, " (", defaultModuleName, ")",
 					isWorkingCopy ? "[WC]" : "");
 			}

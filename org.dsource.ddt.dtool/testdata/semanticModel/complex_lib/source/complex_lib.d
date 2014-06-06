@@ -1,4 +1,4 @@
-/** basic_lib bundle */
+
 import std.stdio;
 
 void barLibFunction(string str)

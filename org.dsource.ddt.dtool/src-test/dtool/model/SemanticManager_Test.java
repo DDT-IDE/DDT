@@ -32,18 +32,18 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		
 		mgr = new SemanticManager(new Tests_DToolServer());
 		
-		SemanticContext semanticContext = mgr.getSemanticResolution(BASIC_LIB);
-		assertEquals(semanticContext.getBundleId(), "basic_lib");
-		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
+		SemanticContext sr = mgr.getSemanticResolution(BASIC_LIB);
+		assertEquals(sr.getBundleId(), "basic_lib");
+		new BundleFilesChecker(sr.getBundleModuleFiles()) {
 			{
 				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
 				checkEntry("pack.basicFoo", "source/pack/basicFoo.d");			
 			}
 		}.run();
 		
-		semanticContext = mgr.getSemanticResolution(SMTEST);
-		assertEquals(semanticContext.getBundleId(), "smtest_foo");
-		new BundleFilesChecker(semanticContext.getBundleModuleFiles()) {
+		SemanticContext smtestSR = mgr.getSemanticResolution(SMTEST);
+		assertEquals(smtestSR.getBundleId(), "smtest_foo");
+		new BundleFilesChecker(smtestSR.getBundleModuleFiles()) {
 			{
 				checkEntry("sm_test_foo", "src/sm_test_foo.d");
 				checkEntry("test.fooLib", "src2/test/fooLib.d");			
@@ -53,12 +53,19 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 			}
 		}.run();
 		
-		assertEqualArrays(semanticContext.findModules("test."), 
+		assertEqualArrays(smtestSR.findModules("test."), 
 			array("test.fooLib"));
-		;
-//		assertEqualArrays(semanticContext.findModules("basic_lib"), 
-//			array("basic_lib_foo"));
-//		;
+		
+		assertEquals(smtestSR.getParsedModule("sm_test_foo").modulePath, 
+			SMTEST.path.resolve("src/sm_test_foo.d"));
+		
+		assertAreEqual(smtestSR.getParsedModule("non_existing"), null); 
+		
+		// Test dependency bundles module resolution
+		assertEqualArrays(smtestSR.findModules("basic_lib"), 
+			array("basic_lib_foo"));
+		assertEquals(smtestSR.getParsedModule("basic_lib_foo").modulePath, 
+			BASIC_LIB.path.resolve("source/basic_lib_foo.d"));
 		
 	}
 	

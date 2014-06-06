@@ -13,14 +13,20 @@ package dtool.model;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import melnorme.utilbox.misc.MiscUtil;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
+import dtool.dub.DubBundle.BundleFile;
+import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.dub.DubBundleDescription;
 import dtool.model.util.CachingEntry;
 import dtool.model.util.CachingRegistry;
+import dtool.project.DeeNamingRules;
 
 public class SemanticManager {
 	
@@ -39,6 +45,14 @@ public class SemanticManager {
 	
 	protected BundleManifestRegistry getBundleManifestCache() {
 		return dtoolServer.getBundleManifestRegistry();
+	}
+	
+	protected void logError(String message) {
+		dtoolServer.logError(message, null);
+	}
+	
+	protected void logWarning(String message) {
+		dtoolServer.logMessage(message);
 	}
 	
 	/* -----------------  ----------------- */
@@ -77,6 +91,13 @@ public class SemanticManager {
 		}
 		
 		@Override
+		public void makeStale() {
+			// Note: don't lock on SemanticResolutionEntry lock
+			getBundleManifestCache().getEntry(bundlePath).makeStale();
+			super.makeStale();
+		}
+		
+		@Override
 		protected synchronized boolean checkIsStale() {
 			
 			srEntriesLock.lock();
@@ -85,10 +106,10 @@ public class SemanticManager {
 					return true;
 				}
 				SemanticResolution existingSR = getExistingValue();
-				DubBundle[] bundleDeps = existingSR.getBundleDeps();
+				Path[] bundleDeps = existingSR.getBundleDeps();
 				
-				for (DubBundle bundle : bundleDeps) {
-					BundlePath depBundlePath = BundlePath.createUnchecked(bundle.getLocation());
+				for (Path bundlePath : bundleDeps) {
+					BundlePath depBundlePath = BundlePath.createUnchecked(bundlePath);
 					SemanticResolutionEntry depSR = semanticResolutions.getEntry(depBundlePath);
 					
 					// Note: depSR can be internally stale, thats ok because we have our own copy of depSR.
@@ -104,18 +125,25 @@ public class SemanticManager {
 		}
 		
 		@Override
-		public void makeStale() {
-			// Note: don't lock on SemanticResolutionEntry lock
-			getBundleManifestCache().getEntry(bundlePath).makeStale();
-			super.makeStale();
-		}
-		
-		
-		@Override
 		protected SemanticResolution doCreateNewValue() throws ExecutionException, InterruptedException {
+			// Note: we are under SemanticResolutionEntry lock
+			
+			/* BUG here must store the created depSRs */
+			
 			DubBundleDescription bundleDesc = getBundleManifestCache().getManifest(bundlePath);
 			
-			return new SemanticResolution(SemanticManager.this, bundleDesc);
+			HashMap<String, Path> depBundleToPathMapping = bundleDesc.getDepBundleToPathMapping();
+			
+			DubBundle mainBundle = bundleDesc.getMainBundle();
+			SemanticResolution mainSR = createSemanticResolution(mainBundle, depBundleToPathMapping);
+			
+			DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
+			SemanticResolution[] depSRs = new SemanticResolution[bundleDeps.length]; 
+			for (int i = 0; i < bundleDeps.length; i++) {
+				depSRs[i] = createSemanticResolution(bundleDeps[i], depBundleToPathMapping);
+			}
+			
+			return mainSR;
 		}
 		
 	}
@@ -125,14 +153,67 @@ public class SemanticManager {
 	}
 	
 	
+	/* ----------------- module model calculation ----------------- */
+	
+	public SemanticResolution createSemanticResolution(DubBundle bundle, 
+			HashMap<String, Path> depBundleToPathMapping) {
+		Path[] depBundles = getDependenciesBundlePath(depBundleToPathMapping, bundle);
+		HashMap<ModuleFullName, Path> bundleModules = calculateBundleModules(bundle);
+		
+		return new SemanticResolution(SemanticManager.this, bundle, depBundles, bundleModules);
+	}
+	
+	protected Path[] getDependenciesBundlePath(HashMap<String, Path> bundleToPathMapping, DubBundle bundle) {
+		DubDependecyRef[] depRefs = bundle.getDependencyRefs();
+		Path[] directDepsPath = new Path[depRefs.length];
+		for (int i = 0; i < depRefs.length; i++) {
+			directDepsPath[i] = bundleToPathMapping.get(depRefs[i].getBundleNameRef());
+			if(directDepsPath[i] == null) {
+				dtoolServer.logError("DUB describe: dependency missing.", null);
+			}
+		}
+		return directDepsPath;
+	}
+	
+	protected HashMap<ModuleFullName, Path> calculateBundleModules(DubBundle bundle) {
+		HashMap<ModuleFullName, Path> hashMap = new HashMap<>();
+		
+		for (BundleFile bundleFiles : bundle.bundleFiles) {
+			Path filePath = MiscUtil.createValidPath(bundleFiles.filePath);
+			if(filePath == null) {
+				logError("Invalid filesystem path: " + bundleFiles.filePath);
+				continue; // ignore
+			}
+			
+			Path[] importFolders = bundle.getEffectiveImportPathFolders();
+			for (Path importFolder : importFolders) {
+				if(filePath.startsWith(importFolder)) {
+					Path relPath = importFolder.relativize(filePath);
+					if(relPath.getNameCount() == 0) {
+						logError("File has same path as import folder: " + filePath);
+						continue;
+					}
+					
+					ModuleFullName moduleFullName = DeeNamingRules.getModuleFullName(relPath);
+					if(!moduleFullName.isValid()) {
+						logWarning("Invalid path for a D module: " + relPath);
+						continue;
+					}
+					hashMap.put(moduleFullName, filePath);
+					
+					// continue looking, the same file can be present in multiple import paths, if nested
+					// it's not an elegant scenario, but it's probably ok to support.
+				}
+			}
+		}
+		return hashMap;
+	}
+	
 	public static class SemanticResolution extends SemanticContext {
 		
-		public SemanticResolution(SemanticManager manager, DubBundleDescription bundleDesc) {
-			super(manager, bundleDesc);
-		}
-		
-		protected DubBundle[] getBundleDeps() {
-			return bundleDesc.getBundleDependencies();
+		public SemanticResolution(SemanticManager manager, DubBundle bundle, Path[] bundleDeps, 
+				Map<ModuleFullName, Path> bundleModules) {
+			super(manager, bundle, bundleDeps, bundleModules);
 		}
 		
 	}

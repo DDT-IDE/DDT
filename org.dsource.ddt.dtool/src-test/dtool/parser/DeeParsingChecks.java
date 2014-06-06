@@ -195,8 +195,8 @@ public class DeeParsingChecks extends CommonTestUtils {
 			Boolean expectErrors, boolean runBasicContractChecks) {
 		
 		DeeParserResult parseResult = runBasicContractChecks ? 
-			new DeeTestsChecksParser(source).parseUsingRule(null, defaultModuleName) :
-			new DeeParser(source).parseUsingRule(null, defaultModuleName);
+			new DeeTestsChecksParser(source).parseModuleSource(defaultModuleName, null) :
+			new DeeParser(source).parseModuleSource(defaultModuleName, null);
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);

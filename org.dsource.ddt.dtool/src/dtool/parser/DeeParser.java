@@ -13,6 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,11 +60,16 @@ public class DeeParser
 	}
 	
 	public static ParsedModule parseSource(String source, String defaultModuleName) {
-		return new DeeParser(source).parseModuleSource(defaultModuleName);
+		return parseSource(source, defaultModuleName, null);
 	}
 	
-	public ParsedModule parseModuleSource(String defaultModuleName) {
-		return (ParsedModule) parseUsingRule(null, defaultModuleName);
+	public static ParsedModule parseSource(String source, String defaultModuleName, Path modulePath) {
+		return new DeeParser(source).parseModuleSource(defaultModuleName, modulePath);
+	}
+	
+	public ParsedModule parseModuleSource(String defaultModuleName, Path modulePath) {
+		NodeResult<Module> nodeResult = parseModule(defaultModuleName);
+		return (ParsedModule) prepParseResult(null, nodeResult, modulePath);
 	}
 	
 	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule, String defaultModuleName) {
@@ -87,19 +93,24 @@ public class DeeParser
 		} else {
 			throw assertFail();
 		}
+		return prepParseResult(parseRule, nodeResult, null);
+	}
+	
+	protected DeeParserResult prepParseResult(ParseRuleDescription parseRule, NodeResult<?> nodeResult, 
+			Path modulePath) {
 		assertTrue(enabled);
-		if(nodeResult.node != null) {
-			ASTNode.doSimpleAnalysisOnTree(nodeResult.node);
+		ASTNode node = nodeResult.node;
+		if(node != null) {
+			ASTNode.doSimpleAnalysisOnTree(node);
 		}
 		
-		List<ParserError> errors = initErrors(lexerErrors, nodeResult.node);
+		List<ParserError> errors = initErrors(lexerErrors, node);
 		if(parseRule == null) {
-			Module module = (Module) nodeResult.node;
-			return new ParsedModule(getSource(), lexSource.lexElementList, module, 
-				nodeResult.ruleBroken, errors);
+			Module module = (Module) node;
+			return new ParsedModule(getSource(), lexSource.lexElementList, module, nodeResult.ruleBroken, errors, 
+				modulePath);
 		} else {
-			return new DeeParserResult(getSource(), lexSource.lexElementList, nodeResult.node, 
-				nodeResult.ruleBroken, errors);
+			return new DeeParserResult(getSource(), lexSource.lexElementList, node, nodeResult.ruleBroken, errors);
 		}
 	}
 	

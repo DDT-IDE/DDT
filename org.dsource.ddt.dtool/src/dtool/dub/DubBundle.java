@@ -27,7 +27,7 @@ public class DubBundle {
 	public static final String DEFAULT_VERSION = "~master";
 	
 	public final Path location;// location in the filesystem where bundle is installed. Can be null if not installed.
-	public final String name; 
+	public final String name; // not null 
 	public final DubBundleException error;
 	
 	public final String version;
@@ -35,7 +35,7 @@ public class DubBundle {
 	public final Path[] effectiveSrcFolders;
 	public final List<BundleFile> bundleFiles;
 	
-	public final DubDependecyRef[] dependencies;
+	public final DubDependecyRef[] dependencies; // not null
 	public final String targetName;
 	public final String targetPath;
 	
@@ -143,10 +143,10 @@ public class DubBundle {
 	public static class DubDependecyRef {
 		
 		public final String bundleName;
-		public final String version; // tODO;
+		public final String version; // not implemented yet, not really important.
 		
 		public DubDependecyRef(String bundleName, String version) {
-			this.bundleName = bundleName;
+			this.bundleName = assertNotNull(bundleName);
 			this.version = version;
 		}
 		

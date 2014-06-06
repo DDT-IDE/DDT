@@ -13,6 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.AbstractList;
 import java.util.Collections;
 import java.util.List;
@@ -55,9 +56,12 @@ public class DeeParserResult {
 	
 	public static class ParsedModule extends DeeParserResult {
 		
+		public final Path modulePath; // optional, can be null
+		
 		public ParsedModule(String source, AbstractList<LexElement> tokenList, Module node, boolean ruleBroken,
-				List<ParserError> errors) {
+				List<ParserError> errors, Path modulePath) {
 			super(source, tokenList, node, ruleBroken, errors);
+			this.modulePath = modulePath;
 		}
 		
 	}

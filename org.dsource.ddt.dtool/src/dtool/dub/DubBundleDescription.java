@@ -11,6 +11,10 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.nio.file.Path;
+import java.util.HashMap;
+
 import dtool.dub.DubBundle.DubBundleException;
 
 /**
@@ -21,7 +25,7 @@ public class DubBundleDescription {
 	
 	protected final boolean isResolved;
 	protected final DubBundle mainDubBundle;
-	protected final DubBundle[] bundleDependencies;
+	protected final DubBundle[] bundleDependencies; //not null
 	protected final DubBundleException error;
 	
 	/** Constructor for unresolved descriptions. */
@@ -39,11 +43,9 @@ public class DubBundleDescription {
 	
 	protected DubBundleDescription(DubBundle mainBundle, DubBundle[] bundleDeps, boolean isResolvedFlag,
 			DubBundleException error) {
-		assertNotNull(mainBundle);
-		assertNotNull(bundleDeps);
 		
-		this.mainDubBundle = mainBundle;
-		this.bundleDependencies = bundleDeps;
+		this.mainDubBundle = assertNotNull(mainBundle);
+		this.bundleDependencies = assertNotNull(bundleDeps);
 		
 		this.error = error;
 		this.isResolved = isResolvedFlag && error == null;
@@ -69,7 +71,7 @@ public class DubBundleDescription {
 	}
 	
 	public DubBundle[] getBundleDependencies() {
-		return assertNotNull(bundleDependencies);
+		return bundleDependencies;
 	}
 	
 	/** A bundle description is considered resolved if dub.json had no errors, and if 
@@ -84,6 +86,23 @@ public class DubBundleDescription {
 	
 	public DubBundleException getError() {
 		return error;
+	}
+	
+	// TODO test, make permanent, etc. /*BUG here*/ validate, etc.
+	public HashMap<String,Path> getDepBundleToPathMapping() {
+		HashMap<String, Path> hashMap = new HashMap<>(bundleDependencies.length);
+		
+		for (DubBundle bundleDep : bundleDependencies) {
+			String bundleDepName = bundleDep.getBundleName();
+			Path bundleDepPath = bundleDep.getLocation();
+			if(bundleDepPath != null) {
+				hashMap.put(bundleDepName, bundleDepPath);
+			}
+		}
+		
+		// TODO validate cycles.
+		
+		return hashMap;
 	}
 	
 }

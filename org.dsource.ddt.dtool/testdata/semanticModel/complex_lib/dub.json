@@ -1,0 +1,8 @@
+{
+	"name": "complex_lib",
+	"dependencies": {
+		"basic_lib" : "~master",
+		"basic_lib2" : "~master"
+	},
+	"targetPath": ".dub"
+}

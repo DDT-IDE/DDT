@@ -49,15 +49,11 @@ public abstract class CachingEntry<VALUE> {
 		return value;
 	}
 	
-	protected void setNewValue(VALUE value) {
-		this.value = value;
-	}
-	
 	public synchronized VALUE getValue() throws ExecutionException {
 		if(checkIsStale()) {
 			creationStamp = System.nanoTime();
 			try {
-				setNewValue(doCreateNewValue());
+				this.value = doCreateNewValue();
 			} catch (InterruptedException e) {
 				throw new ExecutionException(e);
 			}
