@@ -27,7 +27,6 @@ public class DToolServer {
 		};
 	};
 	
-	protected final BundleManifestRegistry bundleManifestRegistry = new BundleManifestRegistry(this);
 	protected final SemanticManager semanticManager = new SemanticManager(this);
 	
 	
@@ -35,16 +34,12 @@ public class DToolServer {
 		logMessage("DTool started");
 	}
 	
-	protected void shutdown() {
-		dubProcessAgent.shutdownNow();
-	}
-	
 	public SemanticManager getSemanticManager() {
 		return semanticManager;
 	}
 	
-	public BundleManifestRegistry getBundleManifestRegistry() {
-		return bundleManifestRegistry;
+	protected void shutdown() {
+		dubProcessAgent.shutdownNow();
 	}
 	
 	protected void logMessage(String message) {

@@ -10,46 +10,33 @@
  *******************************************************************************/
 package dtool.model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
+import dtool.dub.ResolvedManifest;
 import dtool.model.ModuleParseCache.ParseSourceException;
-import dtool.model.SemanticManager.SemanticResolution;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.project.IModuleResolver;
 
-public class SemanticContext implements IModuleResolver {
+public class BundleSemanticResolution extends ResolvedManifest implements IModuleResolver {
 	
 	protected final SemanticManager manager;
-	protected final DubBundle bundle;
-	protected final BundlePath bundlePath;
-	protected final BundlePath[] bundleDeps;
-	protected final Map<ModuleFullName, Path> bundleModules; //immutable
 	
-	public SemanticContext(SemanticManager manager, DubBundle bundle, BundlePath[] bundleDeps, 
+	public BundleSemanticResolution(SemanticManager manager, DubBundle bundle, ArrayList<BundlePath> depBundlePaths, 
 			Map<ModuleFullName, Path> bundleModules) {
+		super(bundle, depBundlePaths, bundleModules);
 		this.manager = manager;
-		this.bundle = assertNotNull(bundle);
-		this.bundlePath = assertNotNull(bundle.getBundlePath());
-		this.bundleDeps = ArrayUtil.removeAll(bundleDeps, null);
-		
-		this.bundleModules = bundleModules;
 	}
 	
 	public String getBundleId() {
 		return bundle.getBundleName();
-	}
-	
-	public Map<ModuleFullName, Path> getBundleModuleFiles() {
-		return bundleModules;
 	}
 	
 	public Path internalGetModuleAbsolutePath(ModuleFullName moduleFullName) {
@@ -59,18 +46,15 @@ public class SemanticContext implements IModuleResolver {
 		return getBundlePath().resolve(path);
 	}
 	
-	public BundlePath getBundlePath() {
-		return bundlePath;
-	}
-	
-	protected BundlePath[] getBundleDeps() {
-		return bundleDeps;
-	}
-	
 	/* ----------------- ----------------- */
 	
-	protected SemanticResolution getDepSR(BundlePath bundlePath) {
-		return manager.getSemanticResolution(bundlePath);
+	protected BundleSemanticResolution getDepSR(BundlePath bundlePath) {
+		try {
+			return manager.getUpdatedResolution(bundlePath);
+		} catch (ExecutionException e) {
+			/*BUG here TODO*/
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	@Override

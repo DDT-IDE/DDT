@@ -10,74 +10,41 @@
  *******************************************************************************/
 package dtool.model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.locks.ReentrantLock;
 
-import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.concurrency.ITaskAgent;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.dub.DubBundleDescription;
+import dtool.dub.DubHelper.RunDubDescribeCallable;
+import dtool.dub.ResolvedManifest;
 import dtool.model.util.CachingEntry;
 import dtool.model.util.CachingRegistry;
-import dtool.project.DeeNamingRules;
 
-public class SemanticManager {
+/**
+ * A caching hierarchical registry.
+ * This class could be generalized, but it would be a bit of a mess to handle all the parameterized types.
+ */
+abstract class AbstractSemanticManager 
+	extends CachingRegistry<BundlePath, AbstractSemanticManager.SemanticResolutionEntry> {
 	
-	protected final DToolServer dtoolServer;
-	
-	protected final SemanticManagerRegistry semanticResolutions = new SemanticManagerRegistry();
-	protected final ReentrantLock srEntriesLock = new ReentrantLock();
-	
-	
-	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
-	
-	
-	public SemanticManager(DToolServer dtoolServer) {
-		this.dtoolServer = assertNotNull(dtoolServer);
-	}
-	
-	protected BundleManifestRegistry getBundleManifestCache() {
-		return dtoolServer.getBundleManifestRegistry();
-	}
-	
-	protected void logError(String message) {
-		dtoolServer.logError(message, null);
-	}
-	
-	protected void logWarning(String message) {
-		dtoolServer.logMessage(message);
+	public AbstractSemanticManager() {
+		super();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public SemanticResolution getSemanticResolution(BundlePath bundlePath) {
-		try {
-			return semanticResolutions.getEntry(bundlePath).getValue();
-		} catch (ExecutionException e) {
-			/*BUG here store error in SR*/
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+	@Override
+	protected SemanticResolutionEntry createEntry(BundlePath bundlePath) {
+		return new SemanticResolutionEntry(bundlePath);
 	}
 	
-	public SemanticResolutionEntry getEntry(BundlePath bundlePath) {
-		return semanticResolutions.getEntry(bundlePath);
-	}
-	
-	protected final class SemanticManagerRegistry extends CachingRegistry<BundlePath, SemanticResolutionEntry> {
-		@Override
-		protected SemanticResolutionEntry createEntry(BundlePath bundlePath) {
-			return new SemanticResolutionEntry(bundlePath);
-		}
-	}
-	
-	protected class SemanticResolutionEntry extends CachingEntry<SemanticResolution>{
+	protected static class SemanticResolutionEntry extends CachingEntry<BundleSemanticResolution> {
 		
 		protected final BundlePath bundlePath;
 		
@@ -85,131 +52,170 @@ public class SemanticManager {
 			this.bundlePath = bundlePath;
 		}
 		
-		@Override
-		public void makeStale() {
-			// Note: don't lock on SemanticResolutionEntry lock
-			getBundleManifestCache().getEntry(bundlePath).makeStale();
-			super.makeStale();
-		}
-		
-		@Override
-		protected synchronized boolean checkIsStale() {
-			
-			srEntriesLock.lock();
-			try {
-				if(isInternallyStale()) {
-					return true;
-				}
-				SemanticResolution existingSR = getExistingValue();
-				BundlePath[] bundleDeps = existingSR.getBundleDeps();
-				
-				for(BundlePath depBundlePath : bundleDeps) {
-					SemanticResolutionEntry depSR = semanticResolutions.getEntry(depBundlePath);
-					
-					// Note: depSR can be internally stale, thats ok because we have our own copy of depSR.
-					// We just want to know if a newer on is available or not.
-					if(depSR.getLatestAvailableStamp() > getCreationStamp()) {
-						return true;
-					}
-				}
-				return false;
-			} finally {
-				srEntriesLock.unlock();
-			}
-		}
-		
-		@Override
-		protected SemanticResolution doCreateNewValue() throws ExecutionException, InterruptedException {
-			// Note: we are under SemanticResolutionEntry lock
-			
-			/* BUG here must store the created depSRs */
-			
-			DubBundleDescription bundleDesc = getBundleManifestCache().getManifest(bundlePath);
-			
-			HashMap<String, BundlePath> depBundleToPathMapping = bundleDesc.getDepBundleToPathMapping();
-			
-			DubBundle mainBundle = bundleDesc.getMainBundle();
-			SemanticResolution mainSR = createSemanticResolution(mainBundle, depBundleToPathMapping);
-			
-			DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
-			SemanticResolution[] depSRs = new SemanticResolution[bundleDeps.length]; 
-			for (int i = 0; i < bundleDeps.length; i++) {
-				depSRs[i] = createSemanticResolution(bundleDeps[i], depBundleToPathMapping);
-			}
-			
-			return mainSR;
-		}
-		
+	}
+
+	/* -----------------  ----------------- */
+	
+	protected final Object entriesLock = new Object();
+	
+	public ResolvedManifest getStoredResolution(BundlePath bundlePath) throws ExecutionException {
+		SemanticResolutionEntry mapEntry = getMapEntry(bundlePath);
+		return mapEntry != null ? mapEntry.getValue() : null;
 	}
 	
-	public void notifyManifestFileChanged(BundlePath bundlePath) {
-		semanticResolutions.getEntry(bundlePath).makeStale();
+	public BundleSemanticResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+		SemanticResolutionEntry entry = getEntry(bundlePath);
+		if(!isResolutionUpdated(bundlePath)) {
+			updateEntry(bundlePath);
+		}
+		return entry.getValue();
 	}
 	
+	protected boolean isInternallyUpdated(BundlePath bundlePath) {
+		return !getEntry(bundlePath).isStale();
+	}
 	
-	/* ----------------- module model calculation ----------------- */
-	
-	public SemanticResolution createSemanticResolution(DubBundle bundle, 
-			HashMap<String, BundlePath> depBundleToPathMap) {
-		BundlePath[] depBundles = getDependenciesBundlePath(depBundleToPathMap, bundle);
-		HashMap<ModuleFullName, Path> bundleModules = calculateBundleModules(bundle);
+	public boolean isResolutionUpdated(BundlePath bundlePath) {
+		SemanticResolutionEntry entry = getEntry(bundlePath);
+		if(entry.isStale()) {
+			return false;
+		}
 		
-		return new SemanticResolution(SemanticManager.this, bundle, depBundles, bundleModules);
+		synchronized(entriesLock) {
+			long valueTimeStamp = entry.getValueTimeStamp();
+			return !hasBeenModifiedSince(entry, valueTimeStamp);
+		}
 	}
 	
-	protected BundlePath[] getDependenciesBundlePath(HashMap<String, BundlePath> bundleToPathMap, DubBundle bundle) {
-		DubDependecyRef[] depRefs = bundle.getDependencyRefs();
-		BundlePath[] directDepsPath = new BundlePath[depRefs.length];
-		for (int i = 0; i < depRefs.length; i++) {
-			directDepsPath[i] = bundleToPathMap.get(depRefs[i].getBundleNameRef());
-			if(directDepsPath[i] == null) {
-				dtoolServer.logError("DUB describe: dependency path is missing or invalid.", null);
+	/** Checks if given entry, or any child entry that it refers to, 
+	 * has had any modifications since given timeStamp. */
+	protected boolean hasBeenModifiedSince(SemanticResolutionEntry entry, long timeStamp) {
+		ResolvedManifest bundle = entry.getValue();
+		
+		if(entry.isStale() || entry.getValueTimeStamp() > timeStamp) {
+			return true;
+		}
+		
+		for(BundlePath depBundlePath : bundle.getBundleDeps()) {
+			SemanticResolutionEntry depEntry = getEntry(depBundlePath);
+			if(hasBeenModifiedSince(depEntry, timeStamp)) {
+				return true;
 			}
 		}
-		return directDepsPath;
+		return false;
 	}
 	
-	protected HashMap<ModuleFullName, Path> calculateBundleModules(DubBundle bundle) {
-		HashMap<ModuleFullName, Path> hashMap = new HashMap<>();
-		
-		for (BundleFile bundleFiles : bundle.bundleFiles) {
-			Path filePath = MiscUtil.createValidPath(bundleFiles.filePath);
-			if(filePath == null) {
-				logError("Invalid filesystem path: " + bundleFiles.filePath);
-				continue; // ignore
-			}
+	public void invalidateCurrentManifest(BundlePath bundlePath) {
+		getEntry(bundlePath).makeStale();
+	}
+	
+	protected final Object updateOperationLock = new Object();
+	
+	protected void updateEntry(BundlePath bundlePath) throws ExecutionException {
+		synchronized(updateOperationLock) {
+			// Recheck udpate status after acquiring lock.
+			if(isResolutionUpdated(bundlePath))
+				return;
 			
-			Path[] importFolders = bundle.getEffectiveImportPathFolders();
-			for (Path importFolder : importFolders) {
-				if(filePath.startsWith(importFolder)) {
-					Path relPath = importFolder.relativize(filePath);
-					if(relPath.getNameCount() == 0) {
-						logError("File has same path as import folder: " + filePath);
-						continue;
-					}
-					
-					ModuleFullName moduleFullName = DeeNamingRules.getModuleFullName(relPath);
-					if(!moduleFullName.isValid()) {
-						logWarning("Invalid path for a D module: " + relPath);
-						continue;
-					}
-					hashMap.put(moduleFullName, filePath);
-					
-					// continue looking, the same file can be present in multiple import paths, if nested
-					// it's not an elegant scenario, but it's probably ok to support.
+			UpdateEntryResult updateResult = determineNewEntryValues(bundlePath);
+			
+			synchronized(entriesLock) {
+				long newTimeStamp = updateResult.newTimeStamp; 
+				for(BundleSemanticResolution resolvedBundle : updateResult.newValues) {
+					getEntry(resolvedBundle.bundlePath).updateValue(resolvedBundle, newTimeStamp);
 				}
 			}
 		}
-		return hashMap;
 	}
 	
-	public static class SemanticResolution extends SemanticContext {
+	protected abstract UpdateEntryResult determineNewEntryValues(BundlePath bundlePath) throws ExecutionException;
+	
+	protected class UpdateEntryResult {
 		
-		public SemanticResolution(SemanticManager manager, DubBundle bundle, BundlePath[] depBundlePaths, 
-				Map<ModuleFullName, Path> bundleModules) {
-			super(manager, bundle, depBundlePaths, bundleModules);
+		protected long newTimeStamp;
+		protected List<BundleSemanticResolution> newValues;
+		
+		public UpdateEntryResult(long newTimeStamp, List<BundleSemanticResolution> newValues) {
+			this.newTimeStamp = newTimeStamp;
+			this.newValues = newValues;
 		}
 		
+	}
+	
+}
+
+/**
+ * Maintains a registry of parsed bundle manifests, indexed by bundle path.
+ */
+public class SemanticManager extends AbstractSemanticManager {
+	
+	protected final DToolServer dtoolServer;
+	protected final ITaskAgent processAgent;
+	
+	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
+	
+	public SemanticManager(DToolServer dtoolServer) {
+		this.dtoolServer = dtoolServer;
+		this.processAgent = dtoolServer.dubProcessAgent;
+	}
+	
+	@Override
+	protected UpdateEntryResult determineNewEntryValues(BundlePath bundlePath) throws ExecutionException {
+		RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(bundlePath);
+		DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(processAgent);
+		
+		long newTimeStamp = dubDescribeTask.getStartTimeStamp();
+		ArrayList<BundleSemanticResolution> bundleSRs = createFromDescribe(bundleDesc);
+		return new UpdateEntryResult(newTimeStamp, bundleSRs);
+	}
+	
+	/* ----------------- Resolved manifest calculation ----------------- */
+	
+	public ArrayList<BundleSemanticResolution> createFromDescribe(DubBundleDescription bundleDesc) {
+		DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
+		HashMap<String, BundlePath> bundleNameToPathMap = bundleDesc.getDepBundleNameToPathMapping();
+		
+		ArrayList<BundleSemanticResolution> resolvedManifests = new ArrayList<>(bundleDeps.length + 1);
+		
+		addResolvedManifest(resolvedManifests, bundleDesc.getMainBundle(), bundleNameToPathMap);
+		for (DubBundle dubBundle : bundleDeps) {
+			addResolvedManifest(resolvedManifests, dubBundle, bundleNameToPathMap);
+		}
+		
+		return resolvedManifests;
+	}
+	
+	public void addResolvedManifest(ArrayList<BundleSemanticResolution> manifests, DubBundle bundle, 
+			HashMap<String, BundlePath> bundleNameToPathMap) {
+		BundlePath bundlePath = bundle.getBundlePath();
+		if(bundlePath == null) {
+			dtoolServer.logError("DUB describe: invalid bundle path for : " + bundle.getBundleName(), null);
+			return;
+		}
+		
+		ArrayList<BundlePath> directDependencies = getDirectDependencies(bundle, bundleNameToPathMap);
+		
+		BundleModulesHelper sm = new BundleModulesHelper(dtoolServer); /*BUG here fix this*/
+		HashMap<ModuleFullName, Path> bundleModules = sm.calculateBundleModules(bundle);
+		
+		manifests.add(new BundleSemanticResolution(this, bundle, directDependencies, bundleModules));
+	}
+	
+	protected ArrayList<BundlePath> getDirectDependencies(DubBundle bundle, 
+		HashMap<String, BundlePath> bundleNameToPath) {
+		
+		ArrayList<BundlePath> directDeps = new ArrayList<>(bundle.getDependencyRefs().length);
+		
+		for (DubDependecyRef directDependencyRef : bundle.getDependencyRefs()) {
+			String depName = directDependencyRef.getBundleName();
+			BundlePath depBundlePath = bundleNameToPath.get(depName);
+			if(depBundlePath == null) {
+				dtoolServer.logError("DUB describe: dependency path is missing for: " + depName, null);
+			} else {
+				directDeps.add(depBundlePath);
+			}
+		}
+		return directDeps;
 	}
 	
 }

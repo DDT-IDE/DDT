@@ -10,57 +10,48 @@
  *******************************************************************************/
 package dtool.model.util;
 
-import java.util.concurrent.ExecutionException;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 /**
- * An entry caching some value. Value can be created on demand, and invalid manually.
+ * An entry caching some value. 
+ * The value has an associated timestamp, which can be marked as out of date.
  */
 public abstract class CachingEntry<VALUE> {
 	
-	protected volatile VALUE value;
-	protected volatile long latestAvailableStamp = 0;
-	protected volatile long creationStamp = -1;
+	private volatile VALUE value;
+	private volatile long valueTimeStamp = -1;
+	private volatile long invalidationTimeStamp = 0;
 	
 	public CachingEntry() {
 	}
 	
-	public final boolean isInternallyStale() {
-		return latestAvailableStamp > creationStamp;
-	}
-	
-	public void makeStale() {
-		latestAvailableStamp = System.nanoTime();
-	}
-	
-	public long getLatestAvailableStamp() {
-		return latestAvailableStamp;
-	}
-	
-	public long getCreationStamp() {
-		return creationStamp;
-	}
-	
-	protected boolean checkIsStale() {
-		return isInternallyStale();
-	}
-	
-	/** Get existing value, even if it's stale. */
-	public VALUE getExistingValue() {
+	public VALUE getValue() {
 		return value;
 	}
 	
-	public synchronized VALUE getValue() throws ExecutionException {
-		if(checkIsStale()) {
-			creationStamp = System.nanoTime();
-			try {
-				this.value = doCreateNewValue();
-			} catch (InterruptedException e) {
-				throw new ExecutionException(e);
-			}
-		}
-		return value;
+	public long getValueTimeStamp() {
+		return valueTimeStamp;
 	}
 	
-	protected abstract VALUE doCreateNewValue() throws ExecutionException, InterruptedException;
+	
+	public synchronized boolean isStale() {
+		return invalidationTimeStamp > valueTimeStamp;
+	}
+	
+	public synchronized void updateValue(VALUE value, long newTimeStamp) {
+		this.value = value;
+		assertTrue(newTimeStamp >= valueTimeStamp);
+		valueTimeStamp = newTimeStamp;
+	}
+	
+	public synchronized void makeStale() {
+		do {
+			long currentTime = System.nanoTime();
+			invalidationTimeStamp = currentTime;
+			// Extremely unlikely, but if makeStale is called soon after updateTimeStamp, 
+			// then nanoTime may return the same value. If so, loop until currentTime increases. 
+		} while(invalidationTimeStamp <= valueTimeStamp);
+		assertTrue(isStale());
+	}
 	
 }

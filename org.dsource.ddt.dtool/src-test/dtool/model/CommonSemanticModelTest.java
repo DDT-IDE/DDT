@@ -34,9 +34,15 @@ public class CommonSemanticModelTest extends DToolBaseTest {
 	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
 	
 	public static final BundlePath BASIC_LIB = new BundlePath(WORKING_DIR.resolve("basic_lib"));
-	public static final BundlePath BASIC_LIB2 = new BundlePath(WORKING_DIR.resolve("basic_lib2"));
 	public static final BundlePath SMTEST = new BundlePath(WORKING_DIR.resolve("smtest_foo"));
 	
+	public static final BundlePath BASIC_LIB2 = new BundlePath(WORKING_DIR.resolve("basic_lib2"));
+	public static final BundlePath COMPLEX_LIB = new BundlePath(WORKING_DIR.resolve("complex_lib"));
+	public static final BundlePath COMPLEX_BUNDLE = new BundlePath(WORKING_DIR.resolve("complex_bundle"));
+	
+	public static BundlePath createBP(Path basePath, String other) {
+		return BundlePath.create(basePath.resolve(other));
+	}
 	
 	@BeforeClass
 	public static void setup() throws IOException {

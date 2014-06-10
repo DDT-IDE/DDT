@@ -88,7 +88,7 @@ public class DubBundleDescription {
 	}
 	
 	// TODO test, make permanent, etc. /*BUG here*/ validate, etc.
-	public HashMap<String, BundlePath> getDepBundleToPathMapping() {
+	public HashMap<String, BundlePath> getDepBundleNameToPathMapping() {
 		HashMap<String, BundlePath> hashMap = new HashMap<>(bundleDependencies.length);
 		
 		for (DubBundle bundleDep : bundleDependencies) {

@@ -78,6 +78,7 @@ public class DubBundle {
 		return name;
 	}
 	
+	/** @return the bundlePath. Can be null. */
 	public BundlePath getBundlePath() {
 		return bundlePath;
 	}
@@ -157,7 +158,7 @@ public class DubBundle {
 			this.version = version;
 		}
 		
-		public String getBundleNameRef() {
+		public String getBundleName() {
 			return bundleName;
 		}
 		
