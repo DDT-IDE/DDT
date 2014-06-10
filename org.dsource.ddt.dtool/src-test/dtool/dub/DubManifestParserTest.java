@@ -53,7 +53,7 @@ public class DubManifestParserTest extends CommonDubTest {
 	}
 	
 	public DubBundle parseDubBundle(Path location) {
-		return DubManifestParser.parseDubBundleFromLocation(location);
+		return DubManifestParser.parseDubBundleFromLocation(BundlePath.create(location));
 	}
 	
 	public void testBundle(DubBundleChecker bundle) {

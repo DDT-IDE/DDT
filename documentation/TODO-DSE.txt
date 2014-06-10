@@ -1,9 +1,9 @@
 
-dtool.dub.DubBundleDescription.getDepRefToPathMapping()
+dtool.dub.DubBundleDescription.getDepBundleToPathMapping()
 
 dtool.model.SemanticContext.getDepSR(Path)
 
-dtool.dub.BundlePath.createUnchecked(Path)
-
 
 SemanticManager depSRS
+
+dtool.model.SemanticManager.getSemanticResolution(BundlePath)

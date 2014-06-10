@@ -16,29 +16,45 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+
 /**
  * A valid directory path for a dub bundle.
  * Is normalized, absolute, and has at least one segment 
  */
 public class BundlePath {
 	
-	@Deprecated
-	public static BundlePath createUnchecked(Path path) {
-		return new BundlePath(path);
+	public static final String DUB_MANIFEST_FILENAME = "dub.json";
+	
+	public static BundlePath create(String pathStr) {
+		try {
+			Path path = MiscUtil.createPath(pathStr);
+			return BundlePath.create(path);
+		} catch (InvalidPathExceptionX e) {
+			return null;
+		}
 	}
+	
+	public static BundlePath create(Path path) {
+		if(isValidBundlePath(path)) {
+			return new BundlePath(path);
+		}
+		return null;
+	}
+	
+	public static boolean isValidBundlePath(Path path) {
+		assertNotNull(path);
+		return path.isAbsolute() && path.getNameCount() > 0;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public final Path path;
 	
 	public BundlePath(Path path) {
-		this.path = BundlePath.validatePath(path);
-	}
-	
-	public static Path validatePath(Path filePath) {
-		assertNotNull(filePath);
-		assertTrue(filePath.isAbsolute());
-		assertTrue(filePath.getNameCount() > 0);
-		filePath = filePath.normalize();
-		return filePath;
+		assertTrue(BundlePath.isValidBundlePath(path));
+		this.path = path.normalize();
 	}
 	
 	@Override
@@ -56,8 +72,16 @@ public class BundlePath {
 		return path.hashCode();
 	}
 	
-	public Path getManifestPath() {
-		return path.resolve("dub.json");
+	public Path getManifestFilePath() {
+		return path.resolve(DUB_MANIFEST_FILENAME);
+	}
+	
+	public Path resolve(Path other) {
+		return path.resolve(other);
+	}
+	
+	public Path resolve(String other) {
+		return path.resolve(other);
 	}
 	
 	@Override

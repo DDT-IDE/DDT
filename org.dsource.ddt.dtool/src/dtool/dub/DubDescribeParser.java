@@ -10,8 +10,9 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -24,8 +25,9 @@ public class DubDescribeParser extends CommonDubParser {
 	
 	public static final String ERROR_PACKAGES_IS_EMPTY = "'packages' entry is empty or missing.";
 	
-	public static DubBundleDescription parseDescription(Path location, String describeSource) {
-		return new DubDescribeParser().parseInput(location, describeSource);
+	public static DubBundleDescription parseDescription(BundlePath bundlePath, String describeSource) {
+		assertNotNull(bundlePath);
+		return new DubDescribeParser().parseInput(bundlePath, describeSource);
 	}
 	
 	protected String bundleName;
@@ -34,7 +36,7 @@ public class DubDescribeParser extends CommonDubParser {
 	public DubDescribeParser() {
 	}
 	
-	public DubBundleDescription parseInput(Path location, String describeSource) {
+	public DubBundleDescription parseInput(BundlePath bundlePath, String describeSource) {
 		try {
 			parseFromSource(describeSource);
 		} catch (DubBundleException e) {
@@ -47,7 +49,7 @@ public class DubDescribeParser extends CommonDubParser {
 				bundleName = "<error_undefined>";
 			}
 			putError(ERROR_PACKAGES_IS_EMPTY);
-			return new DubBundleDescription(new DubBundle(location, bundleName, dubError));
+			return new DubBundleDescription(new DubBundle(bundlePath, bundleName, dubError));
 			
 		} else {
 			DubBundle mainBundle = bundles.remove(0);

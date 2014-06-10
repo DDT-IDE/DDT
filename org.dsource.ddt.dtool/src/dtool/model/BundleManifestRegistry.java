@@ -60,7 +60,7 @@ public class BundleManifestRegistry extends CachingRegistry<BundlePath, BundleMa
 			
 			@Override
 			public DubBundleDescription call() throws IOException, InterruptedException {
-				return DubHelper.runDubDescribe(bundlePath.path);
+				return DubHelper.runDubDescribe(bundlePath);
 			}
 			
 		}

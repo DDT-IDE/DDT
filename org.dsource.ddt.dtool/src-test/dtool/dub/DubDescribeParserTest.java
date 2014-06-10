@@ -48,7 +48,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 		DubBundleDescription description = DubDescribeParser.parseDescription(XPTO_BUNDLE_PATH, describeSource);
 		
 		checkResolvedBundle(description, null, 
-			main(XPTO_BUNDLE_PATH, null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
+			main(XPTO_BUNDLE_PATH.path, null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
 				rawDeps("foo_lib"),
 				bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
 				bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
@@ -73,7 +73,8 @@ public class DubDescribeParserTest extends CommonDubTest {
 		}
 	}
 	
-	public static final Path DESCRIBE_RESPATH = DToolTestResources.getTestResourcePath("dub", "_describeErrors");
+	public static final BundlePath DESCRIBE_RESPATH = BundlePath.create(
+		DToolTestResources.getTestResourcePath("dub", "_describeErrors"));
 	
 	@Test
 	public void testDescriptionParseErrors() throws Exception { testDescriptionParseErrors$(); }

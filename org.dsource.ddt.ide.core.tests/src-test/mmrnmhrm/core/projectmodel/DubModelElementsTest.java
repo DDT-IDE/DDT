@@ -38,7 +38,7 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		project.getFolder("source").create(true, true, null);
 		
-		DubBundle mainBundle = new DubBundle(loc(project), "dub_test", null,
+		DubBundle mainBundle = new DubBundle(bpath(project), "dub_test", null,
 			"~master", array("source"), CommonDubTest.paths("source"), 
 			null,
 			array(new DubBundle.DubDependecyRef("dub_lib", null)), 
@@ -48,7 +48,7 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
 		libProject.getFolder("src").create(true, true, null);
 		
-		DubBundle[] bundleDeps = array(new DubBundle(loc(libProject), "dub_lib", null,
+		DubBundle[] bundleDeps = array(new DubBundle(bpath(libProject), "dub_lib", null,
 			"~master", array("src"), CommonDubTest.paths("src"), 
 			null,
 			null, 

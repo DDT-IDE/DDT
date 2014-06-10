@@ -22,6 +22,8 @@ import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 
+import dtool.dub.BundlePath;
+
 public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyElement> {
 	
 	protected final Path srcFolderPath;
@@ -54,7 +56,11 @@ public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyEle
 	}
 	
 	public IProjectFragment getUnderlyingProjectFragment() {
-		Path path = getParent().getDubBundle().location.resolve(srcFolderPath);
+		BundlePath bundlePath = getParent().getDubBundle().getBundlePath();
+		if(bundlePath == null) {
+			return null;
+		}
+		Path path = bundlePath.resolve(srcFolderPath);
 		IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.getPath(path));
 		try {
 			return scriptProject.findProjectFragment(bpPath);

@@ -55,6 +55,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
@@ -167,7 +168,7 @@ public class DubModelManager {
 		}
 	}
 	
-	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(DubManifestParser.DUB_MANIFEST_FILENAME);
+	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(BundlePath.DUB_MANIFEST_FILENAME);
 	
 	protected boolean projectHasDubManifestFile(IProject project) {
 		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
@@ -268,7 +269,7 @@ public class DubModelManager {
 	
 	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
-		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(location);
+		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(BundlePath.create(location));
 		
 		return new DubBundleDescription(unresolvedBundle);
 	}
@@ -389,6 +390,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	
 	protected Void resolveProjectOperation(IProgressMonitor pm) throws CoreException {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
+		BundlePath bundlePath = BundlePath.create(location);
 		
 		String dubPath = DeeCorePreferences.getDubPath();
 		
@@ -409,7 +411,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
 		}
 		
-		DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(location, processHelper);
+		DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(bundlePath, processHelper);
 		
 		if(bundleDesc.hasErrors()) {
 			setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
@@ -472,7 +474,8 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 	protected IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
 		ArrayList<IBuildpathEntry> depEntries = new ArrayList<>();
 		for (DubBundle depBundle : bundleDesc.getBundleDependencies()) {
-			if(depBundle.hasErrors()) {
+			BundlePath bundlePath = depBundle.getBundlePath();
+			if(depBundle.hasErrors() || bundlePath == null) {
 				continue;
 			}
 			IProject workspaceProject = findProjectForBundle(depBundle);
@@ -481,7 +484,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 			} else {
 				for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
 					
-					java.nio.file.Path srcFolderAbsolute = depBundle.location.resolve(srcFolder);
+					java.nio.file.Path srcFolderAbsolute = bundlePath.resolve(srcFolder);
 					assertTrue(srcFolderAbsolute.isAbsolute());
 					depEntries.add(
 						DubBuildpathContainer.createDubBuildpathEntry(EclipseUtils.getPath(srcFolderAbsolute)));
@@ -493,7 +496,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 	}
 	
 	protected IProject findProjectForBundle(DubBundle depBundle) {
-		return findProjectForBundleLocation(depBundle.location);
+		return findProjectForBundleLocation(depBundle.getLocation());
 	}
 	
 	protected IProject findProjectForBundleLocation(java.nio.file.Path location) {

@@ -34,7 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.FileEditorInput;
 
-import dtool.dub.DubManifestParser;
+import dtool.dub.BundlePath;
 
 /**
  * D New Project Wizard.
@@ -100,7 +100,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 	
 	@Override
 	protected void configureProjectBuildpath(IProject project, IProgressMonitor monitor) throws CoreException {
-		IFile dubManifest = project.getFile(DubManifestParser.DUB_MANIFEST_FILENAME);
+		IFile dubManifest = project.getFile(BundlePath.DUB_MANIFEST_FILENAME);
 		if(!dubManifest.exists()) {
 			
 			final IFolder folder = project.getFolder("source");
@@ -143,7 +143,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 		boolean res = super.performFinish();
 		if (res) {
 			final IProject project = getCreatedElement().getProject();
-			IFile file = project.getFile(DubManifestParser.DUB_MANIFEST_FILENAME);
+			IFile file = project.getFile(BundlePath.DUB_MANIFEST_FILENAME);
 			
 			IWorkbenchPage activePage = WorkbenchUtils.getActivePage();
 			if(activePage != null) {

@@ -26,8 +26,11 @@ public class DubBundle {
 	
 	public static final String DEFAULT_VERSION = "~master";
 	
-	public final Path location;// location in the filesystem where bundle is installed. Can be null if not installed.
-	public final String name; // not null 
+	public final String name; // not null
+	
+	// bundlePath is the bundle's location in the filesystem. Can be null if path is invalid or not specified.
+	protected final BundlePath bundlePath;
+	
 	public final DubBundleException error;
 	
 	public final String version;
@@ -40,7 +43,7 @@ public class DubBundle {
 	public final String targetPath;
 	
 	public DubBundle(
-			Path location, 
+			BundlePath bundlePath, 
 			String name, 
 			DubBundleException error, 
 			String version, 
@@ -50,7 +53,7 @@ public class DubBundle {
 			DubDependecyRef[] dependencies, 
 			String targetName, 
 			String targetPath) {
-		this.location = location == null ? null : location.toAbsolutePath();
+		this.bundlePath = bundlePath;
 		this.name = assertNotNull(name);
 		this.error = error;
 		
@@ -63,24 +66,28 @@ public class DubBundle {
 		this.targetPath = targetPath;
 		
 		if(!hasErrors()) {
-			assertTrue(location != null);
+			assertTrue(bundlePath != null);
 		}
 	}
 	
-	public DubBundle(Path location, String name, DubBundleException error) {
-		this(location, name, error, null, null, null, null, null, null, null);
+	public DubBundle(BundlePath bundlePath, String name, DubBundleException error) {
+		this(bundlePath, name, error, null, null, null, null, null, null, null);
 	}
 	
 	public String getBundleName() {
 		return name;
 	}
 	
+	public BundlePath getBundlePath() {
+		return bundlePath;
+	}
+	
 	public Path getLocation() {
-		return location;
+		return bundlePath == null ? null : bundlePath.path;
 	}
 	
 	public String getLocationString() {
-		return location.toString();
+		return getLocation() == null ? "[null]" : getLocation().toString();
 	}
 	
 	public boolean hasErrors() {

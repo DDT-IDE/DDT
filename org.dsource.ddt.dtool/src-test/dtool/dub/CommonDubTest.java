@@ -32,7 +32,7 @@ public class CommonDubTest extends DToolBaseTest {
 	
 	public static final Path DUB_TEST_BUNDLES = DToolTestResources.getTestResourcePath("dub");	
 	
-	public static final Path XPTO_BUNDLE_PATH = DUB_TEST_BUNDLES.resolve("XptoBundle");
+	public static final BundlePath XPTO_BUNDLE_PATH = BundlePath.create(DUB_TEST_BUNDLES.resolve("XptoBundle"));
 	
 	public CommonDubTest() {
 		super();
@@ -96,7 +96,7 @@ public class CommonDubTest extends DToolBaseTest {
 		}
 		
 		protected void checkAllExceptDepRefs(DubBundle bundle, boolean isResolved) {
-			checkAreEqual(bundle.location, location);
+			checkAreEqual(bundle.getLocation(), location);
 			checkAreEqual(bundle.name, bundleName);
 			if(isResolvedOnlyError() && !isResolved) {
 				// Don't check, error occurs only in resolved bundles
@@ -183,18 +183,18 @@ public class CommonDubTest extends DToolBaseTest {
 	
 	/* ------------------------------ */
 	
-	protected String runDubDescribe(java.nio.file.Path workingDir) throws Exception {
+	protected String runDubDescribe(BundlePath workingDir) throws Exception {
 		ExternalProcessResult processResult = startDubProcess(workingDir, "describe").strictAwaitTermination(2000);
 		
 		return processResult.getStdOutBytes().toString(StringUtil.UTF8);
 	}
 	
-	public static ExternalProcessHelper startDubProcess(Path workingDir, String... arguments) 
+	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, String... arguments) 
 			throws IOException {
 		String[] command = ArrayUtil.prepend(DToolTests.DUB_PROGRAM_PATH, arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
-		if(workingDir != null) {
-			pb.directory(workingDir.toFile());
+		if(bundlePath != null) {
+			pb.directory(bundlePath.path.toFile());
 		}
 		
 		return new ExternalProcessHelper(pb);

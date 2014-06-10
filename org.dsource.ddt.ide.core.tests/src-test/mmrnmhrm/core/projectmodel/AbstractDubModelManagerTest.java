@@ -52,6 +52,7 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import dtool.dub.CommonDubTest;
 import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
 
@@ -144,6 +145,10 @@ public abstract class AbstractDubModelManagerTest extends BaseDeeTest {
 	
 	protected Path loc(IProject project) {
 		return project.getLocation().toFile().toPath();
+	}
+	
+	protected BundlePath bpath(IProject project) {
+		return BundlePath.create(project.getLocation().toFile().toPath());
 	}
 	
 	protected static ITaskAgent getModelAgent() {

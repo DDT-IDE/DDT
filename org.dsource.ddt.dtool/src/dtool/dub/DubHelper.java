@@ -13,7 +13,6 @@ package dtool.dub;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.misc.StringUtil;
@@ -25,8 +24,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
  */
 public class DubHelper {
 	
-	public static DubBundleDescription runDubDescribe(Path bundlePath) throws IOException, InterruptedException {
-		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(bundlePath.toFile());
+	public static DubBundleDescription runDubDescribe(BundlePath bundlePath) throws IOException, InterruptedException {
+		ProcessBuilder pb = new ProcessBuilder("dub", "describe").directory(bundlePath.path.toFile());
 		ExternalProcessHelper extPH = new ExternalProcessHelper(pb);
 		ExternalProcessResult processResult;
 		try {
@@ -38,14 +37,14 @@ public class DubHelper {
 		return parseDubDescribe(bundlePath, processResult);
 	}
 	
-	public static DubBundleDescription parseDubDescribe(Path location, ExternalProcessResult processResult) {
+	public static DubBundleDescription parseDubDescribe(BundlePath bundlePath, ExternalProcessResult processResult) {
 		String describeOutput = processResult.stdout.toString(StringUtil.UTF8);
 		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
 		describeOutput = StringUtil.substringFromMatch('{', describeOutput);
 		
-		return DubDescribeParser.parseDescription(location, describeOutput);
+		return DubDescribeParser.parseDescription(bundlePath, describeOutput);
 	}
 	
 }

@@ -24,6 +24,7 @@ import melnorme.utilbox.tests.TestsWorkingDir;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -31,7 +32,7 @@ import dtool.tests.utils.MiscFileUtils;
 
 public class ModuleParseCache_Test {
 	
-	public static final Path XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
+	public static final BundlePath XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
 	
 	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDir().toPath();
 	public static final Path TEST_WORKING_DIR = WORKING_DIR.resolve(ModuleParseCache_Test.class.getSimpleName());
@@ -65,7 +66,7 @@ public class ModuleParseCache_Test {
 		assertTrue(mpm.getParsedModule(cuPath) == parsedModule);
 		
 		FileUtil.writeStringToFile(CU_PATH.toFile(), SOURCE1, StringUtil.UTF8);
-		assertEquals(mpm.getParsedModule(CU_PATH).source, SOURCE1);
+		assertEquals(mpm.getParsedModule(CU_PATH).source, SOURCE1); /*BUG here tests sometimes fail here */
 		
 		// Test caching
 		checkGetParsedModule(CU_PATH, WC_SOURCE);
@@ -81,7 +82,7 @@ public class ModuleParseCache_Test {
 		
 		mpm.discardWorkingCopy(CU_PATH);
 		// Test that file now takes precedence.
-		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(SOURCE3));
+		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(SOURCE3));  /*BUG here tests sometimes fail here */
 		
 		testOptmizationsAfterDiscard();
 	}

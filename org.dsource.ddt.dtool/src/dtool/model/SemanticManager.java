@@ -57,11 +57,6 @@ public class SemanticManager {
 	
 	/* -----------------  ----------------- */
 	
-	public SemanticResolution getSemanticResolution(Path path) throws ExecutionException {
-		BundlePath bundlePath = new BundlePath(path);
-		return getSemanticResolution(bundlePath);
-	}
-	
 	public SemanticResolution getSemanticResolution(BundlePath bundlePath) {
 		try {
 			return semanticResolutions.getEntry(bundlePath).getValue();
@@ -106,10 +101,9 @@ public class SemanticManager {
 					return true;
 				}
 				SemanticResolution existingSR = getExistingValue();
-				Path[] bundleDeps = existingSR.getBundleDeps();
+				BundlePath[] bundleDeps = existingSR.getBundleDeps();
 				
-				for (Path bundlePath : bundleDeps) {
-					BundlePath depBundlePath = BundlePath.createUnchecked(bundlePath);
+				for(BundlePath depBundlePath : bundleDeps) {
 					SemanticResolutionEntry depSR = semanticResolutions.getEntry(depBundlePath);
 					
 					// Note: depSR can be internally stale, thats ok because we have our own copy of depSR.
@@ -132,7 +126,7 @@ public class SemanticManager {
 			
 			DubBundleDescription bundleDesc = getBundleManifestCache().getManifest(bundlePath);
 			
-			HashMap<String, Path> depBundleToPathMapping = bundleDesc.getDepBundleToPathMapping();
+			HashMap<String, BundlePath> depBundleToPathMapping = bundleDesc.getDepBundleToPathMapping();
 			
 			DubBundle mainBundle = bundleDesc.getMainBundle();
 			SemanticResolution mainSR = createSemanticResolution(mainBundle, depBundleToPathMapping);
@@ -156,20 +150,20 @@ public class SemanticManager {
 	/* ----------------- module model calculation ----------------- */
 	
 	public SemanticResolution createSemanticResolution(DubBundle bundle, 
-			HashMap<String, Path> depBundleToPathMapping) {
-		Path[] depBundles = getDependenciesBundlePath(depBundleToPathMapping, bundle);
+			HashMap<String, BundlePath> depBundleToPathMap) {
+		BundlePath[] depBundles = getDependenciesBundlePath(depBundleToPathMap, bundle);
 		HashMap<ModuleFullName, Path> bundleModules = calculateBundleModules(bundle);
 		
 		return new SemanticResolution(SemanticManager.this, bundle, depBundles, bundleModules);
 	}
 	
-	protected Path[] getDependenciesBundlePath(HashMap<String, Path> bundleToPathMapping, DubBundle bundle) {
+	protected BundlePath[] getDependenciesBundlePath(HashMap<String, BundlePath> bundleToPathMap, DubBundle bundle) {
 		DubDependecyRef[] depRefs = bundle.getDependencyRefs();
-		Path[] directDepsPath = new Path[depRefs.length];
+		BundlePath[] directDepsPath = new BundlePath[depRefs.length];
 		for (int i = 0; i < depRefs.length; i++) {
-			directDepsPath[i] = bundleToPathMapping.get(depRefs[i].getBundleNameRef());
+			directDepsPath[i] = bundleToPathMap.get(depRefs[i].getBundleNameRef());
 			if(directDepsPath[i] == null) {
-				dtoolServer.logError("DUB describe: dependency missing.", null);
+				dtoolServer.logError("DUB describe: dependency path is missing or invalid.", null);
 			}
 		}
 		return directDepsPath;
@@ -211,9 +205,9 @@ public class SemanticManager {
 	
 	public static class SemanticResolution extends SemanticContext {
 		
-		public SemanticResolution(SemanticManager manager, DubBundle bundle, Path[] bundleDeps, 
+		public SemanticResolution(SemanticManager manager, DubBundle bundle, BundlePath[] depBundlePaths, 
 				Map<ModuleFullName, Path> bundleModules) {
-			super(manager, bundle, bundleDeps, bundleModules);
+			super(manager, bundle, depBundlePaths, bundleModules);
 		}
 		
 	}

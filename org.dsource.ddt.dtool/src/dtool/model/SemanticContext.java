@@ -10,14 +10,16 @@
  *******************************************************************************/
 package dtool.model;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
+import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.model.SemanticManager.SemanticResolution;
@@ -28,14 +30,17 @@ public class SemanticContext implements IModuleResolver {
 	
 	protected final SemanticManager manager;
 	protected final DubBundle bundle;
-	protected final Path[] bundleDeps;
+	protected final BundlePath bundlePath;
+	protected final BundlePath[] bundleDeps;
 	protected final Map<ModuleFullName, Path> bundleModules; //immutable
 	
-	public SemanticContext(SemanticManager manager, DubBundle bundle, Path[] bundleDeps, 
+	public SemanticContext(SemanticManager manager, DubBundle bundle, BundlePath[] bundleDeps, 
 			Map<ModuleFullName, Path> bundleModules) {
 		this.manager = manager;
-		this.bundle = bundle;
+		this.bundle = assertNotNull(bundle);
+		this.bundlePath = assertNotNull(bundle.getBundlePath());
 		this.bundleDeps = ArrayUtil.removeAll(bundleDeps, null);
+		
 		this.bundleModules = bundleModules;
 	}
 	
@@ -54,25 +59,18 @@ public class SemanticContext implements IModuleResolver {
 		return getBundlePath().resolve(path);
 	}
 	
-	public Path getBundlePath() {
-		return bundle.getLocation();
+	public BundlePath getBundlePath() {
+		return bundlePath;
 	}
 	
-	protected Path[] getBundleDeps() {
+	protected BundlePath[] getBundleDeps() {
 		return bundleDeps;
 	}
 	
 	/* ----------------- ----------------- */
 	
-	protected SemanticResolution getDepSR(Path bundlePath) {
-		SemanticResolution depSR;
-		try {
-			depSR = manager.getSemanticResolution(bundlePath);
-		} catch (ExecutionException e) {
-			// TODO store error
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		return depSR;
+	protected SemanticResolution getDepSR(BundlePath bundlePath) {
+		return manager.getSemanticResolution(bundlePath);
 	}
 	
 	@Override
@@ -86,7 +84,7 @@ public class SemanticContext implements IModuleResolver {
 		if(modulePath != null) {
 			return modulePath;
 		}
-		for (Path depBundlePath : getBundleDeps()) {
+		for (BundlePath depBundlePath : getBundleDeps()) {
 			modulePath = getDepSR(depBundlePath).internalGetModuleAbsolutePath(moduleFullName);
 			if(modulePath != null) {
 				return modulePath;
@@ -100,7 +98,7 @@ public class SemanticContext implements IModuleResolver {
 		ArrayList<String> matchedModules = new ArrayList<>();
 		
 		internalFindModules(fullNamePrefix, matchedModules);
-		for (Path depBundlePath : getBundleDeps()) {
+		for (BundlePath depBundlePath : getBundleDeps()) {
 			getDepSR(depBundlePath).internalFindModules(fullNamePrefix, matchedModules);;
 		}
 		

@@ -29,8 +29,8 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
+import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubManifestParser;
 
 public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
@@ -267,7 +267,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 	public static boolean isDubManifestFile(Object element) {
 		if(element instanceof IFile) {
 			IFile file = (IFile) element;
-			if(file.getProjectRelativePath().equals(new Path(DubManifestParser.DUB_MANIFEST_FILENAME))) {
+			if(file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME))) {
 				return true;
 			}
 		}
