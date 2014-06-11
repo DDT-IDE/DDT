@@ -12,57 +12,19 @@ package dtool.model;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.Test;
 
+import dtool.dub.BundlePath;
+import dtool.model.ModuleParseCache.ParseSourceException;
+import dtool.parser.DeeParserResult.ParsedModule;
+
 public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 	
 	protected SemanticManager mgr;
-	
-	@Test
-	public void testModuleResolving() throws Exception { testModuleResolving$(); }
-	public void testModuleResolving$() throws Exception {
-		
-		mgr = new SemanticManager(new Tests_DToolServer());
-		
-		BundleSemanticResolution sr = mgr.getUpdatedResolution(BASIC_LIB);
-		assertEquals(sr.getBundleName(), "basic_lib");
-		new BundleFilesChecker(sr.getBundleModuleFiles()) {
-			{
-				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
-				checkEntry("pack.basicFoo", "source/pack/basicFoo.d");			
-			}
-		}.run();
-		
-		BundleSemanticResolution smtestSR = mgr.getUpdatedResolution(SMTEST);
-		assertEquals(smtestSR.getBundleName(), "smtest_foo");
-		new BundleFilesChecker(smtestSR.getBundleModuleFiles()) {
-			{
-				checkEntry("sm_test_foo", "src/sm_test_foo.d");
-				checkEntry("test.fooLib", "src2/test/fooLib.d");			
-				checkEntry("modA_import_only", "src-import/modA_import_only.d");
-				checkEntry("nested.mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");	
-				checkEntry("mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");			
-			}
-		}.run();
-		
-		assertEqualArrays(smtestSR.findModules("test."), 
-			array("test.fooLib"));
-		
-		assertEquals(smtestSR.getParsedModule("sm_test_foo").modulePath, 
-			SMTEST.path.resolve("src/sm_test_foo.d"));
-		
-		assertAreEqual(smtestSR.getParsedModule("non_existing"), null); 
-		
-		// Test dependency bundles module resolution
-		assertEqualArrays(smtestSR.findModules("basic_lib"), 
-			array("basic_lib_foo"));
-		assertEquals(smtestSR.getParsedModule("basic_lib_foo").modulePath, 
-			BASIC_LIB.path.resolve("source/basic_lib_foo.d"));
-		
-	}
 	
 	public static class BundleFilesChecker extends MapChecker<ModuleFullName, Path> {
 		
@@ -80,6 +42,73 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			});
 		}
 		
+	}
+	
+	@Test
+	public void testModuleResolving() throws Exception { testModuleResolving$(); }
+	public void testModuleResolving$() throws Exception {
+		
+		mgr = new SemanticManager(new Tests_DToolServer());
+		mgr.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
+		
+		BundleSemanticResolution sr = mgr.getUpdatedResolution(BASIC_LIB);
+		assertEquals(sr.getBundleName(), "basic_lib");
+		new BundleFilesChecker(sr.getBundleModuleFiles()) {
+			{
+				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
+				checkEntry("basic_lib_pack.foo", "source/basic_lib_pack/foo.d");			
+			}
+		}.run();
+		
+		BundleSemanticResolution smtestSR = mgr.getUpdatedResolution(SMTEST);
+		assertEquals(smtestSR.getBundleName(), "smtest_foo");
+		new BundleFilesChecker(smtestSR.getBundleModuleFiles()) {
+			{
+				checkEntry("sm_test_foo", "src/sm_test_foo.d");
+				checkEntry("test.fooLib", "src2/test/fooLib.d");			
+				checkEntry("modA_import_only", "src-import/modA_import_only.d");
+				checkEntry("nested.mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");	
+				checkEntry("mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");			
+			}
+		}.run();
+		
+		testFindModule(SMTEST, "sm_test_foo", SMTEST.resolve("src/sm_test_foo.d"));
+		testFindModule(SMTEST, "non_existing", null);
+		
+		assertEqualSet(smtestSR.findModules2("test."), hashSet(
+			"test.fooLib"
+		));
+		
+		// Test dependency bundles module resolution
+		testFindModule(SMTEST, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
+		
+		assertEqualSet(smtestSR.findModules2("basic_lib"), hashSet(
+			"basic_lib_pack.foo",
+			"basic_lib_foo"
+		));
+		
+		BundleSemanticResolution complexLibSR = mgr.getUpdatedResolution(COMPLEX_LIB);
+		assertEqualSet(complexLibSR.findModules2(""), hashSet(
+			"complex_lib",
+			"basic_lib_pack.foo",
+			"basic_lib_foo",
+			"basic_lib2_pack.bar",
+			"basic_lib2_foo"
+		));
+		
+		BundleSemanticResolution complexBundleSR = mgr.getUpdatedResolution(COMPLEX_BUNDLE);
+		assertEqualSet(complexBundleSR.findModules2("basic_lib_pack"), hashSet(
+			"basic_lib_pack.foo"
+		));
+		testFindModule(COMPLEX_BUNDLE, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
+	}
+	
+	protected void testFindModule(BundlePath bundlePath, String bundleFullName, Path expectedPath) 
+			throws ParseSourceException, ExecutionException {
+		BundleSemanticResolution bundleSR = mgr.getStoredResolution(bundlePath);
+		ParsedModule parsedModule = bundleSR.getParsedModule(bundleFullName);
+		Path modulePath = parsedModule == null ? null : parsedModule.modulePath;
+		assertAreEqual(modulePath, expectedPath);
 	}
 	
 }

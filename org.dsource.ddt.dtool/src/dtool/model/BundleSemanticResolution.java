@@ -12,6 +12,8 @@ package dtool.model;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,16 +60,28 @@ public class BundleSemanticResolution extends ResolvedBundle implements IModuleR
 	
 	/* ----------------- ----------------- */
 	
+	public HashSet<String> findModules2(String fullNamePrefix) {
+		String[] modules = findModules(fullNamePrefix);
+		HashSet<String> hashSet = new HashSet<String>();
+		hashSet.addAll(Arrays.asList(modules));
+		return hashSet;
+	}
+	
+	@Deprecated
 	@Override
 	public String[] findModules(String fullNamePrefix) {
 		ArrayList<String> matchedModules = new ArrayList<>();
 		
-		internalFindModules(fullNamePrefix, matchedModules);
-		for (BundleSemanticResolution depSR : depSRs) {
-			depSR.internalFindModules(fullNamePrefix, matchedModules); /*BUG here*/
-		}
+		findModules(fullNamePrefix, matchedModules);
 		
 		return matchedModules.toArray(new String[0]);
+	}
+	
+	protected void findModules(String fullNamePrefix, ArrayList<String> matchedModules) {
+		internalFindModules(fullNamePrefix, matchedModules);
+		for (BundleSemanticResolution depSR : depSRs) {
+			depSR.findModules(fullNamePrefix, matchedModules);
+		}
 	}
 	
 	protected void internalFindModules(String fullNamePrefix, ArrayList<String> matchedModules) {
@@ -104,7 +118,7 @@ public class BundleSemanticResolution extends ResolvedBundle implements IModuleR
 			return modulePath;
 		}
 		for (BundleSemanticResolution depSR : depSRs) {
-			modulePath = depSR.internalGetModuleAbsolutePath(moduleFullName); /*BUG here*/
+			modulePath = depSR.getModuleAbsolutePath(moduleFullName);
 			if(modulePath != null) {
 				return modulePath;
 			}
