@@ -115,7 +115,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			File exclusionsFiles = new File(zipFile.toString() + ".EXCLUSIONS");
 			if(!exclusionsFiles.exists()) 
 				return new String[0];
-			String exclusionsFileSource = readStringFromFileUnchecked(exclusionsFiles);
+			String exclusionsFileSource = readStringFromFile(exclusionsFiles);
 			String[] exclusions = LINE_SPLITTER.split(exclusionsFileSource);
 			exclusions = ArrayUtil.filter(exclusions, new Predicate<String>() {
 				@Override
@@ -142,7 +142,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 				}
 			}
 			
-			String source = readStringFromFileUnchecked(file);
+			String source = readStringFromFile_PreserveBOM(file);
 			int count = System.getProperty("PerformanceTests") != null ? 5 : 1;
 			for (int i = 0; i < count; i++) {
 				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", 

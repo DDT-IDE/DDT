@@ -56,7 +56,7 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 				
 				String moduleName = StringUtil.substringAfterLastMatch(moduleFQName, ".");
 				
-				String source = DToolBaseTest.readStringFromFileUnchecked(child);
+				String source = DToolBaseTest.readStringFromFile_PreserveBOM(child);
 				DeeParserResult parseResult = DeeParser.parseSource(source, moduleName);
 				modules.put(moduleFQName, parseResult);
 			} else {

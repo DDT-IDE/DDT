@@ -11,21 +11,21 @@
 package dtool.model;
 
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import melnorme.utilbox.concurrency.ITaskAgent;
 
 public class DToolServer {
 	
-	protected static DToolServer instance;
-	
-	
-	/* ----------------- ----------------- */
-	
-	protected final ITaskAgent dubProcessAgent = new ExecutorTaskAgent("DSE.DubProcessAgent") {
+	public class DToolTaskAgent extends ExecutorTaskAgent {
+		public DToolTaskAgent(String name) {
+			super(name);
+		}
+		
 		@Override
 		protected void handleUnexpectedException(Throwable throwable) {
 			logError("Unhandled exception in dub agent thread.", throwable);
-		};
-	};
+		}
+	}
+	
+	/* ----------------- ----------------- */
 	
 	protected final SemanticManager semanticManager = new SemanticManager(this);
 	
@@ -39,7 +39,7 @@ public class DToolServer {
 	}
 	
 	protected void shutdown() {
-		dubProcessAgent.shutdownNow();
+		semanticManager.shutdown();
 	}
 	
 	protected void logMessage(String message) {

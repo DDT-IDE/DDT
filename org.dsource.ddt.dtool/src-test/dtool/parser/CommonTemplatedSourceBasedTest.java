@@ -67,7 +67,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 					assertTrue(caseState.isHeaderCase);
 				}
 			};
-			tsp.processSource_unchecked("#", readStringFromFileUnchecked(headerFile));
+			tsp.processSource_unchecked("#", readStringFromFile_PreserveBOM(headerFile));
 			assertTrue(tsp.getGenCases().size() == 0);
 			NewUtils.addNew(commonDefs, tsp.getGlobalExpansions());
 		}
@@ -120,7 +120,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 			tsp.addGlobalExpansions(commonDefinitions);
 		}
 		testsLogger.print(">>>====== " + getClass().getSimpleName() + " on: " + resourceFileToString(file));
-		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFileUnchecked(file));
+		AnnotatedSource[] sourceBasedTests = tsp.processSource_unchecked("#", readStringFromFile_PreserveBOM(file));
 		testsLogger.println(" ("+sourceBasedTests.length+") ======<<<");
 		return sourceBasedTests;
 	}

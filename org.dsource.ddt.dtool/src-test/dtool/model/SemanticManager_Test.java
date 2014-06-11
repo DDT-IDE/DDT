@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.model;
 
+import static dtool.model.CommonSemanticModelTest.StaleState.DEPS_ONLY;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -24,22 +25,12 @@ import dtool.dub.ResolvedBundle;
 
 public class SemanticManager_Test extends CommonSemanticModelTest {
 	
-	protected SemanticManager sm;
-	
 	protected HashMap<BundlePath, BundleSemanticResolution> previousSRs;
-	
-	protected void __storeCurrentManifests__() throws ExecutionException {
-		previousSRs = new HashMap<>();
-		storeCurrentInMap(BASIC_LIB);
-		storeCurrentInMap(BASIC_LIB2);
-		storeCurrentInMap(SMTEST);
-		storeCurrentInMap(COMPLEX_LIB);
-		storeCurrentInMap(COMPLEX_BUNDLE);
-	}
 	
 	protected ResolvedBundle storeCurrentInMap(BundlePath bundlePath) throws ExecutionException {
 		BundleSemanticResolution bundleSR = sm.getStoredResolution(bundlePath);
 		previousSRs.put(bundlePath, bundleSR);
+		checkChanged(bundlePath, false);
 		return bundleSR;
 	}
 	
@@ -50,7 +41,21 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		}
 		boolean changed = previousManifest != sm.getStoredResolution(bundlePath);
 		assertTrue(changed == expectedChanged);
+		if(expectedChanged) {
+			checkIsStale(bundlePath, false);
+		}
 	}
+	
+	protected void __storeCurrentManifests__() throws ExecutionException {
+		previousSRs = new HashMap<>();
+		storeCurrentInMap(BASIC_LIB);
+		storeCurrentInMap(BASIC_LIB2);
+		storeCurrentInMap(SMTEST);
+		storeCurrentInMap(COMPLEX_LIB);
+		storeCurrentInMap(COMPLEX_BUNDLE);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Test
 	public void testCaching() throws Exception { testCaching$(); }
@@ -58,32 +63,31 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		sm = new SemanticManager(new Tests_DToolServer());
 		
 		__storeCurrentManifests__();
-		checkChanged(BASIC_LIB, false);
-		checkChanged(SMTEST, false);
-		testGetFullyUpdated(BASIC_LIB);
+		testGetUpdatedResolution(BASIC_LIB);
 		checkChanged(BASIC_LIB, true);
 		checkChanged(SMTEST, false);
 		assertAreEqual(sm.getStoredResolution(SMTEST), null);
 		
 		__storeCurrentManifests__();
-		testGetFullyUpdated(SMTEST);
+		testGetUpdatedResolution(SMTEST);
 		checkChanged(SMTEST, true);
 		checkChanged(BASIC_LIB, true);
 		checkChanged(BASIC_LIB2, false);
 		
 		__storeCurrentManifests__();
-		testGetFullyUpdated(COMPLEX_BUNDLE);
+		testGetUpdatedResolution(COMPLEX_BUNDLE);
 		checkChanged(COMPLEX_BUNDLE, true);
 		checkChanged(SMTEST, true);
 		checkChanged(BASIC_LIB, true);
 		checkChanged(COMPLEX_LIB, true);
 		checkChanged(BASIC_LIB2, true);
 		
+		// Test bundle invalidation
 		__storeCurrentManifests__();
-		sm.invalidateCurrentManifest(BASIC_LIB);
-		checkIsUpdated(BASIC_LIB, false);
-		checkIsUpdated(BASIC_LIB2, true);
-		checkIsUpdatedForInternallyUpdated(SMTEST);
+		sm.invalidateBundleManifest(BASIC_LIB);
+		checkIsStale(BASIC_LIB, true);
+		checkIsStale(BASIC_LIB2, false);
+		checkIsStale(SMTEST, DEPS_ONLY);
 		
 		sm.getUpdatedResolution(SMTEST);
 		checkChanged(SMTEST, true);
@@ -93,39 +97,12 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		
 		// Test effect of invalidation+update of a dependency bundle in a dependee bundle
 		__storeCurrentManifests__();
-		sm.invalidateCurrentManifest(BASIC_LIB);
-		checkIsUpdated(BASIC_LIB, false);
-		checkIsUpdatedForInternallyUpdated(SMTEST);
+		sm.invalidateBundleManifest(BASIC_LIB);
+		checkIsStale(BASIC_LIB, true);
+		checkIsStale(SMTEST, DEPS_ONLY);
 		sm.getUpdatedResolution(BASIC_LIB);
 		checkChanged(BASIC_LIB, true);
-		checkIsUpdatedForInternallyUpdated(SMTEST);
-	}
-	
-	protected void checkIsUpdated(BundlePath bundlePath, boolean expected) {
-		assertTrue(sm.isInternallyUpdated(bundlePath) == expected);
-		assertTrue(sm.isResolutionUpdated(bundlePath) == expected);
-	}
-	
-	protected void checkIsUpdatedForInternallyUpdated(BundlePath bundlePath) throws ExecutionException {
-		assertTrue(sm.isInternallyUpdated(bundlePath) == true);
-		assertTrue(sm.isResolutionUpdated(bundlePath) == false);
-		
-		assertTrue(sm.getStoredResolution(bundlePath) == previousSRs.get(bundlePath));
-	}
-	
-	protected ResolvedBundle testGetFullyUpdated(BundlePath bundlePath) throws ExecutionException {
-		ResolvedBundle manifest = sm.getUpdatedResolution(bundlePath);
-		assertEquals(manifest.bundlePath, bundlePath);
-		checkIsFullyUpdated(manifest);
-		return manifest;
-	}
-	
-	protected void checkIsFullyUpdated(ResolvedBundle manifest) throws ExecutionException {
-		BundlePath bundlePath = manifest.bundlePath;
-		assertTrue(sm.getEntry(bundlePath).isStale() == false);
-		checkIsUpdated(bundlePath, true);
-		ResolvedBundle manifest2 = sm.getUpdatedResolution(bundlePath);
-		assertTrue(manifest == manifest2);
+		checkIsStale(SMTEST, DEPS_ONLY);
 	}
 	
 	/* -----------------  ----------------- */

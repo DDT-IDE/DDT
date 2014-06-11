@@ -24,8 +24,6 @@ import dtool.parser.DeeParserResult.ParsedModule;
 
 public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 	
-	protected SemanticManager mgr;
-	
 	public static class BundleFilesChecker extends MapChecker<ModuleFullName, Path> {
 		
 		public BundleFilesChecker(Map<ModuleFullName, Path> map) {
@@ -48,10 +46,10 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 	public void testModuleResolving() throws Exception { testModuleResolving$(); }
 	public void testModuleResolving$() throws Exception {
 		
-		mgr = new SemanticManager(new Tests_DToolServer());
-		mgr.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
+		sm = new SemanticManager(new Tests_DToolServer());
+		sm.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
 		
-		BundleSemanticResolution sr = mgr.getUpdatedResolution(BASIC_LIB);
+		BundleSemanticResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertEquals(sr.getBundleName(), "basic_lib");
 		new BundleFilesChecker(sr.getBundleModuleFiles()) {
 			{
@@ -60,7 +58,7 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			}
 		}.run();
 		
-		BundleSemanticResolution smtestSR = mgr.getUpdatedResolution(SMTEST);
+		BundleSemanticResolution smtestSR = sm.getUpdatedResolution(SMTEST);
 		assertEquals(smtestSR.getBundleName(), "smtest_foo");
 		new BundleFilesChecker(smtestSR.getBundleModuleFiles()) {
 			{
@@ -89,7 +87,7 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			"basic_lib_foo"
 		));
 		
-		BundleSemanticResolution complexLibSR = mgr.getUpdatedResolution(COMPLEX_LIB);
+		BundleSemanticResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
 		assertEqualSet(complexLibSR.findModules2(""), hashSet(
 			"complex_lib",
 			"basic_lib_pack.foo",
@@ -98,7 +96,7 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			"basic_lib2_foo"
 		));
 		
-		BundleSemanticResolution complexBundleSR = mgr.getUpdatedResolution(COMPLEX_BUNDLE);
+		BundleSemanticResolution complexBundleSR = sm.getUpdatedResolution(COMPLEX_BUNDLE);
 		assertEqualSet(complexBundleSR.findModules2("basic_lib_pack"), hashSet(
 			"basic_lib_pack.foo"
 		));
@@ -107,16 +105,10 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 	
 	protected void testFindModule(BundlePath bundlePath, String bundleFullName, Path expectedPath) 
 			throws ParseSourceException, ExecutionException {
-		BundleSemanticResolution bundleSR = mgr.getStoredResolution(bundlePath);
+		BundleSemanticResolution bundleSR = sm.getStoredResolution(bundlePath);
 		ParsedModule parsedModule = bundleSR.getParsedModule(bundleFullName);
 		Path modulePath = parsedModule == null ? null : parsedModule.modulePath;
 		assertAreEqual(modulePath, expectedPath);
-	}
-	
-	@Test
-	public void testUpdates() throws Exception { testUpdates$(); }
-	public void testUpdates$() throws Exception {
-		 prepSMTestsWorkingDir();
 	}
 	
 }

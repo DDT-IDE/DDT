@@ -71,7 +71,7 @@ abstract class AbstractSemanticManager
 		return entry.getValue();
 	}
 	
-	protected boolean isInternallyUpdated(BundlePath bundlePath) {
+	protected boolean isEntryNodeUpdated(BundlePath bundlePath) {
 		return !getEntry(bundlePath).isStale();
 	}
 	
@@ -103,7 +103,7 @@ abstract class AbstractSemanticManager
 		return false;
 	}
 	
-	public void invalidateCurrentManifest(BundlePath bundlePath) {
+	public void invalidateBundleManifest(BundlePath bundlePath) {
 		getEntry(bundlePath).makeStale();
 	}
 	
@@ -148,19 +148,23 @@ abstract class AbstractSemanticManager
 public class SemanticManager extends AbstractSemanticManager {
 	
 	protected final DToolServer dtoolServer;
-	protected final ITaskAgent processAgent;
+	protected final ITaskAgent dubProcessAgent;
 	
 	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
 	
 	public SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;
-		this.processAgent = dtoolServer.dubProcessAgent;
+		this.dubProcessAgent = dtoolServer.new DToolTaskAgent("DSE.DubProcessAgent");
+	}
+	
+	public void shutdown() {
+		dubProcessAgent.shutdownNow();
 	}
 	
 	@Override
 	protected UpdateEntryResult determineNewEntryValues(BundlePath bundlePath) throws ExecutionException {
-		RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(bundlePath);
-		DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(processAgent);
+		RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(bundlePath, false);
+		DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 		
 		long newTimeStamp = dubDescribeTask.getStartTimeStamp();
 		Collection<BundleSemanticResolution> bundleSRs = new DubDescribeAnalyzer(bundleDesc).getAll();
@@ -243,4 +247,10 @@ public class SemanticManager extends AbstractSemanticManager {
 		
 	}
 	
+	/* ----------------- update handling ----------------- */
+	
+	public void reportFileChange(Path file) {
+		// TODO Auto-generated method stub
+	}
+
 }

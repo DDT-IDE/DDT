@@ -13,7 +13,6 @@ package dtool.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -60,21 +59,18 @@ public class DToolBaseTest extends CommonTest {
 	
 	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
 	
-	public static String readTestResourceFile(String filePath) throws IOException {
-		File testDataDir = DToolTestResources.getInstance().getResourcesDir();
-		File file = new File(testDataDir, filePath);
-		return readStringFromFile(file);
-	}
-	
-	public static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
-	}
-	
-	public static String readStringFromFile(Path path) throws IOException, FileNotFoundException {
+	public static String readStringFromFile(Path path) {
 		return readStringFromFile(path.toFile());
 	}
+	public static String readStringFromFile(File file) {
+		try {
+			return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
 	
-	public static String readStringFromFileUnchecked(File file) {
+	public static String readStringFromFile_PreserveBOM(File file) {
 		try {
 			return NewUtils.readStringFromFile_PreserveBOM(file, DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
@@ -82,7 +78,10 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
-	public static void writeStringToFileUnchecked(File file, String string) {
+	public static void writeStringToFile(Path file, String string) {
+		writeStringToFile(file.toFile(), string);
+	}
+	public static void writeStringToFile(File file, String string) {
 		try {
 			StreamUtil.writeStringToStream(string, new FileOutputStream(file), DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
@@ -90,7 +89,7 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
-	public static void appendStringToFileUnchecked(File file, String string) {
+	public static void appendStringToFile(File file, String string) {
 		try {
 			StreamUtil.writeStringToStream(string, new FileOutputStream(file, true), DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {

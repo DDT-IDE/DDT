@@ -28,16 +28,16 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 public class DubHelper {
 	
 	public static DubBundleDescription runDubDescribe(BundlePath bundlePath) throws IOException, InterruptedException {
-		return runDubDesc(bundlePath, false);
+		return runDubDescribe(bundlePath, false);
 	}
 	
-	public static DubBundleDescription runDubDesc(BundlePath bundlePath, boolean noDepDownload) 
+	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, boolean allowDepDownload) 
 			throws IOException, InterruptedException {
 		ProcessBuilder pb;
-		if(noDepDownload) {
-			pb = new ProcessBuilder("dub", "describe", "--nodeps");
-		} else {
+		if(allowDepDownload) {
 			pb = new ProcessBuilder("dub", "describe");
+		} else {
+			pb = new ProcessBuilder("dub", "describe", "--nodeps");
 		}
 		
 		pb.directory(bundlePath.path.toFile());
@@ -66,16 +66,19 @@ public class DubHelper {
 	public static class RunDubDescribeCallable implements ICallable<DubBundleDescription, Exception> {
 		
 		protected final BundlePath bundlePath;
+		protected final boolean allowDepDownload;
+		
 		protected volatile long startTimeStamp = -1;
 		
-		public RunDubDescribeCallable(BundlePath bundlePath) {
+		public RunDubDescribeCallable(BundlePath bundlePath, boolean allowDepDownload) {
 			this.bundlePath = bundlePath;
+			this.allowDepDownload = allowDepDownload;
 		}
 		
 		@Override
 		public DubBundleDescription call() throws IOException, InterruptedException {
 			startTimeStamp = System.nanoTime();
-			return DubHelper.runDubDescribe(bundlePath);
+			return DubHelper.runDubDescribe(bundlePath, allowDepDownload);
 		}
 		
 		public long getStartTimeStamp() {
