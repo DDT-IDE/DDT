@@ -11,9 +11,6 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.HashMap;
-
 import dtool.dub.DubBundle.DubBundleException;
 
 /**
@@ -85,19 +82,6 @@ public class DubBundleDescription {
 	
 	public DubBundleException getError() {
 		return error;
-	}
-	
-	// TODO test, make permanent, etc. /*BUG here*/ validate, etc.
-	public HashMap<String, BundlePath> getDepBundleNameToPathMapping() {
-		HashMap<String, BundlePath> hashMap = new HashMap<>(bundleDependencies.length);
-		
-		for (DubBundle bundleDep : bundleDependencies) {
-			hashMap.put(bundleDep.getBundleName(), bundleDep.getBundlePath());
-		}
-		
-		// TODO validate cycles.
-		
-		return hashMap;
 	}
 	
 }

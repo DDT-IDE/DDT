@@ -12,27 +12,37 @@ package dtool.model;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
-import dtool.dub.ResolvedManifest;
+import dtool.dub.ResolvedBundle;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.project.IModuleResolver;
 
-public class BundleSemanticResolution extends ResolvedManifest implements IModuleResolver {
+public class BundleSemanticResolution extends ResolvedBundle implements IModuleResolver {
 	
 	protected final SemanticManager manager;
+	protected final List<BundleSemanticResolution> depSRs;
 	
-	public BundleSemanticResolution(SemanticManager manager, DubBundle bundle, ArrayList<BundlePath> depBundlePaths, 
+	public BundleSemanticResolution(SemanticManager manager, DubBundle bundle, List<BundleSemanticResolution> depSRs, 
 			Map<ModuleFullName, Path> bundleModules) {
-		super(bundle, depBundlePaths, bundleModules);
+		super(bundle, getDepBundlePaths(depSRs), bundleModules);
 		this.manager = manager;
+		this.depSRs = depSRs;
+	}
+	
+	protected static List<BundlePath> getDepBundlePaths(List<BundleSemanticResolution> depSRs){
+		ArrayList<BundlePath> depBundlePaths = new ArrayList<>();
+		for (BundleSemanticResolution bundleSemanticResolution : depSRs) {
+			depBundlePaths.add(bundleSemanticResolution.getBundlePath());
+		}
+		return depBundlePaths;
 	}
 	
 	public String getBundleId() {
@@ -48,42 +58,13 @@ public class BundleSemanticResolution extends ResolvedManifest implements IModul
 	
 	/* ----------------- ----------------- */
 	
-	protected BundleSemanticResolution getDepSR(BundlePath bundlePath) {
-		try {
-			return manager.getUpdatedResolution(bundlePath);
-		} catch (ExecutionException e) {
-			/*BUG here TODO*/
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
-	@Override
-	public Module findModule(String[] packages, String module) throws Exception {
-		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, module));
-		return getParsedModule(moduleFullName).getModuleNode();
-	}
-	
-	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {
-		Path modulePath = internalGetModuleAbsolutePath(moduleFullName);
-		if(modulePath != null) {
-			return modulePath;
-		}
-		for (BundlePath depBundlePath : getBundleDeps()) {
-			modulePath = getDepSR(depBundlePath).internalGetModuleAbsolutePath(moduleFullName);
-			if(modulePath != null) {
-				return modulePath;
-			}
-		}
-		return null;
-	}
-	
 	@Override
 	public String[] findModules(String fullNamePrefix) {
 		ArrayList<String> matchedModules = new ArrayList<>();
 		
 		internalFindModules(fullNamePrefix, matchedModules);
-		for (BundlePath depBundlePath : getBundleDeps()) {
-			getDepSR(depBundlePath).internalFindModules(fullNamePrefix, matchedModules);;
+		for (BundleSemanticResolution depSR : depSRs) {
+			depSR.internalFindModules(fullNamePrefix, matchedModules); /*BUG here*/
 		}
 		
 		return matchedModules.toArray(new String[0]);
@@ -109,6 +90,26 @@ public class BundleSemanticResolution extends ResolvedManifest implements IModul
 			return null;
 		}
 		return manager.parseCache.getParsedModule(filePath);
+	}
+	
+	@Override
+	public Module findModule(String[] packages, String module) throws Exception {
+		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, module));
+		return getParsedModule(moduleFullName).getModuleNode();
+	}
+	
+	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {
+		Path modulePath = internalGetModuleAbsolutePath(moduleFullName);
+		if(modulePath != null) {
+			return modulePath;
+		}
+		for (BundleSemanticResolution depSR : depSRs) {
+			modulePath = depSR.internalGetModuleAbsolutePath(moduleFullName); /*BUG here*/
+			if(modulePath != null) {
+				return modulePath;
+			}
+		}
+		return null;
 	}
 	
 }

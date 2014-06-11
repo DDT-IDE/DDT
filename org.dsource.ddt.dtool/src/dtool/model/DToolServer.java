@@ -46,6 +46,10 @@ public class DToolServer {
 		System.out.println("> " + message);
 	}
 	
+	protected void logError(String message) {
+		logError(message, null);
+	}
+	
 	protected void logError(String message, Throwable throwable) {
 		System.err.println(">> " + message);
 		if(throwable != null) {

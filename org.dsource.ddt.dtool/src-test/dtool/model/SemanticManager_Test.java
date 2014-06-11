@@ -20,16 +20,16 @@ import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
-import dtool.dub.ResolvedManifest;
+import dtool.dub.ResolvedBundle;
 
 public class SemanticManager_Test extends CommonSemanticModelTest {
 	
 	protected SemanticManager sm;
 	
-	protected HashMap<BundlePath, ResolvedManifest> previousManifests;
+	protected HashMap<BundlePath, BundleSemanticResolution> previousSRs;
 	
 	protected void __storeCurrentManifests__() throws ExecutionException {
-		previousManifests = new HashMap<>();
+		previousSRs = new HashMap<>();
 		storeCurrentInMap(BASIC_LIB);
 		storeCurrentInMap(BASIC_LIB2);
 		storeCurrentInMap(SMTEST);
@@ -37,14 +37,14 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		storeCurrentInMap(COMPLEX_BUNDLE);
 	}
 	
-	protected ResolvedManifest storeCurrentInMap(BundlePath bundlePath) throws ExecutionException {
-		ResolvedManifest manifest = sm.getStoredResolution(bundlePath);
-		previousManifests.put(bundlePath, manifest);
-		return manifest;
+	protected ResolvedBundle storeCurrentInMap(BundlePath bundlePath) throws ExecutionException {
+		BundleSemanticResolution bundleSR = sm.getStoredResolution(bundlePath);
+		previousSRs.put(bundlePath, bundleSR);
+		return bundleSR;
 	}
 	
 	protected void checkChanged(BundlePath bundlePath, boolean expectedChanged) throws ExecutionException {
-		ResolvedManifest previousManifest = previousManifests.get(bundlePath);
+		ResolvedBundle previousManifest = previousSRs.get(bundlePath);
 		if(previousManifest != null) {
 			assertTrue(previousManifest.bundlePath.equals(bundlePath));
 		}
@@ -110,21 +110,21 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		assertTrue(sm.isInternallyUpdated(bundlePath) == true);
 		assertTrue(sm.isResolutionUpdated(bundlePath) == false);
 		
-		assertTrue(sm.getStoredResolution(bundlePath) == previousManifests.get(bundlePath));
+		assertTrue(sm.getStoredResolution(bundlePath) == previousSRs.get(bundlePath));
 	}
 	
-	protected ResolvedManifest testGetFullyUpdated(BundlePath bundlePath) throws ExecutionException {
-		ResolvedManifest manifest = sm.getUpdatedResolution(bundlePath);
+	protected ResolvedBundle testGetFullyUpdated(BundlePath bundlePath) throws ExecutionException {
+		ResolvedBundle manifest = sm.getUpdatedResolution(bundlePath);
 		assertEquals(manifest.bundlePath, bundlePath);
 		checkIsFullyUpdated(manifest);
 		return manifest;
 	}
 	
-	protected void checkIsFullyUpdated(ResolvedManifest manifest) throws ExecutionException {
+	protected void checkIsFullyUpdated(ResolvedBundle manifest) throws ExecutionException {
 		BundlePath bundlePath = manifest.bundlePath;
 		assertTrue(sm.getEntry(bundlePath).isStale() == false);
 		checkIsUpdated(bundlePath, true);
-		ResolvedManifest manifest2 = sm.getUpdatedResolution(bundlePath);
+		ResolvedBundle manifest2 = sm.getUpdatedResolution(bundlePath);
 		assertTrue(manifest == manifest2);
 	}
 	
@@ -142,7 +142,7 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 	}
 	
 	protected void doTestErrors() {
-		ResolvedManifest manifest;
+		ResolvedBundle manifest;
 		try {
 			manifest = sm.getUpdatedResolution(NON_EXISTANT);
 		} catch (ExecutionException e) {

@@ -12,8 +12,9 @@ package dtool.model;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -22,7 +23,6 @@ import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
-import dtool.dub.ResolvedManifest;
 import dtool.model.util.CachingEntry;
 import dtool.model.util.CachingRegistry;
 
@@ -58,7 +58,7 @@ abstract class AbstractSemanticManager
 	
 	protected final Object entriesLock = new Object();
 	
-	public ResolvedManifest getStoredResolution(BundlePath bundlePath) throws ExecutionException {
+	public BundleSemanticResolution getStoredResolution(BundlePath bundlePath) throws ExecutionException {
 		SemanticResolutionEntry mapEntry = getMapEntry(bundlePath);
 		return mapEntry != null ? mapEntry.getValue() : null;
 	}
@@ -90,13 +90,11 @@ abstract class AbstractSemanticManager
 	/** Checks if given entry, or any child entry that it refers to, 
 	 * has had any modifications since given timeStamp. */
 	protected boolean hasBeenModifiedSince(SemanticResolutionEntry entry, long timeStamp) {
-		ResolvedManifest bundle = entry.getValue();
-		
 		if(entry.isStale() || entry.getValueTimeStamp() > timeStamp) {
 			return true;
 		}
 		
-		for(BundlePath depBundlePath : bundle.getBundleDeps()) {
+		for(BundlePath depBundlePath : entry.getValue().getBundleDeps()) {
 			SemanticResolutionEntry depEntry = getEntry(depBundlePath);
 			if(hasBeenModifiedSince(depEntry, timeStamp)) {
 				return true;
@@ -121,8 +119,8 @@ abstract class AbstractSemanticManager
 			
 			synchronized(entriesLock) {
 				long newTimeStamp = updateResult.newTimeStamp; 
-				for(BundleSemanticResolution resolvedBundle : updateResult.newValues) {
-					getEntry(resolvedBundle.bundlePath).updateValue(resolvedBundle, newTimeStamp);
+				for(BundleSemanticResolution newEntryValue : updateResult.newValues) {
+					getEntry(newEntryValue.bundlePath).updateValue(newEntryValue, newTimeStamp);
 				}
 			}
 		}
@@ -133,9 +131,9 @@ abstract class AbstractSemanticManager
 	protected class UpdateEntryResult {
 		
 		protected long newTimeStamp;
-		protected List<BundleSemanticResolution> newValues;
+		protected Collection<BundleSemanticResolution> newValues;
 		
-		public UpdateEntryResult(long newTimeStamp, List<BundleSemanticResolution> newValues) {
+		public UpdateEntryResult(long newTimeStamp, Collection<BundleSemanticResolution> newValues) {
 			this.newTimeStamp = newTimeStamp;
 			this.newValues = newValues;
 		}
@@ -165,57 +163,84 @@ public class SemanticManager extends AbstractSemanticManager {
 		DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(processAgent);
 		
 		long newTimeStamp = dubDescribeTask.getStartTimeStamp();
-		ArrayList<BundleSemanticResolution> bundleSRs = createFromDescribe(bundleDesc);
+		Collection<BundleSemanticResolution> bundleSRs = new DubDescribeAnalyzer(bundleDesc).getAll();
 		return new UpdateEntryResult(newTimeStamp, bundleSRs);
 	}
 	
 	/* ----------------- Resolved manifest calculation ----------------- */
 	
-	public ArrayList<BundleSemanticResolution> createFromDescribe(DubBundleDescription bundleDesc) {
-		DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
-		HashMap<String, BundlePath> bundleNameToPathMap = bundleDesc.getDepBundleNameToPathMapping();
+	public class DubDescribeAnalyzer extends BundleModulesHelper {
 		
-		ArrayList<BundleSemanticResolution> resolvedManifests = new ArrayList<>(bundleDeps.length + 1);
+		protected final HashMap<String, DubBundle> bundlesMap = new HashMap<>();
+		protected final HashMap<String, BundleSemanticResolution> bundleSRs = new HashMap<>();
+		protected final HashSet<String> bundlesBeingCalculated = new HashSet<>();
 		
-		addResolvedManifest(resolvedManifests, bundleDesc.getMainBundle(), bundleNameToPathMap);
-		for (DubBundle dubBundle : bundleDeps) {
-			addResolvedManifest(resolvedManifests, dubBundle, bundleNameToPathMap);
-		}
-		
-		return resolvedManifests;
-	}
-	
-	public void addResolvedManifest(ArrayList<BundleSemanticResolution> manifests, DubBundle bundle, 
-			HashMap<String, BundlePath> bundleNameToPathMap) {
-		BundlePath bundlePath = bundle.getBundlePath();
-		if(bundlePath == null) {
-			dtoolServer.logError("DUB describe: invalid bundle path for : " + bundle.getBundleName(), null);
-			return;
-		}
-		
-		ArrayList<BundlePath> directDependencies = getDirectDependencies(bundle, bundleNameToPathMap);
-		
-		BundleModulesHelper sm = new BundleModulesHelper(dtoolServer); /*BUG here fix this*/
-		HashMap<ModuleFullName, Path> bundleModules = sm.calculateBundleModules(bundle);
-		
-		manifests.add(new BundleSemanticResolution(this, bundle, directDependencies, bundleModules));
-	}
-	
-	protected ArrayList<BundlePath> getDirectDependencies(DubBundle bundle, 
-		HashMap<String, BundlePath> bundleNameToPath) {
-		
-		ArrayList<BundlePath> directDeps = new ArrayList<>(bundle.getDependencyRefs().length);
-		
-		for (DubDependecyRef directDependencyRef : bundle.getDependencyRefs()) {
-			String depName = directDependencyRef.getBundleName();
-			BundlePath depBundlePath = bundleNameToPath.get(depName);
-			if(depBundlePath == null) {
-				dtoolServer.logError("DUB describe: dependency path is missing for: " + depName, null);
-			} else {
-				directDeps.add(depBundlePath);
+		public DubDescribeAnalyzer(DubBundleDescription bundleDesc) {
+			super(SemanticManager.this.dtoolServer);
+			
+			DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
+			for (DubBundle depBundle : bundleDeps) {
+				bundlesMap.put(depBundle.getBundleName(), depBundle);
 			}
+			
+			for (DubBundle dubBundle : bundleDeps) {
+				calculateSemanticResolution(dubBundle);
+			}
+			calculateSemanticResolution(bundleDesc.getMainBundle());
 		}
-		return directDeps;
+		
+		public Collection<BundleSemanticResolution> getAll() {
+			return bundleSRs.values();
+		}
+		
+		public BundleSemanticResolution calculateSemanticResolution(DubBundle bundle) {
+			BundlePath bundlePath = bundle.getBundlePath();
+			if(bundlePath == null) {
+				dtoolServer.logError("DUB describe: invalid bundle path: " + bundlePath);
+				return null;
+			}
+			
+			final String bundleName = bundle.getBundleName();
+			BundleSemanticResolution bundleSR = bundleSRs.get(bundleName);
+			if(bundleSR != null) {
+				return bundleSR;
+			}
+			
+			if(bundlesBeingCalculated.contains(bundleName)) {
+				// Error cycle in DUB describe
+				dtoolServer.logError("DUB describe: bundle dependencies cycle detected!");
+				return null;
+			}
+			bundlesBeingCalculated.add(bundleName); // Mark as SR being created, for cycle checking
+			
+			ArrayList<BundleSemanticResolution> directDepSRs = calculateDirectDependencies(bundle);
+			HashMap<ModuleFullName, Path> bundleModules = calculateBundleModules(bundle);
+			
+			bundleSR = new BundleSemanticResolution(SemanticManager.this, bundle, directDepSRs, bundleModules);
+			bundleSRs.put(bundleName, bundleSR);
+			return bundleSR;
+		}
+		
+		protected ArrayList<BundleSemanticResolution> calculateDirectDependencies(DubBundle bundle) {
+			ArrayList<BundleSemanticResolution> directDeps = new ArrayList<>(bundle.getDependencyRefs().length);
+			
+			for (DubDependecyRef directDependencyRef : bundle.getDependencyRefs()) {
+				String depName = directDependencyRef.getBundleName();
+				DubBundle depBundle = bundlesMap.get(depName);
+				if(depBundle == null) {
+					dtoolServer.logError("DUB describe: missing dependency: " + depName, null);
+					continue;
+				}
+				BundleSemanticResolution sr = calculateSemanticResolution(depBundle);
+				if(sr == null) {
+					dtoolServer.logError("DUB describe: invalid dependency: " + depName, null);
+					continue;
+				}
+				directDeps.add(sr);
+			}
+			return directDeps;
+		}
+		
 	}
 	
 }
