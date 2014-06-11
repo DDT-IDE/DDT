@@ -10,6 +10,10 @@
  *******************************************************************************/
 package dtool.model;
 
+import static dtool.model.CommonSemanticModelTest.StaleState.CURRENT;
+import static dtool.model.CommonSemanticModelTest.StaleState.MANIFEST_STALE;
+import static dtool.model.CommonSemanticModelTest.StaleState.MODULE_CONTENTS_STALE;
+import static dtool.model.CommonSemanticModelTest.StaleState.MODULE_LIST_STALE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -85,17 +89,29 @@ public class CommonSemanticModelTest extends DToolBaseTest {
 		sm.shutdown();
 	}
 	
+	public enum StaleState { CURRENT, MANIFEST_STALE, MODULE_LIST_STALE, MODULE_CONTENTS_STALE }
+	
 	protected void checkIsStale(BundlePath bundlePath, boolean expected) {
-		assertTrue(sm.isResolutionUpdated(bundlePath) == !expected);
-		assertTrue(sm.isEntryNodeUpdated(bundlePath) == !expected);
+		assertTrue(sm.isResolutionStale(bundlePath) == expected);
+		assertTrue(sm.isManifestInfoStale(bundlePath) == expected);
 	}
 	
-	public enum StaleState { DEPS_ONLY }
+	protected void checkIsStale(BundlePath bundlePath, StaleState staleState) {
+
+		boolean expectedStale = staleState != CURRENT;
+		assertTrue(sm.isResolutionStale(bundlePath) == expectedStale);
+		
+		if(staleState == MODULE_LIST_STALE || staleState == MODULE_CONTENTS_STALE) {
+			staleState = MANIFEST_STALE; // TODO: more precision in staleness
+		}
+		assertEquals(sm.isManifestInfoStale(bundlePath), staleState == MANIFEST_STALE);
+//		assertEquals(sm.isModuleListStale(bundlePath), staleState == MODULE_LIST_STALE);
+//		assertEquals(sm.isModuleContentsStale(bundlePath), staleState == MODULE_CONTENTS_STALE); // TODO
+	}
 	
-	@SuppressWarnings("unused")
-	protected void checkIsStale(BundlePath bundlePath, StaleState state) {
-		assertTrue(sm.isResolutionUpdated(bundlePath) == false);
-		assertTrue(sm.isEntryNodeUpdated(bundlePath) == true); // Node itself is up to date
+	protected void checkIsStaleInDepsOnly(BundlePath bundlePath) {
+		assertTrue(sm.isResolutionStale(bundlePath) == true);
+		assertTrue(sm.isManifestInfoStale(bundlePath) == false); // Node itself is up to date
 	}
 	
 	protected BundleSemanticResolution testGetUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
@@ -106,11 +122,11 @@ public class CommonSemanticModelTest extends DToolBaseTest {
 		return bundleSR;
 	}
 	
-	protected void checkHasModule(BundleSemanticResolution bunddleSR, String moduleName, boolean expected) 
+	protected void checkHasModule(BundleSemanticResolution bunddleSR, String moduleName, boolean hasModule) 
 			throws ParseSourceException {
 		ParsedModule parsedModule = bunddleSR.getParsedModule(moduleName);
-		assertTrue((parsedModule == null) == expected);
-		if(expected) {
+		assertTrue((parsedModule != null) == hasModule);
+		if(hasModule) {
 			assertTrue(parsedModule.module.getName().equals(moduleName)); // Not necessarily true
 		}
 	}

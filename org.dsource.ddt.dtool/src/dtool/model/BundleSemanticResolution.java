@@ -87,7 +87,7 @@ public class BundleSemanticResolution extends ResolvedBundle implements IModuleR
 	protected void internalFindModules(String fullNamePrefix, ArrayList<String> matchedModules) {
 		Set<ModuleFullName> moduleEntries = bundleModules.keySet();
 		for (ModuleFullName moduleEntry : moduleEntries) {
-			String moduleFullName = moduleEntry.getModuleFullName();
+			String moduleFullName = moduleEntry.getNameAsString();
 			if(moduleFullName.startsWith(fullNamePrefix)) {
 				matchedModules.add(moduleFullName);
 			}

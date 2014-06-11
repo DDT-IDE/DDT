@@ -23,7 +23,7 @@ public class ModuleFullName {
 	public static final String NAME_SEP = ".";
 	
 	protected final String[] segments;
-	protected final String moduleFullName; //cached
+	protected final String moduleFullNameString; //cached
 	protected final boolean isValid; // cached
 	
 	public ModuleFullName(String moduleFullName) {
@@ -36,9 +36,8 @@ public class ModuleFullName {
 	}
 	
 	protected ModuleFullName(String moduleFullName, String[] segments) {
-		assertTrue(moduleFullName.length() > 0);
 		assertTrue(segments.length > 0);
-		this.moduleFullName = moduleFullName;
+		this.moduleFullNameString = moduleFullName;
 		this.segments = segments;
 		
 		boolean isValid = true;
@@ -62,13 +61,13 @@ public class ModuleFullName {
 	public int hashCode() {
 		// We use hashcode of moduleFullName instead of using segments since it's cached.
 		// This might cause colisions with segments with '.' in them, but that's a totally unimportant case.
-		return moduleFullName.hashCode();
+		return moduleFullNameString.hashCode();
 	}
 	
 	/* ----------------- ----------------- */
 	
-	public String getModuleFullName() {
-		return moduleFullName;
+	public String getNameAsString() {
+		return moduleFullNameString;
 	}
 	
 	public boolean isValid() {
@@ -77,7 +76,7 @@ public class ModuleFullName {
 	
 	@Override
 	public String toString() {
-		return "[" + moduleFullName + "]";
+		return "[" + moduleFullNameString + "]";
 	}
 	
 }

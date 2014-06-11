@@ -53,6 +53,14 @@ public class DeeNamingRules {
 	
 	/* ----------------- ----------------- */
 	
+	public static ModuleFullName getValidModuleFullName(Path filePath) {
+		ModuleFullName moduleFullName = getModuleFullName(filePath);
+		if(moduleFullName == null || !moduleFullName.isValid()) {
+			return null;
+		}
+		return moduleFullName;
+	}
+	
 	public static ModuleFullName getModuleFullName(Path filePath) {
 		if(filePath.getNameCount() == 0)
 			return null;

@@ -100,17 +100,19 @@ public class DeeNamingRules_Test extends CommonTest {
 		checkModuleName("foo/and bar/mymod.d", "foo.and bar.mymod", false);
 		checkModuleName("foo/and;bar/mymod.d", "foo.and;bar.mymod", false);
 		
+		
 		checkModuleName("foo/bar/while.d", "foo.bar.while", false);
 		checkModuleName("foo/bar/and bar.d", "foo.bar.and bar", false);
 		checkModuleName("foo/bar/and;bar.d", "foo.bar.and;bar", false);
+		checkModuleName("", "", false);
 		
 		// Test separators in segments
-		ModuleFullName badSepName = getModuleFullName(path("foo/and.bar/mymod.d"));
-		assertTrue(badSepName.isValid() == false);
-		assertTrue(badSepName.getModuleFullName().equals("foo.and.bar.mymod"));
-		assertTrue(!badSepName.equals(new ModuleFullName(badSepName.getModuleFullName())));
+		checkModuleName("foo/and.bar/mymod.d", true, "foo.and.bar.mymod", false);
+		checkModuleName("foo/../mymod.d", true, "foo....mymod", false);
+		checkModuleName("..", true, "", false);
 		
-		// We allow irregular extensions
+		
+		// Test irregular extensions: we allow them
 		checkModuleName("mymod.dxx", "mymod", true); 
 		checkModuleName("mymod.d.xx", "mymod", true);
 		checkModuleName("pack/mymod.d#blah", "pack.mymod", true);
@@ -124,8 +126,17 @@ public class DeeNamingRules_Test extends CommonTest {
 	}
 	
 	protected void checkModuleName(String filePath, String moduleFullNameStr, boolean isValid) {
+		boolean isLossyPath = false;
+		checkModuleName(filePath, isLossyPath, moduleFullNameStr, isValid);
+	}
+	
+	protected void checkModuleName(String filePath, boolean isLossyPath, String moduleFullNameStr, boolean isValid) {
 		ModuleFullName moduleFullName = getModuleFullName(path(filePath));
-		assertAreEqual(moduleFullName, new ModuleFullName(moduleFullNameStr));
+		if(isLossyPath) {
+			assertAreEqual(moduleFullName.getNameAsString(), moduleFullNameStr);
+		} else {
+			assertAreEqual(moduleFullName, new ModuleFullName(moduleFullNameStr));
+		}
 		assertAreEqual(moduleFullName.isValid(), isValid);
 	}
 	

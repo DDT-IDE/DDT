@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.model;
 
-import static dtool.model.CommonSemanticModelTest.StaleState.DEPS_ONLY;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -87,7 +86,7 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		sm.invalidateBundleManifest(BASIC_LIB);
 		checkIsStale(BASIC_LIB, true);
 		checkIsStale(BASIC_LIB2, false);
-		checkIsStale(SMTEST, DEPS_ONLY);
+		checkIsStaleInDepsOnly(SMTEST);
 		
 		sm.getUpdatedResolution(SMTEST);
 		checkChanged(SMTEST, true);
@@ -99,10 +98,10 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		__storeCurrentManifests__();
 		sm.invalidateBundleManifest(BASIC_LIB);
 		checkIsStale(BASIC_LIB, true);
-		checkIsStale(SMTEST, DEPS_ONLY);
+		checkIsStaleInDepsOnly(SMTEST);
 		sm.getUpdatedResolution(BASIC_LIB);
 		checkChanged(BASIC_LIB, true);
-		checkIsStale(SMTEST, DEPS_ONLY);
+		checkIsStaleInDepsOnly(SMTEST);
 	}
 	
 	/* -----------------  ----------------- */

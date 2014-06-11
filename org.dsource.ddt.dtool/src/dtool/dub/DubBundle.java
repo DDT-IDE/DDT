@@ -17,6 +17,7 @@ import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.CollectionUtil;
@@ -105,6 +106,16 @@ public class DubBundle {
 	
 	public Path[] getEffectiveImportPathFolders() {
 		return assertNotNull(effectiveSrcFolders);
+	}
+	
+	public ArrayList<Path> getEffectiveImportPathFolders_AbsolutePath() {
+		assertTrue(bundlePath != null);
+		
+		ArrayList<Path> importFolders = new ArrayList<>(effectiveSrcFolders.length);
+		for (Path srcFolder : effectiveSrcFolders) {
+			importFolders.add(bundlePath.resolve(srcFolder));
+		}
+		return importFolders;
 	}
 	
 	public static class BundleFile {

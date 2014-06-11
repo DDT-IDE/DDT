@@ -25,6 +25,7 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.model.util.CachingEntry;
 import dtool.model.util.CachingRegistry;
+import dtool.project.DeeNamingRules;
 
 /**
  * A caching hierarchical registry.
@@ -65,25 +66,25 @@ abstract class AbstractSemanticManager
 	
 	public BundleSemanticResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
 		SemanticResolutionEntry entry = getEntry(bundlePath);
-		if(!isResolutionUpdated(bundlePath)) {
+		if(isResolutionStale(bundlePath)) {
 			updateEntry(bundlePath);
 		}
 		return entry.getValue();
 	}
 	
-	protected boolean isEntryNodeUpdated(BundlePath bundlePath) {
-		return !getEntry(bundlePath).isStale();
+	protected boolean isManifestInfoStale(BundlePath bundlePath) {
+		return getEntry(bundlePath).isStale();
 	}
 	
-	public boolean isResolutionUpdated(BundlePath bundlePath) {
+	public boolean isResolutionStale(BundlePath bundlePath) {
 		SemanticResolutionEntry entry = getEntry(bundlePath);
 		if(entry.isStale()) {
-			return false;
+			return true;
 		}
 		
 		synchronized(entriesLock) {
 			long valueTimeStamp = entry.getValueTimeStamp();
-			return !hasBeenModifiedSince(entry, valueTimeStamp);
+			return hasBeenModifiedSince(entry, valueTimeStamp);
 		}
 	}
 	
@@ -104,15 +105,15 @@ abstract class AbstractSemanticManager
 	}
 	
 	public void invalidateBundleManifest(BundlePath bundlePath) {
-		getEntry(bundlePath).makeStale();
+		getEntry(bundlePath).markStale();
 	}
 	
 	protected final Object updateOperationLock = new Object();
 	
 	protected void updateEntry(BundlePath bundlePath) throws ExecutionException {
 		synchronized(updateOperationLock) {
-			// Recheck udpate status after acquiring lock.
-			if(isResolutionUpdated(bundlePath))
+			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
+			if(isResolutionStale(bundlePath) == false)
 				return;
 			
 			UpdateEntryResult updateResult = determineNewEntryValues(bundlePath);
@@ -247,10 +248,55 @@ public class SemanticManager extends AbstractSemanticManager {
 		
 	}
 	
-	/* ----------------- update handling ----------------- */
+	/* ----------------- file updates handling ----------------- */
 	
 	public void reportFileChange(Path file) {
-		// TODO Auto-generated method stub
+		file = file.toAbsolutePath().normalize();
+		BundlePath bundlePath = findBundleForPath(file);
+		SemanticResolutionEntry entry = getEntry(bundlePath);
+		
+		if(isManifestInfoStale(bundlePath)) {
+			return;
+		}
+		DubBundle bundleInfo = getBundleInfo(bundlePath);
+		Path pathInImportFolder = getPathInImportFolder(file, bundleInfo);
+		if(pathInImportFolder == null) {
+			return; // Then the file is not contained in an import folder, so it is of no importance then.
+		}
+		
+		ModuleFullName moduleFullName = DeeNamingRules.getValidModuleFullName(pathInImportFolder);
+		if(moduleFullName != null) {
+			entry.markStale();
+		}
 	}
-
+	
+	protected Path getPathInImportFolder(Path file, DubBundle bundleInfo) {
+		ArrayList<Path> sourceFolders = bundleInfo.getEffectiveImportPathFolders_AbsolutePath();
+		for(Path path : sourceFolders) {
+			if(file.startsWith(path)) {
+				return path.relativize(file);
+			}
+		}
+		return null;
+	}
+	
+	protected DubBundle getBundleInfo(BundlePath bundlePath) {
+		return getMapEntry(bundlePath).getValue().bundle;
+	}
+	
+	protected BundlePath findBundleForPath(Path dir) {
+		if(dir == null) {
+			return null;
+		}
+		BundlePath bundlePath = BundlePath.create(dir);
+		if(bundlePath != null && bundlePath.getManifestFilePath().toFile().exists()) {
+			return bundlePath;
+		}
+		return findBundleForPath(dir.getParent());
+	}
+	
+//	public boolean isModuleListStale(BundlePath bundlePath) {
+//		return getEntry(bundlePath).isStale(); /*BUG here*/
+//	}
+	
 }

@@ -13,6 +13,7 @@ package dtool.model;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
@@ -21,6 +22,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 
 public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
@@ -44,38 +46,64 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 	@Test
 	public void testUpdates() throws Exception { testUpdates$(); }
 	public void testUpdates$() throws Exception {
-		 prepSMTestsWorkingDir();
-		 __initSemanticManager();
+		prepSMTestsWorkingDir();
+		__initSemanticManager();
 		 
-		 BundleSemanticResolution complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
+		BundleSemanticResolution complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
 		 
-		// Test add module file of import folder
-		 Path writeFile = writeFile(BASIC_LIB.resolve("newModule.d")); 
-		 checkIsStale(BASIC_LIB, false);
-		 
-		 deleteFile(writeFile);
-		 checkIsStale(BASIC_LIB, false);
-		 
-		 
+		// Test add module file outside of import folder
+		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("newModule.d"));
+		// Test invalid module file name
+		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("source/new-Module.d"));
+		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("source/pack.blah/newModule.d"));
+		// Some corner cases:
+		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("source"));
+		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.path);
+
+		
 		 // Test module file add
-		 Path newModule = writeFile(BASIC_LIB.resolve("source/newModule.d"));
-		 checkIsStale(BASIC_LIB, true);
-		 checkIsStale(COMPLEX_LIB, StaleState.DEPS_ONLY);
-		 checkHasModule(complexLibSR, "newModule", false);
-		 complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
-		 checkIsStale(BASIC_LIB, false);
-		 checkHasModule(complexLibSR, "newModule", true);
+		Path newModule = writeFile(BASIC_LIB.resolve("source/newModule.d"));
+		checkIsStale(BASIC_LIB, StaleState.MODULE_LIST_STALE);
+		checkIsStaleInDepsOnly(COMPLEX_LIB);
+		checkHasModule(complexLibSR, "newModule", false);
+		complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
+		checkIsStale(BASIC_LIB, false);
+		checkHasModule(complexLibSR, "newModule", true);
 		 
 		// Test module file delete
-		 deleteFile(newModule);
-		 checkIsStale(BASIC_LIB, true);
-		 checkIsStale(COMPLEX_LIB, StaleState.DEPS_ONLY);
-		 complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
-		 checkHasModule(complexLibSR, "newModule", false);
+		deleteFile(newModule);
+		checkIsStale(BASIC_LIB, StaleState.MODULE_LIST_STALE);
+		checkIsStaleInDepsOnly(COMPLEX_LIB);
+		complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
+		checkHasModule(complexLibSR, "newModule", false);
+		 
+		// Test module file modification
+		Path module = writeFile(BASIC_LIB.resolve("source/basic_lib_pack/foo.d"));
+		checkIsStale(BASIC_LIB, StaleState.MODULE_CONTENTS_STALE);
+		checkIsStaleInDepsOnly(COMPLEX_LIB);
+		
+		deleteFile(module);
+		checkIsStale(BASIC_LIB, StaleState.MODULE_LIST_STALE);
+		checkIsStaleInDepsOnly(COMPLEX_LIB);
+		checkHasModule(testGetUpdatedResolution(COMPLEX_LIB), "basic_lib_pack.foo", false);
+		
 	}
 	
-	protected Path writeFile(Path filePath) {
-		Path newFile = filePath;
+	protected void testNoEffectFileChange(BundlePath bundlePath, Path filePath) throws IOException {
+		if(filePath.toFile().isDirectory()) {
+			sm.reportFileChange(filePath);
+			checkIsStale(bundlePath, false);
+			return;
+		}
+		
+		writeFile(filePath); 
+		checkIsStale(bundlePath, false);
+		deleteFile(filePath);
+		checkIsStale(bundlePath, false);
+	}
+	
+	protected Path writeFile(Path newFile) throws IOException {
+		Files.createDirectories(newFile.getParent());
 		writeStringToFile(newFile, "int foo;");
 		sm.reportFileChange(newFile);
 		return newFile;

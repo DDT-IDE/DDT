@@ -44,7 +44,7 @@ public abstract class CachingEntry<VALUE> {
 		valueTimeStamp = newTimeStamp;
 	}
 	
-	public synchronized void makeStale() {
+	public synchronized void markStale() {
 		do {
 			long currentTime = System.nanoTime();
 			invalidationTimeStamp = currentTime;
