@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -42,7 +43,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	public static Collection<Object[]> collectTestParameters() throws IOException {
 		final Collection<Object[]> testList = new ArrayList<>();
 		
-		MiscFileUtils.deleteDir(getMassParseUnpackedResource()); // Allways delete unpackFolder
+		FileUtil.deleteDir(getMassParseUnpackedResource()); // Allways delete unpackFolder
 		File massParseZipFilesFolder = DToolTestResources.getTestResource(MASSPARSE_ZIPFOLDER);
 		for (File zipFile : collectZipFiles(massParseZipFilesFolder)) {
 			File unzippedFolder = unzipSource(zipFile);

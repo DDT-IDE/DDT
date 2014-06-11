@@ -72,6 +72,8 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			}
 		}.run();
 		
+		// Test Module resolver
+		
 		testFindModule(SMTEST, "sm_test_foo", SMTEST.resolve("src/sm_test_foo.d"));
 		testFindModule(SMTEST, "non_existing", null);
 		
@@ -109,6 +111,12 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 		ParsedModule parsedModule = bundleSR.getParsedModule(bundleFullName);
 		Path modulePath = parsedModule == null ? null : parsedModule.modulePath;
 		assertAreEqual(modulePath, expectedPath);
+	}
+	
+	@Test
+	public void testUpdates() throws Exception { testUpdates$(); }
+	public void testUpdates$() throws Exception {
+		 prepSMTestsWorkingDir();
 	}
 	
 }

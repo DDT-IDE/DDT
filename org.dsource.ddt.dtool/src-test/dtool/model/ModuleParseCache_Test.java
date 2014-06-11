@@ -45,8 +45,8 @@ public class ModuleParseCache_Test {
 	protected ModuleParseCache mpm;
 	
 	@BeforeClass
-	public static void setup() {
-		MiscFileUtils.deleteDir(TEST_WORKING_DIR.toFile());
+	public static void setup() throws IOException {
+		FileUtil.deleteDir(TEST_WORKING_DIR);
 		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve("src/"), TEST_WORKING_DIR);
 	}
 	

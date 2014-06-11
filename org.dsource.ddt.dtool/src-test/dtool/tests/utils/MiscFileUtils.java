@@ -6,11 +6,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -85,12 +82,8 @@ public class MiscFileUtils {
 		}
 	}
 	
-	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) {
-		try {
-			new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourceDir.toFile());
-		} catch(IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) throws IOException {
+		new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourceDir.toFile());
 	}
 	
 	public static final class FileCopyTraverser extends FileTraverser {
@@ -107,48 +100,6 @@ public class MiscFileUtils {
 			targetPathParent.mkdirs();
 			assertTrue(targetPathParent.exists());
 			Files.copy(file.toPath(), targetPath);
-		}
-	}
-	
-	public static void deleteDirContents(final Path baseDir) throws IOException {
-		if(!baseDir.toFile().exists()) {
-			return;
-		}
-		Files.walkFileTree(baseDir, new SimpleFileVisitor<Path>() {
-			
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				file.toFile().delete();
-				return FileVisitResult.CONTINUE;
-			}
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				if(!dir.equals(baseDir)) {
-					dir.toFile().delete();
-				}
-				return FileVisitResult.CONTINUE;
-			}
-		});
-	}
-	
-	public static void deleteDir(Path dir) {
-		deleteDir(dir.toFile());
-	}
-	
-	public static void deleteDir(File dir) {
-		if(!dir.exists()) 
-			return;
-		
-		File[] listFiles = dir.listFiles();
-		for(File childFile : listFiles) {
-			if(childFile.isFile()) {
-				childFile.delete();
-			} else {
-				deleteDir(childFile);
-			}
-		}
-		if(dir.delete() == false) {
-			throw new RuntimeException("Failed to delete dir");
 		}
 	}
 	
