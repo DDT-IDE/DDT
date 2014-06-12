@@ -4,13 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Map;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.jdt.ui.JavaPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.FileLocator;
@@ -22,10 +19,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 
-import descent.core.ddoc.Ddoc;
-import descent.core.ddoc.DeeDocAccessor;
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.IDeeDocColorConstants;
 
 class JDT_PreferenceConstants {
@@ -51,39 +44,6 @@ public class HoverUtil {
 		}
 	}
 	
-	private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
-
-	/** Gets the HTML info for the given DefUnit. */
-	public static String getDefUnitHoverInfoWithDeeDoc(DefUnit defUnit) {
-		return getHoverInfoWithDeeDoc(defUnit, defUnit.getDDoc());
-	}
-	
-	public static String getHoverInfoWithDeeDoc(INamedElement defElement) {
-		return getHoverInfoWithDeeDoc(defElement, defElement.resolveDDoc());
-	}
-	
-	public static String getHoverInfoWithDeeDoc(INamedElement defUnit, Ddoc ddoc) {
-		String sig = DeeElementLabelProvider.getLabelForHoverSignature(defUnit);
-		String str = convertToHTMLContent(sig);
-		str = "<b>" +str+ "</b>" 
-		+"  <span style=\"color: #915F6D;\" >"+ "("+defUnit.getArcheType().toString()+")"+"</span>";
-		
-		if(ddoc != null) {
-			StringBuffer stringBuffer = DeeDocAccessor.transform(ddoc, EMPTY_MAP);
-			str += "<br/><br/>" + stringBuffer.toString();
-		}
-		return str;
-	}
-	
-	@SuppressWarnings("restriction")
-	private static String convertToHTMLContent(String str) {
-		
-		str = org.eclipse.jface.internal.text.html.
-			HTMLPrinter.convertToHTMLContent(str);
-		str = str.replace("\n", "<br/>");
-		return str;
-	}
-
 	public static String loadStyleSheet(String cssfilepath) {
 		Bundle bundle= Platform.getBundle(JavaPlugin.PLUGIN_ID);
 		URL url= bundle.getEntry(cssfilepath); //$NON-NLS-1$

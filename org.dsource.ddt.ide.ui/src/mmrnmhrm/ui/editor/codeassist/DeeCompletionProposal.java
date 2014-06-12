@@ -1,7 +1,6 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import mmrnmhrm.ui.DeeUI;
-import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -10,6 +9,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import dtool.ast.definitions.INamedElement;
+import dtool.ddoc.TextUI;
 
 public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
@@ -24,7 +24,7 @@ public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
-		return HoverUtil.getHoverInfoWithDeeDoc(namedElement);
+		return TextUI.getDDocHTMLRender(namedElement);
 	}
 	
 	@Override

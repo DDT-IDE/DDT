@@ -139,7 +139,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	}
 	
 	@Override
-	public Ddoc resolveDDoc() {
+	public final Ddoc resolveDDoc() {
 		return getDDoc();
 	}
 	

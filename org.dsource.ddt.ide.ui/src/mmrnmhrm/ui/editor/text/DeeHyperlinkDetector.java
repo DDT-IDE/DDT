@@ -1,8 +1,20 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.ui.DeeUIPlugin;
 
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
@@ -22,16 +34,21 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
 		if (region == null)
 			return null;
-
-		ITextEditor textEditor= (ITextEditor)getAdapter(ITextEditor.class);
-		ASTNode module = EditorUtil.parseModuleFromEditorInput(textEditor, false);
+		
+		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
+		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
+		if(sourceModule == null) {
+			return null;
+		}
+		
+		ASTNode module = DToolClient.getDefault().getExistingParsedModule(sourceModule).module;
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof NamedReference))
 			return null;
 		
 		IRegion elemRegion = new Region(selNode.getOffset(), selNode.getLength());
 
-		return new IHyperlink[] {new DeeElementHyperlink(region.getOffset(), elemRegion, textEditor)};
+		return new IHyperlink[] { new DeeElementHyperlink(region.getOffset(), elemRegion, textEditor) };
 	}
-
+	
 }

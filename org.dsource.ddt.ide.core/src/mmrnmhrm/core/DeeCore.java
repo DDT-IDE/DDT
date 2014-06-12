@@ -11,8 +11,8 @@
 package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
 import mmrnmhrm.core.projectmodel.CoreDubModel;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.osgi.framework.BundleContext;
 
@@ -23,7 +23,7 @@ public class DeeCore extends LangCore {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		ModuleParsingHandler.initialize();
+		dtoolClient = DToolClient.initializeNew();
 		
 		// Note: the core plugin does not start the DubModelManager... it is the responsiblity of
 		// the Dee UI plugin (or some other "application" code) to start it, 
@@ -34,7 +34,13 @@ public class DeeCore extends LangCore {
 	@Override
 	protected void doCustomStop(BundleContext context) {
 		CoreDubModel.shutdownDefaultManager();
-		ModuleParsingHandler.dispose();
+		dtoolClient.shutdown();
+	}
+	
+	private static DToolClient dtoolClient;
+	
+	public static DToolClient getDToolClient() {
+		return dtoolClient;
 	}
 	
 }

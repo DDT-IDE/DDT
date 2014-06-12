@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IMember;
@@ -99,7 +100,7 @@ public class DeeSearchEngineTestUtils {
 		public void visitElementsAndNodes(IModelElement element, int depth) throws ModelException, CoreException {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
-				Module module = ModuleParsingHandler.parseModule(sourceModule).module;
+				Module module = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule).module;
 				module.accept(new ASTVisitor() {
 					@Override
 					public boolean preVisit(ASTNode node) {

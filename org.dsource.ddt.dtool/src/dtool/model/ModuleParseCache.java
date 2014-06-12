@@ -35,12 +35,6 @@ public class ModuleParseCache {
 	
 	protected static SimpleLogger log = SimpleLogger.create("ModuleParseCache");
 	
-	protected static final ModuleParseCache defaultInstance = new ModuleParseCache();
-	
-	public static ModuleParseCache getDefault() {
-		return defaultInstance;
-	}
-	
 	protected final HashMap<String, ModuleEntry> cache = new HashMap<>();
 	
 	/* -----------------  ----------------- */

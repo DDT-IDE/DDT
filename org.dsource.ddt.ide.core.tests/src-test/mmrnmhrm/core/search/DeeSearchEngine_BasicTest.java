@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -154,7 +155,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Module module = ModuleParsingHandler.parseModule(srcModule).module;
+		Module module = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(srcModule).module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());

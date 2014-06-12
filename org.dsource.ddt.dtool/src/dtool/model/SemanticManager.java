@@ -151,7 +151,7 @@ public class SemanticManager extends AbstractSemanticManager {
 	protected final DToolServer dtoolServer;
 	protected final ITaskAgent dubProcessAgent;
 	
-	protected final ModuleParseCache parseCache = ModuleParseCache.getDefault();
+	protected final ModuleParseCache parseCache = new ModuleParseCache();
 	
 	public SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;

@@ -13,61 +13,9 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
+import dtool.ddoc.TextUI;
 
 public class DeeElementLabelProvider {
-	
-	public static String getLabelForHoverSignature(INamedElement namedElement) {
-		
-		switch (namedElement.getArcheType()) {
-		case Module:
-			return namedElement.getFullyQualifiedName();
-		case Package:
-			return namedElement.getFullyQualifiedName();
-		default:
-			break;
-		}
-		
-		DefUnit defUnit = tryCast(namedElement, DefUnit.class); 
-		if(defUnit == null) {
-			return namedElement.getFullyQualifiedName();
-		}
-		
-		ASTCodePrinter cp = new ASTCodePrinter();
-		
-		switch (defUnit.getNodeType()) {
-		case DEFINITION_VARIABLE: {
-			DefinitionVariable var = (DefinitionVariable) defUnit;
-			
-			return typeRefToUIString(var.type) + " " + var.getName();
-		}
-		case DEFINITION_VAR_FRAGMENT: {
-			DefVarFragment fragment = (DefVarFragment) defUnit;
-			
-			return typeRefToUIString(fragment.getDeclaredTypeReference()) + " " + fragment.getName();
-		}
-		
-		case DEFINITION_FUNCTION: {
-			DefinitionFunction function = (DefinitionFunction) defUnit; 
-			cp.appendStrings(typeRefToUIString(function.retType), " ");
-			cp.append(function.getName());
-			cp.appendList("(", function.tplParams, ", ", ") ");
-			cp.appendList("(", function.getParams_asNodes(), ", ", ") ");
-			return cp.toString();
-		}
-		
-		default: break;
-		}
-		
-		if(defUnit instanceof DefinitionAggregate) {
-			DefinitionAggregate defAggr = (DefinitionAggregate) defUnit;
-			cp.append(defAggr.getName());
-			cp.appendList("(", defAggr.tplParams, ",", ") ");
-			return cp.toString();
-		}
-		
-		// Default hover signature:
-		return defUnit.getName();
-	}
 	
 	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
 		
@@ -141,7 +89,7 @@ public class DeeElementLabelProvider {
 	}
 
 	public static String getTypeSegment(Reference typeRef) {
-		return " : " + typeRefToUIString(typeRef);
+		return " : " + TextUI.typeRefToUIString(typeRef);
 	}
 	
 	public static String getAliasSegment(Reference target) {
@@ -151,13 +99,6 @@ public class DeeElementLabelProvider {
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
 		String moduleFullyQualifiedName = defUnit.getModuleFullyQualifiedName();
 		return moduleFullyQualifiedName == null ? "" : " - " + moduleFullyQualifiedName;
-	}
-	
-	public static String typeRefToUIString(Reference typeReference) {
-		if(typeReference == null) {
-			return "auto";
-		}
-		return typeReference.toStringAsCode();
 	}
 	
 }

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.core.parser;
 
+import mmrnmhrm.core.projectmodel.DToolClient;
+
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
+import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.parser.ISourceParserFactory;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -29,14 +32,14 @@ public class DeeSourceParserFactory implements ISourceParserFactory {
 		return new DeeSourceParser();
 	}
 	
-	public class DeeSourceParser extends AbstractSourceParser {
-		
+	public static class DeeSourceParser extends AbstractSourceParser {
+
 		@Override
-		public DeeModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-			ParsedModule parsedModule = ModuleParsingHandler.parseModule(input);
+		public IModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
+			ParsedModule parsedModule = DToolClient.getDefault().getParsedModule_fromWorkingCopy(input);
 			
 			reportErrors(reporter, parsedModule);
-			return new DeeModuleDeclaration(parsedModule);
+			return new IModuleDeclaration() { }; // Return an empty type, its not used anyways
 		}
 		
 		public final String[] NOSTRINGS = new String[0];

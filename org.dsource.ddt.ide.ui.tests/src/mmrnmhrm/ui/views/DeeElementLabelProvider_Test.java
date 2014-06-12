@@ -7,6 +7,7 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
+import dtool.ddoc.TextUI;
 import dtool.project.NullModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
@@ -20,24 +21,24 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		
 		INamedElement defElement;
 		defElement = new ModuleProxy("foo", null);
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "foo");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "foo");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "foo");
 		
 		defElement = new ModuleProxy("pack.mod", null);
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack.mod");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack.mod");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
 		
 		defElement = new ModuleProxy("pack.sub.mod", null);
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack.sub.mod");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack.sub.mod");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
 		
 		
 		defElement = PackageNamespace.createPartialDefUnits(array("pack"), new ModuleProxy("modA", null));
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 
 		defElement = PackageNamespace.createPartialDefUnits(array("pack", "sub"), new ModuleProxy("modA", null));
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "pack");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		
 		
@@ -45,7 +46,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		ReferenceResolver.findDefUnitInScope(LanguageIntrinsics.d_2_063_intrinsics.primitivesScope, search);
 		defElement = search.getMatchedElements().iterator().next();
 		
-		assertEquals(DeeElementLabelProvider.getLabelForHoverSignature(defElement), "int");
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), "int");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "int");
 		
 	}

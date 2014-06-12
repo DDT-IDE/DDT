@@ -3,16 +3,20 @@ package mmrnmhrm.core.search;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.ArrayList;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.parser.DeeModuleDeclaration;
+import mmrnmhrm.core.parser.DeeSourceParserFactory;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclarationWrapper;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
@@ -29,6 +33,7 @@ import org.eclipse.dltk.core.search.matching.PossibleMatch;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.util.NodeUtil;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	
@@ -60,8 +65,25 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		}
 		
 		@Override
+		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
+			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+			DeeSourceParserFactory.DeeSourceParser dsp = new DeeSourceParserFactory.DeeSourceParser();
+			return parseForMatchLocator(sourceModule);
+			//return super.parse(possibleMatch);
+		}
+		
+		@Override
 		public void parseBodies(ModuleDeclaration unit) {
 			assertFail();
+		}
+
+		public static ModuleDeclaration parseForMatchLocator(ISourceModule sourceModule) {
+			IModuleSource source = tryCast(sourceModule, IModuleSource.class);
+			if(source != null) {
+				ParsedModule parsedModule = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(source);
+				return new ModuleDeclarationWrapper(new DeeModuleDeclaration(parsedModule));
+			}
+			return null;
 		}
 		
 	}

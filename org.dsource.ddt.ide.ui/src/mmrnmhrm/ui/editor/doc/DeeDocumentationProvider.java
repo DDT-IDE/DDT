@@ -5,8 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.eclipse.dltk.core.IMember;
@@ -17,10 +16,6 @@ import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProvider;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension2;
 import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
-
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
-import dtool.ast.definitions.Module;
 
 /**
  * XXX: DLTK: This {@link DeeDocumentationProvider} is disabled (not used at the moment), 
@@ -59,8 +54,9 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 	
 	protected String getHeaderComment(IMember member) {
 		ISourceRange range;
+		ISourceModule sourceModule = member.getSourceModule();
 		try {
-			ISourceModule compilationUnit = member.getSourceModule();
+			ISourceModule compilationUnit = sourceModule;
 			if(!compilationUnit.isConsistent()) {
 				return null;
 			}
@@ -75,11 +71,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		
 		final int start = range.getOffset();
 		
-		Module deeModule = ModuleParsingHandler.parseModule(member.getSourceModule()).module;
-		ASTNode pickedNode = ASTNodeFinder.findElement(deeModule, start);
-		
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(member.getScriptProject());
-		return DeeDocTextHover.getDocInfoForNode(pickedNode, moduleResolver);
+		return DToolClient.getDDocHTMLView(sourceModule, start);
 	}
 	
 }

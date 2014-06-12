@@ -84,11 +84,12 @@ public class EditorUtil {
 	}
 	
 	public static Module parseModuleFromEditorInput(IEditorPart textEditor, boolean useBusyCursorInUI) {
-		final ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
-		if(sourceModule == null) {
-			return null;
-		}
+		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
 		
+		return sourceModule == null ? null : parseModuleForUI(sourceModule, useBusyCursorInUI);
+	}
+	
+	public static Module parseModuleForUI(final ISourceModule sourceModule, boolean useBusyCursorInUI) {
 		if(Display.getCurrent() == null || !useBusyCursorInUI) {
 			return ModuleParsingHandler.parseModule(sourceModule).module;
 		}

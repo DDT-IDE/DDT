@@ -1,8 +1,7 @@
 package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -11,7 +10,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 
-import dtool.parser.DeeParserResult;
 import dtool.resolver.CompareDefUnits;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.ECompletionResultStatus;
@@ -60,7 +58,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
-		PrefixDefUnitSearch search = doCompletionSearch(offset, srcModule);
+		PrefixDefUnitSearch search = DToolClient.doCodeCompletion(offset, srcModule);
 		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
@@ -79,7 +77,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected void testComputeProposalsDo(int repOffset, int repLen, String[] expectedProposals) 
 		throws ModelException {
 		
-		PrefixDefUnitSearch completionSearch = doCompletionSearch(repOffset, srcModule);
+		PrefixDefUnitSearch completionSearch = DToolClient.doCodeCompletion(repOffset, srcModule);
 		
 		if(expectedProposals == null) {
 			assertTrue(completionSearch.getResultCode() != ECompletionResultStatus.RESULT_OK);
@@ -89,12 +87,6 @@ public class CodeCompletion__Common extends DToolBaseTest {
 			
 			CompareDefUnits.checkResults(completionSearch.getResults(), expectedProposals);
 		}
-	}
-	
-	public static PrefixDefUnitSearch doCompletionSearch(int offset, ISourceModule moduleUnit) throws ModelException {
-		DeeParserResult parseResult = ModuleParsingHandler.parseModule(moduleUnit);
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit.getScriptProject());
-		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}
 	
 }

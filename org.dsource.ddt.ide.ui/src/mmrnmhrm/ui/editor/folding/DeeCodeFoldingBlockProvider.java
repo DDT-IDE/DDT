@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
@@ -63,7 +63,7 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	@Override
 	public void computeFoldableBlocks(IFoldingContent content) {
-		Module deeModule = ModuleParsingHandler.parseModule(content).module;
+		Module deeModule = DToolClient.getDefault().getParsedModuleNode(content);
 		
 		if (deeModule != null) {
 			deeModule.accept(new ASTVisitor() {

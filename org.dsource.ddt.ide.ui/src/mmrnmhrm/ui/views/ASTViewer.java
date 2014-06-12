@@ -1,15 +1,16 @@
 package mmrnmhrm.ui.views;
 
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler;
 import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -31,7 +32,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -55,7 +56,7 @@ import dtool.parser.DeeParserResult;
  * D AST viewer
  */
 public class ASTViewer extends ViewPart implements ISelectionListener,
-		IDocumentListener, ISelectionChangedListener, IDoubleClickListener {
+		ISelectionChangedListener, IDoubleClickListener {
 	
 	
 	public static final String VIEW_ID = DeeUIPlugin.PLUGIN_ID + ".views.ASTViewer";
@@ -89,20 +90,12 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		window.getSelectionService().addPostSelectionListener(this);
 		//site.getPage().addPartListener(this);
 		
-		/*if (fMultiListener == null) {
-			fMultiListener = this.new MultiListener();
-			
-			ISelectionService service= site.getWorkbenchWindow().getSelectionService();
-			service.addPostSelectionListener(fMultiListener);
-			site.getPage().addPartListener(fMultiListener);
-			//FileBuffers.getTextFileBufferManager().addFileBufferListener(fSuperListener);
-		}*/
 	}
 	
 	@Override
 	public void dispose() {
-		if (fEditor != null && fDocument != null) {
-			fDocument.removeDocumentListener(this);
+		if (fDocument != null) {
+			fDocument.removeDocumentListener(documentListener);
 		}
 		window.getSelectionService().removePostSelectionListener(this);
 		super.dispose();
@@ -138,22 +131,6 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		}
 	}
 	
-	@Override
-	public void documentAboutToBeChanged(DocumentEvent event) {
-		// Do nothing
-	}
-	
-	@Override
-	public void documentChanged(DocumentEvent event) {
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(!viewer.getTree().isDisposed()) {
-					refreshViewer();
-				}
-			}
-		});
-	}
 	
 	public void setInput(ITextEditor editor) {
 		if(editor == fEditor) {
@@ -161,7 +138,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		}
 		
 		if (fEditor != null && fDocument != null) {
-			fDocument.removeDocumentListener(this);
+			fDocument.removeDocumentListener(documentListener);
 		}
 		
 		fEditor = null;
@@ -177,7 +154,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			if(fSourceModule != null) {
 				fDocument = fEditor.getDocumentProvider().getDocument(editor.getEditorInput());
 				if(fDocument != null) {
-					fDocument.addDocumentListener(this);
+					fDocument.addDocumentListener(documentListener);
 				}
 			} 
 			refreshViewer();
@@ -185,20 +162,39 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 	}
 	
+	protected final IDocumentListener documentListener = new IDocumentListener() {
+		
+		@Override
+		public void documentChanged(DocumentEvent event) {
+		}
+		
+		@Override
+		public void documentAboutToBeChanged(DocumentEvent event) {
+			viewerUpdateJob.schedule(500);
+		}
+	};
 	
-	private void refreshViewer() {
+	protected final UIJob viewerUpdateJob = new UIJob("ASTViewer.refresh") {
+		{ setSystem(true); }
+		
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			if(!viewer.getTree().isDisposed()) {
+				refreshViewer();
+			}
+			
+			return Status.OK_STATUS;
+		}
+	};
+	
+	protected void refreshViewer() {
 		if(fEditor == null || fSourceModule == null || fEditor.getDocumentProvider() == null) {
 			setContentDescription("No Editor or SourceModule available");
 			viewer.getControl().setVisible(false);
 			return;
 		}
 		
-		try {
-			fSourceModule.makeConsistent(null);
-		} catch (ModelException e) {
-			DeeCore.logError(e);
-		}
-		fDeeModule = ModuleParsingHandler.parseModule(fSourceModule);
+		fDeeModule = DToolClient.getDefault().getExistingParsedModule(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

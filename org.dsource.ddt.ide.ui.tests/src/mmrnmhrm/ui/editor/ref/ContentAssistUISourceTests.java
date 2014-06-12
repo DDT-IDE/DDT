@@ -24,6 +24,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.INamedElement;
+import dtool.ddoc.TextUI;
 import dtool.sourcegen.AnnotatedSource;
 
 public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
@@ -112,7 +113,7 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	@Override
 	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
 		for (INamedElement defElement : resultDefElementsOriginal) {
-			DeeElementLabelProvider.getLabelForHoverSignature(defElement);
+			TextUI.getLabelForHoverSignature(defElement);
 			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}

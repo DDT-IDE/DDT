@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 
-import dtool.ast.IASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -14,10 +13,6 @@ public class DeeModuleDeclaration implements IModuleDeclaration {
 	
 	public DeeModuleDeclaration(ParsedModule deeParserResult) {
 		this.deeParserResult = assertNotNull(deeParserResult);
-	}
-	
-	public IASTNode getModuleNode() {
-		return deeParserResult.module;
 	}
 	
 	public Module getModule() {

@@ -11,13 +11,11 @@
 package mmrnmhrm.core.model_elements;
 
 
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
-
-import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
@@ -31,11 +29,7 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
 	@Override
 	public void parseSourceModule(IModuleSource moduleSource) {
-		ParsedModule parsedModule = ModuleParsingHandler.parseModule(moduleSource);
-		if (parsedModule != null) {
-			DeeSourceElementProvider provider = new DeeSourceElementProvider(getRequestor());
-			provider.provide(parsedModule);
-		}
+		DToolClient.getDefault().provideModelElements(moduleSource, getRequestor());
 	}
 	
 }
