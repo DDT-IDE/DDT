@@ -4,12 +4,11 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
+import mmrnmhrm.lang.ui.AbstractUIOperation;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.actions.OperationsManager;
+import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
@@ -84,26 +83,28 @@ public abstract class FindAction extends SelectionDispatchAction {
 			IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
 			INamedElement defunit = ref.findTargetDefElement(new DeeProjectModuleResolver(scriptProject));
 			if(defunit == null) {
-				OperationsManager.openWarning(getShell(), SEARCH_REFS, 
-				"No DefUnit found when resolving reference.");
+				UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, 
+						"No DefUnit found when resolving reference.");
 			} else {
 				runOperation(defunit);
 			}
 		} else {
-			OperationsManager.openWarning(getShell(), SEARCH_REFS, 
+			UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, 
 					"Element is not a Definition nor a Reference");
 		}
 	}
 
 	protected void runOperation(final INamedElement defUnit) {
-		OperationsManager.executeOperation(new IWorkspaceRunnable() {
+		new AbstractUIOperation(SEARCH_REFS) {
+			
 			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
+			protected Object doExecute() throws CoreException {
 				performNewSearch(defUnit);
+				return null;
 			}
-		}, SEARCH_REFS);
+		}.executeSafe();
 	}
-
+	
 	protected void performNewSearch(INamedElement defunit) throws ModelException {
 		assertNotNull(defunit);
 		DLTKSearchQuery query= new DLTKSearchQuery(createQuery(defunit));

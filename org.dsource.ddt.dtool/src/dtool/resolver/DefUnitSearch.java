@@ -67,7 +67,7 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	
 	@Override
 	public String toString() {
-		return super.toString() + StringUtil.collToString(namedElements, "\n", new Function<INamedElement, String>() {
+		return super.toString() + StringUtil.iterToString(namedElements, "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return NamedElementUtil.getElementTypedQualification(obj); 

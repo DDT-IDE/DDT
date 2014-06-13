@@ -14,6 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
@@ -34,9 +37,12 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
+import dtool.ast.references.Reference;
+import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
 import dtool.model.ModuleParseCache;
 import dtool.model.ModuleParseCache.ParseSourceException;
@@ -47,6 +53,8 @@ import dtool.project.DeeNamingRules;
 import dtool.project.IModuleResolver;
 import dtool.project.NullModuleResolver;
 import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.FindDefinitionResult;
+import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
 /**
  * Handle communication with DToolServer.
@@ -78,8 +86,8 @@ public class DToolClient {
 	}
 	
 	public ParsedModule parseModule(ISourceModule sourceModule) {
-		Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
 		try {
+			Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
 			boolean isWorkingCopy = sourceModule.isWorkingCopy();
 			if(!sourceModule.isConsistent()) {
 				assertTrue(isWorkingCopy);
@@ -95,7 +103,7 @@ public class DToolClient {
 				return getModuleParseCache().getParsedModule(filePath);
 			}
 		} catch (ParseSourceException | ModelException e) {
-			DeeCore.logError(e);
+			DeeCore.logWarning("Error in parseModule", e);
 			return null;
 		}
 	}
@@ -118,8 +126,12 @@ public class DToolClient {
 		public void visitModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
 			if((moduleDelta.getFlags() & IModelElementDelta.F_PRIMARY_WORKING_COPY) != 0) {
 				if(sourceModule.isWorkingCopy() == false) {
-					Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
-					getModuleParseCache().discardWorkingCopy(filePath);
+					try {
+						Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
+						getModuleParseCache().discardWorkingCopy(filePath);
+					} catch (ModelException e) {
+						DeeCore.logError(e);
+					}
 				}
 			}
 		}
@@ -131,9 +143,14 @@ public class DToolClient {
 	public ParsedModule getParsedModule(IModuleSource input) {
 		return parseModule(input);
 	}
+	public ParsedModule getParsedModule(ISourceModule input) {
+		return parseModule(input);
+	}
+	
 	
 	public Module getParsedModuleNode(IModuleSource input) {
-		return parseModule(input).module;
+		ParsedModule parseModule = parseModule(input);
+		return parseModule == null ? null : parseModule.module;
 	}
 	
 	// TODO /*BUG here*/
@@ -151,13 +168,89 @@ public class DToolClient {
 	public ParsedModule getParsedModule_fromWorkingCopy(IModuleSource input) {
 		return parseModule(input);
 	}
-
+	
 	public void provideModelElements(IModuleSource moduleSource, ISourceElementRequestor requestor) {
 		ParsedModule parsedModule = getParsedModule(moduleSource);
 		if (parsedModule != null) {
 			new DeeSourceElementProvider(requestor).provide(parsedModule);
 		}
 	}
+	
+	/* -----------------  ----------------- */
+	
+	public static final String FIND_DEF_PickedElementAlreadyADefinition = 
+		"Element next to cursor is already a definition, not a reference.";
+	public static final String FIND_DEF_NoReferenceFoundAtCursor = 
+		"No reference found next to cursor.";
+	public static final String FIND_DEF_MISSING_REFERENCE_AT_CURSOR = FIND_DEF_NoReferenceFoundAtCursor;
+	public static final String FIND_DEF_NoNamedReferenceAtCursor = 
+		"No named reference found next to cursor.";
+	public static final String FIND_DEF_ReferenceResolveFailed = 
+		"Definition not found for reference: ";
+	
+	public static FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
+		Module module = DToolClient.getDefault().getParsedModule(sourceModule).module;
+		ASTNode node = ASTNodeFinder.findElement(module, offset);
+		if(node == null) {
+			return  new FindDefinitionResult("No node found at offset: " + offset);
+		}
+		
+		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {
+			
+			@Override
+			protected FindDefinitionResult nodeIsDefSymbol(DefSymbol defSymbol) {
+				return new FindDefinitionResult(FIND_DEF_PickedElementAlreadyADefinition);
+			}
+			
+			@Override
+			protected FindDefinitionResult nodeIsNotReference() {
+				return new FindDefinitionResult(FIND_DEF_NoReferenceFoundAtCursor);
+			}
+			
+			@Override
+			protected FindDefinitionResult nodeIsNonNamedReference(Reference reference) {
+				return new FindDefinitionResult(FIND_DEF_NoNamedReferenceAtCursor);
+			}
+			
+			@Override
+			protected FindDefinitionResult nodeIsNamedReference_missing(NamedReference namedReference) {
+				return new FindDefinitionResult(FIND_DEF_MISSING_REFERENCE_AT_CURSOR);
+			}
+			
+			@Override
+			protected FindDefinitionResult nodeIsNamedReference_ok(NamedReference namedReference) {
+				return doFindDefinitionForRef(namedReference, sourceModule);
+			}
+		};
+		
+		return refPickHelper.switchOnPickedNode(node);
+	}
+	
+	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISourceModule sourceModule) {
+		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+		
+		if(defElements == null || defElements.size() == 0) {
+			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode());
+		}
+		
+		List<FindDefinitionResultEntry> results = new ArrayList<>();
+		for (INamedElement namedElement : defElements) {
+			final DefUnit defUnit = namedElement.resolveDefUnit();
+			results.add(new FindDefinitionResultEntry(
+				defUnit.defname.getSourceRangeOrNull(),
+				namedElement.getExtendedName(), 
+				namedElement.isLanguageIntrinsic(),
+				defUnit.getModuleNode().compilationUnitPath));
+		}
+		
+		return new FindDefinitionResult(results, ref.getModuleNode().compilationUnitPath);
+	}
+	
+	
+	/* -----------------  ----------------- */
+	
+	
 	
 	public static PrefixDefUnitSearch doCodeCompletion(int offset, ISourceModule moduleUnit) {
 		return getDefault().doCodeCompletionDo(offset, moduleUnit);
@@ -168,7 +261,7 @@ public class DToolClient {
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit.getScriptProject());
 		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}
-
+	
 	public static PrefixDefUnitSearch doCodeCompletion2(IModuleSource moduleSource, final int position) {
 		DeeParserResult parseResult;
 		IModuleResolver mr;

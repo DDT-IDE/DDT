@@ -4,8 +4,8 @@ import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.actions.GoToDefinitionHandler;
-import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
+import mmrnmhrm.ui.actions.OpenDefinitionHandler;
+import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -311,7 +311,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		GoToDefinitionHandler.executeChecked((AbstractTextEditor)fEditor, EOpenNewEditor.NEVER);
+		OpenDefinitionHandler.executeOperation(fEditor, EOpenNewEditor.NEVER);
 	}
 	
 	@Override

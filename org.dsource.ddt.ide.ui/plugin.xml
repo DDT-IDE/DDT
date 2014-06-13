@@ -401,7 +401,7 @@
             visible="false">
 
          <action
-               class="mmrnmhrm.ui.actions.GoToDefinitionAction"
+               class="mmrnmhrm.ui.actions.OpenDefinitionAction"
                definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
                icon="icons/action16e/gotodef.gif"
                id="org.dsource.ddt.ide.ui.actions.openDefinition"

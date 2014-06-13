@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor;
 
 import mmrnmhrm.ui.DeePluginImages;
-import mmrnmhrm.ui.actions.GoToDefinitionHandler;
+import mmrnmhrm.ui.actions.OpenDefinitionHandler;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor;
@@ -23,7 +23,7 @@ public class DeeEditorActionContributor extends	SourceModuleEditorActionContribu
 	public static CommandContributionItem createCommand_FindDefinition(IWorkbenchWindow workbenchWindow) {
 		return new CommandContributionItem(new CommandContributionItemParameter(
 				workbenchWindow, null,
-				GoToDefinitionHandler.COMMAND_ID, null,
+				OpenDefinitionHandler.COMMAND_ID, null,
 				DeePluginImages.OPEN_DEF_DESC, null, null, null, null, null,
 				CommandContributionItem.STYLE_PUSH, null, true));
 	}

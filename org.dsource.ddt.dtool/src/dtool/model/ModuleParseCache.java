@@ -26,7 +26,6 @@ import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.project.DeeNamingRules;
 
 /**
  * Manages a cache of parsed modules, indexed by file path
@@ -124,7 +123,6 @@ public class ModuleParseCache {
 	public static class ModuleEntry {
 		
 		protected final Path filePath;
-		protected final String defaultModuleName;
 		
 		protected String source = null;
 		protected boolean isWorkingCopy = false;
@@ -134,7 +132,6 @@ public class ModuleParseCache {
 		public ModuleEntry(Path filePath) {
 			this.filePath = filePath;
 			assertTrue(filePath != null);
-			this.defaultModuleName = DeeNamingRules.getDefaultModuleName(filePath);
 		}
 		
 		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
@@ -179,8 +176,8 @@ public class ModuleParseCache {
 		
 		protected ParsedModule doGetParseModule(String source) {
 			if(parsedModule == null) {
-				parsedModule = DeeParser.parseSource(source, defaultModuleName, filePath);
-				ModuleParseCache.log.println("ParseCache: Parsed Module ", filePath, " (", defaultModuleName, ")",
+				parsedModule = DeeParser.parseSource(source, filePath);
+				ModuleParseCache.log.println("ParseCache: Parsed Module ", filePath, " ",
 					isWorkingCopy ? "[WC]" : "");
 			}
 			return parsedModule;

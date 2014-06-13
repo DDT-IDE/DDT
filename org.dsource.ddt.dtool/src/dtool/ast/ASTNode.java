@@ -83,6 +83,13 @@ public abstract class ASTNode implements IASTNode {
 		return new SourceRange(getStartPos(), getLength());
 	}
 	
+	public final SourceRange getSourceRangeOrNull() {
+		if(hasSourceRangeInfo()) {
+			return getSourceRange();
+		}
+		return null;
+	}
+	
 	/** Checks if the node has source range info. */
 	public final boolean hasSourceRangeInfo() {
 		return this.sourceStart != -1;

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 
@@ -32,7 +33,7 @@ public class DLTKUtils {
 		return EnvironmentPathUtils.getFullPath(LocalEnvironment.getInstance(), path);
 	}
 	
-	public static Path filePathFromSourceModule(ISourceModule sourceModule) {
+	public static Path filePathFromSourceModule(ISourceModule sourceModule) throws ModelException {
 		if(sourceModule.exists() == false) {
 			DeeCore.logWarning("#getParsedDeeModule with module that does not exist: " + 
 					sourceModule.getElementName());
@@ -44,7 +45,12 @@ public class DLTKUtils {
 		if(resource == null) {
 			filePath = EnvironmentPathUtils.getLocalPath(sourceModule.getPath()).toFile().toPath();
 		} else {
-			filePath = resource.getLocation().toFile().toPath();
+			IPath location = resource.getLocation();
+			if(location == null) {
+				/*BUG here*/
+				throw new ModelException(DeeCore.createCoreException("no location for source module", null));
+			}
+			filePath = location.toFile().toPath();
 		}
 		return filePath;
 	}

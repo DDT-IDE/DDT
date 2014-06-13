@@ -25,6 +25,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -37,6 +38,10 @@ public class EditorUtil {
 	
 	public static void setEditorSelection(ITextEditor textEditor, IASTNode node) {
 		setEditorSelection(textEditor, node.getStartPos(), node.getLength());
+	}
+	
+	public static void setEditorSelection(ITextEditor textEditor, SourceRange sourceRange) {
+		setEditorSelection(textEditor, sourceRange.getOffset(), sourceRange.getLength()); 
 	}
 	
 	public static void setEditorSelection(ITextEditor textEditor, int offset, int length) {
@@ -80,17 +85,13 @@ public class EditorUtil {
 	// ------------  Used by editor ------------ 
 	
 	public static Module parseModuleFromEditorInput(IEditorPart textEditor) {
-		return parseModuleFromEditorInput(textEditor, true);
-	}
-	
-	public static Module parseModuleFromEditorInput(IEditorPart textEditor, boolean useBusyCursorInUI) {
 		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
 		
-		return sourceModule == null ? null : parseModuleForUI(sourceModule, useBusyCursorInUI);
+		return sourceModule == null ? null : parseModuleForUI(sourceModule);
 	}
 	
-	public static Module parseModuleForUI(final ISourceModule sourceModule, boolean useBusyCursorInUI) {
-		if(Display.getCurrent() == null || !useBusyCursorInUI) {
+	public static Module parseModuleForUI(final ISourceModule sourceModule) {
+		if(Display.getCurrent() == null) {
 			return ModuleParsingHandler.parseModule(sourceModule).module;
 		}
 		

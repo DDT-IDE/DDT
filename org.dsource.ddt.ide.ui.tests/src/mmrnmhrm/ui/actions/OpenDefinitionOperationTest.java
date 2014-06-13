@@ -14,19 +14,19 @@ package mmrnmhrm.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
+import mmrnmhrm.core.projectmodel.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
+import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -38,6 +38,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import dtool.resolver.api.FindDefinitionResult;
+
 public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	protected IFile file; 
@@ -46,7 +48,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	@BeforeClass
 	public static void commonSetUp() throws Exception {
-		OperationsManager.get().unitTestMode = true;
+		UIUserInteractionsHelper.unitTestsMode = true;
 	}
 	
 	@Before
@@ -72,17 +74,16 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	public void testOpenRef_TargetInSameFile$() throws Exception {
 		int offset;
 		offset = getOffsetForString("Foo foo");
-		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
 		offset = getOffsetForString("Foo foo") + "Foo".length();
-		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
 
 		offset = getOffsetForString("testGoToDefOp.");
-		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
 		
 		offset = getEndPosForString("testGoToDefOp.");
-		doTest(offset, IStatus.INFO, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
-		assertTrue(OperationsManager.get().opMessage.contains(
-			GoToDefinitionHandler.MISSING_REFERENCE_FOUND_NEXT_TO_CURSOR));
+		doTest(offset, DToolClient.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
+			OutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	protected int getOffsetForString(String string) {
@@ -94,22 +95,23 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	}
 	
 	@Test
-	public void testOpenRef_TargetNotFound() {
+	public void testOpenRef_TargetNotFound() throws CoreException {
 		int offset = getOffsetForString("NotFound notfound");
-		doTest(offset, IStatus.WARNING, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
+			file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void testOpenRef_OnADefUnit() {
+	public void testOpenRef_OnADefUnit() throws CoreException {
 		int offset = getOffsetForString("Foo {");
-		doTest(offset, IStatus.INFO, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
-	public void testOpenRef_TargetInAnotherFile() {
+	public void testOpenRef_TargetInAnotherFile() throws CoreException {
 		int offset = getOffsetForString("SampleClass sampleCl");
 		// find target in other file
-		doTest(offset, IStatus.OK, file.getProject(), OutsideBuildpathTestResources.TEST_SRC_TARGETFILE); 
+		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRC_TARGETFILE); 
 	}
 	
 	@Test
@@ -117,7 +119,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("Foo foo");
-		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_OUTFILE);
 	}
 	
 	@Test
@@ -125,7 +127,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
+		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
 	}
 	
 	
@@ -135,7 +137,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		SampleNonDeeProject.project.getProject().getFolder(ITestResourcesConstants.TR_SAMPLE_SRC1).exists();
 		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("Foo foo");
-		doTest(offset, IStatus.OK, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
 	@Test
@@ -143,13 +145,17 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleNonDeeProject.project;
 		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, IStatus.WARNING, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
+			project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
-	protected void doTest(int offset, int result, IProject project, String editorFile) {
+	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
+			throws CoreException {
 		EditorUtil.setEditorSelection(srcEditor, offset, 0);
-		GoToDefinitionHandler.executeChecked(srcEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
-		assertTrue(OperationsManager.get().opResult == result, "Got result: " + result);
+		FindDefinitionResult opResult = OpenDefinitionHandler.executeOperation(srcEditor, 
+			EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
+		assertTrue(errorMessageContains == null || opResult.errorMessage.contains(errorMessageContains));
+		
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);
 	}
 	

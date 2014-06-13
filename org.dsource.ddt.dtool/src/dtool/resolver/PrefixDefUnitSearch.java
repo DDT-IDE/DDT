@@ -201,7 +201,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		String str = super.toString();
 		str += "searchPrefix: " + searchOptions.searchPrefix +"\n";
 		str += "----- Results: -----\n";
-		str += StringUtil.collToString(results, "\n", new Function<INamedElement, String>() {
+		str += StringUtil.iterToString(results, "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return NamedElementUtil.getElementTypedQualification(obj); 

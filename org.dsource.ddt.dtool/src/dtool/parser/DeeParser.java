@@ -11,6 +11,7 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -23,6 +24,7 @@ import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.ParserError.ErrorSourceRangeComparator;
+import dtool.project.DeeNamingRules;
 
 /**
  * Concrete D Parser class
@@ -67,16 +69,25 @@ public class DeeParser
 		return new DeeParser(source).parseModuleSource(defaultModuleName, modulePath);
 	}
 	
+	public static ParsedModule parseSource(String source, Path modulePath) {
+		return new DeeParser(source).parseModuleSource(modulePath);
+	}
+	
+	public ParsedModule parseModuleSource(Path modulePath) {
+		String defaultModuleName = DeeNamingRules.getDefaultModuleName(modulePath);
+		return parseModuleSource(defaultModuleName, modulePath);
+	}
+	
 	public ParsedModule parseModuleSource(String defaultModuleName, Path modulePath) {
-		NodeResult<Module> nodeResult = parseModule(defaultModuleName);
+		NodeResult<Module> nodeResult = parseModule(defaultModuleName, modulePath);
 		return (ParsedModule) prepParseResult(null, nodeResult, modulePath);
 	}
 	
-	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule, String defaultModuleName) {
+	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
 		NodeResult<? extends ASTNode> nodeResult;
-		if(parseRule == null) {
-			nodeResult = parseModule(defaultModuleName);
-		} else if(parseRule == DeeParser.RULE_EXPRESSION) {
+		assertNotNull(parseRule);
+		
+		if(parseRule == DeeParser.RULE_EXPRESSION) {
 			nodeResult = parseExpression();
 		} else if(parseRule == DeeParser.RULE_REFERENCE) {
 			nodeResult = parseTypeReference();

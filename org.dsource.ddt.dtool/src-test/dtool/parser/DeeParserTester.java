@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.ASTVisitor;
@@ -324,7 +325,7 @@ public class DeeParserTester extends CommonTestUtils {
 		
 		if(parseRule == null) {
 		} else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
-			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION, null);
+			return deeParser.parseUsingRule(DeeParser.RULE_EXPRESSION);
 		} else if(parseRule.equalsIgnoreCase("PARAMETER_TEST")) {
 			
 			Object ambigParsedResult = deeParser.new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parseParameter();
@@ -333,7 +334,11 @@ public class DeeParserTester extends CommonTestUtils {
 			
 			return null;
 		}
-		return deeParser.parseUsingRule(getParseRule(parseRule), "_parser_tests");
+		ParseRuleDescription parseRuleDesc = getParseRule(parseRule);
+		if(parseRuleDesc == null) {
+			return deeParser.parseModuleSource(MiscUtil.createValidPath("_parser_tests.d"));
+		}
+		return deeParser.parseUsingRule(parseRuleDesc);
 	}
 	
 	public static ParseRuleDescription getParseRule(String parseRuleName) {
@@ -377,13 +382,13 @@ public class DeeParserTester extends CommonTestUtils {
 		else if(parseRule.equalsIgnoreCase("REFERENCE")) {
 			if(DToolTests.TESTS_LITE_MODE == false) {
 				DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
-				DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP, null);
+				DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
 				DeeParsingChecks.checkNodeEquality(result.node, resultToE.node);
 			}
 		} 
 		else if(parseRule.equalsIgnoreCase("EXPRESSION_ToE")) {
 			DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
-			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP, null);
+			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
 			ASTNode expNode = result.node;
 			List<ParserError> resultToE_Errors = resultToE.getErrors();
 			if(result.errors.size() >= 1) {

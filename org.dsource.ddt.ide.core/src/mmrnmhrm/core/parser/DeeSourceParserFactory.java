@@ -45,7 +45,7 @@ public class DeeSourceParserFactory implements ISourceParserFactory {
 		public final String[] NOSTRINGS = new String[0];
 		
 		protected void reportErrors(IProblemReporter reporter, ParsedModule parsedModule) {
-			if(reporter == null) {
+			if(reporter == null || parsedModule == null) {
 				return;
 			}
 			for (ParserError parserError : parsedModule.errors) {

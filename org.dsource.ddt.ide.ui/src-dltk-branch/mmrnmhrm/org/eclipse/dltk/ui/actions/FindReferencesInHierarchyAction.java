@@ -3,8 +3,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
-import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.actions.OperationsManager;
+import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
@@ -45,7 +44,7 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 		if(defunit.getArcheType().isType()) {
 			super.runOperation(defunit);
 		} else {
-			OperationsManager.openWarning(getShell(), super.SEARCH_REFS, 
+			UIUserInteractionsHelper.openWarning(getShell(), super.SEARCH_REFS, 
 				"Element is not a type");
 		}
 	}

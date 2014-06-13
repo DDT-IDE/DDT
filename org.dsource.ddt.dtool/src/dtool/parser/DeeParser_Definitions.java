@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
@@ -185,7 +186,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName) {
+	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName, Path compilationUnitPath) {
 		assertNotNull(defaultModuleName);
 		DeclarationModule md = parseModuleDeclaration();
 		
@@ -198,9 +199,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		SourceRange modRange = new SourceRange(0, getSourcePosition());
 		
 		if(md != null) {
-			return result(false, conclude(modRange, new Module(md.getModuleSymbol(), md, members)));
+			return result(false, conclude(modRange, 
+				new Module(md.getModuleSymbol(), md, members, compilationUnitPath)));
 		} else {
-			return result(false, conclude(modRange, Module.createModuleNoModuleDecl(defaultModuleName, members)));
+			return result(false, conclude(modRange, 
+				Module.createModuleNoModuleDecl(defaultModuleName, members, compilationUnitPath)));
 		}
 	}
 	

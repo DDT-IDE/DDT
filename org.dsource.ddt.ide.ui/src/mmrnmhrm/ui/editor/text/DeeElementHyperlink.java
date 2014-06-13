@@ -10,14 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import mmrnmhrm.ui.actions.GoToDefinitionHandler;
-import mmrnmhrm.ui.actions.OperationsManager;
-import mmrnmhrm.ui.actions.GoToDefinitionHandler.EOpenNewEditor;
+import mmrnmhrm.ui.actions.OpenDefinitionOperation;
+import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -34,7 +30,6 @@ public class DeeElementHyperlink implements IHyperlink {
 
 	/**
 	 * Creates a new Lang element hyperlink.
-	 * @param i 
 	 */
 	public DeeElementHyperlink(int offset, IRegion region, ITextEditor textEditor) {
 		Assert.isNotNull(textEditor);
@@ -52,13 +47,7 @@ public class DeeElementHyperlink implements IHyperlink {
 	
 	@Override
 	public void open() {
-		OperationsManager.executeOperation(new IWorkspaceRunnable() {
-			@Override
-			public void run(IProgressMonitor monitor) throws CoreException {
-				GoToDefinitionHandler.executeOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, 
-					offset);
-			}
-		}, "Open Element");
+		new OpenDefinitionOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, offset).executeSafe();
 	}
 	
 	@Override

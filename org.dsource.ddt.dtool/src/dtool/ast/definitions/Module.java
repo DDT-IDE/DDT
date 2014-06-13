@@ -2,6 +2,9 @@ package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.nio.file.Path;
+
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -83,20 +86,24 @@ public class Module extends DefUnit implements IScopeNode {
 		
 	}
 	
-	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members) {
+	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members,
+			Path compilationUnitPath) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
-		return new Module(defSymbol, null, members);
+		return new Module(defSymbol, null, members, compilationUnitPath);
 	}
 	
 	public final DeclarationModule md;
 	public final ArrayView<ASTNode> members;
+	public final Path compilationUnitPath; // can be null. This might be removed in the future.
 	
-	public Module(ModuleDefSymbol defSymbol, DeclarationModule md, ArrayView<ASTNode> members) {
+	public Module(ModuleDefSymbol defSymbol, DeclarationModule md, ArrayView<ASTNode> members, 
+			Path compilationUnitPath) {
 		super(defSymbol, false);
 		defSymbol.module = this;
 		this.md = parentize(md);
 		this.members = parentize(members);
 		assertNotNull(members);
+		this.compilationUnitPath = compilationUnitPath;
 	}
 	
 	@Override

@@ -31,21 +31,26 @@ public final class StringUtil {
 	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */
-	public static String collToString(Collection<?> coll, String sep) {
-		return collToString(coll, sep, null);
+	public static String collToString(Collection<?> coll, String separator) {
+		return iterToString(coll, separator, null);
 	}
 	
-	/** @return a String produced from the given coll with the given separator String, 
-	 * using give strFunction to produce a string from each element. */
-	public static <T> String collToString(Collection<T> coll, String sep, Function<T, String> strFunction) {
+	public static <T> String iterToString(Iterable<T> sequence, String separator, 
+			Function<? super T, String> toStringFn) {
+		return iteratorToString(sequence.iterator(), separator, toStringFn);
+	}
+	
+	private static <T> String iteratorToString(Iterator<T> iter, String sep, Function<? super T, String> toStringFn) {
 		StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		for(T item : coll){
-			if(!first)
-				sb.append(sep);
-			first = false;
+		
+		while(iter.hasNext()) {
+			T element = iter.next();
 			
-			sb.append(strFunction == null ? item.toString() : strFunction.evaluate(item));
+			sb.append(toStringFn == null ? element.toString() : toStringFn.evaluate(element));
+			
+			if(iter.hasNext()) {
+				sb.append(sep);
+			}
 		}
 		return sb.toString();
 	}
