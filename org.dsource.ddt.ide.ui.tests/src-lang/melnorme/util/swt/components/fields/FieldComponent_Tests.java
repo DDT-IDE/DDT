@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
@@ -135,7 +136,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 		@Override
 		protected Object getValueFromControl() {
-			return field.getSpinner().getDigits();
+			return field.getSpinner().getSelection();
 		}
 		
 		@Override
@@ -150,7 +151,7 @@ public abstract class FieldComponent_Tests extends CommonTest {
 		
 		@Override
 		public void doChangeFromControl() {
-			field.getSpinner().setDigits(30);
+			field.getSpinner().setSelection(30);
 		}
 		
 		@Override
