@@ -11,7 +11,7 @@
 package mmrnmhrm.core.model_elements;
 
 
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -29,7 +29,7 @@ public class DeeSourceElementParser extends AbstractSourceElementParser {
 	
 	@Override
 	public void parseSourceModule(IModuleSource moduleSource) {
-		DToolClient.getDefault().provideModelElements(moduleSource, getRequestor());
+		DToolClient.getDefault().provideModelElements(moduleSource, getProblemReporter(), getRequestor());
 	}
 	
 }

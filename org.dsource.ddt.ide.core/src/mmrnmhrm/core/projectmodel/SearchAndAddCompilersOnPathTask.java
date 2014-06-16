@@ -112,7 +112,7 @@ public class SearchAndAddCompilersOnPathTask {
 				return;
 			}
 			
-			Path path = MiscUtil.createValidPath(pathString);
+			Path path = MiscUtil.createPathOrNull(pathString);
 			if(path == null) {
 				DeeCore.logWarning("Invalid path: " + pathString + " in env variable: " + envVarName);
 				continue;

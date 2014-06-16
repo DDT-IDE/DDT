@@ -1,11 +1,12 @@
 package mmrnmhrm.ui.editor.doc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.Reader;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 import org.eclipse.dltk.core.IMember;
@@ -16,6 +17,7 @@ import org.eclipse.dltk.ui.documentation.IDocumentationResponse;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProvider;
 import org.eclipse.dltk.ui.documentation.IScriptDocumentationProviderExtension2;
 import org.eclipse.dltk.ui.documentation.TextDocumentationResponse;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * XXX: DLTK: This {@link DeeDocumentationProvider} is disabled (not used at the moment), 
@@ -69,9 +71,8 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 			return null;
 		}
 		
-		final int start = range.getOffset();
-		
-		return DToolClient.getDDocHTMLView(sourceModule, start);
+		assertTrue(Display.getCurrent() == null);
+		return DToolClient.getDDocHTMLView(sourceModule, range.getOffset());
 	}
 	
 }

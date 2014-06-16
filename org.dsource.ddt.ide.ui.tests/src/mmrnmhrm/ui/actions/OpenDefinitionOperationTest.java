@@ -14,7 +14,7 @@ package mmrnmhrm.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;

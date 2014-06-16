@@ -152,7 +152,7 @@ public class DubBundle {
 	}
 	
 	public Path getEffectiveTargetFullPath() {
-		Path path = MiscUtil.createValidPath(getTargetPath() == null ? "" : getTargetPath());
+		Path path = MiscUtil.createPathOrNull(getTargetPath() == null ? "" : getTargetPath());
 		if(path == null) {
 			path = Paths.get("");
 		}

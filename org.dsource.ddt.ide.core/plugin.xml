@@ -95,7 +95,7 @@
       <parserContribution
             natureId="org.dsource.ddt.ide.core.nature">
          <parser
-               class="mmrnmhrm.core.parser.DeeSourceParserFactory"
+               class="mmrnmhrm.core.engine_client.DeeSourceParserFactory"
                description="%sourceParser.description"
                id="org.dsource.ddt.ide.core.SourceParser"
                name="%sourceParser.name"

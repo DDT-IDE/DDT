@@ -11,14 +11,16 @@
 
 package mmrnmhrm.ui.editor.hover;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 
 /**
@@ -45,6 +47,8 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		}
 		
 		int offset = hoverRegion.getOffset();
+		
+		assertTrue(Display.getCurrent() == null);
 		String info = DToolClient.getDDocHTMLView(sourceModule, offset);
 		
 		if(info != null) {

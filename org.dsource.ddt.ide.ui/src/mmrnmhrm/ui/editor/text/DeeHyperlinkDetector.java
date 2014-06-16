@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -41,7 +41,7 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 		}
 		
-		ASTNode module = DToolClient.getDefault().getExistingParsedModule(sourceModule).module;
+		ASTNode module = DToolClient.getDefault().getExistingModuleNodeOrNull(sourceModule);
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof NamedReference))
 			return null;

@@ -1,7 +1,7 @@
 package dtool.tests.ref.cc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -58,7 +58,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	
 	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
 			throws ModelException {
-		PrefixDefUnitSearch search = DToolClient.doCodeCompletion(offset, srcModule);
+		PrefixDefUnitSearch search = DToolClient.getDefault().doCodeCompletion(srcModule, offset);
 		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
@@ -77,7 +77,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	protected void testComputeProposalsDo(int repOffset, int repLen, String[] expectedProposals) 
 		throws ModelException {
 		
-		PrefixDefUnitSearch completionSearch = DToolClient.doCodeCompletion(repOffset, srcModule);
+		PrefixDefUnitSearch completionSearch = DToolClient.getDefault().doCodeCompletion(srcModule, repOffset);
 		
 		if(expectedProposals == null) {
 			assertTrue(completionSearch.getResultCode() != ECompletionResultStatus.RESULT_OK);

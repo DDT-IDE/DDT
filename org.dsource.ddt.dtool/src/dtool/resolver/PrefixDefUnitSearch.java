@@ -135,9 +135,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		if(node instanceof CommonRefQualified) {
 			CommonRefQualified namedRef = (CommonRefQualified) node;
 			if(offset <= namedRef.getDotOffset()) {
-				search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
+				return search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
 						"Invalid Location: before qualifier dot but not next to id.");
-				return search;
 			}
 			assertEquals(search.searchOptions.searchPrefix, "");
 			assertEquals(search.searchOptions.namePrefixLen, 0);

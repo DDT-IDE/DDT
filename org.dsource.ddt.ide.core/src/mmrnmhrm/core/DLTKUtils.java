@@ -10,15 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
+import static melnorme.utilbox.core.CoreUtil.tryCast;
+
 import java.nio.file.Path;
+
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 
@@ -33,30 +38,41 @@ public class DLTKUtils {
 		return EnvironmentPathUtils.getFullPath(LocalEnvironment.getInstance(), path);
 	}
 	
-	public static Path filePathFromSourceModule(ISourceModule sourceModule) throws ModelException {
+	protected static boolean isExternal(ISourceModule sourceModule) {
+		return sourceModule.getResource() == null;
+	}
+	
+	public static Path getFilePath(ISourceModule sourceModule) throws InvalidPathExceptionX {
+		return MiscUtil.createPath(getFilePathString(sourceModule));
+	}
+	
+	public static String getFilePathString(ISourceModule sourceModule) {
 		if(sourceModule.exists() == false) {
 			DeeCore.logWarning("#getParsedDeeModule with module that does not exist: " + 
 					sourceModule.getElementName());
 		}
 		
-		Path filePath;
-		
 		IResource resource = sourceModule.getResource();
 		if(resource == null) {
-			filePath = EnvironmentPathUtils.getLocalPath(sourceModule.getPath()).toFile().toPath();
+			return EnvironmentPathUtils.getLocalPath(sourceModule.getPath()).toOSString();
 		} else {
 			IPath location = resource.getLocation();
 			if(location == null) {
-				/*BUG here*/
-				throw new ModelException(DeeCore.createCoreException("no location for source module", null));
+				String pathString = sourceModule.getPath().toPortableString();
+				pathString = pathString.replace("/ /", ""); // Fix for Windows Path issue: "/ /" is not valid!
+				return "###ExternalFile/" + pathString;
 			}
-			filePath = location.toFile().toPath();
+			return location.toOSString();
 		}
-		return filePath;
 	}
 	
-	protected static boolean isExternal(ISourceModule sourceModule) {
-		return sourceModule.getResource() == null;
+	public static Path getFilePath(IModuleSource moduleSource) throws InvalidPathExceptionX {
+		ISourceModule sourceModule = tryCast(moduleSource.getModelElement(), ISourceModule.class);
+		if(sourceModule != null) {
+			return getFilePath(sourceModule);
+		} else {
+			return MiscUtil.createPath(moduleSource.getFileName());
+		}
 	}
 	
 }

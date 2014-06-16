@@ -14,9 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
-import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -50,7 +49,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		
-		Module deeModule = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule).module;
+		Module deeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(sourceModule).module;
 		ASTNode node = ASTNodeFinder.findElement(deeModule, offset);
 		
 		if(node instanceof DefSymbol) {

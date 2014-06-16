@@ -56,7 +56,7 @@ public class BundleModulesHelper {
 		HashMap<ModuleFullName, Path> hashMap = new HashMap<>();
 		
 		for (BundleFile bundleFiles : bundle.bundleFiles) {
-			Path filePath = MiscUtil.createValidPath(bundleFiles.filePath);
+			Path filePath = MiscUtil.createPathOrNull(bundleFiles.filePath);
 			if(filePath == null) {
 				logError("Invalid filesystem path: " + bundleFiles.filePath);
 				continue; // ignore

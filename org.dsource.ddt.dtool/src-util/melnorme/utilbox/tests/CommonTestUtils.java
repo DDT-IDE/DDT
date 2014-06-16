@@ -149,7 +149,7 @@ public class CommonTestUtils {
 	}
 	
 	public static Path path(String pathString) {
-		return MiscUtil.createValidPath(pathString);
+		return MiscUtil.createPathOrNull(pathString);
 	}
 	
 	public static String safeToString(Object obj) {

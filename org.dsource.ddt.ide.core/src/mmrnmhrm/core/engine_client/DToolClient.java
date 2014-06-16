@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
@@ -18,15 +18,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
 
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IModelElement;
@@ -85,9 +86,89 @@ public class DToolClient {
 		return moduleParseCache;
 	}
 	
-	public ParsedModule parseModule(ISourceModule sourceModule) {
+	public static Path validateFilePath(ISourceModule input) {
 		try {
-			Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
+			return DLTKUtils.getFilePath(input);
+		} catch (InvalidPathExceptionX e) {
+			DeeCore.logError("Invalid path from DLTK: " + e);
+			return null;
+		}
+	}
+	public static Path validateFilePath(IModuleSource input) {
+		try {
+			return DLTKUtils.getFilePath(input);
+		} catch (InvalidPathExceptionX e) {
+			DeeCore.logError("Invalid path from DLTK: " + e);
+			return null;
+		}
+	}
+	
+	public ParsedModule getParsedModuleOrNull(ISourceModule input) {
+		Path filePath = validateFilePath(input);
+		return filePath == null ? null : getParsedModuleOrNull(filePath);
+	}
+	
+	public ParsedModule getParsedModuleOrNull(IModuleSource input) {
+		Path filePath = validateFilePath(input);
+		return filePath == null ? null : getParsedModuleOrNull(filePath);
+	}
+	
+	
+	public ParsedModule getParsedModuleOrNull(Path filePath) {
+		try {
+			return getModuleParseCache().getParsedModule(filePath);
+		} catch (ParseSourceException e) {
+			// Most likely a file IO error ocurred. 
+			DeeCore.logWarning("Error in getParsedModule", e);
+			return null;
+		}
+	}
+	
+	public Module getParsedModuleNodeOrNull(ISourceModule input) {
+		ParsedModule parseModule = getParsedModuleOrNull(input);
+		return parseModule == null ? null : parseModule.module;
+	}
+	
+	
+	public ParsedModule getExistingParsedModuleOrNull(ISourceModule input) {
+		Path filePath = validateFilePath(input);
+		return filePath == null ? null : getModuleParseCache().getExistingParsedModule(filePath);
+	}
+	public ParsedModule getExistingParsedModuleOrNull(IModuleSource input) {
+		Path filePath = validateFilePath(input);
+		return filePath == null ? null : getModuleParseCache().getExistingParsedModule(filePath);
+	}
+	
+	public Module getExistingModuleNodeOrNull(ISourceModule input) {
+		ParsedModule parsedModule = getExistingParsedModuleOrNull(input);
+		return parsedModule == null ? null : parsedModule.module;
+	}
+	public Module getExistingModuleNodeOrNull(IModuleSource input) {
+		ParsedModule parsedModule = getExistingParsedModuleOrNull(input);
+		return parsedModule == null ? null : parsedModule.module;
+	}
+	
+	@Deprecated
+	public ParsedModule getParsedModule_forDeprecatedAPIs(ISourceModule input) {
+		return getParsedModuleOrNull(input);
+	}
+	
+	/* ----------------- working copy handling ----------------- */
+	
+	public ParsedModule getParsedModuleOrNull_fromBuildStructure(IModuleSource input) {
+		ISourceModule sourceModule = tryCast(input, ISourceModule.class);
+		if(sourceModule != null) {
+			getParsedModuleOrNull_fromWorkingCopy(sourceModule);
+		}
+		return getParsedModuleOrNull(input);
+	}
+	
+	public ParsedModule getParsedModuleOrNull_fromWorkingCopy(ISourceModule sourceModule) {
+		Path filePath = validateFilePath(sourceModule);
+		if(filePath == null) 
+			return null;
+		
+		try {
 			boolean isWorkingCopy = sourceModule.isWorkingCopy();
 			if(!sourceModule.isConsistent()) {
 				assertTrue(isWorkingCopy);
@@ -108,29 +189,15 @@ public class DToolClient {
 		}
 	}
 	
-	public ParsedModule parseModule(IModuleSource moduleSource) {
-		
-		ISourceModule sourceModule = tryCast(moduleSource.getModelElement(), ISourceModule.class);
-		if(sourceModule != null) {
-			return parseModule(sourceModule);
-		}
-		
-		String fileName = moduleSource.getFileName();
-		String source = moduleSource.getSourceContents();
-		return getModuleParseCache().getParsedModule(fileName, source);
-	}
-	
 	public class WorkingCopyListener extends ModelDeltaVisitor {
 		
 		@Override
 		public void visitModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
 			if((moduleDelta.getFlags() & IModelElementDelta.F_PRIMARY_WORKING_COPY) != 0) {
 				if(sourceModule.isWorkingCopy() == false) {
-					try {
-						Path filePath = DLTKUtils.filePathFromSourceModule(sourceModule);
+					Path filePath = validateFilePath(sourceModule);
+					if(filePath != null) {
 						getModuleParseCache().discardWorkingCopy(filePath);
-					} catch (ModelException e) {
-						DeeCore.logError(e);
 					}
 				}
 			}
@@ -138,39 +205,17 @@ public class DToolClient {
 		
 	}
 	
-	/* ----------------- new API ----------------- */
+	/* ----------------- Specific semantic operations: ----------------- */
 	
-	public ParsedModule getParsedModule(IModuleSource input) {
-		return parseModule(input);
-	}
-	public ParsedModule getParsedModule(ISourceModule input) {
-		return parseModule(input);
-	}
-	
-	
-	public Module getParsedModuleNode(IModuleSource input) {
-		ParsedModule parseModule = parseModule(input);
-		return parseModule == null ? null : parseModule.module;
+	public ParsedModule doParseForRebuild(IModuleSource input, IProblemReporter reporter) {
+		ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull_fromBuildStructure(input);
+		DeeSourceParserFactory.reportErrors(reporter, parsedModule);
+		return parsedModule;
 	}
 	
-	// TODO /*BUG here*/
-	public DeeParserResult getExistingParsedModule(ISourceModule input) {
-		return parseModule(input);
-	}
-	
-	public ParsedModule getParsedModule_forDeprecatedAPIs(IModuleSource input) {
-		return parseModule(input);
-	}
-	public ParsedModule getParsedModule_forDeprecatedAPIs(ISourceModule input) {
-		return parseModule(input);
-	}
-	
-	public ParsedModule getParsedModule_fromWorkingCopy(IModuleSource input) {
-		return parseModule(input);
-	}
-	
-	public void provideModelElements(IModuleSource moduleSource, ISourceElementRequestor requestor) {
-		ParsedModule parsedModule = getParsedModule(moduleSource);
+	public void provideModelElements(IModuleSource moduleSource, IProblemReporter pr, 
+			ISourceElementRequestor requestor) {
+		ParsedModule parsedModule = doParseForRebuild(moduleSource, pr);
 		if (parsedModule != null) {
 			new DeeSourceElementProvider(requestor).provide(parsedModule);
 		}
@@ -189,7 +234,7 @@ public class DToolClient {
 		"Definition not found for reference: ";
 	
 	public static FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
-		Module module = DToolClient.getDefault().getParsedModule(sourceModule).module;
+		Module module = DToolClient.getDefault().getParsedModuleNodeOrNull(sourceModule);
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		if(node == null) {
 			return  new FindDefinitionResult("No node found at offset: " + offset);
@@ -252,23 +297,19 @@ public class DToolClient {
 	
 	
 	
-	public static PrefixDefUnitSearch doCodeCompletion(int offset, ISourceModule moduleUnit) {
-		return getDefault().doCodeCompletionDo(offset, moduleUnit);
-	}
-	
-	public PrefixDefUnitSearch doCodeCompletionDo(int offset, ISourceModule moduleUnit) {
-		DeeParserResult parseResult = ModuleParsingHandler.parseModule(moduleUnit);
+	public PrefixDefUnitSearch doCodeCompletion(ISourceModule moduleUnit, int offset) {
+		DeeParserResult parseResult = getParsedModule_forDeprecatedAPIs(moduleUnit); 
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit.getScriptProject());
 		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 	}
 	
-	public static PrefixDefUnitSearch doCodeCompletion2(IModuleSource moduleSource, final int position) {
+	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, final int position) {
 		DeeParserResult parseResult;
 		IModuleResolver mr;
 		
 		if(moduleSource instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) moduleSource;
-			parseResult = ModuleParsingHandler.parseModule(sourceModule);
+			parseResult = getParsedModule_forDeprecatedAPIs(sourceModule);
 			mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 		} else {
 			String defaultModuleName = DToolClient.getDefaultModuleName(moduleSource);
@@ -293,16 +334,15 @@ public class DToolClient {
 	/* -----------------  ----------------- */
 	
 	public static String getDDocHTMLView(ISourceModule sourceModule, int offset) {
-		Module module = getDefault().getParsedModule_forDeprecatedAPIs(sourceModule).module;
+		Module module = getDefault().getParsedModuleNodeOrNull(sourceModule);
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
-		
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
 		
 		INamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
-			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(moduleResolver);
+			DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(mr);
 		}
 		
 		return relevantElementForDoc == null ? null : TextUI.getDDocHTMLRender(relevantElementForDoc);

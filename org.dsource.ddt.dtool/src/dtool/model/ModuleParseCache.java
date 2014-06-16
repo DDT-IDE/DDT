@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeParser;
@@ -38,30 +37,26 @@ public class ModuleParseCache {
 	
 	/* -----------------  ----------------- */
 	
-	public ParsedModule getParsedModule(String freeformFilePath, String source) {
-		Path path = MiscUtil.createValidPath(freeformFilePath);
-		if(path == null) {
-			return null;
+	public ParsedModule getParsedModule(Path filePath) throws ParseSourceException {
+		ModuleEntry entry = getEntry(filePath);
+		try {
+			return assertNotNull(entry.getParsedModule());
+		} catch (IOException e) {
+			throw new ParseSourceException(e);
 		}
-		return getParsedModule(path, source);
+	}
+	
+	public ParsedModule getExistingParsedModule(Path filePath) {
+		return getEntry(filePath).parsedModule;
 	}
 	
 	public ParsedModule getParsedModule(Path filePath, String source) {
 		return parseModuleWithNewSource(filePath, source);
 	}
 	
-	public ParsedModule getParsedModule(Path filePath) throws ParseSourceException {
-		try {
-			return doGetParseResult(filePath);
-		} catch (IOException e) {
-			throw new ParseSourceException(e);
-		}
-	}
-	
 	public static class ParseSourceException extends Exception {
 		
 		private static final long serialVersionUID = 1L;
-		
 		
 		public ParseSourceException() {
 		}
@@ -86,7 +81,7 @@ public class ModuleParseCache {
 		return filePath.toString();
 	}
 	
-	protected ModuleEntry updateEntry(Path filePath) {
+	protected ModuleEntry getEntry(Path filePath) {
 		filePath = validatePath(filePath);
 		String key = getKeyFromPath(filePath);
 		
@@ -100,14 +95,10 @@ public class ModuleParseCache {
 		}
 	}
 	
-	protected ParsedModule doGetParseResult(Path filePath) throws FileNotFoundException, IOException {
-		return updateEntry(filePath).getParsedModule();
-	}
-	
 	protected ParsedModule parseModuleWithNewSource(Path filePath, String source) {
 		assertNotNull(source);
 		
-		return updateEntry(filePath).getParsedModuleWithWorkingCopySource(source);
+		return getEntry(filePath).getParsedModuleWithWorkingCopySource(source);
 	}
 	
 	public void discardWorkingCopy(Path filePath) {
@@ -127,7 +118,7 @@ public class ModuleParseCache {
 		protected String source = null;
 		protected boolean isWorkingCopy = false;
 		protected long readTimestamp;
-		protected ParsedModule parsedModule = null;
+		protected volatile ParsedModule parsedModule = null;
 		
 		public ModuleEntry(Path filePath) {
 			this.filePath = filePath;

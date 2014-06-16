@@ -62,12 +62,12 @@ public class DubDescribeParserTest extends CommonDubTest {
 	protected void checkBundleFiles(List<BundleFile> bundleFilesOriginal, List<String> expected) {
 		ArrayList<BundleFile> bundleFiles = new ArrayList<>(bundleFilesOriginal);
 		for (String expectedFile : expected) {
-			final Path expectedPath = MiscUtil.createValidPath(expectedFile);
+			final Path expectedPath = MiscUtil.createPathOrNull(expectedFile);
 			
 			assertTrue(CollectionUtil.removeElement(bundleFiles, new Predicate<BundleFile>() {
 				@Override
 				public boolean evaluate(BundleFile obj) {
-					return areEqual(MiscUtil.createValidPath(obj.filePath), expectedPath);
+					return areEqual(MiscUtil.createPathOrNull(obj.filePath), expectedPath);
 				}
 			}));
 		}

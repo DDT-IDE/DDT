@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
@@ -45,7 +45,7 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 		if(isFoldingComments()) {
 			
 			// With changes in the parser perhaps this code could be simplified.
-			Module deeModule = DToolClient.getDefault().getParsedModuleNode(content);
+			Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content);
 			if (deeModule != null && deeModule.md != null) {
 				offsetForModuleDeclaration = deeModule.md.getOffset();
 			}

@@ -11,7 +11,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.engine_client.ModuleParsingHandler;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;

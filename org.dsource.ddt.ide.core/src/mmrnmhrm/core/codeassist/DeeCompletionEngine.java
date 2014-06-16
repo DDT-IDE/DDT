@@ -2,7 +2,7 @@ package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -28,7 +28,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			CompletionContext context = new CompletionContext();
 			requestor.acceptContext(context);
 			
-			PrefixDefUnitSearch search = DToolClient.doCodeCompletion2(moduleSource, position);
+			PrefixDefUnitSearch search = DToolClient.getDefault().doCodeCompletion(moduleSource, position);
 			for (INamedElement result : search.getResults()) {
 				CompletionProposal proposal = createProposal(result, position, search.searchOptions);
 				requestor.accept(proposal);				

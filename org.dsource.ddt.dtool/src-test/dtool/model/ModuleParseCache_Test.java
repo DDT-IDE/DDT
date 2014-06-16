@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -110,7 +111,8 @@ public class ModuleParseCache_Test {
 	public void testOther$() throws Exception {
 		mpm = new ModuleParseCache();
 		
-		assertTrue(mpm.getParsedModule("#freeFormPath", SOURCE1).source.equals(SOURCE1));
+		Path freeformPath = MiscUtil.createValidPath("#freeFormPath");
+		assertTrue(mpm.getParsedModule(freeformPath, SOURCE1).source.equals(SOURCE1));
 	}
 	
 }

@@ -20,6 +20,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -65,7 +66,7 @@ public class EditorUtils {
 	}
 	
 	public static IEditorInput getBestEditorInputForUri(URI uri) {
-		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri);
+		IFile[] files = ResourceUtils.getWorkspaceRoot().findFilesForLocationURI(uri, IWorkspaceRoot.INCLUDE_HIDDEN);
 		if(files.length != 0) {
 			// As an improvement we could try to see which file is more relevant if there is more than one
 			IFile file = files[0]; 

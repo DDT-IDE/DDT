@@ -1,4 +1,4 @@
-package mmrnmhrm.core.parser;
+package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 

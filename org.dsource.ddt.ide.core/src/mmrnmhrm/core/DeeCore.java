@@ -11,8 +11,8 @@
 package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.projectmodel.CoreDubModel;
-import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.osgi.framework.BundleContext;
 

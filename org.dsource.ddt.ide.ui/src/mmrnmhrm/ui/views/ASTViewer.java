@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -194,7 +194,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return;
 		}
 		
-		fDeeModule = DToolClient.getDefault().getExistingParsedModule(fSourceModule);
+		fDeeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(fSourceModule);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

@@ -35,7 +35,7 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 				@Override
 				public void run() {
 					Path value = getExpectedEntry(new ModuleFullName(moduleFullName));
-					assertAreEqual(value, MiscUtil.createValidPath(filePath));
+					assertAreEqual(value, MiscUtil.createPathOrNull(filePath));
 				};
 			});
 		}

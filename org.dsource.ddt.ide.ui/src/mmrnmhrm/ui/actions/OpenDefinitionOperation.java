@@ -21,7 +21,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUI;
 import mmrnmhrm.ui.editor.DeeEditor;
@@ -41,7 +41,7 @@ import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class OpenDefinitionOperation extends AbstractEditorOperation {
 	
-	protected static final String GO_TO_DEFINITION_OPNAME = "Go to Definition";
+	protected static final String OPEN_DEFINITION_OPNAME = "Open Definition";
 	
 	public static enum EOpenNewEditor { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
 	
@@ -51,7 +51,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	protected FindDefinitionResult result;
 	
 	public OpenDefinitionOperation(ITextEditor editor, EOpenNewEditor openNewEditor, int offset) {
-		super(GO_TO_DEFINITION_OPNAME, editor);
+		super(OPEN_DEFINITION_OPNAME, editor);
 		this.openNewEditor = openNewEditor;
 		this.offset = offset;
 	}
@@ -90,7 +90,6 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		FindDefinitionResultEntry fdResultEntry = results.get(0);
 		
 		if(fdResultEntry == null || fdResultEntry.isLanguageIntrinsic()) {
-			// TODO: test this path
 			dialogInfo(window.getShell(), 
 				"Cannot open editor, element \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
 			return;
@@ -161,15 +160,15 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	}
 	
 	protected void dialogError(Shell shell, String msg) {
-		UIUserInteractionsHelper.openError(shell, OpenDefinitionOperation.GO_TO_DEFINITION_OPNAME, msg);
+		UIUserInteractionsHelper.openError(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
 	}
 	
 	protected void dialogWarning(Shell shell, String msg) {
-		UIUserInteractionsHelper.openWarning(shell, OpenDefinitionOperation.GO_TO_DEFINITION_OPNAME, msg);
+		UIUserInteractionsHelper.openWarning(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
 	}
 	
 	protected void dialogInfo(Shell shell, String msg) {
-		UIUserInteractionsHelper.openInfo(shell, OpenDefinitionOperation.GO_TO_DEFINITION_OPNAME, msg);
+		UIUserInteractionsHelper.openInfo(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
 	}
 	
 }

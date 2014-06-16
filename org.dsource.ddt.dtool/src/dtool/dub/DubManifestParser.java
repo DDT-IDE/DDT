@@ -12,7 +12,6 @@ package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.misc.MiscUtil.createPath;
-import static melnorme.utilbox.misc.MiscUtil.createValidPath;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 
 import com.google.gson.stream.JsonToken;
@@ -138,7 +138,7 @@ public class DubManifestParser extends CommonDubParser {
 			@Override
 			public boolean accept(File dir, String name) {
 				if(dir.isDirectory() && (name.equals("src") || name.equals("source"))) {
-					implicitFolders.add(createValidPath(name));
+					implicitFolders.add(MiscUtil.createValidPath(name));
 				}
 				return false;
 			}

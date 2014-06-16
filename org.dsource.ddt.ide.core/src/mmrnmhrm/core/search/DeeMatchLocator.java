@@ -8,10 +8,8 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.util.ArrayList;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
-import mmrnmhrm.core.parser.DeeModuleDeclaration;
-import mmrnmhrm.core.parser.DeeSourceParserFactory;
-import mmrnmhrm.core.projectmodel.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -67,7 +65,6 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		@Override
 		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
 			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-			DeeSourceParserFactory.DeeSourceParser dsp = new DeeSourceParserFactory.DeeSourceParser();
 			return parseForMatchLocator(sourceModule);
 			//return super.parse(possibleMatch);
 		}
@@ -79,11 +76,14 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 
 		public static ModuleDeclaration parseForMatchLocator(ISourceModule sourceModule) {
 			IModuleSource source = tryCast(sourceModule, IModuleSource.class);
-			if(source != null) {
-				ParsedModule parsedModule = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(source);
-				return new ModuleDeclarationWrapper(new DeeModuleDeclaration(parsedModule));
+			if(source == null) {
+				return null;
 			}
-			return null;
+			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(source);
+			if(parsedModule == null) {
+				return null;
+			}
+			return new ModuleDeclarationWrapper(new DeeModuleDeclaration(parsedModule));
 		}
 		
 	}

@@ -8,9 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.parser;
-
-import mmrnmhrm.core.projectmodel.DToolClient;
+package mmrnmhrm.core.engine_client;
 
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
@@ -36,32 +34,30 @@ public class DeeSourceParserFactory implements ISourceParserFactory {
 
 		@Override
 		public IModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-			ParsedModule parsedModule = DToolClient.getDefault().getParsedModule_fromWorkingCopy(input);
-			
-			reportErrors(reporter, parsedModule);
+			DToolClient.getDefault().doParseForRebuild(input, reporter);
 			return new IModuleDeclaration() { }; // Return an empty type, its not used anyways
 		}
 		
-		public final String[] NOSTRINGS = new String[0];
-		
-		protected void reportErrors(IProblemReporter reporter, ParsedModule parsedModule) {
-			if(reporter == null || parsedModule == null) {
-				return;
-			}
-			for (ParserError parserError : parsedModule.errors) {
-				reporter.reportProblem(new DefaultProblem(
-					parserError.getUserMessage(),
-					DefaultProblemIdentifier.decode(org.eclipse.dltk.compiler.problem.IProblem.Syntax),
-					NOSTRINGS, 
-					ProblemSeverities.Error,
-					parserError.getStartPos(),
-					parserError.getEndPos(),
-					0 //TODO: review if we actually need end line
-					)
-				);
-			}
+	}
+	
+	public static final String[] NOSTRINGS = new String[0];
+	
+	protected static void reportErrors(IProblemReporter reporter, ParsedModule parsedModule) {
+		if(reporter == null || parsedModule == null) {
+			return;
 		}
-		
+		for (ParserError parserError : parsedModule.errors) {
+			reporter.reportProblem(new DefaultProblem(
+				parserError.getUserMessage(),
+				DefaultProblemIdentifier.decode(org.eclipse.dltk.compiler.problem.IProblem.Syntax),
+				NOSTRINGS, 
+				ProblemSeverities.Error,
+				parserError.getStartPos(),
+				parserError.getEndPos(),
+				0 //TODO: review if we actually need end line
+				)
+			);
+		}
 	}
 	
 }

@@ -6,9 +6,11 @@ package mmrnmhrm.lang.ui;
 import java.lang.reflect.InvocationTargetException;
 
 import melnorme.lang.ide.ui.utils.ProgressRunnableWithResult;
-import mmrnmhrm.core.parser.ModuleParsingHandler;
+import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.ModuleParsingHandler;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.TextSelection;
@@ -110,6 +112,18 @@ public class EditorUtil {
 		} catch (InterruptedException e) {
 			return null;
 		}
+	}
+	
+	public static Module getParsedModule_NoWaitInUI(IModuleSource input) {
+		if(Display.getCurrent() == null) {
+			return getModuleNode(DToolClient.getDefault().getParsedModuleOrNull(input));
+		}
+		
+		return getModuleNode(DToolClient.getDefault().getExistingParsedModuleOrNull(input));
+	}
+	
+	protected static Module getModuleNode(ParsedModule parsedModule) {
+		return parsedModule == null ? null : parsedModule.module;
 	}
 	
 }
