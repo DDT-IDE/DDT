@@ -163,7 +163,7 @@
          name="TODO"
          point="org.eclipse.dltk.core.selectionEngine">
       <selectionEngine
-            class="mmrnmhrm.core.codeassist.DeeSelectionEngine"
+            class="mmrnmhrm.core.engine_client.DeeSelectionEngine"
             nature="org.dsource.ddt.ide.core.nature"
             priority="0">
       </selectionEngine>
@@ -171,7 +171,7 @@
    <extension
          point="org.eclipse.dltk.core.completionEngine">
       <completionEngine
-            class="mmrnmhrm.core.codeassist.DeeCompletionEngine"
+            class="mmrnmhrm.core.engine_client.DeeCompletionEngine"
             nature="org.dsource.ddt.ide.core.nature"
             priority="0">
       </completionEngine>

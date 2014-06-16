@@ -29,4 +29,7 @@ public abstract class DeeCoreMessages extends LangCoreMessages {
 	public static final String RunningDubBuild_Error = 
 			"Error running dub build command.";
 	
+	public static final String ContentAssist_LocationFailure = 
+			"Could not perform content assist at location.";
+	
 }

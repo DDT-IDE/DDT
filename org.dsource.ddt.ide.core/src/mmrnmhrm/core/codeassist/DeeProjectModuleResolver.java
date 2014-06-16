@@ -11,7 +11,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.engine_client.ModuleParsingHandler;
+import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IProject;
@@ -57,7 +57,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 	public ISourceModule findModuleUnit(String[] packages, String moduleName, ISourceModule workingCopySourceModule)
 		throws ModelException {
 		if(workingCopySourceModule != null) {
-			Module wcModule = ModuleParsingHandler.parseModule(workingCopySourceModule).module;
+			Module wcModule = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(workingCopySourceModule).module;
 			
 			String wcModuleName = wcModule.getName();
 			String[] wcPackages = wcModule.getDeclaredPackages();
@@ -80,7 +80,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		if(moduleUnit == null)
 			return null;
 		
-		return ModuleParsingHandler.parseModule(moduleUnit).module;
+		return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(moduleUnit).module;
 	}
 	
 	public ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 

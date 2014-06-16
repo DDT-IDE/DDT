@@ -12,7 +12,7 @@ import java.util.List;
 import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
-import mmrnmhrm.core.codeassist.CompletionEngineSourceTests;
+import mmrnmhrm.core.engine_client.CompletionEngineSourceTests;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;

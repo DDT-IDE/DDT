@@ -7,7 +7,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import melnorme.lang.ide.ui.utils.ProgressRunnableWithResult;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.engine_client.ModuleParsingHandler;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -94,7 +93,7 @@ public class EditorUtil {
 	
 	public static Module parseModuleForUI(final ISourceModule sourceModule) {
 		if(Display.getCurrent() == null) {
-			return ModuleParsingHandler.parseModule(sourceModule).module;
+			return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule).module;
 		}
 		
 		try {
@@ -102,7 +101,7 @@ public class EditorUtil {
 				@Override
 				public ParsedModule doCall(IProgressMonitor monitor) 
 						throws InvocationTargetException, InterruptedException {
-					return ModuleParsingHandler.parseModule(sourceModule);
+					return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule);
 				}
 			};
 			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(parseModuleTask);

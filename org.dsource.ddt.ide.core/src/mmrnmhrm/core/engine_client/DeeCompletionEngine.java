@@ -1,17 +1,21 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.DeeCoreMessages;
 
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.compiler.problem.DefaultProblem;
+import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
+import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.resolver.PrefixDefUnitSearch;
+import dtool.resolver.api.ECompletionResultStatus;
 import dtool.resolver.api.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
@@ -29,14 +33,25 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			requestor.acceptContext(context);
 			
 			PrefixDefUnitSearch search = DToolClient.getDefault().doCodeCompletion(moduleSource, position);
+			if(search.getResults().isEmpty() && search.getResultCode() != ECompletionResultStatus.RESULT_OK) {
+				handleCompletionFailure(DeeCoreMessages.ContentAssist_LocationFailure, position);
+			}
+			
 			for (INamedElement result : search.getResults()) {
 				CompletionProposal proposal = createProposal(result, position, search.searchOptions);
 				requestor.accept(proposal);				
 			}
 			
+		} catch (ModelException e) {
+			handleCompletionFailure(e.getMessage(), position);
 		} finally {
 			requestor.endReporting();
 		}
+	}
+	
+	protected void handleCompletionFailure(String errorMessage, final int position) {
+		requestor.completionFailure(
+			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
 	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset,

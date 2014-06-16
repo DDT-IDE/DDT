@@ -154,7 +154,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Module module = DToolClient.getDefault().getParsedModuleNodeOrNull(srcModule);
+		Module module = DToolClient.getDefault().getModuleNodeOrNull(srcModule);
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
 		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());

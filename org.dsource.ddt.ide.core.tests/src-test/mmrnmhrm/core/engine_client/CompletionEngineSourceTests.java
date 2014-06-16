@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -16,7 +16,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-import mmrnmhrm.core.codeassist.CompletionEngine_Test.CompletionEngineTestsRequestor;
+import mmrnmhrm.core.codeassist.CoreResolverSourceTests;
+import mmrnmhrm.core.engine_client.DeeCompletionEngine;
+import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;

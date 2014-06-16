@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
+import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 

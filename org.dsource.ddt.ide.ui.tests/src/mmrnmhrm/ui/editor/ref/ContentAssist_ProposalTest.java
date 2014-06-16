@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.codeassist.CompletionEngine_Test;
+import mmrnmhrm.core.engine_client.CompletionEngine_Test;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;

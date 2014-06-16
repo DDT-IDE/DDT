@@ -1,8 +1,7 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.tests;
 
-import mmrnmhrm.tests.ITestResourcesConstants;
 
-public interface OutsideBuildpathTestResources {
+public interface IOutsideBuildpathTestResources {
 	
 	static final String TEST_SRCFILE = ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testFindDefOp.d";
 	static final String TEST_SRC_TARGETFILE = ITestResourcesConstants.TR_SAMPLE_SRC3 +"/pack/sample.d";

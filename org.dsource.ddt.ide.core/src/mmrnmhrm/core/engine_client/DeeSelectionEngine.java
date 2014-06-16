@@ -8,13 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;

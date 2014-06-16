@@ -1,11 +1,12 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
-import mmrnmhrm.core.codeassist.DeeCompletionEngine.RefSearchCompletionProposal;
+import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
+import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
@@ -48,7 +49,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	
 	public static DeeCompletionEngine testCompletionEngine(IModuleSource moduleSource, final int offset,
 		final int rplLen) {
-		CompletionRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
+		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 		completionEngine.setRequestor(requestor);
 		completionEngine.complete(moduleSource, offset, 0);
@@ -81,6 +82,31 @@ public class CompletionEngine_Test extends CommonCoreTest {
 			assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
 			INamedElement defUnit = refProposal.getExtraInfo();
 			results.add(defUnit);
+		}
+	}
+	
+	@Test
+	public void testCompletionOnOutSrc() throws Exception { testCompletionOnOutSrc$(); }
+	public void testCompletionOnOutSrc$() throws Exception {
+		ISourceModule srcModule = SampleMainProject.getSourceModule(IOutsideBuildpathTestResources.TEST_OUTFILE);
+		
+		srcModule.becomeWorkingCopy(null, null);
+		try {
+			final int offset = srcModule.getSource().indexOf("Foo foo");
+			
+			class CompletionRequestorTestCheck extends CompletionRequestor {
+				@Override
+				public void accept(CompletionProposal proposal) {
+					assertTrue(proposal.getCompletionLocation() == offset);
+					assertTrue(proposal.getReplaceStart() == offset);
+				}
+			}
+			
+			DeeCompletionEngine completionEngine = new DeeCompletionEngine();
+			completionEngine.setRequestor(new CompletionRequestorTestCheck());
+			completionEngine.complete((IModuleSource) srcModule, offset, 0);
+		} finally {
+			srcModule.discardWorkingCopy();
 		}
 	}
 	

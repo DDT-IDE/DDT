@@ -13,9 +13,9 @@ package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import mmrnmhrm.core.codeassist.OutsideBuildpathTestResources;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
@@ -54,7 +54,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	@Before
 	public void setUp() throws Exception {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, OutsideBuildpathTestResources.TEST_SRCFILE);
+		setupWithFile(project, IOutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	private void setupWithFile(IProject project, String path) throws PartInitException, CoreException {
@@ -74,16 +74,16 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	public void testOpenRef_TargetInSameFile$() throws Exception {
 		int offset;
 		offset = getOffsetForString("Foo foo");
-		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 		offset = getOffsetForString("Foo foo") + "Foo".length();
-		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE);
 
 		offset = getOffsetForString("testGoToDefOp.");
-		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE);
+		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE);
 		
 		offset = getEndPosForString("testGoToDefOp.");
 		doTest(offset, DToolClient.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
-			OutsideBuildpathTestResources.TEST_SRCFILE);
+			IOutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
 	protected int getOffsetForString(String string) {
@@ -98,36 +98,36 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	public void testOpenRef_TargetNotFound() throws CoreException {
 		int offset = getOffsetForString("NotFound notfound");
 		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
-			file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+			file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void testOpenRef_OnADefUnit() throws CoreException {
 		int offset = getOffsetForString("Foo {");
-		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
 	public void testOpenRef_TargetInAnotherFile() throws CoreException {
 		int offset = getOffsetForString("SampleClass sampleCl");
 		// find target in other file
-		doTest(offset, null, file.getProject(), OutsideBuildpathTestResources.TEST_SRC_TARGETFILE); 
+		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRC_TARGETFILE); 
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInSameFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		setupWithFile(project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("Foo foo");
-		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInAnotherFile() throws CoreException {
 		IProject project = SampleMainProject.scriptProject.getProject();
-		setupWithFile(project, OutsideBuildpathTestResources.TEST_OUTFILE);
+		setupWithFile(project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
+		doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
 	}
 	
 	
@@ -135,18 +135,18 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	public void testOpenRef_OriginFileNotOnDProject_TargetInSameFile() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
 		SampleNonDeeProject.project.getProject().getFolder(ITestResourcesConstants.TR_SAMPLE_SRC1).exists();
-		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		setupWithFile(project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("Foo foo");
-		doTest(offset, null, project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
 	@Test
 	public void testOpenRef_OriginFileNotOnDProject_NotFound() throws CoreException {
 		IProject project = SampleNonDeeProject.project;
-		setupWithFile(project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+		setupWithFile(project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
 		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
-			project, OutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
+			project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 

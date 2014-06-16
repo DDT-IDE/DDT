@@ -2,6 +2,7 @@
 
 ### DDT 0.10.x
  * Fixed - D application run/debug launch shorted appearing in non-D editors
+ * Added: error message in status line when doing content assist in invalid locations.
 
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 

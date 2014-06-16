@@ -99,7 +99,7 @@ public class DeeSearchEngineTestUtils {
 		public void visitElementsAndNodes(IModelElement element, int depth) throws ModelException, CoreException {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
-				Module module = DToolClient.getDefault().getParsedModuleNodeOrNull(sourceModule);
+				Module module = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
 				if(module == null)
 					return;
 				

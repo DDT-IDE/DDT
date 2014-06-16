@@ -79,6 +79,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		checkModuleSetupConsistency();
 		
 		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
+		explicitModuleName = explicitModuleName != null ? explicitModuleName : "_dummy.d";
 		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
 		
 		if(moduleName == CoreResolverSourceTests.DEFAULT_MODULE_NAME) {

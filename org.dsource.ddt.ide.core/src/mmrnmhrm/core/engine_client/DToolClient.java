@@ -25,6 +25,7 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
@@ -47,10 +48,8 @@ import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
 import dtool.model.ModuleParseCache;
 import dtool.model.ModuleParseCache.ParseSourceException;
-import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.project.DeeNamingRules;
 import dtool.project.IModuleResolver;
 import dtool.project.NullModuleResolver;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -107,13 +106,6 @@ public class DToolClient {
 		Path filePath = validateFilePath(input);
 		return filePath == null ? null : getParsedModuleOrNull(filePath);
 	}
-	
-	public ParsedModule getParsedModuleOrNull(IModuleSource input) {
-		Path filePath = validateFilePath(input);
-		return filePath == null ? null : getParsedModuleOrNull(filePath);
-	}
-	
-	
 	public ParsedModule getParsedModuleOrNull(Path filePath) {
 		try {
 			return getModuleParseCache().getParsedModule(filePath);
@@ -124,7 +116,27 @@ public class DToolClient {
 		}
 	}
 	
-	public Module getParsedModuleNodeOrNull(ISourceModule input) {
+	public ParsedModule getParsedModuleOrNull(IModuleSource input) {
+		Path filePath = validateFilePath(input);
+		if(filePath == null) { 
+			return null;
+		}
+		if(!filePath.isAbsolute()) {
+			// If it's a special path, there will not be an underlying file, so we must retrieve source directly.
+			return getModuleParseCache().getParsedModule(filePath, input.getSourceContents());
+		}
+		return getParsedModuleOrNull(filePath);
+	}
+	
+	public ParsedModule getParsedModuleOrNull_updateSource(IModuleSource input) {
+		Path filePath = validateFilePath(input);
+		if(filePath == null) { 
+			return null;
+		}
+		return getModuleParseCache().getParsedModule(filePath, input.getSourceContents());
+	}
+	
+	public Module getModuleNodeOrNull(ISourceModule input) {
 		ParsedModule parseModule = getParsedModuleOrNull(input);
 		return parseModule == null ? null : parseModule.module;
 	}
@@ -234,7 +246,7 @@ public class DToolClient {
 		"Definition not found for reference: ";
 	
 	public static FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
-		Module module = DToolClient.getDefault().getParsedModuleNodeOrNull(sourceModule);
+		Module module = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		if(node == null) {
 			return  new FindDefinitionResult("No node found at offset: " + offset);
@@ -297,44 +309,42 @@ public class DToolClient {
 	
 	
 	
-	public PrefixDefUnitSearch doCodeCompletion(ISourceModule moduleUnit, int offset) {
-		DeeParserResult parseResult = getParsedModule_forDeprecatedAPIs(moduleUnit); 
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(moduleUnit.getScriptProject());
-		return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
+	public PrefixDefUnitSearch doCodeCompletion(ISourceModule moduleUnit, int offset) throws ModelException {
+		DeeParserResult parseResult = getParsedModuleOrNull(moduleUnit); 
+		return doCodeCompletionDo(parseResult, offset, moduleUnit);
 	}
 	
-	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, final int position) {
+	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws ModelException {
 		DeeParserResult parseResult;
-		IModuleResolver mr;
 		
 		if(moduleSource instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) moduleSource;
-			parseResult = getParsedModule_forDeprecatedAPIs(sourceModule);
-			mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
-		} else {
-			String defaultModuleName = DToolClient.getDefaultModuleName(moduleSource);
-			parseResult = DeeParser.parseSource(moduleSource.getSourceContents(), defaultModuleName);
+			sourceModule.makeConsistent(new NullProgressMonitor());
 			
-			IModelElement modelElement = moduleSource.getModelElement();
-			if(modelElement != null) {
-				mr = new DeeProjectModuleResolver(modelElement.getScriptProject());
-			} else {
-				mr = new NullModuleResolver();
-			}
+			parseResult = getParsedModuleOrNull(sourceModule);
+		} else {
+			parseResult = getParsedModuleOrNull_updateSource(moduleSource);
 		}
 		
-		return PrefixDefUnitSearch.doCompletionSearch(parseResult, position, mr);
+		IModelElement modelElement = moduleSource.getModelElement();
+		return doCodeCompletionDo(parseResult, offset, modelElement);
 	}
 	
-	public static String getDefaultModuleName(IModuleSource moduleSource) {
-		String fileName = moduleSource.getFileName();
-		return fileName == null ? "" : DeeNamingRules.getDefaultModuleNameFromFileName(fileName);
+	protected PrefixDefUnitSearch doCodeCompletionDo(DeeParserResult parseResultOrNull, int offset, 
+			IModelElement modelElement) throws ModelException {
+		if(parseResultOrNull == null) {
+			throw new ModelException(DeeCore.createCoreException("Source not found for content assist.", null));
+		}
+		IModuleResolver mr = modelElement == null ? 
+				new NullModuleResolver() :
+				new DeeProjectModuleResolver(modelElement.getScriptProject());
+		return PrefixDefUnitSearch.doCompletionSearch(parseResultOrNull, offset, mr);
 	}
 	
 	/* -----------------  ----------------- */
 	
 	public static String getDDocHTMLView(ISourceModule sourceModule, int offset) {
-		Module module = getDefault().getParsedModuleNodeOrNull(sourceModule);
+		Module module = getDefault().getModuleNodeOrNull(sourceModule);
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		
 		INamedElement relevantElementForDoc = null;

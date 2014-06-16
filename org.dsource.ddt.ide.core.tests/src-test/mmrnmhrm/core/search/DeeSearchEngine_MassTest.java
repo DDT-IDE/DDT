@@ -113,7 +113,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			ISourceModule sourceModule = key.getFirst();
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
-			Module deeModule = DToolClient.getDefault().getParsedModuleNodeOrNull(sourceModule);
+			Module deeModule = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
 			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;

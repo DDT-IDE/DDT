@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.Iterator;
 
+import mmrnmhrm.core.engine_client.DeeSelectionEngine;
 import mmrnmhrm.core.model_elements.DeeModelElement_Test;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -36,9 +37,9 @@ public class SelectionEngineSourceTests extends CoreResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
+	@SuppressWarnings("null")
 	@Override
 	public void runFindTest_________(MetadataEntry mde) {
-//		DirectDefUnitResolve resolveResult = doFindTest(mde);
 		DirectDefUnitResolve resolveResult = null;
 		
 		// TODO: adapt test to more than one defUnit returned?
