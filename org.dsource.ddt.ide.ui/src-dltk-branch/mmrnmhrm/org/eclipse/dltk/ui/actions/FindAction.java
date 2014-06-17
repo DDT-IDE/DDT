@@ -3,12 +3,12 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
-import mmrnmhrm.lang.ui.AbstractUIOperation;
 import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.actions.AbstractEditorOperation;
 import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
@@ -66,46 +66,56 @@ public abstract class FindAction extends SelectionDispatchAction {
 	
 	@Override
 	public void run() {
-		Module neoModule = EditorUtil.parseModuleFromEditorInput(deeEditor);
-
 		TextSelection sel = EditorUtil.getSelection(deeEditor);
-		int offset = sel.getOffset();
-		ASTNode elem = ASTNodeFinder.findElement(neoModule, offset);
-		run(elem);
-	}
-
-	private void run(ASTNode elem) {
-		if(elem instanceof DefSymbol) {
-			DefSymbol defSymbol = (DefSymbol) elem;
-			runOperation(defSymbol.getDefUnit());
-		} else if(elem instanceof Reference) {
-			Reference ref = (Reference) elem;
-			IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-			INamedElement defunit = ref.findTargetDefElement(new DeeProjectModuleResolver(scriptProject));
-			if(defunit == null) {
-				UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, 
-						"No DefUnit found when resolving reference.");
-			} else {
-				runOperation(defunit);
-			}
-		} else {
-			UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, 
-					"Element is not a Definition nor a Reference");
-		}
-	}
-
-	protected void runOperation(final INamedElement defUnit) {
-		new AbstractUIOperation(SEARCH_REFS) {
-			
-			@Override
-			protected Object doExecute() throws CoreException {
-				performNewSearch(defUnit);
-				return null;
-			}
-		}.executeSafe();
+		final int offset = sel.getOffset();
+		
+		new FindReferencesOperation(offset).execute();
+		
 	}
 	
-	protected void performNewSearch(INamedElement defunit) throws ModelException {
+	protected class FindReferencesOperation extends AbstractEditorOperation {
+		
+		protected final int offset;
+		
+		protected INamedElement defunit;
+		protected String errorMessage;
+		
+		public FindReferencesOperation(int offset) {
+			super(SEARCH_REFS, deeEditor);
+			this.offset = offset;
+		}
+		
+		@Override
+		protected void performOperation_do() throws ModelException {
+			if(errorMessage != null) {
+				UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, errorMessage);
+			}
+			if(defunit != null) {
+				startNewSearch(defunit);
+			}
+		}
+		
+		@Override
+		protected void performLongRunningComputation_do() {
+			Module neoModule = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
+			ASTNode elem = ASTNodeFinder.findElement(neoModule, offset);
+			if(elem instanceof DefSymbol) {
+				DefSymbol defSymbol = (DefSymbol) elem;
+				defunit = defSymbol.getDefUnit();
+			} else if(elem instanceof Reference) {
+				Reference ref = (Reference) elem;
+				IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
+				defunit = ref.findTargetDefElement(new DeeProjectModuleResolver(scriptProject));
+				if(defunit == null) {
+					errorMessage = "No DefUnit found when resolving reference.";
+				}
+			} else {
+				errorMessage = "Element is not a Definition nor a Reference";
+			}
+		}
+	}
+	
+	protected void startNewSearch(INamedElement defunit) throws ModelException {
 		assertNotNull(defunit);
 		DLTKSearchQuery query= new DLTKSearchQuery(createQuery(defunit));
 		if (query.canRunInBackground()) {

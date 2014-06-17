@@ -39,15 +39,15 @@ public final class FindReferencesInHierarchyAction extends FindAction {
 		}
 	}
 	
-	@Override
-	protected void runOperation(INamedElement defunit) {
-		if(defunit.getArcheType().isType()) {
-			super.runOperation(defunit);
-		} else {
-			UIUserInteractionsHelper.openWarning(getShell(), super.SEARCH_REFS, 
-				"Element is not a type");
-		}
-	}
+//	@Override
+//	protected void runOperation(INamedElement defunit) {
+//		if(defunit.getArcheType().isType()) {
+//			super.runOperation(defunit);
+//		} else {
+//			UIUserInteractionsHelper.openWarning(getShell(), super.SEARCH_REFS, 
+//				"Element is not a type");
+//		}
+//	}
 	
 	protected QuerySpecification createQuery(DefUnit defunit) throws ModelException {
 		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(deeEditor, false);

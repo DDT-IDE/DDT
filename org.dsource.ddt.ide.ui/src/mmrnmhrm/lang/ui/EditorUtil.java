@@ -85,34 +85,6 @@ public class EditorUtil {
 	
 	// ------------  Used by editor ------------ 
 	
-	public static Module parseModuleFromEditorInput(IEditorPart textEditor) {
-		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
-		
-		return sourceModule == null ? null : parseModuleForUI(sourceModule);
-	}
-	
-	public static Module parseModuleForUI(final ISourceModule sourceModule) {
-		if(Display.getCurrent() == null) {
-			return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule).module;
-		}
-		
-		try {
-			ProgressRunnableWithResult<ParsedModule> parseModuleTask = new ProgressRunnableWithResult<ParsedModule>() {
-				@Override
-				public ParsedModule doCall(IProgressMonitor monitor) 
-						throws InvocationTargetException, InterruptedException {
-					return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(sourceModule);
-				}
-			};
-			PlatformUI.getWorkbench().getProgressService().busyCursorWhile(parseModuleTask);
-			return parseModuleTask.result.module;
-		} catch (InvocationTargetException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		} catch (InterruptedException e) {
-			return null;
-		}
-	}
-	
 	public static Module getParsedModule_NoWaitInUI(IModuleSource input) {
 		if(Display.getCurrent() == null) {
 			return getModuleNode(DToolClient.getDefault().getParsedModuleOrNull(input));

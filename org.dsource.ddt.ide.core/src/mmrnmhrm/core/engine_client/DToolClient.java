@@ -160,11 +160,6 @@ public class DToolClient {
 		return parsedModule == null ? null : parsedModule.module;
 	}
 	
-	@Deprecated
-	public ParsedModule getParsedModule_forDeprecatedAPIs(ISourceModule input) {
-		return getParsedModuleOrNull(input);
-	}
-	
 	/* ----------------- working copy handling ----------------- */
 	
 	public ParsedModule getParsedModuleOrNull_fromBuildStructure(IModuleSource input) {
@@ -249,7 +244,7 @@ public class DToolClient {
 		Module module = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		if(node == null) {
-			return  new FindDefinitionResult("No node found at offset: " + offset);
+			return new FindDefinitionResult("No node found at offset: " + offset);
 		}
 		
 		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {

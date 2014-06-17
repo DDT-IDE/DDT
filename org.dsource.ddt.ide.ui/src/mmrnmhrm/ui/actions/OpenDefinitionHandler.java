@@ -37,7 +37,7 @@ public class OpenDefinitionHandler extends AbstractHandler  {
 	
 	public static FindDefinitionResult executeOperation(ITextEditor srcEditor, EOpenNewEditor openNewEditor) {
 		TextSelection sel = EditorUtil.getSelection(srcEditor);
-		return new OpenDefinitionOperation(srcEditor, openNewEditor, sel.getOffset()).executeSafeWithResult();
+		return new OpenDefinitionOperation(srcEditor, openNewEditor, sel.getOffset()).executeWithResult();
 	}
 	
 }

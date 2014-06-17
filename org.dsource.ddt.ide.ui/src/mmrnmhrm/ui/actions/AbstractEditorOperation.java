@@ -10,8 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.lang.ui.AbstractUIOperation;
+import mmrnmhrm.ui.DeeUI;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -28,6 +31,42 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.editor = editor;
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
+	}
+	
+	
+	@Override
+	protected void performOperation() throws CoreException {
+		if(sourceModule == null) {
+			throw new CoreException(DeeUI.createErrorStatus("No valid editor input in current editor.", null));
+		}
+		
+		try {
+			performLongRunningComputation();
+		} catch (InterruptedException e) {
+			return;
+		}
+		
+		performOperation_do();
+	}
+	
+	protected void performOperation_do() throws CoreException { }
+	
+	
+	protected void dialogError(String msg) {
+		UIUserInteractionsHelper.openError(window.getShell(), operationName, msg);
+	}
+	
+	protected void dialogWarning(String msg) {
+		UIUserInteractionsHelper.openWarning(window.getShell(), operationName, msg);
+	}
+	
+	protected void dialogInfo(String msg) {
+		UIUserInteractionsHelper.openInfo(window.getShell(), operationName, msg);
+	}
+	
+	protected void handleSystemError(String msg) {
+		DeeCore.logError(msg);
+		dialogError(msg);
 	}
 	
 }

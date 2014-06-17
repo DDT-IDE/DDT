@@ -31,6 +31,7 @@ import dtool.ast.definitions.Module;
 import dtool.project.CommonModuleResolver;
 import dtool.project.DeeNamingRules;
 
+@Deprecated
 public class DeeProjectModuleResolver extends CommonModuleResolver{
 	
 	protected final IScriptProject scriptProject;
@@ -57,7 +58,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 	public ISourceModule findModuleUnit(String[] packages, String moduleName, ISourceModule workingCopySourceModule)
 		throws ModelException {
 		if(workingCopySourceModule != null) {
-			Module wcModule = DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(workingCopySourceModule).module;
+			Module wcModule = DToolClient.getDefault().getModuleNodeOrNull(workingCopySourceModule);
 			
 			String wcModuleName = wcModule.getName();
 			String[] wcPackages = wcModule.getDeclaredPackages();
@@ -80,7 +81,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		if(moduleUnit == null)
 			return null;
 		
-		return DToolClient.getDefault().getParsedModule_forDeprecatedAPIs(moduleUnit).module;
+		return DToolClient.getDefault().getModuleNodeOrNull(moduleUnit);
 	}
 	
 	public ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 

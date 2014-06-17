@@ -16,11 +16,13 @@ import org.eclipse.swt.widgets.Shell;
 
 public class UIUserInteractionsHelper {
 	
+	protected static final String MSG_EXECUTING_OPERATION 
+		= "Executing {0}.";
 	protected static final String MSG_ERROR_EXECUTING_OPERATION 
-		= "Error executing operation.";
+		= "Error executing {0}.";
 	protected static final String MSG_INTERNAL_ERROR_EXECUTING_OPERATION 
-		= "Internal Error executing operation.";
-
+		= "Internal Error executing {0}.";
+	
 	
 	protected static boolean unitTestsMode = false;
 	

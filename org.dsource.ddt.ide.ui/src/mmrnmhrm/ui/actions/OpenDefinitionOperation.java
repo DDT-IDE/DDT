@@ -23,16 +23,13 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.DeeUI;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.SourceRange;
@@ -48,7 +45,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	protected final EOpenNewEditor openNewEditor;
 	protected final int offset;
 	
-	protected FindDefinitionResult result;
+	protected FindDefinitionResult findDefResult;
 	
 	public OpenDefinitionOperation(ITextEditor editor, EOpenNewEditor openNewEditor, int offset) {
 		super(OPEN_DEFINITION_OPNAME, editor);
@@ -56,21 +53,20 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		this.offset = offset;
 	}
 	
-	public FindDefinitionResult executeSafeWithResult() {
-		executeSafe();
-		return result;
+	public FindDefinitionResult executeWithResult() {
+		execute();
+		return findDefResult;
 	}
 	
 	@Override
-	protected FindDefinitionResult doExecute() throws CoreException {
-		if(sourceModule == null) {
-			throw new CoreException(DeeUI.createErrorStatus("No valid editor input in current editor.", null));
-		}
-		this.result = DToolClient.doFindDefinition(sourceModule, offset);
-		
-		assertNotNull(result);
-		handleOpenDefinitionResult(result);
-		return result;
+	protected void performOperation_do() throws CoreException {
+		assertNotNull(findDefResult);
+		handleOpenDefinitionResult(findDefResult);
+	}
+	
+	@Override
+	protected void performLongRunningComputation_do() {
+		findDefResult = DToolClient.doFindDefinition(sourceModule, offset);
 	}
 	
 	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CoreException {
@@ -78,26 +74,25 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		List<FindDefinitionResultEntry> results = openDefResult.results;
 		
 		if(openDefResult.errorMessage != null) {
-			dialogError(window.getShell(), openDefResult.errorMessage);
+			dialogError(openDefResult.errorMessage);
 			return;
 		}
 		
 		if(results.size() > 1) {
-			dialogInfo(window.getShell(), "Multiple definitions found: \n" 
+			dialogInfo("Multiple definitions found: \n" 
 					+ namedResultsToString(results, "\n") + "\nOpening the first one.");
 		}
 		
 		FindDefinitionResultEntry fdResultEntry = results.get(0);
 		
 		if(fdResultEntry == null || fdResultEntry.isLanguageIntrinsic()) {
-			dialogInfo(window.getShell(), 
-				"Cannot open editor, element \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
+			dialogInfo("Cannot open editor, element \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
 			return;
 		}
 		SourceRange sourceRange = fdResultEntry.sourceRange;
 		if(sourceRange == null) {
 			String msg = "Symbol " +fdResultEntry.extendedName + " has no source range info!";
-			handleSystemError(window, msg);
+			handleSystemError(msg);
 			return;
 		}
 		
@@ -107,7 +102,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 			newInput = editor.getEditorInput();
 		} else {
 			if(newEditorFilePath == null) {
-				handleSystemError(window, "no file path provided");
+				handleSystemError("no file path provided");
 				return;
 			}
 			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
@@ -152,23 +147,6 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 			}
 			EditorUtil.setEditorSelection(targetEditor, sourceRange);
 		}
-	}
-	
-	protected void handleSystemError(final IWorkbenchWindow window, String msg) {
-		DeeCore.logError(msg);
-		dialogError(window.getShell(), msg);
-	}
-	
-	protected void dialogError(Shell shell, String msg) {
-		UIUserInteractionsHelper.openError(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
-	}
-	
-	protected void dialogWarning(Shell shell, String msg) {
-		UIUserInteractionsHelper.openWarning(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
-	}
-	
-	protected void dialogInfo(Shell shell, String msg) {
-		UIUserInteractionsHelper.openInfo(shell, OpenDefinitionOperation.OPEN_DEFINITION_OPNAME, msg);
 	}
 	
 }
