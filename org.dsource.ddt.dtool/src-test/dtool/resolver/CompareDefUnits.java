@@ -12,12 +12,12 @@ import java.util.Set;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.INamedElement;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
 /**
  * This is an old version of what {@link DefUnitResultsChecker} does now
  */
-public class CompareDefUnits extends DToolBaseTest {
+public class CompareDefUnits extends CommonDToolTest {
 	
 	public static Function<String, String> fnStringToSubString(final int index) {
 		return new Function<String, String>() {

@@ -3,13 +3,13 @@ package dtool.sourcegen;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.tests.CommonTest;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor.StandardErrors;
 import dtool.sourcegen.TemplatedSourceProcessor.TemplatedSourceProcessingException;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
+import dtool.tests.CommonDToolTest;
 
-public class TemplatedSourceProcessorCommonTest extends CommonTest {
+public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 	
 	public static class TestsTemplatedSourceProcessor extends TemplatedSourceProcessor {
 		@Override

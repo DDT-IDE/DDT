@@ -14,9 +14,9 @@ import org.junit.After;
 import dtool.resolver.CompareDefUnits;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.ECompletionResultStatus;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
-public class CodeCompletion__Common extends DToolBaseTest {
+public class CodeCompletion__Common extends CommonDToolTest {
 	
 	protected final ISourceModule srcModule;
 	protected ICodeCompletionTester ccTester;

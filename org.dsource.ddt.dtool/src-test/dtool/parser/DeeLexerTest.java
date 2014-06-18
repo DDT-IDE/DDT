@@ -4,9 +4,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
-public class DeeLexerTest extends DToolBaseTest {
+public class DeeLexerTest extends CommonDToolTest {
 	
 	@Test
 	public void basicLexerTest() throws Exception { basicLexerTest$(); }

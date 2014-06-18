@@ -24,11 +24,11 @@ import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubDependecyRef;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
 
-public class CommonDubTest extends DToolBaseTest {
+public class CommonDubTest extends CommonDToolTest {
 	
 	public static final Path DUB_TEST_BUNDLES = DToolTestResources.getTestResourcePath("dub");	
 	

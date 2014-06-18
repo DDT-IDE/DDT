@@ -12,10 +12,10 @@ import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 import dtool.tests.utils.MiscNodeUtils;
 
-public class DeclarationAttributesTest extends DToolBaseTest {
+public class DeclarationAttributesTest extends CommonDToolTest {
 	
 	@Test
 	public void testAttribs() throws Exception { testAttribs$(); }

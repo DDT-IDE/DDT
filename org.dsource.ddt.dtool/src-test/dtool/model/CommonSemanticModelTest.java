@@ -32,11 +32,11 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.utils.MiscFileUtils;
 
-public class CommonSemanticModelTest extends DToolBaseTest {
+public class CommonSemanticModelTest extends CommonDToolTest {
 	
 	public static class Tests_DToolServer extends DToolServer {
 		

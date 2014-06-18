@@ -4,7 +4,7 @@ package dtool.tests;
 import java.io.File;
 
 
-public class DeeFileBasedTest extends DToolBaseTest {
+public class DeeFileBasedTest extends CommonDToolTest {
 	
 	protected final File file;
 	

@@ -23,6 +23,7 @@ import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
+import dtool.tests.CommonDToolTest;
 
 public class DubModelManagerTest extends AbstractDubModelManagerTest {
 	
@@ -134,7 +135,7 @@ public class DubModelManagerTest extends AbstractDubModelManagerTest {
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("nameMISSING", "xptobundle")+ jsFileEnd(),
 			project, 
-			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, IGNORE_STR));
+			bundle(DubManifestParser.ERROR_BUNDLE_NAME_UNDEFINED, CommonDToolTest.IGNORE_STR));
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 

@@ -16,7 +16,7 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.project.CommonModuleResolver;
 import dtool.project.DeeNamingRules;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
 public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 	
@@ -56,7 +56,7 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 				
 				String moduleName = StringUtil.substringAfterLastMatch(moduleFQName, ".");
 				
-				String source = DToolBaseTest.readStringFromFile_PreserveBOM(child);
+				String source = CommonDToolTest.readStringFromFile_PreserveBOM(child);
 				DeeParserResult parseResult = DeeParser.parseSource(source, moduleName);
 				modules.put(moduleFQName, parseResult);
 			} else {

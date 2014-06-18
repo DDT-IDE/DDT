@@ -13,12 +13,9 @@ package dtool.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,11 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.VoidFunction;
-import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.SimpleLogger;
-import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.tests.CommonTest;
+import melnorme.utilbox.tests.CommonTestExt;
 
 import org.junit.Before;
 
@@ -38,8 +32,7 @@ import dtool.project.DeeNamingRules;
 import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
-
-public class DToolBaseTest extends CommonTest {
+public class CommonDToolTest extends CommonTestExt {
 	
 	public static PrintStream testsLogger = System.out;
 	public static SimpleLogger testsLogVerbose = SimpleLogger.create("verbose");
@@ -55,43 +48,9 @@ public class DToolBaseTest extends CommonTest {
 		}
 	}
 	
-	/* -------------  Resources stuff   ------------ */
-	
-	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
-	
-	public static String readStringFromFile(Path path) {
-		return readStringFromFile(path.toFile());
-	}
-	public static String readStringFromFile(File file) {
-		try {
-			return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
 	public static String readStringFromFile_PreserveBOM(File file) {
 		try {
 			return NewUtils.readStringFromFile_PreserveBOM(file, DEFAULT_TESTDATA_ENCODING);
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
-	public static void writeStringToFile(Path file, String string) {
-		writeStringToFile(file.toFile(), string);
-	}
-	public static void writeStringToFile(File file, String string) {
-		try {
-			StreamUtil.writeStringToStream(string, new FileOutputStream(file), DEFAULT_TESTDATA_ENCODING);
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
-	public static void appendStringToFile(File file, String string) {
-		try {
-			StreamUtil.writeStringToStream(string, new FileOutputStream(file, true), DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

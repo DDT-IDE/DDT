@@ -2,9 +2,9 @@ package dtool.parser;
 
 import org.junit.Test;
 
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
-public abstract class CommonParameterizedTest extends DToolBaseTest {
+public abstract class CommonParameterizedTest extends CommonDToolTest {
 	
 	protected final Runnable testRunnable;
 	

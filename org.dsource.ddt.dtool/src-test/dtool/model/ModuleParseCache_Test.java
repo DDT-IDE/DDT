@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.model;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.FileNotFoundException;
@@ -19,7 +18,6 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.BeforeClass;
@@ -29,9 +27,10 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
+import dtool.tests.CommonDToolTest;
 import dtool.tests.utils.MiscFileUtils;
 
-public class ModuleParseCache_Test {
+public class ModuleParseCache_Test extends CommonDToolTest {
 	
 	public static final BundlePath XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
 	
@@ -66,7 +65,7 @@ public class ModuleParseCache_Test {
 		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH);
 		assertTrue(mpm.getParsedModule(cuPath) == parsedModule);
 		
-		FileUtil.writeStringToFile(CU_PATH.toFile(), SOURCE1, StringUtil.UTF8);
+		writeStringToFile(CU_PATH, SOURCE1);
 		assertEquals(mpm.getParsedModule(CU_PATH).source, SOURCE1); /*BUG here tests sometimes fail here */
 		
 		// Test caching
@@ -76,7 +75,7 @@ public class ModuleParseCache_Test {
 		checkGetParsedModule(CU_PATH, "blah");
 		
 		mpm.getParsedModule(CU_PATH, WC_SOURCE);
-		FileUtil.writeStringToFile(CU_PATH.toFile(), SOURCE3, StringUtil.UTF8);
+		writeStringToFile(CU_PATH, SOURCE3);
 		// Check working copy source still takes precedence
 		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(WC_SOURCE));
 		checkGetParsedModule(CU_PATH, WC_SOURCE);
@@ -91,7 +90,7 @@ public class ModuleParseCache_Test {
 	protected void testOptmizationsAfterDiscard() throws IOException, FileNotFoundException, ParseSourceException {
 		mpm.getParsedModule(CU_PATH, "reset");
 		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH, WC_SOURCE);
-		FileUtil.writeStringToFile(CU_PATH.toFile(), WC_SOURCE, StringUtil.UTF8);
+		writeStringToFile(CU_PATH, WC_SOURCE);
 		mpm.discardWorkingCopy(CU_PATH);
 		ParsedModule newParsedModule = mpm.getParsedModule(CU_PATH);
 		// Test that a reparse did not happen, even though file is newer (but source is same)

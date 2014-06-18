@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import melnorme.utilbox.core.fntypes.Function;
-import dtool.tests.DToolBaseTest;
+import dtool.tests.CommonDToolTest;
 
 /**
  * Miscellaneous utils relating to {@link File}'s.
@@ -126,7 +126,7 @@ public class MiscFileUtils {
 	
 	public static void unzipFile(File zipFile, File parentDir) throws IOException {
 		ZipFile zip = new ZipFile(zipFile);
-		DToolBaseTest.testsLogger.println("== Unzipping: " + zipFile);
+		CommonDToolTest.testsLogger.println("== Unzipping: " + zipFile);
 		try {
 			Enumeration<? extends ZipEntry> entries = zip.entries();
 			
@@ -142,8 +142,8 @@ public class MiscFileUtils {
 				
 				entryTargetFile.getParentFile().mkdirs();
 				Path destPath = entryTargetFile.toPath();
-				DToolBaseTest.testsLogVerbose.println("Unzipped: " + entry);
-				DToolBaseTest.testsLogVerbose.println("  to: " + destPath);
+				CommonDToolTest.testsLogVerbose.println("Unzipped: " + entry);
+				CommonDToolTest.testsLogVerbose.println("  to: " + destPath);
 				Files.copy(zip.getInputStream(entry), destPath);
 			}
 			
