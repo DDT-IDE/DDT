@@ -26,15 +26,14 @@ public class ResolvedBundle {
 	
 	public final DubBundle bundle;
 	public final BundlePath bundlePath;
-	
-	protected final List<BundlePath> depBundlePaths;
+	protected final List<BundlePath> bundleDependencies;
 	protected final Map<ModuleFullName, Path> bundleModules;
 	
 	public ResolvedBundle(DubBundle bundle, List<BundlePath> depBundlePaths, 
 			Map<ModuleFullName, Path> bundleModules) {
 		this.bundle = bundle;
 		this.bundlePath = assertNotNull(bundle.getBundlePath());
-		this.depBundlePaths = Collections.unmodifiableList(depBundlePaths);
+		this.bundleDependencies = Collections.unmodifiableList(depBundlePaths);
 		this.bundleModules = Collections.unmodifiableMap(bundleModules);
 	}
 	
@@ -47,7 +46,7 @@ public class ResolvedBundle {
 	}
 	
 	public List<BundlePath> getBundleDeps() {
-		return depBundlePaths;
+		return bundleDependencies;
 	}
 	
 	public Map<ModuleFullName, Path> getBundleModuleFiles() {

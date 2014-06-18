@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
@@ -25,6 +26,7 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -46,6 +48,8 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
+import dtool.model.BundleSemanticResolution.ResolvedModule;
+import dtool.model.DToolServer;
 import dtool.model.ModuleParseCache;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult;
@@ -61,6 +65,7 @@ import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
  */
 public class DToolClient {
 	
+
 	public static DToolClient getDefault() {
 		return DeeCore.getDToolClient();
 	}
@@ -72,9 +77,12 @@ public class DToolClient {
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
 	
 	protected final ModuleParseCache moduleParseCache = new ModuleParseCache();
+	protected final DToolServer dtoolServer;
+	
 	
 	public DToolClient() {
 		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
+		dtoolServer = new DToolServer();
 	}
 	
 	public void shutdown() {
@@ -126,14 +134,6 @@ public class DToolClient {
 			return getModuleParseCache().getParsedModule(filePath, input.getSourceContents());
 		}
 		return getParsedModuleOrNull(filePath);
-	}
-	
-	public ParsedModule getParsedModuleOrNull_updateSource(IModuleSource input) {
-		Path filePath = validateFilePath(input);
-		if(filePath == null) { 
-			return null;
-		}
-		return getModuleParseCache().getParsedModule(filePath, input.getSourceContents());
 	}
 	
 	public Module getModuleNodeOrNull(ISourceModule input) {
@@ -304,36 +304,66 @@ public class DToolClient {
 	
 	
 	
-	public PrefixDefUnitSearch doCodeCompletion(ISourceModule moduleUnit, int offset) throws ModelException {
-		DeeParserResult parseResult = getParsedModuleOrNull(moduleUnit); 
-		return doCodeCompletionDo(parseResult, offset, moduleUnit);
+	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
+		Path filePath = validateFilePath(sourceModule);
+		return doCodeCompletion_Do(filePath, offset, sourceModule);
 	}
 	
-	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws ModelException {
-		DeeParserResult parseResult;
+	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws CoreException {
+		Path filePath;
 		
 		if(moduleSource instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) moduleSource;
+			filePath = validateFilePath(sourceModule);
+			// Update source to engine server.
 			sourceModule.makeConsistent(new NullProgressMonitor());
-			
-			parseResult = getParsedModuleOrNull(sourceModule);
 		} else {
-			parseResult = getParsedModuleOrNull_updateSource(moduleSource);
+			filePath = validateFilePath(moduleSource);
+			// Update source to engine server.
+			if(filePath != null) {
+				getModuleParseCache().getParsedModule(filePath, moduleSource.getSourceContents());
+			}
 		}
 		
 		IModelElement modelElement = moduleSource.getModelElement();
-		return doCodeCompletionDo(parseResult, offset, modelElement);
+		return doCodeCompletion_Do(filePath, offset, modelElement);
 	}
 	
-	protected PrefixDefUnitSearch doCodeCompletionDo(DeeParserResult parseResultOrNull, int offset, 
-			IModelElement modelElement) throws ModelException {
-		if(parseResultOrNull == null) {
-			throw new ModelException(DeeCore.createCoreException("Source not found for content assist.", null));
+	private static final boolean USE_LEGACY_RESOLVER = true;
+	
+	protected PrefixDefUnitSearch doCodeCompletion_Do(Path filePath, int offset, 
+			IModelElement modelElement) throws CoreException {
+		if(filePath == null) { 
+			throw DeeCore.createCoreException("Invalid path for content assist source.", null);
 		}
-		IModuleResolver mr = modelElement == null ? 
-				new NullModuleResolver() :
-				new DeeProjectModuleResolver(modelElement.getScriptProject());
-		return PrefixDefUnitSearch.doCompletionSearch(parseResultOrNull, offset, mr);
+		
+		if(USE_LEGACY_RESOLVER) {
+			
+			DeeParserResult parseResult;
+			try {
+				parseResult = getModuleParseCache().getParsedModule(filePath);
+			} catch (ParseSourceException e) {
+				throw DeeCore.createCoreException("Error reading source of content assist file.", e);
+			}
+			
+			IModuleResolver mr = modelElement == null ? 
+					new NullModuleResolver() :
+					new DeeProjectModuleResolver(modelElement.getScriptProject());
+			return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
+		}
+		
+		ResolvedModule resolvedModule;
+		try {
+			resolvedModule = getResolvedModule(filePath);
+		} catch (ExecutionException e) {
+			throw DeeCore.createCoreException("Error performing code complete operation.", e.getCause());
+		}
+		return PrefixDefUnitSearch.doCompletionSearch(resolvedModule.getParsedModule(), offset, 
+			resolvedModule.getModuleResolver());
+	}
+	
+	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+		return dtoolServer.getSemanticManager().getResolutionModule(filePath);
 	}
 	
 	/* -----------------  ----------------- */

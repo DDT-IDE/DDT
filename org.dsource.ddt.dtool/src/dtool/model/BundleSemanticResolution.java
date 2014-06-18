@@ -13,6 +13,7 @@ package dtool.model;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,48 @@ public class BundleSemanticResolution extends ResolvedBundle implements IModuleR
 			}
 		}
 		return null;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected final Map<Path, ResolvedModule> bundleResolutionModules = new HashMap<>();
+	
+	public ResolvedModule getResolvedModule(Path filePath, ModuleParseCache parseCache) 
+			throws ParseSourceException {
+		
+		// TODO: proper synchronization
+		
+		ResolvedModule resolutionModule = bundleResolutionModules.get(filePath);
+		if(resolutionModule == null) {
+			ParsedModule parsedModule = parseCache.getParsedModule(filePath);
+			resolutionModule = new ResolvedModule(parsedModule, this);
+			bundleResolutionModules.put(filePath, resolutionModule);
+		}
+		return resolutionModule;
+	}
+	
+	public static class ResolvedModule {
+		
+		protected final ParsedModule parsedModule;
+		protected final IModuleResolver mr;		
+		
+		public ResolvedModule(ParsedModule parsedModule, IModuleResolver mr) {
+			this.parsedModule = parsedModule;
+			this.mr = mr;
+		}
+		
+		public Module getModuleNode() {
+			return parsedModule.module;
+		}
+		
+		public ParsedModule getParsedModule() {
+			return parsedModule;
+		}
+		
+		public IModuleResolver getModuleResolver() {
+			return mr;
+		}
+		
 	}
 	
 }

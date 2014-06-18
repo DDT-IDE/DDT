@@ -17,8 +17,8 @@ import java.nio.file.Path;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.ModuleSource;
-import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 import dtool.resolver.DefUnitResultsChecker;
@@ -55,14 +55,14 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 		// Error case
 		try {
-			client.doCodeCompletionDo(null, 0, null);
+			client.doCodeCompletion_Do(null, 0, null);
 			assertFail();
-		} catch (ModelException e) {
+		} catch (CoreException e) {
 		}
 		
 	}
 	
-	protected void testCodeCompletion(ModuleSource moduleSource, int offset, String... results) throws ModelException {
+	protected void testCodeCompletion(ModuleSource moduleSource, int offset, String... results) throws CoreException {
 		PrefixDefUnitSearch cc = client.doCodeCompletion(moduleSource, offset);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}

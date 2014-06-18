@@ -40,7 +40,7 @@ public class CommonSemanticModelTest extends DToolBaseTest {
 	
 	public static class Tests_DToolServer extends DToolServer {
 		
-		public Tests_DToolServer() throws IOException {
+		public Tests_DToolServer() {
 		}
 		
 		@Override

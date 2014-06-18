@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.DeeCoreMessages;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
@@ -11,7 +12,6 @@ import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
-import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -42,7 +42,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				requestor.accept(proposal);				
 			}
 			
-		} catch (ModelException e) {
+		} catch (CoreException e) {
 			handleCompletionFailure(e.getMessage(), position);
 		} finally {
 			requestor.endReporting();

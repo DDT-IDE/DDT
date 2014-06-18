@@ -5,6 +5,7 @@ import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IBuffer;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -29,7 +30,7 @@ public class CodeCompletion__Common extends DToolBaseTest {
 		this.ccTester = new ICodeCompletionTester() {
 			@Override
 			public void testComputeProposalsWithRepLen(int repOffset, int prefixLen,
-					int repLen, String... expectedProposals) throws ModelException {
+					int repLen, String... expectedProposals) throws CoreException {
 				testComputeProposalsDo(repOffset, repLen, expectedProposals);
 			}
 			
@@ -57,25 +58,25 @@ public class CodeCompletion__Common extends DToolBaseTest {
 	}
 	
 	protected PrefixDefUnitSearch testUnavailableCompletion(int offset, ECompletionResultStatus caResult) 
-			throws ModelException {
+			throws CoreException {
 		PrefixDefUnitSearch search = DToolClient.getDefault().doCodeCompletion(srcModule, offset);
 		assertTrue(search.getResultCode() == caResult);
 		return search;
 	}
 	
 	public void testComputeProposalsWithRepLen(int repOffset, int prefixLen, int repLen, 
-		String... expectedProposals) throws ModelException {
+		String... expectedProposals) throws CoreException {
 		ccTester.testComputeProposalsWithRepLen(repOffset, prefixLen, repLen, expectedProposals);
 	}
 	
 	public final void testComputeProposals(int repOffset, int prefixLen, 
-			String... expectedProposals) throws ModelException {
+			String... expectedProposals) throws CoreException {
 		testComputeProposalsWithRepLen(repOffset, prefixLen, 0, expectedProposals);
 	}
 	
 	
 	protected void testComputeProposalsDo(int repOffset, int repLen, String[] expectedProposals) 
-		throws ModelException {
+		throws CoreException {
 		
 		PrefixDefUnitSearch completionSearch = DToolClient.getDefault().doCodeCompletion(srcModule, repOffset);
 		

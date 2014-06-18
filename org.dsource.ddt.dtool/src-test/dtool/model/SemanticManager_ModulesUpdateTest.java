@@ -15,8 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,6 +26,7 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.model.BundleSemanticResolution.ResolvedModule;
 
 public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 	
@@ -50,7 +53,10 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 		__initSemanticManager();
 		 
 		BundleSemanticResolution complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
-		 
+		
+		// Test file that belongs to no bundle.
+		sm.reportFileChange(TestsWorkingDir.getWorkingDir().toPath().resolve(".."));
+		
 		// Test add module file outside of import folder
 		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("newModule.d"));
 		// Test invalid module file name
@@ -113,6 +119,25 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 		assertTrue(FileUtil.deleteIfExists(file));
 		sm.reportFileChange(file);
 		assertTrue(file.toFile().exists() == false);
+	}
+	
+	@Test
+	public void testModules() throws Exception { testModules$(); }
+	public void testModules$() throws ExecutionException {
+		sm = new SemanticManager(new Tests_DToolServer());
+		
+		sm.getUpdatedResolution(COMPLEX_LIB);
+		Path complexLib_module = COMPLEX_LIB.path.resolve("source/complex_lib.d");
+		
+		ResolvedModule semModule = sm.getResolutionModule(complexLib_module);
+		assertEquals(semModule.getModuleNode().getName(), "complex_lib");
+		
+		assertTrue(semModule == sm.getResolutionModule(complexLib_module)); // Check instance remains same.
+		
+		sm.reportFileChange(complexLib_module);
+		
+		// Check new instance returned.
+		assertTrue(semModule != sm.getResolutionModule(complexLib_module)); 
 	}
 	
 }

@@ -23,9 +23,13 @@ import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
+import dtool.model.BundleSemanticResolution.ResolvedModule;
+import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.model.util.CachingEntry;
 import dtool.model.util.CachingRegistry;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.project.DeeNamingRules;
+import dtool.project.NullModuleResolver;
 
 /**
  * A caching hierarchical registry.
@@ -285,7 +289,7 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	protected BundlePath findBundleForPath(Path dir) {
-		if(dir == null) {
+		if(dir == null || !dir.isAbsolute()) {
 			return null;
 		}
 		BundlePath bundlePath = BundlePath.create(dir);
@@ -295,8 +299,21 @@ public class SemanticManager extends AbstractSemanticManager {
 		return findBundleForPath(dir.getParent());
 	}
 	
-//	public boolean isModuleListStale(BundlePath bundlePath) {
-//		return getEntry(bundlePath).isStale(); /*BUG here*/
-//	}
+	public ResolvedModule getResolutionModule(Path filePath) throws ExecutionException {
+		BundlePath bundlePath = findBundleForPath(filePath);
+		
+		try {
+			if(bundlePath == null) {
+				ParsedModule parsedModule = parseCache.getParsedModule(filePath);
+				return new ResolvedModule(parsedModule, new NullModuleResolver());
+			} else {
+				BundleSemanticResolution bundleSR = getUpdatedResolution(bundlePath);
+				return bundleSR.getResolvedModule(filePath, parseCache);
+			}
+		} catch (ParseSourceException e) {
+			throw new ExecutionException(e);
+		}
+		
+	}
 	
 }
