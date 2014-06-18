@@ -110,7 +110,8 @@ public class BundleSemanticResolution extends ResolvedBundle implements IModuleR
 	@Override
 	public Module findModule(String[] packages, String module) throws Exception {
 		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, module));
-		return getParsedModule(moduleFullName).getModuleNode();
+		ParsedModule parsedModule = getParsedModule(moduleFullName);
+		return parsedModule == null ? null : parsedModule.getModuleNode();
 	}
 	
 	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {

@@ -24,7 +24,7 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
 
-public class CoreModelManagerTest extends AbstractDubModelManagerTest {
+public class DubModelManagerTest extends AbstractDubModelManagerTest {
 	
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }

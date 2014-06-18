@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.AfterClass;
@@ -54,8 +55,10 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 		 
 		BundleSemanticResolution complexLibSR = testGetUpdatedResolution(COMPLEX_LIB);
 		
-		// Test file that belongs to no bundle.
+		// Test file that belongs to no bundle : no effect.
 		sm.reportFileChange(TestsWorkingDir.getWorkingDir().toPath().resolve(".."));
+		// Test non-absolute path: no effect.
+		sm.reportFileChange(MiscUtil.createPath("blah"));
 		
 		// Test add module file outside of import folder
 		testNoEffectFileChange(BASIC_LIB, BASIC_LIB.resolve("newModule.d"));
@@ -121,6 +124,9 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 		assertTrue(file.toFile().exists() == false);
 	}
 	
+	protected static final String SOURCE1 = "module source_change1;";
+	protected static final String SOURCE2 = "module change2;";
+	
 	@Test
 	public void testModules() throws Exception { testModules$(); }
 	public void testModules$() throws ExecutionException {
@@ -129,15 +135,30 @@ public class SemanticManager_ModulesUpdateTest extends CommonSemanticModelTest {
 		sm.getUpdatedResolution(COMPLEX_LIB);
 		Path complexLib_module = COMPLEX_LIB.path.resolve("source/complex_lib.d");
 		
-		ResolvedModule semModule = sm.getResolutionModule(complexLib_module);
+		ResolvedModule semModule = sm.getResolvedModule(complexLib_module);
 		assertEquals(semModule.getModuleNode().getName(), "complex_lib");
 		
-		assertTrue(semModule == sm.getResolutionModule(complexLib_module)); // Check instance remains same.
+		assertTrue(semModule == sm.getResolvedModule(complexLib_module)); // Check instance remains same.
 		
 		sm.reportFileChange(complexLib_module);
 		
 		// Check new instance returned.
-		assertTrue(semModule != sm.getResolutionModule(complexLib_module)); 
+		assertTrue(semModule != sm.getResolvedModule(complexLib_module));
+		
+		
+		assertEquals(sm.getResolvedModule(complexLib_module).getModuleNode().getName(), "complex_lib");
+		// Test updateWorkingCopyAndParse
+		sm.updateWorkingCopyAndParse(complexLib_module, SOURCE1);
+		assertEquals(sm.getResolvedModule(complexLib_module).getModuleNode().getName(), "source_change1");
+		
+		sm.updateWorkingCopyAndParse(complexLib_module, SOURCE2);
+		assertEquals(sm.getResolvedModule(complexLib_module).getModuleNode().getName(), "change2");
+		
+		sm.updateWorkingCopyAndParse(complexLib_module, SOURCE2);
+		ResolvedModule resolvedModule = sm.getResolvedModule(complexLib_module);
+		sm.updateWorkingCopyAndParse(complexLib_module, SOURCE2);
+		// Test optimization: resolved module does not change if updated source was the same
+		assertTrue(resolvedModule == sm.getResolvedModule(complexLib_module));
 	}
 	
 }

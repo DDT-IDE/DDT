@@ -16,28 +16,22 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.core.projectmodel.DubBuildpathContainer.isDubBuildpathEntry;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.IteratorUtil;
-import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement;
 import mmrnmhrm.tests.BaseDeeTest;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -49,10 +43,10 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
+import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
-import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
 
@@ -80,17 +74,6 @@ public abstract class AbstractDubModelManagerTest extends BaseDeeTest {
 				DubDescribeParserTest.cleanupDubRepositoriesPath();
 			}
 		});
-	}
-	
-	public static String readFileContents(Path path) throws IOException {
-		assertTrue(path.isAbsolute());
-		return FileUtil.readStringFromFile(path.toFile(), StringUtil.UTF8);
-	}
-	
-	public static void writeStringToFile(IProject project, String name, String contents) 
-			throws CoreException {
-		IFile file = project.getFile(name);
-		ResourceUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
 	}
 	
 	public static String jsObject(String... entries) {

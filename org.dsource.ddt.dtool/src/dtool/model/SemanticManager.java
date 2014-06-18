@@ -255,7 +255,6 @@ public class SemanticManager extends AbstractSemanticManager {
 	/* ----------------- file updates handling ----------------- */
 	
 	public void reportFileChange(Path file) {
-		file = file.toAbsolutePath().normalize();
 		BundlePath bundlePath = findBundleForPath(file);
 		SemanticResolutionEntry entry = getEntry(bundlePath);
 		
@@ -299,7 +298,22 @@ public class SemanticManager extends AbstractSemanticManager {
 		return findBundleForPath(dir.getParent());
 	}
 	
-	public ResolvedModule getResolutionModule(Path filePath) throws ExecutionException {
+	public ParsedModule updateWorkingCopyAndParse(Path filePath, String source) {
+		ParsedModule previousParsedModule = parseCache.getExistingParsedModule(filePath);
+		ParsedModule parsedModule = parseCache.getParsedModule(filePath, source);
+		// Note: reportFileChange must occur after getParsedModule
+		// Also, it will have no effect if filepath is for a working copy that has no underlying file. That is ok.
+		if(parsedModule != previousParsedModule) {
+			reportFileChange(filePath);
+		}
+		return parsedModule;
+	}
+	
+	public void discardWorkingCopy(Path filePath) {
+		// TODO Auto-generated method stub
+	}
+	
+	public ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
 		BundlePath bundlePath = findBundleForPath(filePath);
 		
 		try {

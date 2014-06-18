@@ -46,16 +46,16 @@ public class DeeCoreTestResources {
 		return new Path(workingDirFile.getAbsolutePath());
 	}
 	
-	public static void createSrcFolderFromDeeCoreResource(String resourcePath, IContainer destFolder) 
+	public static void createSrcFolderFromCoreResource(String resourcePath, IContainer destFolder) 
 			throws CoreException {
-		createWorkspaceFolderFromDeeResource(resourcePath, destFolder);
+		createFolderFromCoreResource(resourcePath, destFolder);
 		addSourceFolder(destFolder, null);
 	}
 	
-	public static void createWorkspaceFolderFromDeeResource(String resourcePath, IContainer destFolder)
+	public static void createFolderFromCoreResource(String resourcePath, IContainer destFolder)
 			throws CoreException {
 		File destFolder_File = destFolder.getLocation().toFile();
-		copyTestFolderContentsFromDeeResource(resourcePath, destFolder_File);
+		copyTestFolderContentsFromCoreResource(resourcePath, destFolder_File);
 		
 		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 		assertTrue(destFolder.exists());
@@ -64,7 +64,7 @@ public class DeeCoreTestResources {
 	protected static final String TESTDATA_BUNDLE_PATH = "testdata/";
 	
 	/** Copies the contents of a test bundle resource folder into given destFolder destination */
-	public static void copyTestFolderContentsFromDeeResource(String resourcePath, File destFolder) 
+	public static void copyTestFolderContentsFromCoreResource(String resourcePath, File destFolder) 
 			throws CoreException {
 		String pluginId = DeeCore.TESTS_PLUGIN_ID;
 		String bundleResourcePath = new Path(TESTDATA_BUNDLE_PATH).append(resourcePath).toString();

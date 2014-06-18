@@ -1,3 +1,5 @@
+staleness detail
+dtool.model.CommonSemanticModelTest.checkIsStale(BundlePath, StaleState)
 
 
 dtool.project.DeeNamingRules.getModuleFullName(Path)

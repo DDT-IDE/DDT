@@ -48,15 +48,15 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		IProject project = scriptProject.getProject();
 		IFolder folder;
 		
-		createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
-		createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRCBIG, folder = project.getFolder(TR_SAMPLE_SRCBIG));
+		createSrcFolderFromCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
+		createSrcFolderFromCoreResource(TR_SAMPLE_SRCBIG, folder = project.getFolder(TR_SAMPLE_SRCBIG));
 		sampleBigFile = folder.getFile("bigfile.d");
 		
-		createSrcFolderFromDeeCoreResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));
-		createSrcFolderFromDeeCoreResource(TR_CA, project.getFolder(TR_CA));
-		createSrcFolderFromDeeCoreResource(TR_REFS, project.getFolder(TR_REFS));
+		createSrcFolderFromCoreResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));
+		createSrcFolderFromCoreResource(TR_CA, project.getFolder(TR_CA));
+		createSrcFolderFromCoreResource(TR_REFS, project.getFolder(TR_REFS));
 		
-		createWorkspaceFolderFromDeeResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
+		createFolderFromCoreResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
 		

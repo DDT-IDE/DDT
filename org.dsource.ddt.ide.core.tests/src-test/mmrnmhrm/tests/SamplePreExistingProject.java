@@ -34,7 +34,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 			try {
 				sampleDeeProj = BaseDeeTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
 				project = sampleDeeProj.getProject();
-				DeeCoreTestResources.createSrcFolderFromDeeCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
+				DeeCoreTestResources.createSrcFolderFromCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
 				DeeCore.logError(e);
 				ExceptionAdapter.unchecked(e);

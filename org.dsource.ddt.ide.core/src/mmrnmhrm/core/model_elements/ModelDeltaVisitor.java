@@ -46,7 +46,7 @@ public class ModelDeltaVisitor implements IElementChangedListener {
 						assertTrue(element instanceof ISourceModule);
 						ISourceModule sourceModule = (ISourceModule) element;
 						
-						visitModule(moduleDelta, sourceModule);
+						visitSourceModule(moduleDelta, sourceModule);
 					}
 				}
 			}
@@ -54,7 +54,7 @@ public class ModelDeltaVisitor implements IElementChangedListener {
 	}
 	
 	@SuppressWarnings("unused")
-	protected void visitModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
+	protected void visitSourceModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
 	}
 	
 }

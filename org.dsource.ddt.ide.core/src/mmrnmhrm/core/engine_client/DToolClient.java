@@ -16,17 +16,23 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DefaultResourceListener;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -48,10 +54,12 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
+import dtool.dub.BundlePath;
 import dtool.model.BundleSemanticResolution.ResolvedModule;
 import dtool.model.DToolServer;
 import dtool.model.ModuleParseCache;
 import dtool.model.ModuleParseCache.ParseSourceException;
+import dtool.model.SemanticManager;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.project.IModuleResolver;
@@ -65,7 +73,6 @@ import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
  */
 public class DToolClient {
 	
-
 	public static DToolClient getDefault() {
 		return DeeCore.getDToolClient();
 	}
@@ -74,26 +81,51 @@ public class DToolClient {
 		return new DToolClient();
 	}
 	
-	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
-	
-	protected final ModuleParseCache moduleParseCache = new ModuleParseCache();
 	protected final DToolServer dtoolServer;
+	protected final ModuleParseCache moduleParseCache = new ModuleParseCache();
+	
+	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
+	protected final DToolResourceListener resourceListener = new DToolResourceListener();
+	
+	protected static final boolean USE_LEGACY_RESOLVER = true;
 	
 	
 	public DToolClient() {
-		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 		dtoolServer = new DToolServer();
+		ResourceUtils.getWorkspace().addResourceChangeListener(resourceListener);
+		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 	}
 	
 	public void shutdown() {
 		DLTKCore.removeElementChangedListener(wclistener);
+		ResourceUtils.getWorkspace().removeResourceChangeListener(resourceListener);
 	}
 	
-	public ModuleParseCache getModuleParseCache() {
+	protected ModuleParseCache getClientModuleCache() {
 		return moduleParseCache;
 	}
 	
-	public static Path validateFilePath(ISourceModule input) {
+	protected SemanticManager getServerSemanticManager() {
+		return dtoolServer.getSemanticManager();
+	}
+	
+	
+	public static Path getFilePath(ISourceModule input) throws CoreException {
+		try {
+			return DLTKUtils.getFilePath(input);
+		} catch (InvalidPathExceptionX e) {
+			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
+		}
+	}
+	public static Path getFilePath(IModuleSource input) throws CoreException {
+		try {
+			return DLTKUtils.getFilePath(input);
+		} catch (InvalidPathExceptionX e) {
+			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
+		}
+	}
+	
+	public static Path getFilePathOrNull(ISourceModule input) {
 		try {
 			return DLTKUtils.getFilePath(input);
 		} catch (InvalidPathExceptionX e) {
@@ -101,7 +133,8 @@ public class DToolClient {
 			return null;
 		}
 	}
-	public static Path validateFilePath(IModuleSource input) {
+	
+	public static Path getFilePathOrNull(IModuleSource input) {
 		try {
 			return DLTKUtils.getFilePath(input);
 		} catch (InvalidPathExceptionX e) {
@@ -111,12 +144,12 @@ public class DToolClient {
 	}
 	
 	public ParsedModule getParsedModuleOrNull(ISourceModule input) {
-		Path filePath = validateFilePath(input);
+		Path filePath = getFilePathOrNull(input);
 		return filePath == null ? null : getParsedModuleOrNull(filePath);
 	}
 	public ParsedModule getParsedModuleOrNull(Path filePath) {
 		try {
-			return getModuleParseCache().getParsedModule(filePath);
+			return getClientModuleCache().getParsedModule(filePath);
 		} catch (ParseSourceException e) {
 			// Most likely a file IO error ocurred. 
 			DeeCore.logWarning("Error in getParsedModule", e);
@@ -125,13 +158,13 @@ public class DToolClient {
 	}
 	
 	public ParsedModule getParsedModuleOrNull(IModuleSource input) {
-		Path filePath = validateFilePath(input);
+		Path filePath = getFilePathOrNull(input);
 		if(filePath == null) { 
 			return null;
 		}
 		if(!filePath.isAbsolute()) {
 			// If it's a special path, there will not be an underlying file, so we must retrieve source directly.
-			return getModuleParseCache().getParsedModule(filePath, input.getSourceContents());
+			return getClientModuleCache().getParsedModule(filePath, input.getSourceContents());
 		}
 		return getParsedModuleOrNull(filePath);
 	}
@@ -143,12 +176,12 @@ public class DToolClient {
 	
 	
 	public ParsedModule getExistingParsedModuleOrNull(ISourceModule input) {
-		Path filePath = validateFilePath(input);
-		return filePath == null ? null : getModuleParseCache().getExistingParsedModule(filePath);
+		Path filePath = getFilePathOrNull(input);
+		return filePath == null ? null : getClientModuleCache().getExistingParsedModule(filePath);
 	}
 	public ParsedModule getExistingParsedModuleOrNull(IModuleSource input) {
-		Path filePath = validateFilePath(input);
-		return filePath == null ? null : getModuleParseCache().getExistingParsedModule(filePath);
+		Path filePath = getFilePathOrNull(input);
+		return filePath == null ? null : getClientModuleCache().getExistingParsedModule(filePath);
 	}
 	
 	public Module getExistingModuleNodeOrNull(ISourceModule input) {
@@ -171,7 +204,7 @@ public class DToolClient {
 	}
 	
 	public ParsedModule getParsedModuleOrNull_fromWorkingCopy(ISourceModule sourceModule) {
-		Path filePath = validateFilePath(sourceModule);
+		Path filePath = getFilePathOrNull(sourceModule);
 		if(filePath == null) 
 			return null;
 		
@@ -180,15 +213,20 @@ public class DToolClient {
 			if(!sourceModule.isConsistent()) {
 				assertTrue(isWorkingCopy);
 				String source = sourceModule.getSource();
-				return getModuleParseCache().getParsedModule(filePath, source);
+				if(!USE_LEGACY_RESOLVER) {
+					// We update the server working copy too.
+					getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
+				}
+				return getClientModuleCache().getParsedModule(filePath, source);
 			} else {
 				// This method can be called during the scope of the discard/commit working copy method,
 				// and as such the WorkingCopyListener has not yet had a chance to discard the cache working.
 				// Because of that, we should check here as well if it's a WC, and discard it if so.
 				if(!isWorkingCopy) {
-					getModuleParseCache().discardWorkingCopy(filePath);
+					/*BUG here*/
+					getClientModuleCache().discardWorkingCopy(filePath);
 				}
-				return getModuleParseCache().getParsedModule(filePath);
+				return getClientModuleCache().getParsedModule(filePath);
 			}
 		} catch (ParseSourceException | ModelException e) {
 			DeeCore.logWarning("Error in parseModule", e);
@@ -196,15 +234,28 @@ public class DToolClient {
 		}
 	}
 	
-	public class WorkingCopyListener extends ModelDeltaVisitor {
+	protected class DToolResourceListener extends DefaultResourceListener {
+		@Override
+		protected void processProjectDelta(IResourceDelta projectDelta) {
+			if(!USE_LEGACY_RESOLVER) {
+				System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(projectDelta));
+			}
+		}
+	}
+	
+	protected class WorkingCopyListener extends ModelDeltaVisitor {
 		
 		@Override
-		public void visitModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
+		public void visitSourceModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
 			if((moduleDelta.getFlags() & IModelElementDelta.F_PRIMARY_WORKING_COPY) != 0) {
 				if(sourceModule.isWorkingCopy() == false) {
-					Path filePath = validateFilePath(sourceModule);
+					Path filePath = getFilePathOrNull(sourceModule);
 					if(filePath != null) {
-						getModuleParseCache().discardWorkingCopy(filePath);
+						if(!USE_LEGACY_RESOLVER) {
+							// We update the server working copy too.
+							getServerSemanticManager().discardWorkingCopy(filePath);
+						}
+						getClientModuleCache().discardWorkingCopy(filePath);
 					}
 				}
 			}
@@ -215,7 +266,7 @@ public class DToolClient {
 	/* ----------------- Specific semantic operations: ----------------- */
 	
 	public ParsedModule doParseForRebuild(IModuleSource input, IProblemReporter reporter) {
-		ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull_fromBuildStructure(input);
+		ParsedModule parsedModule = getParsedModuleOrNull_fromBuildStructure(input);
 		DeeSourceParserFactory.reportErrors(reporter, parsedModule);
 		return parsedModule;
 	}
@@ -302,34 +353,33 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	
-	
 	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
-		Path filePath = validateFilePath(sourceModule);
+		Path filePath = getFilePath(sourceModule);
+		// Update source to engine server.
+		sourceModule.makeConsistent(new NullProgressMonitor());
 		return doCodeCompletion_Do(filePath, offset, sourceModule);
 	}
 	
 	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws CoreException {
-		Path filePath;
 		
 		if(moduleSource instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) moduleSource;
-			filePath = validateFilePath(sourceModule);
-			// Update source to engine server.
-			sourceModule.makeConsistent(new NullProgressMonitor());
-		} else {
-			filePath = validateFilePath(moduleSource);
-			// Update source to engine server.
-			if(filePath != null) {
-				getModuleParseCache().getParsedModule(filePath, moduleSource.getSourceContents());
-			}
+			return doCodeCompletion(sourceModule, offset);
 		}
 		
+		Path filePath = getFilePath(moduleSource);
+		// Update source to engine server.
+		if(filePath != null) {
+			String sourceContents = moduleSource.getSourceContents();
+			if(USE_LEGACY_RESOLVER) {
+				getClientModuleCache().getParsedModule(filePath, sourceContents);
+			} else {
+				getServerSemanticManager().updateWorkingCopyAndParse(filePath, sourceContents);
+			}
+		}
 		IModelElement modelElement = moduleSource.getModelElement();
 		return doCodeCompletion_Do(filePath, offset, modelElement);
 	}
-	
-	private static final boolean USE_LEGACY_RESOLVER = true;
 	
 	protected PrefixDefUnitSearch doCodeCompletion_Do(Path filePath, int offset, 
 			IModelElement modelElement) throws CoreException {
@@ -341,7 +391,7 @@ public class DToolClient {
 			
 			DeeParserResult parseResult;
 			try {
-				parseResult = getModuleParseCache().getParsedModule(filePath);
+				parseResult = getClientModuleCache().getParsedModule(filePath);
 			} catch (ParseSourceException e) {
 				throw DeeCore.createCoreException("Error reading source of content assist file.", e);
 			}
@@ -352,6 +402,10 @@ public class DToolClient {
 			return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 		}
 		
+		return doCodeCompletion_Client(filePath, offset);
+	}
+	
+	protected PrefixDefUnitSearch doCodeCompletion_Client(Path filePath, int offset) throws CoreException {
 		ResolvedModule resolvedModule;
 		try {
 			resolvedModule = getResolvedModule(filePath);
@@ -362,8 +416,18 @@ public class DToolClient {
 			resolvedModule.getModuleResolver());
 	}
 	
+	public HashSet<String> listModulesFor(ISourceModule sourceModule, String fullNamePrefix) throws CoreException {
+		IPath location = sourceModule.getScriptProject().getProject().getLocation();
+		BundlePath bundlePath = BundlePath.create(location.toFile().toPath());
+		try {
+			return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath).findModules2(fullNamePrefix);
+		} catch (ExecutionException e) {
+			throw new CoreException(DeeCore.createErrorStatus("DToolClient error: ", e.getCause()));
+		}
+	}
+	
 	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return dtoolServer.getSemanticManager().getResolutionModule(filePath);
+		return dtoolServer.getSemanticManager().getResolvedModule(filePath);
 	}
 	
 	/* -----------------  ----------------- */

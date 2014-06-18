@@ -87,7 +87,7 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 	protected static void setupTestDeeInstalls() {
 		try {
 			File destFolder = new File(TestsWorkingDir.getWorkingDir(), "deeCompilerInstalls");
-			DeeCoreTestResources.copyTestFolderContentsFromDeeResource("deeCompilerInstalls", destFolder);
+			DeeCoreTestResources.copyTestFolderContentsFromCoreResource("deeCompilerInstalls", destFolder);
 		} catch(CoreException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
@@ -190,6 +190,19 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		);
 		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
+	}
+	
+	/* ----------------- header ----------------- */
+	
+	public static IScriptProject createLangProject(String name, boolean overwrite) throws CoreException {
+		IProject project = createAndOpenProject(name, overwrite);
+		setupLangProject(project, false);
+		IScriptProject scriptProject = DLTKCore.create(project);
+		
+		scriptProject.setRawBuildpath(new IBuildpathEntry[] {}, null);
+		
+		assertTrue(scriptProject.exists());
+		return scriptProject;
 	}
 	
 }

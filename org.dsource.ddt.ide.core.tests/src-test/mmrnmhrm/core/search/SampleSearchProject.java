@@ -32,8 +32,8 @@ public class SampleSearchProject extends DeeCoreTestResources {
 	
 	protected void fillSampleProj() throws CoreException {
 		IProject project = scriptProject.getProject();
-		createSrcFolderFromDeeCoreResource(SAMPLEPROJNAME + "/srcA", project.getFolder("srcA"));
-		createSrcFolderFromDeeCoreResource(SAMPLEPROJNAME + "/srcB", project.getFolder("srcB"));
+		createSrcFolderFromCoreResource(SAMPLEPROJNAME + "/srcA", project.getFolder("srcA"));
+		createSrcFolderFromCoreResource(SAMPLEPROJNAME + "/srcB", project.getFolder("srcB"));
 	}
 	
 }

@@ -3,15 +3,9 @@ package mmrnmhrm.lang.ui;
 
 
 
-import java.lang.reflect.InvocationTargetException;
-
-import melnorme.lang.ide.ui.utils.ProgressRunnableWithResult;
 import mmrnmhrm.core.engine_client.DToolClient;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;

@@ -32,6 +32,7 @@ import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.DefaultResourceListener;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
@@ -41,7 +42,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
@@ -168,39 +168,29 @@ public class DubModelManager {
 		}
 	}
 	
-	protected static final Path DUB_BUNDLE_PACKAGE_FILE = new Path(BundlePath.DUB_MANIFEST_FILENAME);
+	protected static final Path DUB_BUNDLE_MANIFEST_FILE = new Path(BundlePath.DUB_MANIFEST_FILENAME);
 	
-	protected boolean projectHasDubManifestFile(IProject project) {
-		IResource packageFile = project.findMember(DUB_BUNDLE_PACKAGE_FILE);
+	protected static boolean projectHasDubManifestFile(IProject project) {
+		IResource packageFile = project.findMember(DUB_BUNDLE_MANIFEST_FILE);
 		if(packageFile != null && packageFile.getType() == IResource.FILE) {
 			return true;
 		}
 		return false;
 	}
 	
-	protected final class DubProjectModelResourceListener implements IResourceChangeListener {
+	protected final class DubProjectModelResourceListener extends DefaultResourceListener {
 		
 		@Override
-		public void resourceChanged(IResourceChangeEvent resourceChange) {
-			IResourceDelta workspaceDelta = resourceChange.getDelta();
-			assertTrue(workspaceDelta != null);
-			
-			for (IResourceDelta projectDelta : workspaceDelta.getAffectedChildren()) {
-				processProjectDelta(projectDelta);
-			}
-		}
-		
 		protected void processProjectDelta(IResourceDelta projectDelta) {
 			//System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(projectDelta));
 			
-			assertTrue(projectDelta.getResource().getType() == IResource.PROJECT);
 			IProject project = (IProject) projectDelta.getResource();
 			
 			DubBundleDescription existingProjectModel = model.getBundleInfo(project.getName());
 			
 			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAcessible(project, true)) {
 				if(existingProjectModel == null) {
-					return; // Nothing to removed, might not have been a DUB model project.
+					return; // Nothing to remove, might not have been a DUB model project.
 				}
 				dubProjectRemoved(project);
 				return;
@@ -228,7 +218,7 @@ public class DubModelManager {
 					break;
 				for (IResourceDelta resourceDelta : resourceDeltas) {
 					if(resourceDelta.getResource().getType() == IResource.FILE && 
-							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_PACKAGE_FILE)) {
+							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_MANIFEST_FILE)) {
 						if(resourceDelta.getResource().getType() == IResource.FILE) {
 							dubManifestFileChanged(project);
 						}
@@ -237,7 +227,7 @@ public class DubModelManager {
 				break;
 			}
 		}
-
+		
 	}
 	
 	protected void dubProjectAdded(IProject project) {
