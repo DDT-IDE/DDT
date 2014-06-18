@@ -11,17 +11,21 @@
 
 package mmrnmhrm.ui.editor.hover;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.ui.actions.AbstractEditorOperation;
 import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import dtool.ddoc.TextUI;
 
 /**
  * Standard documentation hover for DDoc.
@@ -40,7 +44,10 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 	
 	@Override
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
-		IEditorPart editor = getEditor();
+		ITextEditor editor = tryCast(getEditor(), ITextEditor.class);
+		if(editor == null) {
+			return null;
+		}
 		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
 		if(sourceModule == null) {
 			return null;
@@ -48,8 +55,14 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		
 		int offset = hoverRegion.getOffset();
 		
-		assertTrue(Display.getCurrent() == null);
-		String info = DToolClient.getDDocHTMLView(sourceModule, offset);
+		GetDDocViewOperation ddocOp = new GetDDocViewOperation("Get DDoc", editor, offset);
+		try {
+			ddocOp.executeOperation();
+		} catch (CoreException e) {
+			DeeCore.logError(e);
+			return TextUI.convertoToHTML("Error: " + e.getMessage() + " " + e.getCause());					
+		}
+		String info = ddocOp.info;
 		
 		if(info != null) {
 			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
@@ -58,4 +71,26 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		return null;
 	}
 	
+	public static class GetDDocViewOperation extends AbstractEditorOperation {
+		
+		protected final int offset;
+		protected String info;
+		
+		public GetDDocViewOperation(String operationName, ITextEditor editor, int offset) {
+			super(operationName, editor);
+			this.offset = offset;
+		}
+		
+		@Override
+		protected void performLongRunningComputation_do() {
+			info = DToolClient.getDDocHTMLView(sourceModule, offset);
+		}
+		
+		@Override
+		protected void performOperation_do() throws CoreException {
+			// Nothing else to do
+		}
+		
+	}
+
 }

@@ -47,7 +47,7 @@ public class DeeElementHyperlink implements IHyperlink {
 	
 	@Override
 	public void open() {
-		new OpenDefinitionOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, offset).execute();
+		new OpenDefinitionOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, offset).executeHandled();
 	}
 	
 	@Override

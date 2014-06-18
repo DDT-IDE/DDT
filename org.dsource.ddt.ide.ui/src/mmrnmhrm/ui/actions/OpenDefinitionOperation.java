@@ -54,7 +54,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	}
 	
 	public FindDefinitionResult executeWithResult() {
-		execute();
+		executeHandled();
 		return findDefResult;
 	}
 	

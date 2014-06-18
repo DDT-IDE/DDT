@@ -17,7 +17,6 @@ import java.text.MessageFormat;
 
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.ui.DeeUI;
-import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +26,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 
-public abstract class AbstractUIOperation extends UIUserInteractionsHelper {
+public abstract class AbstractUIOperation {
+	
+	protected static final String MSG_EXECUTING_OPERATION 
+		= "Executing {0}.";
+	protected static final String MSG_ERROR_EXECUTING_OPERATION 
+		= "Error executing {0}.";
+	protected static final String MSG_INTERNAL_ERROR_EXECUTING_OPERATION 
+		= "Internal Error executing {0}.";
+	
 	
 	protected final String operationName;
 	
@@ -35,11 +42,11 @@ public abstract class AbstractUIOperation extends UIUserInteractionsHelper {
 		this.operationName = operationName;
 	}
 	
-	public void execute() {
+	public void executeHandled() {
 		assertTrue(Display.getCurrent() != null);
 		
 		try {
-			performOperation();
+			executeOperation();
 		} catch (CoreException ce) {
 			OperationExceptionHandler.handle(ce, operationName, 
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName));
@@ -49,13 +56,13 @@ public abstract class AbstractUIOperation extends UIUserInteractionsHelper {
 		}
 	}
 	
-	protected abstract void performOperation() throws CoreException;
+	public abstract void executeOperation() throws CoreException;
 	
 	
 	protected void performLongRunningComputation() throws InterruptedException, CoreException {
 		if(Display.getCurrent() == null) {
 			// Perform computation directly in this thread.
-			performLongRunningComputation();
+			performLongRunningComputation_do();
 		}
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
@@ -72,7 +79,7 @@ public abstract class AbstractUIOperation extends UIUserInteractionsHelper {
 				}
 			});
 		} catch (InvocationTargetException e) {
-			throw new CoreException(DeeUI.createErrorStatus(DeeCoreMessages.Internal_Error, e));
+			throw new CoreException(DeeUI.createErrorStatus(DeeCoreMessages.Internal_Error, e.getTargetException()));
 		}
 	}
 	

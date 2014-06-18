@@ -339,7 +339,11 @@ public class DToolClient {
 	/* -----------------  ----------------- */
 	
 	public static String getDDocHTMLView(ISourceModule sourceModule, int offset) {
-		Module module = getDefault().getModuleNodeOrNull(sourceModule);
+		ParsedModule parsedModule = getDefault().getParsedModuleOrNull(sourceModule);
+		if(parsedModule == null) {
+			return null;
+		}
+		Module module = parsedModule.module;
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		
 		INamedElement relevantElementForDoc = null;

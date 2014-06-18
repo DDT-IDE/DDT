@@ -33,9 +33,8 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
 	}
 	
-	
 	@Override
-	protected void performOperation() throws CoreException {
+	public void executeOperation() throws CoreException {
 		if(sourceModule == null) {
 			throw new CoreException(DeeUI.createErrorStatus("No valid editor input in current editor.", null));
 		}
@@ -49,7 +48,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		performOperation_do();
 	}
 	
-	protected void performOperation_do() throws CoreException { }
+	protected abstract void performOperation_do() throws CoreException;
 	
 	
 	protected void dialogError(String msg) {

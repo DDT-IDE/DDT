@@ -69,7 +69,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		TextSelection sel = EditorUtil.getSelection(deeEditor);
 		final int offset = sel.getOffset();
 		
-		new FindReferencesOperation(offset).execute();
+		new FindReferencesOperation(offset).executeHandled();
 		
 	}
 	
