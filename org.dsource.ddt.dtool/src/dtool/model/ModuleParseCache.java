@@ -17,11 +17,12 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 
 import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -31,7 +32,11 @@ import dtool.parser.DeeParserResult.ParsedModule;
  */
 public class ModuleParseCache {
 	
-	protected static SimpleLogger log = SimpleLogger.create("ModuleParseCache");
+	protected final DToolServer dtoolServer;
+	
+	public ModuleParseCache(DToolServer dtoolServer) {
+		this.dtoolServer = dtoolServer;
+	}
 	
 	protected final HashMap<String, ModuleEntry> cache = new HashMap<>();
 	
@@ -107,17 +112,19 @@ public class ModuleParseCache {
 		ModuleEntry entry = cache.get(key);
 		if(entry != null && entry.isWorkingCopy) {
 			entry.isWorkingCopy = false;
-			log.println("ParseCache: Discarded working copy: ", filePath);
+			dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
 		}
 	}
 	
-	public static class ModuleEntry {
+	public class ModuleEntry {
+		
+		public static final int FILE_MODIFY_TIME__GRANULARITY_Millis = 1_000_000;
 		
 		protected final Path filePath;
 		
 		protected String source = null;
 		protected boolean isWorkingCopy = false;
-		protected long readTimestamp;
+		protected BasicFileAttributes fileSyncAttributes;
 		protected volatile ParsedModule parsedModule = null;
 		
 		public ModuleEntry(Path filePath) {
@@ -137,25 +144,37 @@ public class ModuleParseCache {
 		}
 		
 		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
-			if(isWorkingCopy) {
-				assertNotNull(source);
-			} else {
-				File file = filePath.toFile();
-				
-				if(source == null) {
-					readSource(file);
-				} else if(file.lastModified() > readTimestamp){ //BUG here if modified twice in same millisecond  
-					readSource(file);
-				}
-			}
-			
+			if(isStale()) {
+				readSource(filePath.toFile());
+			}			
 			return doGetParseModule(source);
 		}
 		
+		protected synchronized boolean isStale() {
+			if(isWorkingCopy) {
+				assertNotNull(source);
+				return false;
+			}
+			if(source == null) {
+				return true;
+			}
+			
+			BasicFileAttributes newAttributes;
+			try {
+				newAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+			} catch (IOException e) {
+				return true;
+			}
+			
+			return fileSyncAttributes.lastModifiedTime().toMillis() != newAttributes.lastModifiedTime().toMillis() ||
+					fileSyncAttributes.size() != newAttributes.size();
+		}
+		
 		protected void readSource(File file) throws IOException, FileNotFoundException {
-			readTimestamp = file.lastModified();
-			String newSource = FileUtil.readStringFromFile(file, StringUtil.UTF8);
-			setNewSource(newSource);
+			fileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+			
+			String fileContents = FileUtil.readStringFromFile(file, StringUtil.UTF8); // TODO: detect encoding
+			setNewSource(fileContents);
 		}
 		
 		protected void setNewSource(String newSource) {
@@ -168,8 +187,8 @@ public class ModuleParseCache {
 		protected ParsedModule doGetParseModule(String source) {
 			if(parsedModule == null) {
 				parsedModule = DeeParser.parseSource(source, filePath);
-				ModuleParseCache.log.println("ParseCache: Parsed Module ", filePath, " ",
-					isWorkingCopy ? "[WC]" : "");
+				dtoolServer.logMessage("ParseCache: Parsed Module " + filePath +
+					(isWorkingCopy ? " [WorkingCopy]" : ""));
 			}
 			return parsedModule;
 		}

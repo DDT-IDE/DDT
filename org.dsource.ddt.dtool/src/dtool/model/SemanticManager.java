@@ -154,11 +154,11 @@ public class SemanticManager extends AbstractSemanticManager {
 	
 	protected final DToolServer dtoolServer;
 	protected final ITaskAgent dubProcessAgent;
-	
-	protected final ModuleParseCache parseCache = new ModuleParseCache();
+	protected final ModuleParseCache parseCache;
 	
 	public SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;
+		this.parseCache = new ModuleParseCache(dtoolServer);
 		this.dubProcessAgent = dtoolServer.new DToolTaskAgent("DSE.DubProcessAgent");
 	}
 	

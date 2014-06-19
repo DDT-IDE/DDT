@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.model.CommonSemanticModelTest.Tests_DToolServer;
 import dtool.model.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;
@@ -53,7 +54,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	@Test
 	public void testCaching() throws Exception { testCaching$(); }
 	public void testCaching$() throws Exception {
-		mpm = new ModuleParseCache();
+		mpm = new ModuleParseCache(new Tests_DToolServer());
 		
 		basicSequence(CU_PATH);
 		// repeat
@@ -65,41 +66,58 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH);
 		assertTrue(mpm.getParsedModule(cuPath) == parsedModule);
 		
-		writeStringToFile(CU_PATH, SOURCE1);
-		assertEquals(mpm.getParsedModule(CU_PATH).source, SOURCE1); /*BUG here tests sometimes fail here */
+		updateFileContents(CU_PATH, SOURCE1);
+		assertTrue(mpm.getEntry(CU_PATH).isStale());
+		parsedModule = mpm.getParsedModule(CU_PATH);
+		assertEquals(parsedModule.source, SOURCE1);
 		
 		// Test caching
-		checkGetParsedModule(CU_PATH, WC_SOURCE);
+		assertTrue(mpm.getEntry(CU_PATH).isWorkingCopy == false);
+		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
+		assertTrue(mpm.getParsedModule(CU_PATH) == parsedModule);
+		
+		// Test caching for WC
+		checkGetParsedModule_ForWorkingCopy(CU_PATH, WC_SOURCE);
 		
 		// Test new source update over previous working copy
-		checkGetParsedModule(CU_PATH, "blah");
+		checkGetParsedModule_ForWorkingCopy(CU_PATH, "blah");
 		
 		mpm.getParsedModule(CU_PATH, WC_SOURCE);
-		writeStringToFile(CU_PATH, SOURCE3);
+		updateFileContents(CU_PATH, SOURCE3);
 		// Check working copy source still takes precedence
+		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
 		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(WC_SOURCE));
-		checkGetParsedModule(CU_PATH, WC_SOURCE);
+		checkGetParsedModule_ForWorkingCopy(CU_PATH, WC_SOURCE);
 		
 		mpm.discardWorkingCopy(CU_PATH);
 		// Test that file now takes precedence.
-		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(SOURCE3));  /*BUG here tests sometimes fail here */
+		assertTrue(mpm.getEntry(CU_PATH).isStale());
+		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(SOURCE3));
 		
 		testOptmizationsAfterDiscard();
 	}
 	
+	public static void updateFileContents(Path filePath, String string) {
+		writeStringToFile(filePath, string);
+	}
+	
 	protected void testOptmizationsAfterDiscard() throws IOException, FileNotFoundException, ParseSourceException {
-		mpm.getParsedModule(CU_PATH, "reset");
+		mpm.getParsedModule(CU_PATH, "___reset___");
 		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH, WC_SOURCE);
-		writeStringToFile(CU_PATH, WC_SOURCE);
+		updateFileContents(CU_PATH, WC_SOURCE);
 		mpm.discardWorkingCopy(CU_PATH);
+		
+		//assertTrue(mpm.getEntry(CU_PATH).isStale() == true);
+		
 		ParsedModule newParsedModule = mpm.getParsedModule(CU_PATH);
 		// Test that a reparse did not happen, even though file is newer (but source is same)
 		assertTrue(parsedModule == newParsedModule);
 		assertTrue(parsedModule.module == newParsedModule.module);
 	}
 	
-	protected void checkGetParsedModule(Path modulePath, String source) throws ParseSourceException {
+	protected void checkGetParsedModule_ForWorkingCopy(Path modulePath, String source) throws ParseSourceException {
 		ParsedModule parsedModule = mpm.getParsedModule(modulePath, source);
+		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
 		assertTrue(mpm.getParsedModule(modulePath) == parsedModule);
 		assertTrue(mpm.getParsedModule(modulePath, source) == parsedModule);
 		assertTrue(parsedModule.source == source);
@@ -108,7 +126,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	@Test
 	public void testOther() throws Exception { testOther$(); }
 	public void testOther$() throws Exception {
-		mpm = new ModuleParseCache();
+		mpm = new ModuleParseCache(new Tests_DToolServer());
 		
 		Path freeformPath = MiscUtil.createValidPath("#freeFormPath");
 		assertTrue(mpm.getParsedModule(freeformPath, SOURCE1).source.equals(SOURCE1));

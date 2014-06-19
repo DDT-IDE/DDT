@@ -82,7 +82,7 @@ public class DToolClient {
 	}
 	
 	protected final DToolServer dtoolServer;
-	protected final ModuleParseCache moduleParseCache = new ModuleParseCache();
+	protected final ModuleParseCache moduleParseCache;
 	
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
 	protected final DToolResourceListener resourceListener = new DToolResourceListener();
@@ -92,6 +92,7 @@ public class DToolClient {
 	
 	public DToolClient() {
 		dtoolServer = new DToolServer();
+		moduleParseCache = new ModuleParseCache(dtoolServer);
 		ResourceUtils.getWorkspace().addResourceChangeListener(resourceListener);
 		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 	}

@@ -21,6 +21,10 @@ public class DefaultResourceListener implements IResourceChangeListener {
 	
 	@Override
 	public void resourceChanged(IResourceChangeEvent resourceChange) {
+		if(resourceChange.getType() != IResourceChangeEvent.POST_CHANGE) {
+			return;
+		}
+		
 		IResourceDelta workspaceDelta = resourceChange.getDelta();
 		assertTrue(workspaceDelta != null);
 		
