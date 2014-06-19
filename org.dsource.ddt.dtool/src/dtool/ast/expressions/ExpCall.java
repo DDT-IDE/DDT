@@ -12,7 +12,7 @@ import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
 
 public class ExpCall extends Expression {

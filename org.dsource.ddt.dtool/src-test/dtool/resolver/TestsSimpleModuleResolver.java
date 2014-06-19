@@ -12,10 +12,10 @@ import java.util.Set;
 
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
+import dtool.engine.modules.CommonModuleResolver;
+import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.project.CommonModuleResolver;
-import dtool.project.DeeNamingRules;
 import dtool.tests.CommonDToolTest;
 
 public final class TestsSimpleModuleResolver extends CommonModuleResolver {
@@ -44,13 +44,13 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 			
 			if(child.isDirectory()) {
 				String packageName = resourceName;
-				if(!DeeNamingRules.isValidPackageNamePart(packageName, true)) {
+				if(!ModuleNamingRules.isValidPackageNamePart(packageName, true)) {
 					continue;
 				}
 				initModules(child, packagePath + packageName + "/");
 			} else if(resourceName.endsWith(".d")) {
 				
-				String moduleFQName = DeeNamingRules.getModuleFQNameFromFilePath(packagePath, resourceName);
+				String moduleFQName = ModuleNamingRules.getModuleFQNameFromFilePath(packagePath, resourceName);
 				if(moduleFQName == null) 
 					continue;
 				

@@ -12,7 +12,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 
 /**
  * A normal qualified reference.

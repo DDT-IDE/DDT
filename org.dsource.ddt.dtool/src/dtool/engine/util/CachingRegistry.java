@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.model.util;
+package dtool.engine.util;
 
 import java.util.HashMap;
 
@@ -25,7 +25,7 @@ public abstract class CachingRegistry<KEY, ENTRY> {
 		return entry;
 	}
 	
-	public synchronized ENTRY getMapEntry(KEY key) {
+	public synchronized ENTRY getEntryOrNull(KEY key) {
 		return map.get(key);
 	}
 	

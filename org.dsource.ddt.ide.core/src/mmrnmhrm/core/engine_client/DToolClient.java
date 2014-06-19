@@ -30,6 +30,8 @@ import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -55,15 +57,15 @@ import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
 import dtool.dub.BundlePath;
-import dtool.model.BundleSemanticResolution.ResolvedModule;
-import dtool.model.DToolServer;
-import dtool.model.ModuleParseCache;
-import dtool.model.ModuleParseCache.ParseSourceException;
-import dtool.model.SemanticManager;
+import dtool.engine.DToolServer;
+import dtool.engine.ModuleParseCache;
+import dtool.engine.SemanticManager;
+import dtool.engine.BundleResolution.CommonResolvedModule;
+import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.modules.IModuleResolver;
+import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.project.IModuleResolver;
-import dtool.project.NullModuleResolver;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
@@ -355,9 +357,10 @@ public class DToolClient {
 	/* -----------------  ----------------- */
 	
 	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
-		Path filePath = getFilePath(sourceModule);
 		// Update source to engine server.
 		sourceModule.makeConsistent(new NullProgressMonitor());
+		
+		Path filePath = getFilePath(sourceModule);
 		return doCodeCompletion_Do(filePath, offset, sourceModule);
 	}
 	
@@ -407,7 +410,7 @@ public class DToolClient {
 	}
 	
 	protected PrefixDefUnitSearch doCodeCompletion_Client(Path filePath, int offset) throws CoreException {
-		ResolvedModule resolvedModule;
+		CommonResolvedModule resolvedModule;
 		try {
 			resolvedModule = getResolvedModule(filePath);
 		} catch (ExecutionException e) {
@@ -417,9 +420,8 @@ public class DToolClient {
 			resolvedModule.getModuleResolver());
 	}
 	
-	public HashSet<String> listModulesFor(ISourceModule sourceModule, String fullNamePrefix) throws CoreException {
-		IPath location = sourceModule.getScriptProject().getProject().getLocation();
-		BundlePath bundlePath = BundlePath.create(location.toFile().toPath());
+	public HashSet<String> listModulesFor(IProject project, String fullNamePrefix) throws CoreException {
+		BundlePath bundlePath = BundlePath.create(project.getLocation().toFile().toPath());
 		try {
 			return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath).findModules2(fullNamePrefix);
 		} catch (ExecutionException e) {
@@ -427,8 +429,8 @@ public class DToolClient {
 		}
 	}
 	
-	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return dtoolServer.getSemanticManager().getResolvedModule(filePath);
+	protected CommonResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+		return dtoolServer.getSemanticManager().getUpdatedResolvedModule(filePath);
 	}
 	
 	/* -----------------  ----------------- */

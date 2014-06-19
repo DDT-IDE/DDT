@@ -13,7 +13,7 @@ import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NamedElementUtil;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 
 /**
  * Normal DefUnit search, 

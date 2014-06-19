@@ -8,7 +8,7 @@ import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.TextUI;
-import dtool.project.NullModuleResolver;
+import dtool.engine.modules.NullModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;

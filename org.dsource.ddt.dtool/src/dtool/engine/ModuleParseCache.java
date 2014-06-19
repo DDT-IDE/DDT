@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.model;
+package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -110,9 +110,8 @@ public class ModuleParseCache {
 		filePath = validatePath(filePath);
 		String key = getKeyFromPath(filePath);
 		ModuleEntry entry = cache.get(key);
-		if(entry != null && entry.isWorkingCopy) {
-			entry.isWorkingCopy = false;
-			dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
+		if(entry != null) {
+			entry.discardWorkingCopy();
 		}
 	}
 	
@@ -150,6 +149,13 @@ public class ModuleParseCache {
 			return doGetParseModule(source);
 		}
 		
+		public synchronized ParsedModule getParsedModuleIfNotStale() {
+			if(isStale()) {
+				return null;
+			}			
+			return parsedModule;		
+		}
+		
 		protected synchronized boolean isStale() {
 			if(isWorkingCopy) {
 				assertNotNull(source);
@@ -166,9 +172,17 @@ public class ModuleParseCache {
 				return true;
 			}
 			
-			return fileSyncAttributes.lastModifiedTime().toMillis() != newAttributes.lastModifiedTime().toMillis() ||
-					fileSyncAttributes.size() != newAttributes.size();
+			return hasBeenModified(fileSyncAttributes, newAttributes);
 		}
+		
+		protected synchronized void discardWorkingCopy() {
+			if(isWorkingCopy) {
+				isWorkingCopy = false;
+				fileSyncAttributes = null;
+				dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
+			}
+		}
+		
 		
 		protected void readSource(File file) throws IOException, FileNotFoundException {
 			fileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
@@ -187,12 +201,19 @@ public class ModuleParseCache {
 		protected ParsedModule doGetParseModule(String source) {
 			if(parsedModule == null) {
 				parsedModule = DeeParser.parseSource(source, filePath);
-				dtoolServer.logMessage("ParseCache: Parsed Module " + filePath +
+				dtoolServer.logMessage("ParseCache: Parsed module " + filePath +
 					(isWorkingCopy ? " [WorkingCopy]" : ""));
 			}
 			return parsedModule;
 		}
 		
+	}
+	
+	public static boolean hasBeenModified(BasicFileAttributes originalAttributes, BasicFileAttributes newAttributes) {
+		return 
+				originalAttributes == null ||
+				originalAttributes.lastModifiedTime().toMillis() != newAttributes.lastModifiedTime().toMillis() ||
+				originalAttributes.size() != newAttributes.size();
 	}
 	
 }

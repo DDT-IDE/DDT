@@ -1,4 +1,4 @@
-package dtool.project;
+package dtool.engine.modules;
 
 import dtool.ast.definitions.Module;
 import dtool.util.NewUtils;

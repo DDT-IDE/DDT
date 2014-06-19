@@ -36,7 +36,7 @@ public class DubBundle {
 	
 	public final String version;
 	public final String[] srcFolders;
-	public final Path[] effectiveSrcFolders;
+	public final Path[] effectiveSourceFolders;
 	public final List<BundleFile> bundleFiles;
 	
 	public final DubDependecyRef[] dependencies; // not null
@@ -60,7 +60,7 @@ public class DubBundle {
 		
 		this.version = version == null ? DEFAULT_VERSION : version;
 		this.srcFolders = srcFolders;
-		this.effectiveSrcFolders = nullToEmpty(effectiveSrcFolders, Path.class);
+		this.effectiveSourceFolders = nullToEmpty(effectiveSrcFolders, Path.class);
 		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
 		this.bundleFiles = unmodifiableList(CollectionUtil.nullToEmpty(bundleFiles));
 		this.targetName = targetName;
@@ -101,21 +101,11 @@ public class DubBundle {
 	}
 	
 	public Path[] getEffectiveSourceFolders() {
-		return assertNotNull(effectiveSrcFolders);
+		return assertNotNull(effectiveSourceFolders);
 	}
 	
-	public Path[] getEffectiveImportPathFolders() {
-		return assertNotNull(effectiveSrcFolders);
-	}
-	
-	public ArrayList<Path> getEffectiveImportPathFolders_AbsolutePath() {
-		assertTrue(bundlePath != null);
-		
-		ArrayList<Path> importFolders = new ArrayList<>(effectiveSrcFolders.length);
-		for (Path srcFolder : effectiveSrcFolders) {
-			importFolders.add(bundlePath.resolve(srcFolder));
-		}
-		return importFolders;
+	public Path[] getEffectiveImportFolders() {
+		return assertNotNull(effectiveSourceFolders);
 	}
 	
 	public static class BundleFile {
@@ -195,6 +185,28 @@ public class DubBundle {
 			return super.getMessage();
 		}
 		
+	}
+	
+	/* ----------------- utilities ----------------- */
+	
+	public ArrayList<Path> getEffectiveImportFolders_AbsolutePath() {
+		assertTrue(bundlePath != null);
+		
+		ArrayList<Path> importFolders = new ArrayList<>(effectiveSourceFolders.length);
+		for (Path srcFolder : effectiveSourceFolders) {
+			importFolders.add(bundlePath.resolve(srcFolder));
+		}
+		return importFolders;
+	}
+	
+	public Path relativizePathToImportFolder(Path path) {
+		ArrayList<Path> importFolders = getEffectiveImportFolders_AbsolutePath();
+		for(Path importFolderPath : importFolders) {
+			if(path.startsWith(importFolderPath)) {
+				return importFolderPath.relativize(path);
+			}
+		}
+		return null;
 	}
 	
 }

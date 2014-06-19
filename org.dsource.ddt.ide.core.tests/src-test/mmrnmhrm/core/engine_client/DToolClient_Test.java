@@ -13,11 +13,14 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
@@ -26,6 +29,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.env.ModuleSource;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Test;
 
@@ -92,51 +96,59 @@ public class DToolClient_Test extends CommonCoreTest {
 		};
 		
 		ISourceModule sourceModule = testsProject.getSourceModule("basic_foo.d");
-		IFile file = (IFile) sourceModule.getResource();
-		
-		IFolder SRC_FOLDER = testsProject.project.getFolder("simple-source");
 		
 		doCodeCompletion(sourceModule, 0, "basic_foo", "barLibFunction");
 		
-		writeStringToFile(file, "module change1;");
+		updateFile(sourceModule, "module change1;");
 		doCodeCompletion(sourceModule, 0, "change1");
 		
-		writeStringToFile(file, "module change2;");
+		updateFile(sourceModule, "module change2;");
 		doCodeCompletion(sourceModule, 0, "change2");
 		
+		IFolder SRC_FOLDER = testsProject.project.getFolder("simple-source");
+		
 		IFile newFile = SRC_FOLDER.getFile("new_file.d");
-		writeStringToFile(newFile, "module new_file;");
-		checkModuleContains(sourceModule, "new", "new_file", true);
+		sourceModule = testsProject.getSourceModule("new_file.d"); 
+		updateFile(sourceModule, "module new_file;");
+		checkModuleContains(newFile, "new", "new_file", true);
 		
 		IFolder newPackage = createFolder(SRC_FOLDER.getFolder("new_package"));
-		writeStringToFile(newPackage.getFile("new_package_file.d"), "module new_package_file;");
-		checkModuleContains(sourceModule, "new", "new_package.new_package_file", true);
+		newFile = newPackage.getFile("new_package_file.d");
+		updateFile(sourceModule, "module new_package_file;");
+		checkModuleContains(newFile, "new", "new_package.new_package_file", true);
 		
 		deleteResource(newPackage);
-		checkModuleContains(sourceModule, "new", "new_package.new_package_file", false);
+		checkModuleContains(newFile, "new", "new_package.new_package_file", false);
 		
 		deleteResource(newFile);
-		checkModuleContains(sourceModule, "new", "new_file", false);
+		checkModuleContains(newFile, "new", "new_file", false);
 		
 		testUpdatesToWorkingCopy();
 	}
 	
-	protected void checkModuleContains(ISourceModule sourceModule, String prefix, String moduleName, boolean contains) 
+	public static void updateFile(ISourceModule sourceModule, String contents) throws CoreException {
+		IFile file = (IFile) sourceModule.getResource();
+		ResourceUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
+		assertEquals(sourceModule.getSource(), contents);
+	}
+	
+	protected void checkModuleContains(IFile file, String prefix, String moduleName, boolean contains) 
 			throws CoreException {
-		HashSet<String> modules = client.listModulesFor(sourceModule, prefix);
+		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
+		assertTrue(sourceModule != null && sourceModule.exists());
+		HashSet<String> modules = client.listModulesFor(file.getProject(), prefix);
 		assertTrue(modules.contains(moduleName) == contains);
 		if(contains) {
 			doCodeCompletion(sourceModule, 0, moduleName);
 		}
 	}
-	
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
 		ISourceModule sourceModule = testsProject.getSourceModule("basic_foo.d");
 		sourceModule.discardWorkingCopy();
 		
 		IFile file = (IFile) sourceModule.getResource();
 		String originalFileContents = "module wc_change0;";
-		writeStringToFile(file, originalFileContents);
+		updateFile(sourceModule, originalFileContents);
 		
 		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
 		doCodeCompletion(sourceModule, 0, "wc_change0");

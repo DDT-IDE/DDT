@@ -52,7 +52,7 @@ public class TestsWorkingDir {
 		if(property != null) {
 			initWorkingDir(property);
 		} else {
-			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests_workingdir");
+			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests");
 		}
 	}
 	

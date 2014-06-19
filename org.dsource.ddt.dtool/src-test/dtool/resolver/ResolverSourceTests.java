@@ -7,9 +7,9 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 import java.io.File;
 
 import dtool.ast.references.NamedReference;
+import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
-import dtool.project.NullModuleResolver;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;

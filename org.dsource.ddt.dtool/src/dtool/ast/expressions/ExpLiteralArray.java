@@ -8,7 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.INamedElement;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
 public class ExpLiteralArray extends Expression {

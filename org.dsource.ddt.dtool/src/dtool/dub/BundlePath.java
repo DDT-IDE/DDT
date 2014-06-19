@@ -89,4 +89,18 @@ public class BundlePath {
 		return path.toString();
 	}
 	
+	/***
+	 * Searches for a manifest file in any of the directories denoted by given path, starting in path. 
+	 */
+	public static BundlePath findBundleForPath(Path path) {
+		if(path == null || !path.isAbsolute()) {
+			return null;
+		}
+		BundlePath bundlePath = create(path);
+		if(bundlePath != null && bundlePath.getManifestFilePath().toFile().exists()) {
+			return bundlePath;
+		}
+		return findBundleForPath(path.getParent());
+	}
+	
 }

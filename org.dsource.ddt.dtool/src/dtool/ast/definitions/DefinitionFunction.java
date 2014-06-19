@@ -8,8 +8,8 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
-import dtool.project.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 

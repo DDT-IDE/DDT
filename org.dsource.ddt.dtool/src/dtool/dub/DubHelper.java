@@ -13,6 +13,7 @@ package dtool.dub;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.IOException;
+import java.nio.file.attribute.FileTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -68,7 +69,7 @@ public class DubHelper {
 		protected final BundlePath bundlePath;
 		protected final boolean allowDepDownload;
 		
-		protected volatile long startTimeStamp = -1;
+		protected volatile FileTime startTimeStamp = null;
 		
 		public RunDubDescribeCallable(BundlePath bundlePath, boolean allowDepDownload) {
 			this.bundlePath = bundlePath;
@@ -77,11 +78,11 @@ public class DubHelper {
 		
 		@Override
 		public DubBundleDescription call() throws IOException, InterruptedException {
-			startTimeStamp = System.nanoTime();
+			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
 			return DubHelper.runDubDescribe(bundlePath, allowDepDownload);
 		}
 		
-		public long getStartTimeStamp() {
+		public FileTime getStartTimeStamp() {
 			return startTimeStamp;
 		}
 		

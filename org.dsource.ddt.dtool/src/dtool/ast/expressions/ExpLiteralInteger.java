@@ -9,8 +9,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.IToken;
-import dtool.project.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
 public class ExpLiteralInteger extends Expression {

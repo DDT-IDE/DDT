@@ -10,7 +10,7 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
 
 /**

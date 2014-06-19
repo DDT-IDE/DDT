@@ -23,9 +23,9 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
-import dtool.project.IModuleResolver;
 import dtool.resolver.api.ECompletionResultStatus;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;

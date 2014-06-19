@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.model;
+package dtool.engine;
 
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 

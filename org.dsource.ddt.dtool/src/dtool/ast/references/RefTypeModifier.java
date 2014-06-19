@@ -9,8 +9,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokens;
-import dtool.project.IModuleResolver;
 import dtool.resolver.api.DefUnitDescriptor;
 
 public class RefTypeModifier extends Reference implements IQualifierNode {

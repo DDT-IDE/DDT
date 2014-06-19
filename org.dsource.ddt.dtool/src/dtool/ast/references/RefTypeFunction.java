@@ -13,7 +13,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.expressions.Resolvable;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 

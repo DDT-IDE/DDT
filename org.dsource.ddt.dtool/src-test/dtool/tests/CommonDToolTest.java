@@ -28,7 +28,7 @@ import melnorme.utilbox.tests.CommonTestExt;
 
 import org.junit.Before;
 
-import dtool.project.DeeNamingRules;
+import dtool.engine.modules.ModuleNamingRules;
 import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
@@ -88,7 +88,7 @@ public class CommonDToolTest extends CommonTestExt {
 					// exclude team private folder, like .svn, and other crap
 					return !childName.startsWith(".");
 				} else {
-					return addInAnyFileName || DeeNamingRules.isValidCompilationUnitName(childName, false);
+					return addInAnyFileName || ModuleNamingRules.isValidCompilationUnitName(childName, false);
 				}
 			}
 		};

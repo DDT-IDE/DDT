@@ -8,36 +8,51 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.model;
+package dtool.engine;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
-
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
-import dtool.model.ModuleParseCache.ParseSourceException;
-import dtool.parser.DeeParserResult.ParsedModule;
+import dtool.engine.BundleResolution;
+import dtool.engine.SemanticManager;
+import dtool.engine.BundleResolution.ResolvedModule;
+import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.modules.ModuleFullName;
 
-public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
+public class SemanticManager_ModuleListTest extends CommonSemanticModelTest {
 	
-	public static class BundleFilesChecker extends MapChecker<ModuleFullName, Path> {
+	public static class BundleFilesChecker {
 		
-		public BundleFilesChecker(Map<ModuleFullName, Path> map) {
-			super(map);
+		protected final BundleResolution bundleRes;
+		protected final HashMap<ModuleFullName, Path> modules;
+		protected final HashSet<Path> moduleFiles;
+
+		public BundleFilesChecker(BundleResolution bundleRes) {
+			modules = new HashMap<>(bundleRes.getBundleModules());
+			moduleFiles = new HashSet<>(bundleRes.getBundleModuleFiles());
+			this.bundleRes = bundleRes;
 		}
 		
-		protected void checkEntry(final String moduleFullName, final String filePath) {
-			entryChecks.add(new MapEntryChecker() {
-				@Override
-				public void run() {
-					Path value = getExpectedEntry(new ModuleFullName(moduleFullName));
-					assertAreEqual(value, MiscUtil.createPathOrNull(filePath));
-				};
-			});
+		protected void checkEntry(String moduleFullName, String relFilePath) {
+			checkEntry(moduleFullName, relFilePath, false);
+		}
+		
+		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateEntry) {
+			Path filePath = bundleRes.getBundlePath().resolve(relFilePath);
+			checkMapContains(modules, new ModuleFullName(moduleFullName), filePath);
+			assertTrue(moduleFiles.remove(filePath) == !duplicateEntry);
+		}
+		
+		protected void finalCheck() {
+			assertTrue(modules.isEmpty());
+			assertTrue(moduleFiles.isEmpty());
 		}
 		
 	}
@@ -47,28 +62,31 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 	public void testModuleResolving$() throws Exception {
 		
 		sm = new SemanticManager(new Tests_DToolServer());
-		sm.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
 		
-		BundleSemanticResolution sr = sm.getUpdatedResolution(BASIC_LIB);
+		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertEquals(sr.getBundleName(), "basic_lib");
-		new BundleFilesChecker(sr.getBundleModuleFiles()) {
+		new BundleFilesChecker(sr) {
 			{
 				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
-				checkEntry("basic_lib_pack.foo", "source/basic_lib_pack/foo.d");			
+				checkEntry("basic_lib_pack.foo", "source/basic_lib_pack/foo.d");
+				finalCheck();
 			}
-		}.run();
+		};
 		
-		BundleSemanticResolution smtestSR = sm.getUpdatedResolution(SMTEST);
+		sm.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
+		
+		BundleResolution smtestSR = sm.getUpdatedResolution(SMTEST);
 		assertEquals(smtestSR.getBundleName(), "smtest_foo");
-		new BundleFilesChecker(smtestSR.getBundleModuleFiles()) {
+		new BundleFilesChecker(smtestSR) {
 			{
 				checkEntry("sm_test_foo", "src/sm_test_foo.d");
 				checkEntry("test.fooLib", "src2/test/fooLib.d");			
 				checkEntry("modA_import_only", "src-import/modA_import_only.d");
 				checkEntry("nested.mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");	
-				checkEntry("mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");			
+				checkEntry("mod_nested_import_only", "src-import/nested/mod_nested_import_only.d", true);
+				finalCheck();
 			}
-		}.run();
+		};
 		
 		// Test Module resolver
 		
@@ -87,7 +105,7 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			"basic_lib_foo"
 		));
 		
-		BundleSemanticResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
+		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
 		assertEqualSet(complexLibSR.findModules2(""), hashSet(
 			"complex_lib",
 			"basic_lib_pack.foo",
@@ -96,19 +114,11 @@ public class SemanticManager_ModulesTest extends CommonSemanticModelTest {
 			"basic_lib2_foo"
 		));
 		
-		BundleSemanticResolution complexBundleSR = sm.getUpdatedResolution(COMPLEX_BUNDLE);
+		BundleResolution complexBundleSR = sm.getUpdatedResolution(COMPLEX_BUNDLE);
 		assertEqualSet(complexBundleSR.findModules2("basic_lib_pack"), hashSet(
 			"basic_lib_pack.foo"
 		));
 		testFindModule(COMPLEX_BUNDLE, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
-	}
-	
-	protected void testFindModule(BundlePath bundlePath, String bundleFullName, Path expectedPath) 
-			throws ParseSourceException, ExecutionException {
-		BundleSemanticResolution bundleSR = sm.getStoredResolution(bundlePath);
-		ParsedModule parsedModule = bundleSR.getParsedModule(bundleFullName);
-		Path modulePath = parsedModule == null ? null : parsedModule.modulePath;
-		assertAreEqual(modulePath, expectedPath);
 	}
 	
 }

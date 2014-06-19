@@ -8,12 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.model;
+package dtool.engine.modules;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.project.DeeNamingRules;
+import dtool.parser.LexingUtil;
 
 /**
  * A fully qualified name of a module.
@@ -42,7 +43,7 @@ public class ModuleFullName {
 		
 		boolean isValid = true;
 		for (int i = 0; isValid && i < segments.length; i++) {
-			isValid = DeeNamingRules.isValidDIdentifier(segments[i]);
+			isValid = LexingUtil.isValidDIdentifier(segments[i]);
 		}
 		this.isValid = isValid;
 	}
@@ -62,6 +63,14 @@ public class ModuleFullName {
 		// We use hashcode of moduleFullName instead of using segments since it's cached.
 		// This might cause colisions with segments with '.' in them, but that's a totally unimportant case.
 		return moduleFullNameString.hashCode();
+	}
+	
+	public String[] getPackages() {
+		return ArrayUtil.copyFrom(segments, segments.length - 1);
+	}
+	
+	public String getModuleBaseName() {
+		return segments[segments.length - 1];
 	}
 	
 	/* ----------------- ----------------- */

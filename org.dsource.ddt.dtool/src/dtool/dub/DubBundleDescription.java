@@ -11,7 +11,14 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubBundle.DubDependecyRef;
 
 /**
  * A resolved DUB bundle description. 
@@ -82,6 +89,81 @@ public class DubBundleDescription {
 	
 	public DubBundleException getError() {
 		return error;
+	}
+	
+	/* ----------------- helper to create ResolvedManifest ----------------- */
+	
+	public static class DubDescribeAnalysis {
+		
+		protected final HashMap<String, DubBundle> bundlesMap = new HashMap<>();
+		protected final HashMap<String, ResolvedManifest> manifests = new HashMap<>();
+		protected final HashSet<String> manifestsBeingCalculated = new HashSet<>();
+		public final ResolvedManifest mainManifest;
+		
+		public DubDescribeAnalysis(DubBundleDescription bundleDesc) {
+			
+			DubBundle[] bundleDeps = bundleDesc.getBundleDependencies();
+			for (DubBundle depBundle : bundleDeps) {
+				bundlesMap.put(depBundle.getBundleName(), depBundle);
+			}
+			
+			for (DubBundle dubBundle : bundleDeps) {
+				calculateResolvedManifest(dubBundle);
+			}
+			mainManifest = calculateResolvedManifest(bundleDesc.getMainBundle());
+		}
+		
+		public Collection<ResolvedManifest> getAllManifests() {
+			return manifests.values();
+		}
+		
+		public ResolvedManifest calculateResolvedManifest(DubBundle bundle) {
+			BundlePath bundlePath = bundle.getBundlePath();
+			if(bundlePath == null) {
+//				dtoolServer.logError("DUB describe: invalid bundle path: " + bundlePath);
+				return null;
+			}
+			
+			final String bundleName = bundle.getBundleName();
+			ResolvedManifest manifest = manifests.get(bundleName);
+			if(manifest != null) {
+				return manifest;
+			}
+			
+			if(manifestsBeingCalculated.contains(bundleName)) {
+				// Error: cycle in DUB describe
+//				dtoolServer.logError("DUB describe: bundle dependencies cycle detected!");
+				return null;
+			}
+			manifestsBeingCalculated.add(bundleName); // Mark as being created, for cycle checking
+			
+			ArrayList<ResolvedManifest> directDeps = calculateDirectDependencies(bundle);
+			
+			manifest = new ResolvedManifest(bundle, bundlePath, directDeps);
+			manifests.put(bundleName, manifest);
+			return manifest;
+		}
+		
+		protected ArrayList<ResolvedManifest> calculateDirectDependencies(DubBundle bundle) {
+			ArrayList<ResolvedManifest> directDeps = new ArrayList<>(bundle.getDependencyRefs().length);
+			
+			for (DubDependecyRef directDependencyRef : bundle.getDependencyRefs()) {
+				String depName = directDependencyRef.getBundleName();
+				DubBundle depBundle = bundlesMap.get(depName);
+				if(depBundle == null) {
+//					dtoolServer.logError("DUB describe: missing dependency: " + depName, null);
+					continue;
+				}
+				ResolvedManifest manifest = calculateResolvedManifest(depBundle);
+				if(manifest == null) {
+//					dtoolServer.logError("DUB describe: invalid dependency: " + depName, null);
+					continue;
+				}
+				directDeps.add(manifest);
+			}
+			return directDeps;
+		}
+		
 	}
 	
 }

@@ -22,9 +22,9 @@ import java.util.List;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
+import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.ParserError.ErrorSourceRangeComparator;
-import dtool.project.DeeNamingRules;
 
 /**
  * Concrete D Parser class
@@ -74,7 +74,7 @@ public class DeeParser
 	}
 	
 	public ParsedModule parseModuleSource(Path modulePath) {
-		String defaultModuleName = DeeNamingRules.getDefaultModuleName(modulePath);
+		String defaultModuleName = ModuleNamingRules.getDefaultModuleName(modulePath);
 		return parseModuleSource(defaultModuleName, modulePath);
 	}
 	

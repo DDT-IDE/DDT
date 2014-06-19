@@ -18,11 +18,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.FileUtil;
@@ -134,37 +133,14 @@ public class CommonTestExt extends CommonTest {
 		
 	}
 	
-	public static class MapChecker<K, V> implements Runnable {
-		
-		public final Map<K, V> map;
-		
-		protected final ArrayList<MapEntryChecker> entryChecks = new ArrayList<>();
-		
-		public MapChecker(Map<K, V> map) {
-			this.map = new HashMap<>(map);
-		}
-		
-		@Override
-		public void run() {
-			runEntryChecks();
-			assertTrue(map.size() == 0);
-		}
-		
-		protected void runEntryChecks() {
-			for (MapEntryChecker check : entryChecks) {
-				check.run();
-			}
-		}
-		
-		public abstract class MapEntryChecker implements Runnable {
-			
-			public V getExpectedEntry(K key) {
-				assertTrue(map.containsKey(key));
-				return map.remove(key);
-			}
-			
-		}
-		
-	}
+	protected static <K, V> void checkMapContains(Map<K, V> map, K key, V expectedValue) {
+		assertTrue(map.containsKey(key));
+		V value = map.remove(key);
+		assertAreEqual(value, expectedValue);
+	};
+	
+	protected static <V> void checkSetContains(Set<V> set, V expectedValue) {
+		assertTrue(set.remove(expectedValue));
+	};
 	
 }

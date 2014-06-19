@@ -16,12 +16,12 @@ import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
 import dtool.ast.util.NamedElementUtil;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.IToken;
-import dtool.parser.TokenListUtil;
-import dtool.project.IModuleResolver;
+import dtool.parser.LexingUtil;
 import dtool.resolver.api.ECompletionResultStatus;
 import dtool.resolver.api.PrefixSearchOptions;
 
@@ -96,7 +96,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
 		
-		IToken tokenAtOffset = TokenListUtil.findTokenAtOffset(offset, parseResult);
+		IToken tokenAtOffset = LexingUtil.findTokenAtOffset(offset, parseResult);
 		
 		if((offset > tokenAtOffset.getStartPos() && offset < tokenAtOffset.getEndPos()) &&
 			canCompleteInsideToken(tokenAtOffset)) {

@@ -1,3 +1,4 @@
+module mod_nested_import_only;
 
 import std.stdio;
 import basic_lib_foo;

@@ -9,7 +9,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.INamedElement;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 
 public class ExpThis extends Expression {
 	

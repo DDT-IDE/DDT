@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 

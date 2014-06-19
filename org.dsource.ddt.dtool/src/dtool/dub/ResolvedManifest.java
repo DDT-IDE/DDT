@@ -10,31 +10,27 @@
  *******************************************************************************/
 package dtool.dub;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import dtool.model.ModuleFullName;
 
 /**
- * This contains holds information analyzed from a bundle manifest file.
+ * A {@link ResolvedManifest} has manifest info for a bundle, 
+ * plus the same info for all dependencies, organized into a tree.
  */
-public class ResolvedBundle {
+public class ResolvedManifest {
 	
 	public final DubBundle bundle;
 	public final BundlePath bundlePath;
-	protected final List<BundlePath> bundleDependencies;
-	protected final Map<ModuleFullName, Path> bundleModules;
+	protected final List<ResolvedManifest> bundleDependencies;
 	
-	public ResolvedBundle(DubBundle bundle, List<BundlePath> depBundlePaths, 
-			Map<ModuleFullName, Path> bundleModules) {
+	public ResolvedManifest(DubBundle bundle, BundlePath bundlePath, List<ResolvedManifest> bundleDependencies) {
 		this.bundle = bundle;
-		this.bundlePath = assertNotNull(bundle.getBundlePath());
-		this.bundleDependencies = Collections.unmodifiableList(depBundlePaths);
-		this.bundleModules = Collections.unmodifiableMap(bundleModules);
+		this.bundlePath = bundlePath;
+		this.bundleDependencies = Collections.unmodifiableList(bundleDependencies);
+	}
+	
+	public DubBundle getBundle() {
+		return bundle;
 	}
 	
 	public String getBundleName() {
@@ -45,12 +41,8 @@ public class ResolvedBundle {
 		return bundlePath;
 	}
 	
-	public List<BundlePath> getBundleDeps() {
+	public List<ResolvedManifest> getBundleDeps() {
 		return bundleDependencies;
-	}
-	
-	public Map<ModuleFullName, Path> getBundleModuleFiles() {
-		return bundleModules;
 	}
 	
 }

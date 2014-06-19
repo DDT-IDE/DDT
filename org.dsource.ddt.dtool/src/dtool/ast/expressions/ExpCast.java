@@ -7,7 +7,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
-import dtool.project.IModuleResolver;
+import dtool.engine.modules.IModuleResolver;
 
 public class ExpCast extends Expression {
 	

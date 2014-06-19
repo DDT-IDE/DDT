@@ -1,49 +1,17 @@
-package dtool.project;
+package dtool.engine.modules;
 
-import static dtool.project.DeeNamingRules.getDefaultModuleNameFromFileName;
-import static dtool.project.DeeNamingRules.getModuleFullName;
-import static dtool.project.DeeNamingRules.isValidCompilationUnitName;
-import static dtool.project.DeeNamingRules.isValidDIdentifier;
-import static dtool.project.DeeNamingRules.isValidPackagePathName;
+import static dtool.engine.modules.ModuleNamingRules.getDefaultModuleNameFromFileName;
+import static dtool.engine.modules.ModuleNamingRules.getModuleFullName;
+import static dtool.engine.modules.ModuleNamingRules.isValidCompilationUnitName;
+import static dtool.engine.modules.ModuleNamingRules.isValidPackagePathName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Test;
 
-import dtool.model.ModuleFullName;
-import dtool.parser.DeeTokenHelper;
-import dtool.parser.DeeTokens;
+import dtool.engine.modules.ModuleFullName;
 
-public class DeeNamingRules_Test extends CommonTest {
-	
-	@Test
-	public void test_isValidDIdentifier() throws Exception { test_isValidDIdentifier$(); }
-	public void test_isValidDIdentifier$() throws Exception {
-		assertTrue(isValidDIdentifier("foo"));
-		assertTrue(isValidDIdentifier("bar321"));
-		assertTrue(isValidDIdentifier("_bar"));
-		assertTrue(isValidDIdentifier("_foo_bar"));
-		assertTrue(isValidDIdentifier("foo_bar"));
-		assertTrue(isValidDIdentifier("Açores"));
-		assertTrue(isValidDIdentifier("Солярис"));
-		
-		assertTrue(!isValidDIdentifier(""));
-		assertTrue(!isValidDIdentifier("foo.d"));
-		assertTrue(!isValidDIdentifier("123foo"));
-		assertTrue(!isValidDIdentifier("bar.foo"));
-		assertTrue(!isValidDIdentifier("bar foo"));
-		assertTrue(!isValidDIdentifier("bar-foo"));
-		
-		// Test keywords
-		assertTrue(!isValidDIdentifier("while"));
-		assertTrue(!isValidDIdentifier("package"));
-		assertTrue(!isValidDIdentifier("__FILE__"));
-		
-		for (DeeTokens token : DeeTokenHelper.keyWords_All) {
-			assertTrue(!isValidDIdentifier(token.getSourceValue()));
-		}
-		
-	}
+public class ModuleNamingRules_Test extends CommonTest {
 	
 	@Test
 	public void test_isValidCompilationUnitName() throws Exception { test_isValidCompilationUnitName$(); }
@@ -112,9 +80,10 @@ public class DeeNamingRules_Test extends CommonTest {
 		checkModuleName("..", true, "", false);
 		
 		
-		// Test irregular extensions: we allow them
+		// Test irregular extensions: allow
 		checkModuleName("mymod.dxx", "mymod", true); 
 		checkModuleName("mymod.d.xx", "mymod", true);
+		checkModuleName("mymod.xx.d", "mymod", true);
 		checkModuleName("pack/mymod.d#blah", "pack.mymod", true);
 		assertEquals(getDefaultModuleNameFromFileName("mymod.d"), "mymod");
 		assertEquals(getDefaultModuleNameFromFileName("mymod"), "mymod");

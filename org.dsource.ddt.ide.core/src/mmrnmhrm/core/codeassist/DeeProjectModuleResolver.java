@@ -28,8 +28,8 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.Module;
-import dtool.project.CommonModuleResolver;
-import dtool.project.DeeNamingRules;
+import dtool.engine.modules.CommonModuleResolver;
+import dtool.engine.modules.ModuleNamingRules;
 
 @Deprecated
 public class DeeProjectModuleResolver extends CommonModuleResolver{
@@ -193,7 +193,7 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 		}
 		
 		protected static ISourceModule getExistingSourceModule(IScriptFolder scriptFolder, String moduleName) {
-			for (String validExtension : DeeNamingRules.VALID_EXTENSIONS) {
+			for (String validExtension : ModuleNamingRules.VALID_EXTENSIONS) {
 				ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
 				if(DLTKModelUtils.exists(sourceModule)) {
 					return sourceModule;
@@ -229,14 +229,14 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 				
 				String packagePath= pkgFrag.getElementName();
 				
-				if(!DeeNamingRules.isValidPackagePathName(packagePath))
+				if(!ModuleNamingRules.isValidPackagePathName(packagePath))
 					continue;
 				
 				for (IModelElement srcUnitElem : pkgFrag.getChildren()) {
 					ISourceModule cu = (ISourceModule) srcUnitElem;
 					String cuFileName = cu.getElementName();
 					
-					String fqName = DeeNamingRules.getModuleFQNameFromFilePath(packagePath, cuFileName);
+					String fqName = ModuleNamingRules.getModuleFQNameFromFilePath(packagePath, cuFileName);
 					
 					if(fqName == null)
 						continue;

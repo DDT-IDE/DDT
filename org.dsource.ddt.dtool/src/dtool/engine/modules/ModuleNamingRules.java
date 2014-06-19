@@ -1,4 +1,4 @@
-package dtool.project;
+package dtool.engine.modules;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -6,54 +6,31 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.StringUtil;
-import dtool.model.ModuleFullName;
-import dtool.parser.DeeLexerKeywordHelper;
-import dtool.parser.DeeTokens;
+import dtool.parser.LexingUtil;
 
 /**
  * Naming rules code for compilation units and packages.
  * 
- * Some stuff here breaks on UTF32 supplementary characters (we don't care much)
  */
-public class DeeNamingRules {
+public class ModuleNamingRules {
 	
 	private static final String DEE_FILE_EXTENSION = ".d";
 	private static final String DEE_HEADERFILE_EXTENSION = ".di";
 	
 	public static final String[] VALID_EXTENSIONS = array(DEE_FILE_EXTENSION, DEE_HEADERFILE_EXTENSION);
 	
-	public static boolean isValidDIdentifier(String text) {
-		if(!isValidDAlphaNumeric(text))
-			return false;
-		
-		// Check for keywords
-		DeeTokens keywordToken = DeeLexerKeywordHelper.getKeywordToken(text);
-		if(keywordToken != null) 
-			return false;
-		
-		return true;
-	}
-	
-	public static boolean isValidDAlphaNumeric(String text) {
-		if(text.length() == 0) 
-			return false;
-		
-		if(!(Character.isLetter(text.charAt(0)) || text.charAt(0) == '_'))
-			return false;
-		
-		int pos = 0;
-		int length = text.length();
-		for(pos = 1; pos < length; ++pos){
-			if(!Character.isLetterOrDigit(text.charAt(pos)) && !(text.charAt(pos) == '_'))
-				return false;
-		}
-		
-		return true;	
-	}
 	
 	/* ----------------- ----------------- */
 	
-	public static ModuleFullName getValidModuleFullName(Path filePath) {
+	public static ModuleFullName getValidModuleFullNameOrNull(Path filePath) {
+		String fileName = filePath.getFileName().toString();
+		String fileExtension = StringUtil.substringFromMatch(".", fileName);
+		
+		// TODO: test this path
+		if(!isValidDFileExtension(fileExtension)) {
+			return null;
+		}
+		
 		ModuleFullName moduleFullName = getModuleFullName(filePath);
 		if(moduleFullName == null || !moduleFullName.isValid()) {
 			return null;
@@ -61,7 +38,7 @@ public class DeeNamingRules {
 		return moduleFullName;
 	}
 	
-	public static ModuleFullName getModuleFullName(Path filePath) {
+	protected static ModuleFullName getModuleFullName(Path filePath) {
 		if(filePath.getNameCount() == 0)
 			return null;
 		
@@ -105,7 +82,7 @@ public class DeeNamingRules {
 		if(fileName.equals("package.d") && !packageName.isEmpty()) {
 			return packageName;
 		} else {
-			if(!DeeNamingRules.isValidCompilationUnitName(fileName)) {
+			if(!ModuleNamingRules.isValidCompilationUnitName(fileName)) {
 				return null;
 			}
 			String moduleName = getDefaultModuleNameFromFileName(fileName);
@@ -125,8 +102,8 @@ public class DeeNamingRules {
 		String fileExtension = fileName.substring(fileNameWithoutExtension.length());
 		
 		return strict ?
-				(isValidDFileExtension(fileExtension) && isValidDIdentifier(fileNameWithoutExtension)) :
-				(isValidDFileExtension(fileExtension) && isValidDAlphaNumeric(fileNameWithoutExtension));
+				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDIdentifier(fileNameWithoutExtension)) :
+				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDAlphaNumeric(fileNameWithoutExtension));
 	}
 	
 	private static boolean isValidDFileExtension(String fileExt) {
@@ -143,15 +120,23 @@ public class DeeNamingRules {
 			return true;
 		
 		String[] parts = packagePath.split("/");
-		for (int i = 0; i < parts.length; i++) {
-			if(!isValidPackageNamePart(parts[i], strict))
+		for (String part : parts) {
+			if(!isValidPackageNamePart(part, strict))
+				return false;
+		}
+		return true;
+	}
+	
+	public static boolean isValidPackagePath(Path relPath) {
+		for (Path part : relPath) {
+			if(!isValidPackageNamePart(part.getFileName().toString(), true))
 				return false;
 		}
 		return true;
 	}
 	
 	public static boolean isValidPackageNamePart(String partname, boolean strict) {
-		return strict ? isValidDIdentifier(partname) : isValidDAlphaNumeric(partname);
+		return strict ? LexingUtil.isValidDIdentifier(partname) : LexingUtil.isValidDAlphaNumeric(partname);
 	}
 	
 }
