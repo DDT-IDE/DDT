@@ -47,11 +47,6 @@ public class DLTKUtils {
 	}
 	
 	public static String getFilePathString(ISourceModule sourceModule) {
-		if(sourceModule.exists() == false) {
-			DeeCore.logWarning("#getParsedDeeModule with module that does not exist: " + 
-					sourceModule.getElementName());
-		}
-		
 		IResource resource = sourceModule.getResource();
 		if(resource == null) {
 			return EnvironmentPathUtils.getLocalPath(sourceModule.getPath()).toOSString();

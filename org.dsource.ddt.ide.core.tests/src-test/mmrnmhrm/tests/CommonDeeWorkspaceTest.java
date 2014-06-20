@@ -6,16 +6,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 
-import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.tests.TestsWorkingDir;
-import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,7 +23,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.internal.environment.LazyFileHandle;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
-import org.eclipse.dltk.core.search.indexing.IndexManager;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
@@ -34,50 +30,19 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.After;
 import org.junit.Before;
 
-import dtool.dub.BundlePath;
-
 /**
  * Initializes a common Dee test setup:
  * - No autobuild, no DLTK indexer, creates mock compiler installs. 
  * - Creates common sample workspace projects.
  * Statically loads some read only projects, and prepares the workbench, in case it wasn't cleared.
  */
-public abstract class CommonDeeWorkspaceTest extends CommonCoreTest {
+public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 	
 	static {
-		disableWorkspaceAutoBuild();
-		disableDLTKIndexer();
-		
 		setupTestDeeInstalls();
 		
 		SamplePreExistingProject.checkForExistanceOfPreExistingProject();
 		SampleNonDeeProject.createAndSetupNonDeeProject();
-	}
-	
-	private static void disableWorkspaceAutoBuild() {
-		IWorkspaceDescription desc = DeeCore.getWorkspace().getDescription();
-		desc.setAutoBuilding(false);
-		try {
-			DeeCore.getWorkspace().setDescription(desc);
-		} catch (CoreException e) {
-			throw ExceptionAdapter.unchecked(e);
-		}
-		assertTrue(DeeCore.getWorkspace().isAutoBuilding() == false);
-	}
-	
-	@SuppressWarnings("restriction")
-	public static void disableDLTKIndexer() {
-		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
-		indexManager.disable();
-	}
-	
-	@SuppressWarnings("restriction")
-	public static void enableDLTKIndexer(boolean waitUntilReady) {
-		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
-		indexManager.enable();
-		if(waitUntilReady) {
-			indexManager.waitUntilReady();
-		}
 	}
 	
 	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";
@@ -192,28 +157,6 @@ public abstract class CommonDeeWorkspaceTest extends CommonCoreTest {
 		);
 		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
-	}
-	
-	protected static void writeDubManifest(IProject project, String bundleName, String sourceFolder) 
-			throws CoreException {
-		CommonDeeWorkspaceTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_FILENAME, MiscJsonUtils.jsDocument(
-			MiscJsonUtils.jsStringEntry("name", bundleName),
-			MiscJsonUtils.jsEntryValue("sourcePaths", "[ \"" + sourceFolder + "\" ]"),
-			MiscJsonUtils.jsEntryValue("importPaths", "[ \"" + sourceFolder + "\" ]")
-		));
-	}
-	
-	/* ----------------- ----------------- */
-	
-	public static IProject createLangProject(String name, boolean overwrite) throws CoreException {
-		IProject project = createAndOpenProject(name, overwrite);
-		setupLangProject(project, false);
-		
-		IScriptProject scriptProject = DLTKCore.create(project);
-		scriptProject.setRawBuildpath(new IBuildpathEntry[] {}, null);
-		
-		assertTrue(scriptProject.exists());
-		return project;
 	}
 	
 }

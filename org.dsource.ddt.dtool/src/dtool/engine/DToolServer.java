@@ -46,7 +46,7 @@ public class DToolServer {
 		System.out.println("> " + message);
 	}
 	
-	protected void logError(String message) {
+	protected final void logError(String message) {
 		logError(message, null);
 	}
 	

@@ -70,14 +70,14 @@ public abstract class CommonCoreTest extends CommonTest {
 		logErrorListener.checkErrorsAndUninstall();
 	}
 	
-	@Before
-	public void setUpExceptionListener() throws Throwable {
+	public static void checkLogErrors_() throws Throwable {
 		logErrorListener.checkErrors();
 	}
 	
 	@After
-	public void checkLogErrorListener() throws Throwable {
-		logErrorListener.checkErrors();
+	@Before
+	public void checkLogErrors() throws Throwable {
+		checkLogErrors_();
 	}
 	
 	private static void initializeWorkingDirToEclipseInstanceLocation() {

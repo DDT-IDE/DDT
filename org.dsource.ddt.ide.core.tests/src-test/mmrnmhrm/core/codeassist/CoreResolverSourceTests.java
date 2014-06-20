@@ -17,8 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.utilbox.misc.MiscUtil;
-import mmrnmhrm.tests.CommonDeeWorkspaceTest;
+import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.resources.IFolder;
@@ -27,11 +28,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import dtool.resolver.BaseResolverSourceTests;
 import dtool.sourcegen.AnnotatedSource;
@@ -39,8 +42,25 @@ import dtool.sourcegen.AnnotatedSource;
 public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	static {
-		MiscUtil.loadClass(CommonDeeWorkspaceTest.class);
+		MiscUtil.loadClass(CommonDeeWorkspaceTestNew.class);
 	}
+	
+	@BeforeClass
+	public static void setUpExceptionListenerStatic() throws Exception {
+		CommonCoreTest.setUpExceptionListenerStatic();
+	}
+	@AfterClass
+	public static void checkLogErrorListenerStatic() throws Throwable {
+		CommonCoreTest.checkLogErrorListenerStatic();
+	}
+	
+	@After
+	@Before
+	public void _checkLogErrors() throws Throwable {
+		CommonCoreTest.checkLogErrors_();
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public CoreResolverSourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
@@ -96,16 +116,17 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	public static IProject createProjectForResolverTestCase(File projectSourceDir) throws CoreException {
 		String projectName = projectSourceDir == null ? "r__emptyProject" : "r_" + projectSourceDir.getName();
 		
-		IScriptProject resolverProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(projectName);
-		resolverProject.setRawBuildpath(new IBuildpathEntry[] {}, null); // Remove library entry
-		IProject project = resolverProject.getProject();
+		IProject project = CommonDeeWorkspaceTestNew.createLangProject(projectName, false);
 		
 		if(projectSourceDir == null) {
+			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, ".");
 			DeeCoreTestResources.addSourceFolder(project);
 			return project;
+		} else {
+			IFolder destFolder = DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
+			DeeCoreTestResources.addSourceFolder(destFolder);
+			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, "src-dtool");
 		}
-		IFolder destFolder = DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
-		DeeCoreTestResources.addSourceFolder(destFolder);
 		return project;
 	}
 	
@@ -123,7 +144,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	}
 	
 	public void checkModuleSetupConsistency() {
-		assertTrue(sourceModule != null && sourceModule.exists());
+		assertTrue(sourceModule != null && sourceModule.getResource().exists());
 		try {
 			assertTrue(sourceModule.getSource().equals(testCase.source));
 		} catch(ModelException e) {

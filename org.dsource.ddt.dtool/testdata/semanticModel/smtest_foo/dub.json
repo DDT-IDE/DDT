@@ -1,13 +1,18 @@
 {
 	"name": "smtest_foo",
-	"description": "A more complex bundle",
+	"description": "A more complex bundle, testing a variety of situations particularly 
+	with regards to import folders (nesting, nonexisting, invalid, etc)",
+	
 	"dependencies": {
 		"basic_lib": "~master"
 	},
 	"sourcePaths": [ "src", "src2" ],
 	"sourceFiles": [ "src-extra/modA_src_extra.d"],
-	"importPaths": [ "src", "src2", "src-import", "src-import/nested" ],
+	"importPaths": [ "src", "src2", "src-import", "src-import/nested",
 	
+	"src-missing-folder", "src_this_is_a_file"
+	 ],
+	 
 	
 	"targetPath": ".dub"
 }

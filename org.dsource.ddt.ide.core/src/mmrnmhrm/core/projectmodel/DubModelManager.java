@@ -44,6 +44,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -118,7 +119,7 @@ public class DubModelManager {
 	public void shutdownManager() {
 		// It is possible to shutdown the manager without having it started.
 		
-		DeeCore.getWorkspace().removeResourceChangeListener(listener);
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
 		// shutdown model manager agent first, since model agent uses dub process agent
 		modelAgent.shutdownNow();
 		dubProcessManager.shutdownNow();
@@ -139,17 +140,17 @@ public class DubModelManager {
 		}
 		
 		try {
-			DeeCore.getWorkspace().run(new IWorkspaceRunnable() {
+			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				@Override
 				public void run(IProgressMonitor monitor) {
-					DeeCore.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+					ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 					initializeProjectsInfo(monitor);
 				}
 			}, null);
 		} catch (CoreException e) {
 			DeeCore.logError(e);
 			// This really should not happen, but still try to recover by registering listener.
-			DeeCore.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		}
 	}
 	

@@ -48,6 +48,9 @@ public class BundleModulesVisitor {
 	}
 	
 	protected void visitImportFolder(final Path importFolder) {
+		if(!importFolder.toFile().exists()) {
+			return;
+		}
 		try {
 			Files.walkFileTree(importFolder, new SimpleFileVisitor<Path>() {
 				@Override

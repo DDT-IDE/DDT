@@ -2,6 +2,7 @@ package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.util.swt.SWTTestUtils;
+import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
@@ -15,13 +16,25 @@ import org.junit.After;
 import org.junit.Test;
 
 import dtool.resolver.CompareDefUnits;
-import dtool.tests.ref.cc.CodeCompletion_LookupTest;
 
+// TODO: this test needs some cleanup
 public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 	
 	public ContentAssist_InteractionTest() {
-		super(SampleMainProject.getFile("src-ca/testCodeCompletion.d"));
+		super(SampleMainProject.getFile(ITestResourcesConstants.TR_CA + "/testCodeCompletion.d"));
 	}
+	
+	public static final String[] EXPECTED_IN_TEST_f = array(
+		"fParam", "func(int a, List!(Foo) a)", "foobarvar",
+		"foovar", "foox", 
+		"func(char b, List!(Foo) b)", "func()",
+		/*"FooBar",*/  "foo_t", "fooalias", "fooOfModule", "frak" /*,"Foo",*/
+	);
+	
+	public static final String[] EXPECTED_IN_TEST_fo = array(
+			"foobarvar",
+			"foovar", "foox", "foo_t", "fooalias", "fooOfModule"
+	);
 	
 	@After
 	public void editorCleanup() {
@@ -115,7 +128,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*1,*/ 
 			proposalsToDefUnitResults(proposals),
-			CodeCompletion_LookupTest.EXPECTED_IN_TEST_f);
+			EXPECTED_IN_TEST_f);
 		
 		simulateCharacterPress('o', 'o'); // at start of defunit
 		SWTTestUtils.________________flushUIEventQueue________________();
@@ -125,7 +138,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		proposals = getProposals(ca);
 		CompareDefUnits.checkResults(/*2,*/ 
 			proposalsToDefUnitResults(proposals),
-			CodeCompletion_LookupTest.EXPECTED_IN_TEST_fo);
+			EXPECTED_IN_TEST_fo);
 		
 		simulateCharacterPress('z', 'z'); // before defunit
 		SWTTestUtils.________________flushUIEventQueue________________();

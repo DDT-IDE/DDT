@@ -107,7 +107,7 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 			List<INamedElement> results = proposalResultsToDefUnit(proposals);
 			checkResults(results, expectedResults);
 		}
-		CodeCompletionUITestAdapter.checkProposals(proposals, repOffset, repLen, prefixLen);
+		ContentAssistUI_CommonTest.checkProposals(proposals, repOffset, repLen, prefixLen);
 	}
 	
 	@Override

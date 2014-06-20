@@ -49,11 +49,6 @@ public abstract class LangCore extends Plugin {
 		return EclipseUtils.getWorkspaceRoot();
 	}
 	
-	/** Convenience method to get the Workspace. */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-	
 	public static Status createStatus(String message) {
 		return createOkStatus(message);
 	}

@@ -19,18 +19,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.DefaultResourceListener;
 import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
@@ -84,21 +80,26 @@ public class DToolClient {
 	protected final ModuleParseCache moduleParseCache;
 	
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
-	protected final DToolResourceListener resourceListener = new DToolResourceListener();
 	
 	protected static final boolean USE_LEGACY_RESOLVER = false;
 	
 	
 	public DToolClient() {
-		dtoolServer = new DToolServer();
+		dtoolServer = new DToolServer() {
+			@Override
+			protected void logError(String message, Throwable throwable) {
+				super.logError(message, throwable);
+				// Note: the error logging is important not just logging in normal usage, 
+				// but also for tests detecting errors. It's not the best way, but works for now.
+				DeeCore.logError(message, throwable);
+			}
+		};
 		moduleParseCache = new ModuleParseCache(dtoolServer);
-		ResourceUtils.getWorkspace().addResourceChangeListener(resourceListener);
 		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 	}
 	
 	public void shutdown() {
 		DLTKCore.removeElementChangedListener(wclistener);
-		ResourceUtils.getWorkspace().removeResourceChangeListener(resourceListener);
 	}
 	
 	protected ModuleParseCache getClientModuleCache() {
@@ -230,15 +231,6 @@ public class DToolClient {
 		} catch (ParseSourceException | ModelException e) {
 			DeeCore.logWarning("Error in parseModule", e);
 			return null;
-		}
-	}
-	
-	protected class DToolResourceListener extends DefaultResourceListener {
-		@Override
-		protected void processProjectDelta(IResourceDelta projectDelta) {
-			if(!USE_LEGACY_RESOLVER) {
-				System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(projectDelta));
-			}
 		}
 	}
 	

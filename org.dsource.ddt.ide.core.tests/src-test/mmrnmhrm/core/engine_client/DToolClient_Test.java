@@ -37,14 +37,13 @@ import dtool.tests.DToolTestResources;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
-	protected DToolClient client;
+	protected static final DToolClient client = DToolClient.getDefault();
+	
 	protected TestFixtureProject testsProject;
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		client = new DToolClient();
-		
 		ModuleSource moduleSource = new ModuleSource("relative/path/foo.d", "module blah;");
 		
 		assertEquals(client.getParsedModuleOrNull(moduleSource).module.getName(), "blah");
@@ -82,8 +81,6 @@ public class DToolClient_Test extends CommonCoreTest {
 	public void testUpdates________________() throws Exception {
 		if(DToolClient.USE_LEGACY_RESOLVER) 
 			return; // test not valid
-		
-		client = DToolClient.getDefault();
 		
 		testsProject = new DToolFixtureProject();
 		doTestUpdates();
