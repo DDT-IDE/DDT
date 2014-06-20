@@ -1,13 +1,13 @@
 package mmrnmhrm.core.model_elements;
 
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 
-public abstract class SampleModelElementsVisitor extends BaseDeeTest {
+public abstract class SampleModelElementsVisitor extends CommonDeeWorkspaceTest {
 	
 	protected final ISourceModule srcModule;
 	protected final IType topLevelElement;

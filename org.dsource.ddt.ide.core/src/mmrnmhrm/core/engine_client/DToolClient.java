@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
@@ -31,10 +30,8 @@ import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -57,11 +54,11 @@ import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
 import dtool.dub.BundlePath;
+import dtool.engine.BundleResolution.CommonResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
-import dtool.engine.SemanticManager;
-import dtool.engine.BundleResolution.CommonResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.SemanticManager;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParserResult;
@@ -89,7 +86,7 @@ public class DToolClient {
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
 	protected final DToolResourceListener resourceListener = new DToolResourceListener();
 	
-	protected static final boolean USE_LEGACY_RESOLVER = true;
+	protected static final boolean USE_LEGACY_RESOLVER = false;
 	
 	
 	public DToolClient() {
@@ -212,9 +209,8 @@ public class DToolClient {
 			return null;
 		
 		try {
-			boolean isWorkingCopy = sourceModule.isWorkingCopy();
 			if(!sourceModule.isConsistent()) {
-				assertTrue(isWorkingCopy);
+				// This usually means it's a working copy, but its not guaranteed.
 				String source = sourceModule.getSource();
 				if(!USE_LEGACY_RESOLVER) {
 					// We update the server working copy too.
@@ -225,8 +221,8 @@ public class DToolClient {
 				// This method can be called during the scope of the discard/commit working copy method,
 				// and as such the WorkingCopyListener has not yet had a chance to discard the cache working.
 				// Because of that, we should check here as well if it's a WC, and discard it if so.
+				boolean isWorkingCopy = sourceModule.isWorkingCopy();
 				if(!isWorkingCopy) {
-					/*BUG here*/
 					getClientModuleCache().discardWorkingCopy(filePath);
 				}
 				return getClientModuleCache().getParsedModule(filePath);

@@ -5,13 +5,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import melnorme.utilbox.misc.MiscUtil;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.SampleMainProject;
 
 /** 
  * Checks for errors that might occur in background thread during DLTKIndexing. 
  */
-public class DLTKIndexCheckTest extends BaseDeeTest {
+public class DLTKIndexCheckTest extends CommonDeeWorkspaceTest {
 	
 	@BeforeClass
 	public static void setup() {

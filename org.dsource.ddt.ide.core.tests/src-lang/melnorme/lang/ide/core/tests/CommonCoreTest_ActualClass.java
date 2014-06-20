@@ -1,9 +1,9 @@
 package melnorme.lang.ide.core.tests;
 
 
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
-public abstract class CommonCoreTest_ActualClass extends BaseDeeTest {
+public abstract class CommonCoreTest_ActualClass extends CommonDeeWorkspaceTest {
 	
 	public CommonCoreTest_ActualClass() {
 		super();

@@ -30,7 +30,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -53,7 +53,7 @@ import dtool.dub.DubDescribeParserTest;
 /**
  * Utilities for manipulation of Dub projects
  */
-public abstract class AbstractDubModelManagerTest extends BaseDeeTest {
+public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest {
 	
 	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
 	

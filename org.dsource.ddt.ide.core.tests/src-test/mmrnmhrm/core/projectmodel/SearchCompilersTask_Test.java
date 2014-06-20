@@ -15,14 +15,14 @@ import static mmrnmhrm.tests.DeeCoreTestResources.getWorkingDirPath;
 
 import java.util.List;
 
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.junit.Test;
 
-public class SearchCompilersTask_Test extends BaseDeeTest {
+public class SearchCompilersTask_Test extends CommonDeeWorkspaceTest {
 	
 	protected static final String MULTIPLE_IN_ONE_PATH = MOCK_DEE_COMPILERS_PATH+"_multipleInSameLocation/bin";
 	

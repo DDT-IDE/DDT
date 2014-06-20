@@ -10,36 +10,34 @@
  *******************************************************************************/
 package mmrnmhrm.tests;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.downCast;
 import melnorme.utilbox.misc.MiscUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
-
-import dtool.dub.BundlePath;
 
 public class TestFixtureProject implements ITestResourcesConstants {
 	
 	protected final String projectName;
 	public final IProject project;
-	public final IScriptProject scriptProject;
 	
 	static {
-		MiscUtil.loadClass(BaseDeeTest.class);
+		MiscUtil.loadClass(CommonDeeWorkspaceTest.class);
 	}
 
 	public TestFixtureProject(String projectName) throws CoreException {
 		this.projectName = projectName;
-		scriptProject = BaseDeeTest.createLangProject(projectName, true);
-		project = scriptProject.getProject();
+		this.project = createProject(projectName);
 		
 		createContents();
+	}
+	
+	protected IProject createProject(String projectName) throws CoreException {
+		return CommonDeeWorkspaceTest.createLangProject(projectName, true);
 	}
 	
 	protected void createContents() throws CoreException {
@@ -48,25 +46,35 @@ public class TestFixtureProject implements ITestResourcesConstants {
 	protected void writeManifestFile() throws CoreException {
 		String sourceFolder = "source";
 		
-		BaseDeeTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_FILENAME, MiscJsonUtils.jsDocument(
-			MiscJsonUtils.jsStringEntry("name", projectName),
-			MiscJsonUtils.jsEntryValue("sourcePaths", "[ \"" + sourceFolder + "\" ]"),
-			MiscJsonUtils.jsEntryValue("importPaths", "[ \"" + sourceFolder + "\" ]")
-		));
+		CommonDeeWorkspaceTest.writeDubManifest(project, projectName, sourceFolder);
 	}
 	
 	public java.nio.file.Path getPath() {
 		return project.getLocation().toFile().toPath();
 	}
 	
+	public IFolder createFolder(String name) throws CoreException {
+		IFolder folder = getFolder(name);
+		folder.create(true, true, null);
+		return folder;
+	}
+	
+	public IFolder getFolder(String name) {
+		IFolder folder = project.getFolder(name);
+		assertTrue(folder.exists());
+		return folder;
+	}
+	
+	public IFile getFile(String pathString) {
+		IFile file = project.getFile(pathString);
+		assertTrue(file.exists());
+		return file;
+	}
+	
 	public ISourceModule getSourceModule(String pathString) {
-		try {
-			ISourceModule sourceModule = downCast(scriptProject.findElement(new Path(pathString)));
-			assertTrue(sourceModule.exists());
-			return sourceModule;
-		} catch (ModelException e) {
-			throw assertFail();
-		}
+		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(getFile(pathString));
+		assertTrue(sourceModule != null);
+		return sourceModule;
 	}
 	
 }

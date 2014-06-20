@@ -13,7 +13,7 @@ package mmrnmhrm.core.launch;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.compiler_installs.CommonInstallType;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.IPath;
@@ -25,7 +25,7 @@ import org.eclipse.dltk.launching.LibraryLocation;
 import org.eclipse.dltk.utils.PlatformFileUtils;
 import org.junit.Test;
 
-public class DMDInstallType_Test extends BaseDeeTest {
+public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }

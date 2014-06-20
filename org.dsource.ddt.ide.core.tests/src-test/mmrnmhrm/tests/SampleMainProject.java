@@ -29,13 +29,13 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	public static IFile sampleNonExistantFile;
 	
 	static {
-		MiscUtil.loadClass(BaseDeeTest.class);
+		MiscUtil.loadClass(CommonDeeWorkspaceTest.class);
 		SampleMainProject.createAndSetupSampleProj();
 	}
 	
 	private static void createAndSetupSampleProj() {
 		try {
-			scriptProject = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
+			scriptProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();
 		} catch (Exception e) {
 			throw ExceptionAdapter.unchecked(e);

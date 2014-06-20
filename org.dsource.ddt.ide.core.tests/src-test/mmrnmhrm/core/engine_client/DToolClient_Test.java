@@ -13,19 +13,17 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.env.ModuleSource;
@@ -80,104 +78,144 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	@Test
-	public void testUpdates() throws Exception { testUpdates$(); }
-	public void testUpdates$() throws Exception {
+	public void testUpdates() throws Exception { testUpdates________________(); }
+	public void testUpdates________________() throws Exception {
 		if(DToolClient.USE_LEGACY_RESOLVER) 
 			return; // test not valid
 		
 		client = DToolClient.getDefault();
 		
-		testsProject = new TestFixtureProject("DToolClientTest") {
+		testsProject = new DToolFixtureProject();
+		doTestUpdates();
+		
+		// Test again with module under a source folder. It should not make much difference, but never know..
+		testsProject = new DToolFixtureProject() {
 			@Override
 			protected void createContents() throws CoreException {
-				DeeCoreTestResources.createSrcFolderFromCoreResource("simple-source", project.getFolder("source"));
-				writeManifestFile();
+				super.createContents();
+				DeeCoreTestResources.addSourceFolder(sourceFolder);
 			}
 		};
+		doTestUpdates();
+	}
+	
+	protected class DToolFixtureProject extends TestFixtureProject {
 		
-		ISourceModule sourceModule = testsProject.getSourceModule("basic_foo.d");
+		protected IFolder sourceFolder;
 		
-		doCodeCompletion(sourceModule, 0, "basic_foo", "barLibFunction");
+		private DToolFixtureProject() throws CoreException {
+			super("DToolClientTest");
+		}
 		
-		updateFile(sourceModule, "module change1;");
-		doCodeCompletion(sourceModule, 0, "change1");
+		@Override
+		protected void createContents() throws CoreException {
+			sourceFolder = project.getFolder("source");
+			DeeCoreTestResources.createFolderFromCoreResource("simple-source", sourceFolder);
+			writeManifestFile();
+		}
+	}
+	
+	protected void doTestUpdates() throws CoreException, IOException {
+		IFolder SRC_FOLDER = testsProject.getFolder("source");
+		IFile basic_foo = exists(SRC_FOLDER.getFile("basic_foo.d"));
 		
-		updateFile(sourceModule, "module change2;");
-		doCodeCompletion(sourceModule, 0, "change2");
+		doCodeCompletion(basic_foo, 0, "basic_foo", "barLibFunction");
 		
-		IFolder SRC_FOLDER = testsProject.project.getFolder("simple-source");
+		writeStringToFile(basic_foo, "module change1;");
+		doCodeCompletion(basic_foo, 0, "change1");
+		
+		writeStringToFile(basic_foo, "module change2;");
+		doCodeCompletion(basic_foo, 0, "change2");
+		
 		
 		IFile newFile = SRC_FOLDER.getFile("new_file.d");
-		sourceModule = testsProject.getSourceModule("new_file.d"); 
-		updateFile(sourceModule, "module new_file;");
-		checkModuleContains(newFile, "new", "new_file", true);
+		writeStringToFile(newFile, "module new_file;"); 
+		checkModuleContains(newFile, "new_file");
 		
 		IFolder newPackage = createFolder(SRC_FOLDER.getFolder("new_package"));
-		newFile = newPackage.getFile("new_package_file.d");
-		updateFile(sourceModule, "module new_package_file;");
-		checkModuleContains(newFile, "new", "new_package.new_package_file", true);
+		IFile newFile2 = newPackage.getFile("new_file2.d");
+		writeStringToFile(newFile2, "module new_file2;");
+		checkModuleContains(newFile2, "new_package.new_file2", "new_file2/");
 		
 		deleteResource(newPackage);
-		checkModuleContains(newFile, "new", "new_package.new_package_file", false);
+		checkModuleExists(newFile2, "new_package.new_package_file", false);
 		
 		deleteResource(newFile);
-		checkModuleContains(newFile, "new", "new_file", false);
+		checkModuleExists(newFile, "new_file", false);
 		
 		testUpdatesToWorkingCopy();
 	}
 	
-	public static void updateFile(ISourceModule sourceModule, String contents) throws CoreException {
-		IFile file = (IFile) sourceModule.getResource();
-		ResourceUtils.writeToFile(file, new ByteArrayInputStream(contents.getBytes(StringUtil.UTF8)));
-		assertEquals(sourceModule.getSource(), contents);
+	protected <T extends IResource> T exists(T resource) {
+		assertTrue(resource.exists());
+		return resource;
 	}
 	
-	protected void checkModuleContains(IFile file, String prefix, String moduleName, boolean contains) 
-			throws CoreException {
-		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
-		assertTrue(sourceModule != null && sourceModule.exists());
-		HashSet<String> modules = client.listModulesFor(file.getProject(), prefix);
-		assertTrue(modules.contains(moduleName) == contains);
-		if(contains) {
-			doCodeCompletion(sourceModule, 0, moduleName);
-		}
+	protected void checkModuleContains(IFile file, String moduleName) throws CoreException {
+		checkModuleContains(file, moduleName, moduleName + "/");
 	}
+	
+	protected void checkModuleContains(IFile file, String moduleName, String... results) throws CoreException {
+		checkModuleExists(file, moduleName, true);
+		doCodeCompletion(file, 0, results);
+	}
+	
+	protected void checkModuleExists(IFile file, String moduleName, boolean exists)
+			throws CoreException {
+		HashSet<String> modules = client.listModulesFor(file.getProject(), "");
+		assertTrue(modules.contains(moduleName) == exists);
+	}
+	
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
-		ISourceModule sourceModule = testsProject.getSourceModule("basic_foo.d");
+		ISourceModule sourceModule = testsProject.getSourceModule("source/basic_foo.d");
+		IFile moduleFile = (IFile) sourceModule.getResource();
 		sourceModule.discardWorkingCopy();
 		
-		IFile file = (IFile) sourceModule.getResource();
 		String originalFileContents = "module wc_change0;";
-		updateFile(sourceModule, originalFileContents);
+		writeStringToFile(moduleFile, originalFileContents);
 		
 		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
-		doCodeCompletion(sourceModule, 0, "wc_change0");
+		doCodeCompletion(moduleFile, 0, "wc_change0");
 		
 		sourceModule.getBuffer().setContents("module wc_change1;");
-		assertEquals(readFileContents(file), originalFileContents);
+		assertEquals(readFileContents(moduleFile), originalFileContents);
 		
-		doCodeCompletion(sourceModule, 0, "wc_change1");
+		doCodeCompletion(moduleFile, 0, "wc_change1");
 		
 		sourceModule.getBuffer().setContents("module wc_change2;");
-		doCodeCompletion(sourceModule, 0, "wc_change2");
+		doCodeCompletion(moduleFile, 0, "wc_change2");
 		
 		sourceModule.discardWorkingCopy();
-		doCodeCompletion(sourceModule, 0, "basic_foo", "barLibFunction");
+		doCodeCompletion(moduleFile, 0, "wc_change0");
 		
 		
-		sourceModule = testsProject.getSourceModule("basic_pack/foo.d");
-		doCodeCompletion(sourceModule, 0, "foo");
+		sourceModule = testsProject.getSourceModule("source/basic_pack/foo.d");
+		moduleFile = (IFile) sourceModule.getResource();
+		doCodeCompletion(moduleFile, 0, "basic_pack/");
 		
-		sourceModule.getBuffer().setContents("module wc_change3;");
-		doCodeCompletion(sourceModule, 0, "wc_change3");
+		// Test commitWorkingCopy
+		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
+		sourceModule.getBuffer().setContents("module wc_commitWC_Test;");
 		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
+		doCodeCompletion(moduleFile, 0, "wc_commitWC_Test/");
+
+		sourceModule.getBuffer().setContents("module wc_commitWC_Test2;");
+		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
+		sourceModule.discardWorkingCopy();
+		doCodeCompletion(moduleFile, 0, "wc_commitWC_Test2/");
 		
-		doCodeCompletion(sourceModule, 0, "wc_change3");
+		// Test setContents of non-working copy - only valid if sourceModule in buildpath it seems
+		if(sourceModule.exists()) {
+			sourceModule.getBuffer().setContents("module wc_change3;");
+			assertTrue(sourceModule.isWorkingCopy() == false);
+			doCodeCompletion(moduleFile, 0, "wc_change3/");
+		}
 	}
 	
 	// Note: we don't use this method to test code completion, we are test the Working Copies of the server.
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
-	protected void doCodeCompletion(ISourceModule sourceModule, int offset, String... results) throws CoreException {
+	protected void doCodeCompletion(IFile file, int offset, String... results) throws CoreException {
+		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
 		PrefixDefUnitSearch cc = client.doCodeCompletion(sourceModule, offset);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}

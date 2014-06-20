@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import melnorme.utilbox.misc.MiscUtil;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.env.ModuleSource;
@@ -37,14 +39,14 @@ import dtool.sourcegen.AnnotatedSource;
 public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	static {
-		MiscUtil.loadClass(BaseDeeTest.class);
+		MiscUtil.loadClass(CommonDeeWorkspaceTest.class);
 	}
 	
 	public CoreResolverSourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
 	}
 	
-	protected static HashMap<String, IScriptProject> defaultFixtureProjects = new HashMap<>();
+	protected static HashMap<String, IProject> defaultFixtureProjects = new HashMap<>();
 	
 	protected TestsProjectFileOverlay fixtureSourceOverlay;
 	protected ISourceModule sourceModule;
@@ -62,16 +64,16 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	public void prepareTestCase_do(String explicitModuleName, String projectFolderName, AnnotatedSource testCase)
 		throws CoreException, IOException {
-		IScriptProject scriptProject = defaultFixtureProjects.get(projectFolderName /*Can be null*/);
+		IProject project = defaultFixtureProjects.get(projectFolderName /*Can be null*/);
 		
-		if(scriptProject == null) {
+		if(project == null) {
 			File projectDir = projectFolderName == null ? null : getProjectDirectory(projectFolderName);
-			scriptProject = createProjectForResolverTestCase(projectDir);
-			defaultFixtureProjects.put(projectFolderName, scriptProject);
+			project = createProjectForResolverTestCase(projectDir);
+			defaultFixtureProjects.put(projectFolderName, project);
 		}
 		
 		String moduleName = nullToOther(explicitModuleName, DEFAULT_MODULE_NAME);
-		fixtureSourceOverlay = new TestsProjectFileOverlay(scriptProject, moduleName, testCase.source);
+		fixtureSourceOverlay = new TestsProjectFileOverlay(project, moduleName, testCase.source);
 		
 		mr = null; // Redundant
 		
@@ -91,18 +93,20 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		}
 	}
 	
-	public static IScriptProject createProjectForResolverTestCase(File projectSourceDir) throws CoreException {
+	public static IProject createProjectForResolverTestCase(File projectSourceDir) throws CoreException {
 		String projectName = projectSourceDir == null ? "r__emptyProject" : "r_" + projectSourceDir.getName();
 		
-		IScriptProject resolverProject = BaseDeeTest.createAndOpenDeeProject(projectName);
+		IScriptProject resolverProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(projectName);
 		resolverProject.setRawBuildpath(new IBuildpathEntry[] {}, null); // Remove library entry
+		IProject project = resolverProject.getProject();
 		
 		if(projectSourceDir == null) {
-			DeeCoreTestResources.addSourceFolder(resolverProject.getProject(), null);
-			return resolverProject;
+			DeeCoreTestResources.addSourceFolder(project);
+			return project;
 		}
-		DeeCoreTestResources.createSrcFolderFromDirectory(projectSourceDir, resolverProject, "src-dtool");
-		return resolverProject;
+		IFolder destFolder = DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
+		DeeCoreTestResources.addSourceFolder(destFolder);
+		return project;
 	}
 	
 	@Override

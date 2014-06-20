@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IScriptProject;
 
 import melnorme.utilbox.core.ExceptionAdapter;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
 public class SampleSearchProject extends DeeCoreTestResources {
@@ -26,7 +26,7 @@ public class SampleSearchProject extends DeeCoreTestResources {
 	public final IScriptProject scriptProject;
 	
 	public SampleSearchProject() throws CoreException {
-		scriptProject = BaseDeeTest.createAndOpenDeeProject(SAMPLEPROJNAME);
+		scriptProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 		fillSampleProj();
 	}
 	

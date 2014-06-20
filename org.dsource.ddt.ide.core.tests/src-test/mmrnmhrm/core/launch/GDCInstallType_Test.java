@@ -13,14 +13,14 @@ package mmrnmhrm.core.launch;
 import static mmrnmhrm.core.launch.DMDInstallType_Test.checkLibLocations;
 import static mmrnmhrm.core.launch.DMDInstallType_Test.getLibraryLocations;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.LibraryLocation;
 import org.junit.Test;
 
-public class GDCInstallType_Test extends BaseDeeTest {
+public class GDCInstallType_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }

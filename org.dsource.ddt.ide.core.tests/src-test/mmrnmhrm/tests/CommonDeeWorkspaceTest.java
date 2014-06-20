@@ -34,13 +34,15 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.After;
 import org.junit.Before;
 
+import dtool.dub.BundlePath;
+
 /**
  * Initializes a common Dee test setup:
  * - No autobuild, no DLTK indexer, creates mock compiler installs. 
  * - Creates common sample workspace projects.
  * Statically loads some read only projects, and prepares the workbench, in case it wasn't cleared.
  */
-public abstract class BaseDeeTest extends CommonCoreTest {
+public abstract class CommonDeeWorkspaceTest extends CommonCoreTest {
 	
 	static {
 		disableWorkspaceAutoBuild();
@@ -192,17 +194,26 @@ public abstract class BaseDeeTest extends CommonCoreTest {
 		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
 	}
 	
-	/* ----------------- header ----------------- */
+	protected static void writeDubManifest(IProject project, String bundleName, String sourceFolder) 
+			throws CoreException {
+		CommonDeeWorkspaceTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_FILENAME, MiscJsonUtils.jsDocument(
+			MiscJsonUtils.jsStringEntry("name", bundleName),
+			MiscJsonUtils.jsEntryValue("sourcePaths", "[ \"" + sourceFolder + "\" ]"),
+			MiscJsonUtils.jsEntryValue("importPaths", "[ \"" + sourceFolder + "\" ]")
+		));
+	}
 	
-	public static IScriptProject createLangProject(String name, boolean overwrite) throws CoreException {
+	/* ----------------- ----------------- */
+	
+	public static IProject createLangProject(String name, boolean overwrite) throws CoreException {
 		IProject project = createAndOpenProject(name, overwrite);
 		setupLangProject(project, false);
-		IScriptProject scriptProject = DLTKCore.create(project);
 		
+		IScriptProject scriptProject = DLTKCore.create(project);
 		scriptProject.setRawBuildpath(new IBuildpathEntry[] {}, null);
 		
 		assertTrue(scriptProject.exists());
-		return scriptProject;
+		return project;
 	}
 	
 }

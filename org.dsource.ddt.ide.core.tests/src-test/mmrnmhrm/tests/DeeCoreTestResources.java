@@ -22,9 +22,9 @@ import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -49,7 +49,7 @@ public class DeeCoreTestResources {
 	public static void createSrcFolderFromCoreResource(String resourcePath, IContainer destFolder) 
 			throws CoreException {
 		createFolderFromCoreResource(resourcePath, destFolder);
-		addSourceFolder(destFolder, null);
+		addSourceFolder(destFolder);
 	}
 	
 	public static void createFolderFromCoreResource(String resourcePath, IContainer destFolder)
@@ -75,22 +75,22 @@ public class DeeCoreTestResources {
 		}
 	}
 	
-	public static void createSrcFolderFromDirectory(File directory, IScriptProject project, 
-		String destFolderName) throws CoreException {
-		IFolder destFolder = project.getProject().getFolder(destFolderName);
+	public static IFolder createFolderFromDirectory(File directory, IProject project, String destFolderName)
+			throws CoreException {
+		IFolder destFolder = project.getFolder(destFolderName);
 		MiscFileUtils.copyDirContentsIntoDirectory(directory, destFolder.getLocation().toFile());
 		destFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-		addSourceFolder(destFolder, null);
+		return destFolder;
 	}
 	
 	/** Setup the given folder as a source folder. */
-	public static IProjectFragment addSourceFolder(IContainer folder, IProgressMonitor pm) throws CoreException {
+	public static IProjectFragment addSourceFolder(IContainer folder) throws CoreException {
 		IScriptProject dltkProj = DLTKCore.create(folder.getProject());
 		IProjectFragment fragment = dltkProj.getProjectFragment(folder);
 		if(!fragment.exists()) {
 			IBuildpathEntry[] bpentries = dltkProj.getRawBuildpath();
 			IBuildpathEntry entry = DLTKCore.newSourceEntry(fragment.getPath());
-			dltkProj.setRawBuildpath(ArrayUtil.concat(bpentries, entry), pm);
+			dltkProj.setRawBuildpath(ArrayUtil.concat(bpentries, entry), null);
 		}
 		return fragment;
 	}

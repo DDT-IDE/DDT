@@ -12,7 +12,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.arrayI;
-import mmrnmhrm.tests.BaseDeeTest;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.ModelElementTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
@@ -32,7 +32,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.TemplateParameter;
 
-public class DeeModelElement_Test extends BaseDeeTest implements ITestResourcesConstants,
+public class DeeModelElement_Test extends CommonDeeWorkspaceTest implements ITestResourcesConstants,
 	DefElementFlagConstants {
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {

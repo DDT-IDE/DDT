@@ -12,8 +12,8 @@ package mmrnmhrm.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.tests.CommonCoreTest;
 import mmrnmhrm.core.model_elements.SampleModelElementsVisitor;
-import mmrnmhrm.tests.BaseDeeTest;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.ModelElementTestUtils;
 import mmrnmhrm.tests.SampleMainProject;
@@ -29,7 +29,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.junit.Test;
 
-public class DeeScriptElementLabels_Test extends BaseDeeTest implements ITestResourcesConstants {
+public class DeeScriptElementLabels_Test extends CommonCoreTest implements ITestResourcesConstants {
 	
 	private static final long DEE_SEARCHPAGE_FLAGS = 
 			ScriptElementLabels.T_FULLY_QUALIFIED |

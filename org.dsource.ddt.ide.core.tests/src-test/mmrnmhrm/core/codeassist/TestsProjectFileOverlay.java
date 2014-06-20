@@ -9,10 +9,10 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.IScriptProject;
 
 /**
  * Module resolver helper for the {@link CoreResolverSourceTests} fixture
@@ -22,13 +22,13 @@ public class TestsProjectFileOverlay {
 	protected IFile overlayedFile;
 	protected IByteSequence overlayedFilePreviousContents;
 	
-	public TestsProjectFileOverlay(IScriptProject scriptProject, String moduleName, String source) 
+	public TestsProjectFileOverlay(IProject project, String moduleName, String source) 
 		throws IOException, CoreException {
 		
 		Path filePath = new Path(moduleName.replaceAll("\\.", "/") + ".d");
-		IContainer srcFolder = scriptProject.getProject().getFolder("src-dtool");
+		IContainer srcFolder = project.getFolder("src-dtool");
 		if(!srcFolder.exists()) {
-			srcFolder = scriptProject.getProject();
+			srcFolder = project;
 		}
 		overlayedFile = srcFolder.getFile(filePath);
 		

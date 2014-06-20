@@ -32,7 +32,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 		if(!project.exists()) {
 			// If the preexisting project doesn't exist, create it
 			try {
-				sampleDeeProj = BaseDeeTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
+				sampleDeeProj = CommonDeeWorkspaceTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
 				project = sampleDeeProj.getProject();
 				DeeCoreTestResources.createSrcFolderFromCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
