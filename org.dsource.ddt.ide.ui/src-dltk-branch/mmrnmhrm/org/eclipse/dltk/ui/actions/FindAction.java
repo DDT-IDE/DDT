@@ -2,7 +2,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.lang.ui.EditorUtil;
@@ -11,6 +11,7 @@ import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -39,6 +40,7 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.ResolverUtil;
 import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 
@@ -104,8 +106,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 				defunit = defSymbol.getDefUnit();
 			} else if(elem instanceof Reference) {
 				Reference ref = (Reference) elem;
-				IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-				defunit = ref.findTargetDefElement(new DeeProjectModuleResolver(scriptProject));
+				IModelElement inputModelElement = deeEditor.getInputModelElement();
+				IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(inputModelElement);
+				defunit = ref.findTargetDefElement(mr);
 				if(defunit == null) {
 					errorMessage = "No DefUnit found when resolving reference.";
 				}
@@ -166,7 +169,6 @@ public abstract class FindAction extends SelectionDispatchAction {
 	
 	protected boolean isInsideInterpreterEnv(INamedElement defunit, DLTKSearchScopeFactory factory) throws ModelException {
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(scriptProject);
 		
 		boolean isInsideInterpreterEnvironment;
 		String moduleFQName = defunit.getModuleFullyQualifiedName();
@@ -174,7 +176,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			isInsideInterpreterEnvironment = false;
 		} else {
 			ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(moduleFQName);
-			ISourceModule element = mr.findModuleUnit(nameDescriptor.packages, nameDescriptor.moduleName, null);
+			ISourceModule element = SourceModuleFinder.findModuleUnit(scriptProject, nameDescriptor.packages, nameDescriptor.moduleName);
 			// review this
 			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
 		}

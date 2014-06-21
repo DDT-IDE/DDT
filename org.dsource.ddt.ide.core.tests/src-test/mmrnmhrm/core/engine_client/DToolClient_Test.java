@@ -64,7 +64,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 		// Error case
 		try {
-			client.doCodeCompletion_Do(null, 0, null);
+			client.doCodeCompletion_Do(null, 0);
 			assertFail();
 		} catch (CoreException e) {
 		}
@@ -79,9 +79,6 @@ public class DToolClient_Test extends CommonCoreTest {
 	@Test
 	public void testUpdates() throws Exception { testUpdates________________(); }
 	public void testUpdates________________() throws Exception {
-		if(DToolClient.USE_LEGACY_RESOLVER) 
-			return; // test not valid
-		
 		testsProject = new DToolFixtureProject();
 		doTestUpdates();
 		

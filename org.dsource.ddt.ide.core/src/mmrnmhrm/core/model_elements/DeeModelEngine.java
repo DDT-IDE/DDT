@@ -3,10 +3,11 @@ package mmrnmhrm.core.model_elements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.codeassist.SourceModuleFinder;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
@@ -27,7 +28,7 @@ import dtool.util.NewUtils;
  */
 public class DeeModelEngine {
 	
-	public static IMember findCorrespondingModelElement(DefUnit targetDefUnit, DeeProjectModuleResolver moduleResolver)
+	public static IMember findCorrespondingModelElement(DefUnit targetDefUnit, IScriptProject scriptProject)
 		throws ModelException {
 		if(targetDefUnit == null) 
 			return null;
@@ -35,7 +36,7 @@ public class DeeModelEngine {
 		Module module = targetDefUnit.getModuleNode();
 		// TODO: would be nice to have test for module == null path
 		if(module != null) {
-			ISourceModule targetSrcModule = moduleResolver.findModuleUnit(module); 
+			ISourceModule targetSrcModule = SourceModuleFinder.findModuleUnit(module, scriptProject); 
 			// TODO: would be nice to have test for targetSrcModule == null path
 			// TODO consider out of buildpath scenario
 			if(targetSrcModule != null) {

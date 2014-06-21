@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
@@ -31,6 +31,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 
 /**
  * XXX: what is the exact contract of this class. Do returned model elements have to exist?
@@ -67,7 +68,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+		IModuleResolver moduleResolver = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
@@ -77,7 +78,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
 		for (INamedElement defElement : defElements) {
 			DefUnit defUnit = defElement.resolveDefUnit();
-			IMember modelElement = getModelElement(defUnit, moduleResolver, sourceModule);
+			IMember modelElement = getModelElement(defUnit, sourceModule);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -86,7 +87,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	protected IMember getModelElement(DefUnit defUnit, DeeProjectModuleResolver mr, ISourceModule sourceModule) {
+	protected IMember getModelElement(DefUnit defUnit, ISourceModule sourceModule) {
 		if(defUnit == null) {
 			return null;
 		}
@@ -95,7 +96,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 			return null;
 		}
 		try {
-			ISourceModule moduleUnit = mr.findModuleUnit(module, sourceModule);
+			ISourceModule moduleUnit = SourceModuleFinder.findModuleUnit(module, sourceModule.getScriptProject());
 			return DeeModelEngine.findCorrespondingModelElement(defUnit, moduleUnit);
 		} catch (ModelException e) {
 			return null;

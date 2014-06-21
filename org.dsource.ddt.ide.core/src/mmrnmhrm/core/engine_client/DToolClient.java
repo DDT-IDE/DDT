@@ -56,8 +56,6 @@ import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.SemanticManager;
 import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.NullModuleResolver;
-import dtool.parser.DeeParserResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.FindDefinitionResult;
@@ -80,9 +78,6 @@ public class DToolClient {
 	protected final ModuleParseCache moduleParseCache;
 	
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
-	
-	protected static final boolean USE_LEGACY_RESOLVER = false;
-	
 	
 	public DToolClient() {
 		dtoolServer = new DToolServer() {
@@ -213,10 +208,8 @@ public class DToolClient {
 			if(!sourceModule.isConsistent()) {
 				// This usually means it's a working copy, but its not guaranteed.
 				String source = sourceModule.getSource();
-				if(!USE_LEGACY_RESOLVER) {
-					// We update the server working copy too.
-					getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
-				}
+				// We update the server working copy too.
+				getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
 				return getClientModuleCache().getParsedModule(filePath, source);
 			} else {
 				// This method can be called during the scope of the discard/commit working copy method,
@@ -242,16 +235,28 @@ public class DToolClient {
 				if(sourceModule.isWorkingCopy() == false) {
 					Path filePath = getFilePathOrNull(sourceModule);
 					if(filePath != null) {
-						if(!USE_LEGACY_RESOLVER) {
-							// We update the server working copy too.
-							getServerSemanticManager().discardWorkingCopy(filePath);
-						}
+						// We update the server working copy too.
+						getServerSemanticManager().discardWorkingCopy(filePath);
 						getClientModuleCache().discardWorkingCopy(filePath);
 					}
 				}
 			}
 		}
 		
+	}
+	
+	
+	public IModuleResolver getResolverForSourceModule(IModelElement element) {
+		return new DeeProjectModuleResolver(element.getScriptProject());
+	}
+	
+	public IModuleResolver getResolverForSourceModuleNew(IModelElement element) throws ExecutionException {
+		IProject project = element.getScriptProject().getProject();
+		BundlePath bundlePath = BundlePath.create(project.getLocation().toOSString());
+		if(bundlePath == null) {
+			return null;
+		}
+		return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath);
 	}
 	
 	/* ----------------- Specific semantic operations: ----------------- */
@@ -282,8 +287,18 @@ public class DToolClient {
 	public static final String FIND_DEF_ReferenceResolveFailed = 
 		"Definition not found for reference: ";
 	
-	public static FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
-		Module module = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
+	public FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
+		Path filePath = getFilePathOrNull(sourceModule);
+		if(filePath == null) {
+			return new FindDefinitionResult("Invalid path for file: " );
+		}
+		final CommonResolvedModule resolvedModule;
+		try {
+			resolvedModule = getResolvedModule(filePath);
+		} catch (ExecutionException e) {
+			return new FindDefinitionResult("Error awaiting operation result: " + e);
+		}
+		Module module = resolvedModule.getModuleNode();
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		if(node == null) {
 			return new FindDefinitionResult("No node found at offset: " + offset);
@@ -313,15 +328,15 @@ public class DToolClient {
 			
 			@Override
 			protected FindDefinitionResult nodeIsNamedReference_ok(NamedReference namedReference) {
-				return doFindDefinitionForRef(namedReference, sourceModule);
+				return doFindDefinitionForRef(namedReference, resolvedModule);
 			}
 		};
 		
 		return refPickHelper.switchOnPickedNode(node);
 	}
 	
-	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISourceModule sourceModule) {
-		DeeProjectModuleResolver moduleResolver = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+	public FindDefinitionResult doFindDefinitionForRef(Reference ref, CommonResolvedModule resolvedModule) {
+		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		
 		if(defElements == null || defElements.size() == 0) {
@@ -344,14 +359,6 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
-		// Update source to engine server.
-		sourceModule.makeConsistent(new NullProgressMonitor());
-		
-		Path filePath = getFilePath(sourceModule);
-		return doCodeCompletion_Do(filePath, offset, sourceModule);
-	}
-	
 	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws CoreException {
 		
 		if(moduleSource instanceof ISourceModule) {
@@ -363,35 +370,22 @@ public class DToolClient {
 		// Update source to engine server.
 		if(filePath != null) {
 			String sourceContents = moduleSource.getSourceContents();
-			if(USE_LEGACY_RESOLVER) {
-				getClientModuleCache().getParsedModule(filePath, sourceContents);
-			} else {
-				getServerSemanticManager().updateWorkingCopyAndParse(filePath, sourceContents);
-			}
+			getServerSemanticManager().updateWorkingCopyAndParse(filePath, sourceContents);
 		}
-		IModelElement modelElement = moduleSource.getModelElement();
-		return doCodeCompletion_Do(filePath, offset, modelElement);
+		return doCodeCompletion_Do(filePath, offset);
 	}
 	
-	protected PrefixDefUnitSearch doCodeCompletion_Do(Path filePath, int offset, 
-			IModelElement modelElement) throws CoreException {
+	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
+		// Update source to engine server.
+		sourceModule.makeConsistent(new NullProgressMonitor());
+		
+		Path filePath = getFilePath(sourceModule);
+		return doCodeCompletion_Do(filePath, offset);
+	}
+	
+	protected PrefixDefUnitSearch doCodeCompletion_Do(Path filePath, int offset) throws CoreException {
 		if(filePath == null) { 
 			throw DeeCore.createCoreException("Invalid path for content assist source.", null);
-		}
-		
-		if(USE_LEGACY_RESOLVER) {
-			
-			DeeParserResult parseResult;
-			try {
-				parseResult = getClientModuleCache().getParsedModule(filePath);
-			} catch (ParseSourceException e) {
-				throw DeeCore.createCoreException("Error reading source of content assist file.", e);
-			}
-			
-			IModuleResolver mr = modelElement == null ? 
-					new NullModuleResolver() :
-					new DeeProjectModuleResolver(modelElement.getScriptProject());
-			return PrefixDefUnitSearch.doCompletionSearch(parseResult, offset, mr);
 		}
 		
 		return doCodeCompletion_Client(filePath, offset);
@@ -423,19 +417,25 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public static String getDDocHTMLView(ISourceModule sourceModule, int offset) {
-		ParsedModule parsedModule = getDefault().getParsedModuleOrNull(sourceModule);
-		if(parsedModule == null) {
+	public String getDDocHTMLView(ISourceModule sourceModule, int offset) {
+		Path filePath = getFilePathOrNull(sourceModule);
+		CommonResolvedModule resolvedModule;
+		try {
+			resolvedModule = filePath == null ? null : getResolvedModule(filePath);
+		} catch (ExecutionException e) {
+			resolvedModule = null;
+		}
+		if(resolvedModule == null) {
 			return null;
 		}
-		Module module = parsedModule.module;
+		Module module = resolvedModule.getModuleNode();
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		
 		INamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
-			DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+			IModuleResolver mr = resolvedModule.getModuleResolver();
 			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(mr);
 		}
 		

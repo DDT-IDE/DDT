@@ -72,7 +72,7 @@ public class DeeDocumentationProvider implements IScriptDocumentationProvider, I
 		}
 		
 		assertTrue(Display.getCurrent() == null);
-		return DToolClient.getDDocHTMLView(sourceModule, range.getOffset());
+		return DToolClient.getDefault().getDDocHTMLView(sourceModule, range.getOffset());
 	}
 	
 }

@@ -1,25 +1,14 @@
 package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.DLTKModelUtils;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 
-import org.dsource.ddt.ide.core.DeeNature;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
@@ -32,44 +21,15 @@ import dtool.engine.modules.CommonModuleResolver;
 import dtool.engine.modules.ModuleNamingRules;
 
 @Deprecated
-public class DeeProjectModuleResolver extends CommonModuleResolver{
+public class DeeProjectModuleResolver extends CommonModuleResolver {
 	
-	protected final IScriptProject scriptProject;
+	public final IScriptProject scriptProject;
 	
 	public DeeProjectModuleResolver(IScriptProject scriptProject) {
 		assertNotNull(scriptProject);
 		this.scriptProject = scriptProject;
 	}
-	
-	/** Shortcut method */
-	public ISourceModule findModuleUnit(Module module) throws ModelException {
-		return findModuleUnit(module, null);
-	}
-	
-	// TODO: review this method
-	public ISourceModule findModuleUnit(Module module, ISourceModule workingCopySourceModule) throws ModelException {
-		String[] packages = module.getDeclaredPackages();
-		String moduleName = module.getName();
-		
-		return findModuleUnit(packages, moduleName, workingCopySourceModule);
-	}
-	
-	// TODO: review this method
-	public ISourceModule findModuleUnit(String[] packages, String moduleName, ISourceModule workingCopySourceModule)
-		throws ModelException {
-		if(workingCopySourceModule != null) {
-			Module wcModule = DToolClient.getDefault().getModuleNodeOrNull(workingCopySourceModule);
-			
-			String wcModuleName = wcModule.getName();
-			String[] wcPackages = wcModule.getDeclaredPackages();
-			
-			if(wcModuleName.equals(moduleName) && areEqualArrays(wcPackages, packages)) {
-				return workingCopySourceModule;
-			}
-		}
-		return findModuleUnit(scriptProject, packages, moduleName);
-	}
-	
+
 	@Override
 	public Module findModule_do(String[] packages, String moduleName) throws CoreException {
 		return findModule(packages, moduleName, this.scriptProject);
@@ -77,130 +37,11 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 	
 	protected Module findModule(String[] packages, String modName, IScriptProject deeproj) 
 		throws ModelException {
-		ISourceModule moduleUnit = findModuleUnit(deeproj, packages, modName);
+		ISourceModule moduleUnit = SourceModuleFinder.findModuleUnit(deeproj, packages, modName);
 		if(moduleUnit == null)
 			return null;
 		
 		return DToolClient.getDefault().getModuleNodeOrNull(moduleUnit);
-	}
-	
-	public ISourceModule findModuleUnit(IScriptProject deeProject, String[] packages, String moduleName) 
-			throws ModelException {
-		IPath packagesPath = new Path(StringUtil.collToString(packages, "/"));
-		
-		return new ModuleImportTargetFinder(moduleName, packagesPath).findImportTarget(deeProject);
-	}
-	
-	protected static class ImportPathVisitor {
-		
-		protected static boolean isAccessible(IScriptProject scriptProject) {
-			return DeeNature.isAcessible(scriptProject.getProject(), false);
-		}
-		
-		protected void iteratonFullImportPath(IScriptProject deeProject) throws ModelException {
-			if(!isAccessible(deeProject))
-				return;
-			
-			for (IProjectFragment srcFolder : deeProject.getProjectFragments()) {
-				boolean stop = visitSourceContainer(srcFolder);
-				if(stop) {
-					return;
-				}
-			}
-			
-			IBuildpathEntry[] resolvedBuildpath = deeProject.getResolvedBuildpath(true);
-			for (IBuildpathEntry bpEntry : resolvedBuildpath) {
-				if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_PROJECT) {
-					IPath path = bpEntry.getPath();
-					if(path.segmentCount() != 1) {
-						DeeCore.logError("Invalid path in project BP entry: " + path);
-						continue;
-					}
-					String projectName = path.segment(0);
-					IScriptProject depProject = getDeeScriptProject(projectName);
-					if(depProject == null) {
-						continue;
-					}
-					IProjectFragment[] projectFragments = depProject.getProjectFragments();
-					for (IProjectFragment projectFragment : projectFragments) {
-						if(projectFragment.isExternal()) {
-							continue;
-						}
-						
-						boolean stop = visitSourceContainer(projectFragment);
-						if(stop) {
-							return;
-						}
-					}
-				}
-			}
-		}
-		
-		@SuppressWarnings("unused")
-		protected boolean visitSourceContainer(IProjectFragment srcContainer) throws ModelException {
-			return false;
-		}
-		
-		protected IScriptProject getDeeScriptProject(String projectName) {
-			IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-			try {
-				if(DeeNature.isAcessible(project)) {
-					return DLTKCore.create(project);
-				}
-			} catch (CoreException e) {
-			}
-			return null;
-		}
-		
-	}
-	
-	protected static class ModuleImportTargetFinder extends ImportPathVisitor {
-		
-		protected final String moduleName;
-		protected final IPath packagesPath;
-		
-		protected ISourceModule foundSourceModule;
-		
-		public ModuleImportTargetFinder(String moduleName, IPath packagesPath) {
-			this.moduleName = moduleName;
-			this.packagesPath = packagesPath;
-		}
-		
-		public ISourceModule findImportTarget(IScriptProject deeProject) throws ModelException {
-			iteratonFullImportPath(deeProject);
-			return foundSourceModule;
-		}
-		
-		@Override
-		protected boolean visitSourceContainer(IProjectFragment srcFolder) {
-			IScriptFolder scriptFolder = srcFolder.getScriptFolder(packagesPath);
-			
-			if(scriptFolder.exists()) {
-				foundSourceModule = getExistingSourceModule(scriptFolder, moduleName);
-				if(foundSourceModule != null) {
-					return true;
-				}
-			}
-			// search for package.d
-			scriptFolder = srcFolder.getScriptFolder(packagesPath.append(moduleName));
-			if(scriptFolder.exists()) {
-				foundSourceModule = getExistingSourceModule(scriptFolder, "package");
-				if(foundSourceModule != null) {
-					return true;
-				}
-			}
-			return false;
-		}
-		
-		protected static ISourceModule getExistingSourceModule(IScriptFolder scriptFolder, String moduleName) {
-			for (String validExtension : ModuleNamingRules.VALID_EXTENSIONS) {
-				ISourceModule sourceModule = scriptFolder.getSourceModule(moduleName + validExtension);
-				if(DLTKModelUtils.exists(sourceModule)) {
-					return sourceModule;
-				}
-			}
-			return null;
-		}
 	}
 	
 	@Override

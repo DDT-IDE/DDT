@@ -5,7 +5,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.eclipse.dltk.core.IMember;
@@ -20,6 +19,7 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.engine.modules.IModuleResolver;
 import dtool.tests.utils.MiscNodeUtils;
 
 public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
@@ -157,8 +157,9 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		Module module = DToolClient.getDefault().getModuleNodeOrNull(srcModule);
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		DeeProjectModuleResolver mr = new DeeProjectModuleResolver(srcModule.getScriptProject());
-		assertTrue(assertInstance(defUnit, DefinitionVariable.class).type.findTargetDefElement(mr) == null);
+		IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(srcModule);
+		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
+		assertTrue(defVar.type.findTargetDefElement(mr) == null);
 	}
 	
 }

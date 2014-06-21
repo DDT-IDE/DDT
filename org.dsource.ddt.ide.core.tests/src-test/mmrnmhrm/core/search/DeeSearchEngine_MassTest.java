@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import melnorme.utilbox.misc.Pair;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
+import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
@@ -30,6 +30,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 
 public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	
@@ -76,7 +77,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 				if(node instanceof Reference) {
 					Reference reference = (Reference) node;
 					
-					DeeProjectModuleResolver mr = new DeeProjectModuleResolver(sourceModule.getScriptProject());
+					IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
 					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
@@ -168,7 +169,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	public static ISourceModule findSourceModule(Module module, IScriptProject searchProj) {
 		try {
 			// TODO: test this, consider multiple named source Packages
-			return new DeeProjectModuleResolver(searchProj).findModuleUnit(module);
+			return SourceModuleFinder.findModuleUnit(module, searchProj);
 		} catch (ModelException e) {
 			return null;
 		}
