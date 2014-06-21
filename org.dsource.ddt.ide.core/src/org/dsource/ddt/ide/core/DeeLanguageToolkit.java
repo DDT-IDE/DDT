@@ -51,7 +51,7 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	@Override
 	public IStatus validateSourceModule(IResource resource) {
 		String name = resource.getName();
-		if(ModuleNamingRules.isValidCompilationUnitName(name, false)) {
+		if(ModuleNamingRules.isValidCompilationUnitName(name)) {
 			return Status.OK_STATUS;
 		} else {
 			return new Status(IStatus.ERROR, DeeCore.PLUGIN_ID, "Invalid resource name:" + name);
@@ -60,9 +60,6 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	
 	@Override
 	public boolean validateSourcePackage(IPath path, IEnvironment environment) {
-		if(DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) {
-			return ModuleNamingRules.isValidPackagePathName(path.toString());	
-		}
 		// We always return true because DLTK gives us path as an absolute path! 
 		// Thus we have no way to determine where the package starts, so we cant use isValidPackagePathName
 		return true;

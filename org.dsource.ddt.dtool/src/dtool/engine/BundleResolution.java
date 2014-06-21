@@ -182,7 +182,7 @@ public class BundleResolution implements IModuleResolver {
 	}
 	
 	protected ResolvedModule getBundleResolvedModule(String moduleFullName) throws ParseSourceException {
-		return getBundleResolvedModule(new ModuleFullName(moduleFullName) /*BUG here*/);
+		return getBundleResolvedModule(new ModuleFullName(moduleFullName));
 	}
 	
 	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {

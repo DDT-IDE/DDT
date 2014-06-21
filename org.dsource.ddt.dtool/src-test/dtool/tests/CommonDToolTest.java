@@ -88,7 +88,7 @@ public class CommonDToolTest extends CommonTestExt {
 					// exclude team private folder, like .svn, and other crap
 					return !childName.startsWith(".");
 				} else {
-					return addInAnyFileName || ModuleNamingRules.isValidCompilationUnitName(childName, false);
+					return addInAnyFileName || ModuleNamingRules.isValidCompilationUnitName(childName);
 				}
 			}
 		};

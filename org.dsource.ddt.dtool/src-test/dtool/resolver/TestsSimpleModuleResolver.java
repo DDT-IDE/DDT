@@ -44,7 +44,7 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 			
 			if(child.isDirectory()) {
 				String packageName = resourceName;
-				if(!ModuleNamingRules.isValidPackageNamePart(packageName, true)) {
+				if(!ModuleNamingRules.isValidPackageNameSegment(packageName)) {
 					continue;
 				}
 				initModules(child, packagePath + packageName + "/");

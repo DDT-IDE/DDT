@@ -1,10 +1,10 @@
 package dtool.engine.modules;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.LexingUtil;
 
@@ -20,22 +20,29 @@ public class ModuleNamingRules {
 	public static final String[] VALID_EXTENSIONS = array(DEE_FILE_EXTENSION, DEE_HEADERFILE_EXTENSION);
 	
 	
+	public static String getDefaultModuleNameFromFileName(String fileName) {
+		return StringUtil.substringUntilMatch(fileName, ".");
+	}
+	
+	protected static boolean isValidDFileExtension(String fileExt) {
+		return DEE_FILE_EXTENSION.equals(fileExt) || DEE_HEADERFILE_EXTENSION.equals(fileExt);
+	}
+	
 	/* ----------------- ----------------- */
 	
-	public static ModuleValidName getModuleValidNameOrNull(Path filePath) {
+	public static ModuleFullName getValidModuleNameOrNull(Path filePath) {
 		int count = filePath.getNameCount();
 		if(count == 0) {
 			return null;
 		}
 		
 		String fileName = filePath.getFileName().toString();
-		String fileExtension = StringUtil.substringFromMatch(".", fileName);
-		if(!isValidDFileExtension(fileExtension)) {
+		String moduleBaseName = getModuleNameIfValidFileName(fileName, true);
+		if(moduleBaseName == null) {
 			return null;
 		}
 		
-		String moduleBaseName = getDefaultModuleNameFromFileName(fileName);
-		if(fileName.equals("package.d")) {
+		if(moduleBaseName.equals("package")) {
 			count--;
 			if(count == 0) {
 				return null;
@@ -51,95 +58,64 @@ public class ModuleNamingRules {
 		
 		for (int i = 0; i < count - 1; i++) {
 			segments[i] = filePath.getName(i).toString();
-			if(!LexingUtil.isValidDIdentifier(segments[i])) {
+			if(!isValidPackageNameSegment(segments[i])) {
 				return null;
 			}
 		}
 		
-		return new ModuleValidName(segments);
+		return new ModuleFullName(segments);
 	}
 	
-	public static String getDefaultModuleNameFromFileName(String fileName) {
-		return StringUtil.substringUntilMatch(fileName, ".");
+	public static boolean isValidCompilationUnitName(String fileName) {
+		return getModuleNameIfValidFileName(fileName) != null;
 	}
 	
-	protected static boolean isValidDFileExtension(String fileExt) {
-		return DEE_FILE_EXTENSION.equals(fileExt) || DEE_HEADERFILE_EXTENSION.equals(fileExt);
+	protected static String getModuleNameIfValidFileName(String fileName) {
+		return getModuleNameIfValidFileName(fileName, false);
 	}
 	
-	public static String getDefaultModuleName(Path filePath) {
-		Path fileName = filePath.getFileName();
-		assertNotNull(fileName);
-		return getDefaultModuleNameFromFileName(fileName.toString());
+	protected static String getModuleNameIfValidFileName(String fileName, boolean allowPackageName) {
+		String fileExtension = StringUtil.substringFromMatch(".", fileName);
+		if(!isValidDFileExtension(fileExtension)){
+			return null;
+		}
+		String moduleName = StringUtil.substringUntilMatch(fileName, ".");
+		if(LexingUtil.isValidDIdentifier(moduleName)) {
+			return moduleName;
+		}
+		if(allowPackageName && moduleName.equals("package")) {
+			return moduleName;
+		}
+		return null;
+	}
+	
+	public static boolean isValidPackageNameSegment(String partname) {
+		return LexingUtil.isValidDIdentifier(partname);
 	}
 	
 	/* ----------------- ----------------- */
 	
-	/**
-	 * @return The fully qualified name of the module with given packagePath and given fileName,
-	 * or null if this compilation has a name or path that cannot be imported.
-	 * The fully qualified name is the name by which the module can be imported.
-	 * @param packagePath package path separated by "/"
-	 * @param fileName the compilation unit file name
-	 */
-	public static String getModuleFQNameFromFilePath(String packagePath, String fileName) {
-		packagePath = StringUtil.trimEnding(packagePath, "/");
-		String packageName = packagePath.replace("/", ".");
-		
-		if(fileName.equals("package.d") && !packageName.isEmpty()) {
-			return packageName;
-		} else {
-			if(!ModuleNamingRules.isValidCompilationUnitName(fileName)) {
-				return null;
-			}
-			String moduleName = getDefaultModuleNameFromFileName(fileName);
-			return packageName.isEmpty() ? moduleName : packageName + "." + moduleName;
-		}
-		
-	}
-	
-	/** @return Whether given fileName is a strictly valid compilationUnitName. 
-	 * For a compilation unit name to be strictly valid, one must be able to import it in some way. */
-	public static boolean isValidCompilationUnitName(String fileName) {
-		return isValidCompilationUnitName(fileName, true);
-	}
-	
-	public static boolean isValidCompilationUnitName(String fileName, boolean strict) {
-		String fileNameWithoutExtension = getDefaultModuleNameFromFileName(fileName);
-		String fileExtension = fileName.substring(fileNameWithoutExtension.length());
-		
-		return strict ?
-				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDIdentifier(fileNameWithoutExtension)) :
-				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDAlphaNumeric(fileNameWithoutExtension));
-	}
-	
-	
-	public static boolean isValidPackagePathName(String packagePath) {
-		return isValidPackagePathName(packagePath, true);
-	}
-	
-	public static boolean isValidPackagePathName(String packagePath, boolean strict) {
-		if(packagePath.equals(""))
+	public static boolean isValidPackagesPath(String packagesPathStr) {
+		if(packagesPathStr.equals(""))
 			return true;
 		
-		String[] parts = packagePath.split("/");
-		for (String part : parts) {
-			if(!isValidPackageNamePart(part, strict))
+		String[] segments = packagesPathStr.split("/");
+		for (String segment : segments) {
+			if(!isValidPackageNameSegment(segment))
 				return false;
 		}
 		return true;
 	}
 	
-	public static boolean isValidPackagePath(Path relPath) {
-		for (Path part : relPath) {
-			if(!isValidPackageNamePart(part.getFileName().toString(), true))
-				return false;
-		}
-		return true;
-	}
 	
-	public static boolean isValidPackageNamePart(String partname, boolean strict) {
-		return strict ? LexingUtil.isValidDIdentifier(partname) : LexingUtil.isValidDAlphaNumeric(partname);
+	public static String getModuleFQNameFromFilePath(String packagePath, String fileName) {
+		Path path = MiscUtil.createPathOrNull(packagePath + "/" + fileName);
+		if(path == null) {
+			return null;
+		}
+		
+		ModuleFullName moduleValidName = getValidModuleNameOrNull(path);
+		return moduleValidName == null ? null : moduleValidName.getFullNameAsString();
 	}
 	
 }

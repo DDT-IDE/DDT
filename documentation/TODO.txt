@@ -1,4 +1,3 @@
 
 DubDescribeAnalysis
 
-dtool.project.DeeNamingRules.getModuleFullName(Path)

@@ -2,20 +2,20 @@ package dtool.engine;
 
 import static dtool.engine.modules.ModuleNamingRules.getDefaultModuleNameFromFileName;
 import static dtool.engine.modules.ModuleNamingRules.isValidCompilationUnitName;
-import static dtool.engine.modules.ModuleNamingRules.isValidPackagePathName;
+import static dtool.engine.modules.ModuleNamingRules.isValidPackagesPath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.MiscUtil.createValidPath;
 
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Test;
 
 import dtool.engine.modules.ModuleFullName;
 import dtool.engine.modules.ModuleNamingRules;
-import dtool.engine.modules.ModuleValidName;
 
 public class ModuleNamingRules_Test extends CommonTest {
 	
@@ -38,14 +38,14 @@ public class ModuleNamingRules_Test extends CommonTest {
 		assertTrue(!isValidCompilationUnitName("bar-foo.d"));
 		assertTrue(!isValidCompilationUnitName("Açores.txt"));
 		
-		assertTrue(isValidPackagePathName(""));
-		assertTrue(isValidPackagePathName("foo"));
-		assertTrue(isValidPackagePathName("foo/"));
-		assertTrue(isValidPackagePathName("foo/bar"));
-		assertTrue(isValidPackagePathName("foo/bar/"));
+		assertTrue(isValidPackagesPath(""));
+		assertTrue(isValidPackagesPath("foo"));
+		assertTrue(isValidPackagesPath("foo/"));
+		assertTrue(isValidPackagesPath("foo/bar"));
+		assertTrue(isValidPackagesPath("foo/bar/"));
 		
-		assertTrue(!isValidPackagePathName("foo!/bar"));
-		assertTrue(!isValidPackagePathName("foo/sub-pack"));
+		assertTrue(!isValidPackagesPath("foo!/bar"));
+		assertTrue(!isValidPackagesPath("foo/sub-pack"));
 		
 		
 		// Test keywords - they are considered valid, for the moment (perhaps this could change?)
@@ -53,13 +53,14 @@ public class ModuleNamingRules_Test extends CommonTest {
 		assertTrue(isValidCompilationUnitName("while.d") == false);
 		assertTrue(isValidCompilationUnitName("package.d") == false);
 		
-		assertTrue(isValidPackagePathName("foo/while") == false);
-		assertTrue(isValidPackagePathName("package/bar") == false);
+		assertTrue(isValidPackagesPath("foo/while") == false);
+		assertTrue(isValidPackagesPath("package/bar") == false);
 		
 		assertEquals(getDefaultModuleNameFromFileName("mymod.d"), "mymod");
 		assertEquals(getDefaultModuleNameFromFileName("mymod"), "mymod");
 		assertEquals(getDefaultModuleNameFromFileName("mymod.dx"), "mymod");
-
+		
+		assertEqualArrays(StringUtil.splitString("", '.'), new String[] { "" });
 	}
 	
 	/* ----------------- module names ----------------- */
@@ -93,6 +94,7 @@ public class ModuleNamingRules_Test extends CommonTest {
 		// Test package import rule
 		checkModuleName("path/package.d", "path");
 		checkModuleName("pack/foo/package.d", "pack.foo");
+		checkModuleName("pack/foo/package.di", "pack.foo");
 		checkInvalidModuleName("package.d");
 		checkInvalidModuleName("/package.d");
 		
@@ -115,7 +117,7 @@ public class ModuleNamingRules_Test extends CommonTest {
 	}
 	
 	protected void checkModuleName(String moduleFullNameStr, Path path) {
-		ModuleValidName moduleFullName = ModuleNamingRules.getModuleValidNameOrNull(path);
+		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(path);
 		assertAreEqual(moduleFullName, new ModuleFullName(moduleFullNameStr));
 		assertAreEqual(moduleFullName.getFullNameAsString(), moduleFullNameStr);
 	}
@@ -125,7 +127,7 @@ public class ModuleNamingRules_Test extends CommonTest {
 	}
 	
 	protected void checkInvalidModuleName(Path path) {
-		assertTrue(ModuleNamingRules.getModuleValidNameOrNull(path) == null);
+		assertTrue(ModuleNamingRules.getValidModuleNameOrNull(path) == null);
 	}
 	
 }

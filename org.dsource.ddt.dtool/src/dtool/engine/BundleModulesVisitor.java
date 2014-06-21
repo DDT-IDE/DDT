@@ -61,7 +61,7 @@ public class BundleModulesVisitor {
 					
 					assertTrue(dir.startsWith(importFolder));
 					Path relPath = importFolder.relativize(dir);
-					if(ModuleNamingRules.isValidPackagePath(relPath)) {
+					if(ModuleNamingRules.isValidPackageNameSegment(relPath.getFileName().toString())) {
 						return FileVisitResult.CONTINUE;
 					}
 					return FileVisitResult.SKIP_SUBTREE;
@@ -83,7 +83,7 @@ public class BundleModulesVisitor {
 	protected void visitPotentialModuleFile(Path fullPath, Path importFolder) {
 		assertTrue(fullPath.isAbsolute());
 		Path relPath = importFolder.relativize(fullPath);
-		ModuleFullName moduleFullName = ModuleNamingRules.getModuleValidNameOrNull(relPath);
+		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(relPath);
 		if(moduleFullName != null) {
 			assertTrue(fullPath.isAbsolute());
 			addModuleEntry(moduleFullName, fullPath);

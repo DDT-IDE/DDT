@@ -10,11 +10,11 @@
  *******************************************************************************/
 package dtool.engine.modules;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqualArrays;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.parser.LexingUtil;
 
 /**
  * A fully qualified name of a module.
@@ -25,7 +25,6 @@ public class ModuleFullName {
 	
 	protected final String[] segments;
 	protected final String moduleFullNameString; //cached
-	protected final boolean isValid; // cached
 	
 	public ModuleFullName(String moduleFullName) {
 		this(moduleFullName, StringUtil.splitString(moduleFullName, NAME_SEP.charAt(0)));
@@ -41,11 +40,9 @@ public class ModuleFullName {
 		this.moduleFullNameString = moduleFullName;
 		this.segments = segments;
 		
-		boolean isValid = true;
-		for (int i = 0; isValid && i < segments.length; i++) {
-			isValid = LexingUtil.isValidDIdentifier(segments[i]);
+		for (String segment : segments) {
+			assertNotNull(segment);
 		}
-		this.isValid = isValid;
 	}
 	
 	@Override
@@ -69,19 +66,15 @@ public class ModuleFullName {
 		return ArrayUtil.copyFrom(segments, segments.length - 1);
 	}
 	
-	public String getModuleBaseName() {
+	public String getBaseName() {
 		return segments[segments.length - 1];
 	}
-	
-	/* ----------------- ----------------- */
 	
 	public String getFullNameAsString() {
 		return moduleFullNameString;
 	}
 	
-	public boolean isValid() {
-		return isValid;
-	}
+	/* ----------------- ----------------- */
 	
 	@Override
 	public String toString() {

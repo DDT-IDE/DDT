@@ -74,7 +74,8 @@ public class DeeParser
 	}
 	
 	public ParsedModule parseModuleSource(Path modulePath) {
-		String defaultModuleName = ModuleNamingRules.getDefaultModuleName(modulePath);
+		String fileName = modulePath.getFileName().toString();
+		String defaultModuleName = ModuleNamingRules.getDefaultModuleNameFromFileName(fileName);
 		return parseModuleSource(defaultModuleName, modulePath);
 	}
 	

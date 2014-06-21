@@ -227,9 +227,9 @@ public class DeeProjectModuleResolver extends CommonModuleResolver{
 			for (IModelElement pkgFragElem : srcContainer.getChildren()) {
 				IScriptFolder pkgFrag = (IScriptFolder) pkgFragElem;
 				
-				String packagePath= pkgFrag.getElementName();
+				String packagePath = pkgFrag.getElementName();
 				
-				if(!ModuleNamingRules.isValidPackagePathName(packagePath))
+				if(!ModuleNamingRules.isValidPackagesPath(packagePath))
 					continue;
 				
 				for (IModelElement srcUnitElem : pkgFrag.getChildren()) {
