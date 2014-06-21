@@ -1,15 +1,21 @@
-package dtool.engine.modules;
+package dtool.engine;
 
 import static dtool.engine.modules.ModuleNamingRules.getDefaultModuleNameFromFileName;
-import static dtool.engine.modules.ModuleNamingRules.getModuleFullName;
 import static dtool.engine.modules.ModuleNamingRules.isValidCompilationUnitName;
 import static dtool.engine.modules.ModuleNamingRules.isValidPackagePathName;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.MiscUtil.createValidPath;
+
+import java.nio.file.Path;
+
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Test;
 
 import dtool.engine.modules.ModuleFullName;
+import dtool.engine.modules.ModuleNamingRules;
+import dtool.engine.modules.ModuleValidName;
 
 public class ModuleNamingRules_Test extends CommonTest {
 	
@@ -43,12 +49,17 @@ public class ModuleNamingRules_Test extends CommonTest {
 		
 		
 		// Test keywords - they are considered valid, for the moment (perhaps this could change?)
-		assertTrue(!isValidCompilationUnitName("__FILE__.d"));
-		assertTrue(!isValidCompilationUnitName("while.d"));
-		assertTrue(!isValidCompilationUnitName("package.d"));
+		assertTrue(isValidCompilationUnitName("__FILE__.d") == false);
+		assertTrue(isValidCompilationUnitName("while.d") == false);
+		assertTrue(isValidCompilationUnitName("package.d") == false);
 		
-		assertTrue(!isValidPackagePathName("foo/while"));
-		assertTrue(!isValidPackagePathName("package/bar"));
+		assertTrue(isValidPackagePathName("foo/while") == false);
+		assertTrue(isValidPackagePathName("package/bar") == false);
+		
+		assertEquals(getDefaultModuleNameFromFileName("mymod.d"), "mymod");
+		assertEquals(getDefaultModuleNameFromFileName("mymod"), "mymod");
+		assertEquals(getDefaultModuleNameFromFileName("mymod.dx"), "mymod");
+
 	}
 	
 	/* ----------------- module names ----------------- */
@@ -56,6 +67,7 @@ public class ModuleNamingRules_Test extends CommonTest {
 	@Test
 	public void testGetModuleName() throws Exception { testGetModuleName$(); }
 	public void testGetModuleName$() throws Exception {
+		
 		checkModuleName("mymod.d", "mymod");
 		checkModuleName("mymod.di", "mymod");
 		checkModuleName("/mymod.d", "mymod");
@@ -64,49 +76,56 @@ public class ModuleNamingRules_Test extends CommonTest {
 		checkModuleName("/path/mymod.d", "path.mymod");
 		checkModuleName("foo/bar/mymod.d", "foo.bar.mymod");
 		
-		checkModuleName("foo/while/mymod.d", "foo.while.mymod", false);
-		checkModuleName("foo/and bar/mymod.d", "foo.and bar.mymod", false);
-		checkModuleName("foo/and;bar/mymod.d", "foo.and;bar.mymod", false);
+		checkInvalidModuleName("foo/while/mymod.d");
+		checkInvalidModuleName("foo/and bar/mymod.d");
+		checkInvalidModuleName("foo/and;bar/mymod.d");
 		
 		
-		checkModuleName("foo/bar/while.d", "foo.bar.while", false);
-		checkModuleName("foo/bar/and bar.d", "foo.bar.and bar", false);
-		checkModuleName("foo/bar/and;bar.d", "foo.bar.and;bar", false);
-		checkModuleName("", "", false);
+		checkInvalidModuleName("foo/bar/while.d");
+		checkInvalidModuleName("foo/bar/and bar.d");
+		checkInvalidModuleName("foo/bar/and;bar.d");
+		checkInvalidModuleName("");
+		checkInvalidModuleName(createValidPath(""));
+		checkInvalidModuleName(createValidPath("/"));
+		checkInvalidModuleName(createValidPath("D:/"));
+
+		
+		// Test package import rule
+		checkModuleName("path/package.d", "path");
+		checkModuleName("pack/foo/package.d", "pack.foo");
+		checkInvalidModuleName("package.d");
+		checkInvalidModuleName("/package.d");
+		
 		
 		// Test separators in segments
-		checkModuleName("foo/and.bar/mymod.d", true, "foo.and.bar.mymod", false);
-		checkModuleName("foo/../mymod.d", true, "foo....mymod", false);
-		checkModuleName("..", true, "", false);
+		checkInvalidModuleName("foo/and.bar/mymod.d");
+		checkInvalidModuleName("foo/../mymod.d");
+		checkInvalidModuleName("..");
 		
 		
-		// Test irregular extensions: allow
-		checkModuleName("mymod.dxx", "mymod", true); 
-		checkModuleName("mymod.d.xx", "mymod", true);
-		checkModuleName("mymod.xx.d", "mymod", true);
-		checkModuleName("pack/mymod.d#blah", "pack.mymod", true);
-		assertEquals(getDefaultModuleNameFromFileName("mymod.d"), "mymod");
-		assertEquals(getDefaultModuleNameFromFileName("mymod"), "mymod");
-		assertEquals(getDefaultModuleNameFromFileName("mymod.dx"), "mymod");
+		// Test irregular extensions: invalid
+		checkInvalidModuleName("mymod.dxx"); 
+		checkInvalidModuleName("mymod.d.xx");
+		checkInvalidModuleName("mymod.xx.d");
+		checkInvalidModuleName("pack/mymod.d#blah");
 	}
 	
 	protected void checkModuleName(String filePath, String moduleFullNameStr) {
-		checkModuleName(filePath, moduleFullNameStr, true);
+		checkModuleName(moduleFullNameStr, MiscUtil.createValidPath(filePath));
 	}
 	
-	protected void checkModuleName(String filePath, String moduleFullNameStr, boolean isValid) {
-		boolean isLossyPath = false;
-		checkModuleName(filePath, isLossyPath, moduleFullNameStr, isValid);
+	protected void checkModuleName(String moduleFullNameStr, Path path) {
+		ModuleValidName moduleFullName = ModuleNamingRules.getModuleValidNameOrNull(path);
+		assertAreEqual(moduleFullName, new ModuleFullName(moduleFullNameStr));
+		assertAreEqual(moduleFullName.getFullNameAsString(), moduleFullNameStr);
 	}
 	
-	protected void checkModuleName(String filePath, boolean isLossyPath, String moduleFullNameStr, boolean isValid) {
-		ModuleFullName moduleFullName = getModuleFullName(path(filePath));
-		if(isLossyPath) {
-			assertAreEqual(moduleFullName.getNameAsString(), moduleFullNameStr);
-		} else {
-			assertAreEqual(moduleFullName, new ModuleFullName(moduleFullNameStr));
-		}
-		assertAreEqual(moduleFullName.isValid(), isValid);
+	protected void checkInvalidModuleName(String filePath) {
+		checkInvalidModuleName(path(filePath));
+	}
+	
+	protected void checkInvalidModuleName(Path path) {
+		assertTrue(ModuleNamingRules.getModuleValidNameOrNull(path) == null);
 	}
 	
 }

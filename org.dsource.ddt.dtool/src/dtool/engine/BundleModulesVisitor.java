@@ -83,7 +83,7 @@ public class BundleModulesVisitor {
 	protected void visitPotentialModuleFile(Path fullPath, Path importFolder) {
 		assertTrue(fullPath.isAbsolute());
 		Path relPath = importFolder.relativize(fullPath);
-		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleFullNameOrNull(relPath);
+		ModuleFullName moduleFullName = ModuleNamingRules.getModuleValidNameOrNull(relPath);
 		if(moduleFullName != null) {
 			assertTrue(fullPath.isAbsolute());
 			addModuleEntry(moduleFullName, fullPath);

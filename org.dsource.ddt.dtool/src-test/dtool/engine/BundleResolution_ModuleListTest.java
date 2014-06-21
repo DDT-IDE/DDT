@@ -15,18 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
-import dtool.dub.BundlePath;
-import dtool.engine.BundleResolution;
-import dtool.engine.SemanticManager;
-import dtool.engine.BundleResolution.ResolvedModule;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.modules.ModuleFullName;
 
-public class SemanticManager_ModuleListTest extends CommonSemanticModelTest {
+public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 	
 	public static class BundleFilesChecker {
 		
@@ -80,7 +74,11 @@ public class SemanticManager_ModuleListTest extends CommonSemanticModelTest {
 		new BundleFilesChecker(smtestSR) {
 			{
 				checkEntry("sm_test_foo", "src/sm_test_foo.d");
-				checkEntry("test.fooLib", "src2/test/fooLib.d");			
+				checkEntry("pack.import_pack_test", "src/pack/import_pack_test/package.d"); // Test package rule
+				checkEntry("pack.import_pack_test.foo", "src/pack/import_pack_test/foo.d");
+				
+				checkEntry("test.fooLib", "src2/test/fooLib.d");
+				
 				checkEntry("modA_import_only", "src-import/modA_import_only.d");
 				checkEntry("nested.mod_nested_import_only", "src-import/nested/mod_nested_import_only.d");	
 				checkEntry("mod_nested_import_only", "src-import/nested/mod_nested_import_only.d", true);

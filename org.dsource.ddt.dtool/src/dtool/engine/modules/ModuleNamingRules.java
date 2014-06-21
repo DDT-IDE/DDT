@@ -22,42 +22,49 @@ public class ModuleNamingRules {
 	
 	/* ----------------- ----------------- */
 	
-	public static ModuleFullName getValidModuleFullNameOrNull(Path filePath) {
+	public static ModuleValidName getModuleValidNameOrNull(Path filePath) {
+		int count = filePath.getNameCount();
+		if(count == 0) {
+			return null;
+		}
+		
 		String fileName = filePath.getFileName().toString();
 		String fileExtension = StringUtil.substringFromMatch(".", fileName);
-		
-		// TODO: test this path
 		if(!isValidDFileExtension(fileExtension)) {
 			return null;
 		}
 		
-		ModuleFullName moduleFullName = getModuleFullName(filePath);
-		if(moduleFullName == null || !moduleFullName.isValid()) {
+		String moduleBaseName = getDefaultModuleNameFromFileName(fileName);
+		if(fileName.equals("package.d")) {
+			count--;
+			if(count == 0) {
+				return null;
+			}
+			moduleBaseName = filePath.getName(count-1).toString();
+		}
+		if(!LexingUtil.isValidDIdentifier(moduleBaseName)) {
 			return null;
 		}
-		return moduleFullName;
-	}
-	
-	protected static ModuleFullName getModuleFullName(Path filePath) {
-		if(filePath.getNameCount() == 0)
-			return null;
-		
-		int count = filePath.getNameCount();
-		// TODO: "package.d" rule /*BUG here*/
 		
 		String[] segments = new String[count];
+		segments[count - 1] = moduleBaseName;
 		
 		for (int i = 0; i < count - 1; i++) {
 			segments[i] = filePath.getName(i).toString();
+			if(!LexingUtil.isValidDIdentifier(segments[i])) {
+				return null;
+			}
 		}
 		
-		String fileName = filePath.getFileName().toString();
-		segments[count - 1] = getDefaultModuleNameFromFileName(fileName);
-		return new ModuleFullName(segments);
+		return new ModuleValidName(segments);
 	}
 	
 	public static String getDefaultModuleNameFromFileName(String fileName) {
 		return StringUtil.substringUntilMatch(fileName, ".");
+	}
+	
+	protected static boolean isValidDFileExtension(String fileExt) {
+		return DEE_FILE_EXTENSION.equals(fileExt) || DEE_HEADERFILE_EXTENSION.equals(fileExt);
 	}
 	
 	public static String getDefaultModuleName(Path filePath) {
@@ -104,10 +111,6 @@ public class ModuleNamingRules {
 		return strict ?
 				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDIdentifier(fileNameWithoutExtension)) :
 				(isValidDFileExtension(fileExtension) && LexingUtil.isValidDAlphaNumeric(fileNameWithoutExtension));
-	}
-	
-	private static boolean isValidDFileExtension(String fileExt) {
-		return DEE_FILE_EXTENSION.equals(fileExt) || DEE_HEADERFILE_EXTENSION.equals(fileExt);
 	}
 	
 	

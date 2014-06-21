@@ -283,7 +283,7 @@ public class BundleResolution implements IModuleResolver {
 	protected void internalFindModules(String fullNamePrefix, ArrayList<String> matchedModules) {
 		Set<ModuleFullName> moduleEntries = modules.keySet();
 		for (ModuleFullName moduleEntry : moduleEntries) {
-			String moduleFullName = moduleEntry.getNameAsString();
+			String moduleFullName = moduleEntry.getFullNameAsString();
 			if(moduleFullName.startsWith(fullNamePrefix)) {
 				matchedModules.add(moduleFullName);
 			}

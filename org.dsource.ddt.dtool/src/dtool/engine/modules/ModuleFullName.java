@@ -75,7 +75,7 @@ public class ModuleFullName {
 	
 	/* ----------------- ----------------- */
 	
-	public String getNameAsString() {
+	public String getFullNameAsString() {
 		return moduleFullNameString;
 	}
 	
