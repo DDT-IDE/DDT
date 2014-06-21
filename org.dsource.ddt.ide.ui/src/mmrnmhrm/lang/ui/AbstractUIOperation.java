@@ -63,6 +63,7 @@ public abstract class AbstractUIOperation {
 		if(Display.getCurrent() == null) {
 			// Perform computation directly in this thread.
 			performLongRunningComputation_do();
+			return;
 		}
 		IProgressService ps = PlatformUI.getWorkbench().getProgressService();
 		try {
