@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.misc.SimpleLogger;
 import mmrnmhrm.core.projectmodel.IDubModel.IDubModelListener;
 
 import org.eclipse.core.resources.IProject;
@@ -24,6 +25,8 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 
 public class DubModel extends ListenerListHelper<IDubModelListener> implements IDubModel {
+	
+	protected final SimpleLogger log = DubModelManager.log;
 	
 	protected final HashMap<String, DubBundleDescription> dubBundleInfos = new HashMap<>();
 	
@@ -50,12 +53,15 @@ public class DubModel extends ListenerListHelper<IDubModelListener> implements I
 	}
 	
 	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
-		dubBundleInfos.put(project.getName(), dubBundleDescription);
+		String projectName = project.getName();
+		dubBundleInfos.put(projectName, dubBundleDescription);
+		log.println("DUB project model added: " + projectName);
 		fireUpdateEvent(new DubModelUpdateEvent(project, dubBundleDescription));
 	}
 	
 	protected synchronized void removeProjectModel(IProject project) {
 		DubBundleDescription oldDesc = dubBundleInfos.remove(project.getName());
+		log.println("DUB project model removed: " + project.getName());
 		fireUpdateEvent(new DubModelUpdateEvent(project, oldDesc));
 	}
 	

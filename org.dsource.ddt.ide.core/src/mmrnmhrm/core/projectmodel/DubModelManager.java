@@ -140,17 +140,17 @@ public class DubModelManager {
 		}
 		
 		try {
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
 				@Override
 				public void run(IProgressMonitor monitor) {
-					ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+					EclipseUtils.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 					initializeProjectsInfo(monitor);
 				}
 			}, null);
 		} catch (CoreException e) {
 			DeeCore.logError(e);
 			// This really should not happen, but still try to recover by registering listener.
-			ResourcesPlugin.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
+			EclipseUtils.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		}
 	}
 	
@@ -182,9 +182,14 @@ public class DubModelManager {
 	protected final class DubProjectModelResourceListener extends DefaultResourceListener {
 		
 		@Override
-		protected void processProjectDelta(IResourceDelta projectDelta) {
-			//System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(projectDelta));
+		protected void processWorkspaceDelta(IResourceDelta workspaceDelta) {
+			//System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(workspaceDelta));
 			
+			super.processWorkspaceDelta(workspaceDelta);
+		}
+		
+		@Override
+		protected void processProjectDelta(IResourceDelta projectDelta) {
 			IProject project = (IProject) projectDelta.getResource();
 			
 			DubBundleDescription existingProjectModel = model.getBundleInfo(project.getName());
@@ -243,6 +248,7 @@ public class DubModelManager {
 	
 	protected void dubManifestFileChanged(final IProject project) {
 		beginProjectDescribeUpdate(project);
+		// TODO: bug here, we should recalculated manifest for all files, not just buildpath
 		queueUpdateAllProjectsBuildpath(project); // We do this because project might have changed name
 	}
 	
@@ -528,7 +534,7 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 		Set<String> dubProjects = getModel().getDubProjects();
 		for (String projectName : dubProjects) {
 			if(changedProject != null && changedProject.getName().equals(projectName))
-				continue; // changedProject is supposed to be up to date, so no need to update that.
+				continue; // changedProject is supposed to be up to date, so no need to update that one.
 			
 			DubBundleDescription bundleDesc = getModel().getBundleInfo(projectName);
 			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);

@@ -93,9 +93,13 @@ public class DubModelManagerTest extends AbstractDubModelManagerTest {
 		assertTrue(getDubContainer(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.
+		_awaitModelUpdates_();
 		project = createAndOpenProject(DUB_TEST, true);
 		LatchRunnable modelLatch = writeDubJsonWithModelLatch(project, jsObject(jsEntry("name", "xptobundle")));
 		setupStandardDeeProject(project);
+		System.out.println("--------- .project contents: ");
+		System.out.println(readFileContents(project.getFile(".project")));
+		
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
 		modelLatch.releaseAll();
 		checkDubModel(unresolvedBundleDesc, project, 

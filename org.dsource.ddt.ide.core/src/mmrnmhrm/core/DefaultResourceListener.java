@@ -27,7 +27,10 @@ public class DefaultResourceListener implements IResourceChangeListener {
 		
 		IResourceDelta workspaceDelta = resourceChange.getDelta();
 		assertTrue(workspaceDelta != null);
-		
+		processWorkspaceDelta(workspaceDelta);
+	}
+	
+	protected void processWorkspaceDelta(IResourceDelta workspaceDelta) {
 		for (IResourceDelta projectDelta : workspaceDelta.getAffectedChildren()) {
 			processProjectDelta(projectDelta);
 		}
