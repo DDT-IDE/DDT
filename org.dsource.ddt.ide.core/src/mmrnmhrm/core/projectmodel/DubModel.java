@@ -11,6 +11,7 @@
 package mmrnmhrm.core.projectmodel;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
@@ -45,7 +46,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> implements I
 	
 	@Override
 	public synchronized Set<String> getDubProjects() {
-		return dubBundleInfos.keySet();
+		return new HashSet<>(dubBundleInfos.keySet());
 	}
 	
 	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
