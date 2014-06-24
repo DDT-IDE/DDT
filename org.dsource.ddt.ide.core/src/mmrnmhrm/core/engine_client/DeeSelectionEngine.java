@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -49,8 +50,12 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	@Override
 	public IModelElement[] select(IModuleSource sourceUnit, int offset, int i) {
 		ISourceModule sourceModule = (ISourceModule) sourceUnit.getModelElement();
+		Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
+		if(filePath == null) {
+			return null;
+		}
 		
-		Module deeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(sourceModule).module;
+		Module deeModule = DToolClient.getDefault().getExistingParsedModuleNodeOrNull(filePath);
 		ASTNode node = ASTNodeFinder.findElement(deeModule, offset);
 		
 		if(node instanceof DefSymbol) {
@@ -68,7 +73,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		IModuleResolver moduleResolver = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
+		IModuleResolver moduleResolver = DToolClient_Bad.getResolverForSourceModule(sourceModule);
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {

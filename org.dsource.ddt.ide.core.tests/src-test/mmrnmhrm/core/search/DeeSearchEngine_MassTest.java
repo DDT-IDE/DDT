@@ -6,16 +6,20 @@ import static melnorme.utilbox.core.CoreUtil.blindCast;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 import static mmrnmhrm.core.search.DeeSearchEngineTestUtils.getSourceModule;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import melnorme.utilbox.misc.Pair;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
+import org.eclipse.core.internal.dtree.DataTreeLookup;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
@@ -31,6 +35,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	
@@ -77,7 +82,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 				if(node instanceof Reference) {
 					Reference reference = (Reference) node;
 					
-					IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
+					IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
 					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
@@ -114,7 +119,10 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			ISourceModule sourceModule = key.getFirst();
 			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
 			
-			Module deeModule = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
+			Path filePath = DLTKUtils.getFilePath(sourceModule);
+			
+			ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+			Module deeModule = parseModule == null ? null : parseModule.module;
 			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			
 			final DefUnit defUnit = (DefUnit) node;

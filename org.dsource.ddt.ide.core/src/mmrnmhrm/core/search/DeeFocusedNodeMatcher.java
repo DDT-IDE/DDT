@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
 import org.eclipse.dltk.core.IMember;
@@ -56,7 +56,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(!ref.canMatch(defUnitDescriptor))
 			return;
 		
-		IModuleResolver moduleResolver = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
+		IModuleResolver moduleResolver = DToolClient_Bad.getResolverForSourceModule(sourceModule);
 		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;

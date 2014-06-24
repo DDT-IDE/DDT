@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.editor.BestMatchHover;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.actions.AbstractEditorOperation;
-import mmrnmhrm.ui.editor.doc.DeeDocumentationProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
@@ -29,7 +28,6 @@ import dtool.ddoc.TextUI;
 
 /**
  * Standard documentation hover for DDoc.
- * Used instead of {@link DeeDocumentationProvider} due to API limitation, review in the future.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
 public class DeeDocTextHover extends AbstractDocTextHover {
@@ -83,7 +81,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		
 		@Override
 		protected void performLongRunningComputation_do() {
-			info = DToolClient.getDefault().getDDocHTMLView(sourceModule, offset);
+			info = DToolClient.getDefault().getDDocHTMLView(inputPath, offset);
 		}
 		
 		@Override

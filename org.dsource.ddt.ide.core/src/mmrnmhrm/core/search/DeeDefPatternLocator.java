@@ -3,7 +3,7 @@ package mmrnmhrm.core.search;
 import java.util.Collection;
 import java.util.Iterator;
 
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
@@ -42,7 +42,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 			if(!ref.canMatch(defUnitDescriptor))
 				return true;
 			
-			IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
+			IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
 			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr, false);
 			if(defUnits == null)
 				return true;

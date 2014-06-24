@@ -120,11 +120,9 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		
 		if(projectSourceDir == null) {
 			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, ".");
-			DeeCoreTestResources.addSourceFolder(project);
 			return project;
 		} else {
-			IFolder destFolder = DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
-			DeeCoreTestResources.addSourceFolder(destFolder);
+			DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
 			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, "src-dtool");
 		}
 		return project;

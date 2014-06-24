@@ -3,18 +3,20 @@ package mmrnmhrm.core.search;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.tryCast;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclarationWrapper;
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
@@ -64,26 +66,34 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		@Override
 		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
-			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-			return parseForMatchLocator(sourceModule);
+			Path filePath = null;
+			
+			if(possibleMatch.resource != null) {
+				IPath location = possibleMatch.resource.getLocation();
+				if(location != null) {
+					filePath = MiscUtil.createPathOrNull(location.toOSString());
+				}
+			}
+			
+			if(filePath == null) {
+				// Try alternative path location
+				ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+				filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
+			}
+			if(filePath == null)
+				return null;
+			
+			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+			if(parsedModule == null) {
+				return null;
+			}
+			return new ModuleDeclarationWrapper(new DeeModuleDeclaration(parsedModule));
 			//return super.parse(possibleMatch);
 		}
 		
 		@Override
 		public void parseBodies(ModuleDeclaration unit) {
 			assertFail();
-		}
-
-		public static ModuleDeclaration parseForMatchLocator(ISourceModule sourceModule) {
-			IModuleSource source = tryCast(sourceModule, IModuleSource.class);
-			if(source == null) {
-				return null;
-			}
-			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(source);
-			if(parsedModule == null) {
-				return null;
-			}
-			return new ModuleDeclarationWrapper(new DeeModuleDeclaration(parsedModule));
 		}
 		
 	}

@@ -2,11 +2,13 @@ package mmrnmhrm.core.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IModelElement;
@@ -19,6 +21,7 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.CommonModuleResolver;
 import dtool.engine.modules.ModuleNamingRules;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 @Deprecated
 public class DeeProjectModuleResolver extends CommonModuleResolver {
@@ -40,8 +43,13 @@ public class DeeProjectModuleResolver extends CommonModuleResolver {
 		ISourceModule moduleUnit = SourceModuleFinder.findModuleUnit(deeproj, packages, modName);
 		if(moduleUnit == null)
 			return null;
+		Path filePath = DToolClient_Bad.getFilePathOrNull(moduleUnit);
+		if(filePath == null) {
+			return null;
+		}
 		
-		return DToolClient.getDefault().getModuleNodeOrNull(moduleUnit);
+		ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+		return parseModule == null ? null : parseModule.module;
 	}
 	
 	@Override

@@ -10,26 +10,34 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
+import java.nio.file.Path;
+
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.lang.ui.AbstractUIOperation;
+import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	
 	protected final ITextEditor editor;
-	protected final ISourceModule sourceModule;
 	protected final IWorkbenchWindow window;
+	protected final IEditorInput editorInput;
+	protected final ISourceModule sourceModule;
+	protected final Path inputPath;
 	
 	public AbstractEditorOperation(String operationName, ITextEditor editor) {
 		super(operationName);
 		this.editor = editor;
 		this.window = editor.getSite().getWorkbenchWindow();
+		this.editorInput = editor.getEditorInput();
+		this.inputPath = EditorUtil.getFilePathFromEditorInput(editorInput);
 		this.sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
 	}
 	

@@ -4,6 +4,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.AbstractEditorOperation;
@@ -41,6 +42,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.ResolverUtil;
 import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 
@@ -99,7 +101,11 @@ public abstract class FindAction extends SelectionDispatchAction {
 		
 		@Override
 		protected void performLongRunningComputation_do() {
-			Module neoModule = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
+			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(inputPath);
+			if(parsedModule == null) {
+				errorMessage = "Could not parse contents";
+			}
+			Module neoModule = parsedModule.module;
 			ASTNode elem = ASTNodeFinder.findElement(neoModule, offset);
 			if(elem instanceof DefSymbol) {
 				DefSymbol defSymbol = (DefSymbol) elem;
@@ -107,7 +113,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			} else if(elem instanceof Reference) {
 				Reference ref = (Reference) elem;
 				IModelElement inputModelElement = deeEditor.getInputModelElement();
-				IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(inputModelElement);
+				IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(inputModelElement);
 				defunit = ref.findTargetDefElement(mr);
 				if(defunit == null) {
 					errorMessage = "No DefUnit found when resolving reference.";

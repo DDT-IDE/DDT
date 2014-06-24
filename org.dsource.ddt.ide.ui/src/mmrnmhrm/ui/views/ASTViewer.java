@@ -1,5 +1,7 @@
 package mmrnmhrm.ui.views;
 
+import java.nio.file.Path;
+
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeePluginImages;
@@ -10,8 +12,6 @@ import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -73,7 +73,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	protected ITextEditor fEditor;
 	protected IDocument fDocument;
-	protected ISourceModule fSourceModule;
+	protected Path inputFilePath;
 	protected DeeParserResult fDeeModule;
 	protected IASTNode selNode;
 	
@@ -150,8 +150,9 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		} else {
 			fEditor = editor;
 			
-			fSourceModule = EditorUtility.getEditorInputModelElement(fEditor, false);
-			if(fSourceModule != null) {
+			inputFilePath = EditorUtil.getFilePathFromEditorInput(fEditor.getEditorInput());
+			
+			if(inputFilePath != null) {
 				fDocument = fEditor.getDocumentProvider().getDocument(editor.getEditorInput());
 				if(fDocument != null) {
 					fDocument.addDocumentListener(documentListener);
@@ -186,15 +187,15 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return Status.OK_STATUS;
 		}
 	};
-	
+
 	protected void refreshViewer() {
-		if(fEditor == null || fSourceModule == null || fEditor.getDocumentProvider() == null) {
+		if(fEditor == null || inputFilePath == null || fEditor.getDocumentProvider() == null) {
 			setContentDescription("No Editor or SourceModule available");
 			viewer.getControl().setVisible(false);
 			return;
 		}
 		
-		fDeeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(fSourceModule);
+		fDeeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(inputFilePath);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

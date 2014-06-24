@@ -3,7 +3,7 @@ package mmrnmhrm.core.search;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.lang.core.search.CommonLangPatternMatcher;
 
@@ -64,7 +64,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
-			IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(sourceModule);
+			IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
 			Collection<INamedElement> defUnits = node.findTargetDefElements(mr, false);
 			
 			int matched = 0;

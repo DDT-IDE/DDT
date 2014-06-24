@@ -16,16 +16,22 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.ReflectionUtils;
 
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IBuffer;
 import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
+import org.eclipse.dltk.internal.core.ExternalSourceModule;
 
 public class DLTKUtils {
 	
@@ -38,29 +44,44 @@ public class DLTKUtils {
 		return EnvironmentPathUtils.getFullPath(LocalEnvironment.getInstance(), path);
 	}
 	
-	protected static boolean isExternal(ISourceModule sourceModule) {
-		return sourceModule.getResource() == null;
-	}
-	
+	@Deprecated
 	public static Path getFilePath(ISourceModule sourceModule) throws InvalidPathExceptionX {
-		return MiscUtil.createPath(getFilePathString(sourceModule));
-	}
-	
-	public static String getFilePathString(ISourceModule sourceModule) {
 		IResource resource = sourceModule.getResource();
-		if(resource == null) {
-			return EnvironmentPathUtils.getLocalPath(sourceModule.getPath()).toOSString();
-		} else {
-			IPath location = resource.getLocation();
-			if(location == null) {
-				String pathString = sourceModule.getPath().toPortableString();
-				pathString = pathString.replace("/ /", ""); // Fix for Windows Path issue: "/ /" is not valid!
-				return "###ExternalFile/" + pathString;
-			}
-			return location.toOSString();
+		if(resource != null && resource.getLocation() != null) {
+			// This is the best case, it means we should have an accurate path.
+			return getFilePath(resource.getLocation());
 		}
+		if(sourceModule instanceof ExternalSourceModule) {
+			ExternalSourceModule externalSourceModule = (ExternalSourceModule) sourceModule;
+			IStorage storage = externalSourceModule.getStorage();
+			return getFilePath(storage.getFullPath());
+		}
+		
+		if(sourceModule.isWorkingCopy()) {
+			try {
+				IBuffer buffer = sourceModule.getBuffer();
+				if(buffer != null) {
+					IFileStore fileStore = tryCast(ReflectionUtils.readField(buffer, "fFileStore"), IFileStore.class);
+					return fileStore.toLocalFile(0, null).toPath();
+				}
+			} catch (NoSuchFieldException e) {
+			} catch (CoreException e) {
+			}
+		}
+		
+		// Workaround:
+		String pathString = sourceModule.getPath().toPortableString();
+		
+		DeeCore.logError("Failed to get accurate filePath from source module: " + pathString);
+		pathString = pathString.replace("/ /", ""); // Fix for Windows Path issue: "/ /" is not valid!
+		return MiscUtil.createPath("###ExternalFile/" + pathString);
 	}
 	
+	private static Path getFilePath(IPath location) throws InvalidPathExceptionX {
+		return MiscUtil.createPath(location.toOSString());
+	}
+	
+	@Deprecated
 	public static Path getFilePath(IModuleSource moduleSource) throws InvalidPathExceptionX {
 		ISourceModule sourceModule = tryCast(moduleSource.getModelElement(), ISourceModule.class);
 		if(sourceModule != null) {

@@ -19,10 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
-import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
@@ -34,7 +31,6 @@ import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
-import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -105,44 +101,6 @@ public class DToolClient {
 		return dtoolServer.getSemanticManager();
 	}
 	
-	
-	public static Path getFilePath(ISourceModule input) throws CoreException {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
-		}
-	}
-	public static Path getFilePath(IModuleSource input) throws CoreException {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
-		}
-	}
-	
-	public static Path getFilePathOrNull(ISourceModule input) {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			DeeCore.logError("Invalid path from DLTK: " + e);
-			return null;
-		}
-	}
-	
-	public static Path getFilePathOrNull(IModuleSource input) {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			DeeCore.logError("Invalid path from DLTK: " + e);
-			return null;
-		}
-	}
-	
-	public ParsedModule getParsedModuleOrNull(ISourceModule input) {
-		Path filePath = getFilePathOrNull(input);
-		return filePath == null ? null : getParsedModuleOrNull(filePath);
-	}
 	public ParsedModule getParsedModuleOrNull(Path filePath) {
 		try {
 			return getClientModuleCache().getParsedModule(filePath);
@@ -152,9 +110,7 @@ public class DToolClient {
 			return null;
 		}
 	}
-	
-	public ParsedModule getParsedModuleOrNull(IModuleSource input) {
-		Path filePath = getFilePathOrNull(input);
+	public ParsedModule getParsedModuleOrNull_withSource(Path filePath, IModuleSource input) {
 		if(filePath == null) { 
 			return null;
 		}
@@ -165,42 +121,48 @@ public class DToolClient {
 		return getParsedModuleOrNull(filePath);
 	}
 	
-	public Module getModuleNodeOrNull(ISourceModule input) {
-		ParsedModule parseModule = getParsedModuleOrNull(input);
-		return parseModule == null ? null : parseModule.module;
+	public ParsedModule getExistingParsedModuleOrNull(Path filePath) {
+		return getClientModuleCache().getExistingParsedModule(filePath);
 	}
-	
-	
-	public ParsedModule getExistingParsedModuleOrNull(ISourceModule input) {
-		Path filePath = getFilePathOrNull(input);
-		return filePath == null ? null : getClientModuleCache().getExistingParsedModule(filePath);
-	}
-	public ParsedModule getExistingParsedModuleOrNull(IModuleSource input) {
-		Path filePath = getFilePathOrNull(input);
-		return filePath == null ? null : getClientModuleCache().getExistingParsedModule(filePath);
-	}
-	
-	public Module getExistingModuleNodeOrNull(ISourceModule input) {
-		ParsedModule parsedModule = getExistingParsedModuleOrNull(input);
-		return parsedModule == null ? null : parsedModule.module;
-	}
-	public Module getExistingModuleNodeOrNull(IModuleSource input) {
-		ParsedModule parsedModule = getExistingParsedModuleOrNull(input);
+	public Module getExistingParsedModuleNodeOrNull(Path filePath) {
+		ParsedModule parsedModule = getExistingParsedModuleOrNull(filePath);
 		return parsedModule == null ? null : parsedModule.module;
 	}
 	
-	/* ----------------- working copy handling ----------------- */
+	public static Path getPathHandleForModuleSource(IModuleSource input) {
+		return DToolClient_Bad.getFilePathOrNull(input);
+	}
+	
+	/* ----------------- Module build structure operation and working copy handling ----------------- */
+	
+	public ParsedModule doParseForBuildStructureOrIndex(IModuleSource input, IProblemReporter reporter) {
+		ParsedModule parsedModule = getParsedModuleOrNull_fromBuildStructure(input);
+		DeeSourceParserFactory.reportErrors(reporter, parsedModule);
+		return parsedModule;
+	}
+	
+	public void provideModelElements(IModuleSource moduleSource, IProblemReporter pr, 
+			ISourceElementRequestor requestor) {
+		ParsedModule parsedModule = doParseForBuildStructureOrIndex(moduleSource, pr);
+		if (parsedModule != null) {
+			new DeeSourceElementProvider(requestor).provide(parsedModule);
+		}
+	}
 	
 	public ParsedModule getParsedModuleOrNull_fromBuildStructure(IModuleSource input) {
 		ISourceModule sourceModule = tryCast(input, ISourceModule.class);
+		if(sourceModule == null) {
+			sourceModule = tryCast(input.getModelElement() , ISourceModule.class);
+		} 
 		if(sourceModule != null) {
-			getParsedModuleOrNull_fromWorkingCopy(sourceModule);
+			return getParsedModuleOrNull_fromWorkingCopy(sourceModule);
 		}
-		return getParsedModuleOrNull(input);
+		DeeCore.logError("getParsedModuleOrNull_fromBuildStructure: input not a source Module");
+		return null;
 	}
 	
 	public ParsedModule getParsedModuleOrNull_fromWorkingCopy(ISourceModule sourceModule) {
-		Path filePath = getFilePathOrNull(sourceModule);
+		Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
 		if(filePath == null) 
 			return null;
 		
@@ -233,7 +195,7 @@ public class DToolClient {
 		public void visitSourceModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
 			if((moduleDelta.getFlags() & IModelElementDelta.F_PRIMARY_WORKING_COPY) != 0) {
 				if(sourceModule.isWorkingCopy() == false) {
-					Path filePath = getFilePathOrNull(sourceModule);
+					Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
 					if(filePath != null) {
 						// We update the server working copy too.
 						getServerSemanticManager().discardWorkingCopy(filePath);
@@ -244,36 +206,7 @@ public class DToolClient {
 		}
 		
 	}
-	
-	
-	public IModuleResolver getResolverForSourceModule(IModelElement element) {
-		return new DeeProjectModuleResolver(element.getScriptProject());
-	}
-	
-	public IModuleResolver getResolverForSourceModuleNew(IModelElement element) throws ExecutionException {
-		IProject project = element.getScriptProject().getProject();
-		BundlePath bundlePath = BundlePath.create(project.getLocation().toOSString());
-		if(bundlePath == null) {
-			return null;
-		}
-		return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath);
-	}
-	
-	/* ----------------- Specific semantic operations: ----------------- */
-	
-	public ParsedModule doParseForRebuild(IModuleSource input, IProblemReporter reporter) {
-		ParsedModule parsedModule = getParsedModuleOrNull_fromBuildStructure(input);
-		DeeSourceParserFactory.reportErrors(reporter, parsedModule);
-		return parsedModule;
-	}
-	
-	public void provideModelElements(IModuleSource moduleSource, IProblemReporter pr, 
-			ISourceElementRequestor requestor) {
-		ParsedModule parsedModule = doParseForRebuild(moduleSource, pr);
-		if (parsedModule != null) {
-			new DeeSourceElementProvider(requestor).provide(parsedModule);
-		}
-	}
+
 	
 	/* -----------------  ----------------- */
 	
@@ -287,8 +220,7 @@ public class DToolClient {
 	public static final String FIND_DEF_ReferenceResolveFailed = 
 		"Definition not found for reference: ";
 	
-	public FindDefinitionResult doFindDefinition(final ISourceModule sourceModule, final int offset) {
-		Path filePath = getFilePathOrNull(sourceModule);
+	public FindDefinitionResult doFindDefinition(Path filePath, final int offset) {
 		if(filePath == null) {
 			return new FindDefinitionResult("Invalid path for file: " );
 		}
@@ -366,7 +298,7 @@ public class DToolClient {
 			return doCodeCompletion(sourceModule, offset);
 		}
 		
-		Path filePath = getFilePath(moduleSource);
+		Path filePath = DToolClient_Bad.getFilePath(moduleSource);
 		// Update source to engine server.
 		if(filePath != null) {
 			String sourceContents = moduleSource.getSourceContents();
@@ -379,7 +311,7 @@ public class DToolClient {
 		// Update source to engine server.
 		sourceModule.makeConsistent(new NullProgressMonitor());
 		
-		Path filePath = getFilePath(sourceModule);
+		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
 		return doCodeCompletion_Do(filePath, offset);
 	}
 	
@@ -417,8 +349,7 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public String getDDocHTMLView(ISourceModule sourceModule, int offset) {
-		Path filePath = getFilePathOrNull(sourceModule);
+	public String getDDocHTMLView(Path filePath, int offset) {
 		CommonResolvedModule resolvedModule;
 		try {
 			resolvedModule = filePath == null ? null : getResolvedModule(filePath);

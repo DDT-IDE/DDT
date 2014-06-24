@@ -66,7 +66,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	
 	@Override
 	protected void performLongRunningComputation_do() {
-		findDefResult = DToolClient.getDefault().doFindDefinition(sourceModule, offset);
+		findDefResult = DToolClient.getDefault().doFindDefinition(inputPath, offset);
 	}
 	
 	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CoreException {

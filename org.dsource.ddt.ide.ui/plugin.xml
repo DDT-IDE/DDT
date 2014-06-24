@@ -149,13 +149,6 @@
       </context>
    </extension>
    
-   <extension point="org.eclipse.dltk.ui.scriptDocumentationProviders">
-      <provider
-          class="mmrnmhrm.ui.editor.doc.DeeDocumentationProvider"
-          id="org.dsource.ddt.ide.ui.DeeDocumentationProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-      </provider>
-   </extension>
    <extension
        id="DeeCodeCompletionProposalComputer"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">

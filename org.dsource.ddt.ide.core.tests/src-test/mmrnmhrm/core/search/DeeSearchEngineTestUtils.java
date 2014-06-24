@@ -3,8 +3,11 @@ package mmrnmhrm.core.search;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
@@ -14,11 +17,11 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
+import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSearchEngineTestUtils {
 	
@@ -96,13 +99,16 @@ public class DeeSearchEngineTestUtils {
 	
 	public static class ElementsAndDefUnitVisitor { 
 		
-		public void visitElementsAndNodes(IModelElement element, int depth) throws ModelException, CoreException {
+		public void visitElementsAndNodes(IModelElement element, int depth) throws CoreException, 
+		InvalidPathExceptionX {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
-				Module module = DToolClient.getDefault().getModuleNodeOrNull(sourceModule);
-				if(module == null)
+				Path filePath = DLTKUtils.getFilePath(sourceModule);
+				ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+				if(parseModule == null)
 					return;
 				
+				Module module = parseModule.module;
 				module.accept(new ASTVisitor() {
 					@Override
 					public boolean preVisit(ASTNode node) {

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
+import java.nio.file.Path;
+
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
 
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
@@ -36,12 +37,9 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 		
 		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
-		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(textEditor, false);
-		if(sourceModule == null) {
-			return null;
-		}
+		Path filePath = EditorUtil.getFilePathFromEditorInput(textEditor.getEditorInput());
 		
-		ASTNode module = DToolClient.getDefault().getExistingModuleNodeOrNull(sourceModule);
+		ASTNode module = DToolClient.getDefault().getExistingParsedModuleNodeOrNull(filePath);
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof NamedReference))
 			return null;

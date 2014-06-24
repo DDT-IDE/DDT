@@ -2,10 +2,13 @@ package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -20,6 +23,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.IModuleResolver;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.utils.MiscNodeUtils;
 
 public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
@@ -154,10 +158,12 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Module module = DToolClient.getDefault().getModuleNodeOrNull(srcModule);
+		Path filePath = DLTKUtils.getFilePath(srcModule);
+		ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		IModuleResolver mr = DToolClient.getDefault().getResolverForSourceModule(srcModule);
+		IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(srcModule);
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
 		assertTrue(defVar.type.findTargetDefElement(mr) == null);
 	}

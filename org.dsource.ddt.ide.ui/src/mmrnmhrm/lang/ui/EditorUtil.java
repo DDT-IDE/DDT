@@ -3,6 +3,9 @@ package mmrnmhrm.lang.ui;
 
 
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -11,7 +14,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -77,18 +82,39 @@ public class EditorUtil {
 	}
 	
 	
-	// ------------  Used by editor ------------ 
+	// ------------  syntax and semantic operations util ------------ 
 	
 	public static Module getParsedModule_NoWaitInUI(IModuleSource input) {
-		if(Display.getCurrent() == null) {
-			return getModuleNode(DToolClient.getDefault().getParsedModuleOrNull(input));
+		Path filePath = DToolClient.getPathHandleForModuleSource(input);
+		if(filePath == null) {
+			return null;
 		}
 		
-		return getModuleNode(DToolClient.getDefault().getExistingParsedModuleOrNull(input));
+		if(Display.getCurrent() == null) {
+			return getModuleNode(DToolClient.getDefault().getParsedModuleOrNull_withSource(filePath, input));
+		}
+		
+		return getModuleNode(DToolClient.getDefault().getExistingParsedModuleOrNull(filePath));
 	}
 	
 	protected static Module getModuleNode(ParsedModule parsedModule) {
 		return parsedModule == null ? null : parsedModule.module;
+	}
+	
+	public static Path getFilePathFromEditorInput(IEditorInput editorInput) {
+		IURIEditorInput uriEditorInput;
+		if(editorInput instanceof IURIEditorInput) {
+			uriEditorInput = (IURIEditorInput) editorInput;
+		} else {
+			uriEditorInput = (IURIEditorInput) editorInput.getAdapter(IURIEditorInput.class);
+		}
+		if(uriEditorInput != null) {
+			try {
+				return Paths.get(uriEditorInput.getURI());
+			} catch (Exception e) {
+			}
+		}
+		return null;
 	}
 	
 }

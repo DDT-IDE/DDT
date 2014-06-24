@@ -45,12 +45,9 @@ public class DToolClient_Test extends CommonCoreTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		ModuleSource moduleSource = new ModuleSource("relative/path/foo.d", "module blah;");
-		
-		assertEquals(client.getParsedModuleOrNull(moduleSource).module.getName(), "blah");
-		
-		assertEquals(client.getExistingModuleNodeOrNull(moduleSource).getName(), "blah");
-		assertEquals(client.getExistingParsedModuleOrNull(moduleSource).module.getName(), "blah");
-		
+		Path filePath = DToolClient.getPathHandleForModuleSource(moduleSource);
+		assertEquals(client.getParsedModuleOrNull_withSource(filePath, moduleSource).module.getName(), "blah");
+		assertEquals(client.getExistingParsedModuleNodeOrNull(filePath).getName(), "blah");
 		
 		testCodeCompletion(moduleSource, 0, 
 			"blah");

@@ -34,7 +34,7 @@ public class DeeSourceParserFactory implements ISourceParserFactory {
 
 		@Override
 		public IModuleDeclaration parse(IModuleSource input, IProblemReporter reporter) {
-			DToolClient.getDefault().doParseForRebuild(input, reporter);
+			DToolClient.getDefault().doParseForBuildStructureOrIndex(input, reporter);
 			return new IModuleDeclaration() { }; // Return an empty type, its not used anyways
 		}
 		
