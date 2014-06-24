@@ -2,10 +2,10 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
+import mmrnmhrm.core.search.SourceModuleFinder;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.AbstractEditorOperation;
 import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
@@ -112,8 +112,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 				defunit = defSymbol.getDefUnit();
 			} else if(elem instanceof Reference) {
 				Reference ref = (Reference) elem;
-				IModelElement inputModelElement = deeEditor.getInputModelElement();
-				IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(inputModelElement);
+				IModuleResolver mr = DToolClient_Bad.getResolverFor(inputPath);
 				defunit = ref.findTargetDefElement(mr);
 				if(defunit == null) {
 					errorMessage = "No DefUnit found when resolving reference.";

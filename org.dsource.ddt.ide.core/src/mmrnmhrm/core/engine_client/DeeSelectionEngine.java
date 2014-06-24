@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
+import mmrnmhrm.core.search.SourceModuleFinder;
 
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -73,7 +73,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		IModuleResolver moduleResolver = DToolClient_Bad.getResolverForSourceModule(sourceModule);
+		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {

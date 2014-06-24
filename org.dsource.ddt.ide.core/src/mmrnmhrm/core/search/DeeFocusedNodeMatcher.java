@@ -1,5 +1,6 @@
 package mmrnmhrm.core.search;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -34,21 +35,20 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	}
 	
 	@Override
-	public boolean match(ASTNode node, ISourceModule sourceModule) {
-		
+	public boolean match(ASTNode node, ISourceModule sourceModule, Path filePath) {
 		if(matchDeclarations && node instanceof DefUnit) {
 			DefUnit definition = (DefUnit) node;
-			matchDefUnit(definition, sourceModule);
+			matchDefUnit(definition, sourceModule, filePath);
 		}
 		
 		if(matchReferences && node instanceof NamedReference) {
 			NamedReference ref = (NamedReference) node;
-			matchReferences(ref, sourceModule);
+			matchReferences(ref, sourceModule, filePath);
 		}
 		return true;
 	}
 	
-	protected void matchReferences(final NamedReference ref, final ISourceModule sourceModule) {
+	protected void matchReferences(final NamedReference ref, final ISourceModule sourceModule, Path filePath) {
 		// don't match qualifieds, the match will be made in its children
 		if(ref instanceof CommonRefQualified)
 			return;
@@ -56,7 +56,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(!ref.canMatch(defUnitDescriptor))
 			return;
 		
-		IModuleResolver moduleResolver = DToolClient_Bad.getResolverForSourceModule(sourceModule);
+		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
 		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;
@@ -80,7 +80,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		}
 	}
 	
-	protected void matchDefUnit(DefUnit definition, ISourceModule sourceModule) {
+	protected void matchDefUnit(DefUnit definition, ISourceModule sourceModule, Path filePath) {
 		try {
 			IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(definition, sourceModule);
 			

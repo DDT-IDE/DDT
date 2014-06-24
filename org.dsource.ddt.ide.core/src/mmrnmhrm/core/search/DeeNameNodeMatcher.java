@@ -1,5 +1,6 @@
 package mmrnmhrm.core.search;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 import melnorme.utilbox.misc.StringUtil;
@@ -41,7 +42,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 	
 	
 	@Override
-	public boolean match(ASTNode node, ISourceModule sourceModule) {
+	public boolean match(ASTNode node, ISourceModule sourceModule, Path filePath) {
 		if(matchDeclarations) {
 			if(node instanceof DefUnit) {
 				matchDefUnit((DefUnit) node, sourceModule);
@@ -50,21 +51,21 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		}
 		
 		if(matchReferences && node instanceof NamedReference) {
-			matchReference((NamedReference) node, sourceModule);
+			matchReference((NamedReference) node, sourceModule, filePath);
 			return true;
 		}
 		return true;
 	}
 	
 	
-	public void matchReference(NamedReference node, ISourceModule sourceModule) {
+	public void matchReference(NamedReference node, ISourceModule sourceModule, Path filePath) {
 		// don't match qualifieds, the match will be made in its children
 		if(node instanceof CommonRefQualified)
 			return;
 		
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
-			IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
+			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
 			Collection<INamedElement> defUnits = node.findTargetDefElements(mr, false);
 			
 			int matched = 0;

@@ -1,4 +1,4 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

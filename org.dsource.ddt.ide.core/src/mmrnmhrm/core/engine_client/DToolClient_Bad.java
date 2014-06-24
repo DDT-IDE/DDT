@@ -11,27 +11,31 @@
 package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.codeassist.DeeProjectModuleResolver;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.engine.modules.IModuleResolver;
+import dtool.engine.modules.NullModuleResolver;
 
 /**
  * Bad API that needs to be replaced eventually
  */
-@Deprecated
 public class DToolClient_Bad {
 	
-	public static IModuleResolver getResolverForSourceModule(IModelElement element) {
-		return new DeeProjectModuleResolver(element.getScriptProject());
+	@Deprecated
+	public static IModuleResolver getResolverFor(Path filePath) {
+		try {
+			return DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
+		} catch (ExecutionException e) {
+			return new NullModuleResolver();
+		}
 	}
 	
 	@Deprecated

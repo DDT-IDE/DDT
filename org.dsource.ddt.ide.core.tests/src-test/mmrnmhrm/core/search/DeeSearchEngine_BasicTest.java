@@ -8,7 +8,6 @@ import java.util.Iterator;
 
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -74,7 +73,8 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		testNameSearch(createStringPattern("mod0", IDLTKSearchConstants.TYPE, DECLARATIONS), elementSet(mod0));
 		
 		SearchPattern searchPattern = createStringPattern("pack", IDLTKSearchConstants.TYPE, REFERENCES);
-		SearchRequestorResultCollector requestor = executeSearch(searchPattern);
+//		SearchRequestorResultCollector requestor = 
+				executeSearch(searchPattern);
 		// TODO test this more
 	}
 	
@@ -158,12 +158,12 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Path filePath = DLTKUtils.getFilePath(srcModule);
+		Path filePath = DLTKUtils.getFilePath(srcModule.getResource().getLocation());
 		ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
 		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(srcModule);
+		IModuleResolver mr = DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
 		assertTrue(defVar.type.findTargetDefElement(mr) == null);
 	}

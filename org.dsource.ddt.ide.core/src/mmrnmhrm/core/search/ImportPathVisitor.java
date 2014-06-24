@@ -1,4 +1,4 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.search;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import mmrnmhrm.core.DeeCore;

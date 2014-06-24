@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.Iterator;
 
+import mmrnmhrm.core.engine_client.CoreResolverSourceTests;
 import mmrnmhrm.core.engine_client.DeeSelectionEngine;
 import mmrnmhrm.core.model_elements.DeeModelElement_Test;
 

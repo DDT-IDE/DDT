@@ -131,17 +131,6 @@ public class ModuleParseCache {
 			assertTrue(filePath != null);
 		}
 		
-		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
-			assertNotNull(newSource);
-			if(!newSource.equals(source)) {
-				source = newSource;
-				parsedModule = null;
-				isWorkingCopy = true;
-			}
-			
-			return doGetParseModule(newSource);
-		}
-		
 		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
 			if(isStale()) {
 				readSource(filePath.toFile());
@@ -173,6 +162,18 @@ public class ModuleParseCache {
 			}
 			
 			return hasBeenModified(fileSyncAttributes, newAttributes);
+		}
+		
+		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
+			assertNotNull(newSource);
+			if(!newSource.equals(source)) {
+				source = newSource;
+				parsedModule = null;
+				isWorkingCopy = true;
+			}
+			dtoolServer.logMessage("ParseCache: Set working copy: " + filePath);
+			
+			return doGetParseModule(newSource);
 		}
 		
 		protected synchronized void discardWorkingCopy() {

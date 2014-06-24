@@ -1,6 +1,8 @@
 package mmrnmhrm.core.search;
 
 
+import java.nio.file.Path;
+
 import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.ast.ASTNode;
@@ -21,16 +23,16 @@ public abstract class AbstractNodePatternMatcher {
 		this.matchReferences = findReferences;
 	}
 	
-	public void doMatching(ParsedModule parsedModule, final ISourceModule sourceModule) {
+	public void doMatching(ParsedModule parsedModule, final ISourceModule sourceModule, final Path filePath) {
 		parsedModule.getModuleNode().accept(new ASTVisitor() {
 			@Override
 			public boolean preVisit(ASTNode node) {
-				return match(node, sourceModule);
+				return match(node, sourceModule, filePath);
 			}
 		});
 	}
 	
-	public abstract boolean match(ASTNode node, ISourceModule sourceModule);
+	public abstract boolean match(ASTNode node, ISourceModule sourceModule, Path filePath);
 	
 	public void addMatch(ASTNode node, int accLevel, ISourceModule sourceModule) {
 		deeMatchLocator.addMatch(node, accLevel, sourceModule);

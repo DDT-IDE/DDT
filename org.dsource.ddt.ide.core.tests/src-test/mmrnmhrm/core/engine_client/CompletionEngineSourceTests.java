@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-import mmrnmhrm.core.codeassist.CoreResolverSourceTests;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 

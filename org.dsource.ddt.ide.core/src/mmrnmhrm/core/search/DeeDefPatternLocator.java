@@ -1,5 +1,6 @@
 package mmrnmhrm.core.search;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -32,7 +33,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 	}
 	
 	@Override
-	public boolean match(ASTNode node, ISourceModule sourceModule) {
+	public boolean match(ASTNode node, ISourceModule sourceModule, Path filePath) {
 		if(node instanceof Reference) {
 			// don't match qualifieds, the match will be made in its children
 			if(node instanceof CommonRefQualified)
@@ -42,7 +43,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 			if(!ref.canMatch(defUnitDescriptor))
 				return true;
 			
-			IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
+			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
 			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr, false);
 			if(defUnits == null)
 				return true;

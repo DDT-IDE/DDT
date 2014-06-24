@@ -66,20 +66,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		@Override
 		public ModuleDeclaration parse(PossibleMatch possibleMatch) {
-			Path filePath = null;
-			
-			if(possibleMatch.resource != null) {
-				IPath location = possibleMatch.resource.getLocation();
-				if(location != null) {
-					filePath = MiscUtil.createPathOrNull(location.toOSString());
-				}
-			}
-			
-			if(filePath == null) {
-				// Try alternative path location
-				ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-				filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
-			}
+			Path filePath = getFilePath(possibleMatch);
 			if(filePath == null)
 				return null;
 			
@@ -96,6 +83,24 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			assertFail();
 		}
 		
+	}
+	
+	public static Path getFilePath(PossibleMatch possibleMatch) {
+		Path filePath = null;
+		
+		if(possibleMatch.resource != null) {
+			IPath location = possibleMatch.resource.getLocation();
+			if(location != null) {
+				filePath = MiscUtil.createPathOrNull(location.toOSString());
+			}
+		}
+		
+		if(filePath == null) {
+			// Try alternative path location
+			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+			filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
+		}
+		return filePath;
 	}
 	
 	@Override
@@ -138,13 +143,13 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 		
 		DeeModuleDeclaration deeUnit = getDeeModuleDeclaration(possibleMatch.parsedUnit);
 		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-		
+		Path filePath = getFilePath(possibleMatch);
 		
 		this.currentPossibleMatch = possibleMatch; // required by addMatch
 		
 		// Stage 1: collect matches 
 		matches = new ArrayList<SearchMatch>();
-		patternMatcher.doMatching(deeUnit.deeParserResult, sourceModule);
+		patternMatcher.doMatching(deeUnit.deeParserResult, sourceModule, filePath);
 		
 		
 		// Stage 2: report matches

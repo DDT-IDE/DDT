@@ -343,7 +343,7 @@ public class DToolClient {
 		}
 	}
 	
-	protected CommonResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+	public CommonResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
 		return dtoolServer.getSemanticManager().getUpdatedResolvedModule(filePath);
 	}
 	

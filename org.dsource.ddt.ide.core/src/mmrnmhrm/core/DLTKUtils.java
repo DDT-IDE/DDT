@@ -77,7 +77,7 @@ public class DLTKUtils {
 		return MiscUtil.createPath("###ExternalFile/" + pathString);
 	}
 	
-	private static Path getFilePath(IPath location) throws InvalidPathExceptionX {
+	public static Path getFilePath(IPath location) throws InvalidPathExceptionX {
 		return MiscUtil.createPath(location.toOSString());
 	}
 	

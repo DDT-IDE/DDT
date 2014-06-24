@@ -3,7 +3,7 @@ package mmrnmhrm.core.model_elements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.codeassist.SourceModuleFinder;
+import mmrnmhrm.core.search.SourceModuleFinder;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;

@@ -34,6 +34,9 @@ public class SampleSearchProject extends DeeCoreTestResources {
 		IProject project = scriptProject.getProject();
 		createSrcFolderFromCoreResource(SAMPLEPROJNAME + "/srcA", project.getFolder("srcA"));
 		createSrcFolderFromCoreResource(SAMPLEPROJNAME + "/srcB", project.getFolder("srcB"));
+		
+		CommonDeeWorkspaceTest.writeDubManifest(project, SAMPLEPROJNAME, 
+			"srcA", "srcB");
 	}
 	
 }

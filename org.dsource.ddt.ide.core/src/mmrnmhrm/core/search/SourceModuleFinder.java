@@ -1,4 +1,4 @@
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.search;
 
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;

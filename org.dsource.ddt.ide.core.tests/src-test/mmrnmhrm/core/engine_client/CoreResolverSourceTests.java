@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.codeassist;
+package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.MiscUtil.nullToOther;
@@ -22,7 +22,6 @@ import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.tests.DeeCoreTestResources;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;

@@ -14,12 +14,10 @@ import java.util.HashSet;
 
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.DLTKUtils;
-import mmrnmhrm.core.codeassist.SourceModuleFinder;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
-import org.eclipse.core.internal.dtree.DataTreeLookup;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
@@ -81,8 +79,12 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
 				if(node instanceof Reference) {
 					Reference reference = (Reference) node;
+					Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
+					if(filePath == null) {
+						return;
+					}
 					
-					IModuleResolver mr = DToolClient_Bad.getResolverForSourceModule(sourceModule);
+					IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
 					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
