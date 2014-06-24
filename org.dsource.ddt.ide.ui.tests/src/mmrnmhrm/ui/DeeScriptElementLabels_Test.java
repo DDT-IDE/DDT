@@ -39,9 +39,7 @@ public class DeeScriptElementLabels_Test extends CommonCoreTest implements ITest
 			;
 	
 	public static ISourceModule getSourceModule(String srcFolder, String cuPath) {
-		ISourceModule sourceModule = SampleMainProject.getSourceModule(srcFolder, cuPath);
-		assertTrue(sourceModule.exists());
-		return sourceModule;
+		return SampleMainProject.getSourceModule(srcFolder, cuPath);
 	}
 	
 	final DeeScriptElementLabels sel = DeeUILanguageToolkit.getDefault().getScriptElementLabels();

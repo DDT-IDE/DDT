@@ -59,7 +59,8 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		createFolderFromCoreResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
-		CommonDeeWorkspaceTest.writeDubManifest(project, SAMPLEPROJNAME, TR_CA);
+		CommonDeeWorkspaceTest.writeDubManifest(project, SAMPLEPROJNAME, 
+			TR_SAMPLE_SRC1, TR_SAMPLE_SRCBIG, TR_SAMPLE_SRC3, TR_CA, TR_REFS);
 		
 		sampleNonExistantFile = project.getFile(new Path("nonexistant.d"));
 	}

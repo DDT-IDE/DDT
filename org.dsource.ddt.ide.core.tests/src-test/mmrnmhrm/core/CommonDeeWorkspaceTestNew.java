@@ -14,6 +14,7 @@ package mmrnmhrm.core;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import mmrnmhrm.tests.MiscJsonUtils;
 
@@ -77,12 +78,14 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 		return project;
 	}
 	
-	public static void writeDubManifest(IProject project, String bundleName, String sourceFolder) 
+	public static void writeDubManifest(IProject project, String bundleName, String... sourceFolders) 
 			throws CoreException {
+		String sourceFoldersStr = '"' + StringUtil.collToString(sourceFolders, "\", \"") + '"';
+		
 		CommonDeeWorkspaceTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_FILENAME, MiscJsonUtils.jsDocument(
 			MiscJsonUtils.jsStringEntry("name", bundleName),
-			MiscJsonUtils.jsEntryValue("sourcePaths", "[ \"" + sourceFolder + "\" ]"),
-			MiscJsonUtils.jsEntryValue("importPaths", "[ \"" + sourceFolder + "\" ]")
+			MiscJsonUtils.jsEntryValue("sourcePaths", "[ " + sourceFoldersStr + " ]"),
+			MiscJsonUtils.jsEntryValue("importPaths", "[ " + sourceFoldersStr + " ]")
 		));
 	}
 	
