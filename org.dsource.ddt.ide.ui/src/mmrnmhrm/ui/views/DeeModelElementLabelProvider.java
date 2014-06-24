@@ -34,21 +34,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		if(object instanceof IMember) {
 			IMember member = (IMember) object;
 			
-			// XXX: Due to a DLTK limitation we don't know what image size is preferred. 
-			// BM: so we do this awful hack to try to figure it out, 
-			// I'm particularly concerned about performance, but since it is UI elements code, it should be
-			// called a limited number of times 
-			
-			Point imageSize = DeeElementImageProvider.BIG_SIZE;
-			StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-			for (int i = 0; i < 5; i++) {
-				if(stackTrace[i].getClassName().startsWith(
-						"org.eclipse.dltk.internal.ui.navigator.ScriptExplorerLabelProvider")) {
-					imageSize = DeeElementImageProvider.SMALL_SIZE; // Use small size for the Script Explorer
-				}
-			}
-			
-			ImageDescriptor imageDescriptor = getImageDescriptor(member, imageSize);
+			ImageDescriptor imageDescriptor = getImageDescriptor(member, DeeElementImageProvider.BIG_SIZE);
 			
 			return getImageDescriptorRegistry().get(imageDescriptor);
 		} else {
