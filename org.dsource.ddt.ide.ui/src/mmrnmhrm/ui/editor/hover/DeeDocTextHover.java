@@ -81,6 +81,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		
 		@Override
 		protected void performLongRunningComputation_do() {
+			updateWorkingCopyContents();
 			info = DToolClient.getDefault().getDDocHTMLView(inputPath, offset);
 		}
 		

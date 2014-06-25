@@ -25,7 +25,6 @@ import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
@@ -133,6 +132,7 @@ public class DToolClient {
 		return DToolClient_Bad.getFilePathOrNull(input);
 	}
 	
+	
 	/* ----------------- Module build structure operation and working copy handling ----------------- */
 	
 	public ParsedModule doParseForBuildStructureOrIndex(IModuleSource input, IProblemReporter reporter) {
@@ -206,7 +206,16 @@ public class DToolClient {
 		}
 		
 	}
-
+	
+	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
+		try {
+			if(sourceModule.isConsistent()) {
+				return;
+			}
+		} catch (ModelException e) {
+		}
+		getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -308,10 +317,11 @@ public class DToolClient {
 	}
 	
 	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
-		// Update source to engine server.
-		sourceModule.makeConsistent(new NullProgressMonitor());
-		
 		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
+		
+		// Submit latest source to engine server.
+		updateWorkingCopyIfInconsistent(filePath, sourceModule.getSource(), sourceModule);
+		
 		return doCodeCompletion_Do(filePath, offset);
 	}
 	

@@ -10,9 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.AbstractUIOperation;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUI;
@@ -20,6 +23,7 @@ import mmrnmhrm.ui.DeeUI;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -31,6 +35,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	protected final IEditorInput editorInput;
 	protected final ISourceModule sourceModule;
 	protected final Path inputPath;
+	protected final IDocument doc;
 	
 	public AbstractEditorOperation(String operationName, ITextEditor editor) {
 		super(operationName);
@@ -38,6 +43,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
 		this.inputPath = EditorUtil.getFilePathFromEditorInput(editorInput);
+		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 		this.sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
 	}
 	
@@ -57,6 +63,10 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	}
 	
 	protected abstract void performOperation_do() throws CoreException;
+	
+	protected void updateWorkingCopyContents() {
+		DToolClient.getDefault().updateWorkingCopyIfInconsistent(inputPath, doc.get(), sourceModule);
+	}
 	
 	
 	protected void dialogError(String msg) {

@@ -12,7 +12,6 @@ import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
@@ -101,6 +100,8 @@ public abstract class FindAction extends SelectionDispatchAction {
 		
 		@Override
 		protected void performLongRunningComputation_do() {
+			updateWorkingCopyContents();
+			
 			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(inputPath);
 			if(parsedModule == null) {
 				errorMessage = "Could not parse contents";
