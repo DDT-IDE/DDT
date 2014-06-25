@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_COMPILER;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_COMPILER_LOCATION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -121,14 +121,14 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		
 	}
 	
-	@Test
-	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
-	public void testStdLibResolve$() throws Exception {
-		sm = new SemanticManager(new Tests_DToolServer());
-		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
-		
-		testFindModule(BASIC_LIB, "object", DEFAULT_DMD_COMPILER.resolve("src/druntime/import/object.di"));
-		testFindModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_COMPILER.resolve("src/phobos/std/stdio.d"));
-	}
+//	@Test
+//	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
+//	public void testStdLibResolve$() throws Exception {
+//		sm = new SemanticManager(new Tests_DToolServer());
+//		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
+//		
+//		testFindModule(BASIC_LIB, "object", DEFAULT_DMD_COMPILER_LOCATION.resolve("src/druntime/import/object.di"));
+//		testFindModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_COMPILER_LOCATION.resolve("src/phobos/std/stdio.d"));
+//	}
 	
 }

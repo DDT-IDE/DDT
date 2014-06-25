@@ -24,14 +24,14 @@ import org.eclipse.dltk.launching.LibraryLocation;
 import org.eclipse.dltk.utils.PlatformFileUtils;
 import org.junit.Test;
 
-import dtool.tests.MockCompilerInstalls;
+import dtool.engine.CompilerInstallDetector_Test;
 
 public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {
-		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_TESTDATA_PATH);
+		Path compilerPath = epath(CompilerInstallDetector_Test.MOCK_DMD_CMDPATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
@@ -41,7 +41,7 @@ public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	@Test
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
 	public void testLibraryLocUnix$() throws Exception {
-		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_SYSTEM_PATH);
+		Path compilerPath = epath(CompilerInstallDetector_Test.MOCK_DMD2_SYSTEM_CMDPATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
@@ -51,7 +51,7 @@ public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	@Test
 	public void testLibraryLocUnix2() throws Exception { testLibraryLocUnix2$(); }
 	public void testLibraryLocUnix2$() throws Exception {
-		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_SYSTEM_PATH2);
+		Path compilerPath = epath(CompilerInstallDetector_Test.MOCK_DMD2_SYSTEM2_CMDPATH2);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 

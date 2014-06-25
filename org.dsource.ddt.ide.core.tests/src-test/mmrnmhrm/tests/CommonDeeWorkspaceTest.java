@@ -52,10 +52,10 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 		MockCompilerInstalls.load();
 		
 		createFakeDeeInstall(DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME, 
-			MockCompilerInstalls.MOCK_DMD2_TESTDATA_PATH, true);
+			MockCompilerInstalls.DEFAULT_DMD_COMPILER_LOCATION, true);
 		
 		createFakeDeeInstall(GDCInstallType.INSTALLTYPE_ID, MOCK_GDC_INSTALL_NAME, 
-			MockCompilerInstalls.MOCK_GDC_INSTALL_PATH, false);
+			MockCompilerInstalls.DEFAULT_DMD_COMPILER_LOCATION, false);
 		
 		checkTestSetupInvariants();
 	}

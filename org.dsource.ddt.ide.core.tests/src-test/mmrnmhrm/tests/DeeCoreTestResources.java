@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import melnorme.lang.ide.core.tests.utils.BundleResourcesUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.tests.TestsWorkingDir;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IContainer;
@@ -35,16 +34,6 @@ import dtool.tests.utils.MiscFileUtils;
 
 
 public class DeeCoreTestResources {
-	
-	public static File getWorkingDirFile(String relativePath) {
-		return new File(TestsWorkingDir.getWorkingDir(), relativePath);
-	}
-	
-	public static Path getWorkingDirPath(String relativePath) {
-		File workingDirFile = getWorkingDirFile(relativePath);
-		assertTrue(workingDirFile.getPath().equals(workingDirFile.getAbsolutePath()));
-		return new Path(workingDirFile.getAbsolutePath());
-	}
 	
 	public static void createSrcFolderFromCoreResource(String resourcePath, IContainer destFolder) 
 			throws CoreException {

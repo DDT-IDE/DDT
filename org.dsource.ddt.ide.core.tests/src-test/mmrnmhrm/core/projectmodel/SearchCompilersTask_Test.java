@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
+import static dtool.engine.CompilerInstallDetector_Test.MULTIPLE_IN_ONE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static mmrnmhrm.tests.DeeCoreTestResources.getWorkingDirPath;
 
 import java.util.List;
 
@@ -21,18 +21,16 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.junit.Test;
 
-import dtool.tests.MockCompilerInstalls;
-
 public class SearchCompilersTask_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		testWithPathVar(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH.toString());
+		testWithPathVar(MULTIPLE_IN_ONE_PATH.toString());
 		
 		String PATH_SEP = SearchAndAddCompilersOnPathTask.getPathsSeparator();
-		testWithPathVar(getWorkingDirPath("__NON_EXISTING___###__").toOSString() + PATH_SEP +
-			MockCompilerInstalls.MULTIPLE_IN_ONE_PATH.toString());
+		testWithPathVar(workingDirPath("__NON_EXISTING___###__").toString() + PATH_SEP +
+			MULTIPLE_IN_ONE_PATH.toString());
 	}
 	
 	protected void testWithPathVar(String pathsString) {
@@ -43,9 +41,9 @@ public class SearchCompilersTask_Test extends CommonDeeWorkspaceTest {
 		List<InterpreterStandin> foundInstalls = compilerSearchTask.getFoundInstalls();
 		assertTrue(foundInstalls.size() == 2);
 		assertEquals(foundInstalls.get(0).getInstallLocation().getPath(),
-			epath(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH).append("gdc"));
+			epath(MULTIPLE_IN_ONE_PATH).append("gdc"));
 		assertEquals(foundInstalls.get(1).getInstallLocation().getPath(),
-			epath(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH).append("ldc2"));
+			epath(MULTIPLE_IN_ONE_PATH).append("ldc2"));
 	}
 	
 }

@@ -151,4 +151,10 @@ public class CommonTestUtils {
 		return obj == null ? null : obj.toString();
 	}
 	
+	/* -----------------  ----------------- */
+	
+	public static Path workingDirPath(String relativePath) {
+		return TestsWorkingDir.getWorkingDirPath(relativePath);
+	}
+	
 }

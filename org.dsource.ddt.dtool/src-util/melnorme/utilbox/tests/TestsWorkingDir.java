@@ -61,4 +61,8 @@ public class TestsWorkingDir {
 		}
 	}
 	
+	public static Path getWorkingDirPath(String relativePath) {
+		return getWorkingDirPath().resolve(relativePath);
+	}
+	
 }

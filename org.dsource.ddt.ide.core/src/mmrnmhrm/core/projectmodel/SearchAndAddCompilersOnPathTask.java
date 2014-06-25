@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -32,7 +31,9 @@ import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
 
-public class SearchAndAddCompilersOnPathTask {
+import dtool.util.SearchPathEnvOperation;
+
+public class SearchAndAddCompilersOnPathTask extends SearchPathEnvOperation {
 	
 	protected static final SimpleLogger log = new SimpleLogger(true);
 	
@@ -69,62 +70,17 @@ public class SearchAndAddCompilersOnPathTask {
 		searchEnvironmentVar("DUB_COMPILERS_PATH");
 	}
 	
-	public void applyFoundInstalls() {
-		// TODO: There are some bugs related to this, in particular, saving prefs
-		// Also, I'm not sure how safe it is to call this outside UI thread
-		if(monitor.isCanceled()) 
+	@Override
+	protected void handleWarning(String message) {
+		DeeCore.logWarning(message);
+	}
+	
+	@Override
+	protected void searchPathEntry(Path path) {
+		if(monitor.isCanceled()) {
 			return;
-		for (InterpreterStandin install : foundInstalls) {
-			log.println("Found compiler on PATH: " + install.getInstallLocation());
-			install.convertToRealInterpreter();
 		}
-		try {
-			ScriptRuntime.saveInterpreterConfiguration();
-		} catch (CoreException e) {
-			DeeCore.logError("Error saving found compilers configuration", e);
-		}
-	}
-	
-	protected void searchEnvironmentVar(String envVarName) {
-		String fullPathString = System.getenv(envVarName);
-		if(fullPathString != null) {
-			searchPathsString(fullPathString, envVarName);
-		}
-	}
-	
-	protected void searchPathsString(String pathsString, String envVarName) {
-		String separator = getPathsSeparator();
-		String[] paths = pathsString.split(separator);
 		
-		searchPaths(paths, envVarName);
-	}
-	
-	protected static String getPathsSeparator() {
-		if(MiscUtil.OS_IS_WINDOWS) {
-			return ";";
-		}
-		return ":";
-	}
-	
-	protected void searchPaths(String[] paths, String envVarName) {
-		for (String pathString : paths) {
-			if(monitor.isCanceled()) {
-				return;
-			}
-			
-			Path path = MiscUtil.createPathOrNull(pathString);
-			if(path == null) {
-				DeeCore.logWarning("Invalid path: " + pathString + " in env variable: " + envVarName);
-				continue;
-			}
-			if(!path.toFile().isDirectory()) {
-				continue;
-			}
-			searchPath(path);
-		}
-	}
-	
-	protected void searchPath(Path path) {
 		// Make sure we get the real install type instances, so we can get installs
 		for (CommonInstallType compilerInstallType : getDeeInstallTypes()) {
 			IFileHandle compilerInstallLocation = compilerInstallType.directoryHasCompilerPresent(path);
@@ -175,6 +131,22 @@ public class SearchAndAddCompilersOnPathTask {
 			}
 		}
 		return null;
+	}
+	
+	public void applyFoundInstalls() {
+		// TODO: There are some bugs related to this, in particular, saving prefs
+		// Also, I'm not sure how safe it is to call this outside UI thread
+		if(monitor.isCanceled()) 
+			return;
+		for (InterpreterStandin install : foundInstalls) {
+			log.println("Found compiler on PATH: " + install.getInstallLocation());
+			install.convertToRealInterpreter();
+		}
+		try {
+			ScriptRuntime.saveInterpreterConfiguration();
+		} catch (CoreException e) {
+			DeeCore.logError("Error saving found compilers configuration", e);
+		}
 	}
 	
 }

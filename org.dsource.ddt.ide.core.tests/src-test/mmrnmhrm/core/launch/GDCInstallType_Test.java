@@ -19,14 +19,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.launching.LibraryLocation;
 import org.junit.Test;
 
-import dtool.tests.MockCompilerInstalls;
+import dtool.engine.CompilerInstallDetector_Test;
 
 public class GDCInstallType_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {		
-		Path compilerPath = epath(MockCompilerInstalls.MOCK_GDC_INSTALL_PATH);
+		Path compilerPath = epath(CompilerInstallDetector_Test.MOCK_GDC_CMDPATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new GDCInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(2), 
@@ -36,7 +36,7 @@ public class GDCInstallType_Test extends CommonDeeWorkspaceTest {
 	@Test
 	public void stestLibraryLocations_2() throws Exception { stestLibraryLocations_2$(); }
 	public void stestLibraryLocations_2$() throws Exception {
-		Path compilerPath = epath(MockCompilerInstalls.MOCK_GDC_INSTALL_PATH_B);
+		Path compilerPath = epath(CompilerInstallDetector_Test.MOCK_GDC_B_CMDPATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new GDCInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(2), 
