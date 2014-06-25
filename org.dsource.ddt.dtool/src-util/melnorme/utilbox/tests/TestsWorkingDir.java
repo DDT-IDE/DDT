@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class TestsWorkingDir {
 	
@@ -41,6 +42,10 @@ public class TestsWorkingDir {
 		File file = new File(testsWorkingDir);
 		assertTrue(file.exists() && file.isDirectory());
 		return file;
+	}
+	
+	public static Path getWorkingDirPath() {
+		return getWorkingDir().toPath();
 	}
 	
 	protected static void defaultWorkingDirInit() {

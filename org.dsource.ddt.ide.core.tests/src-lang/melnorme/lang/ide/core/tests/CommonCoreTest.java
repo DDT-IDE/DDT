@@ -93,6 +93,10 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	/* ----------------- utilities ----------------- */
 	
+	public static org.eclipse.core.runtime.Path epath(Path path) {
+		return new org.eclipse.core.runtime.Path(path.toString());
+	}
+	
 	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {
 		return ResourceUtils.createAndOpenProject(name, overwrite);
 	}

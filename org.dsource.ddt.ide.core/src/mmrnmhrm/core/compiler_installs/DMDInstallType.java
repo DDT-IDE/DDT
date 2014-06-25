@@ -55,7 +55,7 @@ public class DMDInstallType extends CommonInstallType {
 		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("usr/include/dmd")))
 			return;
 		
-		// Not sure there is any Linux layout like this, but no hard in trying:
+		// Not sure there is any Linux layout like this, but no harm in trying:
 		if(checkForDMD2InstallLocation(locs, env, exePath.removeLastSegments(3).append("include/dmd")))
 			return;
 		

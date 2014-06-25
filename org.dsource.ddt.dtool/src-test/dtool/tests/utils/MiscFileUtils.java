@@ -83,7 +83,9 @@ public class MiscFileUtils {
 	}
 	
 	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) throws IOException {
-		new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourceDir.toFile());
+		File sourcePath = sourceDir.toFile();
+		assertTrue(sourcePath.exists());
+		new FileCopyTraverser(destFolder.toFile()).traverseDirectory(sourcePath);
 	}
 	
 	public static final class FileCopyTraverser extends FileTraverser {

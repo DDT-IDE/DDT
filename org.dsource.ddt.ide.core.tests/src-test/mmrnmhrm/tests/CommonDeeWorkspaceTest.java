@@ -4,10 +4,9 @@ package mmrnmhrm.tests;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.File;
+import java.nio.file.Path;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.tests.TestsWorkingDir;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
@@ -16,7 +15,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
@@ -29,6 +27,8 @@ import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.junit.After;
 import org.junit.Before;
+
+import dtool.tests.MockCompilerInstalls;
 
 /**
  * Initializes a common Dee test setup:
@@ -46,24 +46,16 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 	}
 	
 	public static final String MOCK_DMD2_INSTALL_NAME = "defaultDMD2Install";
-	protected static final String MOCK_DEE_COMPILERS_PATH = "deeCompilerInstalls/";
-	protected static final String MOCK_DMD2_TESTDATA_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall/windows/bin/dmd.exe";
 	public static final String MOCK_GDC_INSTALL_NAME = "gdcInstall";
-	protected static final String MOCK_GDC_INSTALL_PATH = MOCK_DEE_COMPILERS_PATH+"gdcInstall/bin/gdc";
 	
 	protected static void setupTestDeeInstalls() {
-		try {
-			File destFolder = new File(TestsWorkingDir.getWorkingDir(), "deeCompilerInstalls");
-			DeeCoreTestResources.copyTestFolderContentsFromCoreResource("deeCompilerInstalls", destFolder);
-		} catch(CoreException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		MockCompilerInstalls.load();
 		
-		createFakeDeeInstall(DMDInstallType.INSTALLTYPE_ID, 
-				MOCK_DMD2_INSTALL_NAME, MOCK_DMD2_TESTDATA_PATH, true);
+		createFakeDeeInstall(DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME, 
+			MockCompilerInstalls.MOCK_DMD2_TESTDATA_PATH, true);
 		
-		createFakeDeeInstall(GDCInstallType.INSTALLTYPE_ID, 
-				MOCK_GDC_INSTALL_NAME, MOCK_GDC_INSTALL_PATH, false);
+		createFakeDeeInstall(GDCInstallType.INSTALLTYPE_ID, MOCK_GDC_INSTALL_NAME, 
+			MockCompilerInstalls.MOCK_GDC_INSTALL_PATH, false);
 		
 		checkTestSetupInvariants();
 	}
@@ -79,15 +71,15 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 		checkTestSetupInvariants();
 	}
 	
-	protected static void createFakeDeeInstall(String installTypeId, String installName, String installExePath, 
+	protected static void createFakeDeeInstall(String installTypeId, String installName, Path installExePath, 
 			boolean setAsDefault) {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");
 		
-		String installPathStr = DeeCoreTestResources.getWorkingDirFile(installExePath).getAbsolutePath();
-		assertTrue(new File(installPathStr).exists());
+		assertTrue(installExePath.toFile().exists());
 		
-		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, new Path(installPathStr)));
+		install.setInstallLocation(new LazyFileHandle(LocalEnvironment.ENVIRONMENT_ID, 
+			new org.eclipse.core.runtime.Path(installExePath.toString())));
 		install.setName(installName);
 		install.setInterpreterArgs(null);
 		install.setLibraryLocations(null); // Use default locations

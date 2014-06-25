@@ -16,28 +16,23 @@ import static mmrnmhrm.tests.DeeCoreTestResources.getWorkingDirPath;
 import java.util.List;
 
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
-import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.junit.Test;
 
+import dtool.tests.MockCompilerInstalls;
+
 public class SearchCompilersTask_Test extends CommonDeeWorkspaceTest {
-	
-	protected static final String MULTIPLE_IN_ONE_PATH = MOCK_DEE_COMPILERS_PATH+"_multipleInSameLocation/bin";
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		testWithPathVar(getWorkingDirFullPathString(MULTIPLE_IN_ONE_PATH));
+		testWithPathVar(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH.toString());
 		
 		String PATH_SEP = SearchAndAddCompilersOnPathTask.getPathsSeparator();
-		testWithPathVar(getWorkingDirFullPathString("__NON_EXISTING___###__") + PATH_SEP +
-			getWorkingDirFullPathString(MULTIPLE_IN_ONE_PATH));
-	}
-	
-	protected String getWorkingDirFullPathString(String workdingDirRelPath) {
-		return getWorkingDirPath(workdingDirRelPath).toOSString();
+		testWithPathVar(getWorkingDirPath("__NON_EXISTING___###__").toOSString() + PATH_SEP +
+			MockCompilerInstalls.MULTIPLE_IN_ONE_PATH.toString());
 	}
 	
 	protected void testWithPathVar(String pathsString) {
@@ -48,9 +43,9 @@ public class SearchCompilersTask_Test extends CommonDeeWorkspaceTest {
 		List<InterpreterStandin> foundInstalls = compilerSearchTask.getFoundInstalls();
 		assertTrue(foundInstalls.size() == 2);
 		assertEquals(foundInstalls.get(0).getInstallLocation().getPath(),
-			DeeCoreTestResources.getWorkingDirPath(MULTIPLE_IN_ONE_PATH).append("gdc"));
+			epath(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH).append("gdc"));
 		assertEquals(foundInstalls.get(1).getInstallLocation().getPath(),
-			DeeCoreTestResources.getWorkingDirPath(MULTIPLE_IN_ONE_PATH).append("ldc2"));
+			epath(MockCompilerInstalls.MULTIPLE_IN_ONE_PATH).append("ldc2"));
 	}
 	
 }

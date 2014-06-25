@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.compiler_installs.CommonInstallType;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
-import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -25,25 +24,24 @@ import org.eclipse.dltk.launching.LibraryLocation;
 import org.eclipse.dltk.utils.PlatformFileUtils;
 import org.junit.Test;
 
+import dtool.tests.MockCompilerInstalls;
+
 public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	
 	@Test
 	public void testLibraryLocations() throws Exception { testLibraryLocations$(); }
 	public void testLibraryLocations$() throws Exception {
-		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_TESTDATA_PATH);
+		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_TESTDATA_PATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
 			"src/druntime/import", "src/phobos");	
 	}
 	
-	protected static final String MOCK_DMD2_SYSTEM_PATH = MOCK_DEE_COMPILERS_PATH+"DMDInstall-linux/usr/bin/dmd";
-	protected static final String MOCK_DMD2_SYSTEM_PATH2 = MOCK_DEE_COMPILERS_PATH+"DMDInstall-linux2/usr/bin/dmd";
-	
 	@Test
 	public void testLibraryLocUnix() throws Exception { testLibraryLocUnix$(); }
 	public void testLibraryLocUnix$() throws Exception {
-		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_SYSTEM_PATH);
+		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_SYSTEM_PATH);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 
@@ -53,7 +51,7 @@ public class DMDInstallType_Test extends CommonDeeWorkspaceTest {
 	@Test
 	public void testLibraryLocUnix2() throws Exception { testLibraryLocUnix2$(); }
 	public void testLibraryLocUnix2$() throws Exception {
-		Path compilerPath = DeeCoreTestResources.getWorkingDirPath(MOCK_DMD2_SYSTEM_PATH2);
+		Path compilerPath = epath(MockCompilerInstalls.MOCK_DMD2_SYSTEM_PATH2);
 		LibraryLocation[] libLocations = getLibraryLocations(new DMDInstallType(), compilerPath);
 		
 		checkLibLocations(libLocations, compilerPath.removeLastSegments(3), 

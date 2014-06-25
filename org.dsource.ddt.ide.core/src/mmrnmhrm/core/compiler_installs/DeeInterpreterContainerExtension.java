@@ -8,6 +8,7 @@ import org.eclipse.dltk.launching.IInterpreterContainerExtension;
 import org.eclipse.dltk.launching.IInterpreterContainerExtension3;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 
+@Deprecated
 public class DeeInterpreterContainerExtension 
 	implements IInterpreterContainerExtension, IInterpreterContainerExtension3
 {
