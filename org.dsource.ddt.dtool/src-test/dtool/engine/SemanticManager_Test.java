@@ -29,7 +29,7 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.BundleResolution.ResolvedModule;
+import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 

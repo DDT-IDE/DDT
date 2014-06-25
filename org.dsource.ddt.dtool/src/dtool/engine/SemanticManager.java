@@ -12,6 +12,7 @@ package dtool.engine;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -21,11 +22,13 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.BundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.NullModuleResolver;
-import dtool.engine.util.FileCachingEntry;
 import dtool.engine.util.CachingRegistry;
+import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 /**
@@ -203,6 +206,13 @@ public class SemanticManager extends AbstractSemanticManager {
 	
 	/* ----------------- file updates handling ----------------- */
 	
+	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
+		@Override
+		protected void handleWarning(String message) {
+			dtoolServer.logMessage(message);
+		}
+	}
+	
 	/*BUG here review, deduplicate */
 	protected BundleInfo updateSemanticResolutionEntry(BundleInfo staleInfo) throws ExecutionException {
 		BundlePath bundlePath = staleInfo.bundlePath;
@@ -213,13 +223,31 @@ public class SemanticManager extends AbstractSemanticManager {
 				return staleInfo; // No longer stale
 			
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
+			StandardLibraryResolution stdLibResolution = getUpdatedStandarLibraryResolution();
 			
-			BundleResolution bundleRes = new BundleResolution(this, manifest);
+			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
 			
 			synchronized(entriesLock) {
 				return setNewBundleResolution(bundleRes);
 			}
 		}
+	}
+	
+	// /*BUG here TODO: caching. */
+	protected StandardLibraryResolution getUpdatedStandarLibraryResolution() {
+		List<CompilerInstall> foundInstalls = searchCompilerInstalls();
+		if(foundInstalls.size() > 0) {
+			// TODO: determine a better match according to compiler type.
+			CompilerInstall foundInstall = foundInstalls.get(0);
+			return new StandardLibraryResolution(this, foundInstall);
+		}
+		return null; /*BUG here test */
+	}
+	
+	protected List<CompilerInstall> searchCompilerInstalls() {
+		SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
+		searchCompilers.searchForCompilersInPathEnvVars();
+		return searchCompilers.getFoundInstalls();
 	}
 	
 	protected BundleInfo setNewBundleResolution(BundleResolution bundleRes) {
@@ -252,7 +280,7 @@ public class SemanticManager extends AbstractSemanticManager {
 				return new CommonResolvedModule(parsedModule, new NullModuleResolver());
 			} else {
 				BundleResolution bundleRes = getUpdatedResolution(bundlePath);
-				return bundleRes.getResolvedModule(filePath);
+				return bundleRes.getBundleResolvedModule(filePath);
 			}
 		} catch (ParseSourceException e) {
 			throw new ExecutionException(e);

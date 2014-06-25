@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.SourceRange;
@@ -28,11 +29,10 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
-import dtool.engine.BundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 
 public class DToolServer {
 	

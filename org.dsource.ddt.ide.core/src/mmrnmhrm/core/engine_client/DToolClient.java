@@ -33,7 +33,7 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
-import dtool.engine.BundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;

@@ -10,15 +10,20 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_COMPILER_LOCATION;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_DIR;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.Test;
 
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
+import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.engine.modules.ModuleFullName;
 
 public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
@@ -105,8 +110,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		));
 		
 		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
-		assertEqualSet(complexLibSR.findModules(""), hashSet(
-			"complex_lib",
+		assertEqualSet(complexLibSR.findModules("b"), hashSet(
 			"basic_lib_pack.foo",
 			"basic_lib_foo",
 			"basic_lib2_pack.bar",
@@ -121,14 +125,25 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		
 	}
 	
-//	@Test
-//	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
-//	public void testStdLibResolve$() throws Exception {
-//		sm = new SemanticManager(new Tests_DToolServer());
-//		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
-//		
-//		testFindModule(BASIC_LIB, "object", DEFAULT_DMD_COMPILER_LOCATION.resolve("src/druntime/import/object.di"));
-//		testFindModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_COMPILER_LOCATION.resolve("src/phobos/std/stdio.d"));
-//	}
+	@Test
+	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
+	public void testStdLibResolve$() throws Exception {
+		sm = new SemanticManager(new Tests_DToolServer()) {
+			@Override
+			protected List<CompilerInstall> searchCompilerInstalls() {
+				SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
+				searchCompilers.searchPathsString(DEFAULT_DMD_INSTALL_EXE_DIR.toString(), "_synthetic_");
+				List<CompilerInstall> foundInstalls = searchCompilers.getFoundInstalls();
+				assertTrue(foundInstalls.size() > 0);
+				return foundInstalls;
+			}
+		};
+		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
+		assertTrue(sr.stdLibResolution.getCompilerType() == ECompilerType.DMD);
+		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_LOCATION));
+		
+		testFindModule(BASIC_LIB, "object", DEFAULT_DMD_INSTALL_LOCATION.resolve("src/druntime/import/object.di"));
+		testFindModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_INSTALL_LOCATION.resolve("src/phobos/std/stdio.d"));
+	}
 	
 }

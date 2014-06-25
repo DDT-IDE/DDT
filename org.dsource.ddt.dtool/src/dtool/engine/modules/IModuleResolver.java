@@ -20,16 +20,15 @@ import dtool.ast.definitions.Module;
  */
 public interface IModuleResolver {
 	
+	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix.
+	 * @return a set with the results. */
+	Set<String> findModules(String fullNamePrefix);
+	
 	/** Finds a module with the given fully qualified name.
 	 * @param packages The packages of the module to find.
 	 * @param module The name of the modules to find. 
 	 * @return the respective module or null if not found
 	 */
 	Module findModule(String[] packages, String module) throws Exception;
-	
-	
-	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix.
-	 * @return a set with the results. */
-	Set<String> findModules(String fullNamePrefix);
 	
 }
