@@ -92,7 +92,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		}
 		SourceRange sourceRange = fdResultEntry.sourceRange;
 		if(sourceRange == null) {
-			String msg = "Symbol " +fdResultEntry.extendedName + " has no source range info!";
+			String msg = "Symbol " + fdResultEntry.extendedName + " has no source range info!";
 			handleSystemError(msg);
 			return;
 		}

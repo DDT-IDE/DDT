@@ -13,7 +13,6 @@ package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -38,6 +37,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import dtool.engine.DToolServer;
 import dtool.resolver.api.FindDefinitionResult;
 
 public class OpenDefinitionOperationTest extends CommonDeeUITest {
@@ -82,7 +82,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE);
 		
 		offset = getEndPosForString("testGoToDefOp.");
-		doTest(offset, DToolClient.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
+		doTest(offset, DToolServer.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
 			IOutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
@@ -97,7 +97,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	@Test
 	public void testOpenRef_TargetNotFound() throws CoreException {
 		int offset = getOffsetForString("NotFound notfound");
-		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
+		doTest(offset, DToolServer.FIND_DEF_ReferenceResolveFailed, 
 			file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
@@ -145,7 +145,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleNonDeeProject.project;
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, DToolClient.FIND_DEF_ReferenceResolveFailed, 
+		doTest(offset, DToolServer.FIND_DEF_ReferenceResolveFailed, 
 			project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	

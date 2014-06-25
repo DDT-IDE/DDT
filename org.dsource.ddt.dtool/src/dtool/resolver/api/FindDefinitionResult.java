@@ -45,8 +45,8 @@ public class FindDefinitionResult {
 		public final boolean isLanguageIntrinsic;
 		public final Path compilationUnitPath;
 		
-		public FindDefinitionResultEntry(SourceRange sourceRange, String extendedName, boolean isLanguageIntrinsic, 
-				Path compilationUnitPath) {
+		public FindDefinitionResultEntry(Path compilationUnitPath, SourceRange sourceRange, String extendedName, 
+				boolean isLanguageIntrinsic) {
 			this.sourceRange = sourceRange;
 			this.extendedName = extendedName;
 			this.isLanguageIntrinsic = isLanguageIntrinsic;

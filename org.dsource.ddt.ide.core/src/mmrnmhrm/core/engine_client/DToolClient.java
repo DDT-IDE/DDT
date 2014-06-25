@@ -13,10 +13,7 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import mmrnmhrm.core.DeeCore;
@@ -34,27 +31,16 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
-import dtool.ast.definitions.DefSymbol;
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.NamedReference;
-import dtool.ast.references.Reference;
-import dtool.ast.util.ReferenceSwitchHelper;
-import dtool.ddoc.TextUI;
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution.CommonResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.SemanticManager;
-import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
 /**
  * Handle communication with DToolServer.
@@ -219,87 +205,6 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public static final String FIND_DEF_PickedElementAlreadyADefinition = 
-		"Element next to cursor is already a definition, not a reference.";
-	public static final String FIND_DEF_NoReferenceFoundAtCursor = 
-		"No reference found next to cursor.";
-	public static final String FIND_DEF_MISSING_REFERENCE_AT_CURSOR = FIND_DEF_NoReferenceFoundAtCursor;
-	public static final String FIND_DEF_NoNamedReferenceAtCursor = 
-		"No named reference found next to cursor.";
-	public static final String FIND_DEF_ReferenceResolveFailed = 
-		"Definition not found for reference: ";
-	
-	public FindDefinitionResult doFindDefinition(Path filePath, final int offset) {
-		if(filePath == null) {
-			return new FindDefinitionResult("Invalid path for file: " );
-		}
-		final CommonResolvedModule resolvedModule;
-		try {
-			resolvedModule = getResolvedModule(filePath);
-		} catch (ExecutionException e) {
-			return new FindDefinitionResult("Error awaiting operation result: " + e);
-		}
-		Module module = resolvedModule.getModuleNode();
-		ASTNode node = ASTNodeFinder.findElement(module, offset);
-		if(node == null) {
-			return new FindDefinitionResult("No node found at offset: " + offset);
-		}
-		
-		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {
-			
-			@Override
-			protected FindDefinitionResult nodeIsDefSymbol(DefSymbol defSymbol) {
-				return new FindDefinitionResult(FIND_DEF_PickedElementAlreadyADefinition);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNotReference() {
-				return new FindDefinitionResult(FIND_DEF_NoReferenceFoundAtCursor);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNonNamedReference(Reference reference) {
-				return new FindDefinitionResult(FIND_DEF_NoNamedReferenceAtCursor);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNamedReference_missing(NamedReference namedReference) {
-				return new FindDefinitionResult(FIND_DEF_MISSING_REFERENCE_AT_CURSOR);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNamedReference_ok(NamedReference namedReference) {
-				return doFindDefinitionForRef(namedReference, resolvedModule);
-			}
-		};
-		
-		return refPickHelper.switchOnPickedNode(node);
-	}
-	
-	public FindDefinitionResult doFindDefinitionForRef(Reference ref, CommonResolvedModule resolvedModule) {
-		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
-		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
-		
-		if(defElements == null || defElements.size() == 0) {
-			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode());
-		}
-		
-		List<FindDefinitionResultEntry> results = new ArrayList<>();
-		for (INamedElement namedElement : defElements) {
-			final DefUnit defUnit = namedElement.resolveDefUnit();
-			results.add(new FindDefinitionResultEntry(
-				defUnit.defname.getSourceRangeOrNull(),
-				namedElement.getExtendedName(), 
-				namedElement.isLanguageIntrinsic(),
-				defUnit.getModuleNode().compilationUnitPath));
-		}
-		
-		return new FindDefinitionResult(results, ref.getModuleNode().compilationUnitPath);
-	}
-	
-	
-	/* -----------------  ----------------- */
-	
 	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws CoreException {
 		
 		if(moduleSource instanceof ISourceModule) {
@@ -357,30 +262,12 @@ public class DToolClient {
 		return dtoolServer.getSemanticManager().getUpdatedResolvedModule(filePath);
 	}
 	
-	/* -----------------  ----------------- */
+	public FindDefinitionResult doFindDefinition(Path filePath, int offset) {
+		return dtoolServer.doFindDefinition(filePath, offset);
+	}
 	
 	public String getDDocHTMLView(Path filePath, int offset) {
-		CommonResolvedModule resolvedModule;
-		try {
-			resolvedModule = filePath == null ? null : getResolvedModule(filePath);
-		} catch (ExecutionException e) {
-			resolvedModule = null;
-		}
-		if(resolvedModule == null) {
-			return null;
-		}
-		Module module = resolvedModule.getModuleNode();
-		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
-		
-		INamedElement relevantElementForDoc = null;
-		if(pickedNode instanceof DefSymbol) {
-			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
-		} else if(pickedNode instanceof NamedReference) {
-			IModuleResolver mr = resolvedModule.getModuleResolver();
-			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(mr);
-		}
-		
-		return relevantElementForDoc == null ? null : TextUI.getDDocHTMLRender(relevantElementForDoc);
+		return dtoolServer.getDDocHTMLView(filePath, offset);
 	}
 	
 }
