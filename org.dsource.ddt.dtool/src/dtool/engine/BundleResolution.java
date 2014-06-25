@@ -14,14 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
@@ -29,39 +27,24 @@ import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public class BundleResolution implements IModuleResolver {
+public class BundleResolution extends AbstractBundleResolution implements IModuleResolver {
 	
-	protected final SemanticManager manager;
 	protected final ResolvedManifest manifest;
 	protected final DubBundle bundleDubInfo;
 	protected final BundlePath bundlePath;
 	protected final List<BundleResolution> depResolutions;
 	
-	protected final Map<ModuleFullName, Path> modules;
-	protected final Set<Path> moduleFiles;
-	
 	public BundleResolution(SemanticManager manager, ResolvedManifest manifest) {
-		this.manager = manager;
+		super(manager, manifest.getBundle().getEffectiveImportFolders_AbsolutePath());
 		this.manifest = manifest;
 		this.bundleDubInfo = manifest.getBundle();
 		this.bundlePath = assertNotNull(manifest.getBundlePath());
 		this.depResolutions = Collections.unmodifiableList(createDepSRs(manager, manifest));
-		
-		
-		BundleModulesVisitor modulesHelper = new BundleModulesVisitor(manager.dtoolServer, bundleDubInfo) {
-			@Override
-			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
-				modules.put(moduleFullName, fullPath);
-				moduleFiles.add(fullPath);
-			}
-		};
-		
-		this.modules = Collections.unmodifiableMap(modulesHelper.modules);
-		this.moduleFiles = Collections.unmodifiableSet(modulesHelper.moduleFiles);
 	}
 	
 	protected static List<BundleResolution> createDepSRs(SemanticManager manager, ResolvedManifest manifest) {
@@ -88,34 +71,20 @@ public class BundleResolution implements IModuleResolver {
 		return depResolutions;
 	}
 	
-	public Map<ModuleFullName, Path> getBundleModules() {
-		return modules;
-	}
-	
-	public Set<Path> getBundleModuleFiles() {
-		return moduleFiles;
-	}
-	
 	@Override
 	public String toString() {
 		return "BundleResolution: " + getBundleName() + " - " + getBundlePath();
 	}
 	
-	public Path getBundleModuleAbsolutePath(ModuleFullName moduleFullName) {
-		Path path = modules.get(moduleFullName);
-		if(path == null)
-			return null;
-		return getBundlePath().resolve(path);
-	}
-	
 	public boolean checkIsModuleListStale() {
-		BundleModulesVisitor modulesVisitor = new BundleModulesVisitor(manager.dtoolServer, bundleDubInfo) {
+		ArrayList<Path> importFolders = bundleDubInfo.getEffectiveImportFolders_AbsolutePath();
+		BundleModulesVisitor modulesVisitor = new SM_BundleModulesVisitor(importFolders) {
 			@Override
 			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
 				moduleFiles.add(fullPath);
 			}
 		};
-		return !modulesVisitor.moduleFiles.equals(moduleFiles);
+		return !modulesVisitor.getModuleFiles().equals(bundleModules.moduleFiles);
 	}
 	
 	public boolean checkIsModuleListStaleInTree() {
@@ -195,6 +164,7 @@ public class BundleResolution implements IModuleResolver {
 		return modulePath == null ? null : getResolvedModule(modulePath).parsedModule;
 	}
 	
+	// TODO : /*BUG here test find resolved module of deps */
 	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
 		ResolvedModule resolvedModule = getBundleResolvedModule(moduleFullName);
 		if(resolvedModule != null) 
@@ -256,38 +226,22 @@ public class BundleResolution implements IModuleResolver {
 	
 	/* ----------------- ----------------- */
 	
-	public HashSet<String> findModules2(String fullNamePrefix) {
-		String[] modules = findModules(fullNamePrefix);
-		HashSet<String> hashSet = new HashSet<String>();
-		hashSet.addAll(Arrays.asList(modules));
-		return hashSet;
-	}
-	
-	@Deprecated
 	@Override
-	public String[] findModules(String fullNamePrefix) {
-		ArrayList<String> matchedModules = new ArrayList<>();
-		
+	public HashSet<String> findModules(String fullNamePrefix) {
+		HashSet<String> matchedModules = new HashSet<String>();
 		findModules(fullNamePrefix, matchedModules);
-		
-		return matchedModules.toArray(new String[0]);
+		return matchedModules;
 	}
 	
-	protected void findModules(String fullNamePrefix, ArrayList<String> matchedModules) {
+	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
 		internalFindModules(fullNamePrefix, matchedModules);
 		for (BundleResolution depSR : depResolutions) {
 			depSR.findModules(fullNamePrefix, matchedModules);
 		}
 	}
 	
-	protected void internalFindModules(String fullNamePrefix, ArrayList<String> matchedModules) {
-		Set<ModuleFullName> moduleEntries = modules.keySet();
-		for (ModuleFullName moduleEntry : moduleEntries) {
-			String moduleFullName = moduleEntry.getFullNameAsString();
-			if(moduleFullName.startsWith(fullNamePrefix)) {
-				matchedModules.add(moduleFullName);
-			}
-		}
+	protected void internalFindModules(String fullNamePrefix, HashSet<String> matchedModules) {
+		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
 	
 	@Override

@@ -252,7 +252,7 @@ public class DToolClient {
 	public HashSet<String> listModulesFor(IProject project, String fullNamePrefix) throws CoreException {
 		BundlePath bundlePath = BundlePath.create(project.getLocation().toFile().toPath());
 		try {
-			return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath).findModules2(fullNamePrefix);
+			return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath).findModules(fullNamePrefix);
 		} catch (ExecutionException e) {
 			throw new CoreException(DeeCore.createErrorStatus("DToolClient error: ", e.getCause()));
 		}

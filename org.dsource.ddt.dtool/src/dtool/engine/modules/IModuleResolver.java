@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine.modules;
 
+import java.util.Set;
+
 import dtool.ast.definitions.Module;
 
 /** 
@@ -27,7 +29,7 @@ public interface IModuleResolver {
 	
 	
 	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix.
-	 * @return an array of fully qualified names of the found modules. */
-	String[] findModules(String fqNamePrefix) throws Exception;
+	 * @return a set with the results. */
+	Set<String> findModules(String fullNamePrefix);
 	
 }

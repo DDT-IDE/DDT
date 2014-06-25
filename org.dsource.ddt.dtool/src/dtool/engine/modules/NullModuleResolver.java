@@ -1,13 +1,14 @@
 package dtool.engine.modules;
 
+import java.util.HashSet;
+
 import dtool.ast.definitions.Module;
-import dtool.util.NewUtils;
 
 public class NullModuleResolver extends CommonModuleResolver {
 	
 	@Override
-	protected String[] findModules_do(String fqNamePrefix) throws Exception {
-		return NewUtils.EMPTY_STRING_ARRAY;
+	protected HashSet<String> findModules_do(String fqNamePrefix) {
+		return new HashSet<>();
 	}
 	
 	@Override

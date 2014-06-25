@@ -12,18 +12,21 @@ package dtool.engine.modules;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Set;
+
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
 
 public abstract class CommonModuleResolver implements IModuleResolver {
 	
 	@Override
-	public String[] findModules(String fqNamePrefix) throws Exception {
+	public Set<String> findModules(String fqNamePrefix) {
 		assertNotNull(fqNamePrefix);
 		return findModules_do(fqNamePrefix);
 	}
 	
-	protected abstract String[] findModules_do(String fqNamePrefix) throws Exception;
+	protected abstract Set<String> findModules_do(String fqNamePrefix);
 	
 	@Override
 	public Module findModule(String[] packages, String module) throws Exception {

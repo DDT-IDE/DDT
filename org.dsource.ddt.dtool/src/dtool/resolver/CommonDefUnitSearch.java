@@ -6,6 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
@@ -46,12 +47,8 @@ public abstract class CommonDefUnitSearch {
 		return modResolver;
 	}
 	
-	public String[] resolveModules(String fqNamePrefix) {
-		try {
-			return modResolver.findModules(fqNamePrefix);
-		} catch (Exception e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
+		return modResolver.findModules(fqNamePrefix);
 	}
 	
 	public Module resolveModule(String[] packages, String module) {

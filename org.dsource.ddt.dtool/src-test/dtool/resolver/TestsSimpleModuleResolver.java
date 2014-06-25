@@ -4,7 +4,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -66,8 +65,8 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 	}
 	
 	@Override
-	public String[] findModules_do(String fqNamePrefix) throws Exception {
-		ArrayList<String> matchedModules = new ArrayList<>();
+	public Set<String> findModules_do(String fqNamePrefix) {
+		HashSet<String> matchedModules = new HashSet<>();
 		Set<String> nameEntries = new HashSet<>(modules.keySet());
 		if(extraModuleName != null) {
 			nameEntries.add(extraModuleName);
@@ -78,7 +77,7 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 				matchedModules.add(moduleName);
 			}
 		}
-		return matchedModules.toArray(new String[0]);
+		return matchedModules;
 	}
 	
 	@Override

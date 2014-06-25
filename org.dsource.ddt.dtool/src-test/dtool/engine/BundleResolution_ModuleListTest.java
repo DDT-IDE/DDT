@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_COMPILER;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -27,9 +28,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		protected final BundleResolution bundleRes;
 		protected final HashMap<ModuleFullName, Path> modules;
 		protected final HashSet<Path> moduleFiles;
-
+		
 		public BundleFilesChecker(BundleResolution bundleRes) {
-			modules = new HashMap<>(bundleRes.getBundleModules());
+			modules = new HashMap<>(bundleRes.bundleModules.modules);
 			moduleFiles = new HashSet<>(bundleRes.getBundleModuleFiles());
 			this.bundleRes = bundleRes;
 		}
@@ -91,20 +92,20 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		testFindModule(SMTEST, "sm_test_foo", SMTEST.resolve("src/sm_test_foo.d"));
 		testFindModule(SMTEST, "non_existing", null);
 		
-		assertEqualSet(smtestSR.findModules2("test."), hashSet(
+		assertEqualSet(smtestSR.findModules("test."), hashSet(
 			"test.fooLib"
 		));
 		
 		// Test dependency bundles module resolution
 		testFindModule(SMTEST, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
 		
-		assertEqualSet(smtestSR.findModules2("basic_lib"), hashSet(
+		assertEqualSet(smtestSR.findModules("basic_lib"), hashSet(
 			"basic_lib_pack.foo",
 			"basic_lib_foo"
 		));
 		
 		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
-		assertEqualSet(complexLibSR.findModules2(""), hashSet(
+		assertEqualSet(complexLibSR.findModules(""), hashSet(
 			"complex_lib",
 			"basic_lib_pack.foo",
 			"basic_lib_foo",
@@ -113,10 +114,21 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		));
 		
 		BundleResolution complexBundleSR = sm.getUpdatedResolution(COMPLEX_BUNDLE);
-		assertEqualSet(complexBundleSR.findModules2("basic_lib_pack"), hashSet(
+		assertEqualSet(complexBundleSR.findModules("basic_lib_pack"), hashSet(
 			"basic_lib_pack.foo"
 		));
 		testFindModule(COMPLEX_BUNDLE, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
+		
+	}
+	
+	@Test
+	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
+	public void testStdLibResolve$() throws Exception {
+		sm = new SemanticManager(new Tests_DToolServer());
+		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
+		
+		testFindModule(BASIC_LIB, "object", DEFAULT_DMD_COMPILER.resolve("src/druntime/import/object.di"));
+		testFindModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_COMPILER.resolve("src/phobos/std/stdio.d"));
 	}
 	
 }

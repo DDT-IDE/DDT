@@ -91,12 +91,10 @@ public class RefModule extends NamedReference {
 	public void doSearch_forPrefixSearch(PrefixDefUnitSearch search) {
 		String prefix = search.searchOptions.searchPrefix;
 		
-		String[] strings = search.resolveModules(prefix);
-		for (int i = 0; i < strings.length; i++) {
-			String fqName = strings[i];
-			
+		for (String fqName : search.findModulesWithPrefix(prefix)) {
 			search.addMatchDirectly(new ModuleProxy(fqName, search.getModuleResolver()));
 		}
+		
 	}
 	
 }
