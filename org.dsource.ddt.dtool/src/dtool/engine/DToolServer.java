@@ -18,8 +18,10 @@ import java.util.concurrent.ExecutionException;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
+import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
@@ -155,9 +157,14 @@ public class DToolServer {
 		for (INamedElement namedElement : defElements) {
 			final DefUnit defUnit = namedElement.resolveDefUnit();
 			Path compilationUnitPath = defUnit.getModuleNode().compilationUnitPath;
+			SourceRange sourceRange = defUnit.defname.getSourceRangeOrNull();
+			if(defUnit.getArcheType() == EArcheType.Module && sourceRange == null) {
+				sourceRange = new SourceRange(0, 0);
+			}
+			
 			results.add(new FindDefinitionResultEntry(
 				compilationUnitPath,
-				defUnit.defname.getSourceRangeOrNull(), 
+				sourceRange, 
 				namedElement.getExtendedName(),
 				namedElement.isLanguageIntrinsic()));
 		}

@@ -50,8 +50,8 @@ public class DToolTestResources {
 	}
 	
 	public File getResourcesDir() {
-		File file = new File(testResourcesDir);
-		assertTrue(file.exists() && file.isDirectory());
+		File file = new File(testResourcesDir).toPath().toAbsolutePath().normalize().toFile();
+		assertTrue(file.exists() && file.isDirectory() && file.isAbsolute());
 		return file;
 	}
 	

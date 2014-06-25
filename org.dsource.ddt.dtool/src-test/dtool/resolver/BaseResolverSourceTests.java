@@ -36,7 +36,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	public static SimpleLogger resolverTestsLog = SimpleLogger.create("ResolverSourceTests");
 	
-	protected static final String TESTFILESDIR = "resolver";
+	public static final String TESTFILESDIR = "resolver";
 	
 	protected static Map<String, TspExpansionElement> commonDefinitions;
 	
