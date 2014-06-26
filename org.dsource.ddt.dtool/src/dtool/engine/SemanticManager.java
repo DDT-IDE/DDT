@@ -129,19 +129,7 @@ abstract class AbstractSemanticManager {
 	
 	protected final Object updateOperationLock = new Object();
 	
-	protected ResolvedManifest updateManifestEntry(BundlePath bundlePath) throws ExecutionException {
-		synchronized(updateOperationLock) {
-			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
-			// Otherwise unnecessary updates might occur after one other.
-			BundleInfo info = getInfo(bundlePath);
-			if(info.checkIsManifestStale() == false)
-				return info.getManifest();
-			
-			return doUpdateManifest(bundlePath);
-		}
-	}
-	
-	protected abstract ResolvedManifest doUpdateManifest(BundlePath bundlePath) throws ExecutionException;
+	protected abstract ResolvedManifest updateManifestEntry(BundlePath bundlePath) throws ExecutionException;
 	
 }
 
@@ -164,15 +152,31 @@ public class SemanticManager extends AbstractSemanticManager {
 		dubProcessAgent.shutdownNow();
 	}	
 	
-	
 	@Override
-	protected ResolvedManifest doUpdateManifest(BundlePath bundlePath) throws ExecutionException {
+	protected ResolvedManifest updateManifestEntry(BundlePath bundlePath) throws ExecutionException {
+		synchronized(updateOperationLock) {
+			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
+			// Otherwise unnecessary updates might occur after one other.
+			BundleInfo info = getInfo(bundlePath);
+			if(info.checkIsManifestStale() == false)
+				return info.getManifest();
+			
+			doUpdateManifestEntry(bundlePath);
+			return info.getManifest();
+		}
+	}
+	
+	protected void doUpdateManifestEntry(BundlePath bundlePath) throws ExecutionException {
 		RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(bundlePath, false);
 		DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 		
 		FileTime dubStartTimeStamp = dubDescribeTask.getStartTimeStamp();
 		DubDescribeAnalysis dubDescribeAnalyzer = new DubDescribeAnalysis(bundleDesc);
 		
+		setNewManifestEntry(dubStartTimeStamp, dubDescribeAnalyzer);
+	}
+	
+	protected void setNewManifestEntry(FileTime dubStartTimeStamp, DubDescribeAnalysis dubDescribeAnalyzer) {
 		synchronized(entriesLock) {
 			for(ResolvedManifest newManifestValue : dubDescribeAnalyzer.getAllManifests()) {
 				dtoolServer.logMessage("Resolved new manifest for: " + newManifestValue.bundlePath + 
@@ -183,7 +187,6 @@ public class SemanticManager extends AbstractSemanticManager {
 				getInfo(newManifestValue.bundlePath).manifestEntry.updateValue(newManifestValue, dubStartTimeStamp);
 			}
 		}
-		return dubDescribeAnalyzer.mainManifest;
 	}
 	
 	/* ----------------- Semantic Resolution and module list ----------------- */
@@ -198,16 +201,6 @@ public class SemanticManager extends AbstractSemanticManager {
 		return info == null ? true : info.checkIsResolutionStale();
 	}
 	
-	public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
-		BundleInfo info = getInfo(bundlePath);
-		if(info.checkIsResolutionStale()) {
-			return updateSemanticResolutionEntry(info).getSemanticResolution();
-		}
-		return info.getSemanticResolution();
-	}
-	
-	/* ----------------- file updates handling ----------------- */
-	
 	protected class SM_BundleModulesVisitor extends BundleModulesVisitor {
 		public SM_BundleModulesVisitor(List<Path> importFolders) {
 			super(importFolders);
@@ -220,30 +213,49 @@ public class SemanticManager extends AbstractSemanticManager {
 		}
 	}
 	
-	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
-		@Override
-		protected void handleWarning(String message) {
-			dtoolServer.logMessage(message);
+	public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+		BundleInfo info = getInfo(bundlePath);
+		if(info.checkIsResolutionStale()) {
+			return updateSemanticResolutionEntry(info);
 		}
+		return info.getSemanticResolution();
 	}
 	
-	/*BUG here review, deduplicate */
-	protected BundleInfo updateSemanticResolutionEntry(BundleInfo staleInfo) throws ExecutionException {
-		BundlePath bundlePath = staleInfo.bundlePath;
+	protected BundleResolution updateSemanticResolutionEntry(BundleInfo staleInfo) throws ExecutionException {
 		synchronized(updateOperationLock) {
 			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
 			// Otherwise unnecessary update operatons might occur if two threads tried to update at the same time.
 			if(staleInfo.checkIsResolutionStale() == false)
-				return staleInfo; // No longer stale
+				return staleInfo.getSemanticResolution();
 			
+			BundlePath bundlePath = staleInfo.bundlePath;
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
 			StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
 			
 			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
 			
-			synchronized(entriesLock) {
-				return setNewBundleResolution(bundleRes);
+			setNewBundleResolutionEntry(bundleRes);
+			return staleInfo.getSemanticResolution();
+		}
+	}
+	
+	protected BundleInfo setNewBundleResolutionEntry(BundleResolution bundleRes) {
+		synchronized(entriesLock) {
+			for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
+				setNewBundleResolutionEntry(newDepBundleRes);
 			}
+			BundleInfo newInfo = getInfo(bundleRes.getBundlePath());
+			newInfo.bundleResolution = bundleRes;
+			return newInfo;
+		}
+	}
+	
+	/* ----------------- StdLib resolution ----------------- */
+	
+	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
+		@Override
+		protected void handleWarning(String message) {
+			dtoolServer.logMessage(message);
 		}
 	}
 	
@@ -287,14 +299,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		}
 	}
 	
-	protected BundleInfo setNewBundleResolution(BundleResolution bundleRes) {
-		for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
-			setNewBundleResolution(newDepBundleRes);
-		}
-		BundleInfo newInfo = getInfo(bundleRes.getBundlePath());
-		newInfo.bundleResolution = bundleRes;
-		return newInfo;
-	}
+	/* ----------------- Working Copy and module resolution ----------------- */
 	
 	public ParsedModule updateWorkingCopyAndParse(Path filePath, String source) {
 		return parseCache.getParsedModule(filePath, source);
