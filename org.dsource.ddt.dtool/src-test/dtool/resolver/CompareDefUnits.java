@@ -17,7 +17,6 @@ import dtool.tests.CommonDToolTest;
 /**
  * This is an old version of what {@link DefUnitResultsChecker} does now
  */
-@Deprecated
 public class CompareDefUnits extends CommonDToolTest {
 	
 	public static Function<INamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
@@ -38,8 +37,11 @@ public class CompareDefUnits extends CommonDToolTest {
 		};
 	}
 	
-	public static void checkResults(Collection<? extends INamedElement> originaResults, String[] expectedProposalsArr) {
-		LinkedList<INamedElement> results = new LinkedList<>(originaResults);
+	// TODO need to add code to DefUnitResultsChecker to removed function names
+	public static void checkResults(Collection<? extends INamedElement> originalResults, String[] expectedProposalsArr) {
+		//new DefUnitResultsChecker(originalResults).simpleCheckResults(expectedProposalsArr);
+		
+		LinkedList<INamedElement> results = new LinkedList<>(originalResults);
 		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);

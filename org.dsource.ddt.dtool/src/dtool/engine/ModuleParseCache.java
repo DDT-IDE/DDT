@@ -184,7 +184,7 @@ public class ModuleParseCache {
 		protected synchronized void discardWorkingCopy() {
 			if(isWorkingCopy) {
 				isWorkingCopy = false;
-				sourceFileSyncAttributes = null;
+				sourceFileSyncAttributes = null; // This will invalidate current source
 				dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
 			}
 		}

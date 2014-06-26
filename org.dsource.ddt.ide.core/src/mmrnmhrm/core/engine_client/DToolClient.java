@@ -175,6 +175,22 @@ public class DToolClient {
 		}
 	}
 	
+	
+	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
+		try {
+			if(!sourceModule.isConsistent()) {
+				getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
+			} else {
+				boolean isWorkingCopy = sourceModule.isWorkingCopy();
+				if(!isWorkingCopy) {
+					getServerSemanticManager().discardWorkingCopy(filePath);
+				}
+			}
+		} catch (ModelException e) {
+			DeeCore.logError("Should not happen");
+		}
+	}
+	
 	protected class WorkingCopyListener extends ModelDeltaVisitor {
 		
 		@Override
@@ -192,16 +208,7 @@ public class DToolClient {
 		}
 		
 	}
-	
-	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
-		try {
-			if(sourceModule.isConsistent()) {
-				return;
-			}
-		} catch (ModelException e) {
-		}
-		getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
-	}
+
 	
 	/* -----------------  ----------------- */
 	
