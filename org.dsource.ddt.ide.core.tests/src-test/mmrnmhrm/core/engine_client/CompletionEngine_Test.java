@@ -2,6 +2,7 @@ package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
@@ -20,6 +21,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
 import dtool.ast.definitions.INamedElement;
+import dtool.tests.MockCompilerInstalls;
 
 // These tests could be expanded
 public class CompletionEngine_Test extends CommonCoreTest {
@@ -44,13 +46,19 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	}
 	
 	protected void testCompletionEngine(final int offset, final int rplLen) throws ModelException {
-		testCompletionEngine((IModuleSource) srcModule, offset, rplLen);
+		testCompletionEngine((IModuleSource) srcModule, offset, rplLen,
+			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 	}
 	
 	public static DeeCompletionEngine testCompletionEngine(IModuleSource moduleSource, final int offset,
-		final int rplLen) {
+		final int rplLen, final Path compilerPath) {
 		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
-		DeeCompletionEngine completionEngine = new DeeCompletionEngine();
+		DeeCompletionEngine completionEngine = new DeeCompletionEngine() {
+			@Override
+			protected Path getCompilerPath(IModuleSource moduleSource) {
+				return compilerPath;
+			}
+		};
 		completionEngine.setRequestor(requestor);
 		completionEngine.complete(moduleSource, offset, 0);
 		return completionEngine;

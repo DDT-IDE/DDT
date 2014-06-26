@@ -12,6 +12,7 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,6 +66,14 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	
 	public List<BundleResolution> getDirectDependencies() {
 		return depResolutions;
+	}
+	
+	public StandardLibraryResolution getStdLibResolution() {
+		return stdLibResolution;
+	}
+	
+	public Path getCompilerPath() {
+		return getStdLibResolution().getCompilerInstall().getCompilerPath();
 	}
 	
 	@Override

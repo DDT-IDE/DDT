@@ -61,7 +61,9 @@ public class DToolTestResources {
 	
 	public static Path getTestResourcePath(String... segments) {
 		try {
-			return getTestResource(segments).getCanonicalFile().toPath();
+			Path path = getTestResource(segments).getCanonicalFile().toPath();
+			assertTrue(path.toFile().exists());
+			return path;
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

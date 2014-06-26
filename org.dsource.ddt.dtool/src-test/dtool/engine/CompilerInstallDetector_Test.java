@@ -84,19 +84,21 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		));
 	}
 	
-	protected void testDetectInstall(Path installPath, String compilerPath, ECompilerType type, 
+	protected void testDetectInstall(Path installPath, String compilerPathStr, ECompilerType type, 
 			List<String> pathStrings) {
-		CompilerInstall install = detector.detectInstallFromCompilerCommandPath(installPath.resolve(compilerPath));
-		checkInstall(install, type, installPath, pathStrings);
+		Path compilerPath = installPath.resolve(compilerPathStr);
+		CompilerInstall install = detector.detectInstallFromCompilerCommandPath(compilerPath);
+		checkInstall(install, compilerPath, type, installPath, pathStrings);
 	}
 	
-	protected void checkInstall(CompilerInstall install, ECompilerType compilerType, Path installPath, 
-			List<String> pathStrings) {
+	protected void checkInstall(CompilerInstall install, Path compilerPath, ECompilerType compilerType, 
+			Path installPath, List<String> pathStrings) {
 		ArrayList<Path> paths = new ArrayList<>(pathStrings.size());
 		for (String pathString : pathStrings) {
 			paths.add(installPath.resolve(pathString));
 		}
 		assertEquals(install == null, compilerType == null);
+		assertEquals(install.getCompilerPath(), compilerPath);
 		assertEquals(install.getCompilerType(), compilerType);
 		assertEquals(install.getLibrarySourceFolders(), paths);
 	}
@@ -122,9 +124,11 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		List<CompilerInstall> foundInstalls = compilerSearch.getFoundInstalls();
 		assertTrue(foundInstalls.size() == 2);
 		
-		checkInstall(foundInstalls.get(0), ECompilerType.GDC, MULTIPLE_IN_ONE_PATH.getParent(), 
+		checkInstall(foundInstalls.get(0), MULTIPLE_IN_ONE_PATH.resolve("gdc"), ECompilerType.GDC, 
+			MULTIPLE_IN_ONE_PATH.getParent(), 
 			list("include/d/4.6.1/"));
-		checkInstall(foundInstalls.get(1), ECompilerType.LDC, MULTIPLE_IN_ONE_PATH.getParent(), 
+		checkInstall(foundInstalls.get(1), MULTIPLE_IN_ONE_PATH.resolve("ldc2"), ECompilerType.LDC, 
+			MULTIPLE_IN_ONE_PATH.getParent(), 
 			list("import/core", "import/ldc", "import/"));
 	}
 	

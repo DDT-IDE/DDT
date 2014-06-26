@@ -92,8 +92,10 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	protected static HashMap<String, TestsSimpleModuleResolver> moduleResolvers = new HashMap<>();
 	
 	protected AnnotatedSource testCase;
-	protected IModuleResolver mr;
+	protected String testsModuleName;
+	protected String testsProjectDirName;
 	
+	protected IModuleResolver mr;
 	
 	protected Map<String, MetadataEntry> markers;
 	
@@ -104,7 +106,6 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	@Override
 	protected final void runAnnotatedSourceTest(AnnotatedSource testCase) {
 		try {
-			this.testCase = testCase;
 			processTestAnnotations(testCase);
 		} finally {
 			cleanupTestCase();
@@ -112,7 +113,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	protected void processTestAnnotations(AnnotatedSource testCase) {
-		
+		this.testCase = testCase;
+	
 		markers = new HashMap<>();
 		String projectDescription = null;
 		
@@ -127,13 +129,13 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 			}
 		}
 		
-		String testsModuleName = null;
-		String testsProjectDirName = null;
-		
 		if(projectDescription != null) {
 			testsModuleName = StringUtil.segmentUntilMatch(projectDescription, "@");
 			testsProjectDirName = StringUtil.substringAfterMatch(projectDescription, "@");
 			testsProjectDirName = emptyAsNull(testsProjectDirName);
+		} else {
+			testsModuleName = null;
+			testsProjectDirName = null;
 		}
 		
 		prepareTestCase(testsModuleName, testsProjectDirName, testCase);
@@ -215,7 +217,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultElementsOriginal);
 		
 		defUnitResultsChecker.removeIgnoredDefUnits(ignoreDummyResults, ignoreNativeResults);
-		defUnitResultsChecker.removeStdLibObjectDefUnits(); // TODO: we should have an instrumented StdLib
+		
 		removeDefUnitsFromExpected(defUnitResultsChecker.resultDefUnits);
 		defUnitResultsChecker.checkResults(expectedResults, markers);
 	}

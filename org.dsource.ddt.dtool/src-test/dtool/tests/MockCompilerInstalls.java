@@ -10,16 +10,22 @@
  *******************************************************************************/
 package dtool.tests;
 
+import static dtool.tests.DToolTestResources.getTestResourcePath;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
+import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.tests.utils.MiscFileUtils;
 
 public class MockCompilerInstalls {
 	
 	private static final String RESOURCE_CompilerInstalls = "compilerInstalls";
+	
+	public static final Path EMPTY_COMPILER_INSTALL = 
+			getTestResourcePath(RESOURCE_CompilerInstalls, "_empty-install", CompilerInstallDetector.SPECIAL_EMPTY_INSTALL);
 	
 	public static final Path MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDirPath().resolve("_compilerInstalls");
 	
@@ -28,9 +34,6 @@ public class MockCompilerInstalls {
 			DEFAULT_DMD_INSTALL_LOCATION.resolve("windows/bin/dmd.exe");
 	public static final Path DEFAULT_GDC_INSTALL_EXE_PATH = 
 			MOCK_COMPILERS_PATH.resolve("gdcInstall/bin/gdc");
-	
-	public static final Path DEFAULT_DMD_INSTALL_EXE_DIR = DEFAULT_DMD_INSTALL_EXE_PATH.getParent();
-	
 	
 	public static void load() {
 		// Not necessary due to static initialization, but mor readable.

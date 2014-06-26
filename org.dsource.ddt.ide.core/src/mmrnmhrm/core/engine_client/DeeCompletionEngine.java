@@ -2,6 +2,9 @@ package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.nio.file.Path;
+
 import mmrnmhrm.core.DeeCoreMessages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +35,9 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			CompletionContext context = new CompletionContext();
 			requestor.acceptContext(context);
 			
-			PrefixDefUnitSearch search = DToolClient.getDefault().doCodeCompletion(moduleSource, position);
+			Path compilerPath = getCompilerPath(moduleSource);
+			PrefixDefUnitSearch search = DToolClient.getDefault().runCodeCompletion(
+				moduleSource, position, compilerPath);
 			if(search.getResults().isEmpty() && search.getResultCode() != ECompletionResultStatus.RESULT_OK) {
 				handleCompletionFailure(DeeCoreMessages.ContentAssist_LocationFailure, position);
 			}
@@ -47,6 +52,11 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		} finally {
 			requestor.endReporting();
 		}
+	}
+	
+	@SuppressWarnings("unused")
+	protected Path getCompilerPath(IModuleSource moduleSource) {
+		return null; // Use default
 	}
 	
 	protected void handleCompletionFailure(String errorMessage, final int position) {

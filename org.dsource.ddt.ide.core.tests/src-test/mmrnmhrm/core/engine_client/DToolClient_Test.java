@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -31,9 +32,12 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Test;
 
+import dtool.dub.BundlePath;
+import dtool.engine.BundleResolution;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.tests.DToolTestResources;
+import dtool.tests.MockCompilerInstalls;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
@@ -54,14 +58,14 @@ public class DToolClient_Test extends CommonCoreTest {
 		testCodeCompletion(new ModuleSource("relative/path/foo.d", "module xpto;"), 0, 
 			"xpto");
 		
-		Path path = DToolTestResources.getTestResourcePath("dummy__non_existant.d");
+		Path path = DToolTestResources.getTestResourcePath().resolve("dummy__non_existant.d");
 		assertTrue(path.isAbsolute());
 		testCodeCompletion(new ModuleSource(path.toString(), "module blah;"), 0, 
 				"blah");
 		
 		// Error case
 		try {
-			client.doCodeCompletion_Do(null, 0);
+			client.doCodeCompletion((Path) null, 0, null);
 			assertFail();
 		} catch (CoreException e) {
 		}
@@ -69,7 +73,8 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	protected void testCodeCompletion(ModuleSource moduleSource, int offset, String... results) throws CoreException {
-		PrefixDefUnitSearch cc = client.doCodeCompletion(moduleSource, offset);
+		PrefixDefUnitSearch cc = client.runCodeCompletion(moduleSource, offset, 
+			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}
 	
@@ -151,9 +156,15 @@ public class DToolClient_Test extends CommonCoreTest {
 		doCodeCompletion(file, 0, results);
 	}
 	
-	protected void checkModuleExists(IFile file, String moduleName, boolean exists)
-			throws CoreException {
-		HashSet<String> modules = client.listModulesFor(file.getProject(), "");
+	protected void checkModuleExists(IFile file, String moduleName, boolean exists) {
+		BundlePath bundlePath = BundlePath.create(file.getProject().getLocation().toFile().toPath());
+		BundleResolution sr;
+		try {
+			sr = client.getServerSemanticManager().getUpdatedResolution(bundlePath);
+		} catch (ExecutionException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		HashSet<String> modules = sr.findModules(moduleName);
 		assertTrue(modules.contains(moduleName) == exists);
 	}
 	
@@ -207,7 +218,8 @@ public class DToolClient_Test extends CommonCoreTest {
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
 	protected void doCodeCompletion(IFile file, int offset, String... results) throws CoreException {
 		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
-		PrefixDefUnitSearch cc = client.doCodeCompletion(sourceModule, offset);
+		PrefixDefUnitSearch cc = client.runCodeCompletion(sourceModule, offset, 
+			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}
 	

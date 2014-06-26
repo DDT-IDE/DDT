@@ -13,6 +13,7 @@ import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.engine_client.CompletionEngineSourceTests;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
@@ -22,10 +23,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.TextUI;
 import dtool.sourcegen.AnnotatedSource;
+import dtool.tests.MockCompilerInstalls;
 
 public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	
@@ -35,6 +39,16 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 	
 	public ContentAssistUISourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
+	}
+	
+	@BeforeClass
+	public static  void beforeTests() {
+		DToolClient.defaultCompilerPathOverride = MockCompilerInstalls.EMPTY_COMPILER_INSTALL; 
+	}
+	
+	@AfterClass
+	public static void afterTests() {
+		DToolClient.defaultCompilerPathOverride = null;
 	}
 	
 	protected static ScriptEditor editor;

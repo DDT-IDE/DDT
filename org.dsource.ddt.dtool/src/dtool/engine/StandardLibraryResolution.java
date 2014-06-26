@@ -56,7 +56,8 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static final Path SYNTHETIC_COMPILER_INSTALL_PATH = 
 			MiscUtil.createValidPath("###DTOOL_SPECIAL###/Synthetic_StdLib");
 	
-	public static final CompilerInstall SYNTHETIC_COMPILER_INSTALL = CompilerInstall.create(ECompilerType.OTHER);
+	public static final CompilerInstall SYNTHETIC_COMPILER_INSTALL = new CompilerInstall(
+		SYNTHETIC_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
 	
 	/**
 	 * Fall-back synthetic StandardLibraryResolution for when no real compiler installs could be found.

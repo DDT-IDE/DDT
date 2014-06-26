@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-import mmrnmhrm.core.engine_client.DeeCompletionEngine;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -26,6 +25,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.tests.MockCompilerInstalls;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
@@ -58,7 +58,8 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
 	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {
 		DeeCompletionEngine completionEngine;
-		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen);
+		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen,
+			MockCompilerInstalls.EMPTY_COMPILER_INSTALL);
 		
 		CompletionEngineTestsRequestor requestor = (CompletionEngineTestsRequestor) completionEngine.getRequestor();
 		checkResults(requestor.results, expectedResults);

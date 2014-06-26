@@ -12,11 +12,12 @@ package dtool.engine.compiler_installs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.misc.CollectionUtil.createArrayList;
 
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+
+import dtool.util.NewUtils;
 
 public class CompilerInstall {
 	
@@ -24,22 +25,26 @@ public class CompilerInstall {
 		DMD, GDC, LDC, OTHER
 	}
 	
-	public static CompilerInstall create(ECompilerType compilerType, Path... librarySourceFolders) {
-		for (int i = 0; i < librarySourceFolders.length; i++) {
-			librarySourceFolders[i] = librarySourceFolders[i].normalize();
-		}
-		return new CompilerInstall(compilerType, createArrayList(librarySourceFolders));
-	}
-	
+	protected final Path compilerPath;
 	protected final ECompilerType compilerType;
 	protected final List<Path> librarySourceFolders;
 	
-	protected CompilerInstall(CompilerInstall.ECompilerType compilerType, List<Path> librarySourceFolders) {
+	
+	public CompilerInstall(Path compilerPath, ECompilerType compilerType, Path... librarySourceFolders) {
+		this(compilerPath, compilerType, NewUtils.normalizePaths(librarySourceFolders));
+	}
+	
+	public CompilerInstall(Path compilerPath, ECompilerType compilerType, List<Path> librarySourceFolders) {
+		this.compilerPath = compilerPath;
 		this.compilerType = compilerType;
 		this.librarySourceFolders = Collections.unmodifiableList(librarySourceFolders);
 		for (Path path : librarySourceFolders) {
 			assertTrue(path.isAbsolute() && path.equals(path.normalize()));
 		}
+	}
+	
+	public Path getCompilerPath() {
+		return compilerPath;
 	}
 	
 	public CompilerInstall.ECompilerType getCompilerType() {
@@ -57,12 +62,13 @@ public class CompilerInstall {
 		
 		CompilerInstall other = (CompilerInstall) obj;
 		
-		return areEqual(librarySourceFolders, other.librarySourceFolders);
+		return areEqual(compilerPath, other.compilerPath) &&
+				areEqual(librarySourceFolders, other.librarySourceFolders);
 	}
 	
 	@Override
 	public int hashCode() {
-		return librarySourceFolders.hashCode();
+		return compilerPath.hashCode();
 	}
 	
 }

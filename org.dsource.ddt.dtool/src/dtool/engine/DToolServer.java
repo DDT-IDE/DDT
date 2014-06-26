@@ -31,6 +31,7 @@ import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.modules.IModuleResolver;
+import dtool.resolver.PrefixDefUnitSearch;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
@@ -196,6 +197,23 @@ public class DToolServer {
 		}
 		
 		return relevantElementForDoc == null ? null : TextUI.getDDocHTMLRender(relevantElementForDoc);
+	}
+	
+	/* ----------------- code completion ----------------- */
+	
+	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset) throws ExecutionException {
+		return doCodeCompletion(filePath, offset, null);
+	}
+	
+	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset, Path compilerPath) 
+			throws ExecutionException {
+		if(filePath == null) { 
+			throw new ExecutionException(new Exception("Invalid path for content assist source.")); 
+		}
+		
+		ResolvedModule resolvedModule = getSemanticManager().getUpdatedResolvedModule(filePath, compilerPath);
+		return PrefixDefUnitSearch.doCompletionSearch(resolvedModule.getParsedModule(), offset, 
+			resolvedModule.getModuleResolver());
 	}
 	
 }

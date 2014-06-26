@@ -64,7 +64,7 @@ public class DubManifestParserTest extends CommonDubTest {
 	@Test
 	public void testNonExistant() throws Exception { testNonExistant$(); }
 	public void testNonExistant$() throws Exception {
-		testBundle(bundle(DToolTestResources.getTestResourcePath("dub", "nonExistent"), 
+		testBundle(bundle(DToolTestResources.getTestResourcePath("dub").resolve("nonExistent"), 
 			"java.io.FileNotFoundException", IGNORE_STR, IGNORE_STR, null));
 	}
 	

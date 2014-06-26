@@ -20,6 +20,7 @@ public class ModuleProxy implements INamedElement {
 	protected final String moduleName;
 	
 	public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
+		// TODO: assertNotNull
 		this.moduleName = StringUtil.substringAfterLastMatch(fqModuleName, "."); 
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fqModuleName = fqModuleName;
@@ -49,6 +50,11 @@ public class ModuleProxy implements INamedElement {
 	@Override
 	public String getModuleFullyQualifiedName() {
 		return fqModuleName;
+	}
+	
+	@Override
+	public String toString() {
+		return "module["+getModuleFullyQualifiedName()+"]";
 	}
 	
 	@Override

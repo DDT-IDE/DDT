@@ -15,13 +15,12 @@ import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 import org.junit.Test;
 
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.engine.modules.ModuleFullName;
@@ -142,11 +141,17 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		testFindResolvedModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path);
 		
 		
-		// Test when no StdLib is found
+		// Test when no StdLib install is found
 		sm = new Tests_SemanticManager() {
 			@Override
-			protected List<CompilerInstall> searchForCompilerInstalls() {
-				return new ArrayList<>();
+			protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+				return assertCast(super.getUpdatedStdLibResolution(compilerPath), 
+					MissingStandardLibraryResolution.class);
+			}
+			
+			@Override
+			protected CompilerInstall getCompilerInstallForNewResolution(Path compilerPath) {
+				return null;
 			}
 		};
 		sr = sm.getUpdatedResolution(BASIC_LIB);

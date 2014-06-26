@@ -28,14 +28,16 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 	
 	@Override
 	protected void searchPathEntry(Path pathEntry) {
-		if(executableExists(pathEntry, "dmd")) {
-			addPossibleInstall(detector.detectDMDInstall(pathEntry));
+		Path exePath;
+		if((exePath = executableExists(pathEntry, "dmd")) != null) {
+			addPossibleInstall(detector.detectDMDInstall(exePath));
 		}
-		if(executableExists(pathEntry, "gdc")) {
-			addPossibleInstall(detector.detectGDCInstall(pathEntry));
+		if((exePath = executableExists(pathEntry, "gdc")) != null) {
+			addPossibleInstall(detector.detectGDCInstall(exePath));
 		}
-		if(executableExists(pathEntry, "ldc") || executableExists(pathEntry, "ldc2")) {
-			addPossibleInstall(detector.detectLDCInstall(pathEntry));
+		if((exePath = executableExists(pathEntry, "ldc")) != null ||
+			(exePath = executableExists(pathEntry, "ldc2")) != null) {
+			addPossibleInstall(detector.detectLDCInstall(exePath));
 		}
 	}
 	
@@ -45,9 +47,15 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 		}
 	}
 	
-	protected boolean executableExists(Path pathEntry, String executableFileName) {
-		return pathEntry.resolve(executableFileName).toFile().exists() || 
-				pathEntry.resolve(executableFileName + ".exe").toFile().exists();
+	protected Path executableExists(Path pathEntry, String executableFileName) {
+		Path exePath;
+		if((exePath = pathEntry.resolve(executableFileName)).toFile().exists()) {
+			return exePath;
+		}
+		if((exePath = pathEntry.resolve(executableFileName + ".exe")).toFile().exists()) {
+			return exePath;
+		}
+		return null;
 	}
 	
 	public List<CompilerInstall> getFoundInstalls() {

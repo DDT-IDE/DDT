@@ -13,14 +13,12 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -32,7 +30,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.Module;
-import dtool.dub.BundlePath;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
@@ -212,11 +209,12 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public PrefixDefUnitSearch doCodeCompletion(IModuleSource moduleSource, int offset) throws CoreException {
+	public PrefixDefUnitSearch runCodeCompletion(IModuleSource moduleSource, int offset, Path compilerPath) 
+			throws CoreException {
 		
 		if(moduleSource instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) moduleSource;
-			return doCodeCompletion(sourceModule, offset);
+			return runCodeCompletion(sourceModule, offset, compilerPath);
 		}
 		
 		Path filePath = DToolClient_Bad.getFilePath(moduleSource);
@@ -225,43 +223,32 @@ public class DToolClient {
 			String sourceContents = moduleSource.getSourceContents();
 			getServerSemanticManager().updateWorkingCopyAndParse(filePath, sourceContents);
 		}
-		return doCodeCompletion_Do(filePath, offset);
+		return doCodeCompletion(filePath, offset, compilerPath);
 	}
 	
-	public PrefixDefUnitSearch doCodeCompletion(ISourceModule sourceModule, int offset) throws CoreException {
+	public PrefixDefUnitSearch runCodeCompletion(ISourceModule sourceModule, int offset, Path compilerPath) 
+			throws CoreException {
 		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
 		
 		// Submit latest source to engine server.
 		updateWorkingCopyIfInconsistent(filePath, sourceModule.getSource(), sourceModule);
 		
-		return doCodeCompletion_Do(filePath, offset);
+		return doCodeCompletion(filePath, offset, compilerPath);
 	}
 	
-	protected PrefixDefUnitSearch doCodeCompletion_Do(Path filePath, int offset) throws CoreException {
-		if(filePath == null) { 
-			throw DeeCore.createCoreException("Invalid path for content assist source.", null);
-		}
-		
-		return doCodeCompletion_Client(filePath, offset);
-	}
+	/* ----------------- Engine client requests ----------------- */
 	
-	protected PrefixDefUnitSearch doCodeCompletion_Client(Path filePath, int offset) throws CoreException {
-		ResolvedModule resolvedModule;
+	public static Path defaultCompilerPathOverride = null; // For tests usage only
+	
+	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset, Path compilerPath) 
+			throws CoreException {
 		try {
-			resolvedModule = getResolvedModule(filePath);
+			if(compilerPath == null) {
+				compilerPath = defaultCompilerPathOverride;
+			}
+			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath);
 		} catch (ExecutionException e) {
 			throw DeeCore.createCoreException("Error performing code complete operation.", e.getCause());
-		}
-		return PrefixDefUnitSearch.doCompletionSearch(resolvedModule.getParsedModule(), offset, 
-			resolvedModule.getModuleResolver());
-	}
-	
-	public HashSet<String> listModulesFor(IProject project, String fullNamePrefix) throws CoreException {
-		BundlePath bundlePath = BundlePath.create(project.getLocation().toFile().toPath());
-		try {
-			return dtoolServer.getSemanticManager().getUpdatedResolution(bundlePath).findModules(fullNamePrefix);
-		} catch (ExecutionException e) {
-			throw new CoreException(DeeCore.createErrorStatus("DToolClient error: ", e.getCause()));
 		}
 	}
 	

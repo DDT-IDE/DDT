@@ -11,6 +11,7 @@
 package dtool.engine;
 
 import static dtool.engine.BundleResolution_ModuleListTest.DEFAULT_DMD_INSTALL_LOCATION__Object_Path;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -356,7 +357,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
 		assertTrue(resolvedModule == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
-		
+		assertTrue(complexLibSR.getCompilerPath().equals(DEFAULT_DMD_INSTALL_EXE_PATH));
 		
 		// Test getResolvedModule for missing file - must throw
 		try {

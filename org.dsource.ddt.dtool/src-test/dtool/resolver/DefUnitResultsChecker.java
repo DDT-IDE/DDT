@@ -65,7 +65,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
-			if(areEqual(defElement.getModuleFullyQualifiedName(), "object")) {
+			String moduleName = defElement.getModuleFullyQualifiedName();
+			if(areEqual(moduleName, "object")) {
 				iterator.remove();
 			}
 		}

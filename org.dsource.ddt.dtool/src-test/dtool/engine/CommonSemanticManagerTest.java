@@ -16,14 +16,13 @@ import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULES_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_CONTENTS_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_LIST_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.NO_BUNDLE_RESOLUTION;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_DIR;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.FileUtil;
@@ -38,8 +37,6 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.ModuleFullName;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
@@ -148,29 +145,20 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		}
 		
 		@Override
-		protected StandardLibraryResolution getUpdatedStandardLibResolution() {
-			StandardLibraryResolution stdLibResolution = super.getUpdatedStandardLibResolution();
+		protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+			if(compilerPath == null) {
+				compilerPath = DEFAULT_DMD_INSTALL_EXE_PATH;
+			}
+			StandardLibraryResolution stdLibRes = super.getUpdatedStdLibResolution(compilerPath);
+			
 			// Test caching of resolution
-			assertAreEqual(stdLibResolution.compilerInstall, super.getUpdatedStandardLibResolution().compilerInstall);
-			assertTrue(stdLibResolution == super.getUpdatedStandardLibResolution());
+			assertAreEqual(stdLibRes.compilerInstall, super.getUpdatedStdLibResolution(compilerPath).compilerInstall);
+			assertTrue(stdLibRes == super.getUpdatedStdLibResolution(compilerPath));
 			
-			assertTrue(stdLibResolution.checkIsModuleListStale() == false);
-			assertTrue(stdLibResolution.checkIsModuleContentsStale() == false);
+			assertTrue(stdLibRes.checkIsModuleListStale() == false);
+			assertTrue(stdLibRes.checkIsModuleContentsStale() == false);
 			
-			return stdLibResolution;
-		}
-		
-		@Override
-		protected List<CompilerInstall> searchForCompilerInstalls() {
-			return doSearchForCompilerInstalls();
-		}
-		
-		protected List<CompilerInstall> doSearchForCompilerInstalls() {
-			SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
-			searchCompilers.searchPathsString(DEFAULT_DMD_INSTALL_EXE_DIR.toString(), "_synthetic_");
-			List<CompilerInstall> foundInstalls = searchCompilers.getFoundInstalls();
-			assertTrue(foundInstalls.size() > 0);
-			return foundInstalls;
+			return stdLibRes;
 		}
 		
 	}

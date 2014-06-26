@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -28,6 +30,7 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.ModuleFullName;
@@ -215,14 +218,22 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
-		BundleInfo info = getInfo(bundlePath);
-		if(info.checkIsResolutionStale()) {
-			return updateSemanticResolutionEntry(info);
-		}
-		return info.getSemanticResolution();
+		return getUpdatedResolution(bundlePath, null);
 	}
 	
-	protected BundleResolution updateSemanticResolutionEntry(BundleInfo staleInfo) throws ExecutionException {
+	public BundleResolution getUpdatedResolution(BundlePath bundlePath, Path compilerPath) throws ExecutionException {
+		BundleInfo info = getInfo(bundlePath);
+		BundleResolution semanticResolution = info.getSemanticResolution();
+		if(info.checkIsResolutionStale() || 
+			(compilerPath != null && !areEqual(semanticResolution.getCompilerPath(), compilerPath))) {
+			
+			return updateSemanticResolutionEntry(info, compilerPath);
+		}
+		return semanticResolution;
+	}
+	
+	protected BundleResolution updateSemanticResolutionEntry(BundleInfo staleInfo, Path compilerPath) 
+			throws ExecutionException {
 		synchronized(updateOperationLock) {
 			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
 			// Otherwise unnecessary update operatons might occur if two threads tried to update at the same time.
@@ -231,7 +242,7 @@ public class SemanticManager extends AbstractSemanticManager {
 			
 			BundlePath bundlePath = staleInfo.bundlePath;
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
-			StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
+			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(compilerPath);
 			
 			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
 			
@@ -260,15 +271,27 @@ public class SemanticManager extends AbstractSemanticManager {
 		}
 	}
 	
-	protected StandardLibraryResolution getUpdatedStandardLibResolution() {
-		List<CompilerInstall> foundInstalls = searchForCompilerInstalls();
-		CompilerInstall foundInstall = null;
-		if(foundInstalls.size() > 0) {
-			// TODO: determine a better match according to compiler type.
-			foundInstall = foundInstalls.get(0);
+	protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+		CompilerInstall foundInstall = getCompilerInstallForNewResolution(compilerPath);
+		return stdLibResolutions.getEntry(foundInstall); // found install can be null
+	}
+	
+	protected CompilerInstall getCompilerInstallForNewResolution(Path compilerPath) {
+		if(compilerPath != null) {
+			return new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
+		} else {
+			
+			List<CompilerInstall> foundInstalls = searchForCompilerInstalls();
+			
+			for (CompilerInstall compilerInstall : foundInstalls) {
+				// TODO: determine a better match according to compiler type.
+				if(true) {
+					// Use first
+					return compilerInstall;
+				}
+			}
 		}
-		
-		return stdLibResolutions.getEntry(foundInstall);
+		return null;
 	}
 	
 	// For tests override usage only
@@ -311,6 +334,10 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+		return getUpdatedResolvedModule(filePath, null);
+	}
+	
+	public ResolvedModule getUpdatedResolvedModule(Path filePath, Path compilerPath) throws ExecutionException {
 		// Keep this enabled for now.
 //		if(!filePath.isAbsolute()) {
 //			throw new ExecutionException(new Exception("Invalid module path"));
@@ -320,16 +347,15 @@ public class SemanticManager extends AbstractSemanticManager {
 		try {
 			AbstractBundleResolution bundleRes;
 			if(bundlePath == null) {
-				StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
+				StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(compilerPath);
 				bundleRes = new SyntheticBundleResolution(this, BundleModules.createEmpty(), stdLibResolution);
 			} else {
-				bundleRes = getUpdatedResolution(bundlePath);
+				bundleRes = getUpdatedResolution(bundlePath, compilerPath);
 			}
 			return bundleRes.getBundleResolvedModule(filePath);
 		} catch (ParseSourceException e) {
 			throw new ExecutionException(e);
 		}
-		
 	}
 	
 	protected class SyntheticBundleResolution extends AbstractBundleResolution {
