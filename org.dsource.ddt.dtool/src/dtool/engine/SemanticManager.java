@@ -14,22 +14,26 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.misc.CollectionUtil;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.BundleModulesVisitor;
-import dtool.engine.modules.NullModuleResolver;
+import dtool.engine.modules.ModuleFullName;
 import dtool.engine.util.CachingRegistry;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -309,21 +313,52 @@ public class SemanticManager extends AbstractSemanticManager {
 		parseCache.discardWorkingCopy(filePath);
 	}
 	
-	public CommonResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+		if(!filePath.isAbsolute()) {
+			throw new ExecutionException(new Exception("Invalid module path"));
+		}
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		try {
+			AbstractBundleResolution bundleRes;
 			if(bundlePath == null) {
-				ParsedModule parsedModule = parseCache.getParsedModule(filePath);
-				return new CommonResolvedModule(parsedModule, new NullModuleResolver());
+				StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
+				bundleRes = new SyntheticBundleResolution(this, createBundleModules(filePath), stdLibResolution);
 			} else {
-				BundleResolution bundleRes = getUpdatedResolution(bundlePath);
-				return bundleRes.getBundleResolvedModule(filePath);
+				bundleRes = getUpdatedResolution(bundlePath);
 			}
+			return bundleRes.getBundleResolvedModule(filePath);
 		} catch (ParseSourceException e) {
 			throw new ExecutionException(e);
 		}
 		
+	}
+	
+	protected class SyntheticBundleResolution extends AbstractBundleResolution {
+		
+		protected final StandardLibraryResolution stdLibResolution;
+
+		public SyntheticBundleResolution(SemanticManager manager, BundleModules bundleModules, 
+				StandardLibraryResolution stdLibResolution) {
+			super(manager, bundleModules);
+			this.stdLibResolution = stdLibResolution;
+		}
+		
+		@Override
+		protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
+			stdLibResolution.findModules(fullNamePrefix, matchedModules);
+		}
+		
+		@Override
+		public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+			return stdLibResolution.findResolvedModule(moduleFullName);
+		}
+		
+	}
+	
+	protected BundleModules createBundleModules(Path filePath) {
+		return new BundleModules(new HashMap<ModuleFullName, Path>(), CollectionUtil.createHashSet(filePath), 
+			new ArrayList<Path>());
 	}
 	
 }

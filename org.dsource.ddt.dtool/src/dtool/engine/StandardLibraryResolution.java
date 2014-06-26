@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import melnorme.utilbox.misc.MiscUtil;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.engine.modules.IModuleResolver;
@@ -50,11 +49,6 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	
 	protected List<Path> getLibrarySourceFolders() {
 		return compilerInstall.getLibrarySourceFolders();
-	}
-	
-	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
-		return getBundleResolvedModule(moduleFullName);
 	}
 	
 	/* ----------------- synthetic install ----------------- */

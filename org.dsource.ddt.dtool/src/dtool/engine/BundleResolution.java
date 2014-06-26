@@ -27,7 +27,7 @@ import dtool.engine.modules.ModuleFullName;
 public class BundleResolution extends AbstractBundleResolution implements IModuleResolver {
 	
 	protected final ResolvedManifest manifest;
-	protected final DubBundle bundleDubInfo;
+	protected final DubBundle dubBundle;
 	protected final BundlePath bundlePath;
 	protected final StandardLibraryResolution stdLibResolution;
 	protected final List<BundleResolution> depResolutions;
@@ -36,8 +36,8 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 			StandardLibraryResolution stdLibResolution) {
 		super(manager, manifest.getBundle().getEffectiveImportFolders_AbsolutePath());
 		this.manifest = manifest;
-		this.bundleDubInfo = manifest.getBundle();
-		this.bundlePath = assertNotNull(manifest.getBundlePath());
+		this.dubBundle = manifest.getBundle();
+		this.bundlePath = assertNotNull(dubBundle.getBundlePath());
 		this.stdLibResolution = assertNotNull(stdLibResolution); 
 		this.depResolutions = Collections.unmodifiableList(createDepSRs(manager, manifest, stdLibResolution));
 	}
@@ -52,7 +52,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	}
 	
 	public String getBundleName() {
-		return bundleDubInfo.getBundleName();
+		return dubBundle.getBundleName();
 	}
 	
 	public BundlePath getBundlePath() {
@@ -60,7 +60,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	}
 	
 	public DubBundle getBundle() {
-		return bundleDubInfo;
+		return dubBundle;
 	}
 	
 	public List<BundleResolution> getDirectDependencies() {
@@ -105,7 +105,6 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 		}
 	}
 	
-	// TODO : /*BUG here test find resolved module of deps */
 	@Override
 	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
 		ResolvedModule resolvedModule;

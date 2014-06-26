@@ -118,7 +118,7 @@ public class DubBundleDescription {
 		}
 		
 		public ResolvedManifest calculateResolvedManifest(DubBundle bundle) {
-			BundlePath bundlePath = bundle.getBundlePath();
+			final BundlePath bundlePath = bundle.getBundlePath();
 			if(bundlePath == null) {
 //				dtoolServer.logError("DUB describe: invalid bundle path: " + bundlePath);
 				return null;
@@ -139,7 +139,7 @@ public class DubBundleDescription {
 			
 			ArrayList<ResolvedManifest> directDeps = calculateDirectDependencies(bundle);
 			
-			manifest = new ResolvedManifest(bundle, bundlePath, directDeps);
+			manifest = new ResolvedManifest(bundle, directDeps);
 			manifests.put(bundleName, manifest);
 			return manifest;
 		}

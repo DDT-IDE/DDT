@@ -64,11 +64,15 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		return SEMMODEL_TEST_BUNDLES;
 	}
 	
-	public final BundlePath BASIC_LIB = new BundlePath(getDubRepositoryDir().resolve("basic_lib"));
-	public final BundlePath SMTEST = new BundlePath(getDubRepositoryDir().resolve("smtest_foo"));
-	public final BundlePath BASIC_LIB2 = new BundlePath(getDubRepositoryDir().resolve("basic_lib2"));
-	public final BundlePath COMPLEX_LIB = new BundlePath(getDubRepositoryDir().resolve("complex_lib"));
-	public final BundlePath COMPLEX_BUNDLE = new BundlePath(getDubRepositoryDir().resolve("complex_bundle"));
+	public static BundlePath bundlePath(Path basePath, String other) {
+		return BundlePath.create(basePath.resolve(other));
+	}
+	
+	public final BundlePath BASIC_LIB = bundlePath(getDubRepositoryDir(), "basic_lib");
+	public final BundlePath SMTEST = bundlePath(getDubRepositoryDir(), "smtest_foo");
+	public final BundlePath BASIC_LIB2 = bundlePath(getDubRepositoryDir(), "basic_lib2");
+	public final BundlePath COMPLEX_LIB = bundlePath(getDubRepositoryDir(), "complex_lib");
+	public final BundlePath COMPLEX_BUNDLE = bundlePath(getDubRepositoryDir(), "complex_bundle");
 	
 	/* ----------------- working dir setup ----------------- */
 	
@@ -224,10 +228,14 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		return resolvedModule;
 	}
 	
-	protected void testFindModule(BundlePath bundlePath, String moduleNameStr, Path expectedPath) 
+	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Path expectedPath) 
 			throws ParseSourceException, ExecutionException {
 		BundleResolution bundleRes = sm.getStoredResolution(bundlePath);
-		
+		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
+	}
+	
+	protected void testFindResolvedModule(AbstractBundleResolution bundleRes, String moduleNameStr, Path expectedPath)
+			throws ParseSourceException {
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
 		ResolvedModule resolvedModule = bundleRes.findResolvedModule(moduleFullName);
 		Path modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
@@ -237,12 +245,6 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 			assertEquals(bundleRes.findModule(moduleFullName.getPackages(), moduleFullName.getBaseName()), 
 				resolvedModule.getModuleNode());
 		}
-	}
-	
-	/* ----------------- misc util ----------------- */
-	
-	public static BundlePath createBP(Path basePath, String other) {
-		return BundlePath.create(basePath.resolve(other));
 	}
 	
 }

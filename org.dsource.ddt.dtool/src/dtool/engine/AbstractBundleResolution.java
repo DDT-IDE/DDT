@@ -62,6 +62,11 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
 	
+	/** @return a resolved module from this bundle's full import path (including dependencies). */
+	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+		return getBundleResolvedModule(moduleFullName);
+	}
+	
 	public boolean checkIsStale() {
 		return checkIsModuleListStale() || checkIsModuleContentsStale();
 	}
@@ -129,48 +134,33 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
-	/** @return a resolved module from this bundle's full import path (including dependencies). */
-	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException;
-	
-	
-	public static class CommonResolvedModule {
+	public static class ResolvedModule {
 		
 		protected final ParsedModule parsedModule;
-		protected final IModuleResolver mr;
+		protected final AbstractBundleResolution bundleRes;
 		
-		public CommonResolvedModule(ParsedModule parsedModule, IModuleResolver mr) {
+		public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution bundleRes) {
 			this.parsedModule = parsedModule;
-			this.mr = mr;
-		}
-		
-		public Module getModuleNode() {
-			return parsedModule.module;
+			this.bundleRes = bundleRes;
 		}
 		
 		public ParsedModule getParsedModule() {
 			return parsedModule;
 		}
 		
-		public IModuleResolver getModuleResolver() {
-			return mr;
+		public Module getModuleNode() {
+			return parsedModule.module;
 		}
 		
 		public Path getModulePath() {
 			return parsedModule.modulePath;
 		}
 		
-	}
-	
-	public static class ResolvedModule extends CommonResolvedModule {
-		
-		protected final AbstractBundleResolution bundleRes;
-		
-		public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution bundleRes) {
-			super(parsedModule, bundleRes);
-			this.bundleRes = bundleRes;
+		public AbstractBundleResolution getSemanticResolution() {
+			return bundleRes;
 		}
 		
-		public AbstractBundleResolution getSemanticResolution() {
+		public IModuleResolver getModuleResolver() {
 			return bundleRes;
 		}
 		

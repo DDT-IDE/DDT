@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +25,9 @@ public class ResolvedManifest {
 	public final BundlePath bundlePath;
 	protected final List<ResolvedManifest> bundleDependencies;
 	
-	public ResolvedManifest(DubBundle bundle, BundlePath bundlePath, List<ResolvedManifest> bundleDependencies) {
-		this.bundle = bundle;
-		this.bundlePath = bundlePath;
+	public ResolvedManifest(DubBundle bundle, List<ResolvedManifest> bundleDependencies) {
+		this.bundle = assertNotNull(bundle);
+		this.bundlePath = assertNotNull(bundle.getBundlePath());
 		this.bundleDependencies = Collections.unmodifiableList(bundleDependencies);
 	}
 	

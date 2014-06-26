@@ -33,7 +33,7 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
-import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
@@ -239,7 +239,7 @@ public class DToolClient {
 	}
 	
 	protected PrefixDefUnitSearch doCodeCompletion_Client(Path filePath, int offset) throws CoreException {
-		CommonResolvedModule resolvedModule;
+		ResolvedModule resolvedModule;
 		try {
 			resolvedModule = getResolvedModule(filePath);
 		} catch (ExecutionException e) {
@@ -258,7 +258,7 @@ public class DToolClient {
 		}
 	}
 	
-	public CommonResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+	public ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
 		return dtoolServer.getSemanticManager().getUpdatedResolvedModule(filePath);
 	}
 	

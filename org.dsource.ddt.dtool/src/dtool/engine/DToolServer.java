@@ -29,7 +29,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.ddoc.TextUI;
-import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
+import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
@@ -81,7 +81,7 @@ public class DToolServer {
 	
 	/* -----------------  ----------------- */
 	
-	protected CommonResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
 		return getSemanticManager().getUpdatedResolvedModule(filePath);
 	}
 	
@@ -99,7 +99,7 @@ public class DToolServer {
 		if(filePath == null) {
 			return new FindDefinitionResult("Invalid path for file: " );
 		}
-		final CommonResolvedModule resolvedModule;
+		final ResolvedModule resolvedModule;
 		try {
 			resolvedModule = getResolvedModule(filePath);
 		} catch (ExecutionException e) {
@@ -145,7 +145,7 @@ public class DToolServer {
 	public static final String FIND_DEF_ReferenceResolveFailed = 
 			"Definition not found for reference: ";
 	
-	public FindDefinitionResult doFindDefinitionForRef(Reference ref, CommonResolvedModule resolvedModule) {
+	public FindDefinitionResult doFindDefinitionForRef(Reference ref, ResolvedModule resolvedModule) {
 		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		
@@ -175,7 +175,7 @@ public class DToolServer {
 	/* -----------------  ----------------- */
 
 	public String getDDocHTMLView(Path filePath, int offset) {
-		CommonResolvedModule resolvedModule;
+		ResolvedModule resolvedModule;
 		try {
 			resolvedModule = filePath == null ? null : getResolvedModule(filePath);
 		} catch (ExecutionException e) {

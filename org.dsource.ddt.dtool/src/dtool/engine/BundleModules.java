@@ -52,10 +52,6 @@ public class BundleModules {
 		}
 	}
 	
-	public Set<Path> getModuleFiles() {
-		return moduleFiles;
-	}
-	
 	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {
 		return modules.get(moduleFullName);
 	}
