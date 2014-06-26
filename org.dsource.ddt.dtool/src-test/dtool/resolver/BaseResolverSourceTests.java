@@ -215,6 +215,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultElementsOriginal);
 		
 		defUnitResultsChecker.removeIgnoredDefUnits(ignoreDummyResults, ignoreNativeResults);
+		defUnitResultsChecker.removeStdLibObjectDefUnits(); // TODO: we should have an instrumented StdLib
 		removeDefUnitsFromExpected(defUnitResultsChecker.resultDefUnits);
 		defUnitResultsChecker.checkResults(expectedResults, markers);
 	}

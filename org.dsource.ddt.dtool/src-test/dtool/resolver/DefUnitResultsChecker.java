@@ -13,16 +13,18 @@ package dtool.resolver;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.CollectionUtil.createArrayList;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.StringUtil.collToString;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
@@ -33,17 +35,17 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	
-	protected final Collection<INamedElement> resultDefUnits;
+	protected LinkedList<INamedElement> resultDefUnits;
 	
 	public DefUnitResultsChecker(Collection<? extends INamedElement> resultDefUnits) {
-		this.resultDefUnits = createArrayList(resultDefUnits);
+		this.resultDefUnits = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	
 	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives);
 	}
 	
-	public static void removeIgnoredDefUnits(Collection<INamedElement> resultDefUnits, 
+	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
 		boolean ignoreDummyResults, boolean ignorePrimitives) {
 		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
@@ -59,8 +61,19 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 	}
 	
+	public void removeStdLibObjectDefUnits() {
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
+			
+			if(areEqual(defElement.getModuleFullyQualifiedName(), "object")) {
+				iterator.remove();
+			}
+		}
+	}
+	
 	public void simpleCheckResults(String... expectedResults) {
 		removeIgnoredDefUnits(true, true);
+		removeStdLibObjectDefUnits();
 		checkResults(expectedResults, null);
 	}
 	

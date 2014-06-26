@@ -14,14 +14,11 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
@@ -314,16 +311,17 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
-		if(!filePath.isAbsolute()) {
-			throw new ExecutionException(new Exception("Invalid module path"));
-		}
+		// Keep this enabled for now.
+//		if(!filePath.isAbsolute()) {
+//			throw new ExecutionException(new Exception("Invalid module path"));
+//		}
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		try {
 			AbstractBundleResolution bundleRes;
 			if(bundlePath == null) {
 				StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
-				bundleRes = new SyntheticBundleResolution(this, createBundleModules(filePath), stdLibResolution);
+				bundleRes = new SyntheticBundleResolution(this, BundleModules.createEmpty(), stdLibResolution);
 			} else {
 				bundleRes = getUpdatedResolution(bundlePath);
 			}
@@ -354,11 +352,6 @@ public class SemanticManager extends AbstractSemanticManager {
 			return stdLibResolution.findResolvedModule(moduleFullName);
 		}
 		
-	}
-	
-	protected BundleModules createBundleModules(Path filePath) {
-		return new BundleModules(new HashMap<ModuleFullName, Path>(), CollectionUtil.createHashSet(filePath), 
-			new ArrayList<Path>());
 	}
 	
 }

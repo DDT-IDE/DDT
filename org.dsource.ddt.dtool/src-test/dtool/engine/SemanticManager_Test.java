@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -373,6 +374,16 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		// Test getResolvedModule for module that is not in a bundle at all.
 		resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
+		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
+			"object"
+		));
+		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		
+		
+		// Test getResolvedModule for a relative path.
+		Path specialPath = MiscUtil.createValidPath(("###special/relative_bundle.d"));
+		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
+		resolvedModule = getUpdatedResolvedModule(specialPath);
 		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
 			"object"
 		));
