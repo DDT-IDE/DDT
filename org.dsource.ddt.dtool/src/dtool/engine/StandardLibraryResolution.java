@@ -65,7 +65,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static final CompilerInstall SYNTHETIC_COMPILER_INSTALL = CompilerInstall.create(ECompilerType.OTHER);
 	
 	/**
-	 * Fall-back standard library resolution for when no real compiler installs could be found.
+	 * Fall-back synthetic StandardLibraryResolution for when no real compiler installs could be found.
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
@@ -100,6 +100,11 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		@Override
 		protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
 			syntheticBundleModules.findModules(fullNamePrefix, matchedModules);
+		}
+		
+		@Override
+		public boolean checkIsModuleListStale() {
+			return false;
 		}
 		
 		@Override

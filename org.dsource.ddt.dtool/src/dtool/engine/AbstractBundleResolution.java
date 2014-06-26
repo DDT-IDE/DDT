@@ -62,6 +62,10 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
 	
+	public boolean checkIsStale() {
+		return checkIsModuleListStale() || checkIsModuleContentsStale();
+	}
+	
 	public boolean checkIsModuleListStale() {
 		List<Path> importFolders = bundleModules.importFolders;
 		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(importFolders) {

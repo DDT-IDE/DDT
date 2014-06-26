@@ -145,7 +145,10 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			}
 		};
 		sr = sm.getUpdatedResolution(BASIC_LIB);
-		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().size() == 0);
+		StandardLibraryResolution fallBackStdLibResolution = sr.stdLibResolution;
+		assertTrue(fallBackStdLibResolution.getLibrarySourceFolders().size() == 0);
+		assertTrue(fallBackStdLibResolution.checkIsModuleContentsStale() == false);
+		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
 		testFindModule(BASIC_LIB, "object", SYNTHETIC_COMPILER_INSTALL_PATH.resolve("object.di"));
 		

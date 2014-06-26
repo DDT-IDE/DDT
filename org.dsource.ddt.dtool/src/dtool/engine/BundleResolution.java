@@ -72,12 +72,21 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 		return "BundleResolution: " + getBundleName() + " - " + getBundlePath();
 	}
 	
-	public boolean checkIsModuleListStaleInTree() {
-		if(checkIsModuleListStale()) {
+	// As an optimization, we don't check STD_LIB staleness, as its likely to change very rarely.
+	protected static boolean CHECK_STD_LIB_STALENESS = false;
+	
+	@Override
+	public boolean checkIsStale() {
+		if(checkIsModuleListStale() || checkIsModuleContentsStale()) {
 			return true;
 		}
+		
+		if(CHECK_STD_LIB_STALENESS && stdLibResolution.checkIsStale()) {
+			return true;
+		}
+		
 		for (BundleResolution bundleRes : depResolutions) {
-			if(bundleRes.checkIsModuleListStale()) {
+			if(bundleRes.checkIsStale()) {
 				return true;
 			}
 		}
@@ -115,18 +124,6 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 				return resolvedModule;
 		}
 		return null;
-	}
-	
-	public boolean checkIsModuleContentsStaleInTree() {
-		if(checkIsModuleContentsStale()) {
-			return true;
-		}
-		for (BundleResolution bundleRes : depResolutions) {
-			if(bundleRes.checkIsModuleContentsStale()) {
-				return true;
-			}
-		}
-		return false;
 	}
 	
 }

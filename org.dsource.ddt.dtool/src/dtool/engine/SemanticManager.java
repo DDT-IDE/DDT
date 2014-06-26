@@ -100,8 +100,7 @@ abstract class AbstractSemanticManager {
 			return
 					getSemanticResolution() == null ||
 					checkIsManifestStale() ||					
-					getSemanticResolution().checkIsModuleListStaleInTree() ||
-					getSemanticResolution().checkIsModuleContentsStaleInTree();
+					getSemanticResolution().checkIsStale();
 		}
 		
 	}
@@ -272,7 +271,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		@Override
 		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
 			StandardLibraryResolution entry = map.get(key);
-			if(entry == null || false /*BUG here*/) {
+			if(entry == null || entry.checkIsStale()) {
 				entry = createEntry(key);
 				map.put(key, entry);
 			}
