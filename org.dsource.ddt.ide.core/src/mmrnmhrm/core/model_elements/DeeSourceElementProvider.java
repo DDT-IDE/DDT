@@ -435,7 +435,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	public static DefElementDescriptor toElementDescriptor(IMember member) throws ModelException {
 		int modifierFlags = member.getFlags();
 		return new DefElementDescriptor(modifierFlags);
-	}	
+	}
 	
 	/* ================================== */
 	

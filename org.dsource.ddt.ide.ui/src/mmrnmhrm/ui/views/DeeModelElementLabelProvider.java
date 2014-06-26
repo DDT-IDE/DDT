@@ -48,7 +48,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			DefElementDescriptor elementDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
 			return getImageDescriptor(elementDescriptor, imageSize);
 		} catch (ModelException e) {
-			DeeCore.logError(e);
+			DeeCore.logWarning("Error opening element for element descriptor", e);
 			return DeePluginImages.getIDEInternalErrorImageDescriptor();
 		}
 	}
