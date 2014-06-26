@@ -40,7 +40,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 		this.manifest = manifest;
 		this.bundleDubInfo = manifest.getBundle();
 		this.bundlePath = assertNotNull(manifest.getBundlePath());
-		this.stdLibResolution = stdLibResolution; 
+		this.stdLibResolution = assertNotNull(stdLibResolution); 
 		this.depResolutions = Collections.unmodifiableList(createDepSRs(manager, manifest, stdLibResolution));
 	}
 	
@@ -76,7 +76,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	
 	public boolean checkIsModuleListStale() {
 		ArrayList<Path> importFolders = bundleDubInfo.getEffectiveImportFolders_AbsolutePath();
-		BundleModulesVisitor modulesVisitor = new SM_BundleModulesVisitor(importFolders) {
+		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(importFolders) {
 			@Override
 			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
 				moduleFiles.add(fullPath);

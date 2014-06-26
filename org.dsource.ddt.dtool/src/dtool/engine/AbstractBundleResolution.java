@@ -11,8 +11,6 @@
 package dtool.engine;
 
 
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,32 +22,24 @@ import java.util.Set;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public abstract class AbstractBundleResolution implements IModuleResolver {
+public abstract class AbstractBundleResolution implements IBundleResolution {
 	
 	protected final SemanticManager manager;
 	protected final BundleModules bundleModules;
 	
 	public AbstractBundleResolution(SemanticManager manager, List<Path> importFolders) {
-		this.manager = manager;
-		this.bundleModules = new SM_BundleModulesVisitor(importFolders).toBundleModules();
+		this(manager, manager.new SM_BundleModulesVisitor(importFolders).toBundleModules());
 	}
 	
-	protected class SM_BundleModulesVisitor extends BundleModulesVisitor {
-		public SM_BundleModulesVisitor(List<Path> importFolders) {
-			super(importFolders);
-		}
-		
-		@Override
-		protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
-			manager.dtoolServer.logError("Error visiting path/director: " + file, exc);
-			return FileVisitResult.CONTINUE;
-		}
+	public AbstractBundleResolution(SemanticManager manager, BundleModules bundleModules) {
+		this.manager = manager;
+		this.bundleModules = bundleModules;
 	}
+	
 	
 	public Set<Path> getBundleModuleFiles() {
 		return bundleModules.moduleFiles;
@@ -108,13 +98,13 @@ public abstract class AbstractBundleResolution implements IModuleResolver {
 	public synchronized ResolvedModule getBundleResolvedModule(Path filePath) throws ParseSourceException {
 		ModuleParseCache parseCache = manager.parseCache;
 		
-		ResolvedModule resolutionModule = resolvedModules.get(filePath);
-		if(resolutionModule == null) {
+		ResolvedModule resolvedModule = resolvedModules.get(filePath);
+		if(resolvedModule == null) {
 			ParsedModule parsedModule = parseCache.getParsedModule(filePath);
-			resolutionModule = new ResolvedModule(parsedModule, this);
-			resolvedModules.put(filePath, resolutionModule);
+			resolvedModule = new ResolvedModule(parsedModule, this);
+			resolvedModules.put(filePath, resolvedModule);
 		}
-		return resolutionModule;
+		return resolvedModule;
 	}
 	
 	@Override
@@ -124,9 +114,7 @@ public abstract class AbstractBundleResolution implements IModuleResolver {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
-		return getBundleResolvedModule(moduleFullName);
-	}
+	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException;
 	
 	
 	public static class CommonResolvedModule {

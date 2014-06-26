@@ -23,7 +23,7 @@ public class CompilerInstall {
 		DMD, GDC, LDC, OTHER
 	}
 	
-	protected static CompilerInstall create(ECompilerType compilerType, Path... librarySourceFolders) {
+	public static CompilerInstall create(ECompilerType compilerType, Path... librarySourceFolders) {
 		for (int i = 0; i < librarySourceFolders.length; i++) {
 			librarySourceFolders[i] = librarySourceFolders[i].normalize();
 		}

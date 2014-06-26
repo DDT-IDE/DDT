@@ -30,14 +30,20 @@ public class BundleModules {
 	 * Optimized constructor 
 	 */
 	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles) {
+		this(modules, moduleFiles, true);
+	}
+	
+	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, boolean requireAbsolute) {
 		this.modules = Collections.unmodifiableMap(modules);
 		this.moduleFiles = Collections.unmodifiableSet(moduleFiles);
 		
-		for (Path path : moduleFiles) {
-			assertTrue(path.isAbsolute());
-		}
-		for (Path path : modules.values()) {
-			assertTrue(path.isAbsolute());
+		if(requireAbsolute) {
+			for (Path path : moduleFiles) {
+				assertTrue(path.isAbsolute());
+			}
+			for (Path path : modules.values()) {
+				assertTrue(path.isAbsolute());
+			}
 		}
 	}
 	

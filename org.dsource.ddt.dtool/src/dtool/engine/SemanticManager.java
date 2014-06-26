@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine;
 
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
@@ -24,8 +26,10 @@ import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.AbstractBundleResolution.CommonResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
+import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.engine.util.CachingRegistry;
 import dtool.engine.util.FileCachingEntry;
@@ -206,6 +210,18 @@ public class SemanticManager extends AbstractSemanticManager {
 	
 	/* ----------------- file updates handling ----------------- */
 	
+	protected class SM_BundleModulesVisitor extends BundleModulesVisitor {
+		public SM_BundleModulesVisitor(List<Path> importFolders) {
+			super(importFolders);
+		}
+		
+		@Override
+		protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
+			dtoolServer.logError("Error visiting path/director: " + file, exc);
+			return FileVisitResult.CONTINUE;
+		}
+	}
+	
 	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
 		@Override
 		protected void handleWarning(String message) {
@@ -223,7 +239,7 @@ public class SemanticManager extends AbstractSemanticManager {
 				return staleInfo; // No longer stale
 			
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
-			StandardLibraryResolution stdLibResolution = getUpdatedStandarLibraryResolution();
+			StandardLibraryResolution stdLibResolution = getUpdatedStandardLibraryResolution();
 			
 			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
 			
@@ -234,14 +250,14 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	// /*BUG here TODO: caching. */
-	protected StandardLibraryResolution getUpdatedStandarLibraryResolution() {
+	protected StandardLibraryResolution getUpdatedStandardLibraryResolution() {
 		List<CompilerInstall> foundInstalls = searchCompilerInstalls();
 		if(foundInstalls.size() > 0) {
 			// TODO: determine a better match according to compiler type.
 			CompilerInstall foundInstall = foundInstalls.get(0);
 			return new StandardLibraryResolution(this, foundInstall);
 		}
-		return null; /*BUG here test */
+		return new MissingStandardLibraryResolution(this);
 	}
 	
 	protected List<CompilerInstall> searchCompilerInstalls() {
