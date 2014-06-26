@@ -14,7 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
@@ -44,7 +46,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	protected static final String WC_SOURCE = "module app; /** WC Source */";
 	protected static final String SOURCE3 = "module app; /** ModuleParse Test source3 */";
 
-	protected ModuleParseCache mpm;
+	protected ModuleParseCache mpc;
 	
 	@BeforeClass
 	public static void setup() throws IOException {
@@ -63,27 +65,43 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	protected void __initModuleParseCache() {
-		mpm = new ModuleParseCache(new Tests_DToolServer());
+		mpc = new ModuleParseCache(new Tests_DToolServer());
 	}
 	
-	public static void updateFileContents(Path filePath, String string) {
-		writeStringToFile(filePath, string);
+	public static void writeToFileAndUpdateMTime(Path file, String contents) throws IOException {
+		FileTime lastModifiedTime = Files.getLastModifiedTime(file);
+		writeStringToFile(file.toFile(), contents);
+		// Make sure last modified time is different from before
+		Files.setLastModifiedTime(file, FileTime.fromMillis(lastModifiedTime.toMillis() - 1_000));
+	}
+	
+	public void updateFileContents(Path filePath, String contents) {
+		updateFileContents(filePath, contents, true);
+	}
+	
+	public void updateFileContents(Path filePath, String contents, boolean isEntryStale) {
+		try {
+			writeToFileAndUpdateMTime(filePath, contents);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		assertTrue(mpc.getEntry(filePath).isStale() == isEntryStale);
 	}
 	
 	protected void basicSequence(Path cuPath) throws ParseSourceException, IOException, FileNotFoundException {
 		
-		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH);
-		assertTrue(mpm.getParsedModule(cuPath) == parsedModule);
+		ParsedModule parsedModule = mpc.getParsedModule(CU_PATH);
+		assertTrue(mpc.getParsedModule(cuPath) == parsedModule);
 		
 		updateFileContents(CU_PATH, SOURCE1);
-		assertTrue(mpm.getEntry(CU_PATH).isStale());
-		parsedModule = mpm.getParsedModule(CU_PATH);
+		assertTrue(mpc.getEntry(CU_PATH).isStale());
+		parsedModule = mpc.getParsedModule(CU_PATH);
 		assertEquals(parsedModule.source, SOURCE1);
 		
 		// Test caching
-		assertTrue(mpm.getEntry(CU_PATH).isWorkingCopy == false);
-		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
-		assertTrue(mpm.getParsedModule(CU_PATH) == parsedModule);
+		assertTrue(mpc.getEntry(CU_PATH).isWorkingCopy == false);
+		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
+		assertTrue(mpc.getParsedModule(CU_PATH) == parsedModule);
 		
 		// Test caching for WC
 		testUpdateWorkingCopyAndParse(CU_PATH, WC_SOURCE);
@@ -93,25 +111,24 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		
 		// Test file update over active working copy. Check working copy source still takes precedence
 		testUpdateWorkingCopyAndParse(CU_PATH, WC_SOURCE);
-		updateFileContents(CU_PATH, SOURCE3); // do file update
-		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
-		assertTrue(mpm.getParsedModule(CU_PATH).source.equals(WC_SOURCE));
+		updateFileContents(CU_PATH, SOURCE3, false); // do file update
+		assertTrue(mpc.getParsedModule(CU_PATH).source.equals(WC_SOURCE));
 		
 		
 		// Test discard working copy - last update was on file
 		testUpdateWorkingCopyAndParse(CU_PATH, WC_SOURCE);
-		updateFileContents(CU_PATH, SOURCE3); // last update
+		updateFileContents(CU_PATH, SOURCE3, false); // last update
 		testDiscardWorkingCopy(CU_PATH, WC_SOURCE, SOURCE3);
 		
 		// Test discard working copy - last update was WC and file was parsed previously
 		updateFileContents(CU_PATH, SOURCE3);
-		mpm.getParsedModule(CU_PATH);
+		mpc.getParsedModule(CU_PATH);
 		testUpdateWorkingCopyAndParse(CU_PATH, WC_SOURCE); // last update
 		testDiscardWorkingCopy(CU_PATH, WC_SOURCE, SOURCE3);
 		
 		// Test redundant discardWorkingCopy
-		mpm.discardWorkingCopy(CU_PATH);
-		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
+		mpc.discardWorkingCopy(CU_PATH);
+		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
 		
 		// Special case: first update for path is working copy, then discard
 		__initModuleParseCache();
@@ -120,37 +137,66 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		testDiscardWorkingCopy(CU_PATH, WC_SOURCE, SOURCE1);
 		
 		
-		testOptmizationsAfterDiscard();
+		testOptimizationsWithIdenticalSource();
+		
+		// Special case:
+		mpc.discardWorkingCopy(CU_PATH);
+		updateFileContents(CU_PATH, SOURCE1);
+		parsedModule = mpc.getParsedModule(CU_PATH);
+		updateFileContents(CU_PATH, SOURCE3, true);
+		assertTrue(getParsedModuleIfNotStale(CU_PATH) == null);
+		assertTrue(mpc.getEntry(CU_PATH).isStale());
+		assertTrue(mpc.getParsedModule(CU_PATH) != parsedModule);
 	}
 	
 	protected void testUpdateWorkingCopyAndParse(Path modulePath, String source) throws ParseSourceException {
-		ParsedModule parsedModule = mpm.getParsedModule(modulePath, source);
-		assertTrue(mpm.getEntry(CU_PATH).isStale() == false);
-		assertTrue(mpm.getParsedModule(modulePath) == parsedModule);
-		assertTrue(mpm.getParsedModule(modulePath, source) == parsedModule);
+		ParsedModule parsedModule = mpc.getParsedModule(modulePath, source);
+		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
+		assertTrue(mpc.getParsedModule(modulePath) == parsedModule);
+		assertTrue(mpc.getParsedModule(modulePath, source) == parsedModule);
 		assertTrue(parsedModule.source == source);
 	}
 	
 	protected void testDiscardWorkingCopy(Path filePath, String previousSource, String expectedNewSource) 
 			throws ParseSourceException {
-		assertTrue(mpm.getExistingParsedModule(CU_PATH).source.equals(previousSource));
-		mpm.discardWorkingCopy(filePath);
-		assertTrue(mpm.getEntry(filePath).isStale());
-		assertTrue(mpm.getParsedModule(filePath).source.equals(expectedNewSource));
+		assertTrue(mpc.getExistingParsedModule(CU_PATH).source.equals(previousSource));
+		mpc.discardWorkingCopy(filePath);
+		assertTrue(mpc.getEntry(filePath).isStale());
+		assertTrue(mpc.getParsedModule(filePath).source.equals(expectedNewSource));
 	}
 	
-	protected void testOptmizationsAfterDiscard() throws IOException, FileNotFoundException, ParseSourceException {
-		mpm.getParsedModule(CU_PATH, "___reset___");
-		ParsedModule parsedModule = mpm.getParsedModule(CU_PATH, WC_SOURCE);
+	protected void testOptimizationsWithIdenticalSource() throws IOException, ParseSourceException {
+		mpc.discardWorkingCopy(CU_PATH);
+		ParsedModule parsedModule;
+		
 		updateFileContents(CU_PATH, WC_SOURCE);
-		mpm.discardWorkingCopy(CU_PATH);
+		parsedModule = mpc.getParsedModule(CU_PATH);
+		updateFileContents(CU_PATH, WC_SOURCE, true);
+		testNoReparseHappened(parsedModule, CU_PATH);
 		
-		//assertTrue(mpm.getEntry(CU_PATH).isStale() == true);
+		assertTrue(parsedModule == setWorkingCopySourceAndParse(CU_PATH, WC_SOURCE));
+		testNoReparseHappened(parsedModule, CU_PATH);
 		
-		ParsedModule newParsedModule = mpm.getParsedModule(CU_PATH);
-		// Test that a reparse did not happen, even though file is newer (but source is same)
-		assertTrue(parsedModule == newParsedModule);
-		assertTrue(parsedModule.module == newParsedModule.module);
+		parsedModule = setWorkingCopySourceAndParse(CU_PATH, SOURCE3);
+		updateFileContents(CU_PATH, SOURCE3, false);
+		mpc.discardWorkingCopy(CU_PATH);
+		testNoReparseHappened(parsedModule, CU_PATH);
+	}
+	
+	protected void testNoReparseHappened(ParsedModule previousModule, Path filePath) throws ParseSourceException {
+		assertTrue(previousModule == getParsedModuleIfNotStale(filePath));
+		assertTrue(mpc.getEntry(filePath).isStale() == false);
+		assertTrue(previousModule == mpc.getParsedModule(filePath));
+	}
+	
+	protected ParsedModule getParsedModuleIfNotStale(Path path) {
+		return mpc.getEntry(path).getParsedModuleIfNotStale(true);
+	}
+	
+	protected ParsedModule setWorkingCopySourceAndParse(Path filePath, String source) {
+		ParsedModule parsedModule = mpc.getParsedModule(filePath, source);
+		assertTrue(mpc.getEntry(filePath).isWorkingCopy);
+		return parsedModule;
 	}
 	
 	@Test
@@ -159,7 +205,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		__initModuleParseCache();
 		
 		Path freeformPath = MiscUtil.createValidPath("#freeFormPath");
-		assertTrue(mpm.getParsedModule(freeformPath, SOURCE1).source.equals(SOURCE1));
+		assertTrue(mpc.getParsedModule(freeformPath, SOURCE1).source.equals(SOURCE1));
 	}
 	
 }

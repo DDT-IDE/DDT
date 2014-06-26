@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -186,17 +185,19 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	/* ----------------- module updates ----------------- */
 	
 	
-	protected Path writeFile(Path newFile, String fileContents) throws IOException {
+	protected Path writeToFile(Path newFile, String contents) throws IOException {
 		Files.createDirectories(newFile.getParent());
-		writeStringToFile(newFile, fileContents);
+		writeStringToFile(newFile, contents);
 		return newFile;
 	}
 	
-	public static void writeToFileAndUpdateMTime(Path file, String contents) throws IOException {
-		FileTime lastModifiedTime = Files.getLastModifiedTime(file);
-		writeStringToFile(file.toFile(), contents);
-		// Make sure last modified time is different from before
-		Files.setLastModifiedTime(file, FileTime.fromMillis(lastModifiedTime.toMillis() - 1_000));
+	public void writeToFileAndUpdateMTime(Path file, String contents) throws IOException {
+		writeToFileAndUpdateMTime(file, contents, true);
+	}
+	
+	public void writeToFileAndUpdateMTime(Path file, String contents, boolean isCacheEntryStale) throws IOException {
+		ModuleParseCache_Test.writeToFileAndUpdateMTime(file, contents);
+		assertTrue(sm.parseCache.getEntry(file).isStale() == isCacheEntryStale);
 	}
 	
 	protected void deleteFile(Path file) throws IOException {
@@ -214,7 +215,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		// Test module-file add
-		Path newModule = writeFile(BASIC_LIB.resolve("source/newModule.d"), "module newModule;");
+		Path newModule = writeToFile(BASIC_LIB.resolve("source/newModule.d"), "module newModule;");
 		checkStaleStatus(BASIC_LIB, StaleState.MODULE_LIST_STALE);
 		checkStaleStatus(COMPLEX_LIB, StaleState.DEP_STALE);
 		checkGetModule(BASIC_LIB, "newModule", null);
@@ -230,14 +231,36 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		getUpdatedResolution(COMPLEX_LIB);
 		checkGetModule(BASIC_LIB, "newModule", null);
 		
+		
+		Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d");
+		
 		// Test module-file modification
 		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		writeToFileAndUpdateMTime(BASIC_LIB_FOO_MODULE, "module basic_lib_pack.foo; /*A*/");
+		// The resolution will still be current, because the module is lazy loaded/parsed.
+		// And if it wasn't actually loaded, the SM can still be considered current.
+		checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
+		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		// Now actually parse the module.
 		checkGetModule(BASIC_LIB, "basic_lib_pack.foo", "basic_lib_pack.foo");
-		writeFile(BASIC_LIB.resolve("source/basic_lib_pack/foo.d"), "module basic_lib_pack.foo; /***/");
+		writeToFileAndUpdateMTime(BASIC_LIB_FOO_MODULE, "module basic_lib_pack.foo; /*B*/");
 		checkStaleStatus(BASIC_LIB, StaleState.MODULE_CONTENTS_STALE);
 		checkStaleStatus(COMPLEX_LIB, StaleState.DEP_STALE);
 		getUpdatedResolution(COMPLEX_LIB);
 		
+		
+		// Test optimization: module-file modification with same source as before.
+		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		checkGetModule(BASIC_LIB, "basic_lib_pack.foo", "basic_lib_pack.foo");
+		writeToFileAndUpdateMTime(BASIC_LIB_FOO_MODULE, readStringFromFile(BASIC_LIB_FOO_MODULE));
+		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE).isStale() == true);
+		// This stale check will make the parse cache entry no longer stale
+		sm.getStoredResolution(COMPLEX_LIB).checkIsStale();
+		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE).isStale() == false);
+		checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
+		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		
+		// Test WC
 		testWorkingCopyModifications();
 	}
 	
@@ -276,7 +299,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		// Test file update over a working copy
 		doUpdateWorkingCopy(modulePath, SOURCE1);
-		writeToFileAndUpdateMTime(modulePath, SOURCE2);
+		writeToFileAndUpdateMTime(modulePath, SOURCE2, false);
 //		checkStaleStatus(COMPLEX_LIB, StaleState.MODULES_STALE);
 //		getUpdatedResolvedModule(modulePath, SOURCE2);
 //		// Then discard
@@ -298,7 +321,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertTrue(sm.checkIsResolutionStale(bundlePath) == false);
 		sm.discardWorkingCopy(filePath);
 		
-		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale() == null);
+		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale(true) == null);
 	}
 	
 	/* -----------------  ----------------- */

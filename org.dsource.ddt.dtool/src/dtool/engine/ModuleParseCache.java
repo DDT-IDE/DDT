@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -123,7 +122,7 @@ public class ModuleParseCache {
 		
 		protected String source = null;
 		protected boolean isWorkingCopy = false;
-		protected BasicFileAttributes fileSyncAttributes;
+		protected BasicFileAttributes sourceFileSyncAttributes;
 		protected volatile ParsedModule parsedModule = null;
 		
 		public ModuleEntry(Path filePath) {
@@ -133,16 +132,26 @@ public class ModuleParseCache {
 		
 		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
 			if(isStale()) {
-				readSource(filePath.toFile());
+				readSource();
 			}			
-			return doGetParseModule(source);
+			return doGetParsedModule(source);
 		}
 		
-		public synchronized ParsedModule getParsedModuleIfNotStale() {
-			if(isStale()) {
+		public synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
+			if(!isStale()) {
+				return parsedModule;		
+			}
+			
+			if(attemptSourceRefresh) {
+				try {
+					readSource();
+					return parsedModule; // parsedModule will remain the same if the source didn't change.
+				} catch (IOException e) {
+					return null;
+				}
+			} else {
 				return null;
-			}			
-			return parsedModule;		
+			}
 		}
 		
 		protected synchronized boolean isStale() {
@@ -150,7 +159,7 @@ public class ModuleParseCache {
 				assertNotNull(source);
 				return false;
 			}
-			if(source == null) {
+			if(source == null || parsedModule == null) {
 				return true;
 			}
 			
@@ -161,34 +170,28 @@ public class ModuleParseCache {
 				return true;
 			}
 			
-			return hasBeenModified(fileSyncAttributes, newAttributes);
+			return hasBeenModified(sourceFileSyncAttributes, newAttributes);
 		}
 		
 		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
 			assertNotNull(newSource);
-			if(!newSource.equals(source)) {
-				source = newSource;
-				parsedModule = null;
-				isWorkingCopy = true;
-			}
+			setNewSource(newSource);
+			isWorkingCopy = true;
 			dtoolServer.logMessage("ParseCache: Set working copy: " + filePath);
-			
-			return doGetParseModule(newSource);
+			return doGetParsedModule(newSource);
 		}
 		
 		protected synchronized void discardWorkingCopy() {
 			if(isWorkingCopy) {
 				isWorkingCopy = false;
-				fileSyncAttributes = null;
+				sourceFileSyncAttributes = null;
 				dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
 			}
 		}
 		
-		
-		protected void readSource(File file) throws IOException, FileNotFoundException {
-			fileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
-			
-			String fileContents = FileUtil.readStringFromFile(file, StringUtil.UTF8); // TODO: detect encoding
+		protected void readSource() throws IOException, FileNotFoundException {
+			sourceFileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+			String fileContents = FileUtil.readStringFromFile(filePath, StringUtil.UTF8); // TODO: detect encoding
 			setNewSource(fileContents);
 		}
 		
@@ -199,7 +202,7 @@ public class ModuleParseCache {
 			}
 		}
 		
-		protected ParsedModule doGetParseModule(String source) {
+		protected ParsedModule doGetParsedModule(String source) {
 			if(parsedModule == null) {
 				parsedModule = DeeParser.parseSource(source, filePath);
 				dtoolServer.logMessage("ParseCache: Parsed module " + filePath +

@@ -89,14 +89,12 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 			Path path = entry.getKey();
 			ResolvedModule currentModule = entry.getValue();
 			
-			ParsedModule parsedModuleIfNotStale = parseCache.getEntry(path).getParsedModuleIfNotStale();
-			if(parsedModuleIfNotStale == null) {
+			ParsedModule parsedModule = parseCache.getEntry(path).getParsedModuleIfNotStale(true);
+			if(parsedModule == null) {
 				return true;
-				/*BUG here : minor optimization: if stale source ends up being the same, 
-				 * then parsedModule needs not to be change. */
 			}
 			
-			if(parsedModuleIfNotStale != currentModule.parsedModule) {
+			if(parsedModule != currentModule.parsedModule) {
 				return true;
 			}
 		}

@@ -58,6 +58,12 @@ public final class FileUtil {
 		return readBytesFromFile(file).toString(charset);
 	}
 	
+	/** Read all bytes from the given file.
+	 * @return a String created from those bytes, with given charset. */
+	public static String readStringFromFile(Path file, Charset charset) throws IOException, FileNotFoundException {
+		return readBytesFromFile(file.toFile()).toString(charset);
+	}
+	
 	
 	/** Write the given array of bytes to given file */
 	public static void writeBytesToFile(File file, byte[] bytes) throws IOException, FileNotFoundException {
