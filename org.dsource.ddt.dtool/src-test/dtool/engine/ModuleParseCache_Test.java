@@ -26,7 +26,7 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.ModuleParseCache;
-import dtool.engine.CommonSemanticModelTest.Tests_DToolServer;
+import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;

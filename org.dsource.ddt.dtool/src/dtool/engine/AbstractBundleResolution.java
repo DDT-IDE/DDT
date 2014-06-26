@@ -22,6 +22,7 @@ import java.util.Set;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -45,7 +46,8 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		return bundleModules.moduleFiles;
 	}
 	
-	public Path getBundleModuleAbsolutePath(ModuleFullName moduleFullName) {
+	/** @return the absolute path of a module contained in this bundle resolution. */
+	protected Path getBundleModulePath(ModuleFullName moduleFullName) {
 		return bundleModules.getModuleAbsolutePath(moduleFullName);
 	}
 	
@@ -58,6 +60,17 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 	
 	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
+	}
+	
+	public boolean checkIsModuleListStale() {
+		List<Path> importFolders = bundleModules.importFolders;
+		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(importFolders) {
+			@Override
+			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
+				moduleFiles.add(fullPath);
+			}
+		};
+		return !modulesVisitor.getModuleFiles().equals(bundleModules.moduleFiles);
 	}
 	
 	/* -----------------  ----------------- */
@@ -91,7 +104,7 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 	}
 	
 	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
-		Path modulePath = getBundleModuleAbsolutePath(moduleFullName);
+		Path modulePath = getBundleModulePath(moduleFullName);
 		return modulePath == null ? null : getBundleResolvedModule(modulePath);
 	}
 	
@@ -114,6 +127,7 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
+	/** @return a resolved module from this bundle's full import path (including dependencies). */
 	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException;
 	
 	

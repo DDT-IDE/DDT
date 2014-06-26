@@ -12,7 +12,6 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 
@@ -72,17 +70,6 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	@Override
 	public String toString() {
 		return "BundleResolution: " + getBundleName() + " - " + getBundlePath();
-	}
-	
-	public boolean checkIsModuleListStale() {
-		ArrayList<Path> importFolders = bundleDubInfo.getEffectiveImportFolders_AbsolutePath();
-		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(importFolders) {
-			@Override
-			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
-				moduleFiles.add(fullPath);
-			}
-		};
-		return !modulesVisitor.getModuleFiles().equals(bundleModules.moduleFiles);
 	}
 	
 	public boolean checkIsModuleListStaleInTree() {

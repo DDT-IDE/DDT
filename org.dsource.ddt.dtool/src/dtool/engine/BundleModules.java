@@ -13,9 +13,11 @@ package dtool.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,17 +27,20 @@ public class BundleModules {
 	
 	protected final Map<ModuleFullName, Path> modules;
 	protected final Set<Path> moduleFiles;
+	protected final List<Path> importFolders;
 	
 	/**
 	 * Optimized constructor 
 	 */
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles) {
-		this(modules, moduleFiles, true);
+	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, List<Path> importFolders) {
+		this(modules, moduleFiles, importFolders, true);
 	}
 	
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, boolean requireAbsolute) {
+	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, List<Path> importFolders, 
+			boolean requireAbsolute) {
 		this.modules = Collections.unmodifiableMap(modules);
 		this.moduleFiles = Collections.unmodifiableSet(moduleFiles);
+		this.importFolders = Collections.unmodifiableList(new ArrayList<>(importFolders));
 		
 		if(requireAbsolute) {
 			for (Path path : moduleFiles) {
@@ -63,6 +68,10 @@ public class BundleModules {
 				matchedModules.add(moduleFullName);
 			}
 		}
+	}
+	
+	protected static BundleModules createEmpty() {
+		return new BundleModules(new HashMap<ModuleFullName, Path>(), new HashSet<Path>(), new ArrayList<Path>());
 	}
 	
 }

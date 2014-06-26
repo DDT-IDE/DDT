@@ -33,7 +33,7 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public class SemanticManager_Test extends CommonSemanticModelTest {
+public class SemanticManager_Test extends CommonSemanticManagerTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
@@ -87,7 +87,7 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 	@Test
 	public void testManifestUpdates() throws Exception { testManifestUpdates$(); }
 	public void testManifestUpdates$() throws Exception {
-		sm = new SemanticManager(new Tests_DToolServer());
+		sm = __initSemanticManager();
 		
 		// Test manifest only updates
 		sm.getUpdatedManifest(BASIC_LIB);
@@ -102,13 +102,13 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 		checkStaleStatus(SMTEST, StaleState.NO_BUNDLE_RESOLUTION);
 		
 		// Test update resolution over partially current manifests
-		sm = new SemanticManager(new Tests_DToolServer());
+		sm = __initSemanticManager();
 		sm.getUpdatedManifest(BASIC_LIB);
 		getUpdatedResolution(SMTEST);
 		checkStaleStatus(SMTEST, StaleState.CURRENT);
 		
 		// -- Test update resolution --
-		sm = new SemanticManager(new Tests_DToolServer());
+		sm = __initSemanticManager();
 		
 		__storeCurrentManifests__();
 		getUpdatedResolution(BASIC_LIB);
@@ -167,7 +167,7 @@ public class SemanticManager_Test extends CommonSemanticModelTest {
 	@Test
 	public void testInvalidInput() throws Exception { testInvalidInput$(); }
 	public void testInvalidInput$() throws Exception {
-		sm = new SemanticManager(new Tests_DToolServer());
+		__initSemanticManager();
 		
 		try {
 			sm.getUpdatedResolution(NON_EXISTANT);

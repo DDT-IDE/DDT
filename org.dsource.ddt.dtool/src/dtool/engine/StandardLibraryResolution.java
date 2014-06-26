@@ -11,6 +11,7 @@
 package dtool.engine;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,23 +70,41 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
 		protected static final Path objectPath = SYNTHETIC_COMPILER_INSTALL_PATH.resolve("object.di");
+		protected final BundleModules syntheticBundleModules;
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
-			super(manager, SYNTHETIC_COMPILER_INSTALL, createBundleModules());
+			super(manager, SYNTHETIC_COMPILER_INSTALL, BundleModules.createEmpty());
+			
+			this.syntheticBundleModules = createSyntheticBundleModules();
 			
 			ParsedModule parsedModule = DeeParser.parseSource("module object; ", objectPath);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
 			resolvedModules.put(objectPath, resolvedModule);
 		}
 		
-		protected static BundleModules createBundleModules() {
+		protected static BundleModules createSyntheticBundleModules() {
 			HashMap<ModuleFullName, Path> modules = new HashMap<>();
 			HashSet<Path> moduleFiles = new HashSet<>();
 			
 			moduleFiles.add(objectPath);
 			modules.put(new ModuleFullName("object"), objectPath);
 			
-			return new BundleModules(modules, moduleFiles, false);
+			return new BundleModules(modules, moduleFiles, new ArrayList<Path>(), false);
+		}
+		
+		@Override
+		protected Path getBundleModulePath(ModuleFullName moduleFullName) {
+			return syntheticBundleModules.getModuleAbsolutePath(moduleFullName);
+		}
+		
+		@Override
+		protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
+			syntheticBundleModules.findModules(fullNamePrefix, matchedModules);
+		}
+		
+		@Override
+		public synchronized boolean checkIsModuleContentsStale() {
+			return false;
 		}
 		
 	}

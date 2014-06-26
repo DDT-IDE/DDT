@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
 import dtool.dub.BundlePath;
-import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
@@ -239,7 +238,7 @@ public class SemanticManager extends AbstractSemanticManager {
 				return staleInfo; // No longer stale
 			
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
-			StandardLibraryResolution stdLibResolution = getUpdatedStandardLibraryResolution();
+			StandardLibraryResolution stdLibResolution = getUpdatedStandardLibResolution();
 			
 			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
 			
@@ -249,21 +248,44 @@ public class SemanticManager extends AbstractSemanticManager {
 		}
 	}
 	
-	// /*BUG here TODO: caching. */
-	protected StandardLibraryResolution getUpdatedStandardLibraryResolution() {
-		List<CompilerInstall> foundInstalls = searchCompilerInstalls();
+	protected StandardLibraryResolution getUpdatedStandardLibResolution() {
+		List<CompilerInstall> foundInstalls = searchForCompilerInstalls();
+		CompilerInstall foundInstall = null;
 		if(foundInstalls.size() > 0) {
 			// TODO: determine a better match according to compiler type.
-			CompilerInstall foundInstall = foundInstalls.get(0);
-			return new StandardLibraryResolution(this, foundInstall);
+			foundInstall = foundInstalls.get(0);
 		}
-		return new MissingStandardLibraryResolution(this);
+		
+		return stdLibResolutions.getEntry(foundInstall);
 	}
 	
-	protected List<CompilerInstall> searchCompilerInstalls() {
+	// For tests override usage only
+	protected List<CompilerInstall> searchForCompilerInstalls() {
 		SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
 		searchCompilers.searchForCompilersInPathEnvVars();
 		return searchCompilers.getFoundInstalls();
+	}
+	
+	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
+	
+	protected class StdLibResolutionsCache extends CachingRegistry<CompilerInstall, StandardLibraryResolution> {
+		@Override
+		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
+			StandardLibraryResolution entry = map.get(key);
+			if(entry == null || false /*BUG here*/) {
+				entry = createEntry(key);
+				map.put(key, entry);
+			}
+			return entry;
+		}
+		
+		@Override
+		protected StandardLibraryResolution createEntry(CompilerInstall compilerInstall) {
+			if(compilerInstall != null) {
+				return new StandardLibraryResolution(SemanticManager.this, compilerInstall);
+			}
+			return new MissingStandardLibraryResolution(SemanticManager.this);
+		}
 	}
 	
 	protected BundleInfo setNewBundleResolution(BundleResolution bundleRes) {
@@ -273,10 +295,6 @@ public class SemanticManager extends AbstractSemanticManager {
 		BundleInfo newInfo = getInfo(bundleRes.getBundlePath());
 		newInfo.bundleResolution = bundleRes;
 		return newInfo;
-	}
-	
-	protected DubBundle getBundle(BundlePath bundlePath) {
-		return getStoredManifest(bundlePath).bundle;
 	}
 	
 	public ParsedModule updateWorkingCopyAndParse(Path filePath, String source) {

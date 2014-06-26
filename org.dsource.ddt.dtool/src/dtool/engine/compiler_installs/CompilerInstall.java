@@ -11,6 +11,7 @@
 package dtool.engine.compiler_installs;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.CollectionUtil.createArrayList;
 
 import java.nio.file.Path;
@@ -47,6 +48,21 @@ public class CompilerInstall {
 	
 	public List<Path> getLibrarySourceFolders() {
 		return librarySourceFolders;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof CompilerInstall)) return false;
+		
+		CompilerInstall other = (CompilerInstall) obj;
+		
+		return areEqual(librarySourceFolders, other.librarySourceFolders);
+	}
+	
+	@Override
+	public int hashCode() {
+		return librarySourceFolders.hashCode();
 	}
 	
 }

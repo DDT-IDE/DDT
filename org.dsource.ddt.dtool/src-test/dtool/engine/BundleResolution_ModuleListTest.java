@@ -11,7 +11,6 @@
 package dtool.engine;
 
 import static dtool.engine.StandardLibraryResolution.SYNTHETIC_COMPILER_INSTALL_PATH;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_DIR;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -24,11 +23,10 @@ import java.util.List;
 import org.junit.Test;
 
 import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.engine.modules.ModuleFullName;
 
-public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
+public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	
 	public static class BundleFilesChecker {
 		
@@ -63,7 +61,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 	public void testModuleResolving() throws Exception { testModuleResolving$(); }
 	public void testModuleResolving$() throws Exception {
 		
-		sm = new SemanticManager(new Tests_DToolServer());
+		__initSemanticManager();
 		
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertEquals(sr.getBundleName(), "basic_lib");
@@ -127,25 +125,10 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		
 	}
 	
-	public static class InstrumentedSemanticManager extends SemanticManager {
-		public InstrumentedSemanticManager() {
-			super(new Tests_DToolServer());
-		}
-		
-		@Override
-		protected List<CompilerInstall> searchCompilerInstalls() {
-			SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
-			searchCompilers.searchPathsString(DEFAULT_DMD_INSTALL_EXE_DIR.toString(), "_synthetic_");
-			List<CompilerInstall> foundInstalls = searchCompilers.getFoundInstalls();
-			assertTrue(foundInstalls.size() > 0);
-			return foundInstalls;
-		}
-	}
-	
 	@Test
 	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
 	public void testStdLibResolve$() throws Exception {
-		sm = new InstrumentedSemanticManager();
+		sm = new Tests_SemanticManager();
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertTrue(sr.stdLibResolution.getCompilerType() == ECompilerType.DMD);
 		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_LOCATION));
@@ -155,9 +138,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 		
 		
 		// Test when no StdLib is found
-		sm = new SemanticManager(new Tests_DToolServer()) {
+		sm = new Tests_SemanticManager() {
 			@Override
-			protected List<CompilerInstall> searchCompilerInstalls() {
+			protected List<CompilerInstall> searchForCompilerInstalls() {
 				return new ArrayList<>();
 			}
 		};
@@ -172,9 +155,11 @@ public class BundleResolution_ModuleListTest extends CommonSemanticModelTest {
 			"object"
 		));
 		
-		assertEqualSet(sr.stdLibResolution.findModules(""), hashSet(
+		StandardLibraryResolution fallbackStdLibResolution = sr.stdLibResolution;
+		assertEqualSet(fallbackStdLibResolution.findModules(""), hashSet(
 			"object"
 		));
+		
 	}
 	
 }

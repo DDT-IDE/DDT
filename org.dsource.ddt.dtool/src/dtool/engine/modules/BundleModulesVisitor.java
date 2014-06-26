@@ -29,8 +29,10 @@ public abstract class BundleModulesVisitor {
 	
 	protected final HashMap<ModuleFullName, Path> modules = new HashMap<>();
 	protected final HashSet<Path> moduleFiles = new HashSet<>();
+	protected final List<Path> importFolders;
 	
 	public BundleModulesVisitor(List<Path> importFolders) {
+		this.importFolders = importFolders;
 		visitBundleModules(importFolders);
 	}
 	
@@ -100,7 +102,7 @@ public abstract class BundleModulesVisitor {
 	}
 	
 	public BundleModules toBundleModules() {
-		return new BundleModules(modules, moduleFiles);
+		return new BundleModules(modules, moduleFiles, importFolders);
 	}
 	
 }

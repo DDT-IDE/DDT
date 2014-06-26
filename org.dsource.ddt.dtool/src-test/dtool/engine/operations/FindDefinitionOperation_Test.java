@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import org.junit.Test;
 
 import dtool.ast.SourceRange;
-import dtool.engine.CommonSemanticModelTest.Tests_DToolServer;
+import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.tests.CommonDToolTest;

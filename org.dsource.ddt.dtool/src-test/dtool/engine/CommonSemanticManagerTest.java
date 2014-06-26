@@ -10,18 +10,20 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.engine.CommonSemanticModelTest.StaleState.CURRENT;
-import static dtool.engine.CommonSemanticModelTest.StaleState.MANIFEST_STALE;
-import static dtool.engine.CommonSemanticModelTest.StaleState.MODULES_STALE;
-import static dtool.engine.CommonSemanticModelTest.StaleState.MODULE_CONTENTS_STALE;
-import static dtool.engine.CommonSemanticModelTest.StaleState.MODULE_LIST_STALE;
-import static dtool.engine.CommonSemanticModelTest.StaleState.NO_BUNDLE_RESOLUTION;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.CURRENT;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.MANIFEST_STALE;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULES_STALE;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_CONTENTS_STALE;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_LIST_STALE;
+import static dtool.engine.CommonSemanticManagerTest.StaleState.NO_BUNDLE_RESOLUTION;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_DIR;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.misc.FileUtil;
@@ -36,23 +38,14 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.ModuleFullName;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.utils.MiscFileUtils;
 
-public class CommonSemanticModelTest extends CommonDToolTest {
-	
-	public static class Tests_DToolServer extends DToolServer {
-		
-		public Tests_DToolServer() {
-		}
-		
-		@Override
-		protected void logError(String message, Throwable throwable) {
-			assertFail();
-		}
-	}
+public class CommonSemanticManagerTest extends CommonDToolTest {
 	
 	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
 	
@@ -88,10 +81,100 @@ public class CommonSemanticModelTest extends CommonDToolTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected SemanticManager sm;
+	public static class Tests_DToolServer extends DToolServer {
+		
+		public Tests_DToolServer() {
+		}
+		
+		@Override
+		protected void logError(String message, Throwable throwable) {
+			assertFail();
+		}
+	}
 	
-	protected void __initSemanticManager() throws IOException {
-		sm = new SemanticManager(new Tests_DToolServer());
+	public static class Tests_SemanticManager extends SemanticManager {
+		
+		public Tests_SemanticManager() {
+			super(new Tests_DToolServer());
+		}
+		
+		@Override
+		public ResolvedManifest getUpdatedManifest(BundlePath bundlePath) throws ExecutionException {
+			ResolvedManifest manifest = super.getUpdatedManifest(bundlePath);
+			assertTrue(checkIsManifestStale(bundlePath) == false);
+			return manifest;
+		}
+		
+		@Override
+		public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+			boolean manifestStale = checkIsManifestStale(bundlePath);
+			ResolvedManifest previousManifest = getStoredManifest(bundlePath);
+			
+			BundleResolution bundleResolution = super.getUpdatedResolution(bundlePath);
+			assertEquals(bundleResolution.bundlePath, bundlePath);
+			
+			assertEquals(bundleResolution.manifest == previousManifest, !manifestStale);
+			
+			assertTrue(checkIsManifestStale(bundlePath) == false);
+			assertTrue(checkIsResolutionStale(bundlePath) == false);
+			
+			// test caching
+			assertTrue(bundleResolution == super.getUpdatedResolution(bundlePath));
+			
+			return bundleResolution;
+		}
+		
+		public void checkStaleStatus(BundlePath bundlePath, StaleState staleState) {
+
+			assertEquals(getInfo(bundlePath).manifestEntry.isStale(), 
+				staleState == MANIFEST_STALE);
+			
+			BundleResolution storedResolution = getStoredResolution(bundlePath);
+			
+			if(storedResolution == null) {
+				assertTrue(staleState == MANIFEST_STALE || staleState == NO_BUNDLE_RESOLUTION);
+			} else {
+				assertEquals(storedResolution.checkIsModuleListStale(), 
+					staleState == MODULES_STALE || staleState == MODULE_LIST_STALE);
+				assertEquals(storedResolution.checkIsModuleContentsStale(), 
+					staleState == MODULES_STALE || staleState == MODULE_CONTENTS_STALE);
+			}
+			
+			assertEquals(checkIsResolutionStale(bundlePath), staleState != CURRENT);
+		}
+		
+		@Override
+		protected StandardLibraryResolution getUpdatedStandardLibResolution() {
+			StandardLibraryResolution stdLibResolution = super.getUpdatedStandardLibResolution();
+			// Test caching of resolution
+			assertAreEqual(stdLibResolution.compilerInstall, super.getUpdatedStandardLibResolution().compilerInstall);
+			assertTrue(stdLibResolution == super.getUpdatedStandardLibResolution());
+			
+			assertTrue(stdLibResolution.checkIsModuleListStale() == false);
+			assertTrue(stdLibResolution.checkIsModuleContentsStale() == false);
+			
+			return stdLibResolution;
+		}
+		
+		@Override
+		protected List<CompilerInstall> searchForCompilerInstalls() {
+			return doSearchForCompilerInstalls();
+		}
+		
+		protected List<CompilerInstall> doSearchForCompilerInstalls() {
+			SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
+			searchCompilers.searchPathsString(DEFAULT_DMD_INSTALL_EXE_DIR.toString(), "_synthetic_");
+			List<CompilerInstall> foundInstalls = searchCompilers.getFoundInstalls();
+			assertTrue(foundInstalls.size() > 0);
+			return foundInstalls;
+		}
+		
+	}
+	
+	protected Tests_SemanticManager sm;
+	
+	protected Tests_SemanticManager __initSemanticManager() throws IOException {
+		return sm = new Tests_SemanticManager();
 	}
 	
 	@After
@@ -104,39 +187,12 @@ public class CommonSemanticModelTest extends CommonDToolTest {
 		DEP_STALE }
 	
 	protected void checkStaleStatus(BundlePath bundlePath, StaleState staleState) {
-
-		assertEquals(sm.getInfo(bundlePath).manifestEntry.isStale(), 
-			staleState == MANIFEST_STALE);
-		
-		BundleResolution storedResolution = sm.getStoredResolution(bundlePath);
-		
-		if(storedResolution == null) {
-			assertTrue(staleState == MANIFEST_STALE || staleState == NO_BUNDLE_RESOLUTION);
-		} else {
-			assertEquals(storedResolution.checkIsModuleListStale(), 
-				staleState == MODULES_STALE || staleState == MODULE_LIST_STALE);
-			assertEquals(storedResolution.checkIsModuleContentsStale(), 
-				staleState == MODULES_STALE || staleState == MODULE_CONTENTS_STALE);
-		}
-		
-		assertEquals(sm.checkIsResolutionStale(bundlePath), staleState != CURRENT);
+		sm.checkStaleStatus(bundlePath, staleState);
 	}
 	
 	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
 		assertTrue(sm.checkIsResolutionStale(bundlePath));
-		
-		boolean manifestStale = sm.checkIsManifestStale(bundlePath);
-		
-		ResolvedManifest previousManifest = sm.getStoredManifest(bundlePath);
-		
-		BundleResolution bundleRes = sm.getUpdatedResolution(bundlePath);
-		assertEquals(bundleRes.bundlePath, bundlePath);
-		assertEquals(bundleRes.manifest == previousManifest, !manifestStale);
-		checkStaleStatus(bundlePath, StaleState.CURRENT);
-		
-		// test Caching
-		assertTrue(bundleRes == sm.getUpdatedResolution(bundlePath));
-		return bundleRes;
+		return sm.getUpdatedResolution(bundlePath);
 	}
 	
 	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ParseSourceException {

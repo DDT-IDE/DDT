@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public abstract class CachingRegistry<KEY, ENTRY> {
 	
-	private final HashMap<KEY, ENTRY> map = new HashMap<>();
+	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	
 	public synchronized ENTRY getEntry(KEY key) {
 		ENTRY entry = map.get(key);
