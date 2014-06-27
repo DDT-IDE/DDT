@@ -69,7 +69,6 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			"include/d/dmd/phobos"
 		));
 		
-		
 		testDetectInstall(MOCK_GDC, "bin/gdc", ECompilerType.GDC, list(
 			"include/d2/4.5.2/"
 		));
@@ -78,7 +77,6 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		));
 		
 		testDetectInstall(MOCK_LDC_ARCHIVE, "bin/ldc2", ECompilerType.LDC, list(
-			"import/core",
 			"import/ldc",
 			"import/"
 		));
@@ -129,7 +127,7 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			list("include/d/4.6.1/"));
 		checkInstall(foundInstalls.get(1), MULTIPLE_IN_ONE_PATH.resolve("ldc2"), ECompilerType.LDC, 
 			MULTIPLE_IN_ONE_PATH.getParent(), 
-			list("import/core", "import/ldc", "import/"));
+			list("import/ldc", "import/"));
 	}
 	
 }

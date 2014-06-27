@@ -70,7 +70,6 @@ public class CompilerInstallDetector {
 		
 		if(cmdDir.resolve("../import/core").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC,
-				cmdDir.resolve("../import/core"),
 				cmdDir.resolve("../import/ldc/"),
 				cmdDir.resolve("../import"));
 		}
