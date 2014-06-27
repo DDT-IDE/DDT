@@ -80,6 +80,17 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			"import/ldc",
 			"import/"
 		));
+		
+		// Arch Linux
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/dmd", ECompilerType.DMD, list(
+			"include/dlang/dmd"
+		));
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/ldc2", ECompilerType.LDC, list(
+			"include/dlang/ldc"
+		));
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/gdc", ECompilerType.GDC, list(
+			"include/dlang/gdc"
+		));
 	}
 	
 	protected void testDetectInstall(Path installPath, String compilerPathStr, ECompilerType type, 

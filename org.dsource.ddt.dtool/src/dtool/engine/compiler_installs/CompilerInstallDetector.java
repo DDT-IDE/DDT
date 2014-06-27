@@ -51,6 +51,11 @@ public class CompilerInstallDetector {
 				cmdDir.resolve("../../src/phobos"));
 		}
 		
+		if(cmdDir.resolve("../include/dlang/dmd").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.DMD, 
+				cmdDir.resolve("../include/dlang/dmd"));
+		}
+		
 		if(cmdDir.resolve("../include/dmd").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
 				cmdDir.resolve("../include/dmd/druntime/import"),
@@ -68,9 +73,14 @@ public class CompilerInstallDetector {
 	protected CompilerInstall detectLDCInstall(Path commandPath) {
 		Path cmdDir = commandPath.getParent();
 		
+		if(cmdDir.resolve("../include/dlang/ldc").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.LDC, 
+				cmdDir.resolve("../include/dlang/ldc"));
+		}
+		
 		if(cmdDir.resolve("../import/core").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC,
-				cmdDir.resolve("../import/ldc/"),
+				cmdDir.resolve("../import/ldc"),
 				cmdDir.resolve("../import"));
 		}
 		return null;
@@ -78,6 +88,11 @@ public class CompilerInstallDetector {
 	
 	protected CompilerInstall detectGDCInstall(Path commandPath) {
 		Path cmdDir = commandPath.getParent();
+		
+		if(cmdDir.resolve("../include/dlang/gdc").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.GDC, 
+				cmdDir.resolve("../include/dlang/gdc"));
+		}
 		
 		CompilerInstall install = checkGDCLibrariesAt(cmdDir.resolve("../include/d"), commandPath);
 		if(install != null) 

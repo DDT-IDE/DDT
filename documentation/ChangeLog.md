@@ -6,6 +6,10 @@
  * Greater DUB integrations for semantic operations. 
    * Can now do Open Definition, Content Assist, etc. in D files outside of a DDT Eclipse project.
    * Better prevention of temporary UI freezes when doing semantic operations.
+ * Added: detection of standard library source locations for Arch Linux DMD/LDC/GDC compiler installations.
+  #/bin/dmd  -> #/include/dlang/dmd
+  #/bin/ldc2 -> #/include/dlang/ldc
+  #/bin/gdc  -> #/include/dlang/gdc   
 
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
