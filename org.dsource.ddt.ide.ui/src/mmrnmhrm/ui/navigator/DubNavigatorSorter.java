@@ -19,6 +19,7 @@ import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.StdLibContainer;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IFile;
@@ -54,6 +55,11 @@ public class DubNavigatorSorter extends ViewerSorter {
 			public Integer visitModelElement(IModelElement element, IParent elementAsParent) {
 				assertFail();
 				return null;
+			}
+			
+			@Override
+			public Integer visitStdLibContainer(StdLibContainer element) {
+				return -20;
 			}
 			
 			@Override
@@ -103,6 +109,7 @@ public class DubNavigatorSorter extends ViewerSorter {
 				} 
 				return 0;
 			}
+			
 		}.switchElement(element);
 	}
 	

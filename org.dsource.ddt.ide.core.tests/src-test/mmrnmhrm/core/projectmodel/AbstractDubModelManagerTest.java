@@ -50,31 +50,8 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
 
-/**
- * Utilities for manipulation of Dub projects
- */
-public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest {
-	
-	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
-	
-	static {
-		initDubRepositoriesPath();
-	}
-	
-	private static void initDubRepositoriesPath() {
-		DubDescribeParserTest.initDubRepositoriesPath();
-		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
-		CoreDubModel.startDefaultManager();
-		
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-	    		System.out.println("BaseDubModelManagerTest shutdown hook.");
-	    		DubDescribeParserTest.dubRemovePath(ECLIPSE_WORKSPACE_PATH);
-				DubDescribeParserTest.cleanupDubRepositoriesPath();
-			}
-		});
-	}
+
+abstract class JsHelpers extends CommonDeeWorkspaceTest {
 	
 	public static String jsObject(String... entries) {
 		StringBuilder sb = new StringBuilder();
@@ -124,13 +101,42 @@ public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest
 		return sb;
 	}
 	
+}
+/**
+ * Utilities for manipulation of Dub projects
+ */
+public abstract class AbstractDubModelManagerTest extends JsHelpers {
+	
+	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
+	
+	static {
+		initDubRepositoriesPath();
+	}
+	
+	private static void initDubRepositoriesPath() {
+		DubDescribeParserTest.initDubRepositoriesPath();
+		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
+		CoreDubModel.startDefaultManager();
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+	    		System.out.println("BaseDubModelManagerTest shutdown hook.");
+	    		DubDescribeParserTest.dubRemovePath(ECLIPSE_WORKSPACE_PATH);
+				DubDescribeParserTest.cleanupDubRepositoriesPath();
+			}
+		});
+		_awaitModelUpdates_();
+	}
+	
+	
 	/* -----------------  ----------------- */
 	
-	protected Path loc(IProject project) {
+	protected static Path loc(IProject project) {
 		return project.getLocation().toFile().toPath();
 	}
 	
-	protected BundlePath bpath(IProject project) {
+	protected static BundlePath bpath(IProject project) {
 		return BundlePath.create(project.getLocation().toFile().toPath());
 	}
 	
@@ -138,20 +144,20 @@ public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest
 		return DubModelManager.getDefault().internal_getModelAgent();
 	}
 	
-	protected void _awaitModelUpdates_() {
+	protected static void _awaitModelUpdates_() {
 		DubModelManager.getDefault().syncPendingUpdates();
 	}
 	
-	protected static DubModelManager getProjectModel() {
+	protected static DubModelManager getModelManager() {
 		return DubModelManager.getDefault();
+	}
+	
+	public static DubDependenciesContainer getDubContainer(IProject project) {
+		return assertNotNull(CoreDubModel.getProjectInfo(project).getDubContainer(project));
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
 		return assertNotNull(CoreDubModel.getBundleInfo(projectName));
-	}
-	
-	protected DubDependenciesContainer getDubContainer(IProject project) {
-		return CoreDubModel.getDubContainer(project);
 	}
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) 
@@ -240,7 +246,6 @@ public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest
 	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle, 
 			boolean expectedError) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
-		assertNotNull(dubContainer);
 		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
 			checkAndRemoveRawDep(depChildren, rawDep);
@@ -270,7 +275,6 @@ public abstract class AbstractDubModelManagerTest extends CommonDeeWorkspaceTest
 	
 	protected void testDubContainer(IProject project, DubBundleChecker expMainBundle) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
-		assertNotNull(dubContainer);
 		assertTrue(dubContainer.getBundleInfo().isResolved());
 		
 		IDubElement[] children = dubContainer.getChildren();

@@ -10,17 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.core.projectmodel;
 
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
-
 import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundleDescription;
 
 public class CoreDubModel {
-
+	
 	protected static final DubModel dubModel = new DubModel();
 	
-	public static IDubModel getDubModel() {
+	public static DubModel getDubModel() {
 		return CoreDubModel.dubModel;
 	}
 	
@@ -28,13 +26,9 @@ public class CoreDubModel {
 		return CoreDubModel.dubModel.getBundleInfo(projectName);
 	}
 	
-	public static DubDependenciesContainer getDubContainer(IProject project) {
-		DubBundleDescription bundleInfo = CoreDubModel.getBundleInfo(project.getName());
-		if(bundleInfo == null)
-			return null;
-		return new DubDependenciesContainer(bundleInfo, project);
+	public static ProjectInfo getProjectInfo(IProject project) {
+		return CoreDubModel.dubModel.getProjectInfo(project.getName());
 	}
-	
 	
 	protected static final DubModelManager modelManager = new DubModelManager(CoreDubModel.dubModel);
 	

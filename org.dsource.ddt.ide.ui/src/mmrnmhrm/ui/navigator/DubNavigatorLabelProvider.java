@@ -15,6 +15,7 @@ import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
 import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
+import mmrnmhrm.core.projectmodel.elements.StdLibContainer;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
@@ -83,6 +84,15 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	
 	protected ForegroundColorStyler styler(RGB rgb) {
 		return new ForegroundColorStyler(rgb);
+	}
+	
+	@Override
+	public StyledString visitStdLibContainer(StdLibContainer element) {
+		StyledString baseText = new StyledString("D Standard Library");
+		if(element.isMissingStdLib()) {
+			return baseText.append(" [Error: none found]", styler(DUB_DEPCONTAINER_ERROR_ANNOTATION_FG)); 
+		}
+		return baseText;
 	}
 	
 	@Override
@@ -169,6 +179,11 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {
 		return DeePluginImages.DUB_DEPS_CONTAINER.getImage();
+	}
+	
+	@Override
+	public Image visitStdLibContainer(StdLibContainer element) {
+		return DeePluginImages.DUB_STD_LIB.getImage();
 	}
 	
 	@Override

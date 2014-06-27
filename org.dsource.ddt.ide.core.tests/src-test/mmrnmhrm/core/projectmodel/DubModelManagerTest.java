@@ -59,10 +59,14 @@ public class DubModelManagerTest extends AbstractDubModelManagerTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
+		deleteProject(DUB_TEST); // In case drop-to-frame is used during debugging.
+		_awaitModelUpdates_();
+		
+		// Some basic model tests
+		assertTrue(getModelManager().model.getBundleInfo(DUB_TEST) == null);
+		
 		IProject project;
 		long taskCount;
-		deleteProject(DUB_TEST);
-		_awaitModelUpdates_();
 		
 		// Test project with dub.json, but no D nature
 		LatchRunnable latchRunnable = new LatchRunnable();
@@ -90,7 +94,7 @@ public class DubModelManagerTest extends AbstractDubModelManagerTest {
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
 		assertTrue(CoreDubModel.getBundleInfo(project.getName()) == null);
-		assertTrue(getDubContainer(project) == null);
+		assertTrue(CoreDubModel.getProjectInfo(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.
 		_awaitModelUpdates_();

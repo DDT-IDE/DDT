@@ -6,6 +6,7 @@
  * Greater DUB integrations for semantic operations. 
    * Can now do Open Definition, Content Assist, etc. in D files outside of a DDT Eclipse project.
    * Better prevention of temporary UI freezes when doing semantic operations.
+ * Added D Standard Library element to Project Explorer.
  * Added: detection of standard library source locations for Arch Linux DMD/LDC/GDC compiler installations.
   #/bin/dmd  -> #/include/dlang/dmd
   #/bin/ldc2 -> #/include/dlang/ldc

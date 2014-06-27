@@ -230,7 +230,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		BundleResolution semanticResolution = info.getSemanticResolution();
 		if(info.checkIsResolutionStale() || 
 			(compilerPath != null && !areEqual(semanticResolution.getCompilerPath(), compilerPath))) {
-			
+			/*BUG here*/
 			return updateSemanticResolutionEntry(info, compilerPath);
 		}
 		return semanticResolution;
@@ -284,25 +284,9 @@ public class SemanticManager extends AbstractSemanticManager {
 		if(compilerPath != null) {
 			return new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
 		} else {
-			
-			List<CompilerInstall> foundInstalls = searchForCompilerInstalls();
-			
-			for (CompilerInstall compilerInstall : foundInstalls) {
-				// TODO: determine a better match according to compiler type.
-				if(true) {
-					// Use first
-					return compilerInstall;
-				}
-			}
+			// TODO: determine a better match according to compiler type.
+			return new SM_SearchCompilersOnPath().searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		}
-		return null;
-	}
-	
-	// For tests override usage only
-	protected List<CompilerInstall> searchForCompilerInstalls() {
-		SearchCompilersOnPathOperation searchCompilers = new SM_SearchCompilersOnPath();
-		searchCompilers.searchForCompilersInPathEnvVars();
-		return searchCompilers.getFoundInstalls();
 	}
 	
 	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
@@ -310,6 +294,9 @@ public class SemanticManager extends AbstractSemanticManager {
 	protected class StdLibResolutionsCache extends CachingRegistry<CompilerInstall, StandardLibraryResolution> {
 		@Override
 		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
+			if(key == null) {
+				key = MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
+			}
 			StandardLibraryResolution entry = map.get(key);
 			if(entry == null || entry.checkIsStale()) {
 				entry = createEntry(key);
@@ -320,10 +307,10 @@ public class SemanticManager extends AbstractSemanticManager {
 		
 		@Override
 		protected StandardLibraryResolution createEntry(CompilerInstall compilerInstall) {
-			if(compilerInstall != null) {
-				return new StandardLibraryResolution(SemanticManager.this, compilerInstall);
+			if(compilerInstall == MissingStandardLibraryResolution.NULL_COMPILER_INSTALL) {
+				return new MissingStandardLibraryResolution(SemanticManager.this);
 			}
-			return new MissingStandardLibraryResolution(SemanticManager.this);
+			return new StandardLibraryResolution(SemanticManager.this, compilerInstall);
 		}
 	}
 	

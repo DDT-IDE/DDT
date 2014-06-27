@@ -23,17 +23,15 @@ import dtool.dub.DubBundleDescription;
 
 public class DubModelElementsTest extends AbstractDubModelManagerTest {
 	
-	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
-	
-	protected DubModelManager getModelManager() {
-		return CoreDubModel.modelManager;
-	}
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
+		
+		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
+		libProject.getFolder("src").create(true, true, null);
 		
 		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		project.getFolder("source").create(true, true, null);
@@ -44,10 +42,6 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 			array(new DubBundle.DubDependecyRef("dub_lib", null)), 
 			null, null);
 		
-		
-		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
-		libProject.getFolder("src").create(true, true, null);
-		
 		DubBundle[] bundleDeps = array(new DubBundle(bpath(libProject), "dub_lib", null,
 			"~master", array("src"), CommonDubTest.paths("src"), 
 			null,
@@ -57,17 +51,15 @@ public class DubModelElementsTest extends AbstractDubModelManagerTest {
 		DubBundleDescription bundleDesc = new DubBundleDescription(mainBundle, bundleDeps);
 		
 		getModelManager().addProjectModel(project, bundleDesc);
-		getModelManager().dubProjectRemoved(libProject);
-		_awaitModelUpdates_();
 		
-		DubDependenciesContainer dubContainer = CoreDubModel.getDubContainer(project);
+		DubDependenciesContainer dubContainer = getDubContainer(project);
 		assertTrue(dubContainer.getChildren().length == 1);
 		
 		DubDependencyElement libDepElement = 
 				assertCast(dubContainer.getChildren()[0], DubDependencyElement.class);
 		
 		assertTrue(libDepElement.getChildren().length == 1);
-//		assertCast(libDepElement.getChildren()[0], IProjectFragment.class);
+//		assertCast(libDepElement.getChildren()[0], IProjectFragment.class); /*BUG here TODO*/
 	}
 	
 }

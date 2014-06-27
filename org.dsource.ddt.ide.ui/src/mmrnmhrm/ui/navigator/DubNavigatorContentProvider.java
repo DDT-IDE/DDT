@@ -9,6 +9,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.projectmodel.CoreDubModel;
 import mmrnmhrm.core.projectmodel.IDubModel.DubModelUpdateEvent;
 import mmrnmhrm.core.projectmodel.IDubModel.IDubModelListener;
+import mmrnmhrm.core.projectmodel.ProjectInfo;
 import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
 import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
 import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
@@ -16,6 +17,7 @@ import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
 import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement;
 import mmrnmhrm.core.projectmodel.elements.IDubElement.DubElementType;
+import mmrnmhrm.core.projectmodel.elements.StdLibContainer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -167,9 +169,11 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 	protected Object[] getProjectChildren(IProject project) {
 		ArrayList<Object> arrayList = new ArrayList<>();
 		if(project.isAccessible()) {
-			DubDependenciesContainer dubContainer = CoreDubModel.getDubContainer(project);
-			if(dubContainer != null) {
+			ProjectInfo projectInfo = CoreDubModel.getDubModel().getProjectInfo(project.getName());
+			if(projectInfo != null) {
+				DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 				arrayList.add(dubContainer);
+				arrayList.add(new StdLibContainer(projectInfo.getCompilerInstall(), project));
 			}
 			
 			// Add project children ourselves: this is so that children will be sorted by our own sorter. 
@@ -225,6 +229,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		public RET visitDubElement(IDubElement element) {
 			switch (element.getElementType()) {
 			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
+			case DUB_STD_LIB: return visitStdLibContainer((StdLibContainer) element);
 			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
 			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
 			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
@@ -234,6 +239,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		}
 		
 		public abstract RET visitDepContainer(DubDependenciesContainer element);
+		public abstract RET visitStdLibContainer(StdLibContainer element);
 		public abstract RET visitRawDepElement(DubRawDependencyElement element);
 		public abstract RET visitErrorElement(DubErrorElement element);
 		public abstract RET visitDepElement(DubDependencyElement element);

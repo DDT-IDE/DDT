@@ -53,22 +53,22 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	
 	/* ----------------- synthetic install ----------------- */
 	
-	public static final Path SYNTHETIC_COMPILER_INSTALL_PATH = 
+	public static final Path NULL_COMPILER_INSTALL_PATH = 
 			MiscUtil.createValidPath("###DTOOL_SPECIAL###/Synthetic_StdLib");
 	
-	public static final CompilerInstall SYNTHETIC_COMPILER_INSTALL = new CompilerInstall(
-		SYNTHETIC_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
+	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
+		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
 	
 	/**
 	 * Fall-back synthetic StandardLibraryResolution for when no real compiler installs could be found.
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
-		protected static final Path objectPath = SYNTHETIC_COMPILER_INSTALL_PATH.resolve("object.di");
+		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.resolve("object.di");
 		protected final BundleModules syntheticBundleModules;
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
-			super(manager, SYNTHETIC_COMPILER_INSTALL, BundleModules.createEmpty());
+			super(manager, NULL_COMPILER_INSTALL, BundleModules.createEmpty());
 			
 			this.syntheticBundleModules = createSyntheticBundleModules();
 			

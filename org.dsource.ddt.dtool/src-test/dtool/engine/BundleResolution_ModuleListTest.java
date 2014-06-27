@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.engine.StandardLibraryResolution.SYNTHETIC_COMPILER_INSTALL_PATH;
+import static dtool.engine.StandardLibraryResolution.NULL_COMPILER_INSTALL_PATH;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -151,7 +151,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			
 			@Override
 			protected CompilerInstall getCompilerInstallForNewResolution(Path compilerPath) {
-				return null;
+				return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 			}
 		};
 		sr = sm.getUpdatedResolution(BASIC_LIB);
@@ -160,7 +160,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		assertTrue(fallBackStdLibResolution.checkIsModuleContentsStale() == false);
 		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
-		testFindResolvedModule(BASIC_LIB, "object", SYNTHETIC_COMPILER_INSTALL_PATH.resolve("object.di"));
+		testFindResolvedModule(BASIC_LIB, "object", NULL_COMPILER_INSTALL_PATH.resolve("object.di"));
 		
 		assertEqualSet(sr.findModules(""), hashSet(
 			"basic_lib_pack.foo",

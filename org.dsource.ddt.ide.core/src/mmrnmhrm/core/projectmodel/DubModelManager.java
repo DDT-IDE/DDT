@@ -62,6 +62,8 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubHelper;
 import dtool.dub.DubManifestParser;
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 
 /**
  * Updates {@link DubModel} when resource changes occur, using 'dub describe' 
@@ -248,7 +250,7 @@ public class DubModelManager {
 	
 	protected void dubManifestFileChanged(final IProject project) {
 		beginProjectDescribeUpdate(project);
-		// TODO: bug here, we should recalculated manifest for all files, not just buildpath
+		// TODO: bug here, we should recalculate manifest for all files, not just buildpath
 		queueUpdateAllProjectsBuildpath(project); // We do this because project might have changed name
 	}
 	
@@ -273,8 +275,18 @@ public class DubModelManager {
 	
 	/* ----------------------------------- */
 	
+	protected class SearchCompilersOnPathOperation_Eclipse extends SearchCompilersOnPathOperation {
+		@Override
+		protected void handleWarning(String message) {
+			DeeCore.logWarning(message);
+		}
+	}
+	
 	protected final void addProjectModel(IProject project, DubBundleDescription dubBundleDescription) {
-		model.addProjectModel(project, dubBundleDescription);
+		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
+				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
+		
+		model.addProjectModel(project, dubBundleDescription, compilerInstall);
 	}
 	
 	protected final void removeProjectModel(IProject project) {

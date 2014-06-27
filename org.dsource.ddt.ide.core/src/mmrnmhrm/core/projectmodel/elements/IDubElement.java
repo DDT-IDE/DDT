@@ -24,6 +24,7 @@ public interface IDubElement {
 	
 	public static enum DubElementType {
 		DUB_DEP_CONTAINER,
+		DUB_STD_LIB,
 		DUB_RESOLVED_DEP,
 		DUB_RAW_DEP,
 		DUB_ERROR_ELEMENT,

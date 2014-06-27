@@ -74,6 +74,7 @@ public abstract class CommonDubElement<PARENT> implements IDubElement {
 		public RET switchElement(IDubElement element) {
 			switch (element.getElementType()) {
 			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
+			case DUB_STD_LIB: return visitStdLibContainer((StdLibContainer) element);
 			case DUB_RAW_DEP: return visitRawDepElement((DubRawDependencyElement) element);
 			case DUB_ERROR_ELEMENT: return visitErrorElement((DubErrorElement) element);
 			case DUB_RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
@@ -83,6 +84,8 @@ public abstract class CommonDubElement<PARENT> implements IDubElement {
 		}
 		
 		public abstract RET visitDepContainer(DubDependenciesContainer element);
+		
+		public abstract RET visitStdLibContainer(StdLibContainer element);
 		
 		public abstract RET visitRawDepElement(DubRawDependencyElement element);
 		

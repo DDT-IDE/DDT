@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.util.SearchPathEnvOperation;
 
 public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperation {
@@ -21,9 +22,10 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 	protected final CompilerInstallDetector detector = new CompilerInstallDetector();
 	protected final List<CompilerInstall> foundInstalls = new ArrayList<>();
 	
-	public void searchForCompilersInPathEnvVars() {
+	public SearchCompilersOnPathOperation searchForCompilersInDefaultPathEnvVars() {
 		searchEnvironmentVar("DUB_COMPILERS_PATH");
 		searchEnvironmentVar("PATH");
+		return this;
 	}
 	
 	@Override
@@ -60,6 +62,14 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 	
 	public List<CompilerInstall> getFoundInstalls() {
 		return foundInstalls;
+	}
+	
+	/** @return a preferred compiler install. Not null. */
+	public CompilerInstall getPreferredInstall() {
+		if(foundInstalls != null && foundInstalls.size() > 0) {
+			return foundInstalls.get(0);
+		}
+		return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 	}
 	
 }
