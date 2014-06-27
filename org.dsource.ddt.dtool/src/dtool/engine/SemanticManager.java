@@ -325,8 +325,8 @@ public class SemanticManager extends AbstractSemanticManager {
 	
 	/* ----------------- Working Copy and module resolution ----------------- */
 	
-	public ParsedModule updateWorkingCopyAndParse(Path filePath, String source) {
-		return parseCache.getParsedModule(filePath, source);
+	public ParsedModule setWorkingCopyAndParse(Path filePath, String source) {
+		return parseCache.setWorkingCopyAndGetParsedModule(filePath, source);
 	}
 	
 	public void discardWorkingCopy(Path filePath) {

@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
@@ -50,8 +51,10 @@ public class DToolClient_Test extends CommonCoreTest {
 	public void testBasic$() throws Exception {
 		ModuleSource moduleSource = new ModuleSource("relative/path/foo.d", "module blah;");
 		Path filePath = DToolClient.getPathHandleForModuleSource(moduleSource);
-		assertEquals(client.getParsedModuleOrNull_withSource(filePath, moduleSource).module.getName(), "blah");
-		assertEquals(client.getExistingParsedModuleNodeOrNull(filePath).getName(), "blah");
+		
+		ClientModuleParseCache clientModuleCache = client.getClientModuleCache();
+		assertEquals(clientModuleCache.getParsedModuleOrNull(filePath, moduleSource).module.getName(), "blah");
+		assertEquals(clientModuleCache.getExistingParsedModuleNode(filePath).getName(), "blah");
 		
 		testCodeCompletion(moduleSource, 0, 
 			"blah");

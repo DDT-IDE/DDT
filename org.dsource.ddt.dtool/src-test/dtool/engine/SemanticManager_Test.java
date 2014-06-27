@@ -318,7 +318,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	protected ParsedModule doUpdateWorkingCopy(Path filePath, String contents) {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		assertTrue(sm.checkIsResolutionStale(bundlePath) == false);
-		return sm.updateWorkingCopyAndParse(filePath, contents);
+		return sm.setWorkingCopyAndParse(filePath, contents);
 	}
 	
 	protected void doDiscardWorkingCopy(Path filePath) {

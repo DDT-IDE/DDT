@@ -53,7 +53,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		
 		int offset = hoverRegion.getOffset();
 		
-		GetDDocViewOperation ddocOp = new GetDDocViewOperation("Get DDoc", editor, offset);
+		GetDDocHTMLViewOperation ddocOp = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
 		try {
 			ddocOp.executeOperation();
 		} catch (CoreException e) {
@@ -69,24 +69,23 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		return null;
 	}
 	
-	public static class GetDDocViewOperation extends AbstractEditorOperation {
+	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation {
 		
 		protected final int offset;
 		protected String info;
 		
-		public GetDDocViewOperation(String operationName, ITextEditor editor, int offset) {
+		public GetDDocHTMLViewOperation(String operationName, ITextEditor editor, int offset) {
 			super(operationName, editor);
 			this.offset = offset;
 		}
 		
 		@Override
-		protected void performLongRunningComputation_do() {
-			updateWorkingCopyContents();
+		protected void performLongRunningComputation_withUpdatedServerWorkingCopy() {
 			info = DToolClient.getDefault().getDDocHTMLView(inputPath, offset);
 		}
 		
 		@Override
-		protected void performOperation_do() throws CoreException {
+		protected void performOperation_handleResult() throws CoreException {
 			// Nothing else to do
 		}
 		

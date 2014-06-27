@@ -104,7 +104,7 @@ public class DeeSearchEngineTestUtils {
 			if(element instanceof ISourceModule) {
 				final ISourceModule sourceModule = (ISourceModule) element;
 				Path filePath = DLTKUtils.getFilePath(sourceModule);
-				ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+				ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
 				if(parseModule == null)
 					return;
 				

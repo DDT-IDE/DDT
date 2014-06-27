@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.definitions.Module;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -51,10 +52,17 @@ public class ModuleParseCache {
 	}
 	
 	public ParsedModule getExistingParsedModule(Path filePath) {
+		// TODO: don't create entry
 		return getEntry(filePath).parsedModule;
 	}
 	
-	public ParsedModule getParsedModule(Path filePath, String source) {
+	// util method
+	public Module getExistingParsedModuleNode(Path filePath) {
+		ParsedModule parsedModule = getExistingParsedModule(filePath);
+		return parsedModule == null ? null : parsedModule.module;
+	}
+	
+	public ParsedModule setWorkingCopyAndGetParsedModule(Path filePath, String source) {
 		return parseModuleWithNewSource(filePath, source);
 	}
 	
@@ -219,5 +227,5 @@ public class ModuleParseCache {
 				originalAttributes.lastModifiedTime().toMillis() != newAttributes.lastModifiedTime().toMillis() ||
 				originalAttributes.size() != newAttributes.size();
 	}
-	
+
 }

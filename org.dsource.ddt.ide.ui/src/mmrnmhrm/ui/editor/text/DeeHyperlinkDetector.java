@@ -39,7 +39,7 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
 		Path filePath = EditorUtil.getFilePathFromEditorInput(textEditor.getEditorInput());
 		
-		ASTNode module = DToolClient.getDefault().getExistingParsedModuleNodeOrNull(filePath);
+		ASTNode module = DToolClient.getDefaultModuleCache().getExistingParsedModuleNode(filePath);
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
 		if(!(selNode instanceof NamedReference))
 			return null;

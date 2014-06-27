@@ -59,15 +59,14 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	}
 	
 	@Override
-	protected void performOperation_do() throws CoreException {
-		assertNotNull(findDefResult);
-		handleOpenDefinitionResult(findDefResult);
+	protected void performLongRunningComputation_withUpdatedServerWorkingCopy() {
+		findDefResult = DToolClient.getDefault().doFindDefinition(inputPath, offset);
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do() {
-		updateWorkingCopyContents();
-		findDefResult = DToolClient.getDefault().doFindDefinition(inputPath, offset);
+	protected void performOperation_handleResult() throws CoreException {
+		assertNotNull(findDefResult);
+		handleOpenDefinitionResult(findDefResult);
 	}
 	
 	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CoreException {

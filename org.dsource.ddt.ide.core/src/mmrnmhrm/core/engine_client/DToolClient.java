@@ -29,7 +29,6 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.definitions.Module;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
@@ -48,12 +47,16 @@ public class DToolClient {
 		return DeeCore.getDToolClient();
 	}
 	
+	public static ClientModuleParseCache getDefaultModuleCache() {
+		return DeeCore.getDToolClient().getClientModuleCache();
+	}
+	
 	public static DToolClient initializeNew() {
 		return new DToolClient();
 	}
 	
 	protected final DToolServer dtoolServer;
-	protected final ModuleParseCache moduleParseCache;
+	protected final ClientModuleParseCache moduleParseCache;
 	
 	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
 	
@@ -67,7 +70,7 @@ public class DToolClient {
 				DeeCore.logError(message, throwable);
 			}
 		};
-		moduleParseCache = new ModuleParseCache(dtoolServer);
+		moduleParseCache = new ClientModuleParseCache(dtoolServer);
 		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 	}
 	
@@ -75,7 +78,7 @@ public class DToolClient {
 		DLTKCore.removeElementChangedListener(wclistener);
 	}
 	
-	protected ModuleParseCache getClientModuleCache() {
+	public ClientModuleParseCache getClientModuleCache() {
 		return moduleParseCache;
 	}
 	
@@ -83,32 +86,32 @@ public class DToolClient {
 		return dtoolServer.getSemanticManager();
 	}
 	
-	public ParsedModule getParsedModuleOrNull(Path filePath) {
-		try {
-			return getClientModuleCache().getParsedModule(filePath);
-		} catch (ParseSourceException e) {
-			// Most likely a file IO error ocurred. 
-			DeeCore.logWarning("Error in getParsedModule", e);
-			return null;
+	public static class ClientModuleParseCache extends ModuleParseCache {
+		
+		protected ClientModuleParseCache(DToolServer dtoolServer) {
+			super(dtoolServer);
 		}
-	}
-	public ParsedModule getParsedModuleOrNull_withSource(Path filePath, IModuleSource input) {
-		if(filePath == null) { 
-			return null;
+		
+		public ParsedModule getParsedModuleOrNull(Path filePath) {
+			try {
+				return getParsedModule(filePath);
+			} catch (ParseSourceException e) {
+				// Most likely a file IO error ocurred. 
+				DeeCore.logWarning("Error in getParsedModule", e);
+				return null;
+			}
 		}
-		if(!filePath.isAbsolute()) {
-			// If it's a special path, there will not be an underlying file, so we must retrieve source directly.
-			return getClientModuleCache().getParsedModule(filePath, input.getSourceContents());
+		public ParsedModule getParsedModuleOrNull(Path filePath, IModuleSource input) {
+			if(filePath == null) { 
+				return null;
+			}
+			if(!filePath.isAbsolute()) {
+				// If it's a special path, there will not be an underlying file, so we must retrieve source directly.
+				return setWorkingCopyAndGetParsedModule(filePath, input.getSourceContents());
+			}
+			return getParsedModuleOrNull(filePath);
 		}
-		return getParsedModuleOrNull(filePath);
-	}
-	
-	public ParsedModule getExistingParsedModuleOrNull(Path filePath) {
-		return getClientModuleCache().getExistingParsedModule(filePath);
-	}
-	public Module getExistingParsedModuleNodeOrNull(Path filePath) {
-		ParsedModule parsedModule = getExistingParsedModuleOrNull(filePath);
-		return parsedModule == null ? null : parsedModule.module;
+		
 	}
 	
 	public static Path getPathHandleForModuleSource(IModuleSource input) {
@@ -154,14 +157,15 @@ public class DToolClient {
 				// This usually means it's a working copy, but its not guaranteed.
 				String source = sourceModule.getSource();
 				// We update the server working copy too.
-				getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
-				return getClientModuleCache().getParsedModule(filePath, source);
+				getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
+				return getClientModuleCache().setWorkingCopyAndGetParsedModule(filePath, source);
 			} else {
 				// This method can be called during the scope of the discard/commit working copy method,
 				// and as such the WorkingCopyListener has not yet had a chance to discard the cache working.
 				// Because of that, we should check here as well if it's a WC, and discard it if so.
 				boolean isWorkingCopy = sourceModule.isWorkingCopy();
 				if(!isWorkingCopy) {
+					discardServerWorkingCopy(filePath);
 					getClientModuleCache().discardWorkingCopy(filePath);
 				}
 				return getClientModuleCache().getParsedModule(filePath);
@@ -169,22 +173,6 @@ public class DToolClient {
 		} catch (ParseSourceException | ModelException e) {
 			DeeCore.logWarning("Error in parseModule", e);
 			return null;
-		}
-	}
-	
-	
-	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
-		try {
-			if(!sourceModule.isConsistent()) {
-				getServerSemanticManager().updateWorkingCopyAndParse(filePath, source);
-			} else {
-				boolean isWorkingCopy = sourceModule.isWorkingCopy();
-				if(!isWorkingCopy) {
-					getServerSemanticManager().discardWorkingCopy(filePath);
-				}
-			}
-		} catch (ModelException e) {
-			DeeCore.logError("Should not happen");
 		}
 	}
 	
@@ -197,7 +185,7 @@ public class DToolClient {
 					Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
 					if(filePath != null) {
 						// We update the server working copy too.
-						getServerSemanticManager().discardWorkingCopy(filePath);
+						discardServerWorkingCopy(filePath);
 						getClientModuleCache().discardWorkingCopy(filePath);
 					}
 				}
@@ -205,7 +193,24 @@ public class DToolClient {
 		}
 		
 	}
-
+	
+	/** Warning: if the module is not a client working copy, some code must later be responsible for disposing
+	 * of the server's working copy */
+	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
+		try {
+			if(!sourceModule.isConsistent()) {
+				// This usually means the module is a working copy.
+				getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
+			}
+		} catch (ModelException e) {
+			DeeCore.logError("Should not happen");
+		}
+	}
+	
+	public void discardServerWorkingCopy(Path filePath) {
+		getServerSemanticManager().discardWorkingCopy(filePath);
+	}
+	
 	
 	/* -----------------  ----------------- */
 	
@@ -219,21 +224,34 @@ public class DToolClient {
 		
 		Path filePath = DToolClient_Bad.getFilePath(moduleSource);
 		// Update source to engine server.
-		if(filePath != null) {
-			String sourceContents = moduleSource.getSourceContents();
-			getServerSemanticManager().updateWorkingCopyAndParse(filePath, sourceContents);
+		if(filePath == null) {
+			throw DeeCore.createCoreException("Invalid file path", null); 
 		}
-		return doCodeCompletion(filePath, offset, compilerPath);
+		String sourceContents = moduleSource.getSourceContents();
+		try {
+			getServerSemanticManager().setWorkingCopyAndParse(filePath, sourceContents);
+			return doCodeCompletion(filePath, offset, compilerPath);
+		} finally {
+			discardServerWorkingCopy(filePath);
+		}
 	}
 	
 	public PrefixDefUnitSearch runCodeCompletion(ISourceModule sourceModule, int offset, Path compilerPath) 
 			throws CoreException {
 		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
 		
-		// Submit latest source to engine server.
-		updateWorkingCopyIfInconsistent(filePath, sourceModule.getSource(), sourceModule);
-		
-		return doCodeCompletion(filePath, offset, compilerPath);
+		try {
+			// Submit latest source to engine server.
+			updateWorkingCopyIfInconsistent(filePath, sourceModule.getSource(), sourceModule);
+			
+			return doCodeCompletion(filePath, offset, compilerPath);
+		} finally {
+			// If the module stopped being a working copy, or never was one the first place, 
+			// then we must discard the server's WC
+			if(!sourceModule.isWorkingCopy()) {
+				discardServerWorkingCopy(filePath);
+			}
+		}
 	}
 	
 	/* ----------------- Engine client requests ----------------- */

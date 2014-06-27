@@ -195,7 +195,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 			return;
 		}
 		
-		fDeeModule = DToolClient.getDefault().getExistingParsedModuleOrNull(inputFilePath);
+		fDeeModule = DToolClient.getDefault().getClientModuleCache().getExistingParsedModule(inputFilePath);
 		if(fDeeModule == null) {
 			setContentDescription("No DeeModuleUnit available");
 			viewer.getControl().setVisible(false);

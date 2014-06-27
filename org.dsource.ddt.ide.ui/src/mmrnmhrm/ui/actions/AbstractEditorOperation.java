@@ -59,15 +59,24 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 			return;
 		}
 		
-		performOperation_do();
+		performOperation_handleResult();
 	}
 	
-	protected abstract void performOperation_do() throws CoreException;
-	
-	protected void updateWorkingCopyContents() {
-		DToolClient.getDefault().updateWorkingCopyIfInconsistent(inputPath, doc.get(), sourceModule);
+	@Override
+	protected void performLongRunningComputation_do() {
+		try {
+			DToolClient.getDefault().updateWorkingCopyIfInconsistent(inputPath, doc.get(), sourceModule);
+			performLongRunningComputation_withUpdatedServerWorkingCopy();
+		} finally {
+			if(sourceModule.isWorkingCopy() == false) {
+				DToolClient.getDefault().discardServerWorkingCopy(inputPath);
+			}
+		}
 	}
 	
+	protected abstract void performLongRunningComputation_withUpdatedServerWorkingCopy();
+	
+	protected abstract void performOperation_handleResult() throws CoreException;
 	
 	protected void dialogError(String msg) {
 		UIUserInteractionsHelper.openError(window.getShell(), operationName, msg);

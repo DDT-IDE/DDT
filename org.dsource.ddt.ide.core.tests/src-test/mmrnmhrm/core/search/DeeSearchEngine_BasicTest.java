@@ -159,7 +159,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
 		Path filePath = DLTKUtils.getFilePath(srcModule.getResource().getLocation());
-		ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+		ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
 		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");

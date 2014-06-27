@@ -91,10 +91,10 @@ public class EditorUtil {
 		}
 		
 		if(Display.getCurrent() == null) {
-			return getModuleNode(DToolClient.getDefault().getParsedModuleOrNull_withSource(filePath, input));
+			return getModuleNode(DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath, input));
 		}
 		
-		return getModuleNode(DToolClient.getDefault().getExistingParsedModuleOrNull(filePath));
+		return getModuleNode(DToolClient.getDefaultModuleCache().getExistingParsedModule(filePath));
 	}
 	
 	protected static Module getModuleNode(ParsedModule parsedModule) {

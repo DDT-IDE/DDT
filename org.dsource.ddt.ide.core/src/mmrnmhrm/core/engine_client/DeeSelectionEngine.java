@@ -55,7 +55,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 			return null;
 		}
 		
-		Module deeModule = DToolClient.getDefault().getExistingParsedModuleNodeOrNull(filePath);
+		Module deeModule = DToolClient.getDefaultModuleCache().getExistingParsedModuleNode(filePath);
 		ASTNode node = ASTNodeFinder.findElement(deeModule, offset);
 		
 		if(node instanceof DefSymbol) {

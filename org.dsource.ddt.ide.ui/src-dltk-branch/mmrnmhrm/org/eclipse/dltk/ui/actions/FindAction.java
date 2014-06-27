@@ -40,6 +40,7 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.ModuleParseCache;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.ResolverUtil;
@@ -89,20 +90,22 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 		
 		@Override
-		protected void performOperation_do() throws ModelException {
-			if(errorMessage != null) {
-				UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, errorMessage);
-			}
-			if(defunit != null) {
-				startNewSearch(defunit);
+		protected void performLongRunningComputation_do() {
+			ModuleParseCache clientModuleCache = DToolClient.getDefault().getClientModuleCache();
+			try {
+				clientModuleCache.setWorkingCopyAndGetParsedModule(inputPath, doc.get());
+				// This operation actually runs with the client cache, not on engine server
+				performLongRunningComputation_withUpdatedServerWorkingCopy();
+			} finally {
+				if(sourceModule.isWorkingCopy() == false) {
+					clientModuleCache.discardWorkingCopy(inputPath);
+				}
 			}
 		}
 		
 		@Override
-		protected void performLongRunningComputation_do() {
-			updateWorkingCopyContents();
-			
-			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(inputPath);
+		protected void performLongRunningComputation_withUpdatedServerWorkingCopy() {
+			ParsedModule parsedModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(inputPath);
 			if(parsedModule == null) {
 				errorMessage = "Could not parse contents";
 			}
@@ -122,6 +125,17 @@ public abstract class FindAction extends SelectionDispatchAction {
 				errorMessage = "Element is not a Definition nor a Reference";
 			}
 		}
+		
+		@Override
+		protected void performOperation_handleResult() throws ModelException {
+			if(errorMessage != null) {
+				UIUserInteractionsHelper.openWarning(getShell(), SEARCH_REFS, errorMessage);
+			}
+			if(defunit != null) {
+				startNewSearch(defunit);
+			}
+		}
+		
 	}
 	
 	protected void startNewSearch(INamedElement defunit) throws ModelException {

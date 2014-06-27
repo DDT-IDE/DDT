@@ -1,8 +1,11 @@
 ## DDT release ChangeLog
 
 ### DDT 0.10.x
- * Fixed - D application run/debug launch shorted appearing in non-D editors
- * Added: error message in status line when doing content assist in invalid locations.
+ * Fixed - D application run/debug menu shortcut appearing in non-D editors.
+ * Added: error message in status line when doing content assist in invalid source positionslocations.
+ * Greater DUB integrations for semantic operations. 
+   * Can now do Open Definition, Content Assist, etc. in D files outside of a DDT Eclipse project.
+   * Better prevention of temporary UI freezes when doing semantic operations.
 
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 

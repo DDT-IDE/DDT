@@ -123,7 +123,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			
 			Path filePath = DLTKUtils.getFilePath(sourceModule);
 			
-			ParsedModule parseModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+			ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
 			Module deeModule = parseModule == null ? null : parseModule.module;
 			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
 			

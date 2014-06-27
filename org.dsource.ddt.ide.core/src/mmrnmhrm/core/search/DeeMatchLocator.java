@@ -70,7 +70,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			if(filePath == null)
 				return null;
 			
-			ParsedModule parsedModule = DToolClient.getDefault().getParsedModuleOrNull(filePath);
+			ParsedModule parsedModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
 			if(parsedModule == null) {
 				return null;
 			}
