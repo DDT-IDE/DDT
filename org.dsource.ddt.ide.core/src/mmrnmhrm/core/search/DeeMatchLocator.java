@@ -88,18 +88,17 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	public static Path getFilePath(PossibleMatch possibleMatch) {
 		Path filePath = null;
 		
-		if(possibleMatch.resource != null) {
+		// Try alternative path location
+		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
+		filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
+		
+		if(filePath == null && possibleMatch.resource != null) {
 			IPath location = possibleMatch.resource.getLocation();
 			if(location != null) {
 				filePath = MiscUtil.createPathOrNull(location.toOSString());
 			}
 		}
 		
-		if(filePath == null) {
-			// Try alternative path location
-			ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
-			filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
-		}
 		return filePath;
 	}
 	
@@ -140,6 +139,9 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	
 	@Override
 	protected void process(PossibleMatch possibleMatch) throws CoreException {
+		if(possibleMatch.parsedUnit == null) {
+			return;
+		}
 		
 		DeeModuleDeclaration deeUnit = getDeeModuleDeclaration(possibleMatch.parsedUnit);
 		ISourceModule sourceModule = (ISourceModule) possibleMatch.getModelElement();
