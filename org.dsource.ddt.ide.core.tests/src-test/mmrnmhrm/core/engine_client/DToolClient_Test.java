@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
@@ -49,7 +50,8 @@ public class DToolClient_Test extends CommonCoreTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		ModuleSource moduleSource = new ModuleSource("relative/path/foo.d", "module blah;");
+		String relativePath = "relative/path/foo.d";
+		ModuleSource moduleSource = new ModuleSource(relativePath, "module blah;");
 		Path filePath = DToolClient.getPathHandleForModuleSource(moduleSource);
 		
 		ClientModuleParseCache clientModuleCache = client.getClientModuleCache();
@@ -58,8 +60,10 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 		testCodeCompletion(moduleSource, 0, 
 			"blah");
-		testCodeCompletion(new ModuleSource("relative/path/foo.d", "module xpto;"), 0, 
+		testCodeCompletion(new ModuleSource(relativePath, "module xpto;"), 0, 
 			"xpto");
+		assertTrue(client.getServerSemanticManager().getParseCache().getEntry(MiscUtil.createPath(relativePath))
+			.isWorkingCopy() == false);
 		
 		Path path = DToolTestResources.getTestResourcePath().resolve("dummy__non_existant.d");
 		assertTrue(path.isAbsolute());

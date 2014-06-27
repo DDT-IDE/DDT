@@ -10,8 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
@@ -19,7 +17,6 @@ import java.util.Iterator;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.core.ISourceModule;
 
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
@@ -49,11 +46,6 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		IModuleSource sourceModule_cast = (IModuleSource) sourceModule;
 		runCompletionEngineTest(sourceModule_cast, options.offset, options.expectedResults, options.rplLen);
-		if(moduleSource != null) {
-			// Variation: Run this test with something that is not a ISourceModule
-			assertTrue(!(moduleSource instanceof ISourceModule));
-			runCompletionEngineTest(moduleSource, options.offset, options.expectedResults, options.rplLen);
-		}
 	}
 	
 	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {

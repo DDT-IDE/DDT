@@ -93,7 +93,7 @@ public class ModuleParseCache {
 		return filePath.toString();
 	}
 	
-	protected ModuleEntry getEntry(Path filePath) {
+	public ModuleEntry getEntry(Path filePath) {
 		filePath = validatePath(filePath);
 		String key = getKeyFromPath(filePath);
 		
@@ -129,7 +129,7 @@ public class ModuleParseCache {
 		protected final Path filePath;
 		
 		protected String source = null;
-		protected boolean isWorkingCopy = false;
+		protected volatile boolean isWorkingCopy = false;
 		protected BasicFileAttributes sourceFileSyncAttributes;
 		protected volatile ParsedModule parsedModule = null;
 		
@@ -138,28 +138,8 @@ public class ModuleParseCache {
 			assertTrue(filePath != null);
 		}
 		
-		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
-			if(isStale()) {
-				readSource();
-			}			
-			return doGetParsedModule(source);
-		}
-		
-		public synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
-			if(!isStale()) {
-				return parsedModule;		
-			}
-			
-			if(attemptSourceRefresh) {
-				try {
-					readSource();
-					return parsedModule; // parsedModule will remain the same if the source didn't change.
-				} catch (IOException e) {
-					return null;
-				}
-			} else {
-				return null;
-			}
+		public boolean isWorkingCopy() {
+			return isWorkingCopy;
 		}
 		
 		protected synchronized boolean isStale() {
@@ -181,6 +161,43 @@ public class ModuleParseCache {
 			return hasBeenModified(sourceFileSyncAttributes, newAttributes);
 		}
 		
+		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
+			if(isStale()) {
+				readSource();
+			}			
+			return doGetParsedModule(source);
+		}
+		
+		protected void readSource() throws IOException, FileNotFoundException {
+			sourceFileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+			String fileContents = FileUtil.readStringFromFile(filePath, StringUtil.UTF8); // TODO: detect encoding
+			setNewSource(fileContents);
+		}
+		
+		protected void setNewSource(String newSource) {
+			if(!areEqual(source, newSource)) {
+				source = newSource;
+				parsedModule = null;
+			}
+		}
+		
+		public synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
+			if(!isStale()) {
+				return parsedModule;		
+			}
+			
+			if(attemptSourceRefresh) {
+				try {
+					readSource();
+					return parsedModule; // parsedModule will remain the same if the source didn't change.
+				} catch (IOException e) {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+		
 		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
 			assertNotNull(newSource);
 			setNewSource(newSource);
@@ -194,19 +211,6 @@ public class ModuleParseCache {
 				isWorkingCopy = false;
 				sourceFileSyncAttributes = null; // This will invalidate current source
 				dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
-			}
-		}
-		
-		protected void readSource() throws IOException, FileNotFoundException {
-			sourceFileSyncAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
-			String fileContents = FileUtil.readStringFromFile(filePath, StringUtil.UTF8); // TODO: detect encoding
-			setNewSource(fileContents);
-		}
-		
-		protected void setNewSource(String newSource) {
-			if(!areEqual(source, newSource)) {
-				source = newSource;
-				parsedModule = null;
 			}
 		}
 		

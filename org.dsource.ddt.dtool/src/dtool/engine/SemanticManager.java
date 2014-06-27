@@ -154,7 +154,11 @@ public class SemanticManager extends AbstractSemanticManager {
 	
 	public void shutdown() {
 		dubProcessAgent.shutdownNow();
-	}	
+	}
+	
+	public ModuleParseCache getParseCache() {
+		return parseCache;
+	}
 	
 	@Override
 	protected ResolvedManifest updateManifestEntry(BundlePath bundlePath) throws ExecutionException {

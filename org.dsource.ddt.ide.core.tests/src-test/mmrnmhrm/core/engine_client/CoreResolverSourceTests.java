@@ -69,7 +69,6 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
 	protected TestsProjectFileOverlay fixtureSourceOverlay;
 	protected ISourceModule sourceModule;
-	protected IModuleSource moduleSource;
 	
 	
 	@Override
@@ -101,7 +100,6 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		
 		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
 		explicitModuleName = explicitModuleName != null ? explicitModuleName : "_dummy.d";
-		moduleSource = new ModuleSource(explicitModuleName, modelElement, testCase.source);
 		
 		if(moduleName == CoreResolverSourceTests.DEFAULT_MODULE_NAME) {
 			// Avoid doing TestsProjectFileOverlay cleanup if it is not necessary. 
