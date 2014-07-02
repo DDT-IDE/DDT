@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IScriptProject;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubDependecyRef;
@@ -64,10 +62,6 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 	
 	public IProject getProject() {
 		return getParent();
-	}
-	
-	public IScriptProject getScriptProject() {
-		return DLTKCore.create(getProject());
 	}
 	
 	@Override

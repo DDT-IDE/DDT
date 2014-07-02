@@ -50,7 +50,7 @@ public class WorkspaceViewModelTest extends AbstractDubModelManagerTest {
 		
 		DubBundleDescription bundleDesc = new DubBundleDescription(mainBundle, bundleDeps);
 		
-		getModelManager().addProjectModel(project, bundleDesc);
+		getModelManager().addProjectInfo(project, bundleDesc);
 		
 		DubDependenciesContainer dubContainer = getDubContainer(project);
 		assertTrue(dubContainer.getChildren().length == 1);
@@ -59,7 +59,6 @@ public class WorkspaceViewModelTest extends AbstractDubModelManagerTest {
 				assertCast(dubContainer.getChildren()[0], DubDependencyElement.class);
 		
 		assertTrue(libDepElement.getChildren().length == 1);
-//		assertCast(libDepElement.getChildren()[0], IProjectFragment.class); /*BUG here TODO*/
 	}
 	
 }

@@ -14,11 +14,11 @@ import melnorme.utilbox.misc.StringUtil;
 
 // stupid simple helpers
 public class MiscJsonUtils {
-
+	
 	public static String jsStringEntry(String key, String value) {
 		return "\""+key+"\" : \""+value+"\",";
 	}
-
+	
 	public static String jsEntryValue(String key, Object value) {
 		return "\""+key+"\" : "+value.toString()+",";
 	}

@@ -15,8 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.eclipse.dltk.core.IScriptProject;
-
 import dtool.dub.DubBundle;
 
 public class DubDependencyElement extends CommonDubElement<DubDependenciesContainer> {
@@ -55,10 +53,9 @@ public class DubDependencyElement extends CommonDubElement<DubDependenciesContai
 	
 	protected DubDepSourceFolderElement[] createChildren() {
 		ArrayList<DubDepSourceFolderElement> sourceContainers = new ArrayList<>();
-		IScriptProject scriptProject = getParent().getScriptProject();
 		
 		for (Path localPath : dubBundle.getEffectiveSourceFolders()) {
-			sourceContainers.add(new DubDepSourceFolderElement(this, localPath, scriptProject));
+			sourceContainers.add(new DubDepSourceFolderElement(this, localPath));
 		}
 		return arrayFrom(sourceContainers, DubDepSourceFolderElement.class);
 	}

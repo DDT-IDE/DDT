@@ -24,10 +24,11 @@ import dtool.dub.DubBundleDescription;
 public interface IWorkspaceModel {
 	
 	public void addListener(IWorkspaceModelListener listener);
-	public Set<String> getDubProjects();
 	public void removeListener(IWorkspaceModelListener listener);
 	
+	public ProjectInfo getProjectInfo(IProject project);
 	public DubBundleDescription getBundleInfo(IProject project);
+	public Set<String> getDubProjects();
 	
 	public interface IWorkspaceModelListener {
 		

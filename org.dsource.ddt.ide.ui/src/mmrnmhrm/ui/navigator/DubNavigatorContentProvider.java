@@ -17,7 +17,6 @@ import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement;
-import mmrnmhrm.core.workspace.viewmodel.IDubElement.DubElementType;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
 import org.eclipse.core.resources.IFile;
@@ -125,9 +124,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 			}
 			@Override
 			public Boolean visitDubElement(IDubElement dubElement) {
-				if(dubElement.getElementType() == DubElementType.DUB_DEP_SRC_FOLDER) {
-					return false; // modelElement children disabled for now. // TODO:
-				}
 				return dubElement.hasChildren();
 			}
 			@Override

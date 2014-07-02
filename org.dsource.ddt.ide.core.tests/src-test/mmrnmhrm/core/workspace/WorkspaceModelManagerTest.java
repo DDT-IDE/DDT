@@ -92,7 +92,19 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(model.getBundleInfo(project) == null);
 		
+		// Test concurrency: updating a project that was removed in the meantime
+		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, 
+			"{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
+		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
+		assertTrue(model.getBundleInfo(project) != null);
+		project.delete(true, null);
+		preUpdateLatch.releaseAll();
 		_awaitModelUpdates_();
+		assertTrue(model.getBundleInfo(project) == null);
+		
+		_awaitModelUpdates_();
+		// Run sequence of workspace model tests
+		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
 		assertTrue(model.getBundleInfo(project) == null);
@@ -106,7 +118,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		System.out.println("--------- .project contents: ");
 		System.out.println(readFileContents(project.getFile(".project")));
 		
-		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
+		unresolvedBundleDesc = getExistingDubBundleInfo(project);
 		modelLatch.releaseAll();
 		checkDubModel(unresolvedBundleDesc, project, 
 			main(loc(project), null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));

@@ -22,8 +22,6 @@ import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
 
 import org.eclipse.core.resources.IProject;
 
-import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 
@@ -57,6 +55,7 @@ public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> 
 		return projectInfo == null ? null : projectInfo.getBundleDesc();
 	}
 	
+	@Override
 	public synchronized ProjectInfo getProjectInfo(IProject project) {
 		return projectInfos.get(project.getName());
 	}
@@ -66,17 +65,18 @@ public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> 
 		return new HashSet<>(projectInfos.keySet());
 	}
 	
-	protected synchronized void addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
+	protected synchronized ProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
 			CompilerInstall compilerInstall) {
 		ProjectInfo newProjectInfo = new ProjectInfo(compilerInstall, dubBundleDescription);
-		addProjectInfo(project, newProjectInfo);
+		return addProjectInfo(project, newProjectInfo);
 	}
 	
-	protected synchronized void addProjectInfo(IProject project, ProjectInfo newProjectInfo) {
+	protected synchronized ProjectInfo addProjectInfo(IProject project, ProjectInfo newProjectInfo) {
 		String projectName = project.getName();
 		projectInfos.put(projectName, newProjectInfo);
 		log.println("DUB project model added: " + projectName);
 		fireUpdateEvent(new DubModelUpdateEvent(project, newProjectInfo.getBundleDesc()));
+		return newProjectInfo;
 	}
 	
 	protected synchronized void removeProjectInfo(IProject project) {
@@ -85,15 +85,6 @@ public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> 
 		DubBundleDescription oldDesc = oldProjectInfo.getBundleDesc();
 		log.println("DUB project model removed: " + project.getName());
 		fireUpdateEvent(new DubModelUpdateEvent(project, oldDesc));
-	}
-	
-	protected synchronized void addErrorToProjectInfo(IProject project, DubBundleException dubError) {
-		ProjectInfo projectInfo = projectInfos.get(project.getName());
-		DubBundleDescription unresolvedDescription = projectInfo.getBundleDesc();
-		DubBundle main = unresolvedDescription.getMainBundle();
-		
-		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
-		addProjectInfo(project, bundleDesc, projectInfo.compilerInstall);
 	}
 	
 }

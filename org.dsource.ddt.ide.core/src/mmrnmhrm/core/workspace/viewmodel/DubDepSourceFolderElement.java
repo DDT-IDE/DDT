@@ -14,26 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import mmrnmhrm.core.DLTKUtils;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.core.IProjectFragment;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ModelException;
-
-import dtool.dub.BundlePath;
-
 public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyElement> {
 	
 	protected final Path srcFolderPath;
-	protected final IScriptProject scriptProject;
 	
-	public DubDepSourceFolderElement(DubDependencyElement parent, Path srcFolderPath, 
-			IScriptProject scriptProject) {
+	public DubDepSourceFolderElement(DubDependencyElement parent, Path srcFolderPath) {
 		super(parent);
 		this.srcFolderPath = assertNotNull(srcFolderPath);
-		this.scriptProject = assertNotNull(scriptProject);
 	}
 	
 	@Override
@@ -55,37 +42,14 @@ public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyEle
 		return getParent().getPathString() + "/"+getElementName()+"::";
 	}
 	
-	public IProjectFragment getUnderlyingProjectFragment() {
-		BundlePath bundlePath = getParent().getDubBundle().getBundlePath();
-		if(bundlePath == null) {
-			return null;
-		}
-		Path path = bundlePath.resolve(srcFolderPath);
-		IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.path(path));
-		try {
-			return scriptProject.findProjectFragment(bpPath);
-		} catch (ModelException e) {
-			return null;
-		}
-	}
-	
 	@Override
 	public boolean hasChildren() {
-		IProjectFragment projectFragment = getUnderlyingProjectFragment();
-		try {
-			return projectFragment != null && projectFragment.hasChildren();
-		} catch (ModelException e) {
-			return false;
-		}
+		return false;
 	}
 	
 	@Override
 	public Object[] getChildren() {
-		IProjectFragment projectFragment = getUnderlyingProjectFragment();
-		try {
-			return projectFragment == null ? NO_CHILDREN : projectFragment.getChildren();
-		} catch (ModelException e) {
-			return NO_CHILDREN;
-		}
+		return NO_CHILDREN;
 	}
+	
 }
