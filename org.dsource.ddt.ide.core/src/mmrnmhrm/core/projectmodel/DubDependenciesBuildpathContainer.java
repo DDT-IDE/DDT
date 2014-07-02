@@ -25,7 +25,7 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
-public class DubBuildpathContainer implements IBuildpathContainer {
+public class DubDependenciesBuildpathContainer implements IBuildpathContainer {
 	
 	public static String CONTAINER_PATH_ID = DeeCore.PLUGIN_ID + ".DubContainer";
 	public static Path CONTAINER_PATH = new Path(CONTAINER_PATH_ID);
@@ -34,7 +34,7 @@ public class DubBuildpathContainer implements IBuildpathContainer {
 	protected final IScriptProject project;
 	protected final IBuildpathEntry[] entries;
 	
-	public DubBuildpathContainer(IScriptProject project, IBuildpathEntry[] entries) {
+	public DubDependenciesBuildpathContainer(IScriptProject project, IBuildpathEntry[] entries) {
 		this.containerPath = CONTAINER_PATH;
 		this.project = project;
 		this.entries = entries;

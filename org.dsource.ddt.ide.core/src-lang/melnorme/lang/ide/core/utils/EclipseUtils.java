@@ -33,7 +33,7 @@ public class EclipseUtils extends ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 	
-	public static Path getPath(java.nio.file.Path path) {
+	public static Path path(java.nio.file.Path path) {
 		return new Path(path.toString());
 	}
 	

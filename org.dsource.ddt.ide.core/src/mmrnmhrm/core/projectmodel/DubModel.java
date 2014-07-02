@@ -31,7 +31,7 @@ public class DubModel extends ListenerListHelper<IDubModelListener> implements I
 	
 	protected final SimpleLogger log = DubModelManager.log;
 	
-	protected final HashMap<String, ProjectInfo> dubBundleInfos = new HashMap<>();
+	protected final HashMap<String, ProjectInfo> projectInfos = new HashMap<>();
 	
 	public DubModel() {
 	}
@@ -53,47 +53,47 @@ public class DubModel extends ListenerListHelper<IDubModelListener> implements I
 	
 	@Override
 	public synchronized DubBundleDescription getBundleInfo(String projectName) {
-		ProjectInfo projectInfo = dubBundleInfos.get(projectName);
+		ProjectInfo projectInfo = projectInfos.get(projectName);
 		return projectInfo == null ? null : projectInfo.getBundleDesc();
 	}
 	
 	public synchronized ProjectInfo getProjectInfo(String projectName) {
-		return dubBundleInfos.get(projectName);
+		return projectInfos.get(projectName);
 	}
 	
 	@Override
 	public synchronized Set<String> getDubProjects() {
-		return new HashSet<>(dubBundleInfos.keySet());
+		return new HashSet<>(projectInfos.keySet());
 	}
 	
-	protected synchronized void addProjectModel(IProject project, DubBundleDescription dubBundleDescription, 
+	protected synchronized void addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
 			CompilerInstall compilerInstall) {
 		ProjectInfo newProjectInfo = new ProjectInfo(compilerInstall, dubBundleDescription);
-		addProjectModel(project, newProjectInfo);
+		addProjectInfo(project, newProjectInfo);
 	}
 	
-	protected synchronized void addProjectModel(IProject project, ProjectInfo newProjectInfo) {
+	protected synchronized void addProjectInfo(IProject project, ProjectInfo newProjectInfo) {
 		String projectName = project.getName();
-		dubBundleInfos.put(projectName, newProjectInfo);
+		projectInfos.put(projectName, newProjectInfo);
 		log.println("DUB project model added: " + projectName);
 		fireUpdateEvent(new DubModelUpdateEvent(project, newProjectInfo.getBundleDesc()));
 	}
 	
-	protected synchronized void removeProjectModel(IProject project) {
-		ProjectInfo oldProjectInfo = dubBundleInfos.remove(project.getName());
+	protected synchronized void removeProjectInfo(IProject project) {
+		ProjectInfo oldProjectInfo = projectInfos.remove(project.getName());
 		assertNotNull(oldProjectInfo);
 		DubBundleDescription oldDesc = oldProjectInfo.getBundleDesc();
 		log.println("DUB project model removed: " + project.getName());
 		fireUpdateEvent(new DubModelUpdateEvent(project, oldDesc));
 	}
 	
-	protected synchronized void addErrorToProjectModel(IProject project, DubBundleException dubError) {
-		ProjectInfo projectInfo = dubBundleInfos.get(project.getName());
+	protected synchronized void addErrorToProjectInfo(IProject project, DubBundleException dubError) {
+		ProjectInfo projectInfo = projectInfos.get(project.getName());
 		DubBundleDescription unresolvedDescription = projectInfo.getBundleDesc();
 		DubBundle main = unresolvedDescription.getMainBundle();
 		
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
-		addProjectModel(project, bundleDesc, projectInfo.compilerInstall);
+		addProjectInfo(project, bundleDesc, projectInfo.compilerInstall);
 	}
 	
 }

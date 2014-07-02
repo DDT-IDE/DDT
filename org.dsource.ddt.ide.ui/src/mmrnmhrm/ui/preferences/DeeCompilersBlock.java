@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.dltk.ui.interpreters.CompilersBlock;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask;
+import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask;
 import mmrnmhrm.dltk.ui.interpreters.AddScriptInterpreterDialog;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,12 +56,12 @@ public class DeeCompilersBlock extends CompilersBlock {
 	}
 	
 	protected final class SearchTaskRunnable implements IRunnableWithProgress {
-		protected volatile SearchAndAddCompilersOnPathTask searchTask;
+		protected volatile SearchAndAddCompilersTask searchTask;
 		
 		@Override
 		public void run(IProgressMonitor monitor) {
 			monitor.beginTask(DeeCoreMessages.SearchAndAddCompilersOnPath_JobName, IProgressMonitor.UNKNOWN);
-			searchTask = new SearchAndAddCompilersOnPathTask(monitor) {
+			searchTask = new SearchAndAddCompilersTask(monitor) {
 				@Override
 				protected IInterpreterInstall getExistingInstall(IInterpreterInstallType installType,
 						IFileHandle location) {

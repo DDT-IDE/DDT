@@ -33,9 +33,9 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.DefaultResourceListener;
+import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask.SearchAndAddCompilersOnPathJob;
 import mmrnmhrm.core.projectmodel.DubModelManager.DubModelManagerTask;
 import mmrnmhrm.core.projectmodel.DubProcessManager.DubCompositeOperation;
-import mmrnmhrm.core.projectmodel.SearchAndAddCompilersOnPathTask.SearchAndAddCompilersOnPathJob;
 
 import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
@@ -286,11 +286,11 @@ public class DubModelManager {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
-		model.addProjectModel(project, dubBundleDescription, compilerInstall);
+		model.addProjectInfo(project, dubBundleDescription, compilerInstall);
 	}
 	
 	protected final void removeProjectModel(IProject project) {
-		model.removeProjectModel(project);
+		model.removeProjectInfo(project);
 	}
 	
 	public void syncPendingUpdates() {
@@ -436,7 +436,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		DubBundleException dubError = new DubBundleException(message, exception);
 		
-		dubModelManager.model.addErrorToProjectModel(project, dubError);
+		dubModelManager.model.addErrorToProjectInfo(project, dubError);
 		
 		setDubErrorMarker(project, message, exception);
 	}
@@ -455,7 +455,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
 		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
-		entries.add(DLTKCore.newContainerEntry(new Path(DubBuildpathContainer.CONTAINER_PATH_ID)));
+		entries.add(DLTKCore.newContainerEntry(new Path(DubDependenciesBuildpathContainer.CONTAINER_PATH_ID)));
 		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
@@ -475,8 +475,8 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 	
 	protected void updateDubBuildpathContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
 			throws ModelException {
-		DubBuildpathContainer dubContainer = new DubBuildpathContainer(projectElement, entries);
-		DLTKCore.setBuildpathContainer(DubBuildpathContainer.CONTAINER_PATH, array(projectElement), 
+		DubDependenciesBuildpathContainer dubContainer = new DubDependenciesBuildpathContainer(projectElement, entries);
+		DLTKCore.setBuildpathContainer(DubDependenciesBuildpathContainer.CONTAINER_PATH, array(projectElement), 
 			array(dubContainer), null);
 	}
 	
@@ -496,7 +496,7 @@ abstract class ProjectUpdateBuildpathTask extends DubModelManagerTask {
 					java.nio.file.Path srcFolderAbsolute = bundlePath.resolve(srcFolder);
 					assertTrue(srcFolderAbsolute.isAbsolute());
 					depEntries.add(
-						DubBuildpathContainer.createDubBuildpathEntry(EclipseUtils.getPath(srcFolderAbsolute)));
+						DubDependenciesBuildpathContainer.createDubBuildpathEntry(EclipseUtils.path(srcFolderAbsolute)));
 				}
 			}
 		}

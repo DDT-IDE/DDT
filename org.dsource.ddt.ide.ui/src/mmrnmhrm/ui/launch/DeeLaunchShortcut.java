@@ -49,7 +49,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 		DubBundleDescription bundleInfo = CoreDubModel.getBundleInfo(name);
 		Path targetFilePath = bundleInfo.getMainBundle().getEffectiveTargetFullPath();
 		
-		return project.getFile(EclipseUtils.getPath(targetFilePath));
+		return project.getFile(EclipseUtils.path(targetFilePath));
 	}
 	
 }

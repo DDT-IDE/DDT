@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.launch;
+package mmrnmhrm.core.compiler_installs;
 
-import static mmrnmhrm.core.launch.DMDInstallType_Test.checkLibLocations;
-import static mmrnmhrm.core.launch.DMDInstallType_Test.getLibraryLocations;
+import static mmrnmhrm.core.compiler_installs.DMDInstallType_Test.checkLibLocations;
+import static mmrnmhrm.core.compiler_installs.DMDInstallType_Test.getLibraryLocations;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 

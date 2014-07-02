@@ -14,7 +14,7 @@ package mmrnmhrm.core.projectmodel;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static mmrnmhrm.core.projectmodel.DubBuildpathContainer.isDubBuildpathEntry;
+import static mmrnmhrm.core.projectmodel.DubDependenciesBuildpathContainer.isDubBuildpathEntry;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -317,7 +317,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			}
 			
 			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
-				assertTrue(entryPath.toString() .equals(DubBuildpathContainer.CONTAINER_PATH_ID));
+				assertTrue(entryPath.toString() .equals(DubDependenciesBuildpathContainer.CONTAINER_PATH_ID));
 				continue;
 			}
 			

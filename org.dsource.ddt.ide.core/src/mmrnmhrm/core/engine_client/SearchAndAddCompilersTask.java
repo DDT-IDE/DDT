@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.engine_client;
 
 
 import java.nio.file.Path;
@@ -33,7 +33,7 @@ import org.eclipse.dltk.launching.ScriptRuntime;
 
 import dtool.util.SearchPathEnvOperation;
 
-public class SearchAndAddCompilersOnPathTask extends SearchPathEnvOperation {
+public class SearchAndAddCompilersTask extends SearchPathEnvOperation {
 	
 	protected static final SimpleLogger log = new SimpleLogger(true);
 	
@@ -45,7 +45,7 @@ public class SearchAndAddCompilersOnPathTask extends SearchPathEnvOperation {
 		
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			SearchAndAddCompilersOnPathTask task = new SearchAndAddCompilersOnPathTask(monitor);
+			SearchAndAddCompilersTask task = new SearchAndAddCompilersTask(monitor);
 			task.searchForCompilers();
 			task.applyFoundInstalls();
 			
@@ -56,7 +56,7 @@ public class SearchAndAddCompilersOnPathTask extends SearchPathEnvOperation {
 	protected final IProgressMonitor monitor;
 	protected List<InterpreterStandin> foundInstalls = new ArrayList<>();
 	
-	public SearchAndAddCompilersOnPathTask(IProgressMonitor monitor) {
+	public SearchAndAddCompilersTask(IProgressMonitor monitor) {
 		this.monitor = monitor;
 		this.foundInstalls = new ArrayList<>();
 	}

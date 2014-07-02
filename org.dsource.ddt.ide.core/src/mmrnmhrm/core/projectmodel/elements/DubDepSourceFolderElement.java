@@ -61,7 +61,7 @@ public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyEle
 			return null;
 		}
 		Path path = bundlePath.resolve(srcFolderPath);
-		IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.getPath(path));
+		IPath bpPath = DLTKUtils.localEnvPath(EclipseUtils.path(path));
 		try {
 			return scriptProject.findProjectFragment(bpPath);
 		} catch (ModelException e) {
