@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
-import mmrnmhrm.core.projectmodel.CoreDubModel;
+import mmrnmhrm.core.workspace.CoreDubModel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

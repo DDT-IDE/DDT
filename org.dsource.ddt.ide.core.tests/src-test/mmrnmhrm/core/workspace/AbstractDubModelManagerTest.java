@@ -8,13 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static mmrnmhrm.core.projectmodel.DubDependenciesBuildpathContainer.isDubBuildpathEntry;
+import static mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer.isDubBuildpathEntry;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -27,9 +27,12 @@ import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
-import mmrnmhrm.core.projectmodel.elements.IDubElement;
+import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer;
+import mmrnmhrm.core.workspace.WorkspaceModelManager;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
+import mmrnmhrm.core.workspace.viewmodel.IDubElement;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 import org.eclipse.core.resources.IMarker;
@@ -141,15 +144,15 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	}
 	
 	protected static ITaskAgent getModelAgent() {
-		return DubModelManager.getDefault().internal_getModelAgent();
+		return WorkspaceModelManager.getDefault().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		DubModelManager.getDefault().syncPendingUpdates();
+		WorkspaceModelManager.getDefault().syncPendingUpdates();
 	}
 	
-	protected static DubModelManager getModelManager() {
-		return DubModelManager.getDefault();
+	protected static WorkspaceModelManager getModelManager() {
+		return WorkspaceModelManager.getDefault();
 	}
 	
 	public static DubDependenciesContainer getDubContainer(IProject project) {
@@ -189,7 +192,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		DubModelManager.getDefault().syncPendingUpdates();
+		WorkspaceModelManager.getDefault().syncPendingUpdates();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
 		if(unresolvedDubBundle.hasErrors()) {
@@ -214,7 +217,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	/* ----------------- result checking code ----------------- */
 	
 	protected IMarker getDubErrorMarker(IProject project) throws CoreException {
-		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+		IMarker[] markers = WorkspaceModelManager.getDubErrorMarkers(project);
 		if(markers.length == 0)
 			return null;
 		
@@ -239,7 +242,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		
 		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
 		
-		IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
+		IMarker[] dubErrorMarkers = WorkspaceModelManager.getDubErrorMarkers(project);
 		assertTrue(dubErrorMarkers.length == 0);
 	}
 	

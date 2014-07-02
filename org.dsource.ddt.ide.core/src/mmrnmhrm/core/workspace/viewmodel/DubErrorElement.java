@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel.elements;
+package mmrnmhrm.core.workspace.viewmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 

@@ -1,7 +1,7 @@
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import mmrnmhrm.core.projectmodel.CoreDubModel;
+import mmrnmhrm.core.workspace.CoreDubModel;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 

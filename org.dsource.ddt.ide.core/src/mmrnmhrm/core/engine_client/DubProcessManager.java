@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;

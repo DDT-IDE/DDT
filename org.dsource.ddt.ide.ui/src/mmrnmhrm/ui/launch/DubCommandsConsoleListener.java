@@ -21,8 +21,8 @@ import melnorme.util.swt.jface.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
-import mmrnmhrm.core.projectmodel.DubProcessManager.IDubOperation;
-import mmrnmhrm.core.projectmodel.DubProcessManager.IDubProcessListener;
+import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
+import mmrnmhrm.core.engine_client.DubProcessManager.IDubProcessListener;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
 

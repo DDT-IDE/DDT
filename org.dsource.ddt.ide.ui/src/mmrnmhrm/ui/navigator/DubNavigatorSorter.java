@@ -14,12 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.text.Collator;
 
-import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
-import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.StdLibContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
+import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IFile;

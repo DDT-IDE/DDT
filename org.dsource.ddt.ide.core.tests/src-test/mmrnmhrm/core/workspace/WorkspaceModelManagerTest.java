@@ -1,4 +1,4 @@
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import static dtool.dub.CommonDubTest.ERROR_DUB_RETURNED_NON_ZERO;
 import static dtool.dub.CommonDubTest.bundle;
@@ -14,6 +14,9 @@ import java.util.concurrent.CountDownLatch;
 
 import melnorme.utilbox.concurrency.LatchRunnable;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.workspace.WorkspaceModel;
+import mmrnmhrm.core.workspace.WorkspaceModelManager;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
@@ -25,12 +28,12 @@ import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
 import dtool.tests.CommonDToolTest;
 
-public class DubModelManagerTest extends AbstractDubModelManagerTest {
+public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		DubModelManager dmm = new DubModelManager(new DubModel()); 
+		WorkspaceModelManager dmm = new WorkspaceModelManager(new WorkspaceModel()); 
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		

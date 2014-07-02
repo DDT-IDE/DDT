@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import java.util.Set;
 
@@ -18,18 +18,18 @@ import dtool.dub.DubBundleDescription;
 
 /**
  * DUB model. Holds information about DUB bundles, for the projects in the workspace.
- * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
+ * Designed to be managed concurrently by some other code (see {@link WorkspaceModelManager}).
  * Can notify listeners of updates. 
  */
-public interface IDubModel {
+public interface IWorkspaceModel {
 	
-	public void addListener(IDubModelListener listener);
+	public void addListener(IWorkspaceModelListener listener);
 	public Set<String> getDubProjects();
-	public void removeListener(IDubModelListener listener);
+	public void removeListener(IWorkspaceModelListener listener);
 	
 	public DubBundleDescription getBundleInfo(String projectName);
 	
-	public interface IDubModelListener {
+	public interface IWorkspaceModelListener {
 		
 		/** 
 		 * Note, several locks are held in the scope of this method (DubModel, and potentially Workspace Root).

@@ -124,7 +124,7 @@
    <extension
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer
-            class="mmrnmhrm.core.projectmodel.DubDependenciesBuildpathContainer$DubBPContainerInitializer"
+            class="mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer$DubBPContainerInitializer"
             id="org.dsource.ddt.ide.core.DubContainer">
       </buildpathContainerInitializer>
    </extension>

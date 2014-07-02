@@ -12,10 +12,10 @@ package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.projectmodel.CoreDubModel;
-import mmrnmhrm.core.projectmodel.DubModelManager;
-import mmrnmhrm.core.projectmodel.DubProcessManager;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.engine_client.DubProcessManager;
+import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.workspace.WorkspaceModelManager;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.ui.DeePluginImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
@@ -132,7 +132,7 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 			@Override
 			public void run() {
 				IProject project = getDubProjectFromSelection();
-				DubProcessManager dubMgr = DubModelManager.getDefault().getProcessManager();
+				DubProcessManager dubMgr = WorkspaceModelManager.getDefault().getProcessManager();
 				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
 				dubMgr.submitDubCommand(dubMgr.newDubOperation(

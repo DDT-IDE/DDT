@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel.elements;
+package mmrnmhrm.core.workspace.viewmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -17,47 +17,62 @@ import java.util.ArrayList;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IScriptProject;
 
-import dtool.engine.StandardLibraryResolution;
-import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.dub.DubBundle;
+import dtool.dub.DubBundle.DubDependecyRef;
+import dtool.dub.DubBundleDescription;
 
-public class StdLibContainer extends CommonDubElement<IProject> {
+public class DubDependenciesContainer extends CommonDubElement<IProject> {
 	
-	protected final CompilerInstall compilerInstall;
+	protected final DubBundleDescription bundleInfo;
 	protected final IDubElement[] depElements;
 	
-	public StdLibContainer(CompilerInstall compilerInstall, IProject project) {
+	public DubDependenciesContainer(DubBundleDescription bundleInfo, IProject project) {
 		super(project);
-		this.compilerInstall = assertNotNull(compilerInstall);
+		this.bundleInfo = assertNotNull(bundleInfo);
 		depElements = createChildren();
-	}
-	
-	public CompilerInstall getCompilerInstall() {
-		return compilerInstall;
-	}
-	
-	public boolean isMissingStdLib() {
-		return compilerInstall == StandardLibraryResolution.NULL_COMPILER_INSTALL;
 	}
 	
 	protected IDubElement[] createChildren() {
 		ArrayList<IDubElement> newChildren = new ArrayList<>();
 		
+		if(bundleInfo.isResolved()) {
+			for (DubBundle dubBundle : bundleInfo.getBundleDependencies()) {
+				newChildren.add(new DubDependencyElement(this, dubBundle));
+			}
+		} else {
+			for (DubDependecyRef dubBundleRef : bundleInfo.getMainBundle().getDependencyRefs()) {
+				newChildren.add(new DubRawDependencyElement(this, dubBundleRef));
+			}
+		}
+		if(bundleInfo.getError() != null) {
+			newChildren.add(new DubErrorElement(this, bundleInfo.getError().getMessage()));
+		}
 		return ArrayUtil.createFrom(newChildren, IDubElement.class);
 	}
 	
 	@Override
 	public DubElementType getElementType() {
-		return DubElementType.DUB_STD_LIB;
+		return DubElementType.DUB_DEP_CONTAINER;
+	}
+	
+	public DubBundleDescription getBundleInfo() {
+		return bundleInfo;
 	}
 	
 	public IProject getProject() {
 		return getParent();
 	}
 	
+	public IScriptProject getScriptProject() {
+		return DLTKCore.create(getProject());
+	}
+	
 	@Override
 	public String getElementName() {
-		return "{StdLib}";
+		return "{Dependencies}";
 	}
 	
 	@Override

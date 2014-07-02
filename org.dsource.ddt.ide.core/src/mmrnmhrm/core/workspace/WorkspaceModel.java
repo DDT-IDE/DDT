@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -18,7 +18,7 @@ import java.util.Set;
 
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.SimpleLogger;
-import mmrnmhrm.core.projectmodel.IDubModel.IDubModelListener;
+import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
 
 import org.eclipse.core.resources.IProject;
 
@@ -27,26 +27,26 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 
-public class DubModel extends ListenerListHelper<IDubModelListener> implements IDubModel {
+public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> implements IWorkspaceModel {
 	
-	protected final SimpleLogger log = DubModelManager.log;
+	protected final SimpleLogger log = WorkspaceModelManager.log;
 	
 	protected final HashMap<String, ProjectInfo> projectInfos = new HashMap<>();
 	
-	public DubModel() {
+	public WorkspaceModel() {
 	}
 	
 	@Override
-	public void addListener(IDubModelListener listener) {
+	public void addListener(IWorkspaceModelListener listener) {
 		super.addListener(listener);
 	}
 	@Override
-	public void removeListener(IDubModelListener listener) {
+	public void removeListener(IWorkspaceModelListener listener) {
 		super.removeListener(listener);
 	}
 	
 	protected void fireUpdateEvent(DubModelUpdateEvent updateEvent) {
-		for (IDubModelListener listener : getListeners()) {
+		for (IWorkspaceModelListener listener : getListeners()) {
 			listener.notifyUpdateEvent(updateEvent);
 		}
 	}

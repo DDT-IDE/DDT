@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
 import org.eclipse.core.resources.IProject;
 

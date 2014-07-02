@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
-public class DubModelElementsTest extends AbstractDubModelManagerTest {
+public class WorkspaceViewModelTest extends AbstractDubModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";

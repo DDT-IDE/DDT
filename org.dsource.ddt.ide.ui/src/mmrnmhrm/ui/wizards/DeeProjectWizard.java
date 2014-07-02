@@ -9,7 +9,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.DubModelManager;
+import mmrnmhrm.core.workspace.WorkspaceModelManager;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -164,7 +164,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				// TODO: more clean way to do this.
-				DubModelManager.getDefault().syncPendingUpdates();
+				WorkspaceModelManager.getDefault().syncPendingUpdates();
 			}
 		};
 		try {

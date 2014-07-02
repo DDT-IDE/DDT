@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.DLTKUtils;

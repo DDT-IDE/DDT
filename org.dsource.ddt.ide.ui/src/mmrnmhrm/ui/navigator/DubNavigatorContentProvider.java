@@ -6,18 +6,18 @@ import java.util.ArrayList;
 
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.projectmodel.CoreDubModel;
-import mmrnmhrm.core.projectmodel.IDubModel.DubModelUpdateEvent;
-import mmrnmhrm.core.projectmodel.IDubModel.IDubModelListener;
-import mmrnmhrm.core.projectmodel.ProjectInfo;
-import mmrnmhrm.core.projectmodel.elements.DubDepSourceFolderElement;
-import mmrnmhrm.core.projectmodel.elements.DubDependenciesContainer;
-import mmrnmhrm.core.projectmodel.elements.DubDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.DubErrorElement;
-import mmrnmhrm.core.projectmodel.elements.DubRawDependencyElement;
-import mmrnmhrm.core.projectmodel.elements.IDubElement;
-import mmrnmhrm.core.projectmodel.elements.IDubElement.DubElementType;
-import mmrnmhrm.core.projectmodel.elements.StdLibContainer;
+import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.workspace.ProjectInfo;
+import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
+import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
+import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
+import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.IDubElement;
+import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
+import mmrnmhrm.core.workspace.viewmodel.IDubElement.DubElementType;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -36,7 +36,7 @@ import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
-	protected IDubModelListener listener;
+	protected IWorkspaceModelListener listener;
 	
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -45,7 +45,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		// Remove previous listener, even though I think inputChange is only called once.
 		CoreDubModel.getDubModel().removeListener(listener); 
 		
-		listener = new IDubModelListener() {
+		listener = new IWorkspaceModelListener() {
 			@Override
 			public void notifyUpdateEvent(DubModelUpdateEvent updateEvent) {
 				// we use throttle Job as a workaround to to ensure label is updated, due to bug:

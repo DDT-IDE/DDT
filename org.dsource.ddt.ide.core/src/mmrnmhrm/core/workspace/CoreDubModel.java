@@ -8,7 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.projectmodel;
+package mmrnmhrm.core.workspace;
+
+import mmrnmhrm.core.engine_client.DubProcessManager;
 
 import org.eclipse.core.resources.IProject;
 
@@ -16,9 +18,9 @@ import dtool.dub.DubBundleDescription;
 
 public class CoreDubModel {
 	
-	protected static final DubModel dubModel = new DubModel();
+	protected static final WorkspaceModel dubModel = new WorkspaceModel();
 	
-	public static DubModel getDubModel() {
+	public static WorkspaceModel getDubModel() {
 		return CoreDubModel.dubModel;
 	}
 	
@@ -30,9 +32,9 @@ public class CoreDubModel {
 		return CoreDubModel.dubModel.getProjectInfo(project.getName());
 	}
 	
-	protected static final DubModelManager modelManager = new DubModelManager(CoreDubModel.dubModel);
+	protected static final WorkspaceModelManager modelManager = new WorkspaceModelManager(CoreDubModel.dubModel);
 	
-	public static DubModelManager getManager() {
+	public static WorkspaceModelManager getManager() {
 		return CoreDubModel.modelManager;
 	}
 	
