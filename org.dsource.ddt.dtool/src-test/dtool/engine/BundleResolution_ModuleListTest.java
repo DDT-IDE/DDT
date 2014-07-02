@@ -65,7 +65,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	public void testModuleResolving() throws Exception { testModuleResolving$(); }
 	public void testModuleResolving$() throws Exception {
 		
-		__initSemanticManager();
+		___initSemanticManager();
 		
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertEquals(sr.getBundleName(), "basic_lib");
@@ -132,7 +132,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	@Test
 	public void testStdLibResolve() throws Exception { testStdLibResolve$(); }
 	public void testStdLibResolve$() throws Exception {
-		sm = new Tests_SemanticManager();
+		___initSemanticManager();
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertTrue(sr.stdLibResolution.getCompilerType() == ECompilerType.DMD);
 		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_LOCATION));
@@ -142,7 +142,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test when no StdLib install is found
-		sm = new Tests_SemanticManager() {
+		___initSemanticManager(new Tests_SemanticManager() {
 			@Override
 			protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
 				return assertCast(super.getUpdatedStdLibResolution(compilerPath), 
@@ -153,7 +153,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			protected CompilerInstall getCompilerInstallForNewResolution(Path compilerPath) {
 				return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 			}
-		};
+		});
 		sr = sm.getUpdatedResolution(BASIC_LIB);
 		StandardLibraryResolution fallBackStdLibResolution = sr.stdLibResolution;
 		assertTrue(fallBackStdLibResolution.getLibrarySourceFolders().size() == 0);

@@ -165,8 +165,15 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 	
 	protected Tests_SemanticManager sm;
 	
-	protected Tests_SemanticManager __initSemanticManager() throws IOException {
-		return sm = new Tests_SemanticManager();
+	protected Tests_SemanticManager ___initSemanticManager() throws IOException {
+		return ___initSemanticManager(new Tests_SemanticManager());
+	}
+	
+	protected Tests_SemanticManager ___initSemanticManager(Tests_SemanticManager tests_SemanticManager) {
+		if(sm != null) {
+			sm.shutdown();
+		}
+		return sm = tests_SemanticManager;
 	}
 	
 	@After

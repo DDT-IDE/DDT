@@ -90,7 +90,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testManifestUpdates() throws Exception { testManifestUpdates$(); }
 	public void testManifestUpdates$() throws Exception {
-		sm = __initSemanticManager();
+		sm = ___initSemanticManager();
 		
 		// Test manifest only updates
 		sm.getUpdatedManifest(BASIC_LIB);
@@ -105,13 +105,13 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkStaleStatus(SMTEST, StaleState.NO_BUNDLE_RESOLUTION);
 		
 		// Test update resolution over partially current manifests
-		sm = __initSemanticManager();
+		sm = ___initSemanticManager();
 		sm.getUpdatedManifest(BASIC_LIB);
 		getUpdatedResolution(SMTEST);
 		checkStaleStatus(SMTEST, StaleState.CURRENT);
 		
 		// -- Test update resolution --
-		sm = __initSemanticManager();
+		sm = ___initSemanticManager();
 		
 		__storeCurrentManifests__();
 		getUpdatedResolution(BASIC_LIB);
@@ -170,7 +170,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testInvalidInput() throws Exception { testInvalidInput$(); }
 	public void testInvalidInput$() throws Exception {
-		__initSemanticManager();
+		___initSemanticManager();
 		
 		try {
 			sm.getUpdatedResolution(NON_EXISTANT);
@@ -216,7 +216,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public void testModuleUpdates() throws Exception { testModuleUpdates$(); }
 	public void testModuleUpdates$() throws Exception {
 		prepSMTestsWorkingDir();
-		__initSemanticManager();
+		___initSemanticManager();
 		
 		getUpdatedResolution(COMPLEX_LIB);
 		
@@ -349,7 +349,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public void testGetResolvedModule() throws Exception { testGetResolvedModule$(); }
 	public void testGetResolvedModule$() throws Exception {
 		prepSMTestsWorkingDir();
-		sm = __initSemanticManager();
+		sm = ___initSemanticManager();
 		sm.getUpdatedResolution(COMPLEX_LIB);
 		
 		ResolvedModule resolvedModule = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
