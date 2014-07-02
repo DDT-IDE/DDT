@@ -27,7 +27,6 @@ import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.CoreDubModel;
 import mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer;
 import mmrnmhrm.core.workspace.WorkspaceModelManager;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
@@ -119,7 +118,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	private static void initDubRepositoriesPath() {
 		DubDescribeParserTest.initDubRepositoriesPath();
 		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
-		CoreDubModel.startDefaultManager();
+		DeeCore.startModelManager();
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -144,27 +143,28 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	}
 	
 	protected static ITaskAgent getModelAgent() {
-		return WorkspaceModelManager.getDefault().internal_getModelAgent();
+		return DeeCore.getWorkspaceModelManager().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		WorkspaceModelManager.getDefault().syncPendingUpdates();
+		DeeCore.getWorkspaceModelManager().syncPendingUpdates();
 	}
 	
+	protected static final WorkspaceModel model = getModelManager().model;
+	
 	protected static WorkspaceModelManager getModelManager() {
-		return WorkspaceModelManager.getDefault();
+		return DeeCore.getWorkspaceModelManager();
+	}
+	
+	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
+		return assertNotNull(model.getBundleInfo(project));
 	}
 	
 	public static DubDependenciesContainer getDubContainer(IProject project) {
-		return assertNotNull(CoreDubModel.getProjectInfo(project).getDubContainer(project));
+		return assertNotNull(model.getProjectInfo(project)).getDubContainer(project);
 	}
 	
-	protected static DubBundleDescription getExistingDubBundleInfo(String projectName) {
-		return assertNotNull(CoreDubModel.getBundleInfo(projectName));
-	}
-	
-	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) 
-			throws CoreException {
+	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
 		getModelAgent().submit(latchRunnable);
 		writeDubJson(project, contents);
@@ -182,7 +182,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	public void writeDubJsonAndCheckDubModel(String dubJson, IProject project, DubBundleChecker expMainBundle)
 			throws CoreException {
 		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, dubJson);
-		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
+		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
 		preUpdateLatch.releaseAll();
 		
 		checkDubModel(unresolvedBundleDesc, project, expMainBundle);
@@ -192,9 +192,9 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		WorkspaceModelManager.getDefault().syncPendingUpdates();
+		DeeCore.getWorkspaceModelManager().syncPendingUpdates();
 		
-		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
+		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		if(unresolvedDubBundle.hasErrors()) {
 			// Check that we did not attempt to call dub describe on a manifest with errors
 			assertTrue(unresolvedDubBundle == dubBundle);

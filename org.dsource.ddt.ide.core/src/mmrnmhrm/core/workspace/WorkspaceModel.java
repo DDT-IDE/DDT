@@ -52,13 +52,13 @@ public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> 
 	}
 	
 	@Override
-	public synchronized DubBundleDescription getBundleInfo(String projectName) {
-		ProjectInfo projectInfo = projectInfos.get(projectName);
+	public synchronized DubBundleDescription getBundleInfo(IProject project) {
+		ProjectInfo projectInfo = getProjectInfo(project);
 		return projectInfo == null ? null : projectInfo.getBundleDesc();
 	}
 	
-	public synchronized ProjectInfo getProjectInfo(String projectName) {
-		return projectInfos.get(projectName);
+	public synchronized ProjectInfo getProjectInfo(IProject project) {
+		return projectInfos.get(project.getName());
 	}
 	
 	@Override

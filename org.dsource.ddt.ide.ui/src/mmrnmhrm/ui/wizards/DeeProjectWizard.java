@@ -164,7 +164,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 				// TODO: more clean way to do this.
-				WorkspaceModelManager.getDefault().syncPendingUpdates();
+				DeeCore.getWorkspaceModelManager().syncPendingUpdates();
 			}
 		};
 		try {

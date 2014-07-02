@@ -12,7 +12,9 @@ package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.engine_client.DubProcessManager;
+import mmrnmhrm.core.workspace.WorkspaceModel;
+import mmrnmhrm.core.workspace.WorkspaceModelManager;
 
 import org.osgi.framework.BundleContext;
 
@@ -21,26 +23,44 @@ public class DeeCore extends LangCore {
 	public static final String PLUGIN_ID = "org.dsource.ddt.ide.core";
 	public static final String TESTS_PLUGIN_ID = PLUGIN_ID + ".tests";
 	
+	protected static DToolClient dtoolClient;
+	protected static final WorkspaceModel dubModel = new WorkspaceModel();
+	protected static final WorkspaceModelManager modelManager = new WorkspaceModelManager(dubModel);
+	
+	public static DubProcessManager getDubProcessManager() {
+		return getWorkspaceModelManager().getProcessManager();
+	}
+	
+	public static DToolClient getDToolClient() {
+		return dtoolClient;
+	}
+	
+	public static WorkspaceModel getWorkspaceModel() {
+		return dubModel;
+	}
+	
+	public static WorkspaceModelManager getWorkspaceModelManager() {
+		return modelManager;
+	}
+	
 	@Override
 	protected void doCustomStart(BundleContext context) {
 		dtoolClient = DToolClient.initializeNew();
 		
-		// Note: the core plugin does not start the DubModelManager... it is the responsiblity of
+		// Note: the core plugin does not start the WorkspaceModelManager... it is the responsiblity of
 		// the Dee UI plugin (or some other "application" code) to start it, 
-		// so that they can register listeners first.
-		//CoreDubModel.startDefaultManager();
+		// so that such code can register listeners before model changes or DUB process events occur.
+		//startDefaultManager();
+	}
+	
+	public static void startModelManager() {
+		modelManager.startManager();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		CoreDubModel.shutdownDefaultManager();
+		modelManager.shutdownManager();
 		dtoolClient.shutdown();
-	}
-	
-	private static DToolClient dtoolClient;
-	
-	public static DToolClient getDToolClient() {
-		return dtoolClient;
 	}
 	
 }

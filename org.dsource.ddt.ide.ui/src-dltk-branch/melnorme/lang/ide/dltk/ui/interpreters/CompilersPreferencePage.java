@@ -12,6 +12,7 @@
 package melnorme.lang.ide.dltk.ui.interpreters;
 
 import static melnorme.utilbox.core.CoreUtil.listFrom;
+import static mmrnmhrm.core.DeeCore.getWorkspaceModelManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import java.util.List;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.util.swt.components.IFieldValueListener;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.workspace.WorkspaceModelManager;
 
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.IEnvironment;
@@ -103,7 +103,7 @@ public abstract class CompilersPreferencePage extends PreferencePage implements 
 		// The plugin might be loaded just when this pref page is activaded, 
 		// so make sure we wait for the compilers search job to finish.
 		try {
-			WorkspaceModelManager.getDefault().getCompilersSearchJob().join();
+			getWorkspaceModelManager().getCompilersSearchJob().join();
 		} catch (InterruptedException e) {
 		}
 		

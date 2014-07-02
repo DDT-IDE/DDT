@@ -27,7 +27,7 @@ public interface IWorkspaceModel {
 	public Set<String> getDubProjects();
 	public void removeListener(IWorkspaceModelListener listener);
 	
-	public DubBundleDescription getBundleInfo(String projectName);
+	public DubBundleDescription getBundleInfo(IProject project);
 	
 	public interface IWorkspaceModelListener {
 		

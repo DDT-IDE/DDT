@@ -16,7 +16,7 @@ import melnorme.lang.ide.ui.tests.utils.WizardDialog__Accessor;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DLTKUtils;
-import mmrnmhrm.core.workspace.WorkspaceModelManager;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.CommonDeeUITest;
 
@@ -60,7 +60,7 @@ public class DeeProjectWizardTest extends CommonDeeUITest {
 	@After
 	public void tearDown() throws Exception {
 		// Should undo all wizard actions
-		WorkspaceModelManager.getDefault().syncPendingUpdates(); // ensure DUB process finished
+		DeeCore.getWorkspaceModelManager().syncPendingUpdates(); // ensure DUB process finished
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {

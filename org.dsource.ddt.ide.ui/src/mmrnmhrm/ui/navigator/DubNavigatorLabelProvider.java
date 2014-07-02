@@ -9,7 +9,7 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
-import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -141,7 +141,7 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	@Override
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		DubBundleDescription bundleInfo = CoreDubModel.getBundleInfo(element.getProject().getName());
+		DubBundleDescription bundleInfo = DeeCore.getWorkspaceModel().getBundleInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}

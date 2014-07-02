@@ -14,7 +14,6 @@ import java.util.concurrent.CountDownLatch;
 
 import melnorme.utilbox.concurrency.LatchRunnable;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.CoreDubModel;
 import mmrnmhrm.core.workspace.WorkspaceModel;
 import mmrnmhrm.core.workspace.WorkspaceModelManager;
 
@@ -59,14 +58,14 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), 
 		null, "bar_lib", DEFAULT_VERSION, paths("source"));
 	
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		deleteProject(DUB_TEST); // In case drop-to-frame is used during debugging.
 		_awaitModelUpdates_();
 		
-		// Some basic model tests
-		assertTrue(getModelManager().model.getBundleInfo(DUB_TEST) == null);
+		assertTrue(model.getBundleInfo(project(DUB_TEST)) == null);
 		
 		IProject project;
 		long taskCount;
@@ -79,7 +78,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
-		assertTrue(CoreDubModel.getBundleInfo(DUB_TEST) == null);
+		assertTrue(model.getBundleInfo(project) == null);
 		latchRunnable.releaseAll();
 		
 		// Ensure non-d projects dont provoke updates
@@ -91,13 +90,13 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(CoreDubModel.getBundleInfo(DUB_TEST) == null);
+		assertTrue(model.getBundleInfo(project) == null);
 		
 		_awaitModelUpdates_();
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
-		assertTrue(CoreDubModel.getBundleInfo(project.getName()) == null);
-		assertTrue(CoreDubModel.getProjectInfo(project) == null);
+		assertTrue(model.getBundleInfo(project) == null);
+		assertTrue(model.getProjectInfo(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.
 		_awaitModelUpdates_();
@@ -107,7 +106,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		System.out.println("--------- .project contents: ");
 		System.out.println(readFileContents(project.getFile(".project")));
 		
-		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project.getName());
+		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
 		modelLatch.releaseAll();
 		checkDubModel(unresolvedBundleDesc, project, 
 			main(loc(project), null, "xptobundle", DubBundle.DEFAULT_VERSION, srcFolders(), rawDeps()));
@@ -180,7 +179,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		// DUB_LIB project buildpath entry not on DUB_TEST yet
 		_awaitModelUpdates_();
-		DubBundleDescription dubBundle = getExistingDubBundleInfo(project.getName());
+		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
 				rawDeps("dub_lib"), 

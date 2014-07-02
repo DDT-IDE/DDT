@@ -74,10 +74,6 @@ public class WorkspaceModelManager {
 	
 	protected static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
 	
-	public static WorkspaceModelManager getDefault() {
-		return CoreDubModel.modelManager;
-	}
-	
 	/* ----------------------------------- */
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
@@ -196,7 +192,7 @@ public class WorkspaceModelManager {
 		protected void processProjectDelta(IResourceDelta projectDelta) {
 			IProject project = (IProject) projectDelta.getResource();
 			
-			DubBundleDescription existingProjectModel = model.getBundleInfo(project.getName());
+			DubBundleDescription existingProjectModel = model.getBundleInfo(project);
 			
 			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAcessible(project, true)) {
 				if(existingProjectModel == null) {
@@ -367,6 +363,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected void deleteDubMarkers(IProject project) {
+		/*BUG here concurrency*/
 		try {
 			IMarker[] markers = WorkspaceModelManager.getDubErrorMarkers(project);
 			for (IMarker marker : markers) {
@@ -524,8 +521,7 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 			return null;
 		}
 		for (IProject project : deeProjects) {
-			if(project.getLocation().toFile().toPath().equals(location) && 
-					getModel().getBundleInfo(project.getName()) != null) {
+			if(project.getLocation().toFile().toPath().equals(location) && getModel().getBundleInfo(project) != null) {
 				return project;
 			}
 		}
@@ -550,8 +546,8 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 			if(changedProject != null && changedProject.getName().equals(projectName))
 				continue; // changedProject is supposed to be up to date, so no need to update that one.
 			
-			DubBundleDescription bundleDesc = getModel().getBundleInfo(projectName);
 			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
+			DubBundleDescription bundleDesc = getModel().getBundleInfo(project);
 			updateBuildpath(project, bundleDesc);
 		}
 	}

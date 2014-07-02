@@ -4,20 +4,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.CoreDubModel;
-import mmrnmhrm.core.workspace.ProjectInfo;
 import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
 import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
+import mmrnmhrm.core.workspace.ProjectInfo;
+import mmrnmhrm.core.workspace.WorkspaceModel;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement;
-import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement.DubElementType;
+import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -36,6 +37,10 @@ import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
+	public static WorkspaceModel getWorkspaceModel() {
+		return DeeCore.getWorkspaceModel();
+	}
+	
 	protected IWorkspaceModelListener listener;
 	
 	@Override
@@ -43,7 +48,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		super.inputChanged(viewer, oldInput, newInput);
 		
 		// Remove previous listener, even though I think inputChange is only called once.
-		CoreDubModel.getDubModel().removeListener(listener); 
+		getWorkspaceModel().removeListener(listener); 
 		
 		listener = new IWorkspaceModelListener() {
 			@Override
@@ -53,12 +58,12 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 				viewerRefreshThrottleJob.scheduleRefreshJob();
 			}
 		};
-		CoreDubModel.getDubModel().addListener(listener);
+		getWorkspaceModel().addListener(listener);
 	}
 	
 	@Override
 	public void dispose() {
-		CoreDubModel.getDubModel().removeListener(listener);
+		getWorkspaceModel().removeListener(listener);
 	}
 	
 	protected final ThrottleCodeJob viewerRefreshThrottleJob = new ThrottleCodeJob(1200) {
@@ -70,8 +75,8 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 	
 	protected void postRefreshEventToUI(final ThrottleCodeJob throttleCodeJob) {
 		final ArrayList<IProject> dubProjects = new ArrayList<>();
-		for (String projectName : CoreDubModel.getDubModel().getDubProjects()) {
-			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
+		for (String projectName : getWorkspaceModel().getDubProjects()) {
+			IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
 			dubProjects.add(project);
 		}
 		
@@ -116,7 +121,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		return new DubContentElementsSwitcher<Boolean>() {
 			@Override
 			public Boolean visitProject(IProject project) {
-				return project.isAccessible() && CoreDubModel.getBundleInfo(project.getName()) != null;
+				return project.isAccessible() && getWorkspaceModel().getBundleInfo(project) != null;
 			}
 			@Override
 			public Boolean visitDubElement(IDubElement dubElement) {
@@ -169,7 +174,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 	protected Object[] getProjectChildren(IProject project) {
 		ArrayList<Object> arrayList = new ArrayList<>();
 		if(project.isAccessible()) {
-			ProjectInfo projectInfo = CoreDubModel.getDubModel().getProjectInfo(project.getName());
+			ProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
 			if(projectInfo != null) {
 				DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 				arrayList.add(dubContainer);
@@ -297,7 +302,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		} 
 		IFolder folder = (IFolder) element;
 		IProject project = folder.getProject();
-		DubBundleDescription bundleInfo = CoreDubModel.getBundleInfo(project.getName());
+		DubBundleDescription bundleInfo = getWorkspaceModel().getBundleInfo(project);
 		if(bundleInfo == null) {
 			return false;
 		}

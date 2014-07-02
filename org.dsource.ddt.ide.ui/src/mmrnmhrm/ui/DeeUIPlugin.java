@@ -1,7 +1,7 @@
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import mmrnmhrm.core.workspace.CoreDubModel;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
 import mmrnmhrm.ui.text.DeeTextTools;
 
@@ -29,15 +29,15 @@ public class DeeUIPlugin extends LangUIPlugin {
 	protected void doCustomStart_finalStage() {
 		// Add process listener and start model manager. 
 		dubProcessListener = new DubCommandsConsoleListener();
-		CoreDubModel.getProcessManager().addDubProcessListener(dubProcessListener);
-		CoreDubModel.startDefaultManager();
+		DeeCore.getDubProcessManager().addDubProcessListener(dubProcessListener);
+		DeeCore.startModelManager();
 		
 		super.doCustomStart_finalStage();
 	}
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		CoreDubModel.getProcessManager().removeDubProcessListener(dubProcessListener);
+		DeeCore.getDubProcessManager().removeDubProcessListener(dubProcessListener);
 	}
 	
 	/* --------  -------- */

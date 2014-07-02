@@ -38,6 +38,9 @@ public class DubProcessManager {
 	
 	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
+	public DubProcessManager() {
+	}
+	
 	public void shutdownNow() {
 		dubProcessAgent.shutdownNow();
 	}

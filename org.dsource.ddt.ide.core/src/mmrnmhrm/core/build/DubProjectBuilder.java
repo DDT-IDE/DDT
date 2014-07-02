@@ -27,7 +27,6 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine_client.DubProcessManager;
-import mmrnmhrm.core.workspace.CoreDubModel;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -119,7 +118,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
 			throws CoreException {
-		DubProcessManager dubProcessManager = CoreDubModel.getProcessManager();
+		DubProcessManager dubProcessManager = DeeCore.getDubProcessManager();
 		
 		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(
 			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
