@@ -30,36 +30,43 @@ public class ArrayUtil {
 		return array == null ? EMPTY_ARRAY : array;
 	}
 	
-	/** @return the given array if it is non-null, an empty array otherwise with given klass as component type. */
-	public static <T> T[] nullToEmpty(T[] array, Class<T> klass) {
-		return array == null ? create(0, klass) : array;
+	/** @return the given array if it is non-null, an empty array otherwise with given componentType. */
+	public static <T> T[] nullToEmpty(T[] array, Class<T> componentType) {
+		return array == null ? create(0, componentType) : array;
 	}
 	
-	/** Creates a new array of given length, and same component type as given compType. */
-	public static <T> T[] create(int length, T[] compType) {
-		return (T[]) Array.newInstance(compType.getClass().getComponentType(), length);
+	@SuppressWarnings("unchecked")
+	public static <T> T[] create(int length, Class<T> componentType) {
+		return (T[]) Array.newInstance(componentType, length);
 	}
 	
-	public static <T> T[] create(int length, Class<T> klass) {
-		return (T[]) Array.newInstance(klass, length);
+	@SuppressWarnings("unchecked")
+	public static <T> T[] create(Class<T> componentType, int length) {
+		return (T[]) Array.newInstance(componentType, length);
 	}
 	
-    /** Create an array from the given list, with the given cpType as the run-time component type.
+	/** Creates a new array of given length, and same component type as given similarArray. */
+	@SuppressWarnings("unchecked")
+	public static <T> T[] createWithSameComponentType(int length, T[] similarArray) {
+		return (T[]) Array.newInstance(similarArray.getClass().getComponentType(), length);
+	}
+	
+    /** Create an array from the given list, with the given componentType.
      * If the list is null, a zero-length array is created. */
-	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> cpType) {
+	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> componentType) {
 		if(list == null) {
-			return (T[]) Array.newInstance(cpType, 0);
+			return create(componentType, 0);
 		}
-		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+		return list.toArray(create(componentType, list.size()));
 	}
 	
-    /** Create an array from the given element, with the given cpType as the runtime component type.
+    /** Create an array from the given element, with the given componentType.
      * If the element is null, a zero-length array is created. */
-	public static <T> T[] singletonArray(T element, Class<T> cpType) {
+	public static <T> T[] singletonArray(T element, Class<T> componentType) {
 		if(element == null) {
-			return (T[]) Array.newInstance(cpType, 0);
+			return create(componentType, 0);
 		}
-		T[]newArray = (T[]) Array.newInstance(cpType, 1);
+		T[] newArray = create(componentType, 1);
 		newArray[0] = element;
 		return newArray;
 	}
@@ -70,12 +77,12 @@ public class ArrayUtil {
 		if(list == null) {
 			return null;
 		}
-		return list.toArray((T[])Array.newInstance(cpType, list.size()));
+		return list.toArray(create(cpType, list.size()));
 	}
 	
 	/** Creates a new array with the given length, and of the same type as the given array. */
 	public static <T> T[] copyFrom(T[] array, int newLength) {
-        T[] copy = (T[]) Array.newInstance(array.getClass().getComponentType(), newLength);
+		T[] copy = createWithSameComponentType(newLength, array);
     	System.arraycopy(array, 0, copy, 0, Math.min(array.length, newLength));
     	return copy;
 	}
@@ -134,9 +141,9 @@ public class ArrayUtil {
 	 * If the list is null, a zero-length array is created. */
 	public static <T> T[] newSameSize(List<?> list, Class<T> cpType) {
 		if(list == null)
-			return (T[]) Array.newInstance(cpType, 0);
+			return create(cpType, 0);
 		else 
-			return (T[]) Array.newInstance(cpType, list.size());
+			return create(cpType, list.size());
 	}
 
     /** Copies src array range [0 .. src.length] to dest array starting at destIx. */
@@ -156,7 +163,7 @@ public class ArrayUtil {
 	/** Creates a new array with given first element prepended to given rest array. */
 	@SafeVarargs
 	public static <T> T[] prepend(T first, T... rest) {
-		T[] newArray = ArrayUtil.create(rest.length + 1, rest);
+		T[] newArray = createWithSameComponentType(rest.length + 1, rest);
 		newArray[0] = first;
 		System.arraycopy(rest, 0, newArray, 1, rest.length);
 		return newArray;
@@ -192,16 +199,6 @@ public class ArrayUtil {
 		System.arraycopy(other, 0, newArray, length, appendCount);
 		return newArray;
 	}
-	
-	/** Appends two arrays, creating a new array of given runtime type. */
-	public static <T> T[] concat(T[] base, T[] other, Class<?> arClass) {
-		int newSize = base.length + other.length;
-		T[] newArray = (T[]) Array.newInstance(arClass, newSize);
-		System.arraycopy(base, 0, newArray, 0, base.length);
-		System.arraycopy(other, 0, newArray, base.length, other.length);
-		return newArray;
-	}
-	
 	
 	/** Removes from the given array the first element that isEqual to given objToRemove. */
 	public static<T> T[] remove(T[] array, T objToRemove) {
@@ -242,7 +239,7 @@ public class ArrayUtil {
 			return array;
 		}
 		int ix = 0;
-		T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length - removeCount); 
+		T[] newArray = createWithSameComponentType(array.length - removeCount, array); 
 		for (T elem : array) {
 			if(areEqual(elem, objToRemove)) {
 				continue;
@@ -337,7 +334,7 @@ public class ArrayUtil {
 	
 	/** Filters given array, using given predicate, creating a new array. */
 	public static <T> T[] filter(T[] array, Predicate<T> predicate) {
-		T[] newArray = create(array.length, array);
+		T[] newArray = createWithSameComponentType(array.length, array);
 		assertTrue(newArray.length <= array.length);
 		int newIx = 0, arrayIx = 0;
 		while(arrayIx < array.length) {
