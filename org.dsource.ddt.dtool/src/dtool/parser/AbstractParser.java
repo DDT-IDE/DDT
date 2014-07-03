@@ -523,7 +523,9 @@ public abstract class AbstractParser {
 	public static <T> ArrayView<T> arrayViewG(Collection<? extends T> list) {
 		if(list == null)
 			return null;
-		return ArrayView.create((T[]) ArrayUtil.createFrom(list, Object.class));
+		@SuppressWarnings("unchecked")
+		T[] array = (T[]) ArrayUtil.createFrom(list, Object.class);
+		return ArrayView.create(array);
 	}
 	
 	public static <T extends IASTNode> NodeListView<T> nodeListView(ArrayList<T> list) {

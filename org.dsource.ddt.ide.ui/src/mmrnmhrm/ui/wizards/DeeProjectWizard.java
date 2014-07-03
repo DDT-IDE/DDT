@@ -9,7 +9,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.WorkspaceModelManager;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeNature;

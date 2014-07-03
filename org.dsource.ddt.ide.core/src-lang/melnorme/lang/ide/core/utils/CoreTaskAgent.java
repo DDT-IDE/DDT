@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core;
+package melnorme.lang.ide.core.utils;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;

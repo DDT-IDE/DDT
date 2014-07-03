@@ -2,9 +2,7 @@ package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
 
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;

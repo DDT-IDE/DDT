@@ -90,11 +90,9 @@ public abstract class DeePluginImages extends LangImages {
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");
 	
-	@Deprecated
-	public static ImageDescriptor getActionImageDescriptor(String file, boolean useMissingImageDescriptor) {
-		return helper.createImageDescriptor(getKey(T_ACTIONS, file), useMissingImageDescriptor);
-	}
-
+	public static final ImageDescriptor COLLAPSE_ALL = createUnmanaged(T_ACTIONS, "collapseall.gif");
+	public static final ImageDescriptor EXPAND_ALL = createUnmanaged(T_ACTIONS, "expandall.gif");
+	
 	/* ------------------------------------------- */
 	
 	/** This is an alternate registry with keys based on ImageDescriptors.

@@ -24,10 +24,7 @@ import mmrnmhrm.tests.DeeCoreTestResources;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.compiler.env.IModuleSource;
-import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
@@ -98,7 +95,6 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		sourceModule = (ISourceModule) DLTKCore.create(fixtureSourceOverlay.overlayedFile);
 		checkModuleSetupConsistency();
 		
-		IModelElement modelElement = projectFolderName == null ? null : sourceModule;
 		explicitModuleName = explicitModuleName != null ? explicitModuleName : "_dummy.d";
 		
 		if(moduleName == CoreResolverSourceTests.DEFAULT_MODULE_NAME) {

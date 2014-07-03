@@ -1,6 +1,5 @@
 package org.dsource.ddt.ide.core;
 
-import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IResource;

@@ -22,18 +22,18 @@ import java.util.concurrent.Future;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
+import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.DefaultResourceListener;
 import mmrnmhrm.core.engine_client.DubProcessManager;
 import mmrnmhrm.core.engine_client.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask.SearchAndAddCompilersOnPathJob;
@@ -180,14 +180,7 @@ public class WorkspaceModelManager {
 		return false;
 	}
 	
-	protected final class DubProjectModelResourceListener extends DefaultResourceListener {
-		
-		@Override
-		protected void processWorkspaceDelta(IResourceDelta workspaceDelta) {
-			//System.out.println("--- Got DELTA: " + EclipseUtils.printDelta(workspaceDelta));
-			
-			super.processWorkspaceDelta(workspaceDelta);
-		}
+	protected final class DubProjectModelResourceListener extends DefaultProjectResourceListener {
 		
 		@Override
 		protected void processProjectDelta(IResourceDelta projectDelta) {

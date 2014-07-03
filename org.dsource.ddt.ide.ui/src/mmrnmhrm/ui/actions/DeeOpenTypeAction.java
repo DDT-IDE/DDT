@@ -2,11 +2,11 @@ package mmrnmhrm.ui.actions;
 
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
+import mmrnmhrm.ui.OpenTypeSelectionDialog2_Ext;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
-import org.eclipse.dltk.internal.ui.dialogs.OpenTypeSelectionDialog2;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.actions.OpenTypeAction;
@@ -46,7 +46,7 @@ public class DeeOpenTypeAction extends OpenTypeAction {
 	
 	@Override
 	protected SelectionDialog createDialog() {
-		OpenTypeSelectionDialog2 dialog = new OpenTypeSelectionDialog2(DLTKUIPlugin.getActiveWorkbenchShell(),
+		OpenTypeSelectionDialog2_Ext dialog = new OpenTypeSelectionDialog2_Ext(DLTKUIPlugin.getActiveWorkbenchShell(),
 				true, PlatformUI.getWorkbench().getProgressService(), null, 
 				IDLTKSearchConstants.TYPE, new DeeTypeSelectionExtension(), this.getUILanguageToolkit());
 		dialog.setTitle(getOpenTypeDialogTitle());

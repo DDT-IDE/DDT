@@ -13,13 +13,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -285,7 +283,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		};
 		actionExpand.setText("Expand All");
 		actionExpand.setToolTipText("Expand all nodes");
-		ASTViewer.setupActionImages(actionExpand, "expandall.gif");
+		actionExpand.setImageDescriptor(DeePluginImages.EXPAND_ALL);
 		
 		actionCollapse = new Action() {
 			@Override
@@ -295,7 +293,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		};
 		actionCollapse.setText("Collapse All");
 		actionCollapse.setToolTipText("Collapse All nodes");
-		ASTViewer.setupActionImages(actionCollapse, "collapseall.gif");
+		actionCollapse.setImageDescriptor(DeePluginImages.COLLAPSE_ALL);
 		
 //		actionToggle = new Action() {
 //			@Override
@@ -320,12 +318,6 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		if(fEditor == null)
 			return;
 		EditorUtil.selectNodeInEditor((AbstractTextEditor)fEditor, event);
-	}
-
-
-	public static void setupActionImages(IAction action, String file) {
-		ImageDescriptor imgDesc = DeePluginImages.getActionImageDescriptor(file, true); 
-		action.setImageDescriptor(imgDesc);
 	}
 	
 }

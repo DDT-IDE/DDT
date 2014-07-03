@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core;
+package melnorme.lang.ide.core.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 
-public class DefaultResourceListener implements IResourceChangeListener {
+public class DefaultProjectResourceListener implements IResourceChangeListener {
 	
 	@Override
 	public void resourceChanged(IResourceChangeEvent resourceChange) {
@@ -36,7 +36,6 @@ public class DefaultResourceListener implements IResourceChangeListener {
 		}
 	}
 	
-	//@SuppressWarnings("unused")
 	protected void processProjectDelta(IResourceDelta projectDelta) {
 		assertTrue(projectDelta.getResource().getType() == IResource.PROJECT);
 	}

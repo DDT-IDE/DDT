@@ -51,16 +51,7 @@ public class ArrayUtil {
 		return (T[]) Array.newInstance(similarArray.getClass().getComponentType(), length);
 	}
 	
-    /** Create an array from the given list, with the given componentType.
-     * If the list is null, a zero-length array is created. */
-	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> componentType) {
-		if(list == null) {
-			return create(componentType, 0);
-		}
-		return list.toArray(create(componentType, list.size()));
-	}
-	
-    /** Create an array from the given element, with the given componentType.
+     /** Create an array from the given element, with the given componentType.
      * If the element is null, a zero-length array is created. */
 	public static <T> T[] singletonArray(T element, Class<T> componentType) {
 		if(element == null) {
@@ -71,13 +62,27 @@ public class ArrayUtil {
 		return newArray;
 	}
 	
+	/** Create an array from the given list, with the given componentType.
+     * If the list is null, a zero-length array is created. */
+	public static <T> T[] createFrom(Collection<? extends T> list, Class<T> componentType) {
+		if(list == null) {
+			return create(componentType, 0);
+		}
+		return list.toArray(create(componentType, list.size()));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T[] createFrom(Collection<? extends T> list) {
+		return createFrom(list, (Class<T>) Object.class);
+	}
+	
     /** Create an array from the given list, with the given cpType as the run-time component type.
      * If the list is null, null is returned. */
-	public static <T> T[] toArray(Collection<? extends T> list, Class<T> cpType) {
+	public static <T> T[] toArray(Collection<? extends T> list, Class<T> componentType) {
 		if(list == null) {
 			return null;
 		}
-		return list.toArray(create(cpType, list.size()));
+		return list.toArray(create(componentType, list.size()));
 	}
 	
 	/** Creates a new array with the given length, and of the same type as the given array. */

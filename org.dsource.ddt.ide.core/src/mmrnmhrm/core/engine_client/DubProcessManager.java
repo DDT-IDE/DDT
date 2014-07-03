@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
@@ -24,7 +25,6 @@ import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import mmrnmhrm.core.CoreTaskAgent;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;

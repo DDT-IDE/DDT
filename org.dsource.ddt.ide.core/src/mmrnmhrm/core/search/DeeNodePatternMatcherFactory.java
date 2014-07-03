@@ -1,9 +1,9 @@
 package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.utilbox.core.DevelopmentCodeMarkers.UsesReflectionToAccessInternalAPI;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.IUsesReflectionToAccessInternalAPI;
 
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.search.SearchPattern;
@@ -20,7 +20,7 @@ import org.eclipse.dltk.internal.core.search.matching.VariablePattern;
 /**
  * BM: This is a separate class pretty much so that we can ignore warnings.
  */
-public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInternalAPI{
+public class DeeNodePatternMatcherFactory {
 	
 	public static AbstractNodePatternMatcher createPatternMatcher(DeeMatchLocator deeMatchLocator, SearchPattern pattern) {
 		
@@ -90,7 +90,7 @@ public class DeeNodePatternMatcherFactory implements IUsesReflectionToAccessInte
 		case IIndexConstants.FIELD_PATTERN: {
 			FieldPattern fieldPattern = (FieldPattern) pattern;
 			char[] simpleName = fieldPattern.name;
-			// XXX: ugly hack here
+			@UsesReflectionToAccessInternalAPI
 			char[] qualification = readInternalField(fieldPattern, "declaringQualification", null);
 			return new DeeNameNodeMatcher(deeMatchLocator, pattern,
 					fieldPattern.findDeclarations, simpleName, qualification);
