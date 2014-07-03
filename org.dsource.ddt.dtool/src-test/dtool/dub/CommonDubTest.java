@@ -26,7 +26,6 @@ import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
-import dtool.tests.DToolTests;
 
 public class CommonDubTest extends CommonDToolTest {
 	
@@ -191,7 +190,7 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, String... arguments) 
 			throws IOException {
-		String[] command = ArrayUtil.prepend(DToolTests.DUB_PROGRAM_PATH, arguments);
+		String[] command = ArrayUtil.prepend(DubHelper.getDubPath(), arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
 		if(bundlePath != null) {
 			pb.directory(bundlePath.path.toFile());

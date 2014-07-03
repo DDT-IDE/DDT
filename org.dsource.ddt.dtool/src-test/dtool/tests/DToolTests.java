@@ -16,7 +16,6 @@ public class DToolTests implements Tests_HasExternalDependencies {
 	
 	public static final String DTOOL_PREFIX = "DTool.";
 	public static final boolean TESTS_LITE_MODE = getSystemProperty("TestsLiteMode", false); 
-	public static final String DUB_PROGRAM_PATH = getSystemProperty("DubBinPath", "dub"); 
 	
 	public static String getSystemProperty(String propName, String defaultValue) {
 		String propValue = System.getProperty(DTOOL_PREFIX + propName);

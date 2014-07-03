@@ -14,14 +14,17 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
+import dtool.dub.DubHelper;
 import melnorme.lang.ide.core.CorePreferencesLookup;
 
 public class DeeCorePreferences implements DeeCorePreferencesConstants {
 	
 	public static String getDubPath() {
-		return new CorePreferencesLookup().getString(PREF_DUB_PATH, "");
+		return DubHelper.DUB_PATH_OVERRIDE != null ? 
+				DubHelper.DUB_PATH_OVERRIDE : 
+				new CorePreferencesLookup().getString(PREF_DUB_PATH, "");
 	}
-
+	
 	public static String getDubBuildOptions(IProject project) {
 		return new CorePreferencesLookup(project).getString(PREF_DUB_BUILD_OPTIONS, getDubBuildOptionsDefault());
 	}

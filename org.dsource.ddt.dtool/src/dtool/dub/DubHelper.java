@@ -28,6 +28,18 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
  */
 public class DubHelper {
 	
+	public static final String DUB_PATH_OVERRIDE = System.getProperty("DTool.DubPath");
+	
+	static {
+		if(DUB_PATH_OVERRIDE != null) {
+			System.out.println(":::: DubPathOverride: " + DUB_PATH_OVERRIDE);	
+		}
+	}
+	
+	public static String getDubPath() {
+		return DUB_PATH_OVERRIDE != null ? DUB_PATH_OVERRIDE : "dub";
+	}
+	
 	public static DubBundleDescription runDubDescribe(BundlePath bundlePath) throws IOException, InterruptedException {
 		return runDubDescribe(bundlePath, false);
 	}
@@ -36,16 +48,16 @@ public class DubHelper {
 			throws IOException, InterruptedException {
 		ProcessBuilder pb;
 		if(allowDepDownload) {
-			pb = new ProcessBuilder("dub", "describe");
+			pb = new ProcessBuilder(getDubPath(), "describe");
 		} else {
-			pb = new ProcessBuilder("dub", "describe", "--nodeps");
+			pb = new ProcessBuilder(getDubPath(), "describe", "--nodeps");
 		}
 		
 		pb.directory(bundlePath.path.toFile());
-		ExternalProcessHelper extPH = new ExternalProcessHelper(pb);
+		
 		ExternalProcessResult processResult;
 		try {
-			processResult = extPH.strictAwaitTermination();
+			processResult = new ExternalProcessHelper(pb).strictAwaitTermination();
 		} catch (TimeoutException e) {
 			throw assertFail(); // Cannot happen because there is no cancel monitor
 		}

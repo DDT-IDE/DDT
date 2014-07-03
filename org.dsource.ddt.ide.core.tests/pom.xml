@@ -21,7 +21,10 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<argLine>-DDTool.TestResourcesDir=${dtool.testdataDir}</argLine>
+					<systemProperties>
+						<DTool.TestResourcesDir>${dtool.testdataDir}</DTool.TestResourcesDir>
+						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
+					</systemProperties>
 					<useUIHarness>false</useUIHarness>
 				</configuration>
 			</plugin>

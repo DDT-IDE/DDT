@@ -15,6 +15,7 @@
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
+		<rootBuildDirectory>${project.parent.basedir}/bin-maven</rootBuildDirectory>
 
 		<ddt.targetPlatform>releng/target-platform/DDT</ddt.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
@@ -70,6 +71,22 @@
 				</plugins>
 			</build>
 		</profile>
+		
+		<profile>
+			<id>platform-windows</id>
+			<activation><os><family>windows</family></os></activation>
+			<properties>
+				<DTool.DubPath>${rootBuildDirectory}/dub/dub.exe</DTool.DubPath>
+			</properties>
+		</profile>
+		<profile>
+			<id>platform-linux</id>
+			<activation><os><family>linux</family></os></activation>
+			<properties>
+				<DTool.DubPath>${rootBuildDirectory}/dub/dub</DTool.DubPath>
+			</properties>
+		</profile>
+		
 	</profiles>
 
 	<!-- Core build -->

@@ -25,8 +25,62 @@
 				<dtool.testsLiteModeOption>-DDTool.TestsLiteMode</dtool.testsLiteModeOption>
 			</properties>
 		</profile>
-	</profiles>
 
+		<profile>
+			<id>platform-windows</id>
+			<activation><os><family>windows</family></os></activation>
+			<build>
+			<plugins>
+				<plugin>
+					<groupId>com.googlecode.maven-download-plugin</groupId>
+					<artifactId>download-maven-plugin</artifactId>
+					<version>1.2.0</version>
+					<executions>
+						<execution>
+							<id>download-dub-windows</id>
+							<phase>pre-integration-test</phase>
+							<goals><goal>wget</goal></goals>
+							<configuration>
+								<url>http://code.dlang.org/files/dub-0.9.21-windows-x86.zip</url>
+								<unpack>true</unpack>
+								<outputDirectory>${rootBuildDirectory}/dub</outputDirectory>
+								<md5>684f652b83ecbb1d4afdc26a98e06b5d</md5>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>platform-linux</id>
+			<activation><os><family>linux</family></os></activation>
+			<build>
+			<plugins>
+				<plugin>
+					<groupId>com.googlecode.maven-download-plugin</groupId>
+					<artifactId>download-maven-plugin</artifactId>
+					<version>1.2.0</version>
+					<executions>
+						<execution>
+							<id>download-dub-linux</id>
+							<phase>pre-integration-test</phase>
+							<goals><goal>wget</goal></goals>
+							<configuration>
+								<url>http://code.dlang.org/files/dub-0.9.21-linux-x86.tar.gz</url>
+								<unpack>true</unpack>
+								<outputDirectory>${rootBuildDirectory}/dub</outputDirectory>
+								<md5>e19ef418c1a4c04dcf5fed06695274dd</md5>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -34,7 +88,12 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<argLine>-DDTool.TestResourcesDir=${dtool.testdataDir} -DDTool.TestsWorkingDir=${project.build.directory}/_runtime-tests ${dtool.testsLiteModeOption}</argLine>
+					<systemProperties>
+						<DTool.TestResourcesDir>${dtool.testdataDir}</DTool.TestResourcesDir>
+						<DTool.TestsWorkingDir>${project.build.directory}/_runtime-tests</DTool.TestsWorkingDir>
+						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
+					</systemProperties>
+					<argLine>${dtool.testsLiteModeOption}</argLine>
 				</configuration>
 			</plugin>
 			

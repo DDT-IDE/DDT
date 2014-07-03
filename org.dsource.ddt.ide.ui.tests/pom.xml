@@ -38,6 +38,9 @@
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
+					<systemProperties>
+						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
+					</systemProperties>
 					<useUIHarness>true</useUIHarness>
 					<dependencies>
 						<dependency>
