@@ -3,9 +3,9 @@ package mmrnmhrm.core.engine_client;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.utilbox.misc.IByteSequence;
 import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -14,13 +14,15 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 
+import dtool.engine.ModuleParseCache_Test;
+
 /**
  * Module resolver helper for the {@link CoreResolverSourceTests} fixture
  */
 public class TestsProjectFileOverlay {
 	
-	protected IFile overlayedFile;
-	protected IByteSequence overlayedFilePreviousContents;
+	protected final IFile overlayedFile;
+	protected final IByteSequence overlayedFilePreviousContents;
 	
 	public TestsProjectFileOverlay(IProject project, String moduleName, String source) 
 		throws IOException, CoreException {
@@ -32,14 +34,13 @@ public class TestsProjectFileOverlay {
 		}
 		overlayedFile = srcFolder.getFile(filePath);
 		
-		ByteArrayInputStream is = new ByteArrayInputStream(source.getBytes(StringUtil.UTF8));
 		if(overlayedFile.exists()) {
 			overlayedFilePreviousContents = StreamUtil.readAllBytesFromStream(overlayedFile.getContents());
-			overlayedFile.setContents(is, IResource.NONE, null);
 		} else {
 			overlayedFilePreviousContents = null;
-			overlayedFile.create(is, IResource.NONE, null);
 		}
+		ModuleParseCache_Test.writeToFileAndUpdateMTime(CommonCoreTest.path(overlayedFile.getLocation()), source);
+		overlayedFile.refreshLocal(0, null);
 	}
 	
 	public void cleanupChanges() {
