@@ -45,8 +45,8 @@ public class DubManifestParser extends CommonDubParser {
 	
 	protected String source;
 	
-	protected String locationStr = null;
 	protected String bundleName = null;
+	protected String pathString = null;
 	
 	protected String version = null;
 	protected String[] sourceFolders = null;
@@ -80,18 +80,22 @@ public class DubManifestParser extends CommonDubParser {
 	}
 	
 	public DubBundle createBundle(BundlePath bundlePath, boolean searchImplicitSourceFolders) {
-		if(bundlePath == null) {
-			bundlePath = BundlePath.create(locationStr);
-			if(bundlePath == null) {
-				putError("Invalid path: " + locationStr);
-			}
-		}
 		if(bundleName == null) {
 			bundleName = "<undefined>";
 			
 			putError(ERROR_BUNDLE_NAME_UNDEFINED);
 		}
 		
+		if(bundlePath == null) {
+			if(pathString == null) {
+				putError("Missing path entry.");
+			} else {
+				bundlePath = BundlePath.create(pathString);
+				if(bundlePath == null) {
+					putError("Invalid path: " + pathString);
+				}
+			}
+		}
 		Path[] effectiveSourceFolders;
 		if(sourceFolders != null) {
 			effectiveSourceFolders = createPaths(sourceFolders);
@@ -166,7 +170,7 @@ public class DubManifestParser extends CommonDubParser {
 				} else if(propertyName.equals("version")) {
 					version = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("path")) {
-					locationStr = jsonReader.consumeStringValue();
+					pathString = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("importPaths")) {
 					sourceFolders = parseSourcePaths(jsonReader);
 				} else if(propertyName.equals("dependencies")) {

@@ -20,7 +20,7 @@
 			"libs": [],
 			"lflags": [],
 			"copyright": "Copyright © 2000, Your Name",
-			"name": "xptobundle",
+			"name__MISSING": "xptobundle",
 			"targetName": "xptobundle",
 			"stringImportPaths": [],
 			"homepage": "http://example.org",
@@ -39,7 +39,7 @@
 			"dflags": [],
 			"preGenerateCommands": [],
 			"license": "",
-			"path": "D:\\devel\\DDT\\ddt.git\\org.dsource.ddt.dtool\\testdata\\dub\\workspaceA\\XptoBundle",
+			"path": "relativePath/blah/foo/is/an/error/too",
 			"targetPath": "bin",
 			"options": [],
 			"files": [
@@ -94,7 +94,6 @@
 			"dflags": [],
 			"preGenerateCommands": [],
 			"license": "",
-			"path": "D:\\devel\\DDT\\ddt.git\\org.dsource.ddt.dtool\\testdata\\dub\\workspaceA\\foo_lib",
 			"targetPath": "",
 			"options": [],
 			"files": [
@@ -104,47 +103,6 @@
 				},
 				{
 					"path": "src2\\test\\fooLib.d",
-					"type": "source"
-				}
-			]
-		},
-		{
-			"copyFiles": [],
-			"postGenerateCommands": [],
-			"description": "An example project skeleton",
-			"targetFileName": "bar_lib.lib",
-			"versions": [],
-			"importPaths": [
-				"source/"
-			],
-			"workingDirectory": "",
-			"version": "~master",
-			"libs": [],
-			"lflags": [],
-			"copyright": "Copyright © 2000, Your Name",
-			"name": "bar_lib",
-			"targetName": "bar_lib",
-			"stringImportPaths": [],
-			"homepage": "http://example.org",
-			"authors": [
-				"Your Name"
-			],
-			"debugVersions": [],
-			"preBuildCommands": [],
-			"mainSourceFile": "",
-			"postBuildCommands": [],
-			"targetType": "library",
-			"dependencies": [],
-			"buildRequirements": [],
-			"dflags": [],
-			"preGenerateCommands": [],
-			"license": "",
-			"path": "D:\\devel\\DDT\\ddt.git\\org.dsource.ddt.dtool\\testdata\\dub\\workspaceA\\bar_lib",
-			"targetPath": "",
-			"options": [],
-			"files": [
-				{
-					"path": "source\\barLib.d",
 					"type": "source"
 				}
 			]

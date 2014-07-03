@@ -92,7 +92,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 			DubBundleDescription dubDescribe = DubDescribeParser.parseDescription(DESCRIBE_RESPATH, source);
 			
 			checkResolvedBundle(dubDescribe, "Bundle name not defined.",
-				main(IGNORE_PATH, null, "xptobundle", IGNORE_STR, null,
+				main(IGNORE_PATH, "Bundle name not defined.", IGNORE_STR, IGNORE_STR, null,
 					rawDeps("foo_lib"),
  					IGNORE_DEPS));
 		}
