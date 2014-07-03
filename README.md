@@ -1,7 +1,9 @@
+See project page ( http://code.google.com/p/ddt/ ) for user information.
+
 Developers Guide
 ================
 
-See project page ( http://code.google.com/p/ddt/ ) for user information.
+[![Build Status](https://bruno-medeiros.ci.cloudbees.com/buildStatus/icon?job=DDT)](https://bruno-medeiros.ci.cloudbees.com/job/DDT/)
 
 #### Setting up the development environment:
  * Clone the Git repository.
