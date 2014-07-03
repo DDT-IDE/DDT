@@ -24,8 +24,8 @@ public class MockCompilerInstalls {
 	
 	private static final String RESOURCE_CompilerInstalls = "compilerInstalls";
 	
-	public static final Path EMPTY_COMPILER_INSTALL = 
-			getTestResourcePath(RESOURCE_CompilerInstalls, "_empty-install", CompilerInstallDetector.SPECIAL_EMPTY_INSTALL);
+	public static final Path EMPTY_COMPILER_INSTALL = getTestResourcePath(RESOURCE_CompilerInstalls, 
+		"_empty-install", CompilerInstallDetector.SPECIAL_EMPTY_INSTALL);
 	
 	public static final Path MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDirPath().resolve("_compilerInstalls");
 	

@@ -20,18 +20,18 @@
 		<ddt.targetPlatform>releng/target-platform/DDT</ddt.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
-		<dtool.testdataDir>${parentBaseDir}/org.dsource.ddt.dtool/testdata</dtool.testdataDir>
+		<dtool.testdataDir>${parentBaseDir}/plugin_tooling/testdata</dtool.testdataDir>
 	</properties>
 
 	<modules>
-		<module>org.dsource.ddt.dtool</module>
-		<module>org.dsource.ddt.ide.core</module>
-		<module>org.dsource.ddt.ide.core.tests</module>
-		<module>org.dsource.ddt.ide.ui</module>
-		<module>org.dsource.ddt.ide.ui.tests</module>
-		<module>org.dsource.ddt.ide.debug</module>
-		<module>org.dsource.ddt-feature</module>
-		<module>org.dsource.ddt-base-feature</module>
+		<module>plugin_tooling</module>
+		<module>plugin_ide.core</module>
+		<module>plugin_ide.core.tests</module>
+		<module>plugin_ide.ui</module>
+		<module>plugin_ide.ui.tests</module>
+		<module>plugin_ide.debug</module>
+		<module>feature</module>
+		<module>feature-base</module>
 		<module>releng/repository</module>
 	</modules>
 

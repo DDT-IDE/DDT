@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import dtool.DToolBundle;
 import dtool.tests.utils.MiscFileUtils;
 
 
@@ -44,7 +43,7 @@ public class DToolTestResources {
 		if(testResourcesDir == null) {
 			// Assume a default based on process working directory
 			// This is so test can be started from typical Eclipse workspace without setting up VM properties
-			testResourcesDir = "../"+DToolBundle.BUNDLE_ID+"/"+TESTDATA;
+			testResourcesDir = "../plugin_tooling/"+TESTDATA;
 		}
 		System.out.println("testResourcesDir:" + testResourcesDir);
 	}
