@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
+import dtool.engine.ModuleParseCache_Test;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.tests.DToolTestResources;
@@ -124,20 +125,20 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 		doCodeCompletion(basic_foo, 0, "basic_foo", "barLibFunction");
 		
-		writeStringToFile(basic_foo, "module change1;");
+		updateFileContents(basic_foo, "module change1;");
 		doCodeCompletion(basic_foo, 0, "change1");
 		
-		writeStringToFile(basic_foo, "module change2;");
+		updateFileContents(basic_foo, "module change2;");
 		doCodeCompletion(basic_foo, 0, "change2");
 		
 		
 		IFile newFile = SRC_FOLDER.getFile("new_file.d");
-		writeStringToFile(newFile, "module new_file;"); 
+		updateFileContents(newFile, "module new_file;"); 
 		checkModuleContains(newFile, "new_file");
 		
 		IFolder newPackage = createFolder(SRC_FOLDER.getFolder("new_package"));
 		IFile newFile2 = newPackage.getFile("new_file2.d");
-		writeStringToFile(newFile2, "module new_file2;");
+		updateFileContents(newFile2, "module new_file2;");
 		checkModuleContains(newFile2, "new_package.new_file2", "new_file2/");
 		
 		deleteResource(newPackage);
@@ -152,6 +153,11 @@ public class DToolClient_Test extends CommonCoreTest {
 	protected <T extends IResource> T exists(T resource) {
 		assertTrue(resource.exists());
 		return resource;
+	}
+	
+	public static void updateFileContents(IFile file, String contents) throws IOException, CoreException {
+		ModuleParseCache_Test.writeToFileAndUpdateMTime(path(file.getLocation()), contents);
+		file.refreshLocal(0, null);
 	}
 	
 	protected void checkModuleContains(IFile file, String moduleName) throws CoreException {
@@ -181,7 +187,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		sourceModule.discardWorkingCopy();
 		
 		String originalFileContents = "module wc_change0;";
-		writeStringToFile(moduleFile, originalFileContents);
+		updateFileContents(moduleFile, originalFileContents);
 		
 		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
 		doCodeCompletion(moduleFile, 0, "wc_change0");

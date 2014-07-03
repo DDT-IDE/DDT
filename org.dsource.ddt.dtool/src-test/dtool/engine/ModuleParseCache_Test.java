@@ -69,8 +69,12 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	public static void writeToFileAndUpdateMTime(Path file, String contents) throws IOException {
+		if(!file.toFile().exists()) {
+			writeStringToFile(file, contents);
+			return;
+		}
 		FileTime lastModifiedTime = Files.getLastModifiedTime(file);
-		writeStringToFile(file.toFile(), contents);
+		writeStringToFile(file, contents);
 		// Make sure last modified time is different from before
 		Files.setLastModifiedTime(file, FileTime.fromMillis(lastModifiedTime.toMillis() - 1_000));
 	}

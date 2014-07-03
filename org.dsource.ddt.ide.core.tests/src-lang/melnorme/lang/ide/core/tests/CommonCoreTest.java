@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
@@ -37,6 +38,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -95,6 +97,10 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	public static org.eclipse.core.runtime.Path epath(Path path) {
 		return new org.eclipse.core.runtime.Path(path.toString());
+	}
+	
+	public static Path path(IPath path) {
+		return MiscUtil.createValidPath(path.toOSString());
 	}
 	
 	public static IProject createAndOpenProject(String name, boolean overwrite) throws CoreException {

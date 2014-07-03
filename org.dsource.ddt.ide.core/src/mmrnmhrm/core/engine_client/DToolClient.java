@@ -201,6 +201,10 @@ public class DToolClient {
 			if(!sourceModule.isConsistent()) {
 				// This usually means the module is a working copy.
 				getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
+			} else {
+				if(!sourceModule.isWorkingCopy()) {
+					discardServerWorkingCopy(filePath);
+				}
 			}
 		} catch (ModelException e) {
 			DeeCore.logError("Should not happen");
