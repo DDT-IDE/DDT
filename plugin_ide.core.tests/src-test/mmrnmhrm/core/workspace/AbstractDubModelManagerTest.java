@@ -22,13 +22,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer;
-import mmrnmhrm.core.workspace.WorkspaceModelManager;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement;
@@ -109,7 +108,7 @@ abstract class JsHelpers extends CommonDeeWorkspaceTest {
  */
 public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	
-	protected static final Path ECLIPSE_WORKSPACE_PATH = DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
+	protected static final Path ECLIPSE_WORKSPACE_PATH = EclipseUtils.getWorkspaceRoot().getLocation().toFile().toPath();
 	
 	static {
 		initDubRepositoriesPath();

@@ -1,6 +1,7 @@
 package mmrnmhrm.tests;
 
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 
@@ -26,7 +27,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 	
 	
 	public static void checkForExistanceOfPreExistingProject() {
-		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
+		IWorkspaceRoot workspaceRoot = EclipseUtils.getWorkspaceRoot();
 		IProject project = workspaceRoot.getProject(PREEXISTINGPROJNAME);
 		
 		if(!project.exists()) {

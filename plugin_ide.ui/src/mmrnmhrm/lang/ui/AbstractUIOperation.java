@@ -80,7 +80,7 @@ public abstract class AbstractUIOperation {
 				}
 			});
 		} catch (InvocationTargetException e) {
-			throw new CoreException(DeeUI.createErrorStatus(DeeCoreMessages.Internal_Error, e.getTargetException()));
+			new CoreException(DeeUI.createErrorStatus(DeeCoreMessages.LangCore_error, e.getTargetException()));
 		}
 	}
 	

@@ -16,16 +16,16 @@ import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
-import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -116,7 +116,7 @@ public class DubProcessManager {
 	public static ProcessBuilder createProcessBuilder(IProject project, String... commands) {
 		Path workingDir = project != null ?
 			project.getLocation().toFile().toPath() :
-			DeeCore.getWorkspaceRoot().getLocation().toFile().toPath();
+			EclipseUtils.getWorkspaceRoot().getLocation().toFile().toPath();
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	

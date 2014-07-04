@@ -20,11 +20,11 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.CoreTaskAgent;
+import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
-import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -568,7 +568,7 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 			if(changedProject != null && changedProject.getName().equals(projectName))
 				continue; // changedProject is supposed to be up to date, so no need to update that one.
 			
-			IProject project = DeeCore.getWorkspaceRoot().getProject(projectName);
+			IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
 			ProjectInfo projectInfo = getModel().getProjectInfo(project);
 			// Check if project info exists, the project, might have been removed in the meanwhile.
 			if(projectInfo != null) {

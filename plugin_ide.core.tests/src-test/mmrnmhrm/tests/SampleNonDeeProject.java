@@ -2,8 +2,8 @@ package mmrnmhrm.tests;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -38,7 +38,7 @@ public abstract class SampleNonDeeProject {
 	
 	
 	public static IProject createAndFillSampleProj() throws CoreException {
-		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
+		IWorkspaceRoot workspaceRoot = EclipseUtils.getWorkspaceRoot();
 		project = workspaceRoot.getProject(SAMPLEPROJNAME);
 		if(project.exists()) {
 			project.delete(true, null);
@@ -53,7 +53,7 @@ public abstract class SampleNonDeeProject {
 	
 	
 	public static void commonTearDown() throws Exception {
-		IWorkspaceRoot workspaceRoot = DeeCore.getWorkspaceRoot();
+		IWorkspaceRoot workspaceRoot = EclipseUtils.getWorkspaceRoot();
 		IProject project = workspaceRoot.getProject(SAMPLEPROJNAME);
 		project.delete(true, null);
 	}
