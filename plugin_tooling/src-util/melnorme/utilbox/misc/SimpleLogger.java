@@ -29,6 +29,11 @@ public class SimpleLogger {
 		this.enabled = enabled;
 	}
 	
+	public SimpleLogger(String propertyKey) {
+		this();
+		enabled = System.getProperty("SimpleLogger." + propertyKey) != null;
+	}
+	
 	public SimpleLogger() {
 		this(true);
 	}

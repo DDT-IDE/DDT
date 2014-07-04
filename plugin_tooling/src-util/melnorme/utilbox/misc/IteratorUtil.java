@@ -49,13 +49,13 @@ public class IteratorUtil {
 	}
 	
 	/** @return an {@link Iterable} for given array. A null array is treated as if it's an empty one. */
-	@SafeVarargs
-	public static <E> Iterable<E> iterable(E... array) {
-		if(array == null) {
-			return Collections.EMPTY_LIST;
-		}
-		return new ArrayView<>(array);
-	}
+//	@SafeVarargs
+//	public static <E> Iterable<E> iterable(E... array) {
+//		if(array == null) {
+//			return Collections.EMPTY_LIST;
+//		}
+//		return new ArrayView<>(array);
+//	}
 	
 	/** @return the given iterable if non-null, an empty iterable otherwise. */
 	public static <E> Iterable<E> iterable(Iterable<E> iterable) {

@@ -6,7 +6,7 @@
       provider-name="%providerName"
       plugin="org.dsource.ddt.ide.ui">
 
-   <description url="http://www.dsource.org/projects/ddt">
+   <description>
       %description
    </description>
 

@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.dsource</groupId>
-	<artifactId>ddt-aggregator</artifactId>
+	<artifactId>ide-aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -17,7 +17,7 @@
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 		<rootBuildDirectory>${project.parent.basedir}/bin-maven</rootBuildDirectory>
 
-		<ddt.targetPlatform>releng/target-platform/DDT</ddt.targetPlatform>
+		<ide.targetPlatform>releng/target-platform/DDT</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
 		<dtool.testdataDir>${parentBaseDir}/plugin_tooling/testdata</dtool.testdataDir>
@@ -113,16 +113,6 @@
 
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<!-- According to StackOverflow, with Hotspot JVM this actually doesn't do anything: -->
-					<optimize>true</optimize>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
@@ -130,9 +120,7 @@
 					<!-- Empty so that no class is excluded, otherwise the default excludes inner classes. -->
 					</excludes>
 					<includes>
-						<include>**/Test*.java</include>
-						<include>**/*Test.java</include>
-						<include>**/*Tests.java</include>
+						<include>**/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -145,9 +133,9 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>ddt-aggregator</artifactId>
+							<artifactId>ide-aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
-							<classifier>${ddt.targetPlatform}</classifier>
+							<classifier>${ide.targetPlatform}</classifier>
 						</artifact>
 					</target>
 				</configuration>
