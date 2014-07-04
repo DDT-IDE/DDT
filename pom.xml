@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.dsource</groupId>
-	<artifactId>ide-aggregator</artifactId>
+	<artifactId>ddt.aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -133,7 +133,7 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>ide-aggregator</artifactId>
+							<artifactId>ddt.aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
 							<classifier>${ide.targetPlatform}</classifier>
 						</artifact>
