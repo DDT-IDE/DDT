@@ -11,10 +11,10 @@
 package mmrnmhrm.core.workspace.viewmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
-
-import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
 
@@ -29,7 +29,7 @@ public class StdLibContainer extends CommonDubElement<IProject> {
 	public StdLibContainer(CompilerInstall compilerInstall, IProject project) {
 		super(project);
 		this.compilerInstall = assertNotNull(compilerInstall);
-		depElements = createChildren();
+		this.depElements = createChildren();
 	}
 	
 	public CompilerInstall getCompilerInstall() {
@@ -40,10 +40,13 @@ public class StdLibContainer extends CommonDubElement<IProject> {
 		return compilerInstall == StandardLibraryResolution.NULL_COMPILER_INSTALL;
 	}
 	
-	protected IDubElement[] createChildren() {
-		ArrayList<IDubElement> newChildren = new ArrayList<>();
+	protected DubDepSourceFolderElement[] createChildren() {
+		ArrayList<DubDepSourceFolderElement> sourceContainers = new ArrayList<>();
 		
-		return ArrayUtil.createFrom(newChildren, IDubElement.class);
+		for (Path localPath : getCompilerInstall().getLibrarySourceFolders()) {
+			sourceContainers.add(new DubDepSourceFolderElement(this, localPath));
+		}
+		return arrayFrom(sourceContainers, DubDepSourceFolderElement.class);
 	}
 	
 	@Override

@@ -14,11 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
-public class DubDepSourceFolderElement extends CommonDubElement<DubDependencyElement> {
+public class DubDepSourceFolderElement extends CommonDubElement<IDubElement> {
 	
 	protected final Path srcFolderPath;
 	
-	public DubDepSourceFolderElement(DubDependencyElement parent, Path srcFolderPath) {
+	public DubDepSourceFolderElement(IDubElement parent, Path srcFolderPath) {
 		super(parent);
 		this.srcFolderPath = assertNotNull(srcFolderPath);
 	}

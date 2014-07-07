@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.util.swt.components.fields;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.util.swt.components.AbstractField;
 import melnorme.util.swt.components.AbstractFieldTest;
 import melnorme.utilbox.tests.CommonTest;
