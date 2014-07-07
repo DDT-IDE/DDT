@@ -19,11 +19,13 @@ import dtool.util.SearchPathEnvOperation;
 
 public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperation {
 	
+	public static final String DUB_COMPILERS_PATH__ENV_VAR = "DUB_COMPILERS_PATH";
+	
 	protected final CompilerInstallDetector detector = new CompilerInstallDetector();
 	protected final List<CompilerInstall> foundInstalls = new ArrayList<>();
 	
 	public SearchCompilersOnPathOperation searchForCompilersInDefaultPathEnvVars() {
-		searchEnvironmentVar("DUB_COMPILERS_PATH");
+		searchEnvironmentVar(DUB_COMPILERS_PATH__ENV_VAR);
 		searchEnvironmentVar("PATH");
 		return this;
 	}

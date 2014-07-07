@@ -118,12 +118,6 @@
             id="org.dsource.ddt.ide.ui.preferences.editor.Folding"
             name="%LangEditorFoldingPreferencePage.name">
       </page>
-      <page
-            category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
-            class="mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage"
-            id="org.dsource.ddt.ide.ui.preferences.DeeCompilers"
-            name="%LangCompilersPreferencePage.name">
-      </page>
    </extension>
    
    <!-- ============ EDITOR related ============= -->

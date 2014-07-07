@@ -2,16 +2,18 @@
 
 ### DDT 0.10.x
  * Fixed - D application run/debug menu shortcut appearing in non-D editors.
- * Added: error message in status line when doing content assist in invalid source positionslocations.
- * Greater DUB integrations for semantic operations. 
+ * Added: error message in status line when doing content assist in invalid source positions.
+ * Greater DUB integrations for semantic operations. XXX: clarify 
    * Can now do Open Definition, Content Assist, etc. in D files outside of a DDT Eclipse project.
    * Better prevention of temporary UI freezes when doing semantic operations.
  * Added D Standard Library element to Project Explorer.
  * Added: detection of standard library source locations for Arch Linux DMD/LDC/GDC compiler installations.
-  #/bin/dmd  -> #/include/dlang/dmd
-  #/bin/ldc2 -> #/include/dlang/ldc
-  #/bin/gdc  -> #/include/dlang/gdc   
-
+   * #/bin/dmd  -> #/include/dlang/dmd
+   * #/bin/ldc2 -> #/include/dlang/ldc
+   * #/bin/gdc  -> #/include/dlang/gdc
+ * Removed D compilers preference page. This was replaced in favor of a more general, non-DDT-specific way of detecting compiler installations. See below: 
+   * Added UserGuide.md#compiler-setup section.
+   
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
  * Build: now adds problem markers to resources with compiler errors.

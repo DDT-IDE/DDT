@@ -23,42 +23,29 @@ with 4Gb of RAM or more, the following is recommended as minimum values:
 
 ### DDT Prerequisites and Configuration
 
-The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically 
-find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` 
-preference page.
+The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` preference page. A D compiler is also required. This is so the standard library source modules can be found and used (for code completion, etc.).
 
-A D compiler is also required. This is so the system library modules can be found and used (for code completion, etc.). 
-All 3 major compilers are supported: DMD, GDC, LDC. On each startup, DDT will automatically search for all compilers 
-it can find in the `PATH` environment variable, and add them to the DDT configuration. Most compiler layouts of the 
-library locations will be recognized, but if they are not, the library locations for the found compilers can be 
-configured in the `DDT / Compilers` preference page:
+##### Compiler setup:
+Every time DUB is invoked to resolve the `dub.json` file (see DUB manifest section below), DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables. Most compiler layouts of the library import roots relative to the compiler executable (be it DMD, GDC, or LDC) should be recognized. 
 
-<div align="center">
-<a><img src="screenshots/UserGuide_CompilersPage.png" /><a/> 
-<br/> <sup>The compilers preference page, with auto-detected compilers.</sup>
-</div> 
-
-Other compiler locations that are not present in the `PATH` can also be added in this preference page, although at the
-moment this is of limited use since DUB may not be able to find them when building.
-
+> If DDT does not find the standard library locations, it is not possible to manually configure them at the moment. As a workaround, download and unpack the official DMD release archive (to use as a mock compiler installation), and put the dmd executable in the `DUB_COMPILERS_PATH` environment variable. This way DDT will find the standard library locations, although the compiler used actual for compilation will be another. (You can also replace the standard library source folders of this compiler installation with symbolic links to you actual, up-to-date compiler installation)
 
 ### Project setup
 
 ##### Project creation:
 A new D project can be created in the Project Explorer view. Open `New / Project...` and then `D / DUB Project`. The D perspective should open after creation, if it's not open already.
 
-##### Import Path:
-A project has an import path: a list of folder locations that are D import path roots. The import path is derived from the import roots of the project itself (usually the same as the _source folders_), and the import paths of the dependency DUB packages. Only the modules contained in the import path will be visible to semantic features (such as code completion).
 
-The configuration of the import path and source folders, as well as dependencies and other settings is done in the `dub.json` manifest file. Edit this file in Eclipse and save it after applying the desired changes. On startup, or whenever DDT detects the `dub.json` file has been modified, `dub describe` will be run to resolve dependencies
-and to supply the fully resolved import path for the project (as well as some other DUB package information). The output of this DUB command (as well as any other DUB command) will be displayed in a DUB console in the Console view.
+##### DUB manifest and Import Path:
+A project has an import path: a list of directories that are D import path roots. The import path is derived from the import roots of the project itself (usually the same as the _source folders_), and the import paths of the dependency DUB packages. Only the modules contained in the import path will be visible to semantic features (such as code completion).
+
+The configuration of the import path and source folders, as well as dependencies and other settings is done in the `dub.json` manifest file. Edit this file in Eclipse and save it after applying the desired changes. On startup, or whenever DDT detects the `dub.json` file has been modified, `dub describe` will be run to resolve dependencies and to supply the fully resolved import path for the project (as well as some other DUB package information). The output of this DUB command (as well as any other DUB command) will be displayed in a DUB console in the Console view.
 
 If an error occurs during this process, an error will placed in the project. For more details on what caused the error, view the DUB console contents.
 
 Note also, if you created a DUB project in the default workspace location, and want to use it as a dependency in 
 another project/package, DUB must be able to find it in the packages search path. In the Project Explorer, under 
-the project context menu (or in the `dub.json` file context menu), there a few commands to add or remove the project 
-as DUB local package.
+the project context menu (or in the `dub.json` file context menu), there are a few commands to add or remove the project as a DUB local package.
 
 <div align="center">
 <a><img src="screenshots/UserGuide_DubCtxMenu.png" /><a/> 

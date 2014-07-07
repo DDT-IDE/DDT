@@ -12,7 +12,6 @@ package mmrnmhrm.ui;
 
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.preferences.pages.DeeCompilersPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage;
@@ -81,11 +80,6 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	@Override
 	public DeeScriptElementLabels getScriptElementLabels() {
 		return elementLabels; 
-	}
-	
-	@Override
-	public String getInterpreterPreferencePage() {
-		return DeeCompilersPreferencePage.PAGE_ID;
 	}
 	
 	@Override
