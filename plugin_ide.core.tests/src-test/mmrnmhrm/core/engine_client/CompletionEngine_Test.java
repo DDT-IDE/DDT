@@ -1,6 +1,5 @@
 package mmrnmhrm.core.engine_client;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -38,7 +37,6 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		assertFail();
 		testCompletionEngine(getMarkerEndPos("/+CC1@+/"), 0);
 		testCompletionEngine(getMarkerEndPos("/+CC2@+/")+1, 0);
 		
