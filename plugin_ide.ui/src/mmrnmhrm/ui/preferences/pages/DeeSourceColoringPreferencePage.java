@@ -12,7 +12,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
@@ -35,7 +35,7 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesComponen
 	}
 	
 	@Override
-	protected IPreferencesComponent createPreferencesComponent() {
+	protected IPreferencesBlock createPreferencesComponent() {
 		return new DeeSourceColoringConfigurationBlock(getPreferenceStore());
 	}
 	

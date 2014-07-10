@@ -13,7 +13,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
 
@@ -31,7 +31,7 @@ public class DeeEditorPreferencePage extends AbstractPreferencesComponentPrefPag
 	}
 	
 	@Override
-	protected IPreferencesComponent createPreferencesComponent() {
+	protected IPreferencesBlock createPreferencesComponent() {
 		return new DeeEditorConfigurationBlock(this);
 	}
 	

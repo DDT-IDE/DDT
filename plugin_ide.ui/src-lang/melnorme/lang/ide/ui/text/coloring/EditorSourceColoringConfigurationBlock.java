@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.PreferenceConstants;
-import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.util.swt.SWTFactoryUtil;
@@ -60,8 +60,8 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 /**
  * A configuration component for syntax (and possibly semantic) source highlighting options.
  */
-public abstract class EditorSourceColoringConfigComponent extends AbstractComponentExt 
-	implements IPreferencesComponent, IDisposable {
+public abstract class EditorSourceColoringConfigurationBlock extends AbstractComponentExt 
+	implements IPreferencesBlock, IDisposable {
 		
 	protected final SourceColoringListRoot coloringOptionsList;
 	protected final ColorManager colorManager = new ColorManager();
@@ -77,7 +77,7 @@ public abstract class EditorSourceColoringConfigComponent extends AbstractCompon
 
 	protected OverlayPreferenceStore overlayPreferenceStore;
 	
-	public EditorSourceColoringConfigComponent(IPreferenceStore store) {
+	public EditorSourceColoringConfigurationBlock(IPreferenceStore store) {
 		this.coloringOptionsList = new SourceColoringListRoot();
 		
 		final ArrayList<OverlayKey> prefKeys = new ArrayList<>();	
@@ -115,19 +115,18 @@ public abstract class EditorSourceColoringConfigComponent extends AbstractCompon
 	}
 	
 	@Override
-	public void loadFromStore(IPreferenceStore store) {
-		/*BUG here TODO: fix this API*/
+	public void loadFromStore() {
 		handleAppearanceColorListSelectionChanged();
 	}
 	
 	@Override
-	public void loadStoreDefaults(IPreferenceStore store) {
+	public void loadStoreDefaults() {
 		overlayPreferenceStore.loadDefaults();
 		handleAppearanceColorListSelectionChanged();
 	}
 	
 	@Override
-	public void saveToStore(IPreferenceStore store) {
+	public void saveToStore() {
 		overlayPreferenceStore.propagate();
 	}
 	

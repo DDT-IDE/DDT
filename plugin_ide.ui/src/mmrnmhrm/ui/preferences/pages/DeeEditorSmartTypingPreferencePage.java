@@ -13,7 +13,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
+import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
 import melnorme.lang.ide.ui.preferences.LangEditorSmartTypingConfigurationBlock;
 
 
@@ -31,7 +31,7 @@ public class DeeEditorSmartTypingPreferencePage extends AbstractPreferencesCompo
 	}
 	
 	@Override
-	protected IPreferencesComponent createPreferencesComponent() {
+	protected IPreferencesBlock createPreferencesComponent() {
 		return new LangEditorSmartTypingConfigurationBlock(this);
 	}
 	

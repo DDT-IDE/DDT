@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.InputStream;
 
-import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigComponent;
+import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeePartitions;
@@ -18,7 +18,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringConfigComponent {
+public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringConfigurationBlock {
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
 	
