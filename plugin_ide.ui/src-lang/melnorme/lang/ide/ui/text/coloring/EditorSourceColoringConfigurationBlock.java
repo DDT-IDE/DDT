@@ -39,7 +39,6 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
-import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
@@ -369,7 +368,7 @@ public abstract class EditorSourceColoringConfigurationBlock extends AbstractCom
 		try {
 			return StreamUtil.readAllBytesFromStream(is).toString(StringUtil.UTF8);
 		} catch (IOException e) {
-			DeeUIPlugin.log(e);
+			LangUIPlugin.log(e);
 			return "<INTERNAL ERROR: COULD NOT READ PREVIEW FILE";
 		}
 	}
