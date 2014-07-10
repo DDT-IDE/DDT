@@ -12,6 +12,8 @@ package melnorme.lang.ide.ui.text.coloring;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
@@ -32,9 +34,12 @@ import melnorme.util.swt.jface.TreeViewerExt;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore;
 import melnorme.util.swt.jface.preference.OverlayPreferenceStore.OverlayKey;
 import melnorme.util.swt.jface.text.ColorManager;
+import melnorme.utilbox.misc.StreamUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.PixelConverter;
@@ -210,7 +215,7 @@ public abstract class EditorSourceColoringConfigComponent extends AbstractCompon
 		treeViewer.setContentProvider(new ElementContentProvider2());
 		treeViewer.setLabelProvider(new LabeledTreeElementLabelProvider());
 		treeViewer.getTree().setLayoutData(
-			gdFillDefaults().grab(true, false).hint(SWT.DEFAULT, pc.convertHeightInCharsToPixels(10)).create());
+			gdFillDefaults().hint(pc.convertWidthInCharsToPixels(40), pc.convertHeightInCharsToPixels(10)).create());
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -347,7 +352,7 @@ public abstract class EditorSourceColoringConfigComponent extends AbstractCompon
 	protected Control createPreviewViewer(Composite topControl) {
 		IPreferenceStore store = new ChainedPreferenceStore(array(
 			getOverlayPrefStore(),
-			LangUIPlugin.getCorePrefStore(), // Don't think this is necessary at all
+			LangUIPlugin.getPrefStore(),
 			EditorsUI.getPreferenceStore()
 		));
 		ProjectionViewer fPreviewViewer = this.createPreviewViewer(topControl, false, 
@@ -360,7 +365,17 @@ public abstract class EditorSourceColoringConfigComponent extends AbstractCompon
 		return fPreviewViewer.getControl();
 	}
 	
-	protected abstract String getPreviewContent();
+	protected String getPreviewContent() {
+		InputStream is = getPreviewContentAsStream();
+		try {
+			return StreamUtil.readAllBytesFromStream(is).toString(StringUtil.UTF8);
+		} catch (IOException e) {
+			DeeUIPlugin.log(e);
+			return "<INTERNAL ERROR: COULD NOT READ PREVIEW FILE";
+		}
+	}
+	
+	protected abstract InputStream getPreviewContentAsStream();
 	
 	protected abstract ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview, 
 			int styles, IPreferenceStore store);

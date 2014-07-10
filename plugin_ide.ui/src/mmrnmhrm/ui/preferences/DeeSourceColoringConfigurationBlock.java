@@ -2,14 +2,10 @@ package mmrnmhrm.ui.preferences;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigComponent;
 import melnorme.util.swt.jface.LabeledTreeElement;
-import melnorme.utilbox.misc.StreamUtil;
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
@@ -65,14 +61,8 @@ public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringCon
 	}
 	
 	@Override
-	protected String getPreviewContent() {
-		InputStream is = getClass().getResourceAsStream(PREVIEW_FILE_NAME);
-		try {
-			return StreamUtil.readAllBytesFromStream(is).toString(StringUtil.UTF8);
-		} catch (IOException e) {
-			DeeUIPlugin.log(e);
-			return "<INTERNAL ERROR: COULD NOT READ PREVIEW FILE";
-		}
+	protected InputStream getPreviewContentAsStream() {
+		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
 	}
 	
 	@Override
