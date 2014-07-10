@@ -15,11 +15,10 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
-import org.eclipse.dltk.ui.text.AbstractScriptScanner;
-import org.eclipse.dltk.ui.text.IColorManager;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
@@ -30,12 +29,7 @@ import org.eclipse.jface.text.rules.WordRule;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
 
-public class DeeCodeScanner extends AbstractScriptScanner {
-	
-	public DeeCodeScanner(IColorManager manager, IPreferenceStore store) {
-		super(manager, store);
-		initialize();
-	}
+public class DeeCodeScanner extends AbstractLangScanner {
 	
 	private static String fgTokenProperties[] = new String[] {
 		IDeeColorConstants.DEE_DEFAULT,
@@ -46,12 +40,11 @@ public class DeeCodeScanner extends AbstractScriptScanner {
 		IDeeColorConstants.DEE_OPERATORS,
 	};
 	
-	@Override
-	protected String[] getTokenProperties() {
-		return fgTokenProperties;
+	public DeeCodeScanner(ITokenStoreFactory factory) {
+		super(factory.createTokenStore(fgTokenProperties));
+		setRules(createRules());
 	}
 	
-	@Override
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		

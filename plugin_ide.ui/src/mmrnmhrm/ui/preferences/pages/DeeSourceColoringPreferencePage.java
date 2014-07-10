@@ -10,20 +10,18 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
+import melnorme.lang.ide.ui.preferences.IPreferencesComponent;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-
-public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class DeeSourceColoringPreferencePage extends AbstractPreferencesComponentPrefPage {
 	
 	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.editor.SourceColoring";
 	
-	@Override
-	protected String getHelpId() {
-		return "";
+	public DeeSourceColoringPreferencePage() {
+		super(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
@@ -32,12 +30,13 @@ public class DeeSourceColoringPreferencePage extends AbstractConfigurationBlockP
 	}
 	
 	@Override
-	protected void setPreferenceStore() {
-		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
+	protected String getHelpId() {
+		return null;
 	}
 	
 	@Override
-	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new DeeSourceColoringConfigurationBlock(overlayPreferenceStore);
+	protected IPreferencesComponent createPreferencesComponent() {
+		return new DeeSourceColoringConfigurationBlock(getPreferenceStore());
 	}
+	
 }

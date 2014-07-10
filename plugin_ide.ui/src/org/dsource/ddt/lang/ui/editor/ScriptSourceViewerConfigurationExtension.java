@@ -18,11 +18,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.dltk.ui.text.AbstractScriptScanner;
+import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
+
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -34,20 +33,21 @@ import org.eclipse.ui.texteditor.ITextEditor;
 /**
  * An extension that adds some util code to work with scanners
  */
-public abstract class ScriptSourceViewerConfigurationExtension extends ScriptSourceViewerConfiguration {
+public abstract class ScriptSourceViewerConfigurationExtension extends AbstractLangSourceViewerConfiguration {
 	
-	protected Set<AbstractScriptScanner> scanners;
-	protected Map<String, AbstractScriptScanner> scannersByContentType;
+	protected Set<AbstractLangScanner> scanners;
+	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
 	public ScriptSourceViewerConfigurationExtension(IColorManager colorManager, IPreferenceStore preferenceStore,
 			ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
+		
+		initializeScannersX();
 	}
 	
-	@Override
-	protected void initializeScanners() {
-		scanners = new HashSet<AbstractScriptScanner>();
-		scannersByContentType = new HashMap<String, AbstractScriptScanner>();
+	protected void initializeScannersX() {
+		scanners = new HashSet<>();
+		scannersByContentType = new HashMap<>();
 		createScanners();
 		scanners = Collections.unmodifiableSet(scanners);
 		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
@@ -58,15 +58,11 @@ public abstract class ScriptSourceViewerConfigurationExtension extends ScriptSou
 		// Default implementation
 	}
 	
-	protected void addScanner(AbstractScriptScanner scanner, String... contentTypes ) {
+	protected void addScanner(AbstractLangScanner scanner, String... contentTypes ) {
 		scanners.add(scanner);
 		for (String contentType : contentTypes) {
 			scannersByContentType.put(contentType, scanner);
 		}
-	}
-	
-	protected SingleTokenScriptScanner createSingleTokenScriptScanner(String tokenProperty) {
-		return new SingleTokenScriptScanner(getColorManager(), fPreferenceStore, tokenProperty);
 	}
 	
 	
@@ -80,9 +76,9 @@ public abstract class ScriptSourceViewerConfigurationExtension extends ScriptSou
 	}
 	
 	protected void setupPresentationReconciler(PresentationReconciler reconciler) {
-		for (Entry<String, AbstractScriptScanner> entry : scannersByContentType.entrySet()) {
+		for (Entry<String, AbstractLangScanner> entry : scannersByContentType.entrySet()) {
 			String contentType = entry.getKey();
-			AbstractScriptScanner scanner = entry.getValue();
+			AbstractLangScanner scanner = entry.getValue();
 			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(scanner);
 			reconciler.setDamager(dr, contentType);
 			reconciler.setRepairer(dr, contentType);
@@ -91,7 +87,7 @@ public abstract class ScriptSourceViewerConfigurationExtension extends ScriptSou
 	
 	@Override
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
-		for (AbstractScriptScanner scanner : scanners) {
+		for (AbstractLangScanner scanner : scanners) {
 			if(scanner.affectsBehavior(event))
 				return true;
 		}
@@ -100,7 +96,7 @@ public abstract class ScriptSourceViewerConfigurationExtension extends ScriptSou
 	
 	@Override
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-		for (AbstractScriptScanner scanner : scanners) {
+		for (AbstractLangScanner scanner : scanners) {
 			if (scanner.affectsBehavior(event)) {
 				scanner.adaptToPreferenceChange(event);
 			}

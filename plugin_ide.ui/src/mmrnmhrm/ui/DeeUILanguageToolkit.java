@@ -25,7 +25,6 @@ import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -65,8 +64,9 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
+	@Deprecated
 	@Override
-	public ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
+	public DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
 		return new DeeSimpleSourceViewerConfiguration(getTextTools().getColorManager(),
 				getPreferenceStore(), null, getPartitioningId(), false);
 	}

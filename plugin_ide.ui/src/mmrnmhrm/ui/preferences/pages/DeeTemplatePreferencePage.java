@@ -8,7 +8,6 @@ import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.text.IDocument;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
@@ -33,7 +32,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	}
 	
 	@Override
-	protected ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
+	protected DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
 		return new DeeSimpleSourceViewerConfiguration(getTextTools().getColorManager(), getPreferenceStore(), null,
 				DeePartitions.PARTITIONING_ID, false);
 	}

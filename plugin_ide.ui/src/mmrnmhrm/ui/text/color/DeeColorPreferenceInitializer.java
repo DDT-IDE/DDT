@@ -1,5 +1,7 @@
 package mmrnmhrm.ui.text.color;
 
+import melnorme.lang.ide.ui.text.coloring.LangColoringPreferencesHelper;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
@@ -53,23 +55,23 @@ public abstract class DeeColorPreferenceInitializer implements IDeeColorConstant
 	
 	
 	private static void setIsEnabled(IPreferenceStore store, String key, boolean enabled) {
-		store.setDefault(LangColorPreferences.getEnabledKey(key), enabled);
+		store.setDefault(LangColoringPreferencesHelper.getEnabledKey(key), enabled);
 	}
 	
 	private static void setColor(IPreferenceStore store, String key, RGB rgb) {
-		PreferenceConverter.setDefault(store, LangColorPreferences.getColorKey(key), rgb);
+		PreferenceConverter.setDefault(store, LangColoringPreferencesHelper.getColorKey(key), rgb);
 	}
 	
 	private static void setIsBold(IPreferenceStore store, String key, boolean bold) {
-		store.setDefault(LangColorPreferences.getBoldKey(key), bold);
+		store.setDefault(LangColoringPreferencesHelper.getBoldKey(key), bold);
 	}
 	
 	private static void setIsItalic(IPreferenceStore store, String key, boolean italic) {
-		store.setDefault(LangColorPreferences.getItalicKey(key), italic);
+		store.setDefault(LangColoringPreferencesHelper.getItalicKey(key), italic);
 	}
 	
 	private static void setIsUnderline(IPreferenceStore store, String key, boolean underline) {
-		store.setDefault(LangColorPreferences.getUnderlineKey(key), underline);
+		store.setDefault(LangColoringPreferencesHelper.getUnderlineKey(key), underline);
 	}
 	
 }

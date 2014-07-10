@@ -72,7 +72,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	protected void createScanners() {
 		
-		addScanner(new DeeCodeScanner(getColorManager(), fPreferenceStore), 
+		addScanner(new DeeCodeScanner(getTokenStoreFactory()), 
 				DeePartitions.DEE_CODE);
 		
 		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_COMMENT), 

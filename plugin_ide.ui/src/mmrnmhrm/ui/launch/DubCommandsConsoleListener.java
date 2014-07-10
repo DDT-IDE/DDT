@@ -17,7 +17,7 @@ import java.io.IOException;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
 import melnorme.lang.ide.ui.utils.AbstractProcessMessageConsole;
-import melnorme.util.swt.jface.ColorManager;
+import melnorme.util.swt.jface.text.ColorManager;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
