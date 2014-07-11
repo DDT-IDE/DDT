@@ -28,13 +28,14 @@ import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
-import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
+import org.dsource.ddt.lang.ui.editor.AbstractLangSourceViewerConfiguration;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
+import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -57,11 +58,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfigurationExtension {
+public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
 			ITextEditor editor) {
-		super(colorManager, preferenceStore, editor, DeePartitions.PARTITIONING_ID);
+		super(preferenceStore, colorManager, editor, DeePartitions.PARTITIONING_ID);
 	}
 	
 	@Override
@@ -75,26 +76,31 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		addScanner(new DeeCodeScanner(getTokenStoreFactory()), 
 				DeePartitions.DEE_CODE);
 		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_COMMENT), 
+		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_COMMENT), 
 				DeePartitions.DEE_SINGLE_COMMENT, 
 				DeePartitions.DEE_MULTI_COMMENT, 
 				DeePartitions.DEE_NESTED_COMMENT);
 		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_DOCCOMMENT), 
+		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_DOCCOMMENT), 
 				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
 				DeePartitions.DEE_MULTI_DOCCOMMENT, 
 				DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_STRING), 
+		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_STRING), 
 				DeePartitions.DEE_STRING,
 				DeePartitions.DEE_RAW_STRING,
 				DeePartitions.DEE_RAW_STRING2);
 		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_DELIM_STRING), 
+		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_DELIM_STRING), 
 				DeePartitions.DEE_DELIM_STRING);
 		
-		addScanner(createSingleTokenScriptScanner(IDeeColorConstants.DEE_CHARACTER_LITERALS),
+		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_CHARACTER_LITERALS),
 				DeePartitions.DEE_CHARACTER);
+	}
+	
+	@Override
+	protected ScriptPresentationReconciler createPresentationReconciler() {
+		return new ScriptPresentationReconciler();
 	}
 	
 	@Override

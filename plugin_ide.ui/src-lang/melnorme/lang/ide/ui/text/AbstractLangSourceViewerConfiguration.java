@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.dsource.ddt.lang.ui.editor;
+package melnorme.lang.ide.ui.text;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -26,9 +26,7 @@ import org.eclipse.cdt.internal.ui.text.TokenStore;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.cdt.ui.text.ITokenStore;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -38,30 +36,35 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 
 /**
  * Abstract SourceViewConfiguration
  * Has code to help manage the configured scanners, and let respond to preference changes.
  */
-public abstract class AbstractLangSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
+public abstract class AbstractLangSourceViewerConfiguration extends TextSourceViewerConfiguration {
 	
-	protected final IPreferenceStore preferenceStore;
 	protected final IColorManager colorManager;
+	protected final IPreferenceStore preferenceStore;
 	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
-	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, 
-			final IColorManager colorManager, ITextEditor editor, String partitioning) {
-		super(new DLTKColorManager(colorManager), assertNotNull(preferenceStore), editor, partitioning);
-		this.preferenceStore = preferenceStore;
+	
+	public AbstractLangSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager) {
+		super(assertNotNull(preferenceStore));
 		this.colorManager = colorManager;
+		this.preferenceStore = preferenceStore;
+		
 		scannersByContentType = new HashMap<>();
 		createScanners();
 		scannersByContentType = Collections.unmodifiableMap(scannersByContentType);
 	}
 	
-	protected org.eclipse.cdt.ui.text.IColorManager getColorManager2() {
+	protected IColorManager getColorManager2() {
 		return colorManager;
+	}
+	
+	public IPreferenceStore getPreferenceStore() {
+		return preferenceStore;
 	}
 	
 	protected abstract void createScanners();
@@ -112,7 +115,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends ScriptSource
 		}
 	}
 	
-	@Override
+	//@Override
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if(scanner.affectsBehavior(event))
@@ -121,7 +124,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends ScriptSource
 		return false;
 	}
 	
-	@Override
+	//@Override
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if (scanner.affectsBehavior(event)) {
@@ -130,14 +133,17 @@ public abstract class AbstractLangSourceViewerConfiguration extends ScriptSource
 		}
 	}
 	
-	public void setupViewerForTextPresentationPrefChanges(final SourceViewer viewer) {
-		final IPreferenceStore preferenceStore = getPreferenceStore();
-		
+	public void setupViewerForTextPresentationPrefChanges(SourceViewer viewer) {
+		setupViewerForTextPresentationPrefChanges(viewer, this, getPreferenceStore());
+	}
+	
+	public void setupViewerForTextPresentationPrefChanges(final SourceViewer viewer, 
+			final AbstractLangSourceViewerConfiguration configuration, final IPreferenceStore preferenceStore) {
 		final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (affectsTextPresentation(event)) {
-					handlePropertyChangeEvent(event);
+				if (configuration.affectsTextPresentation(event)) {
+					configuration.handlePropertyChangeEvent(event);
 					viewer.invalidateTextPresentation();
 				}
 			}
