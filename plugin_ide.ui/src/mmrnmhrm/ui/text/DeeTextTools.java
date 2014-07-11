@@ -10,10 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.utilbox.core.Assert;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,8 +38,8 @@ public class DeeTextTools extends ScriptTextTools {
 	public ScriptSourceViewerConfiguration createSourceViewerConfiguraton(IPreferenceStore preferenceStore, 
 			ITextEditor editor, String partitioning) {
 		Assert.isTrue(partitioning.equals(DeePartitions.PARTITIONING_ID));
-		return new DeeSourceViewerConfiguration(getColorManager(), preferenceStore, editor, 
-				DeePartitions.PARTITIONING_ID);
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
 	}
 	
 }

@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.preferences.pages;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
@@ -33,8 +34,8 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
 	@Override
 	protected DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new DeeSimpleSourceViewerConfiguration(getTextTools().getColorManager(), getPreferenceStore(), null,
-				DeePartitions.PARTITIONING_ID, false);
+		return new DeeSimpleSourceViewerConfiguration(LangUIPlugin.getInstance().getColorManager(), 
+			getPreferenceStore(), null, false);
 	}
 	
 	@Override

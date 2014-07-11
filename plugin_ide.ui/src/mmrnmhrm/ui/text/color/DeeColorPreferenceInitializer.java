@@ -3,15 +3,13 @@ package mmrnmhrm.ui.text.color;
 import melnorme.lang.ide.ui.text.coloring.LangColoringPreferencesHelper;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 
 /**
  * Note: its not guaranteed that these methods are called from the UI thread 
  */
-public abstract class DeeColorPreferenceInitializer implements IDeeColorConstants {
-	
-	// Color info: http://blog.platinumsolutions.com/node/155
+public abstract class DeeColorPreferenceInitializer extends LangColoringPreferencesHelper 
+	implements IDeeColorConstants {
 	
 	private static RGB COLOR_BLACK_RGB       = new RGB(0x00, 0x00, 0x00);
 	private static RGB COLOR_CYAN_RGB        = new RGB(0x00, 0xFF, 0xFF); 
@@ -41,37 +39,6 @@ public abstract class DeeColorPreferenceInitializer implements IDeeColorConstant
 		setColoringStyle(store, DEE_COMMENT, true, new RGB(63, 127, 95), false, false, false);
 		
 		setColoringStyle(store, DEE_SPECIAL, false, COLOR_CYAN_RGB, false, false, true);
-	}
-	
-	
-	protected static void setColoringStyle(IPreferenceStore store, String key, boolean enabled, 
-			RGB color, boolean bold, boolean italic, boolean underline) {
-		setIsEnabled(store, key, enabled);
-		setColor(store, key, color);
-		setIsBold(store, key, bold);
-		setIsItalic(store, key, italic);
-		setIsUnderline(store, key, underline);
-	}
-	
-	
-	private static void setIsEnabled(IPreferenceStore store, String key, boolean enabled) {
-		store.setDefault(LangColoringPreferencesHelper.getEnabledKey(key), enabled);
-	}
-	
-	private static void setColor(IPreferenceStore store, String key, RGB rgb) {
-		PreferenceConverter.setDefault(store, LangColoringPreferencesHelper.getColorKey(key), rgb);
-	}
-	
-	private static void setIsBold(IPreferenceStore store, String key, boolean bold) {
-		store.setDefault(LangColoringPreferencesHelper.getBoldKey(key), bold);
-	}
-	
-	private static void setIsItalic(IPreferenceStore store, String key, boolean italic) {
-		store.setDefault(LangColoringPreferencesHelper.getItalicKey(key), italic);
-	}
-	
-	private static void setIsUnderline(IPreferenceStore store, String key, boolean underline) {
-		store.setDefault(LangColoringPreferencesHelper.getUnderlineKey(key), underline);
 	}
 	
 }

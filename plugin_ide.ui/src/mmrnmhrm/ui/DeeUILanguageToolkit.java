@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
@@ -67,8 +68,8 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	@Deprecated
 	@Override
 	public DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new DeeSimpleSourceViewerConfiguration(getTextTools().getColorManager(),
-				getPreferenceStore(), null, getPartitioningId(), false);
+		return new DeeSimpleSourceViewerConfiguration(LangUIPlugin.getInstance().getColorManager(),
+				getPreferenceStore(), null, false);
 	}
 	
 	@Override

@@ -7,12 +7,9 @@ import java.io.InputStream;
 import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
-import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -39,19 +36,12 @@ public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringCon
 		))
 	);
 	
-	protected final IColorManager fColorManager = new DLTKColorManager_Adapter();
-	
-	public static class DLTKColorManager_Adapter extends CColorManager implements IColorManager {
-		
-	}
-	
 	public DeeSourceColoringConfigurationBlock(IPreferenceStore store) {
 		super(store);
 	}
 	
 	@Override
 	public void dispose() {
-		fColorManager.dispose();
 		super.dispose();
 	}
 	
@@ -78,8 +68,7 @@ public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringCon
 	
 	protected DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
 			IPreferenceStore preferenceStore, ITextEditor editor, boolean configureFormatter) {
-		return new DeeSimpleSourceViewerConfiguration(fColorManager, preferenceStore, editor,
-			DeePartitions.PARTITIONING_ID, configureFormatter);
+		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, editor, configureFormatter);
 	}
 	
 }

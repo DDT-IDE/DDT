@@ -13,7 +13,6 @@ package org.dsource.ddt.lang.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
-import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.cdt.internal.ui.text.TokenStore;
 import org.eclipse.cdt.ui.text.ITokenStore;
@@ -26,15 +25,41 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public abstract class AbstractLangSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 	
-	protected org.eclipse.cdt.ui.text.IColorManager fColorManager = DeeUIPlugin.getInstance().getColorManager();
+	public static final class DLTKColorManager implements IColorManager {
+		public final org.eclipse.cdt.ui.text.IColorManager colorManager2;
+		
+		private DLTKColorManager(org.eclipse.cdt.ui.text.IColorManager colorManager2) {
+			this.colorManager2 = colorManager2;
+		}
+		
+		@Override
+		public Color getColor(RGB rgb) {
+			return colorManager2.getColor(rgb);
+		}
+		
+		@Override
+		public Color getColor(String key) {
+			return colorManager2.getColor(key);
+		}
+		
+		@Override
+		public void dispose() {
+			colorManager2.dispose();
+		}
+	}
 	
-	public AbstractLangSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore,
-			ITextEditor editor, String partitioning) {
-		super(assertNotNull(colorManager), assertNotNull(preferenceStore), editor, partitioning);
+	protected final org.eclipse.cdt.ui.text.IColorManager colorManager2;
+	
+	public AbstractLangSourceViewerConfiguration(final org.eclipse.cdt.ui.text.IColorManager colorManager2, 
+			IPreferenceStore preferenceStore, ITextEditor editor, String partitioning) {
+		super(new DLTKColorManager(colorManager2), assertNotNull(preferenceStore), editor, partitioning);
+		this.colorManager2 = colorManager2;
 	}
 	
 	@Override
@@ -43,7 +68,7 @@ public abstract class AbstractLangSourceViewerConfiguration extends ScriptSource
 	}
 	
 	protected org.eclipse.cdt.ui.text.IColorManager getColorManager2() {
-		return fColorManager;
+		return colorManager2;
 	}
 	
 	protected SingleTokenScanner createSingleTokenScriptScanner(String tokenProperty) {

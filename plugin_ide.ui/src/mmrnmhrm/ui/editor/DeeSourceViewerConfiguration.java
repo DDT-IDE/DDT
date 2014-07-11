@@ -29,12 +29,12 @@ import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.dsource.ddt.lang.ui.editor.ScriptSourceViewerConfigurationExtension;
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.internal.ui.typehierarchy.HierarchyInformationControl;
-import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -59,9 +59,9 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfigurationExtension {
 	
-	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore,
-			ITextEditor editor, String partitioning) {
-		super(colorManager, preferenceStore, editor, partitioning);
+	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
+			ITextEditor editor) {
+		super(colorManager, preferenceStore, editor, DeePartitions.PARTITIONING_ID);
 	}
 	
 	@Override

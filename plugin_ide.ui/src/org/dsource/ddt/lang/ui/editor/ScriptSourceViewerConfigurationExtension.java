@@ -20,7 +20,7 @@ import java.util.Set;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 
-import org.eclipse.dltk.ui.text.IColorManager;
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -38,10 +38,10 @@ public abstract class ScriptSourceViewerConfigurationExtension extends AbstractL
 	protected Set<AbstractLangScanner> scanners;
 	protected Map<String, AbstractLangScanner> scannersByContentType;
 	
-	public ScriptSourceViewerConfigurationExtension(IColorManager colorManager, IPreferenceStore preferenceStore,
+	
+	public ScriptSourceViewerConfigurationExtension(IColorManager colorManager, IPreferenceStore preferenceStore, 
 			ITextEditor editor, String partitioning) {
 		super(colorManager, preferenceStore, editor, partitioning);
-		
 		initializeScannersX();
 	}
 	

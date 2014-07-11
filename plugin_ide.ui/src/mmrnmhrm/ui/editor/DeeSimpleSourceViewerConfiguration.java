@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -24,10 +24,9 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	
 	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager,
 			IPreferenceStore preferenceStore, ITextEditor editor,
-			String partitioningId, boolean configureFormatter) {
-		super(colorManager, preferenceStore, editor, partitioningId);
+			boolean configureFormatter) {
+		super(colorManager, preferenceStore, editor);
 		fConfigureFormatter = configureFormatter;
-		
 	}
 	
 	@Override
