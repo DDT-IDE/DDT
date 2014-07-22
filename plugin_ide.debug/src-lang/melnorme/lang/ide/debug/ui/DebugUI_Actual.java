@@ -3,6 +3,7 @@ package melnorme.lang.ide.debug.ui;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.dsource.ddt.debug.ui.DeeToggleBreakpointAdapter;
+import org.eclipse.cdt.debug.internal.ui.actions.breakpoints.ToggleDynamicPrintfAdapter;
 
 public class DebugUI_Actual {
 	
@@ -10,6 +11,10 @@ public class DebugUI_Actual {
 	
 	public static DeeToggleBreakpointAdapter createToggleBreakPointAdapter() {
 		return new DeeToggleBreakpointAdapter();
+	}
+
+	public static ToggleDynamicPrintfAdapter createDynamicPrintfBreakpoint() {
+		return new ToggleDynamicPrintfAdapter();
 	}
 	
 }
