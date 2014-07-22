@@ -12,7 +12,7 @@ public class DebugUI_Actual {
 	public static DeeToggleBreakpointAdapter createToggleBreakPointAdapter() {
 		return new DeeToggleBreakpointAdapter();
 	}
-
+	
 	public static ToggleDynamicPrintfAdapter createDynamicPrintfBreakpoint() {
 		return new ToggleDynamicPrintfAdapter();
 	}

@@ -5,7 +5,7 @@ public class DebugMessages_Actual {
 	public static final String LANG_BREAKPOINT_TARGET_NAME = 
 			"Breakpoint (CDT)";
 	public static final String LANG_BREAKPOINT_TARGET_DESCRIPTION = 
-			"Breakpoint for D language files and elements.";
+			"Breakpoint for native code";
 	
 	public static final String LANG_DYNAMIC_PRINTF_BREAKPOINT_TARGET_NAME = 
 			"GDB Dynamic printf (CDT)";
