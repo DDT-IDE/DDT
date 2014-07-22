@@ -13,6 +13,8 @@
    * #/bin/gdc  -> #/include/dlang/gdc
  * Removed D compilers preference page. This was replaced in favor of a more general, non-DDT-specific way of detecting compiler installations. See below: 
    * Added UserGuide.md#compiler-setup section.
+ * More lenient with CDT versions. DDT can now be installed with any CDT 8.x.x.
+  * However, there is a small change using DDT with a version other than the recommned/tested one will break things. Each DDT release will list a recommented/tested CDT version.
    
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
