@@ -182,13 +182,10 @@
    
    <extension point="org.eclipse.core.runtime.adapters">
       <factory 
-        	class="org.dsource.ddt.debug.ui.DeeGdbAdapterFactory" 
+        	class="melnorme.lang.ide.debug.ui.GdbViewModelAdapterFactory" 
 	        adaptableType="org.dsource.ddt.debug.core.DeeGdbLaunch">
-         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider"/>
-         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory"/>
-         <adapter type="org.eclipse.debug.ui.contexts.ISuspendTrigger"/>
-         <adapter type="org.eclipse.debug.internal.ui.viewers.model.provisional.IColumnPresentationFactory"/>
-	  </factory>         
-   </extension>	
+         <adapter type="org.eclipse.cdt.dsf.gdb.ui.viewmodel.IGdbViewModelServicesFactory"/>
+	  </factory>
+   </extension>
 
 </plugin>

@@ -14,7 +14,8 @@ import org.eclipse.cdt.dsf.concurrent.DataRequestMonitor;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.numberformat.IElementFormatProvider;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.variable.SyncVariableDataAccess;
 import org.eclipse.cdt.dsf.debug.ui.viewmodel.variable.VariableVMNode;
-import org.eclipse.cdt.dsf.gdb.internal.ui.viewmodel.GdbVariableVMNode;
+import org.eclipse.cdt.dsf.gdb.ui.viewmodel.GdbVariableVMNode;
+import org.eclipse.cdt.dsf.gdb.ui.viewmodel.GdbVariableVMProvider;
 import org.eclipse.cdt.dsf.mi.service.MIExpressions;
 import org.eclipse.cdt.dsf.service.DsfSession;
 import org.eclipse.cdt.dsf.ui.viewmodel.AbstractVMAdapter;
@@ -24,7 +25,7 @@ import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationCont
 import org.eclipse.jface.viewers.TreePath;
 
 @SuppressWarnings("restriction")
-public class Lang_GdbVariableVMProvider extends GdbVariableVMProvider_Override implements IElementFormatProvider {
+public class Lang_GdbVariableVMProvider extends GdbVariableVMProvider implements IElementFormatProvider {
 	
 	public Lang_GdbVariableVMProvider(AbstractVMAdapter adapter, IPresentationContext context,
 			DsfSession session) {
