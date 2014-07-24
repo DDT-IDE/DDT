@@ -8,29 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.genie;
+package dtool.util;
 
 import java.io.IOException;
+import java.io.Writer;
 
+import com.google.gson.stream.JsonWriter;
 
-public class GenieMain {
+public class JsonWriterExt extends JsonWriter {
+
+	public JsonWriterExt(Writer out) {
+		super(out);
+	}
 	
-	public static void main	(String[] args) {
-		System.out.println("D Genie Tool - 0.0.1");
-		
-		int portNumber = 2501;
-		
-		if (args.length > 1) {
-			portNumber = Integer.parseInt(args[0]);
-		}
-		
-		try {
-			new GenieServer(portNumber).runServer();
-		} catch (IOException e) {
-			System.out.println("Error trying to listen for connection on port " + portNumber + ".");
-			System.out.println(e.getMessage());
-		}
-		
+	public void writeProperty(String name, String value) throws IOException {
+		name(name);
+		value(value);
 	}
 	
 }

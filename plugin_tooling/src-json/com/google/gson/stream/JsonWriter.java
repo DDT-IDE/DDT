@@ -531,37 +531,46 @@ public void close() throws IOException {
     stackSize = 0;
   }
 
-  private void string(String value) throws IOException {
-    String[] replacements = htmlSafe ? HTML_SAFE_REPLACEMENT_CHARS : REPLACEMENT_CHARS;
-    out.write("\"");
-    int last = 0;
-    int length = value.length();
-    for (int i = 0; i < length; i++) {
-      char c = value.charAt(i);
-      String replacement;
-      if (c < 128) {
-        replacement = replacements[c];
-        if (replacement == null) {
-          continue;
-        }
-      } else if (c == '\u2028') {
-        replacement = "\\u2028";
-      } else if (c == '\u2029') {
-        replacement = "\\u2029";
-      } else {
-        continue;
-      }
-      if (last < i) {
-        out.write(value, last, i - last);
-      }
-      out.write(replacement);
-      last = i + 1;
-    }
-    if (last < length) {
-      out.write(value, last, length - last);
-    }
-    out.write("\"");
-  }
+	
+	private void string(String value) throws IOException {
+		stringValue(value, out, htmlSafe);
+	}
+	
+	public static void stringValue(String value, Writer writer) throws IOException {
+		stringValue(value, writer, false);
+	}
+	
+	public static void stringValue(String value, Writer writer, boolean htmlSafe) throws IOException {
+		String[] replacements = htmlSafe ? HTML_SAFE_REPLACEMENT_CHARS : REPLACEMENT_CHARS;
+		writer.write("\"");
+		int last = 0;
+		int length = value.length();
+		for(int i = 0; i < length; i++) {
+			char c = value.charAt(i);
+			String replacement;
+			if(c < 128) {
+				replacement = replacements[c];
+				if(replacement == null) {
+					continue;
+				}
+			} else if(c == '\u2028') {
+				replacement = "\\u2028";
+			} else if(c == '\u2029') {
+				replacement = "\\u2029";
+			} else {
+				continue;
+			}
+			if(last < i) {
+				writer.write(value, last, i - last);
+			}
+			writer.write(replacement);
+			last = i + 1;
+		}
+		if(last < length) {
+			writer.write(value, last, length - last);
+		}
+		writer.write("\"");
+	}
 
   private void newline() throws IOException {
     if (indent == null) {

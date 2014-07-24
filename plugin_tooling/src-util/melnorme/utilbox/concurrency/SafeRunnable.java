@@ -8,29 +8,21 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.genie;
+package melnorme.utilbox.concurrency;
 
-import java.io.IOException;
-
-
-public class GenieMain {
+public abstract class SafeRunnable implements Runnable {
 	
-	public static void main	(String[] args) {
-		System.out.println("D Genie Tool - 0.0.1");
-		
-		int portNumber = 2501;
-		
-		if (args.length > 1) {
-			portNumber = Integer.parseInt(args[0]);
-		}
-		
-		try {
-			new GenieServer(portNumber).runServer();
-		} catch (IOException e) {
-			System.out.println("Error trying to listen for connection on port " + portNumber + ".");
-			System.out.println(e.getMessage());
-		}
-		
+	@Override
+	public final void run() {
+		try { 
+			safeRun();
+		} catch(Throwable e) {
+			handleUncaughtException(e);
+		} 
 	}
+	
+	protected abstract void safeRun();
+	
+	protected abstract void handleUncaughtException(Throwable e);
 	
 }

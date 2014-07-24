@@ -17,7 +17,6 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
-import mmrnmhrm.tests.MiscJsonUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -29,6 +28,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.search.indexing.IndexManager;
 
 import dtool.dub.BundlePath;
+import dtool.tests.utils.MiscJsonUtils;
 
 /***
  * Future replacement for {@link CommonDeeWorkspaceTest}

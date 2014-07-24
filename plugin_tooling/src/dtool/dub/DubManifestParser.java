@@ -30,6 +30,7 @@ import com.google.gson.stream.MalformedJsonException;
 import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundle.DubDependecyRef;
+import dtool.util.JsonReaderExt;
 
 /**
  * Parse a Dub bundle in a filesystem location into an in-memory description of the bundle.

@@ -20,6 +20,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import com.google.gson.stream.JsonToken;
 
 import dtool.dub.DubBundle.DubBundleException;
+import dtool.util.JsonReaderExt;
 
 public class DubDescribeParser extends CommonDubParser {
 	

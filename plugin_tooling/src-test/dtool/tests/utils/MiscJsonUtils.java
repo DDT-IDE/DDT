@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.tests;
+package dtool.tests.utils;
 
 import melnorme.utilbox.misc.StringUtil;
 
