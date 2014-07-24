@@ -19,7 +19,7 @@
    </license>
 
    <includes
-         id="org.dsource.ddt-base"
+         id="org.dsource.ddt.base"
          version="0.0.0"/>
 
    <requires>
