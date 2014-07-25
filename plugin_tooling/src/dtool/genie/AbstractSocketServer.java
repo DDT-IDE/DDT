@@ -49,11 +49,13 @@ public abstract class AbstractSocketServer {
 	
 	public void logMessage(String message) {
 		System.out.println(message);
+		System.out.flush();
 	}
 	
 	public void logException(String message, Throwable exception) {
-		System.err.println(">> " + message);
-		exception.printStackTrace(System.err);
+		logMessage(">> " + message);
+		exception.printStackTrace(System.out);
+		System.out.flush();
 	}
 	
 	public void runServer() {
@@ -69,7 +71,7 @@ public abstract class AbstractSocketServer {
 			logException("Unexpected exception during socket accept: " , ioe);
 		} finally {
 			closeServerSocket();
-			logMessage("Server shutdown.");
+			logMessage("Server socket closed.");
 			terminationLatch.countDown();
 		}
 	}
@@ -82,13 +84,8 @@ public abstract class AbstractSocketServer {
 		}
 	}
 	
-	public void requestTermination() {
-		closeServerSocket();
-	}
-	
-	public void terminateAndAwait() throws InterruptedException {
-		closeServerSocket();
-		terminationLatch.await();
+	public int getActiveConnections() {
+		return MAX_CONNECTIONS - connectionsSemaphore.availablePermits();
 	}
 	
 	protected void handleNewClientConnection(Socket clientSocket) {

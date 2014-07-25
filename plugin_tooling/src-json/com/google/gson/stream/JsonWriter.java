@@ -515,22 +515,21 @@ public void flush() throws IOException {
     out.flush();
   }
 
-  /**
-   * Flushes and closes this writer and the underlying {@link Writer}.
-   *
-   * @throws IOException if the JSON document is incomplete.
-   */
-  @Override
-public void close() throws IOException {
-    out.close();
-
-    int size = stackSize;
-    if (size > 1 || size == 1 && stack[size - 1] != NONEMPTY_DOCUMENT) {
-      throw new IOException("Incomplete document");
-    }
-    stackSize = 0;
-  }
-
+	/**
+	 * Flushes and closes this writer and the underlying {@link Writer}.
+	 *
+	 * @throws IOException if the JSON document is incomplete.
+	 */
+	@Override
+	public void close() throws IOException {
+		out.close();
+		
+		int size = stackSize;
+		if (size > 1 || size == 1 && stack[size - 1] != NONEMPTY_DOCUMENT) {
+			throw new IOException("Incomplete document");
+		}
+		stackSize = 0;
+	}
 	
 	private void string(String value) throws IOException {
 		stringValue(value, out, htmlSafe);

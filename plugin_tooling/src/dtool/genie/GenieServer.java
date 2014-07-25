@@ -37,6 +37,11 @@ public class GenieServer extends AbstractSocketServer {
 	}
 	
 	@Override
+	public void logMessage(String message) {
+		super.logMessage("Genie Server:: " + message);
+	}
+	
+	@Override
 	protected GenieConnectionHandler createConnectionHandlerRunnable(Socket clientSocket) {
 		return new GenieConnectionHandler(clientSocket);
 	}
@@ -64,10 +69,11 @@ public class GenieServer extends AbstractSocketServer {
 				JsonReaderExt jsonParser = new JsonReaderExt(serverInput);
 				JsonWriterExt jsonWriter = new JsonWriterExt(serverResponse);
 			) {
+				
 				jsonParser.setLenient(true);
 				jsonWriter.setLenient(true);
 				
-				while(true) {
+				while(!jsonParser.isEOF()) {
 					processJsonMessage(jsonParser, jsonWriter);
 				}
 			}

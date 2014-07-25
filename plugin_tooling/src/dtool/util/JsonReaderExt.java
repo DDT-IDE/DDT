@@ -12,6 +12,7 @@ package dtool.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -115,6 +116,19 @@ public class JsonReaderExt extends JsonReader {
 	
 	public String consumeExpectedName() throws IOException {
 		return consumeExpectedPropName();
+	}
+	
+	public boolean isEOF() throws IOException {
+		try {
+			if(peek() == JsonToken.END_DOCUMENT) {
+				return true;
+			}
+		} catch (EOFException eof) {
+			// This exception is ok. Because of a bug, END_DOCUMENT is sometimes not reported.
+			return true;
+		}
+		
+		return false;
 	}
 	
 }

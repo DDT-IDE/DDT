@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +28,37 @@ import org.junit.Test;
 
 public class GenieServerTest extends JsonWriterTestUtils {
 	
+	public static void shutdownSocketOutput(Socket socket) {
+		try {
+			socket.shutdownOutput();
+		} catch (IOException e) {
+			throw assertFail();
+		}
+	}
+	
+	public static void writeStreamMessage(Writer serverOutput, String clientRequest) {
+		try {
+			serverOutput.write(clientRequest);
+			serverOutput.flush();
+		} catch (IOException e) {
+			assertFail();
+		}
+	}
+	
+	protected static void logClientMessage(String message) {
+		System.out.println(message);
+		System.out.flush();
+	}
+	
+	/* ----------------- ----------------- */
+	
 	protected TestsGenieServer genieServer;
 	
 	protected void prepareGenieServer() {
-		if(genieServer != null && !genieServer.serverSocket.isClosed()) {
-			return;
-		}
 		try {
+			if(genieServer != null) {
+				genieServer.serverSocket.close();
+			}
 			genieServer = new TestsGenieServer(0);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
@@ -63,19 +88,18 @@ public class GenieServerTest extends JsonWriterTestUtils {
 			exceptions.add(e);
 		}
 		
-		public void awaitTerminationOfPendingConnections() {
+		protected void shutdownAndAwait() throws InterruptedException {
+			closeServerSocket();
+			awaitTerminationOfActiveConnectionHandlers();
+			terminationLatch.await();
+		}
+		
+		protected void awaitTerminationOfActiveConnectionHandlers() {
 			connectionsSemaphore.acquireUninterruptibly(MAX_CONNECTIONS);
+			logClientMessage("All active connections terminated.");
 			connectionsSemaphore.release(MAX_CONNECTIONS);
 		}
 		
-	}
-	
-	@After
-	public void cleanup() throws InterruptedException {
-		genieServer.terminateAndAwait();
-		assertTrue(genieServer.serverSocket.isClosed());
-		assertTrue(genieServer.exceptions.isEmpty());
-		genieServer = null;
 	}
 	
 	protected Socket socket;
@@ -91,19 +115,40 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		testGenieServer____________();
 	}
 	
+	@After
+	public void cleanup() throws InterruptedException {
+		cleanClientConnection();
+		genieServer.shutdownAndAwait();
+		assertTrue(genieServer.serverSocket.isClosed());
+		assertTrue(genieServer.exceptions.isEmpty());
+		genieServer = null;
+	}
+	
 	protected void prepareServerConnection() {
-		int serverPortNumber = genieServer.getServerPortNumber();
 		try {
-			if(socket != null) {
-					serverInput.flush();
-					socket.close();
-			}
+			cleanClientConnection();
+			
+			int serverPortNumber = genieServer.getServerPortNumber();
+			logClientMessage("---->> Preparing new client connection. " 
+					+ " Active server connections: " + genieServer.getActiveConnections());
 			
 			socket = new Socket("localhost", serverPortNumber);
 			serverInput = new OutputStreamWriter(socket.getOutputStream(), UTF8);
 			serverOutput = new BufferedReader(new InputStreamReader(socket.getInputStream(), UTF8));
 		} catch (IOException e) {
 			assertFail();
+		}
+	}
+	
+	protected void cleanClientConnection(){
+		if(socket != null) {
+			try {
+				serverInput.flush();
+				socket.close();
+				socket = null;
+			} catch (IOException e) {
+				assertFail();
+			}
 		}
 	}
 	
@@ -114,16 +159,6 @@ public class GenieServerTest extends JsonWriterTestUtils {
 			return readObject(serverOutput);
 		} catch (IOException e) {
 			throw assertFail();
-		}
-	}
-	
-	protected void writeConnectionMessage(String clientRequest) {
-		try {
-			serverInput.write(clientRequest);
-			serverInput.flush();
-			socket.getOutputStream().flush();
-		} catch (IOException e) {
-			assertFail();
 		}
 	}
 	
@@ -146,6 +181,13 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		// Test invalid message json
 		testMessageInvalidJson("{ }", "expected property name");
 		testMessageInvalidJson("{ ] }", "expected ':'");
+		
+		// Test disconnect during message
+		writeStreamMessage(serverInput, "{ \"about\" : ");
+		shutdownSocketOutput(socket);
+		awaitConnectionHandlerTermination();
+		checkServerExceptions("End of input");
+		prepareServerConnection();
 	}
 	
 	public void testError(String clientRequest, String expectedContains) {
@@ -162,16 +204,23 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	public void testMessageInvalidJson(String clientRequest, String expectedErrorContains) {
 		assertTrue(socket.isClosed() == false);
 		
-		writeConnectionMessage(clientRequest);
+		writeStreamMessage(serverInput, clientRequest);
 		
+		awaitConnectionHandlerTermination();
+		checkServerExceptions(expectedErrorContains);
+	}
+	
+	protected void awaitConnectionHandlerTermination() {
 		try {
 			while(serverOutput.read() != -1) {
 			}
 			socket.close();
 		} catch (IOException e) {
 		}
-		genieServer.awaitTerminationOfPendingConnections();
-		
+		genieServer.awaitTerminationOfActiveConnectionHandlers();
+	}
+	
+	protected void checkServerExceptions(String expectedErrorContains) {
 		assertTrue(genieServer.exceptions.size() == 1);
 		Throwable exception = genieServer.exceptions.get(0);
 		assertStringContains(exception.getMessage().toLowerCase(), expectedErrorContains.toLowerCase());
