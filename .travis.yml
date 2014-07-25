@@ -2,7 +2,7 @@ language: java
 
 jdk:
   - oraclejdk8
-  - openjdk7
+#  - openjdk7
 
 before_install:
   - "export DISPLAY=:99.0"
@@ -10,5 +10,7 @@ before_install:
 
 # Prevent Travis's default of: mvn install -DskipTests=true
 install: ""
+  - "mvn clean package"
+  - "ls /home/travis/build/bruno-medeiros/DDT/bin-maven/dub"
 
 script: mvn clean integration-test
