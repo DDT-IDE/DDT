@@ -1,8 +1,8 @@
 language: java
 
 jdk:
-  - oraclejdk7
-  - openjdk
+  - oraclejdk8
+  - openjdk7
 
 before_install:
   - "export DISPLAY=:99.0"
