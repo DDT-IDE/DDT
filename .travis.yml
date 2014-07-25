@@ -9,7 +9,7 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 # Prevent Travis's default of: mvn install -DskipTests=true
-install: ""
+install:
   - "mvn clean package"
   - "ls /home/travis/build/bruno-medeiros/DDT/bin-maven/dub"
 
