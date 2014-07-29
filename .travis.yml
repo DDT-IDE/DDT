@@ -10,6 +10,7 @@ before_install:
 
 # Prevent Travis's default of: mvn install -DskipTests=true
 install:
+  - "ls -l /home/travis/build/bruno-medeiros/DDT/bin-maven/"
   - "mvn clean pre-integration-test"
   - "ls -l /home/travis/build/bruno-medeiros/DDT/bin-maven/"
   - "ls -l /home/travis/build/bruno-medeiros/DDT/bin-maven/dub"
