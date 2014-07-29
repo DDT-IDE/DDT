@@ -82,7 +82,7 @@ public class LexingUtil {
 				return false;
 		}
 		
-		return true;	
+		return true;
 	}
 	
 }

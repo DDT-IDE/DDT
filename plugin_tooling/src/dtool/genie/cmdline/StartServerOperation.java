@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.genie.cmdline;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -23,6 +21,8 @@ import dtool.genie.GenieServer;
 
 public class StartServerOperation extends AbstractCmdlineOperation {
 	
+	protected static final String SENTINEL_FILE_NAME = ".dtoolgenie";
+	
 	public StartServerOperation() {
 		super("start");
 	}
@@ -32,21 +32,19 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 		return "Start the DToolGenie server.";
 	}
 	
-	protected DToolServer dtoolServer;
-
 	@Override
 	protected void handle() {
-		int requestedPortNumber = 0;
-		boolean force = true;
+		boolean force = getFlag("force");
+		String portNumberArg = retrieveFirstUnparsedArgument();
+		int requestedPortNumber = portNumberArg == null ? 0 : validatePositiveInt(portNumberArg);
+		validateNoMoreArguments();
 		
-		dtoolServer = new DToolServer();
-		
-		final File sentinelFile = new File(System.getProperty("user.home"), ".dtoolgenie");
+		final File sentinelFile = new File(System.getProperty("user.home"), SENTINEL_FILE_NAME);
 		try {
 			boolean created = sentinelFile.createNewFile();
 			if(created == false && force == false) {
 				String message = "Failed to create server sentinel file, perhaps server is running already?";
-				errorBail(message + "  use argument 'force' to start anyways", null); // TODO
+				errorBail(message + "  use argument 'force' to start anyways", null);
 			}
 		} catch (IOException e) {
 			errorBail("Error creating sentinel file " + sentinelFile, e);
@@ -55,6 +53,7 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 		
 		GenieServer genieServer;
 		try {
+			DToolServer dtoolServer = new DToolServer();
 			genieServer = new GenieServer(dtoolServer, requestedPortNumber);
 		} catch (IOException ioe) {
 			throw errorBail("Error trying to listen for connection on port " + requestedPortNumber + ".", ioe);
@@ -67,12 +66,6 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 		}
 		
 		genieServer.runServer();
-	}
-	
-	protected RuntimeException errorBail(String message, Throwable throwable) {
-		dtoolServer.logError(message, throwable);
-		System.exit(1);
-		throw assertUnreachable();
 	}
 	
 }

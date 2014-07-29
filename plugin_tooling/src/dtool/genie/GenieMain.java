@@ -10,11 +10,13 @@
  *******************************************************************************/
 package dtool.genie;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.array;
 import static melnorme.utilbox.misc.StringUtil.newSpaceFilledString;
 
 import java.io.PrintStream;
 
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.genie.cmdline.StartServerOperation;
 
 
@@ -29,22 +31,24 @@ public class GenieMain {
 	
 	public static void main(String[] args) {
 		
-		String commandString = args.length == 0 ? "help" : args[0];
+		args = args.length == 0 ? array("help") : args;
+		String commandName = args[0];
+		String[] newArgs = ArrayUtil.removeAt(args, 0);
 		
 		for (AbstractCmdlineOperation command : commands) {
-			if(command.tryHandling(commandString, args)) {
+			if(command.tryHandling(commandName, newArgs)) {
 				return;
 			}
 		}
 		
-		System.err.println("Unknown command: " + commandString);
+		System.err.println("Unknown command: " + commandName);
 		System.exit(1);
 	}
 	
-	public static abstract class AbstractCmdlineOperation {
+	public static abstract class AbstractCmdlineOperation extends ProgramArgumentsHelper {
 		
 		protected final String commandName;
-		protected String[] args;
+		protected String[] rawArgs;
 		
 		public AbstractCmdlineOperation(String commandName) {
 			this.commandName = commandName;
@@ -54,9 +58,24 @@ public class GenieMain {
 			if(!commandString.equals(commandName)) {
 				return false;
 			}
-			this.args = args;
+			this.rawArgs = args;
+			parseArgs(args);
 			handle();
 			return true;
+		}
+		
+		@Override
+		protected RuntimeException handleArgumentsError(String message) {
+			return errorBail(message, null);
+		}
+		
+		protected RuntimeException errorBail(String message, Throwable throwable) {
+			System.out.println(message);
+			if(throwable != null) {
+				System.out.println(throwable);
+			}
+			System.exit(1);
+			throw assertUnreachable();
 		}
 		
 		protected abstract void handle();
