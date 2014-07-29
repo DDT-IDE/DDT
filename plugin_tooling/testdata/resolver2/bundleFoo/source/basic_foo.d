@@ -1,9 +1,9 @@
 
 import std.stdio;
 
-void barLibFunction(string str)
+void barLibFunction(string defA/*DEF*/)
 {
-	writeln("FooLib", str);
+	writeln("FooLib", defA/*defA_REF1*/);
 }
 
 

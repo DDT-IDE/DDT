@@ -19,20 +19,17 @@ public class FindDefinitionResult {
 	
 	public final String errorMessage;
 	public final List<FindDefinitionResultEntry> results;
-	public final Path originFilePath;
 	
 	public FindDefinitionResult(String errorMessage) {
 		this.errorMessage = errorMessage;
 		this.results = null;
-		this.originFilePath = null;
 	}
 	
-	public FindDefinitionResult(List<FindDefinitionResultEntry> results, Path compilationUnitPath) {
+	public FindDefinitionResult(List<FindDefinitionResultEntry> results) {
 		this.errorMessage = null;
 		this.results = results;
-		this.originFilePath = compilationUnitPath;
 	}
-
+	
 	public FindDefinitionResult createFailureResult(String errorMessage) {
 		return new FindDefinitionResult(errorMessage);
 	}

@@ -98,7 +98,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		
 		Path newEditorFilePath = fdResultEntry.compilationUnitPath;
 		IEditorInput newInput;
-		if(areEqual(newEditorFilePath, openDefResult.originFilePath)) {
+		if(areEqual(newEditorFilePath, inputPath)) {
 			newInput = editor.getEditorInput();
 		} else {
 			if(newEditorFilePath == null) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,6 +113,7 @@ public class DToolServer {
 		if(node == null) {
 			return new FindDefinitionResult("No node found at offset: " + offset);
 		}
+		assertEquals(node.getModuleNode().compilationUnitPath, filePath); /*BUG here normalization */
 		
 		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {
 			
@@ -170,7 +173,7 @@ public class DToolServer {
 				namedElement.isLanguageIntrinsic()));
 		}
 		
-		return new FindDefinitionResult(results, ref.getModuleNode().compilationUnitPath);
+		return new FindDefinitionResult(results);
 	}
 	
 	/* -----------------  ----------------- */

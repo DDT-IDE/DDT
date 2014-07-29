@@ -12,6 +12,7 @@ package dtool.genie;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.blindCast;
 import static melnorme.utilbox.misc.StringUtil.UTF8;
 
 import java.io.BufferedReader;
@@ -20,11 +21,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.Socket;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Test;
+
+import dtool.ast.SourceRange;
+import dtool.engine.operations.FindDefinitionOperation_Test;
+import dtool.resolver.api.FindDefinitionResult;
+import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class GenieServerTest extends JsonWriterTestUtils {
 	
@@ -168,7 +177,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 		HashMap<String, Object> response;
 		
-		response = sendCommand(jsDocument(jsEntry("about", jsNull())));
+		response = sendCommand(jsObject(jsEntry("about", null)));
 		
 		assertAreEqual(response.get("engine"), GenieServer.ENGINE_NAME);
 		assertAreEqual(response.get("version"), GenieServer.ENGINE_VERSION);
@@ -176,7 +185,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		assertTrue(genieServer.exceptions.isEmpty());
 		
 		// Test invalid commands
-		testError(jsDocument(jsEntry("invalid_command", jsNull())), "unknown command");
+		testError(jsObject(jsEntry("invalid_command", null)), "unknown command");
 		
 		// Test invalid message json
 		testMessageInvalidJson("{ }", "expected property name");
@@ -226,6 +235,59 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		assertStringContains(exception.getMessage().toLowerCase(), expectedErrorContains.toLowerCase());
 		genieServer.exceptions.clear();
 		prepareServerConnection();
+	}
+	
+	protected HashMap<String, Object> response;
+	
+	@Test
+	public void testSemanticOps() throws Exception { testSemanticOps$(); }
+	public void testSemanticOps$() throws Exception {
+		prepareGenieServer();
+		prepareServerConnection();
+		
+		new FindDefinitionOperation_GenieTest().testALL();
+	}
+	
+	public class FindDefinitionOperation_GenieTest extends FindDefinitionOperation_Test {
+		
+		@Override
+		protected void prepEngineServer() {
+			// Don't create server class
+		}
+		
+		@Override
+		protected FindDefinitionResult doOperation(Path filePath, int offset) {
+			response = sendCommand(jsObject(jsEntry("find_definition", jsObject(
+				jsEntry("filepath", filePath.toString()),
+				jsEntry("offset", offset)
+				)))
+			);
+			
+			String errorMessage = getStringOrNull(response, "error");
+			if(errorMessage != null) {
+				return new FindDefinitionResult(errorMessage);
+			}
+			
+			List<?> jsonResults = blindCast(response.get("results"));
+			ArrayList<FindDefinitionResultEntry> results = new ArrayList<>(); 
+			for (Object jsonResultEntry : jsonResults) {
+				results.add(findDefResult(jsonResultEntry));
+			}
+			
+			return new FindDefinitionResult(results);
+		}
+		
+	}
+	
+	protected FindDefinitionResultEntry findDefResult(Object object) {
+		Map<String, Object> resultEntry = blindCast(object);
+		
+		SourceRange sr = new SourceRange(getInt(resultEntry, "offset"), getInt(resultEntry, "length"));
+		return new FindDefinitionResultEntry(
+			getPath(resultEntry, "modulePath"), 
+			sr, 
+			getString(resultEntry, "extentedName"), 
+			getFlag(resultEntry, "isLanguageIntrinsic"));
 	}
 	
 }

@@ -480,40 +480,44 @@ public class JsonWriter implements Closeable, Flushable {
     return this;
   }
 
-  /**
-   * Encodes {@code value}.
-   *
-   * @param value a finite value. May not be {@link Double#isNaN() NaNs} or
-   *     {@link Double#isInfinite() infinities}.
-   * @return this writer.
-   */
-  public JsonWriter value(Number value) throws IOException {
-    if (value == null) {
-      return nullValue();
-    }
-
-    writeDeferredName();
-    String string = value.toString();
-    if (!lenient
-        && (string.equals("-Infinity") || string.equals("Infinity") || string.equals("NaN"))) {
-      throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
-    }
-    beforeValue(false);
-    out.append(string);
-    return this;
-  }
-
-  /**
-   * Ensures all buffered data is written to the underlying {@link Writer}
-   * and flushes that writer.
-   */
-  @Override
-public void flush() throws IOException {
-    if (stackSize == 0) {
-      throw new IllegalStateException("JsonWriter is closed.");
-    }
-    out.flush();
-  }
+	/**
+	 * Encodes {@code value}.
+	 *
+	 * @param value a finite value. May not be {@link Double#isNaN() NaNs} or
+	 *     {@link Double#isInfinite() infinities}.
+	 * @return this writer.
+	 */
+	public JsonWriter value(Number value) throws IOException {
+		return numberValue(value, out, lenient);
+	}
+	
+	public JsonWriter numberValue(Number value, Writer writer, boolean lenient) throws IOException {
+		if (value == null) {
+			return nullValue();
+		}
+		
+		writeDeferredName();
+		String string = value.toString();
+		if (!lenient
+				&& (string.equals("-Infinity") || string.equals("Infinity") || string.equals("NaN"))) {
+			throw new IllegalArgumentException("Numeric values must be finite, but was " + value);
+		}
+		beforeValue(false);
+		writer.append(string);
+		return this;
+	}
+	
+	/**
+	 * Ensures all buffered data is written to the underlying {@link Writer}
+	 * and flushes that writer.
+	 */
+	@Override
+	public void flush() throws IOException {
+		if (stackSize == 0) {
+			throw new IllegalStateException("JsonWriter is closed.");
+		}
+		out.flush();
+	}
 
 	/**
 	 * Flushes and closes this writer and the underlying {@link Writer}.

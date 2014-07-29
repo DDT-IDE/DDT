@@ -11,13 +11,18 @@
 package dtool.genie;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 import com.google.gson.stream.JsonToken;
@@ -27,11 +32,7 @@ import dtool.util.JsonReaderExt;
 
 public class JsonWriterTestUtils extends CommonTest {
 	
-	public static String jsDocument(CharSequence... entries) {
-		return jsDocument2(entries);
-	}
-	
-	public static String jsDocument2(CharSequence... entries) {
+	public static String jsObject(CharSequence... entries) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{");
 		
@@ -47,18 +48,38 @@ public class JsonWriterTestUtils extends CommonTest {
 		return sb.toString();
 	}
 	
-	public static CharSequence jsEntry(String name, CharSequence value) {
+	public static CharSequence jsEntry(String name, Object value) {
 		StringWriter sw = new StringWriter();
 		
 		try {
 			JsonWriter.stringValue(name, sw);
 			sw.append(" : ");
-			sw.append(value.toString());
+			sw.append(jsValue(value));
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		
 		return sw.toString();
+	}
+	
+	public static CharSequence jsValue(Object value) {
+		if(value == null) {
+			return jsNull();
+		}
+		if(value instanceof String) {
+			return jsString((String) value);
+		}
+		if(value instanceof Number) {
+			Number number = (Number) value;
+			return jsString(number.toString());
+		}
+		if(value instanceof List) {
+			assertFail(); // TODO
+		}
+		if(value instanceof Map) {
+			assertFail(); // TODO
+		}
+		return jsString(value.toString());
 	}
 	
 	public static CharSequence jsNull() {
@@ -68,9 +89,9 @@ public class JsonWriterTestUtils extends CommonTest {
 	public static CharSequence jsString(String value) {
 		StringWriter sw = new StringWriter();
 		try {
-			JsonWriter.stringValue(value.toString(), sw);
+			JsonWriter.stringValue(value, sw);
 		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			throw assertFail();
 		}
 		return sw.toString();
 	}
@@ -119,6 +140,59 @@ public class JsonWriterTestUtils extends CommonTest {
 			return null;
 		}
 		throw assertUnreachable();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T validateType(Object value, Class<T> klass, String propName) {
+		if(!klass.isInstance(value)) {
+			throw new GenieCommandException("Expected value of type " + klass.getSimpleName() + 
+				" for property: " + propName);
+		}
+		return (T) value;
+	}
+	
+	@SuppressWarnings("serial")
+	public static class GenieCommandException extends RuntimeException {
+		
+		public GenieCommandException(String message) {
+			super(message);
+		}
+		
+	}
+	
+	protected static String getString(Map<String, Object> map, String propName) {
+		Object value = map.get(propName);
+		return validateType(value, String.class, propName);
+	}
+	
+	protected static String getStringOrNull(Map<String, Object> map, String propName) {
+		Object value = map.get(propName);
+		if(value == null) {
+			return null;
+		}
+		return validateType(value, String.class, propName);
+	}
+	
+	protected static int getInt(Map<String, Object> map, String propName) {
+		Object object = map.get(propName);
+		Integer number = validateType(object, Integer.class, propName);
+		return number.intValue();
+	}
+	
+	protected static boolean getFlag(Map<String, Object> map, String propName) {
+		Object value = map.get(propName);
+		if(value == null) 
+			return false;
+		return validateType(value, Boolean.class, propName);
+	}
+	
+	protected static Path getPath(Map<String, Object> map, String propName) {
+		String pathString = getString(map, propName);
+		Path path = MiscUtil.createPathOrNull(pathString);
+		if(path == null) {
+			throw new GenieCommandException("Invalid path: " + pathString);
+		}
+		return path;
 	}
 	
 }
