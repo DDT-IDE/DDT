@@ -39,24 +39,10 @@ import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class DToolServer {
 	
-	public class DToolTaskAgent extends ExecutorTaskAgent {
-		public DToolTaskAgent(String name) {
-			super(name);
-		}
-		
-		@Override
-		protected void handleUnexpectedException(Throwable throwable) {
-			logError("Unhandled exception in dub agent thread.", throwable);
-		}
-	}
-	
-	/* ----------------- ----------------- */
-	
 	protected final SemanticManager semanticManager = new SemanticManager(this);
 	
-	
 	public DToolServer() {
-		logMessage("DTool started");
+		logMessage(" ------ DTool engine started ------ ");
 	}
 	
 	public SemanticManager getSemanticManager() {
@@ -67,22 +53,25 @@ public class DToolServer {
 		semanticManager.shutdown();
 	}
 	
-	protected void logMessage(String message) {
+	public void logMessage(String message) {
 		System.out.println("> " + message);
 	}
 	
-	protected final void logError(String message) {
+	public final void logError(String message) {
 		logError(message, null);
 	}
-	
-	protected void logError(String message, Throwable throwable) {
-		System.err.println(">> " + message);
+	public void logError(String message, Throwable throwable) {
+		System.out.println("!! " + message);
 		if(throwable != null) {
-			System.err.println(throwable);
+			System.out.println(throwable);
 		}
 	}
 	
-	/* -----------------  ----------------- */
+	public void handleInternalError(Throwable throwable) {
+		logError("!!!! INTERNAL ERRROR: ", throwable);
+		throwable.printStackTrace(System.err);
+	}
+	
 	
 	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
 		return getSemanticManager().getUpdatedResolvedModule(filePath);
@@ -90,13 +79,30 @@ public class DToolServer {
 	
 	/* -----------------  ----------------- */
 	
+	public class DToolTaskAgent extends ExecutorTaskAgent {
+		public DToolTaskAgent(String name) {
+			super(name);
+		}
+		
+		@Override
+		protected void handleUnexpectedException(Throwable throwable) {
+			handleInternalError(throwable);
+		}
+	}
+	
+	/* ----------------- Operations ----------------- */
+	
 	public static final String FIND_DEF_PickedElementAlreadyADefinition = 
 		"Element next to cursor is already a definition, not a reference.";
 	public static final String FIND_DEF_NoReferenceFoundAtCursor = 
 		"No reference found next to cursor.";
-	public static final String FIND_DEF_MISSING_REFERENCE_AT_CURSOR = FIND_DEF_NoReferenceFoundAtCursor;
+	public static final String FIND_DEF_MISSING_REFERENCE_AT_CURSOR = 
+		FIND_DEF_NoReferenceFoundAtCursor;
 	public static final String FIND_DEF_NoNamedReferenceAtCursor = 
 		"No named reference found next to cursor.";
+	public static final String FIND_DEF_ReferenceResolveFailed = 
+			"Definition not found for reference: ";
+	
 	
 	public FindDefinitionResult doFindDefinition(Path filePath, final int offset) {
 		if(filePath == null) {
@@ -146,10 +152,7 @@ public class DToolServer {
 		return refPickHelper.switchOnPickedNode(node);
 	}
 	
-	public static final String FIND_DEF_ReferenceResolveFailed = 
-			"Definition not found for reference: ";
-	
-	public FindDefinitionResult doFindDefinitionForRef(Reference ref, ResolvedModule resolvedModule) {
+	protected FindDefinitionResult doFindDefinitionForRef(Reference ref, ResolvedModule resolvedModule) {
 		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		
@@ -167,10 +170,10 @@ public class DToolServer {
 			}
 			
 			results.add(new FindDefinitionResultEntry(
-				compilationUnitPath,
-				sourceRange, 
 				namedElement.getExtendedName(),
-				namedElement.isLanguageIntrinsic()));
+				namedElement.isLanguageIntrinsic(), 
+				compilationUnitPath,
+				sourceRange));
 		}
 		
 		return new FindDefinitionResult(results);

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.genie;
 
-import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.BufferedReader;
@@ -22,23 +22,47 @@ import java.net.Socket;
 import melnorme.utilbox.misc.StringUtil;
 
 import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.MalformedJsonException;
 
+import dtool.engine.DToolServer;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
 
 public class GenieServer extends AbstractSocketServer {
 	
+	protected final DToolServer dtoolServer;
+	
 	public static final String ENGINE_NAME = "D Tool Genie";
 	public static final String ENGINE_VERSION = "0.1.0";
 	public static final String ENGINE_PROTOCOL_VERSION = "0.1";
 	
-	public GenieServer(int portNumber) throws IOException {
+	public GenieServer(DToolServer dtoolServer, int portNumber) throws IOException {
 		super(portNumber);
+		this.dtoolServer = assertNotNull(dtoolServer);
+		
+		dtoolServer.logMessage(" ------ Started Genie Server ------ ");
+		logMessage("Listening on port: " + this.portNumber);
+	}
+	
+	public DToolServer getDToolServer() {
+		return dtoolServer;
 	}
 	
 	@Override
 	public void logMessage(String message) {
-		super.logMessage("Genie Server:: " + message);
+		dtoolServer.logMessage("# GenieServer: " + message);
+	}
+	@Override
+	public void logError(String message, Throwable throwable) {
+		dtoolServer.logError("# GenieServer: " + message, throwable);
+	}
+	@Override
+	public void handleInternalError(Throwable throwable) {
+		dtoolServer.handleInternalError(throwable);
+	}
+	
+	public void logProtocolMessageError(Throwable throwable) {
+		logError("Protocol message error: ", throwable);
 	}
 	
 	@Override
@@ -60,7 +84,7 @@ public class GenieServer extends AbstractSocketServer {
 		}
 		
 		@Override
-		protected void doHandleConnectionStream() throws IOException {
+		protected void handleConnectionStream() throws IOException {
 			try(
 				BufferedReader serverInput = new BufferedReader(
 					new InputStreamReader(clientSocket.getInputStream(), StringUtil.UTF8)); 
@@ -70,11 +94,16 @@ public class GenieServer extends AbstractSocketServer {
 				JsonWriterExt jsonWriter = new JsonWriterExt(serverResponse);
 			) {
 				
-				jsonParser.setLenient(true);
-				jsonWriter.setLenient(true);
-				
-				while(!jsonParser.isEOF()) {
-					processJsonMessage(jsonParser, jsonWriter);
+				try {
+					jsonParser.setLenient(true);
+					jsonWriter.setLenient(true);
+					
+					while(!jsonParser.isEOF()) {
+						processJsonMessage(jsonParser, jsonWriter);
+					}
+				} catch (MalformedJsonException jsonException) {
+					logProtocolMessageError(jsonException);
+					return;
 				}
 			}
 		}
@@ -82,14 +111,15 @@ public class GenieServer extends AbstractSocketServer {
 	}
 	
 	protected final JsonCommandHandler[] commandHandlers = array(
-		new AboutCommandHandler()
+		new AboutCommandHandler(this),
+		new FindDefinitionCommandHandler(this)
 	);
 	
 	protected void processJsonMessage(JsonReaderExt jsonParser, JsonWriterExt jsonWriter) throws IOException {
 		jsonParser.consumeExpected(JsonToken.BEGIN_OBJECT);
 		try {
 			
-			String commandName = jsonParser.consumeExpectedName();
+			String commandName = jsonParser.consumeExpectedPropName();
 			
 			for (JsonCommandHandler commandHandler : commandHandlers) {
 				if(commandHandler.canHandle(commandName)) {
@@ -98,12 +128,12 @@ public class GenieServer extends AbstractSocketServer {
 				}
 			}
 			
-			new JsonCommandHandler(commandName) {
+			new JsonCommandHandler(commandName, this) {
 				@Override
 				protected void writeResponseJsonContents() throws IOException {
 					String msg = "Unknown command: " + commandName;
+					logProtocolMessageError(validationError(msg));
 					jsonWriter.writeProperty("error", msg);
-					logException(msg, new Exception(msg));
 				};
 			}.processCommand(jsonParser, jsonWriter);
 			
@@ -113,49 +143,19 @@ public class GenieServer extends AbstractSocketServer {
 		
 	}
 	
-	public static abstract class JsonCommandHandler {
+	@SuppressWarnings("serial")
+	public static class GenieCommandException extends Exception {
 		
-		protected final String commandName;
-		
-		public JsonCommandHandler(String commandName) {
-			this.commandName = commandName;
-		}
-		
-		public boolean canHandle(String requestName) {
-			return areEqual(commandName, requestName);
-		}
-		
-		protected JsonReaderExt jsonParser;
-		protected JsonWriterExt jsonWriter;
-		
-		public void processCommand(JsonReaderExt jsonParser, JsonWriterExt jsonWriter) throws IOException {
-			this.jsonParser = jsonParser;
-			this.jsonWriter = jsonWriter;
-			
-			parseCommandInput();
-			processCommandResponse();
-		}
-		
-		protected void processCommandResponse() throws IOException {
-			jsonWriter.beginObject();
-			jsonWriter.writeProperty("command", commandName);
-			writeResponseJsonContents();
-			jsonWriter.endObject();
-			jsonWriter.flush();
-		};
-		
-		protected abstract void writeResponseJsonContents() throws IOException;
-		
-		protected void parseCommandInput() throws IOException {
-			jsonParser.skipValue();
+		public GenieCommandException(String message) {
+			super(message);
 		}
 		
 	}
 	
 	public static class AboutCommandHandler extends JsonCommandHandler {
 		
-		public AboutCommandHandler() {
-			super("about");
+		public AboutCommandHandler(GenieServer genieServer) {
+			super("about", genieServer);
 		}
 		
 		@Override

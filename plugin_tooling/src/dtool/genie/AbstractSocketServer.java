@@ -39,24 +39,15 @@ public abstract class AbstractSocketServer {
 	public AbstractSocketServer(int portNumber) throws IOException {
 		this.serverSocket = new ServerSocket(portNumber);
 		this.portNumber = serverSocket.getLocalPort();
-		
-		logMessage("Started server on port: " + this.portNumber);
 	}
 	
 	public int getServerPortNumber() {
 		return portNumber;
 	}
 	
-	public void logMessage(String message) {
-		System.out.println(message);
-		System.out.flush();
-	}
-	
-	public void logException(String message, Throwable exception) {
-		logMessage(">> " + message);
-		exception.printStackTrace(System.out);
-		System.out.flush();
-	}
+	public abstract void logMessage(String message);
+	public abstract void logError(String message, Throwable throwable);
+	public abstract void handleInternalError(Throwable throwable);
 	
 	public void runServer() {
 		try {
@@ -68,7 +59,7 @@ public abstract class AbstractSocketServer {
 		} catch (SocketException se) {
 			assertTrue(serverSocket.isClosed());
 		} catch (IOException ioe) {
-			logException("Unexpected exception during socket accept: " , ioe);
+			logError("Unexpected exception during socket accept: " , ioe);
 		} finally {
 			closeServerSocket();
 			logMessage("Server socket closed.");
@@ -80,7 +71,7 @@ public abstract class AbstractSocketServer {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
-			logException("Error closing socket: ", e);
+			logError("Error trying to close socket: ", e);
 		}
 	}
 	
@@ -110,7 +101,7 @@ public abstract class AbstractSocketServer {
 		
 		@Override
 		protected void handleUncaughtException(Throwable e) {
-			logException("Internal error (runtime exception) in connection handler: ", e);
+			handleInternalError(e);
 			assertFail();
 		}
 		
@@ -121,21 +112,21 @@ public abstract class AbstractSocketServer {
 		
 		public void handleConnection() {
 			try {
-				doHandleConnectionStream();
+				handleConnectionStream();
 			} catch (IOException e) {
-				logException("IO error in connection handler: ", e);
+				logError("IO error during connection handling: ", e);
 			} finally {
+				logMessage("Closing client connection : " + clientSocket.getRemoteSocketAddress().toString());
 				try {
-					logMessage("Closing client connection : " + clientSocket.getRemoteSocketAddress().toString());
 					clientSocket.close();
 				} catch (IOException e) {
-					logException("Error closing client socket: ", e);
+					logError("Error trying to close client socket: ", e);
 				}
 				connectionsSemaphore.release();
 			}
 		}
 		
-		protected abstract void doHandleConnectionStream() throws IOException;
+		protected abstract void handleConnectionStream() throws IOException;
 		
 	}
 	

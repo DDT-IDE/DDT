@@ -37,19 +37,19 @@ public class FindDefinitionResult {
 	
 	public static class FindDefinitionResultEntry {
 		
-		public final SourceRange sourceRange;
 		public final String extendedName;
 		public final boolean isLanguageIntrinsic;
-		public final Path compilationUnitPath;
+		public final Path modulePath;
+		public final SourceRange sourceRange;
 		
-		public FindDefinitionResultEntry(Path compilationUnitPath, SourceRange sourceRange, String extendedName, 
-				boolean isLanguageIntrinsic) {
-			this.sourceRange = sourceRange;
+		public FindDefinitionResultEntry(String extendedName, boolean isLanguageIntrinsic, Path compilationUnitPath, 
+				SourceRange sourceRange) {
 			this.extendedName = extendedName;
 			this.isLanguageIntrinsic = isLanguageIntrinsic;
-			this.compilationUnitPath = compilationUnitPath;
+			this.modulePath = compilationUnitPath;
+			this.sourceRange = sourceRange;
 		}
-
+		
 		public boolean isLanguageIntrinsic() {
 			return isLanguageIntrinsic;
 		}

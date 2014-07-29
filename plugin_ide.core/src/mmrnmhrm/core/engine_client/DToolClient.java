@@ -63,7 +63,7 @@ public class DToolClient {
 	public DToolClient() {
 		dtoolServer = new DToolServer() {
 			@Override
-			protected void logError(String message, Throwable throwable) {
+			public void logError(String message, Throwable throwable) {
 				super.logError(message, throwable);
 				// Note: the error logging is important not just logging in normal usage, 
 				// but also for tests detecting errors. It's not the best way, but works for now.

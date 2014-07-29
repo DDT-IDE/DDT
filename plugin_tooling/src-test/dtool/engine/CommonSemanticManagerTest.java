@@ -88,7 +88,7 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		}
 		
 		@Override
-		protected void logError(String message, Throwable throwable) {
+		public void logError(String message, Throwable throwable) {
 			assertFail();
 		}
 	}

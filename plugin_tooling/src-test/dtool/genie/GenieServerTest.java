@@ -10,15 +10,22 @@
  *******************************************************************************/
 package dtool.genie;
 
+import static dtool.genie.JsonCommandHandler.getBoolean;
+import static dtool.genie.JsonCommandHandler.getInt;
+import static dtool.genie.JsonCommandHandler.getPath;
+import static dtool.genie.JsonCommandHandler.getString;
+import static dtool.genie.JsonCommandHandler.getStringOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.blindCast;
+import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import static melnorme.utilbox.misc.StringUtil.UTF8;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
 import java.nio.file.Path;
@@ -31,9 +38,12 @@ import org.junit.After;
 import org.junit.Test;
 
 import dtool.ast.SourceRange;
+import dtool.engine.DToolServer;
 import dtool.engine.operations.FindDefinitionOperation_Test;
+import dtool.genie.GenieServer.GenieCommandException;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
+import dtool.util.JsonReaderExt;
 
 public class GenieServerTest extends JsonWriterTestUtils {
 	
@@ -85,16 +95,18 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	
 	public static class TestsGenieServer extends GenieServer {
 		
+		public static final DToolServer DTOOL_SERVER = new DToolServer();
+		
 		protected final ArrayList<Throwable> exceptions = new ArrayList<>();
 		
 		public TestsGenieServer(int portNumber) throws IOException {
-			super(portNumber);
+			super(DTOOL_SERVER, portNumber);
 		}
 		
 		@Override
-		public void logException(String message, Throwable e) {
-			super.logException(message, e);
-			exceptions.add(e);
+		public void logError(String message, Throwable throwable) {
+			super.logError(message, throwable);
+			exceptions.add(throwable);
 		}
 		
 		protected void shutdownAndAwait() throws InterruptedException {
@@ -161,7 +173,12 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 	}
 	
+	protected HashMap<String, Object> sendCommand(Map<String, Object> jsObject) {
+		return sendCommand(jsWriteObject(jsObject));
+	}
 	protected HashMap<String, Object> sendCommand(String jsDocument) {
+		logClientMessage(">> Sending command message:\n" + jsDocument);
+		
 		try {
 			serverInput.write(jsDocument);
 			serverInput.flush();
@@ -171,13 +188,18 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 	}
 	
+	public static HashMap<String,Object> readObject(Reader source) throws IOException {
+		JsonReaderExt jsonParser = new JsonReaderExt(source);
+		return JsonReaderExt.readJsonObject(jsonParser);
+	}
+	
 	public void testGenieServer____________() {
 		prepareGenieServer();
 		prepareServerConnection();
 		
 		HashMap<String, Object> response;
 		
-		response = sendCommand(jsObject(jsEntry("about", null)));
+		response = sendCommand(jsObject(entry("about", null)));
 		
 		assertAreEqual(response.get("engine"), GenieServer.ENGINE_NAME);
 		assertAreEqual(response.get("version"), GenieServer.ENGINE_VERSION);
@@ -185,7 +207,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		assertTrue(genieServer.exceptions.isEmpty());
 		
 		// Test invalid commands
-		testError(jsObject(jsEntry("invalid_command", null)), "unknown command");
+		testError(jsObject(entry("invalid_command", null)), "unknown command");
 		
 		// Test invalid message json
 		testMessageInvalidJson("{ }", "expected property name");
@@ -199,7 +221,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		prepareServerConnection();
 	}
 	
-	public void testError(String clientRequest, String expectedContains) {
+	public void testError(Map<String, Object> clientRequest, String expectedContains) {
 		assertTrue(socket.isClosed() == false);
 		
 		HashMap<String, Object> response = sendCommand(clientRequest);
@@ -252,14 +274,14 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 		@Override
 		protected void prepEngineServer() {
-			// Don't create server class
+			// Don't create DToolServer class
 		}
 		
 		@Override
-		protected FindDefinitionResult doOperation(Path filePath, int offset) {
-			response = sendCommand(jsObject(jsEntry("find_definition", jsObject(
-				jsEntry("filepath", filePath.toString()),
-				jsEntry("offset", offset)
+		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
+			response = sendCommand(jsObject(entry("find_definition", jsObject(
+				entry("filepath", filePath.toString()),
+				entry("offset", offset)
 				)))
 			);
 			
@@ -269,8 +291,9 @@ public class GenieServerTest extends JsonWriterTestUtils {
 			}
 			
 			List<?> jsonResults = blindCast(response.get("results"));
-			ArrayList<FindDefinitionResultEntry> results = new ArrayList<>(); 
-			for (Object jsonResultEntry : jsonResults) {
+			ArrayList<FindDefinitionResultEntry> results = new ArrayList<>();
+			
+			for (Object jsonResultEntry : nullToEmpty(jsonResults)) {
 				results.add(findDefResult(jsonResultEntry));
 			}
 			
@@ -279,15 +302,15 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 	}
 	
-	protected FindDefinitionResultEntry findDefResult(Object object) {
+	protected FindDefinitionResultEntry findDefResult(Object object) throws GenieCommandException {
 		Map<String, Object> resultEntry = blindCast(object);
 		
 		SourceRange sr = new SourceRange(getInt(resultEntry, "offset"), getInt(resultEntry, "length"));
 		return new FindDefinitionResultEntry(
+			getString(resultEntry, "extendedName"), 
+			getBoolean(resultEntry, "isIntrinsic"), 
 			getPath(resultEntry, "modulePath"), 
-			sr, 
-			getString(resultEntry, "extentedName"), 
-			getFlag(resultEntry, "isLanguageIntrinsic"));
+			sr);
 	}
 	
 }

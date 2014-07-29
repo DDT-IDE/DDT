@@ -33,7 +33,7 @@ public class FindDefinitionOperation_Test extends Resolver2Tests {
 		dtoolEngine = new Tests_DToolServer();
 	}
 	
-	protected FindDefinitionResult doOperation(Path filePath, int offset) {
+	protected FindDefinitionResult doOperation(Path filePath, int offset) throws Exception {
 		return dtoolEngine.doFindDefinition(filePath, offset);
 	}
 	
@@ -44,26 +44,28 @@ public class FindDefinitionOperation_Test extends Resolver2Tests {
 		
 		testFindDefinition(BASIC_FOO_FilePath, BASIC_FOO_Contents.indexOf("/*defA_REF1*/"), 
 			new FindDefinitionResultEntry(
-				BASIC_FOO_FilePath, new SourceRange(BASIC_FOO_Contents.indexOf("defA/*DEF*/"), 4), "defA", false)
+				"defA", false, BASIC_FOO_FilePath, new SourceRange(BASIC_FOO_Contents.indexOf("defA/*DEF*/"), 4))
 		);
 		
 		testFindDefinition(BASIC_FOO_FilePath, BASIC_FOO_Contents.indexOf("bar/*MARKER*/"), 
 			new FindDefinitionResultEntry(
-				BUNDLE_FOO__SRC_FOLDER.resolve("basic_pack/bar.d"), new SourceRange(0, 0), "bar", false)
+				"bar", false, BUNDLE_FOO__SRC_FOLDER.resolve("basic_pack/bar.d"), new SourceRange(0, 0))
 		);
 	}
 	
-	protected void testFindDefinition(Path modulePath, int offset, 
-			FindDefinitionResultEntry... expectedResults) {
+	protected void testFindDefinition(Path modulePath, int offset, FindDefinitionResultEntry... expectedResults) 
+			throws Exception {
 		FindDefinitionResult opResult = doOperation(modulePath, offset);
 		assertTrue(opResult.errorMessage == null);
+		
+		assertTrue(expectedResults.length == opResult.results.size());
 		
 		for (int i = 0; i < expectedResults.length; i++) {
 			FindDefinitionResultEntry expected = expectedResults[i];
 			FindDefinitionResultEntry nameResult = opResult.results.get(i);
 			
 			assertAreEqual(nameResult.extendedName, expected.extendedName);
-			assertAreEqual(nameResult.compilationUnitPath, expected.compilationUnitPath);
+			assertAreEqual(nameResult.modulePath, expected.modulePath);
 			assertAreEqual(nameResult.sourceRange, expected.sourceRange);
 			assertAreEqual(nameResult.isLanguageIntrinsic, expected.isLanguageIntrinsic);
 		}

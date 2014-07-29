@@ -40,4 +40,14 @@ public class JsonWriterExt extends JsonWriter {
 		value(value);
 	}
 	
+	public void writeProperty(String name, int value) throws IOException {
+		name(name);
+		value(value);
+	}
+	
+	public void writeProperty(String name, boolean value) throws IOException {
+		name(name);
+		value(value);
+	}
+	
 }

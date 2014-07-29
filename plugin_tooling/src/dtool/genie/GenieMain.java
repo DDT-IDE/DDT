@@ -12,6 +12,8 @@ package dtool.genie;
 
 import java.io.IOException;
 
+import dtool.engine.DToolServer;
+
 
 public class GenieMain {
 	
@@ -24,8 +26,9 @@ public class GenieMain {
 			portNumber = Integer.parseInt(args[0]);
 		}
 		
+		DToolServer dtoolServer = new DToolServer();
 		try {
-			new GenieServer(portNumber).runServer();
+			new GenieServer(dtoolServer, portNumber).runServer();
 		} catch (IOException e) {
 			System.out.println("Error trying to listen for connection on port " + portNumber + ".");
 			System.out.println(e.getMessage());
