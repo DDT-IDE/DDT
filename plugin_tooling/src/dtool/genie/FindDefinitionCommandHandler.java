@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 
+import dtool.ast.SourceRange;
 import dtool.genie.GenieServer.GenieCommandException;
 import dtool.resolver.api.FindDefinitionResult;
 import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
@@ -61,9 +62,14 @@ public class FindDefinitionCommandHandler extends JsonCommandHandler {
 		jsonWriter.beginObject();
 		jsonWriter.writeProperty("extendedName", result.extendedName);
 		jsonWriter.writeProperty("isIntrinsic", result.isLanguageIntrinsic);
-		jsonWriter.writeProperty("modulePath", result.modulePath.toString());
-		jsonWriter.writeProperty("offset", result.sourceRange.getOffset());
-		jsonWriter.writeProperty("length", result.sourceRange.getLength());
+		if(result.modulePath != null) {
+			jsonWriter.writeProperty("modulePath", result.modulePath.toString());
+		}
+		SourceRange sourceRange = result.sourceRange;
+		if(sourceRange != null) {
+			jsonWriter.writeProperty("offset", sourceRange.getOffset());
+			jsonWriter.writeProperty("length", sourceRange.getLength());
+		}
 		jsonWriter.endObject();
 	}
 	

@@ -109,15 +109,28 @@ public abstract class JsonCommandHandler {
 	protected static int getInt(Map<String, Object> map, String propName) throws GenieCommandException {
 		return getValue(map, propName, Integer.class, false);
 	}
+	protected static Integer getIntegerOrNull(Map<String, Object> map, String propName) throws GenieCommandException {
+		return getValue(map, propName, Integer.class, true);
+	}
 	
 	protected static boolean getBoolean(Map<String, Object> map, String propName) throws GenieCommandException {
 		return getValue(map, propName, Boolean.class, false);
 	}
 	
 	protected static Path getPath(Map<String, Object> map, String propName) throws GenieCommandException {
-		String pathString = getString(map, propName);
-		Path path = MiscUtil.createPathOrNull(pathString);
+		return getPath(map, propName, false);
+	}
+	protected static Path getPathOrNull(Map<String, Object> map, String propName) throws GenieCommandException {
+		return getPath(map, propName, true);
+	}
+	
+	protected static Path getPath(Map<String, Object> map, String propName, boolean allowNull) 
+			throws GenieCommandException {
+		String pathString = getValue(map, propName, String.class, allowNull);
+		Path path = pathString == null ? null : MiscUtil.createPathOrNull(pathString);
 		if(path == null) {
+			if(allowNull) 
+				return null;
 			throw validationError("Invalid path: " + pathString);
 		}
 		return path;

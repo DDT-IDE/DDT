@@ -12,7 +12,8 @@ package dtool.genie;
 
 import static dtool.genie.JsonCommandHandler.getBoolean;
 import static dtool.genie.JsonCommandHandler.getInt;
-import static dtool.genie.JsonCommandHandler.getPath;
+import static dtool.genie.JsonCommandHandler.getIntegerOrNull;
+import static dtool.genie.JsonCommandHandler.getPathOrNull;
 import static dtool.genie.JsonCommandHandler.getString;
 import static dtool.genie.JsonCommandHandler.getStringOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -305,11 +306,17 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	protected FindDefinitionResultEntry findDefResult(Object object) throws GenieCommandException {
 		Map<String, Object> resultEntry = blindCast(object);
 		
-		SourceRange sr = new SourceRange(getInt(resultEntry, "offset"), getInt(resultEntry, "length"));
+		SourceRange sr = null;
+		
+		Integer offset = getIntegerOrNull(resultEntry, "offset");
+		if(offset != null) {
+			sr = new SourceRange(offset, getInt(resultEntry, "length"));
+		}
+		
 		return new FindDefinitionResultEntry(
 			getString(resultEntry, "extendedName"), 
 			getBoolean(resultEntry, "isIntrinsic"), 
-			getPath(resultEntry, "modulePath"), 
+			getPathOrNull(resultEntry, "modulePath"), 
 			sr);
 	}
 	

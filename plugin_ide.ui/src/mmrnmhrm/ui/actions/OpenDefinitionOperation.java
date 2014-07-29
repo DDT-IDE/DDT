@@ -86,7 +86,8 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 		FindDefinitionResultEntry fdResultEntry = results.get(0);
 		
 		if(fdResultEntry == null || fdResultEntry.isLanguageIntrinsic()) {
-			dialogInfo("Cannot open editor, element \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
+			dialogInfo("Cannot open definition, "
+					+ "symbol \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
 			return;
 		}
 		SourceRange sourceRange = fdResultEntry.sourceRange;

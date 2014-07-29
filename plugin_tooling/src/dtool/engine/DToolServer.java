@@ -163,10 +163,17 @@ public class DToolServer {
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
 		for (INamedElement namedElement : defElements) {
 			final DefUnit defUnit = namedElement.resolveDefUnit();
-			Path compilationUnitPath = defUnit.getModuleNode().compilationUnitPath;
-			SourceRange sourceRange = defUnit.defname.getSourceRangeOrNull();
-			if(defUnit.getArcheType() == EArcheType.Module && sourceRange == null) {
-				sourceRange = new SourceRange(0, 0);
+			
+			Path compilationUnitPath = null;
+			SourceRange sourceRange = null;
+			
+			if(defUnit != null) { // This can happen with intrinsic elements 
+				
+				compilationUnitPath = defUnit.getModuleNode().compilationUnitPath;
+				sourceRange = defUnit.defname.getSourceRangeOrNull();
+				if(defUnit.getArcheType() == EArcheType.Module && sourceRange == null) {
+					sourceRange = new SourceRange(0, 0);
+				}
 			}
 			
 			results.add(new FindDefinitionResultEntry(

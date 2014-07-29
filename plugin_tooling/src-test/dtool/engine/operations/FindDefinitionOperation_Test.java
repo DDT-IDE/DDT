@@ -47,10 +47,18 @@ public class FindDefinitionOperation_Test extends Resolver2Tests {
 				"defA", false, BASIC_FOO_FilePath, new SourceRange(BASIC_FOO_Contents.indexOf("defA/*DEF*/"), 4))
 		);
 		
+		// Test implicit source module
 		testFindDefinition(BASIC_FOO_FilePath, BASIC_FOO_Contents.indexOf("bar/*MARKER*/"), 
 			new FindDefinitionResultEntry(
 				"bar", false, BUNDLE_FOO__SRC_FOLDER.resolve("basic_pack/bar.d"), new SourceRange(0, 0))
 		);
+		
+		// Test intrinsic
+		testFindDefinition(BASIC_FOO_FilePath, BASIC_FOO_Contents.indexOf("int/*int_ref*/"), 
+			new FindDefinitionResultEntry(
+				"int", true, null, null)
+		);
+		
 	}
 	
 	protected void testFindDefinition(Path modulePath, int offset, FindDefinitionResultEntry... expectedResults) 

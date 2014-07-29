@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.resolver.api;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class FindDefinitionResult {
 		
 		public FindDefinitionResultEntry(String extendedName, boolean isLanguageIntrinsic, Path compilationUnitPath, 
 				SourceRange sourceRange) {
-			this.extendedName = extendedName;
+			this.extendedName = assertNotNull(extendedName);
 			this.isLanguageIntrinsic = isLanguageIntrinsic;
 			this.modulePath = compilationUnitPath;
 			this.sourceRange = sourceRange;
