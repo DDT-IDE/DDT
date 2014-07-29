@@ -10,28 +10,90 @@
  *******************************************************************************/
 package dtool.genie;
 
-import java.io.IOException;
+import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.misc.StringUtil.newSpaceFilledString;
 
-import dtool.engine.DToolServer;
+import java.io.PrintStream;
+
+import dtool.genie.cmdline.StartServerOperation;
 
 
 public class GenieMain {
 	
-	public static void main	(String[] args) {
-		System.out.println("D Genie Tool - 0.0.1");
+	public static final String CMDLINE_PROGRAM_NAME = "genie";
+	
+	public static final AbstractCmdlineOperation[] commands = array(
+		new StartServerOperation(),
+		new CmdlineHelpOperation()
+	);
+	
+	public static void main(String[] args) {
 		
-		int portNumber = 2501;
+		String commandString = args.length == 0 ? "help" : args[0];
 		
-		if (args.length > 1) {
-			portNumber = Integer.parseInt(args[0]);
+		for (AbstractCmdlineOperation command : commands) {
+			if(command.tryHandling(commandString, args)) {
+				return;
+			}
 		}
 		
-		DToolServer dtoolServer = new DToolServer();
-		try {
-			new GenieServer(dtoolServer, portNumber).runServer();
-		} catch (IOException e) {
-			System.out.println("Error trying to listen for connection on port " + portNumber + ".");
-			System.out.println(e.getMessage());
+		System.err.println("Unknown command: " + commandString);
+		System.exit(1);
+	}
+	
+	public static abstract class AbstractCmdlineOperation {
+		
+		protected final String commandName;
+		protected String[] args;
+		
+		public AbstractCmdlineOperation(String commandName) {
+			this.commandName = commandName;
+		}
+		
+		public boolean tryHandling(String commandString, String[] args) {
+			if(!commandString.equals(commandName)) {
+				return false;
+			}
+			this.args = args;
+			handle();
+			return true;
+		}
+		
+		protected abstract void handle();
+		
+		public void printOneLineSummary(PrintStream out) {
+			out.print("   " + commandName + newSpaceFilledString(10 - commandName.length()) + " - ");
+			out.println(getOneLineSummary());
+		}
+		
+		public abstract String getOneLineSummary();
+		
+	}
+	
+	public static class CmdlineHelpOperation extends AbstractCmdlineOperation {
+		
+		public CmdlineHelpOperation() {
+			super("help");
+		}
+		
+		@Override
+		public void handle() {
+			System.out.println(GenieServer.ENGINE_NAME + " - " + GenieServer.ENGINE_VERSION);
+			System.out.println();
+			System.out.println("usage: " + CMDLINE_PROGRAM_NAME + " <command> [<args>]");
+			System.out.println();
+			System.out.println("Available commands:");
+			
+			for (AbstractCmdlineOperation command : commands) {
+				command.printOneLineSummary(System.out);
+			}
+			
+			System.out.println();
+		}
+		
+		@Override
+		public String getOneLineSummary() {
+			return "Display help.";
 		}
 		
 	}
