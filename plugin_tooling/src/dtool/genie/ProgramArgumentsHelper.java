@@ -32,20 +32,25 @@ public abstract class ProgramArgumentsHelper {
 		return parsedArgs.remove(argName);
 	}
 	
-	protected String retrieveFirstUnparsedArgument() {
+	protected String retrieveFirstUnparsedArgument(boolean mustBeLastArgument) {
 		Iterator<String> iterator = parsedArgs.iterator();
+		
+		String firstRemainingArgument = null;
 		if(iterator.hasNext()) {
-			String next = iterator.next();
+			firstRemainingArgument = iterator.next();
 			iterator.remove();
-			return next;
 		}
-		return null;
+		
+		if(mustBeLastArgument) {
+			validateNoMoreUnprocessedArguments();
+		}
+		return firstRemainingArgument;
 	}
 	
-	protected void validateNoMoreArguments() {
-		String firstUnparsedArgument = retrieveFirstUnparsedArgument();
-		if(firstUnparsedArgument != null) {
-			handleArgumentsError("Unknown argument: " + firstUnparsedArgument);
+	protected void validateNoMoreUnprocessedArguments() {
+		String firstRemainingArgument = retrieveFirstUnparsedArgument(false);
+		if(firstRemainingArgument != null) {
+			handleArgumentsError("Unknown argument: " + firstRemainingArgument);
 		}
 	}
 	

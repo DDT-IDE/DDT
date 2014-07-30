@@ -11,6 +11,7 @@
 package dtool.genie;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import static melnorme.utilbox.misc.StringUtil.newSpaceFilledString;
 
@@ -54,15 +55,39 @@ public class GenieMain {
 			this.commandName = commandName;
 		}
 		
+		public String getCommandName() {
+			return commandName;
+		}
+		
+		public void printOneLineSummary(PrintStream out) {
+			out.print("   " + commandName + newSpaceFilledString(10 - commandName.length()) + " - ");
+			out.println(getOneLineSummary());
+		}
+		
+		public abstract String getOneLineSummary();
+		
+		public abstract void printCommandHelp(PrintStream out);
+		
+		protected String helpUsageIntro() {
+			return "Usage: " + CMDLINE_PROGRAM_NAME + " " + getCommandName() + " ";
+		}
+		
+		/* -----------------  ----------------- */
+		
 		public boolean tryHandling(String commandString, String[] args) {
 			if(!commandString.equals(commandName)) {
 				return false;
 			}
 			this.rawArgs = args;
 			parseArgs(args);
+			processArgs();
+			validateNoMoreUnprocessedArguments();
+			
 			handle();
 			return true;
 		}
+		
+		protected abstract void processArgs();
 		
 		@Override
 		protected RuntimeException handleArgumentsError(String message) {
@@ -80,13 +105,6 @@ public class GenieMain {
 		
 		protected abstract void handle();
 		
-		public void printOneLineSummary(PrintStream out) {
-			out.print("   " + commandName + newSpaceFilledString(10 - commandName.length()) + " - ");
-			out.println(getOneLineSummary());
-		}
-		
-		public abstract String getOneLineSummary();
-		
 	}
 	
 	public static class CmdlineHelpOperation extends AbstractCmdlineOperation {
@@ -96,7 +114,40 @@ public class GenieMain {
 		}
 		
 		@Override
+		public String getOneLineSummary() {
+			return "Display help.";
+		}
+		
+		@Override
+		public void printCommandHelp(PrintStream out) {
+			out.println(helpUsageIntro() + "[<command>]");
+			out.println();
+			out.println("Display full help for given <command>.");
+		}
+		
+		protected String commandToHelp;
+		
+		@Override
+		protected void processArgs() {
+			commandToHelp = retrieveFirstUnparsedArgument(true);
+		}
+		
+		@Override
 		public void handle() {
+			if(commandToHelp == null) {
+				printGeneralHelp();
+				return;
+			}
+			
+			for (AbstractCmdlineOperation command : commands) {
+				if(areEqual(command.commandName, commandToHelp)) {
+					command.printCommandHelp(System.out);
+					return;
+				}
+			}
+		}
+		
+		protected void printGeneralHelp() {
 			System.out.println(GenieServer.ENGINE_NAME + " - " + GenieServer.ENGINE_VERSION);
 			System.out.println();
 			System.out.println("usage: " + CMDLINE_PROGRAM_NAME + " <command> [<args>]");
@@ -108,11 +159,6 @@ public class GenieMain {
 			}
 			
 			System.out.println();
-		}
-		
-		@Override
-		public String getOneLineSummary() {
-			return "Display help.";
 		}
 		
 	}

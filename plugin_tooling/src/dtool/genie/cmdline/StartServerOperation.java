@@ -12,6 +12,7 @@ package dtool.genie.cmdline;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -33,12 +34,29 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 	}
 	
 	@Override
+	public void printCommandHelp(PrintStream out) {
+		out.println(helpUsageIntro() + "[<port>] [force]");
+		out.println();
+		out.println("Start the Genie server, listening on given <port>. This will fail if an ");
+		out.println("already running Genie server is detected, unless the 'force' option is given.");
+		out.println();
+		out.println("When the Genie server starts, a file is created in $HOME/" + SENTINEL_FILE_NAME); 
+		out.println("with the port number of the started server. This file is deleted when the server");
+		out.println("terminates, and thus can be used to determine if a Genie server is running.");
+	}
+	
+	protected boolean force;
+	protected int requestedPortNumber;
+	
+	@Override
+	protected void processArgs() {
+		force = getFlag("force");
+		String portNumberArg = retrieveFirstUnparsedArgument(true);
+		requestedPortNumber = portNumberArg == null ? 0 : validatePositiveInt(portNumberArg);
+	}
+	
+	@Override
 	protected void handle() {
-		boolean force = getFlag("force");
-		String portNumberArg = retrieveFirstUnparsedArgument();
-		int requestedPortNumber = portNumberArg == null ? 0 : validatePositiveInt(portNumberArg);
-		validateNoMoreArguments();
-		
 		final File sentinelFile = new File(System.getProperty("user.home"), SENTINEL_FILE_NAME);
 		try {
 			boolean created = sentinelFile.createNewFile();
