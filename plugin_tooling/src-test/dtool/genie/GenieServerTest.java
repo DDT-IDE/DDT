@@ -18,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.Socket;
@@ -107,7 +106,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 		
 		protected void shutdownAndAwait() throws InterruptedException {
-			closeServerSocket();
+			shutdown();
 			awaitTerminationOfActiveConnectionHandlers();
 			terminationLatch.await();
 		}
@@ -136,9 +135,11 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	@After
 	public void cleanup() throws InterruptedException {
 		cleanClientConnection();
-		genieServer.shutdownAndAwait();
-		assertTrue(genieServer.serverSocket.isClosed());
-		assertTrue(genieServer.exceptions.isEmpty());
+		if(genieServer != null) {
+			genieServer.shutdownAndAwait();
+			assertTrue(genieServer.serverSocket.isClosed());
+			assertTrue(genieServer.exceptions.isEmpty());
+		}
 		genieServer = null;
 	}
 	
@@ -194,11 +195,6 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 	}
 	
-	public static HashMap<String,Object> readObject(Reader source) throws IOException {
-		JsonReaderExt jsonParser = new JsonReaderExt(source);
-		return JsonReaderExt.readJsonObject(jsonParser);
-	}
-	
 	protected HashMap<String, Object> response;
 	
 	
@@ -228,9 +224,13 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		prepareServerConnection();
 		
 		// Test shutdown server
-//		new ShutdownServerRequest().perform();
-//		prepareGenieServer();
-//		prepareServerConnection();
+		String responseString = new ShutdownServerRequest().performAndGetResponse();
+		HashMap<String, Object> responseObject = readJsonObject(responseString);
+		assertTrue(responseObject.containsKey("error") == false);
+		shutdownSocketOutput(socket);
+		genieServer.awaitTerminationOfActiveConnectionHandlers();
+		assertTrue(genieServer.serverSocket.isClosed());
+		assertTrue(!GenieServer.getSentinelFile().exists());
 	}
 	
 	public void testError(Map<String, Object> clientRequest, String expectedContains) {

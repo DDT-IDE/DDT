@@ -15,6 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
@@ -24,9 +26,7 @@ import java.util.Map.Entry;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.tests.CommonTest;
-
-import com.google.gson.stream.JsonWriter;
-
+import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
 
 public class JsonWriterTestUtils extends CommonTest {
@@ -57,8 +57,6 @@ public class JsonWriterTestUtils extends CommonTest {
 		}
 		return sb.toString();
 	}
-	
-	/* -----------------  ----------------- */
 	
 	public static void jsWriteObject(Map<String, Object> map, StringWriter sb) throws IOException {
 		JsonWriterExt jsonWriter = new JsonWriterExt(sb);
@@ -91,14 +89,19 @@ public class JsonWriterTestUtils extends CommonTest {
 		}
 	}
 	
-	public static CharSequence jsWriteString(String value) {
-		StringWriter sw = new StringWriter();
+	/* ----------------- reading helpers ----------------- */
+	
+	public static HashMap<String,Object> readObject(Reader source) throws IOException {
+		JsonReaderExt jsonParser = new JsonReaderExt(source);
+		return JsonReaderExt.readJsonObject(jsonParser);
+	}
+	
+	public static HashMap<String, Object> readJsonObject(String source) {
 		try {
-			JsonWriter.stringValue(value, sw);
+			return new JsonReaderExt(new StringReader(source)).readJsonObject();
 		} catch (IOException e) {
-			throw assertFail();
+			throw assertUnreachable();
 		}
-		return sw.toString();
 	}
 	
 }

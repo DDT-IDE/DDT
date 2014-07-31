@@ -31,21 +31,19 @@ public class ShutdownServerRequest extends AbstractClientOperation {
 	
 	@Override
 	public void printCommandHelp(PrintStream out) {
-		out.println(helpUsageIntro() + "[<port>] [wait]");
+		out.println(helpUsageIntro() + "[<port>]");
 		out.println();
 		out.println("Requests a shutdown of the Genie server.");
 		out.println();
 		out.println("Will connect to the server on given <port>. If this parameter is ommited, will try to");
-		out.println("auto-detect which port the server is running, based on the " + SENTINEL_FILE_UIString);
+		out.println("auto-detect which port the server is running, based on the " + SENTINEL_FILE_UIString + "file");
 		out.println();
 	}
 	
 	protected int portNumber = -1;
-	protected boolean wait;
 	
 	@Override
 	protected void processArgs() {
-		wait = getFlag("wait");
 		super.processArgs();
 	}
 	
@@ -53,7 +51,6 @@ public class ShutdownServerRequest extends AbstractClientOperation {
 	protected void writeRequestObjectProperties(JsonWriterExt jsonWriter) throws IOException {
 		jsonWriter.name("shutdown");
 		jsonWriter.beginObject();
-		jsonWriter.writeProperty("wait", wait);
 		jsonWriter.endObject();
 	}
 	

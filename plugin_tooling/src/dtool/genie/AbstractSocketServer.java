@@ -78,6 +78,7 @@ public abstract class AbstractSocketServer {
 	
 	protected void closeServerSocket() {
 		try {
+			logMessage("Closing server socket.");
 			serverSocket.close();
 		} catch (IOException e) {
 			logError("Error trying to close socket: ", e);

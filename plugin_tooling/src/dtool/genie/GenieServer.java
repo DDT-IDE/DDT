@@ -35,6 +35,7 @@ import dtool.util.StatusException;
 public class GenieServer extends AbstractSocketServer {
 	
 	protected final DToolServer dtoolServer;
+	protected File sentinelFile;
 	
 	public static final String ENGINE_NAME = "D Tool Genie";
 	public static final String ENGINE_VERSION = "0.1.0";
@@ -51,13 +52,12 @@ public class GenieServer extends AbstractSocketServer {
 		dtoolServer.logMessage(" ------ Started Genie Server ------ ");
 		logMessage("Listening on port: " + this.portNumber);
 		
-		File sentinelFile = getSentinelFile();
+		this.sentinelFile = getSentinelFile();
 		try {
 			FileUtil.writeStringToFile(sentinelFile, getServerPortNumber()+"", StringUtil.UTF8);
 		} catch (IOException e) {
 			throw new StatusException("Error writing to sentinel file " + sentinelFile, e);
 		}
-		sentinelFile.deleteOnExit();
 	}
 	
 	public DToolServer getDToolServer() {
@@ -77,8 +77,25 @@ public class GenieServer extends AbstractSocketServer {
 		dtoolServer.handleInternalError(throwable);
 	}
 	
-	public void logProtocolMessageError(Throwable throwable) {
-		logError("Protocol message error: ", throwable);
+	@Override
+	public void runServer() {
+		try {
+			super.runServer();
+		} finally {
+			disposeSentinelFile();
+		}
+	}
+	
+	public void shutdown() {
+		closeServerSocket();
+		disposeSentinelFile(); // Note that some connection handlers can still be active
+	}
+	
+	protected void disposeSentinelFile() {
+		if(sentinelFile != null) {
+			sentinelFile.delete();
+			sentinelFile = null;
+		}
 	}
 	
 	@Override
@@ -126,10 +143,17 @@ public class GenieServer extends AbstractSocketServer {
 		
 	}
 	
-	protected final JsonCommandHandler[] commandHandlers = array(
-		new AboutCommandHandler(this),
-		new FindDefinitionCommandHandler(this)
-	);
+	public void logProtocolMessageError(Throwable throwable) {
+		logError("Protocol message error: ", throwable);
+	}
+	
+	public JsonCommandHandler[] getCommandHandlers() {
+		return array(
+			new AboutCommandHandler(this),
+			new ShudtownCommandHandler(this),
+			new FindDefinitionCommandHandler(this)
+		);
+	}
 	
 	protected void processJsonMessage(JsonReaderExt jsonParser, JsonWriterExt jsonWriter) throws IOException {
 		jsonParser.consumeExpected(JsonToken.BEGIN_OBJECT);
@@ -137,7 +161,7 @@ public class GenieServer extends AbstractSocketServer {
 			
 			String commandName = jsonParser.consumeExpectedPropName();
 			
-			for (JsonCommandHandler commandHandler : commandHandlers) {
+			for (JsonCommandHandler commandHandler : getCommandHandlers()) {
 				if(commandHandler.canHandle(commandName)) {
 					commandHandler.processCommand(jsonParser, jsonWriter);
 					return;
@@ -179,6 +203,24 @@ public class GenieServer extends AbstractSocketServer {
 			jsonWriter.writeProperty("engine", ENGINE_NAME);
 			jsonWriter.writeProperty("version", ENGINE_VERSION);
 			jsonWriter.writeProperty("protocol_version", ENGINE_PROTOCOL_VERSION);
+		}
+		
+	}
+	
+	public static class ShudtownCommandHandler extends JsonCommandHandler {
+		
+		public ShudtownCommandHandler(GenieServer genieServer) {
+			super("shutdown", genieServer);
+		}
+		
+		@Override
+		protected void processCommandResponse() throws IOException, GenieCommandException {
+			super.processCommandResponse();
+			genieServer.shutdown();
+		}
+		
+		@Override
+		protected void writeResponseJsonContents() throws IOException {
 		}
 		
 	}
