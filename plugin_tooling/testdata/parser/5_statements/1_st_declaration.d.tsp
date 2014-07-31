@@ -53,7 +53,7 @@
 #STRUCTURE_EXPECTED:  DefinitionTemplate(DefSymbol #@DECLS_BLOCK__SAMPLE )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     mixin("int foo");
-#STRUCTURE_EXPECTED:  DeclarationMixinString(ExpLiteralString)
+#STRUCTURE_EXPECTED:  DeclarationMixinString(ExpMixinString(ExpLiteralString))
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)     mixin #@TYPE_REFS__LITE ;
 #STRUCTURE_EXPECTED:  DeclarationMixin(#@TYPE_REFS__LITE)

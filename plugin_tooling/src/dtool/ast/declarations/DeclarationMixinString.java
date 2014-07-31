@@ -7,7 +7,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.statements.IStatement;
 import dtool.resolver.INonScopedContainer;
 
@@ -17,9 +17,9 @@ import dtool.resolver.INonScopedContainer;
  */
 public class DeclarationMixinString extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	
-	public final Expression exp;
+	public final ExpMixinString exp;
 	
-	public DeclarationMixinString(Expression exp) {
+	public DeclarationMixinString(ExpMixinString exp) {
 		this.exp = parentize(exp);
 	}
 	
@@ -41,9 +41,8 @@ public class DeclarationMixinString extends ASTNode implements INonScopedContain
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("mixin(");
 		cp.append(exp);
-		cp.append(");");
+		cp.append(";");
 	}
 	
 }

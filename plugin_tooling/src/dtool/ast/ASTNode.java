@@ -36,7 +36,7 @@ public abstract class ASTNode implements IASTNode {
 	protected int sourceEnd = -1;
 	
 	/** AST node parent, null if the node is the tree root. */
-	public ASTNode parent = null;
+	protected ASTNode parent = null;
 	/** Custom field to store various kinds of data */
 	private NodeData data = NodeData.CREATED_STATUS; 
 	

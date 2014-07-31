@@ -15,11 +15,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.utilbox.core.CoreUtil;
+import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.declarations.IncompleteDeclarator;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
@@ -222,6 +224,28 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		
 		NodeResult<? extends IDeclaration> declResult = parseDeclaration(true);
 		IDeclaration decl = declResult.node;
+		
+		if(decl instanceof DeclarationMixinString) {
+			DeclarationMixinString declarationMixinString = (DeclarationMixinString) decl;
+			// Check if ";" was consumed
+			if(declResult.ruleBroken) {
+				// If not, then this could have been parsed as an expression, retry with expression rule.
+				
+				ExpMixinString expMixinString = declarationMixinString.exp;
+				expMixinString.detachFromParent();
+				
+				// TODO: perhaps we could add a precise check for whether expMixinString
+				// was consumed sucessfully or had rule broken
+				
+				ParseHelper parse = new ParseHelper(expMixinString.getStartPos());
+				
+				Expression exp = new ParseRule_Expression().
+						parseTypeOrExpression_fromUnary(ANY_OPERATOR, expMixinString);
+				
+				parse.consumeRequired(DeeTokens.SEMICOLON);
+				return parse.resultConclude(new StatementExpression(exp));
+			}
+		}
 		
 		if(decl instanceof IncompleteDeclarator || decl == null) {
 			restoreOriginalState(originalState);

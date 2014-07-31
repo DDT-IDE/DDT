@@ -48,6 +48,7 @@ import dtool.ast.declarations.ImportSelectiveAlias;
 import dtool.ast.declarations.MissingDeclaration;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
+import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
@@ -483,18 +484,16 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	}
 	
 	public NodeResult<DeclarationMixinString> parseDeclarationMixinString() {
-		if(!tryConsume(DeeTokens.KW_MIXIN))
+		if(lookAhead() != DeeTokens.KW_MIXIN) {
 			return null;
-		ParseHelper parse = new ParseHelper();
-		Expression exp = null;
-		
-		if(parse.consumeExpected(DeeTokens.OPEN_PARENS)) {
-			exp = parseExpression_toMissing();
-			parse.consumeExpected(DeeTokens.CLOSE_PARENS);
 		}
 		
+		ParseHelper parse = new ParseHelper(lookAheadElement());
+		
+		ExpMixinString mixinExpression = parseMixinExpression().node;
+		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DeclarationMixinString(exp));
+		return parse.resultConclude(new DeclarationMixinString(mixinExpression));
 	}
 	
 }

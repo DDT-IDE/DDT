@@ -17,7 +17,8 @@
   * However, there is a small change using DDT with a version other than the recommned/tested one will break things. Each DDT release will list a recommented/tested CDT version.
  * Updated/tested DDT to CDT 4.4. 
   * Added Dynamic printf ruler action to DDT editor.
-  * For more info on these new CDT 4.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 
+  * For more info on these new CDT 4.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug
+ * Fixed #65 - MixinString parsing as expression. 
    
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
