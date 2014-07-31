@@ -2,7 +2,7 @@ language: java
 
 jdk:
   - oraclejdk8
-#  - openjdk7
+  - openjdk7
 
 before_install:
   - "export DISPLAY=:99.0"
@@ -10,9 +10,9 @@ before_install:
 
 # Prevent Travis's default of: mvn install -DskipTests=true
 install:
-  - "ls -l /home/travis/build/bruno-medeiros/DDT/"
-  - "mvn clean pre-integration-test"
-  - "ls -l /home/travis/build/bruno-medeiros/DDT/bin-maven/"
-  - "ls -l /home/travis/build/bruno-medeiros/DDT/bin-maven/dub"
+  - mkdir -p bin-maven/dub64
+  - wget http://code.dlang.org/files/dub-0.9.21-linux-x86_64.tar.gz -O - | tar -xvz -C bin-maven/dub64
+  - ls -l bin-maven/dub64
+  - $(pwd)/bin-maven/dub64/dub help
 
-script: mvn clean integration-test
+script: mvn clean integration-test -DDTool.DubPath=$(pwd)/bin-maven/dub64/dub
