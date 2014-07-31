@@ -59,6 +59,8 @@ public class FindDefinitionOperation_Test extends Resolver2Tests {
 				"int", true, null, null)
 		);
 		
+		// TODO: test error cases
+		
 	}
 	
 	protected void testFindDefinition(Path modulePath, int offset, FindDefinitionResultEntry... expectedResults) 

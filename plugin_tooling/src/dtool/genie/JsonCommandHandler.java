@@ -13,16 +13,13 @@ package dtool.genie;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Map;
 
-import melnorme.utilbox.misc.MiscUtil;
 import dtool.engine.DToolServer;
 import dtool.genie.GenieServer.GenieCommandException;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
 
-public abstract class JsonCommandHandler {
+public abstract class JsonCommandHandler extends JsonDeserializeHelper<GenieCommandException> {
 	
 	protected final String commandName;
 	protected final GenieServer genieServer;
@@ -69,71 +66,9 @@ public abstract class JsonCommandHandler {
 		jsonParser.skipValue();
 	}
 	
-	/* ----------------- deserialize helpers: ----------------- */
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T validateType(Object value, String propName, Class<T> klass, boolean allowNull) 
-			throws GenieCommandException {
-		
-		if(value == null) {
-			if(allowNull) {
-				return null;
-			}
-			throw validationError("Expected non-null value" + " for property: " + propName);
-		}
-		
-		if(!klass.isInstance(value)) {
-			throw validationError("Expected value of type " + klass.getSimpleName() + 
-				" for property: " + propName + ", instead got: " + value.getClass().getSimpleName());
-		}
-		return (T) value;
-	}
-	
-	protected static GenieCommandException validationError(String message) {
+	@Override
+	protected GenieCommandException validationError(String message) {
 		return new GenieCommandException(message);
-	}
-	
-	protected static <T> T getValue(Map<String, Object> map, String propName, Class<T> klass, boolean allowNull)
-			throws GenieCommandException {
-		Object value = map.get(propName);
-		return validateType(value, propName, klass, allowNull);
-	}
-	
-	protected static String getString(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getValue(map, propName, String.class, false);
-	}
-	protected static String getStringOrNull(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getValue(map, propName, String.class, true);
-	}
-	
-	protected static int getInt(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getValue(map, propName, Integer.class, false);
-	}
-	protected static Integer getIntegerOrNull(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getValue(map, propName, Integer.class, true);
-	}
-	
-	protected static boolean getBoolean(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getValue(map, propName, Boolean.class, false);
-	}
-	
-	protected static Path getPath(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getPath(map, propName, false);
-	}
-	protected static Path getPathOrNull(Map<String, Object> map, String propName) throws GenieCommandException {
-		return getPath(map, propName, true);
-	}
-	
-	protected static Path getPath(Map<String, Object> map, String propName, boolean allowNull) 
-			throws GenieCommandException {
-		String pathString = getValue(map, propName, String.class, allowNull);
-		Path path = pathString == null ? null : MiscUtil.createPathOrNull(pathString);
-		if(path == null) {
-			if(allowNull) 
-				return null;
-			throw validationError("Invalid path: " + pathString);
-		}
-		return path;
 	}
 	
 }

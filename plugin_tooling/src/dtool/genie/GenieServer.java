@@ -14,19 +14,23 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
 import dtool.engine.DToolServer;
+import dtool.genie.cmdline.StartServerOperation;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
+import dtool.util.StatusException;
 
 public class GenieServer extends AbstractSocketServer {
 	
@@ -36,12 +40,24 @@ public class GenieServer extends AbstractSocketServer {
 	public static final String ENGINE_VERSION = "0.1.0";
 	public static final String ENGINE_PROTOCOL_VERSION = "0.1";
 	
-	public GenieServer(DToolServer dtoolServer, int portNumber) throws IOException {
+	public static File getSentinelFile() {
+		return new File(System.getProperty("user.home"), StartServerOperation.SENTINEL_FILE_NAME);
+	}
+	
+	public GenieServer(DToolServer dtoolServer, int portNumber) throws StatusException {
 		super(portNumber);
 		this.dtoolServer = assertNotNull(dtoolServer);
 		
 		dtoolServer.logMessage(" ------ Started Genie Server ------ ");
 		logMessage("Listening on port: " + this.portNumber);
+		
+		File sentinelFile = getSentinelFile();
+		try {
+			FileUtil.writeStringToFile(sentinelFile, getServerPortNumber()+"", StringUtil.UTF8);
+		} catch (IOException e) {
+			throw new StatusException("Error writing to sentinel file " + sentinelFile, e);
+		}
+		sentinelFile.deleteOnExit();
 	}
 	
 	public DToolServer getDToolServer() {
@@ -144,10 +160,10 @@ public class GenieServer extends AbstractSocketServer {
 	}
 	
 	@SuppressWarnings("serial")
-	public static class GenieCommandException extends Exception {
+	public static class GenieCommandException extends StatusException {
 		
 		public GenieCommandException(String message) {
-			super(message);
+			super(message, null);
 		}
 		
 	}

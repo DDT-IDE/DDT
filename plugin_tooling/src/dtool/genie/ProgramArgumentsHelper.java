@@ -10,8 +10,11 @@
  *******************************************************************************/
 package dtool.genie;
 
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+
+import melnorme.utilbox.misc.MiscUtil;
 
 public abstract class ProgramArgumentsHelper {
 	
@@ -54,10 +57,10 @@ public abstract class ProgramArgumentsHelper {
 		}
 	}
 	
-	protected int validatePositiveInt(String stringArgument) {
-		int intValue = parseInt(stringArgument);
+	protected int parsePositiveInt(String stringArg) {
+		int intValue = parseInt(stringArg);
 		if(intValue < 0) {
-			handleArgumentsError("Argument not positive integer: " + stringArgument);
+			handleArgumentsError("Argument not positive integer: " + stringArg);
 		}
 		return intValue;
 	}
@@ -68,6 +71,14 @@ public abstract class ProgramArgumentsHelper {
 		} catch (NumberFormatException e) {
 			throw handleArgumentsError("Argument not integer: " + stringArg);
 		}
+	}
+	
+	protected Path parseValidPath(String stringArgument) {
+		Path path = MiscUtil.createPathOrNull(stringArgument);
+		if(path == null) {
+			throw handleArgumentsError("Invalid path : " + stringArgument);
+		}
+		return path;
 	}
 	
 }

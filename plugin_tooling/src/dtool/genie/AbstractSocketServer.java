@@ -22,6 +22,7 @@ import java.util.concurrent.Semaphore;
 
 import melnorme.utilbox.concurrency.SafeRunnable;
 import dtool.genie.GenieServer.GenieConnectionHandler;
+import dtool.util.StatusException;
 
 /** 
  * Helper for Genie Server, manages a basic TCP socket server.
@@ -36,9 +37,17 @@ public abstract class AbstractSocketServer {
 	protected final Semaphore connectionsSemaphore = new Semaphore(MAX_CONNECTIONS);
 	
 	
-	public AbstractSocketServer(int portNumber) throws IOException {
-		this.serverSocket = new ServerSocket(portNumber);
+	public AbstractSocketServer(int portNumber) throws StatusException {
+		this.serverSocket = createServerSocket(portNumber);
 		this.portNumber = serverSocket.getLocalPort();
+	}
+	
+	protected ServerSocket createServerSocket(int portNumber) throws StatusException {
+		try {
+			return new ServerSocket(portNumber);
+		} catch (IOException ioe) {
+			throw new StatusException("Error creating socket on port " + portNumber + ".", ioe);
+		}
 	}
 	
 	public int getServerPortNumber() {

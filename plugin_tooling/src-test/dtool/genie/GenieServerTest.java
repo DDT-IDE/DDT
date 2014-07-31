@@ -10,16 +10,8 @@
  *******************************************************************************/
 package dtool.genie;
 
-import static dtool.genie.JsonCommandHandler.getBoolean;
-import static dtool.genie.JsonCommandHandler.getInt;
-import static dtool.genie.JsonCommandHandler.getIntegerOrNull;
-import static dtool.genie.JsonCommandHandler.getPathOrNull;
-import static dtool.genie.JsonCommandHandler.getString;
-import static dtool.genie.JsonCommandHandler.getStringOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.blindCast;
-import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 import static melnorme.utilbox.misc.StringUtil.UTF8;
 
 import java.io.BufferedReader;
@@ -27,24 +19,27 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
 import org.junit.Test;
 
-import dtool.ast.SourceRange;
 import dtool.engine.DToolServer;
 import dtool.engine.operations.FindDefinitionOperation_Test;
 import dtool.genie.GenieServer.GenieCommandException;
+import dtool.genie.cmdline.FindDefinitionRequest;
+import dtool.genie.cmdline.FindDefinitionRequest.FindDefinitionResultParser;
+import dtool.genie.cmdline.ShutdownServerRequest;
 import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.util.JsonReaderExt;
+import dtool.util.JsonWriterExt;
+import dtool.util.StatusException;
 
 public class GenieServerTest extends JsonWriterTestUtils {
 	
@@ -79,8 +74,9 @@ public class GenieServerTest extends JsonWriterTestUtils {
 			if(genieServer != null) {
 				genieServer.serverSocket.close();
 			}
+			GenieServer.getSentinelFile().delete();
 			genieServer = new TestsGenieServer(0);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		new Thread() { 
@@ -100,7 +96,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 		protected final ArrayList<Throwable> exceptions = new ArrayList<>();
 		
-		public TestsGenieServer(int portNumber) throws IOException {
+		public TestsGenieServer(int portNumber) throws StatusException {
 			super(DTOOL_SERVER, portNumber);
 		}
 		
@@ -134,7 +130,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		prepareGenieServer();
 		cleanup(); // Test cleanup methods
 		
-		testGenieServer____________();
+		testGenieServer$();
 	}
 	
 	@After
@@ -154,7 +150,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 			logClientMessage("---->> Preparing new client connection. " 
 					+ " Active server connections: " + genieServer.getActiveConnections());
 			
-			socket = new Socket("localhost", serverPortNumber);
+			socket = ShutdownServerRequest.createLocalConnection(serverPortNumber);
 			serverInput = new OutputStreamWriter(socket.getOutputStream(), UTF8);
 			serverOutput = new BufferedReader(new InputStreamReader(socket.getInputStream(), UTF8));
 		} catch (IOException e) {
@@ -174,18 +170,27 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 	}
 	
-	protected HashMap<String, Object> sendCommand(Map<String, Object> jsObject) {
-		return sendCommand(jsWriteObject(jsObject));
+	protected HashMap<String, Object> sendCommandAndReadResponse(Map<String, Object> jsObject) {
+		sendCommand(serverInput, jsWriteObject(jsObject));
+		return readResponseObject();
 	}
-	protected HashMap<String, Object> sendCommand(String jsDocument) {
-		logClientMessage(">> Sending command message:\n" + jsDocument);
-		
+	
+	protected HashMap<String, Object> readResponseObject() {
 		try {
-			serverInput.write(jsDocument);
-			serverInput.flush();
 			return readObject(serverOutput);
 		} catch (IOException e) {
 			throw assertFail();
+		}
+	}
+	
+	protected void sendCommand(Writer connectionOut, String jsDocument) {
+		logClientMessage(">> Sending command message:\n" + jsDocument);
+		
+		try {
+			connectionOut.write(jsDocument);
+			connectionOut.flush();
+		} catch (IOException e) {
+			assertFail();
 		}
 	}
 	
@@ -194,13 +199,14 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		return JsonReaderExt.readJsonObject(jsonParser);
 	}
 	
-	public void testGenieServer____________() {
+	protected HashMap<String, Object> response;
+	
+	
+	public void testGenieServer$() {
 		prepareGenieServer();
 		prepareServerConnection();
 		
-		HashMap<String, Object> response;
-		
-		response = sendCommand(jsObject(entry("about", null)));
+		response = sendCommandAndReadResponse(jsObject(entry("about", null)));
 		
 		assertAreEqual(response.get("engine"), GenieServer.ENGINE_NAME);
 		assertAreEqual(response.get("version"), GenieServer.ENGINE_VERSION);
@@ -220,12 +226,17 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		awaitConnectionHandlerTermination();
 		checkServerExceptions("End of input");
 		prepareServerConnection();
+		
+		// Test shutdown server
+//		new ShutdownServerRequest().perform();
+//		prepareGenieServer();
+//		prepareServerConnection();
 	}
 	
 	public void testError(Map<String, Object> clientRequest, String expectedContains) {
 		assertTrue(socket.isClosed() == false);
 		
-		HashMap<String, Object> response = sendCommand(clientRequest);
+		HashMap<String, Object> response = sendCommandAndReadResponse(clientRequest);
 		String errorMsg = assertCast(response.get("error"), String.class);
 		assertStringContains(errorMsg.toLowerCase(), expectedContains);
 		assertTrue(genieServer.exceptions.size() == 1);
@@ -260,15 +271,15 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		prepareServerConnection();
 	}
 	
-	protected HashMap<String, Object> response;
-	
 	@Test
 	public void testSemanticOps() throws Exception { testSemanticOps$(); }
 	public void testSemanticOps$() throws Exception {
 		prepareGenieServer();
-		prepareServerConnection();
 		
 		new FindDefinitionOperation_GenieTest().testALL();
+		
+		prepareServerConnection();
+		new FindDefinitionOperation_ReuseConnectionTest().testALL();
 	}
 	
 	public class FindDefinitionOperation_GenieTest extends FindDefinitionOperation_Test {
@@ -280,44 +291,30 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 		@Override
 		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
-			response = sendCommand(jsObject(entry("find_definition", jsObject(
-				entry("filepath", filePath.toString()),
-				entry("offset", offset)
-				)))
-			);
-			
-			String errorMessage = getStringOrNull(response, "error");
-			if(errorMessage != null) {
-				return new FindDefinitionResult(errorMessage);
+			try {
+				String response = new FindDefinitionRequest().setArguments(filePath, offset).performAndGetResponse();
+				return new FindDefinitionResultParser().read(new JsonReaderExt(new StringReader(response)));
+			} catch (IOException e) {
+				throw assertFail();
 			}
-			
-			List<?> jsonResults = blindCast(response.get("results"));
-			ArrayList<FindDefinitionResultEntry> results = new ArrayList<>();
-			
-			for (Object jsonResultEntry : nullToEmpty(jsonResults)) {
-				results.add(findDefResult(jsonResultEntry));
-			}
-			
-			return new FindDefinitionResult(results);
 		}
 		
 	}
 	
-	protected FindDefinitionResultEntry findDefResult(Object object) throws GenieCommandException {
-		Map<String, Object> resultEntry = blindCast(object);
+	public class FindDefinitionOperation_ReuseConnectionTest extends FindDefinitionOperation_GenieTest {
 		
-		SourceRange sr = null;
-		
-		Integer offset = getIntegerOrNull(resultEntry, "offset");
-		if(offset != null) {
-			sr = new SourceRange(offset, getInt(resultEntry, "length"));
+		@Override
+		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
+			try {
+				new FindDefinitionRequest().setArguments(filePath, offset).
+					writeRequest(new JsonWriterExt(serverInput));
+				
+				return new FindDefinitionResultParser().read(new JsonReaderExt(serverOutput));
+			} catch (IOException e) {
+				throw assertFail();
+			}
 		}
 		
-		return new FindDefinitionResultEntry(
-			getString(resultEntry, "extendedName"), 
-			getBoolean(resultEntry, "isIntrinsic"), 
-			getPathOrNull(resultEntry, "modulePath"), 
-			sr);
 	}
 	
 }

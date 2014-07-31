@@ -10,19 +10,17 @@
  *******************************************************************************/
 package dtool.genie.cmdline;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.engine.DToolServer;
 import dtool.genie.GenieMain.AbstractCmdlineOperation;
 import dtool.genie.GenieServer;
+import dtool.util.StatusException;
 
 public class StartServerOperation extends AbstractCmdlineOperation {
 	
-	protected static final String SENTINEL_FILE_NAME = ".dtoolgenie";
+	public static final String SENTINEL_FILE_NAME = ".dtoolgenie";
+	public static final String SENTINEL_FILE_UIString = "$HOME/" + SENTINEL_FILE_NAME;
 	
 	public StartServerOperation() {
 		super("start");
@@ -40,7 +38,7 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 		out.println("Start the Genie server, listening on given <port>. This will fail if an ");
 		out.println("already running Genie server is detected, unless the 'force' option is given.");
 		out.println();
-		out.println("When the Genie server starts, a file is created in $HOME/" + SENTINEL_FILE_NAME); 
+		out.println("When the Genie server starts, a file is created in "+SENTINEL_FILE_UIString); 
 		out.println("with the port number of the started server. This file is deleted when the server");
 		out.println("terminates, and thus can be used to determine if a Genie server is running.");
 	}
@@ -52,38 +50,26 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 	protected void processArgs() {
 		force = getFlag("force");
 		String portNumberArg = retrieveFirstUnparsedArgument(true);
-		requestedPortNumber = portNumberArg == null ? 0 : validatePositiveInt(portNumberArg);
+		requestedPortNumber = portNumberArg == null ? 0 : parsePositiveInt(portNumberArg);
 	}
 	
 	@Override
-	protected void handle() {
-		final File sentinelFile = new File(System.getProperty("user.home"), SENTINEL_FILE_NAME);
-		try {
-			boolean created = sentinelFile.createNewFile();
-			if(created == false && force == false) {
-				String message = "Failed to create server sentinel file, perhaps server is running already?";
-				errorBail(message + "  use argument 'force' to start anyways", null);
-			}
-		} catch (IOException e) {
-			errorBail("Error creating sentinel file " + sentinelFile, e);
+	protected void perform() {
+		if(GenieServer.getSentinelFile().exists() && force == false) {
+			errorBail(
+				"Failed to create server sentinel file, perhaps server is running already?\n"
+				+ "  Use argument 'force' to start anyways (sentinel file will be overriden)." , 
+				null);
 		}
-		sentinelFile.deleteOnExit();
 		
-		GenieServer genieServer;
 		try {
 			DToolServer dtoolServer = new DToolServer();
-			genieServer = new GenieServer(dtoolServer, requestedPortNumber);
-		} catch (IOException ioe) {
-			throw errorBail("Error trying to listen for connection on port " + requestedPortNumber + ".", ioe);
+			GenieServer genieServer = new GenieServer(dtoolServer, requestedPortNumber);
+			genieServer.runServer();
+		} catch (StatusException se) {
+			throw errorBail("Error starting server. ", se);
 		}
 		
-		try {
-			FileUtil.writeStringToFile(sentinelFile, ""+genieServer.getServerPortNumber(), StringUtil.UTF8);
-		} catch (IOException e) {
-			errorBail("Error writing to sentinel file " + sentinelFile, e);
-		}
-		
-		genieServer.runServer();
 	}
 	
 }

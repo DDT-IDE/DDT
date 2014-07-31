@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.genie;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.core.CoreUtil.array;
 import static melnorme.utilbox.misc.StringUtil.newSpaceFilledString;
@@ -31,7 +31,19 @@ public class GenieMain {
 	);
 	
 	public static void main(String[] args) {
-		
+		try {
+			runApp(args);
+		} catch (GenieClientAppException gce) {
+			System.out.println(gce.getMessage());
+			Throwable throwable = gce.getCause();
+			if(throwable != null) {
+				System.out.println(throwable);
+			}
+			System.exit(1);
+		}
+	}
+	
+	public static void runApp(String[] args) {
 		args = args.length == 0 ? array("help") : args;
 		String commandName = args[0];
 		String[] newArgs = ArrayUtil.removeAt(args, 0);
@@ -43,7 +55,15 @@ public class GenieMain {
 		}
 		
 		System.err.println("Unknown command: " + commandName);
-		System.exit(1);
+	}
+	
+	@SuppressWarnings("serial")
+	public static class GenieClientAppException extends RuntimeException {
+		
+		public GenieClientAppException(String message, Throwable cause) {
+			super(assertNotNull(message), cause);
+		}
+		
 	}
 	
 	public static abstract class AbstractCmdlineOperation extends ProgramArgumentsHelper {
@@ -83,7 +103,7 @@ public class GenieMain {
 			processArgs();
 			validateNoMoreUnprocessedArguments();
 			
-			handle();
+			perform();
 			return true;
 		}
 		
@@ -95,15 +115,10 @@ public class GenieMain {
 		}
 		
 		protected RuntimeException errorBail(String message, Throwable throwable) {
-			System.out.println(message);
-			if(throwable != null) {
-				System.out.println(throwable);
-			}
-			System.exit(1);
-			throw assertUnreachable();
+			throw new GenieClientAppException(message, throwable);
 		}
 		
-		protected abstract void handle();
+		protected abstract void perform();
 		
 	}
 	
@@ -133,7 +148,7 @@ public class GenieMain {
 		}
 		
 		@Override
-		public void handle() {
+		public void perform() {
 			if(commandToHelp == null) {
 				printGeneralHelp();
 				return;
