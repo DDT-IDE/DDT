@@ -33,6 +33,7 @@
  
  ►#@DDOC_ATTRIBS alias int defunit;●
  ►#@DDOC_ATTRIBS alias int defunit(int foo);●
+ ►#@DDOC_ATTRIBS alias defunit = int;●
 ¤》
 
 #@DEFUNITS《

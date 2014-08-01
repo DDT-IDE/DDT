@@ -13,6 +13,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
@@ -27,9 +28,11 @@ import dtool.util.ArrayView;
  */
 public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement, INonScopedContainer {
 	
+	public final Token[] comments;
 	public final ArrayView<DefinitionAliasFragment> aliasFragments;
-
-	public DefinitionAlias(ArrayView<DefinitionAliasFragment> aliasFragments) {
+	
+	public DefinitionAlias(Token[] comments, ArrayView<DefinitionAliasFragment> aliasFragments) {
+		this.comments = comments;
 		this.aliasFragments = parentize(aliasFragments);
 	}
 	
@@ -53,6 +56,10 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		return IteratorUtil.nonNullIterator(aliasFragments);
+	}
+	
+	public Token[] getDefinitionContainerDocComments() {
+		return comments;
 	}
 	
 	public static class DefinitionAliasFragment extends DefUnit {
@@ -94,6 +101,11 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Alias;
+		}
+		
+		@Override
+		public Token[] getDocComments() {
+			return getParent_Concrete().getDefinitionContainerDocComments();
 		}
 		
 		@Override

@@ -133,6 +133,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 	}
 	
+	public DefParseHelper createDefParseHelper(DefinitionStartInfo defStartInfo) {
+		if(defStartInfo == null) {
+			defStartInfo = parseDefStartInfo();
+		}
+		return new DefParseHelper(defStartInfo);
+	}
+	
 	public class DefParseHelper extends ParseHelper {
 		
 		protected ArrayList<Token> comments;
@@ -140,9 +147,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		public DefParseHelper(DefinitionStartInfo defStartInfo) {
 			super(lookAheadElement());
-			if(defStartInfo == null) {
-				defStartInfo = parseDefStartInfo();
-			}
+			assertNotNull(defStartInfo);
 			this.comments = defStartInfo.comments;
 			this.extendedStart = defStartInfo.extendedStart;
 		}
@@ -211,7 +216,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(lookAhead() != DeeTokens.KW_MODULE) {
 			return null;
 		}
-		DefParseHelper parse = new DefParseHelper(parseDefStartInfo());
+		DefParseHelper parse = createDefParseHelper(parseDefStartInfo());
 		consumeLookAhead();
 		
 		ArrayList<IToken> packagesList = new ArrayList<>(2);
@@ -348,7 +353,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(lookAhead(1) == DeeTokens.OPEN_PARENS && lookAhead(2) == DeeTokens.KW_THIS) {
 				return parseDeclarationPostBlit_start();
 			}
-			return parseDefinitionConstructor_atThis(new DefParseHelper(defStartInfo));
+			return parseDefinitionConstructor_atThis(createDefParseHelper(defStartInfo));
 		case CONCAT:
 			if(lookAhead(1) == DeeTokens.KW_THIS)
 				return parseDeclarationSpecialFunction();
@@ -528,7 +533,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		if(!(canParseTypeReferenceStart(lookAhead()) || lookAhead() == DeeTokens.IDENTIFIER)) {
 			return declarationNullResult();
 		}
-		DefParseHelper parse = new DefParseHelper(defStartInfo);
+		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		NodeResult<Reference> refResult = parseTypeReference(); // This parses (BasicType + BasicType2) of spec
 		assertNotNull(refResult.node);
 		Reference ref = parse.checkResult(refResult); 
@@ -1014,7 +1019,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		protected IAggregateBody declBody = null;
 		
 		public AggregateDefinitionParse(DefinitionStartInfo defStartInfo) {
-			super(defStartInfo);
+			super(defStartInfo == null ? parseDefStartInfo() : defStartInfo);
 		}
 		
 		public void parseAggregate(boolean tplParamsIsOptional) {
@@ -1089,12 +1094,12 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseAliasDefinition(DefinitionStartInfo defStartInfo) {
-		DefParseHelper parse = new DefParseHelper(defStartInfo);
+		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return null;
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.ASSIGN) {
-			return parseDefinitionAlias_atFragmentStart();
+			return parseDefinitionAlias_atFragmentStart(parse);
 		}
 		
 		// Note that there are heavy similarites between this code and var/function declaration parsing
@@ -1115,7 +1120,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			if(refResult.ruleBroken) break parsing;
 			if(ref == null) {
 				if(attributes == null) {
-					return parseDefinitionAlias_atFragmentStart(); // Return error as if DefinitionAlias was parsed
+					// Return error as if DefinitionAlias was parsed
+					return parseDefinitionAlias_atFragmentStart(parse);
 				} else {
 					ref = parseMissingTypeReference(true);
 					break parsing;
@@ -1124,7 +1130,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			
 			if(lookAhead() != DeeTokens.IDENTIFIER && couldHaveBeenParsedAsId(ref)) {
 				restoreOriginalState(savedParserState);
-				return parseDefinitionAlias_atFragmentStart(); // Return error as if trying to parse DefinitionAlias
+				// Return error as if trying to parse DefinitionAlias
+				return parseDefinitionAlias_atFragmentStart(parse);
 			} else {
 				defId = parseDefId();
 			}
@@ -1170,9 +1177,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return conclude(fragId.nameSourceRange, new AliasVarDeclFragment(fragId));
 	}
 	
-	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart() {
-		ParseHelper parse = new ParseHelper();
-		
+	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart(DefParseHelper parse) {
 		ArrayList<DefinitionAliasFragment> fragments = new ArrayList<>();
 		
 		while(true) {
@@ -1185,7 +1190,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		
 		parse.consumeRequired(DeeTokens.SEMICOLON);
-		return parse.resultConclude(new DefinitionAlias(arrayView(fragments)));
+		Token[] comments = parse.parseEndDDocComments();
+		return parse.resultConclude(new DefinitionAlias(comments, arrayView(fragments)));
 	}
 	
 	public DefinitionAliasFragment parseAliasFragment() {
@@ -1235,7 +1241,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	protected NodeResult<? extends IDeclaration> parseDefinitionEnum_start(DefinitionStartInfo defStartInfo) {
-		DefParseHelper parse = new DefParseHelper(defStartInfo);
+		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		consumeLookAhead(DeeTokens.KW_ENUM);
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER
@@ -1437,7 +1443,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDeclarationMixin(DefinitionStartInfo defStartInfo) {
-		DefParseHelper parse = new DefParseHelper(defStartInfo);
+		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		if(!tryConsume(DeeTokens.KW_MIXIN))
 			return null;
 		

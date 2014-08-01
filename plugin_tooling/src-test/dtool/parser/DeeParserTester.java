@@ -31,6 +31,7 @@ import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
@@ -503,6 +504,10 @@ public class DeeParserTester extends CommonTestUtils {
 					node = declAttrib.body;
 					continue;
 				}
+			}
+			if(node instanceof DefinitionAlias) {
+				DefinitionAlias definitionAlias = (DefinitionAlias) node;
+				return definitionAlias.aliasFragments.get(0); 
 			}
 			return null;
 		}
