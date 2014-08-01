@@ -8,10 +8,10 @@ import dtool.parser.DeeTokens;
 
 public class AttribBasic extends Attribute {
 	
-	public final AttributeKinds declAttrib;
+	public final AttributeKinds attribKind;
 	
 	public AttribBasic(AttributeKinds declAttrib) {
-		this.declAttrib = declAttrib;
+		this.attribKind = declAttrib;
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class AttribBasic extends Attribute {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendStrings(declAttrib.getSourceValue());
+		cp.appendStrings(attribKind.getSourceValue());
 	}
 	
 	public static enum AttributeKinds implements ISourceRepresentation {

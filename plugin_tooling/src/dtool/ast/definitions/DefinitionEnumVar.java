@@ -25,11 +25,12 @@ import dtool.ast.expressions.IInitializer;
 import dtool.ast.statements.IStatement;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
+import dtool.resolver.IResolvable;
 import dtool.util.ArrayView;
 
 /**
  * A definition of an enum variable (aka manifest constant):
- * This is different from normal variables as some additional syntaxes are allwod, 
+ * This is different from normal variables as some additional syntaxes are allowed, 
  * such as template parameters
  */
 public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStatement, INonScopedContainer {
@@ -62,7 +63,7 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		return IteratorUtil.nonNullIterator(defFragments);
 	}
 	
-	public static class DefinitionEnumVarFragment extends DefUnit {
+	public static class DefinitionEnumVarFragment extends DefUnit implements IVarDefinitionLike {
 		
 		public final ArrayView<TemplateParameter> tplParams; // Since 2.064
 		public final IInitializer initializer;
@@ -105,7 +106,15 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			DefinitionVariable.resolveSearchInMembersScopeForVariable(search, null, initializer);
+			DefinitionVariable.resolveSearchInReferredContainer(search, getEffectiveType());
+		}
+		
+		@Override
+		public IResolvable getEffectiveType() {
+			if(initializer instanceof IResolvable) {
+				return (IResolvable) initializer;
+			}
+			return null;
 		}
 		
 	}

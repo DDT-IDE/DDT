@@ -229,6 +229,10 @@ public abstract class AbstractParser {
 			return (NodeResult<SUPER_OF_T>) this;
 		}
 		
+		public T getNode() {
+			return node;
+		}
+		
 	}
 	
 	public static <T extends ASTNode> NodeResult<T> nullResult() {

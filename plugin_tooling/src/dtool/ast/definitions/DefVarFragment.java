@@ -7,11 +7,12 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.IResolvable;
 
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration
  */
-public class DefVarFragment extends DefUnit {
+public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	
 	public final IInitializer initializer;
 	
@@ -57,8 +58,12 @@ public class DefVarFragment extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference varDeclType = getParent_Concrete().type;
-		DefinitionVariable.resolveSearchInMembersScopeForVariable(search, varDeclType, initializer);
+		DefinitionVariable.resolveSearchInReferredContainer(search, getEffectiveType());
+	}
+	
+	@Override
+	public IResolvable getEffectiveType() {
+		return DefinitionVariable.getEffectiveType(getParent_Concrete().type, initializer);
 	}
 	
 }

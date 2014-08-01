@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dtool.engine.DToolServer;
+import dtool.engine.operations.FindDefinitionOperation;
 import dtool.resolver.api.FindDefinitionResult;
 
 public class OpenDefinitionOperationTest extends CommonDeeUITest {
@@ -82,7 +82,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE);
 		
 		offset = getEndPosForString("testGoToDefOp.");
-		doTest(offset, DToolServer.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
+		doTest(offset, FindDefinitionOperation.FIND_DEF_NoReferenceFoundAtCursor, file.getProject(), 
 			IOutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
@@ -97,7 +97,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	@Test
 	public void testOpenRef_TargetNotFound() throws CoreException {
 		int offset = getOffsetForString("NotFound notfound");
-		doTest(offset, DToolServer.FIND_DEF_ReferenceResolveFailed, 
+		doTest(offset, FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed, 
 			file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
@@ -145,7 +145,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleNonDeeProject.project;
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, DToolServer.FIND_DEF_ReferenceResolveFailed, 
+		doTest(offset, FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed, 
 			project, IOutsideBuildpathTestResources.TEST_NONDEEPROJ_FILE);
 	}
 	

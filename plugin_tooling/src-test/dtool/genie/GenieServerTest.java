@@ -285,11 +285,6 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	public class FindDefinitionOperation_GenieTest extends FindDefinitionOperation_Test {
 		
 		@Override
-		protected void prepEngineServer() {
-			// Don't create DToolServer class
-		}
-		
-		@Override
 		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
 			try {
 				String response = new FindDefinitionRequest().setArguments(filePath, offset).performAndGetResponse();

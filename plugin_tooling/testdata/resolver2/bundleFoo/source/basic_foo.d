@@ -9,4 +9,4 @@ void barLibFunction(string defA/*DEF*/)
 }
 
 
-import basic_pack.bar/*MARKER*/;
+import basic_pack.implicit_name/*MARKER*/;

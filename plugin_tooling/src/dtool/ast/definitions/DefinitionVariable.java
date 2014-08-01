@@ -22,7 +22,8 @@ import dtool.util.ArrayView;
  * A variable definition. 
  * Optionally has multiple variables defined with the multi-identifier syntax.
  */
-public class DefinitionVariable extends CommonDefinition implements IDeclaration, IStatement, INonScopedContainer { 
+public class DefinitionVariable extends CommonDefinition 
+	implements IDeclaration, IStatement, INonScopedContainer, IVarDefinitionLike { 
 	
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
@@ -83,17 +84,20 @@ public class DefinitionVariable extends CommonDefinition implements IDeclaration
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInMembersScopeForVariable(search, type, initializer);
+		resolveSearchInReferredContainer(search, getEffectiveType());
 	}
 	
-	public static void resolveSearchInMembersScopeForVariable(CommonDefUnitSearch search, 
-		Reference typeRef, IInitializer initializer) {
-		if(typeRef != null) {
-			resolveSearchInReferredContainer(search, typeRef);
-		} else if(initializer instanceof IResolvable) {
-			IResolvable resolvable = (IResolvable) initializer;
-			resolveSearchInReferredContainer(search, resolvable);
-		}
+	@Override
+	public IResolvable getEffectiveType() {
+		return getEffectiveType(type, initializer);
+	}
+	
+	public static IResolvable getEffectiveType(Reference typeRef, IInitializer initializer) {
+		if(typeRef != null) 
+			return typeRef;
+		if(initializer instanceof IResolvable)
+			return (IResolvable) initializer;
+		return null;
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {

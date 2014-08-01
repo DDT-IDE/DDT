@@ -72,7 +72,20 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 		return IteratorUtil.singletonIterator(body);
 	}
 	
-	public void localAnalysis() {
+	/** 
+	 * If this declaration attrib contains only a single declaration, return it, otherwise return null 
+	 */
+	public IDeclaration getSingleDeclaration() {
+		if(bodySyntax != AttribBodySyntax.SINGLE_DECL) {
+			return null;
+		}
+		if(body instanceof IDeclaration) {
+			return (IDeclaration) body;
+		}
+		return null;
+	}
+	
+	protected void localAnalysis() {
 		for (Attribute attribute : attributes) {
 			if(attribute instanceof AttribBasic) {
 				AttribBasic attribBasic = (AttribBasic) attribute;

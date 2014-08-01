@@ -97,9 +97,9 @@ public class TextUI {
 	public static String getDDocHTMLRender(INamedElement defUnit, Ddoc ddoc) {
 		String sig = TextUI.getLabelForHoverSignature(defUnit);
 		sig = convertoToHTML(sig);
-		String str = sig;
-		str = "<b>" +str+ "</b>" 
-		+"  <span style=\"color: #915F6D;\" >"+ "("+defUnit.getArcheType().toString()+")"+"</span>";
+		String str;
+		str = "<b>" +sig+ "</b>" 
+		+"  <span style=\"color: #915F6D;\">"+ "("+defUnit.getArcheType().toString()+")"+"</span>\n";
 		
 		if(ddoc != null) {
 			StringBuffer stringBuffer = DeeDocAccessor.transform(ddoc, Collections.<String, String>emptyMap());

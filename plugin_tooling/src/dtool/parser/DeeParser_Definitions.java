@@ -297,7 +297,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				(lookAhead(1) == DeeTokens.IDENTIFIER && lookAhead(2) == DeeTokens.KW_THIS)) {
 				return parseDeclarationAliasThis();
 			}
-			return parseAliasDefinition(defStartInfo);
+			return parseDefinitionAlias(defStartInfo);
 		case KW_MIXIN: 
 			if(lookAhead(1) == DeeTokens.KW_TEMPLATE) {
 				return parseTemplateDefinition(defStartInfo);
@@ -1093,7 +1093,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new RefTypeFunction(retType, isDelegate, fnParams, fnAttributes));
 	}
 	
-	public NodeResult<? extends IDeclaration> parseAliasDefinition(DefinitionStartInfo defStartInfo) {
+	public NodeResult<? extends IDeclaration> parseDefinitionAlias(DefinitionStartInfo defStartInfo) {
 		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return null;

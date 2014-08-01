@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
 import dtool.ast.definitions.DefUnit;
@@ -115,9 +116,7 @@ public class LanguageIntrinsics {
 		
 		public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
 			Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
-			if(namedElems == null || namedElems.isEmpty())
-				return null;
-			return namedElems.iterator().next();
+			return CollectionUtil.getFirstElementOrNull(namedElems);
 		}
 		
 		@Override

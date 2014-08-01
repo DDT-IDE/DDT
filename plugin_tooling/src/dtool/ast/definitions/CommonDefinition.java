@@ -62,7 +62,7 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	}
 	
 	public void setAttribute(AttribBasic declBasicAttrib) {
-		defAttributesBitMask |= getBitMaskForBasicAttribute(declBasicAttrib.declAttrib);
+		defAttributesBitMask |= getBitMaskForBasicAttribute(declBasicAttrib.attribKind);
 	}
 	
 	public boolean hasAttribute(AttributeKinds attrib) {

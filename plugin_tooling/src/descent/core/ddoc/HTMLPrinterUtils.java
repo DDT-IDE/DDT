@@ -116,7 +116,7 @@ public class HTMLPrinterUtils {
 
 	public static void addParagraph(StringBuffer buffer, String paragraph) {
 		if (paragraph != null) {
-			buffer.append("<p>"); //$NON-NLS-1$
+			buffer.append("<p/>"); //$NON-NLS-1$
 			buffer.append(paragraph);
 		}
 	}
