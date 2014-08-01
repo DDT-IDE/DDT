@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.ui.DeeUI;
 
@@ -48,10 +49,10 @@ public abstract class AbstractUIOperation {
 		try {
 			executeOperation();
 		} catch (CoreException ce) {
-			OperationExceptionHandler.handle(ce, operationName, 
+			UIOperationExceptionHandler.handle(ce, operationName, 
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName));
 		} catch (RuntimeException re) {
-			OperationExceptionHandler.handle(re, operationName,
+			UIOperationExceptionHandler.handle(re, operationName,
 				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName));
 		}
 	}

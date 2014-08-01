@@ -13,6 +13,7 @@ package mmrnmhrm.core;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.osgi.service.prefs.BackingStoreException;
 
 import dtool.dub.DubHelper;
 import melnorme.lang.ide.core.CorePreferencesLookup;
@@ -33,9 +34,10 @@ public class DeeCorePreferences implements DeeCorePreferencesConstants {
 		return "";
 	}
 	
-	public static void putDubBuildOptions(IProject project, String value) {
+	public static void putDubBuildOptions(IProject project, String value) throws BackingStoreException {
 		IEclipsePreferences projectPreferences = getProjectPreferences(project);
 		projectPreferences.put(PREF_DUB_BUILD_OPTIONS, value);
+		projectPreferences.flush();
 	}
 	
 	public static IEclipsePreferences getProjectPreferences(IProject project) {

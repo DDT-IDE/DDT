@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.fields.TextField;
 import mmrnmhrm.core.DeeCorePreferences;
@@ -19,6 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.osgi.service.prefs.BackingStoreException;
 
 public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
@@ -56,7 +58,11 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 		if(project == null) {
 			return false;
 		}
-		DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getFieldValue());
+		try {
+			DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getFieldValue());
+		} catch (BackingStoreException e) {
+			UIOperationExceptionHandler.handleException(e, "Error saving preferences.");
+		}
 		return true;
 	}
 	
