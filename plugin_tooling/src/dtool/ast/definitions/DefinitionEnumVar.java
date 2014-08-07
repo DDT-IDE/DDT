@@ -12,6 +12,8 @@ package dtool.ast.definitions;
 
 
 import static dtool.util.NewUtils.assertCast;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 
@@ -23,6 +25,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.statements.IStatement;
+import dtool.engine.operations.CommonDefVarSemantics;
+import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
 import dtool.resolver.IResolvable;
@@ -38,7 +42,8 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 	public final ArrayView<DefinitionEnumVarFragment> defFragments;
 
 	public DefinitionEnumVar(ArrayView<DefinitionEnumVarFragment> defFragments) {
-		this.defFragments = parentize(defFragments);
+		this.defFragments = parentize(assertNotNull(defFragments));
+		assertTrue(defFragments.size() > 0);
 	}
 	
 	@Override
@@ -56,6 +61,10 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		cp.append("enum ");
 		cp.appendList(defFragments, ", ", false);
 		cp.append(";");
+	}
+	
+	public boolean isOffsetAtEnumKeyword(int offset) {
+		return offset >= getStartPos() && offset <= getStartPos() + "enum".length();
 	}
 	
 	@Override
@@ -115,6 +124,14 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 				return (IResolvable) initializer;
 			}
 			return null;
+		}
+		
+		protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) {
+		};
+		
+		@Override
+		public CommonDefVarSemantics getNodeSemantics() {
+			return nodeSemantics;
 		}
 		
 	}

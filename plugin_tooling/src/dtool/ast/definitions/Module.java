@@ -9,6 +9,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
+import dtool.ast.SourceRange;
 import dtool.ast.references.RefModule;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
@@ -87,8 +88,9 @@ public class Module extends DefUnit implements IScopeNode {
 	}
 	
 	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members,
-			Path compilationUnitPath) {
+			Path compilationUnitPath, SourceRange modRange) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
+		defSymbol.setSourceRange(modRange.getStartPos(), 0);
 		return new Module(defSymbol, null, members, compilationUnitPath);
 	}
 	

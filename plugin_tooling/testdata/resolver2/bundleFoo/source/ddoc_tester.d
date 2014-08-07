@@ -10,6 +10,7 @@ void fooFunc(string defA)
 	
 	auto a1 = "string";
 	auto a2 = int;
+	auto aError;
 	
 	Bar bar;
 	auto a3 = bar;
@@ -19,6 +20,6 @@ void fooFunc(string defA)
 	enum e1 = "string";
 	enum e2 = int;
 	
-	enum e1 = "string", e2 = int;
+	enum em1 = "string", em2 = int;
 	
 }

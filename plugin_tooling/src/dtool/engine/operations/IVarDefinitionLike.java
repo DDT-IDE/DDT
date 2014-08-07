@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.definitions;
+package dtool.engine.operations;
 
 import dtool.resolver.IResolvable;
 
@@ -16,7 +16,9 @@ import dtool.resolver.IResolvable;
  * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
  */
 public interface IVarDefinitionLike {
-
+	
 	IResolvable getEffectiveType();
+	
+	CommonDefVarSemantics getNodeSemantics();
 	
 }

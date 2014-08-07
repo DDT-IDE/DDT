@@ -208,7 +208,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				new Module(md.getModuleSymbol(), md, members, compilationUnitPath)));
 		} else {
 			return result(false, conclude(modRange, 
-				Module.createModuleNoModuleDecl(defaultModuleName, members, compilationUnitPath)));
+				Module.createModuleNoModuleDecl(defaultModuleName, members, compilationUnitPath, modRange)));
 		}
 	}
 	

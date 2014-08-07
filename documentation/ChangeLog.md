@@ -19,7 +19,8 @@
   * Added Dynamic printf ruler action to DDT editor.
   * For more info on these new CDT 8.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug
  * Fixed #65 - MixinString parsing as expression.
- * Added: Hovering the mouse (or pressing F2) over an auto keyword will display the type that the associated variable declaration resolves to. 
+ * Added: Hovering the mouse (or pressing F2) over an auto keyword (or enum keyword for manifest constants) will display 
+ the type that the associated variable declaration resolves to. 
    
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 

@@ -12,6 +12,8 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.operations.CommonDefVarSemantics;
+import dtool.engine.operations.IVarDefinitionLike;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
@@ -83,21 +85,20 @@ public class DefinitionVariable extends CommonDefinition
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, getEffectiveType());
+	public IResolvable getEffectiveType() {
+		return CommonDefVarSemantics.getEffectiveType(type, initializer);
 	}
 	
 	@Override
-	public IResolvable getEffectiveType() {
-		return getEffectiveType(type, initializer);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		getNodeSemantics().resolveSearchInMembersScope(search);
 	}
 	
-	public static IResolvable getEffectiveType(Reference typeRef, IInitializer initializer) {
-		if(typeRef != null) 
-			return typeRef;
-		if(initializer instanceof IResolvable)
-			return (IResolvable) initializer;
-		return null;
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };
+	
+	@Override
+	public CommonDefVarSemantics getNodeSemantics() {
+		return nodeSemantics;
 	}
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {

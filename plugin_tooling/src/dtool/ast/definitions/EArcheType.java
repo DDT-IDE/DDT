@@ -20,7 +20,8 @@ public enum EArcheType {
 	Tuple, //This probably should not be an archetype
 	
 	Enum(true),
-	EnumMember, // same as var?
+	EnumMember, // Similar to Variable
+	
 	Alias,
 	;
 	

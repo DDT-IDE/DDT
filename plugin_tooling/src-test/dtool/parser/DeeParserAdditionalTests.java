@@ -14,11 +14,24 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
+import dtool.ast.SourceRange;
+import dtool.ast.definitions.Module;
 import dtool.parser.AbstractParser.ParseHelper;
 import dtool.tests.CommonDToolTest;
 
 
 public class DeeParserAdditionalTests extends CommonDToolTest {
+	
+	@Test
+	public void testModule() throws Exception { testModule$(); }
+	public void testModule$() throws Exception {
+		Module module = new DeeParser("").parseModule("defaultModuleName", null).node;
+		assertTrue(module.defname.hasSourceRangeInfo());
+		
+		module = new DeeParser(" int x;").parseModule("defaultModuleName", null).node;
+		assertTrue(module.defname.hasSourceRangeInfo());
+		assertTrue(module.defname.getSourceRange().equals(SourceRange.srStartToEnd(0, 0)));
+	}
 	
 	@Test
 	public void testArgList() throws Exception { testArgList$(); }

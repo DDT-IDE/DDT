@@ -91,21 +91,23 @@ public class TextUI {
 	/* -----------------  ----------------- */
 	
 	public static String getDDocHTMLRender(INamedElement defElement) {
-		return getDDocHTMLRender(defElement, defElement.resolveDDoc());
-	}
-	
-	public static String getDDocHTMLRender(INamedElement defUnit, Ddoc ddoc) {
-		String sig = TextUI.getLabelForHoverSignature(defUnit);
+		Ddoc ddoc = defElement.resolveDDoc();
+		
+		String sig = TextUI.getLabelForHoverSignature(defElement);
 		sig = convertoToHTML(sig);
 		String str;
 		str = "<b>" +sig+ "</b>" 
-		+"  <span style=\"color: #915F6D;\">"+ "("+defUnit.getArcheType().toString()+")"+"</span>\n";
+		+"  "+ span("archetype", "color: #915F6D;", "("+defElement.getArcheType().toString()+")");
 		
 		if(ddoc != null) {
 			StringBuffer stringBuffer = DeeDocAccessor.transform(ddoc, Collections.<String, String>emptyMap());
 			str += "<br/><br/>" + stringBuffer.toString();
 		}
 		return str;
+	}
+	
+	public static String span(String cssClass, String style, String spanContents) {
+		return "<span style=\""+style+"\" class=\"" + cssClass + "\" >" + spanContents + "</span>";
 	}
 	
 	public static String convertoToHTML(String string) {

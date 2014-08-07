@@ -12,7 +12,6 @@ package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.NodeData.CreatedStatusNodeData;
 import dtool.ast.NodeData.ParsedNodeData;
@@ -55,27 +54,29 @@ public abstract class ASTNode implements IASTNode {
 	/** Gets the source range start position. */
 	@Override
 	public final int getStartPos() {
+		assertTrue(hasSourceRangeInfo());
 		return sourceStart;
 	}
 	
 	/** Gets the source range end position. */
 	@Override
 	public final int getEndPos() {
+		assertTrue(hasSourceRangeInfo());
 		return sourceEnd;
 	}
 	
 	/** Gets the source range start position, aka offset. */
 	@Override
 	public final int getOffset() {
-		Assert.isTrue(hasSourceRangeInfo());
-		return getStartPos();
+		assertTrue(hasSourceRangeInfo());
+		return sourceStart;
 	}
 	
 	/** Gets the source range length. */
 	@Override
 	public final int getLength() {
-		Assert.isTrue(hasSourceRangeInfo());
-		return getEndPos() - getStartPos();
+		assertTrue(hasSourceRangeInfo());
+		return sourceEnd - sourceStart;
 	}
 	
 	public final SourceRange getSourceRange() {

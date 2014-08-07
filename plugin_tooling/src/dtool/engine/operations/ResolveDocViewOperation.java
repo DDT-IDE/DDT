@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
-import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
@@ -22,7 +20,9 @@ import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
+import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
@@ -30,7 +30,6 @@ import dtool.ddoc.TextUI;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.IResolvable;
 
 public class ResolveDocViewOperation extends AbstractDToolOperation {
 	
@@ -70,6 +69,14 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 					return getDDocHTMLViewForAuto(mr, declAttrib);
 				}
 			}
+		} else if(pickedNode instanceof DefinitionEnumVar) {
+			DefinitionEnumVar definitionEnumVar = (DefinitionEnumVar) pickedNode;
+			if(definitionEnumVar.isOffsetAtEnumKeyword(offset)) {
+				if(definitionEnumVar.defFragments.size() == 1) {
+					DefinitionEnumVarFragment firstEnumDef = definitionEnumVar.defFragments.get(0);
+					return getDDocHTMLViewForAutoLike(mr, firstEnumDef);
+				}
+			}
 		}
 		
 		return relevantElementForDoc == null ? null : TextUI.getDDocHTMLRender(relevantElementForDoc);
@@ -81,12 +88,20 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		if(singleDecl instanceof DefinitionAutoVariable) {
 			DefinitionAutoVariable defVar = (DefinitionAutoVariable) singleDecl;
 			if(defVar.getFragments().isEmpty()) {
-				IResolvable effectiveType = defVar.getEffectiveType();
-				INamedElement resolvedType = getFirstElementOrNull(effectiveType.findTargetDefElements(mr, true));
-				return TextUI.getDDocHTMLRender(resolvedType);
+				return getDDocHTMLViewForAutoLike(mr, defVar);
 			}
 		}
 		return null;
+	}
+	
+	protected String getDDocHTMLViewForAutoLike(IModuleResolver mr, IVarDefinitionLike defVar) {
+		INamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
+		
+		if(resolvedType == null) {
+			return TextUI.span("semantic_error", "color:red;",
+				"<b> Error: Could not resolve auto initializer </b>");
+		}
+		return TextUI.getDDocHTMLRender(resolvedType);
 	}
 	
 }

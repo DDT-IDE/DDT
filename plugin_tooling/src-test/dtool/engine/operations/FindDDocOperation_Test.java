@@ -60,7 +60,11 @@ public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "auto a2"), 
 			"", "int"
 		);
-		// TODO
+		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "auto aError"), 
+			"", "Error: Could not resolve auto initializer"
+		);
+		
+		
 //		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "auto a3"), 
 //			"Bar DDoc<p/>", "Bar"
 //		);
@@ -70,12 +74,16 @@ public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 			null 
 		);
 		
-//		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "enum e1"), 
-//			"", "string", "(Alias)"
-//		);
-//		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "enum e2"), 
-//			"", "int"
-//		);
+		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "enum e1"), 
+			"", "string", "(Alias)"
+		);
+		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "enum e2"), 
+			"", "int"
+		);
+		
+		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "enum em1"), 
+			null
+		);
 		
 	}
 	

@@ -6,6 +6,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
+import dtool.engine.operations.CommonDefVarSemantics;
+import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IResolvable;
 
@@ -57,13 +59,20 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		DefinitionVariable.resolveSearchInReferredContainer(search, getEffectiveType());
+	public IResolvable getEffectiveType() {
+		return CommonDefVarSemantics.getEffectiveType(getParent_Concrete().type, initializer);
 	}
 	
 	@Override
-	public IResolvable getEffectiveType() {
-		return DefinitionVariable.getEffectiveType(getParent_Concrete().type, initializer);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		getNodeSemantics().resolveSearchInMembersScope(search);
+	}
+	
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };
+	
+	@Override
+	public CommonDefVarSemantics getNodeSemantics() {
+		return nodeSemantics;
 	}
 	
 }
