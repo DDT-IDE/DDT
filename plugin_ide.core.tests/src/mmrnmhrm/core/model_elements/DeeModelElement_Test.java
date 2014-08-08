@@ -196,7 +196,7 @@ public class DeeModelElement_Test extends CommonDeeWorkspaceTest implements ITes
 		
 		IType topLevelElement = srcModule.getType("moduleDeclImplicitName");
 		
-		assertTrue(topLevelElement.getNameRange().getOffset() == -1);
+		assertTrue(topLevelElement.getNameRange().getOffset() == 0);
 		
 		checkElementExists(srcModule, topLevelElement.getType("Foo"), 
 			EArcheType.Class, "class Foo");
