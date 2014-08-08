@@ -23,10 +23,14 @@ import dtool.resolver.api.FindDefinitionResult;
 
 public class DToolServer {
 	
-	protected final SemanticManager semanticManager = new SemanticManager(this);
+	protected final SemanticManager semanticManager = createSemanticManager();
 	
 	public DToolServer() {
 		logMessage(" ------ DTool engine started ------ ");
+	}
+	
+	protected SemanticManager createSemanticManager() {
+		return new SemanticManager(this);
 	}
 	
 	public SemanticManager getSemanticManager() {

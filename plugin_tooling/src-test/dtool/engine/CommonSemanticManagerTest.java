@@ -88,12 +88,22 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		}
 		
 		@Override
+		protected SemanticManager createSemanticManager() {
+			 // We use this to enable the instrumented compiler install location
+			return new Tests_SemanticManager(this);
+		}
+		
+		@Override
 		public void logError(String message, Throwable throwable) {
 			assertFail();
 		}
 	}
 	
 	public static class Tests_SemanticManager extends SemanticManager {
+		
+		public Tests_SemanticManager(DToolServer dtoolServer) {
+			super(dtoolServer);
+		}
 		
 		public Tests_SemanticManager() {
 			super(new Tests_DToolServer());
