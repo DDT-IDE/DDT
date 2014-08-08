@@ -43,4 +43,9 @@ public class ExpReference extends Expression {
 		return ref.findTargetDefElements(moduleResolver, findFirstOnly);
 	}
 	
+	@Override
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+		return ref.resolveTypeOfUnderlyingValue(mr);
+	}
+	
 }

@@ -15,6 +15,8 @@ import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
@@ -81,6 +83,11 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	}
 	
 	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, target);
+	}
+	
+	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		return IteratorUtil.nonNullIterator(fragments);
 	}
@@ -116,10 +123,18 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 			return EArcheType.Alias;
 		}
 		
+		protected Reference getAliasTarget() {
+			return getParent_Concrete().target;
+		}
+		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			Reference target = getParent_Concrete().target;
-			resolveSearchInReferredContainer(search, target);
+			resolveSearchInReferredContainer(search, getAliasTarget());
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, getAliasTarget());
 		}
 		
 	}

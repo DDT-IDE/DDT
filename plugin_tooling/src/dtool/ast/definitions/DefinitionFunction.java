@@ -93,4 +93,10 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		// TODO: except for implicit function calls syntax, that needs to be implemented
 	}
 	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		// TODO implicit function call
+		return null;
+	}
+	
 }

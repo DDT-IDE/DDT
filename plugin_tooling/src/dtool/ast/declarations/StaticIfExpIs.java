@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.declarations;
 
 import static dtool.util.NewUtils.assertCast;
@@ -8,11 +18,13 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 
@@ -102,6 +114,11 @@ public class StaticIfExpIs extends Expression {
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			StaticIfExpIs staticIfIsExp = getParent_Concrete();
 			resolveSearchInReferredContainer(search, staticIfIsExp.typeRef);
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return null;
 		}
 		
 	}

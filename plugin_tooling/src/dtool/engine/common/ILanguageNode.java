@@ -8,20 +8,8 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.common;
 
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
-
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike {
-	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
-	
-	CommonDefVarSemantics getNodeSemantics();
+public interface ILanguageNode {
 	
 }

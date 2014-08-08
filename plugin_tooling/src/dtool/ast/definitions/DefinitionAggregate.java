@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
 import dtool.ast.ASTCodePrinter;
@@ -7,6 +17,8 @@ import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
@@ -65,6 +77,11 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 	public IScopeNode getBodyScope() {

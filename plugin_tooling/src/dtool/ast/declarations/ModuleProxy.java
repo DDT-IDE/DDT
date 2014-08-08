@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -7,6 +17,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -89,6 +100,11 @@ public class ModuleProxy implements INamedElement {
 		if(resolvedModule != null) {
 			resolvedModule.resolveSearchInMembersScope(search);
 		}
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

@@ -12,11 +12,12 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
+import dtool.resolver.IValueNode;
 
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
  */
-public abstract class Resolvable extends ASTNode implements IResolvable {
+public abstract class Resolvable extends ASTNode implements IValueNode, IResolvable {
 	
 	/** Marker interface for nodes that can appear as qualifier in {@link RefQualified}. 
 	 * Must be a {@link Resolvable}. */
@@ -29,9 +30,6 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	public Resolvable() {
 		assertTrue(this instanceof Reference || this instanceof Expression);
 	}
-	
-	@Override
-	public abstract Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
 	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);

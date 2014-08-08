@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
@@ -8,6 +18,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class EnumMember extends DefUnit {
@@ -52,8 +64,17 @@ public class EnumMember extends DefUnit {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference effectiveType = type != null ? type : getEnumParentType();
+		Reference effectiveType = getEffectiveTypeReference();
 		resolveSearchInReferredContainer(search, effectiveType);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext(mr, getEffectiveTypeReference());
+	}
+	
+	protected Reference getEffectiveTypeReference() {
+		return type != null ? type : getEnumParentType();
 	}
 	
 	public Reference getEnumParentType() {

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
@@ -11,6 +21,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.SourceRange;
 import dtool.ast.references.RefModule;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.BaseLexElement;
 import dtool.parser.IToken;
 import dtool.parser.Token;
@@ -168,6 +180,11 @@ public class Module extends DefUnit implements IScopeNode {
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
 		ReferenceResolver.findInNodeList(search, members, false);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

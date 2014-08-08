@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -10,6 +20,8 @@ import dtool.ast.NodeListView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
@@ -111,6 +123,11 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		if(body != null) {
 			ReferenceResolver.findInNodeList(search, body.nodeList, false);
 		}
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

@@ -55,7 +55,7 @@ public class TextUI {
 		case DEFINITION_VAR_FRAGMENT: {
 			DefVarFragment fragment = (DefVarFragment) defUnit;
 			
-			return typeRefToUIString(fragment.getDeclaredTypeReference()) + " " + fragment.getName();
+			return typeRefToUIString(fragment.getDeclaredType()) + " " + fragment.getName();
 		}
 		
 		case DEFINITION_FUNCTION: {

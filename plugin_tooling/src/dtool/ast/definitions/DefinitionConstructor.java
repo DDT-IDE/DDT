@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
@@ -61,6 +63,11 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		// Not applicable to constructor as it cannot be referred directly
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

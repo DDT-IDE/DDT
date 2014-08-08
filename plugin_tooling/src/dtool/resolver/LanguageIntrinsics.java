@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.resolver;
 
 import java.util.ArrayList;
@@ -13,6 +23,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.util.ArrayView;
 
@@ -32,6 +43,11 @@ public class LanguageIntrinsics {
 		@Override
 		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 			return singletonList;
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return DefElementCommon.returnError_ElementIsNotAValue(this);
 		}
 		
 	}
@@ -102,6 +118,12 @@ public class LanguageIntrinsics {
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			DefUnit.resolveSearchInReferredContainer(search, type);
 		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return CollectionUtil.getFirstElementOrNull(type.findTargetDefElements(mr, false));
+		}
+		
 	}
 	
 	public static class FullyQualifiedReference implements IResolvable {
@@ -145,6 +167,9 @@ public class LanguageIntrinsics {
 	protected final ArrayList<IntrinsicDefUnit> integralProperties = new ArrayList<>();
 	protected final ArrayList<IntrinsicDefUnit> floatProperties = new ArrayList<>();
 	
+	public final PrimitiveDefUnit integral_type = new PrimitiveDefUnit("int", integralProperties);
+	public final PrimitiveDefUnit float_type  = new PrimitiveDefUnit("float", floatProperties);
+	
 	public final IntrinsicScope primitivesScope = new IntrinsicScope(
 		new PrimitiveDefUnit("void"),
 		
@@ -154,7 +179,7 @@ public class LanguageIntrinsics {
 		new PrimitiveDefUnit("ubyte", integralProperties),
 		new PrimitiveDefUnit("short", integralProperties),
 		new PrimitiveDefUnit("ushort", integralProperties),
-		new PrimitiveDefUnit("int", integralProperties),
+		integral_type,
 		new PrimitiveDefUnit("uint", integralProperties),
 		new PrimitiveDefUnit("long", integralProperties),
 		new PrimitiveDefUnit("ulong", integralProperties),
@@ -162,7 +187,7 @@ public class LanguageIntrinsics {
 		new PrimitiveDefUnit("wchar", integralProperties),
 		new PrimitiveDefUnit("dchar", integralProperties),
 		
-		new PrimitiveDefUnit("float", floatProperties),
+		float_type,
 		new PrimitiveDefUnit("double", floatProperties),
 		new PrimitiveDefUnit("real", floatProperties),
 		
@@ -174,8 +199,6 @@ public class LanguageIntrinsics {
 		new PrimitiveDefUnit("creal", floatProperties)
 	);
 	
-	public final PrimitiveDefUnit integral_type = new PrimitiveDefUnit("_integral_", integralProperties);
-	public final PrimitiveDefUnit float_type  = new PrimitiveDefUnit("_float_", floatProperties);
 	public final FullyQualifiedReference string_type = new FullyQualifiedReference("object", "string");
 	
 	public final IntrinsicScope typePropertiesScope = new IntrinsicScope(
@@ -336,7 +359,6 @@ public class LanguageIntrinsics {
 			new IntrinsicProperty("sort", dynArrayType, 
 				parseDDoc("Sorts in place the order of the elements in the array. Returns the array."))
 		);
-		
 	}
 	
 	public final FullyQualifiedReference object_reference = new FullyQualifiedReference("object", "Object");

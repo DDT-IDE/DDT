@@ -25,6 +25,7 @@ import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.AutoReference;
 import dtool.ast.references.NamedReference;
 import dtool.ddoc.TextUI;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
@@ -61,6 +62,9 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
 			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(mr);
+		} else if(pickedNode instanceof AutoReference) {
+			AutoReference autoReference = (AutoReference) pickedNode;
+			return getDDocHTMLViewForAutoLike(mr, autoReference.getParent_());
 		} else if(pickedNode instanceof AttribBasic) {
 			AttribBasic attribBasic = (AttribBasic) pickedNode;
 			if(attribBasic.attribKind == AttributeKinds.AUTO) {

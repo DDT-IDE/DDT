@@ -10,16 +10,13 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
-import java.util.Collection;
-
-import melnorme.utilbox.misc.CollectionUtil;
-import dtool.ast.definitions.DefinitionVariable;
+import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IResolvable;
+import dtool.resolver.IValueNode;
 
 public abstract class CommonDefVarSemantics {
 	
@@ -30,35 +27,24 @@ public abstract class CommonDefVarSemantics {
 	}
 	
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		DefinitionVariable.resolveSearchInReferredContainer(search, getEffectiveType());
-	}
-	
-	protected IResolvable getEffectiveType() {
-		return varDef.getEffectiveType();
+		INamedElement effectiveType = resolveEffectiveType(search.getModuleResolver());
+		if(effectiveType != null) {
+			effectiveType.resolveSearchInMembersScope(search);
+		}
 	}
 	
 	public INamedElement resolveEffectiveType(IModuleResolver mr) {
-		return resolveEffectiveType(mr, getEffectiveType());
-	}
-	
-	public static IResolvable getEffectiveType(Reference typeRef, IInitializer initializer) {
-		if(typeRef != null) 
-			return typeRef;
-		if(initializer instanceof IResolvable)
-			return (IResolvable) initializer;
-		return null;
-	}
-	
-	public static INamedElement resolveEffectiveType(IModuleResolver mr, IResolvable effectiveType) {
-		if(effectiveType == null) 
-			return null;
-		Collection<INamedElement> target = effectiveType.findTargetDefElements(mr, true);
-		INamedElement firstElement = CollectionUtil.getFirstElementOrNull(target);
-		
-		if(firstElement == null) {
-			return firstElement;
+		Reference declaredType = varDef.getDeclaredType();
+		if(declaredType != null) {
+			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));
 		}
-		return firstElement;
+		IInitializer initializer = varDef.getDeclaredInitializer();
+		if(initializer instanceof IValueNode) {
+			IValueNode initializerR = (IValueNode) initializer;
+			return getFirstElementOrNull(initializerR.resolveTypeOfUnderlyingValue(mr));
+		}
+		
+		return null; // TODO: create error element
 	}
 	
 }

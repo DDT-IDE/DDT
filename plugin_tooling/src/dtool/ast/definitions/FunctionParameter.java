@@ -7,6 +7,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.LexElement;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
@@ -84,6 +86,11 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInReferredContainer(search, type);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext(mr, type);
 	}
 	
 }

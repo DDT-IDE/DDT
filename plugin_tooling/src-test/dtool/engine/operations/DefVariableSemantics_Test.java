@@ -19,45 +19,14 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.tests.CommonDToolTest;
 
 public class DefVariableSemantics_Test extends CommonDToolTest {
 	
-	@Test
-	public void test() throws Exception { test$(); }
-	public void test$() throws Exception {
-		
-		testResolveEffectiveType("int xxx = 123;", "xxx", "int");
-		testResolveEffectiveType("int z, xxx = 123;", "xxx", "int");
-		
-//		testResolveEffectiveType("auto x2 = 123;", "x2", "int");
-		
-		testResolveEffectiveType("auto xpto;", "xpto", null);
-		testResolveEffectiveType("auto z, xpto;", "xpto", null);
-		//testResolveEffectiveType("enum xpto;", "xpto", null);
-		
-		testResolveEffectiveType("auto xpto = ref_not_found;", "xpto", null);
-		testResolveEffectiveType("auto z = 1, xpto = ref_not_found;", "xpto", null);
-		testResolveEffectiveType("enum xpto = ref_not_found;", "xpto", null);
-		
-		//testResolveEffectiveType("module mod; class Foo {}; Foo foovar; auto xpto = foovar;", "xpto", "mod.Foo");
-	}
-	
-	protected void testResolveEffectiveType(String source, String defNameMarker, String expectedTypeFQN) {
-		testResolveEffectiveType(source, source.indexOf(defNameMarker), expectedTypeFQN);
-	}
-	
-	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN) {
-		NullModuleResolver mr = new NullModuleResolver();
-		INamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
-		if(expectedTypeFQN == null) {
-			assertTrue(effectiveType == null);
-			return;
-		}
-		assertEquals(effectiveType.getFullyQualifiedName(), expectedTypeFQN);
-	}
+	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
 	
 	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
 		DeeTestsChecksParser parser = new DeeTestsChecksParser(source);
@@ -68,6 +37,72 @@ public class DefVariableSemantics_Test extends CommonDToolTest {
 			return assertInstance(defSymbol.getDefUnit(), IVarDefinitionLike.class);
 		}
 		return assertInstance(node, IVarDefinitionLike.class);
+	}
+	
+	@Test
+	public void test() throws Exception { test$(); }
+	public void test$() throws Exception {
+		
+		testMultiple_ResolveEffectiveType(array(
+			"int xxx = 123;",
+			"int z, xxx = 123;",
+			"int xxx = int;"
+		), "int", null);
+		
+		testMultiple_ResolveEffectiveType(array(
+			"auto xxx = 123;",
+			"auto z, xxx = 123;",
+			"enum xxx = 123;"
+		), "int", null);
+		
+		testMultiple_ResolveEffectiveType(array(
+			"auto xxx = int;",
+			"auto z, xxx = int;",
+			"enum xxx = int;"
+		), "int", NotAValueErrorElement.ERROR_IS_NOT_A_VALUE);
+		
+
+		testMultiple_ResolveEffectiveType(array(
+			"auto xxx;",
+			"auto z, xxx;"
+		), null, null);
+		
+		testMultiple_ResolveEffectiveType(array(
+			"auto xxx = ref_not_found;",
+			"auto z = 1, xxx = ref_not_found;",
+			"enum xxx = ref_not_found;"
+		), null, null);
+		
+		testMultiple_ResolveEffectiveType(array(
+			SOURCE_PREFIX1+"auto xxx = foovar;",
+			SOURCE_PREFIX1+"auto z = 1, xxx = foovar;",
+			SOURCE_PREFIX1+"enum xxx = foovar;"
+		), "mod.Foo", null);
+		
+	}
+	
+	protected void testMultiple_ResolveEffectiveType(String[] sources, String expectedTypeFQN, String errorSuffix) {
+		for (String source : sources) {
+			testResolveEffectiveType(source, "xxx", expectedTypeFQN, errorSuffix);
+		}
+	}
+	
+	protected void testResolveEffectiveType(String source, String defNameMarker, String expectedTypeFQN, 
+			String errorSuffix) {
+		testResolveEffectiveType(source, source.indexOf(defNameMarker), expectedTypeFQN, errorSuffix);
+	}
+	
+	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
+		NullModuleResolver mr = new NullModuleResolver();
+		INamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
+		if(expectedTypeFQN == null || effectiveType == null) {
+			assertTrue(expectedTypeFQN == null && effectiveType == null);
+			return;
+		}
+		assertEquals(effectiveType.getFullyQualifiedName(), expectedTypeFQN);
+		if(errorSuffix != null) {
+			assertTrue(effectiveType.getExtendedName().endsWith(errorSuffix));
+		}
 	}
 	
 }

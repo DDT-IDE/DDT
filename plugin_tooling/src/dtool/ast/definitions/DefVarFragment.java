@@ -6,10 +6,10 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
 import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IResolvable;
 
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration
@@ -50,22 +50,24 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 		return EArcheType.Variable;
 	}
 	
-	public IInitializer getInitializer() {
-		return initializer;
-	}
-	
-	public Reference getDeclaredTypeReference() {
+	@Override
+	public Reference getDeclaredType() {
 		return getParent_Concrete().type;
 	}
 	
 	@Override
-	public IResolvable getEffectiveType() {
-		return CommonDefVarSemantics.getEffectiveType(getParent_Concrete().type, initializer);
+	public IInitializer getDeclaredInitializer() {
+		return initializer;
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		getNodeSemantics().resolveSearchInMembersScope(search);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return getNodeSemantics().resolveEffectiveType(mr);
 	}
 	
 	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };

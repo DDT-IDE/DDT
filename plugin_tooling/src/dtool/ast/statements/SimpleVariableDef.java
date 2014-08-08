@@ -6,7 +6,10 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class SimpleVariableDef extends DefUnit {
@@ -43,6 +46,11 @@ public class SimpleVariableDef extends DefUnit {
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInReferredContainer(search, type);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext(mr, type);
 	}
 	
 }

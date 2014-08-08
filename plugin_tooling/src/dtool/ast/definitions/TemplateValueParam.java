@@ -6,6 +6,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateValueParam extends TemplateParameter {
@@ -46,6 +47,11 @@ public class TemplateValueParam extends TemplateParameter {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Variable;
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return type.findTargetDefElement(mr);
 	}
 	
 	@Override

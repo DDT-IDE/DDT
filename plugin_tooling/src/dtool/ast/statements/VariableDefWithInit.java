@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -6,11 +16,17 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
+import dtool.engine.operations.CommonDefVarSemantics;
+import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class VariableDefWithInit extends DefUnit {
+public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	
 	public final Reference type;
 	public final Expression defaultValue;
@@ -48,6 +64,28 @@ public class VariableDefWithInit extends DefUnit {
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInReferredContainer(search, type);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext(mr, type);
+	}
+	
+	@Override
+	public Reference getDeclaredType() {
+		return type;
+	}
+	
+	@Override
+	public IInitializer getDeclaredInitializer() {
+		return defaultValue;
+	}
+	
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };
+	
+	@Override
+	public CommonDefVarSemantics getNodeSemantics() {
+		return nodeSemantics;
 	}
 	
 }

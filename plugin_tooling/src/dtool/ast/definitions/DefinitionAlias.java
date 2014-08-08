@@ -13,6 +13,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
@@ -111,6 +113,11 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			resolveSearchInReferredContainer(search, target);
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, target);
 		}
 		
 	}

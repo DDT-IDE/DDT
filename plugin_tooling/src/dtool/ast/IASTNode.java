@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast;
 
+import dtool.engine.common.ILanguageNode;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 

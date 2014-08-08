@@ -6,7 +6,10 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefImportSelection;
+import dtool.engine.common.DefElementCommon;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSelection {
@@ -30,6 +33,12 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	}
 	
 	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendStrings(getName(), " = ");
+		cp.append(target);
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Alias;
 	}
@@ -40,9 +49,8 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendStrings(getName(), " = ");
-		cp.append(target);
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return DefElementCommon.resolveTypeForValueContext(mr, target);
 	}
 	
 }

@@ -12,12 +12,12 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
 import dtool.engine.operations.IVarDefinitionLike;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
-import dtool.resolver.IResolvable;
 import dtool.util.ArrayView;
 
 /**
@@ -85,13 +85,23 @@ public class DefinitionVariable extends CommonDefinition
 	}
 	
 	@Override
-	public IResolvable getEffectiveType() {
-		return CommonDefVarSemantics.getEffectiveType(type, initializer);
+	public Reference getDeclaredType() {
+		return type;
+	}
+	
+	@Override
+	public IInitializer getDeclaredInitializer() {
+		return initializer;
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		getNodeSemantics().resolveSearchInMembersScope(search);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return getNodeSemantics().resolveEffectiveType(mr);
 	}
 	
 	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };

@@ -10,6 +10,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
@@ -74,6 +75,12 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		DefinitionFunction.resolveSearchInMembersScopeForFunction(search, target, null, fnParams, null);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		// TODO
+		return null;
 	}
 	
 }

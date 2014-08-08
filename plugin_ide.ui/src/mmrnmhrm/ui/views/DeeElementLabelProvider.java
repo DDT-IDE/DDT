@@ -44,7 +44,7 @@ public class DeeElementLabelProvider {
 		}
 		case DEFINITION_VAR_FRAGMENT: {
 			DefVarFragment elem = (DefVarFragment) defUnit;
-			Reference type = elem.getDeclaredTypeReference();
+			Reference type = elem.getDeclaredType();
 			return elem.getName() + getTypeSegment(type) + getDefUnitContainerSuffix(defUnit);
 		}
 		

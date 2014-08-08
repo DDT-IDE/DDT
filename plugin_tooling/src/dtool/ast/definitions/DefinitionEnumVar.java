@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2013, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,12 +24,13 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
+import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
 import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.INonScopedContainer;
-import dtool.resolver.IResolvable;
 import dtool.util.ArrayView;
 
 /**
@@ -114,16 +115,23 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			DefinitionVariable.resolveSearchInReferredContainer(search, getEffectiveType());
+		public Reference getDeclaredType() {
+			return null; // Never has one
 		}
 		
 		@Override
-		public IResolvable getEffectiveType() {
-			if(initializer instanceof IResolvable) {
-				return (IResolvable) initializer;
-			}
-			return null;
+		public IInitializer getDeclaredInitializer() {
+			return initializer;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			getNodeSemantics().resolveSearchInMembersScope(search);
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return getNodeSemantics().resolveEffectiveType(mr);
 		}
 		
 		protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) {

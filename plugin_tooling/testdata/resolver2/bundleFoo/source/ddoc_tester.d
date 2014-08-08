@@ -9,17 +9,21 @@ void fooFunc(string defA)
 	auto xxx = fooFunc/*fooFunc_ref*/();
 	
 	auto a1 = "string";
-	auto a2 = int;
+	auto a2 = 123;
+	auto aNotAType = int;
 	auto aError;
 	
 	Bar bar;
 	auto a3 = bar;
 	
-	auto multiple1 = "string", multiple2 = int;
+	auto multiple1 = "string", multiple2 = 123;
 	
 	enum e1 = "string";
-	enum e2 = int;
+	enum e2 = 123;
 	
-	enum em1 = "string", em2 = int;
+	enum em1 = "string", em2 = 123;
+	
+	if(auto ifauto1 = "string") {
+	}
 	
 }

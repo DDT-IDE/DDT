@@ -79,5 +79,11 @@ public class RefTypeFunction extends CommonRefNative {
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			// TODO
 		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return null; // TODO
+		}
+		
 	}
 }

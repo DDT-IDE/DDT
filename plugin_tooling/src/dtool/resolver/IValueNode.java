@@ -8,26 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.expressions;
-
+package dtool.resolver;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.engine.modules.IModuleResolver;
 
-public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
+public interface IValueNode {
 	
-	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-		return findTargetDefElements(mr, true); // TODO
-	}
-	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-		return Collections.emptySet();
-	}
+	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
 	
 }

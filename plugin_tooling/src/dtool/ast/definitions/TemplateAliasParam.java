@@ -4,6 +4,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Resolvable;
+import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateAliasParam extends TemplateParameter {
@@ -46,6 +47,11 @@ public class TemplateAliasParam extends TemplateParameter {
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		// TODO return intrinsic universal
 		return;
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return null; // TODO: need instance
 	}
 	
 }
