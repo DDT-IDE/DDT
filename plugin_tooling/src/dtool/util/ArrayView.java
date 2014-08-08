@@ -16,8 +16,7 @@ import melnorme.utilbox.core.CoreUtil;
  */
 public class ArrayView<E> implements Iterable<E>, RandomAccess, Collection<E> {
 	
-	@SafeVarargs
-	public static <T> ArrayView<T> create(T... arr){
+	public static <T> ArrayView<T> create(T[] arr){
 		return new ArrayView<T>(arr);
 	}
 	
