@@ -15,6 +15,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.Expression;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.resolver.DefUnitResultsChecker;
@@ -33,7 +34,24 @@ public class CommonNodeSemanticsTest extends CommonDToolTest {
 		return ASTNodeFinder.findElement(module, offset);
 	}
 	
-	protected void testResolveSearchInMembersScope(INamedElement defVar, String... expectedResults) {
+	@SuppressWarnings("unchecked")
+	public static <T> T getMatchingParent(ASTNode node, Class<T> klass) {
+		if(node == null) {
+			return null;
+		}
+		
+		if(klass.isInstance(node)) {
+			return (T) node;
+		}
+		return getMatchingParent(node.getParent(), klass);
+	}
+	
+	public Expression parseSourceAndPickNode(String source, int offset, Class<Expression> klass) {
+		ASTNode node = parseSourceAndPickNode(source, offset);
+		return getMatchingParent(node, klass);
+	}
+	
+	protected static void testResolveSearchInMembersScope(INamedElement defVar, String... expectedResults) {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(null, 0, new NullModuleResolver());
 		defVar.resolveSearchInMembersScope(search);
 		

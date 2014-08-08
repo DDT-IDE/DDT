@@ -50,7 +50,9 @@ public class ReferenceResolver {
 	
 	public static void resolveSearchInFullLexicalScope(final ASTNode node, CommonDefUnitSearch search) {
 		IScopeNode scope = getNearestLexicalScope(node);
-		assertNotNull(scope);
+		if(scope == null) {
+			return;
+		}
 		
 		findDefUnitInPrimitivesScope(search);
 		

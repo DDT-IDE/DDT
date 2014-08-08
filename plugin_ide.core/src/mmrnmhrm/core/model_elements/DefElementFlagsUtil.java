@@ -12,7 +12,7 @@ import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.ITemplatableElement;
-import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 
 public class DefElementFlagsUtil {
 	

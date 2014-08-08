@@ -20,11 +20,10 @@ import melnorme.utilbox.misc.ArrayUtil;
 import org.junit.Test;
 
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.definitions.IntrinsicDefUnit;
 import dtool.ast.expressions.Expression;
+import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
-import dtool.resolver.LanguageIntrinsics.PrimitiveDefUnit;
 
 public class ExpLiteralSemantics_Test extends CommonNodeSemanticsTest {
 	
@@ -35,12 +34,18 @@ public class ExpLiteralSemantics_Test extends CommonNodeSemanticsTest {
 		"max", "min"
 	);
 	protected static final String[] FLOAT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
-		ArrayUtil.createFrom(getMemberNames(D2_063_intrinsics.float_type), String.class)
+		ArrayUtil.createFrom(getMemberNames2(D2_063_intrinsics.float_type), String.class)
+	);
+	protected static final String[] DYN_ARRAY_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
+		ArrayUtil.createFrom(getMemberNames2(D2_063_intrinsics.dynArrayType), String.class)
+	);
+	protected static final String[] STATIC_ARRAY_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
+		ArrayUtil.createFrom(getMemberNames2(D2_063_intrinsics.staticArrayType), String.class)
 	);
 	
-	public static ArrayList<String> getMemberNames(PrimitiveDefUnit primitiveDefUnit) {
+	public static ArrayList<String> getMemberNames2(IntrinsicTypeDefUnit intrinsicDefUnit) {
 		ArrayList<String> names = new ArrayList<>();
-		for (IntrinsicDefUnit defUnit : primitiveDefUnit.getMembers()) {
+		for (INamedElement defUnit : intrinsicDefUnit.getMembersScope().members) {
 			names.add(defUnit.getName());
 		}
 		return names;
@@ -52,14 +57,22 @@ public class ExpLiteralSemantics_Test extends CommonNodeSemanticsTest {
 		testResolveSearchInMembersScope(D2_063_intrinsics.bool_type, COMMON_PROPERTIES);
 		testExpressionResolution("true", COMMON_PROPERTIES);
 		
-		testResolveSearchInMembersScope(D2_063_intrinsics.integral_type, INT_PROPERTIES);
+		testResolveSearchInMembersScope(D2_063_intrinsics.int_type, INT_PROPERTIES);
 		testExpressionResolution("123", INT_PROPERTIES);
+		
+		testResolveSearchInMembersScope(D2_063_intrinsics.char_type, INT_PROPERTIES);
+		testExpressionResolution("'c'", INT_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.float_type, FLOAT_PROPERTIES);
 		testExpressionResolution("123.123", FLOAT_PROPERTIES);
+		testExpressionResolution("123.123f", FLOAT_PROPERTIES);
+		
+		
+		testResolveSearchInMembersScope(D2_063_intrinsics.dynArrayType, DYN_ARRAY_PROPERTIES);
+		testResolveSearchInMembersScope(D2_063_intrinsics.staticArrayType, STATIC_ARRAY_PROPERTIES);
 	}
 	
-	protected void testExpressionResolution(String source, String... expectedResults) {
+	protected static void testExpressionResolution(String source, String... expectedResults) {
 		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
 		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
 		

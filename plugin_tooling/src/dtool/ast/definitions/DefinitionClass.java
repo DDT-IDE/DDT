@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
+import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
@@ -7,6 +18,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -73,10 +85,12 @@ public class DefinitionClass extends DefinitionAggregate {
 		acceptVisitor(visitor, aggrBody);
 	}
 	
+	protected final InstrinsicsScope objectPropertiesScope = D2_063_intrinsics.createObjectPropertiesScope(this);
+	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInHierarchyScope(search);
-		LanguageIntrinsics.D2_063_intrinsics.objectPropertiesScope.resolveSearchInScope(search);
+		objectPropertiesScope.resolveSearchInScope(search);
 	}
 	
 	public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
@@ -115,7 +129,7 @@ public class DefinitionClass extends DefinitionAggregate {
 			}
 		}
 		// TODO test implicit object reference
-		return LanguageIntrinsics.D2_063_intrinsics.object_reference.findTargetDefElement(mr);
+		return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
 	}
 	
 }

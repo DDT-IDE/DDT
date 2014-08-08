@@ -1,17 +1,21 @@
-package dtool.ast.definitions;
+package dtool.engine.common.intrinsics;
 
 import descent.core.ddoc.Ddoc;
-import dtool.resolver.CommonDefUnitSearch;
+import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.INamedElement;
 
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
  */
 public abstract class IntrinsicDefUnit implements INamedElement {
 	
-	protected String name;
+	protected final String name;
+	protected final Ddoc doc;
 	
-	public IntrinsicDefUnit(String name) {
+	public IntrinsicDefUnit(String name, Ddoc doc) {
 		this.name = name;
+		this.doc = doc;
 	}
 	
 	@Override
@@ -55,14 +59,13 @@ public abstract class IntrinsicDefUnit implements INamedElement {
 	}
 	
 	@Override
-	public abstract Ddoc resolveDDoc();
-	
-	@Override
-	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	public final Ddoc resolveDDoc() {
+		return doc;
+	}
 	
 	@Override
 	public String toString() {
-		return "intrinsic#" + getName();
+		return "intrinsic_type#" + getName();
 	}
 	
 }

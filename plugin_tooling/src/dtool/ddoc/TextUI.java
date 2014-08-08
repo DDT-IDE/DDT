@@ -16,7 +16,6 @@ import java.util.Collections;
 
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
-import descent.core.ddoc.HTMLPrinterUtils;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
@@ -26,7 +25,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
 
-public class TextUI {
+public class TextUI extends HTMLWriterUtil {
 	
 	public static String getLabelForHoverSignature(INamedElement namedElement) {
 		
@@ -104,16 +103,6 @@ public class TextUI {
 			str += "<br/><br/>" + stringBuffer.toString();
 		}
 		return str;
-	}
-	
-	public static String span(String cssClass, String style, String spanContents) {
-		return "<span style=\""+style+"\" class=\"" + cssClass + "\" >" + spanContents + "</span>";
-	}
-	
-	public static String convertoToHTML(String string) {
-		string = HTMLPrinterUtils.convertToHTMLContent(string);
-		string = string.replace("\n", "<br/>");
-		return string;
 	}
 	
 }

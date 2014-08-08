@@ -102,8 +102,8 @@ public class DefVariableSemantics_Test extends CommonNodeSemanticsTest {
 	public void testCompletionSearch$() throws Exception {
 		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
 		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
-		defVar_testResolveSearchInMembers("auto xxx = ; ", COMMON_PROPERTIES);
-		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ", COMMON_PROPERTIES);
+		defVar_testResolveSearchInMembers("auto xxx = ; ");
+		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
 	}
 	
 	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {

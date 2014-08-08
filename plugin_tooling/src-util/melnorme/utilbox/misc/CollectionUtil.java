@@ -144,5 +144,9 @@ public class CollectionUtil {
 		list1 = sort(list1);
 		list2 = sort(list2);
 	}
+	public static <E, T extends List<? super E>> T addAll(T coll, Collection<E> other) {
+		coll.addAll(other);
+		return coll;
+	}
 	
 }

@@ -26,8 +26,8 @@
 
 #@TYPE_PROPERTIES【init▪sizeof▪alignof▪mangleof▪stringof】
 #@INTEGRAL_PROPERTIES【#@TYPE_PROPERTIES▪max▪min】
-#@FLOAT_PROPERTIES【#@TYPE_PROPERTIES▪infinity▪nan▪dig▪epsilon▪mant_dig▪
-max_10_exp▪max_exp▪min_10_exp▪min_exp▪max▪min_normal▪re▪im▪▪】
+#@FLOAT_PROPERTIES【#@TYPE_PROPERTIES▪
+infinity▪nan▪dig▪epsilon▪mant_dig▪max_10_exp▪max_exp▪min_10_exp▪min_exp▪max▪min_normal▪re▪im▪】
 
 #@ARRAY_PROPERTIES【#@TYPE_PROPERTIES▪length▪ptr▪dup▪idup▪reverse▪sort】
 

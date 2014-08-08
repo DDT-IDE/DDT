@@ -30,7 +30,7 @@ import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
-import dtool.resolver.LanguageIntrinsics.IPrimitiveDefUnit;
+import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {

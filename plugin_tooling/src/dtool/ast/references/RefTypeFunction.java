@@ -3,18 +3,17 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.utilbox.core.CoreUtil;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.FunctionAttributes;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.CommonDefUnitSearch;
+import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.LanguageIntrinsics.DeeIntrinsicType;
 import dtool.util.ArrayView;
 
 /**
@@ -60,30 +59,14 @@ public class RefTypeFunction extends CommonRefNative {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return Resolvable.wrapResult(IntrinsicFunction.instance);
+		return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
 	}
 	
-	public static class IntrinsicFunction extends IntrinsicDefUnit {
-		public IntrinsicFunction() {
-			super("<funtion>");
+	public static final IntrinsicFunctionType intrinsicFunctionTypeInstance = new IntrinsicFunctionType();
+	
+	public static class IntrinsicFunctionType extends DeeIntrinsicType {
+		public IntrinsicFunctionType() {
+			LanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
 		}
-		
-		public static final IntrinsicFunction instance = new IntrinsicFunction();
-		
-		@Override
-		public Ddoc resolveDDoc() {
-			return null; // TODO
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			// TODO
-		}
-		
-		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return null; // TODO
-		}
-		
 	}
 }

@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.Test;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.IntrinsicDefUnit;
+import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 import dtool.resolver.LanguageIntrinsics;
 
 public class DeeElementFlagsTest {
