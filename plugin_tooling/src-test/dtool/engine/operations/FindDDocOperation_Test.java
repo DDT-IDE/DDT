@@ -36,7 +36,7 @@ public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 		}
 		
 		for (String string : expectedContains) {
-			assertTrue(opResult.contains(string));
+			assertTrue(opResult.contains(string), "【" + opResult + "】 does not contain:" + string);
 		}
 		return opResult;
 	}
