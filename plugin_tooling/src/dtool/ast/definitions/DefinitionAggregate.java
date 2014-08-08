@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
@@ -18,6 +19,7 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -74,9 +76,16 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		ReferenceResolver.findInNodeList(search, tplParams, true);
 	}
 	
+	protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
+	
+	protected InstrinsicsScope createAggregateCommonTypeScope() {
+		return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
+	}
+	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+		commonTypeScope.resolveSearchInScope(search);
 	}
 	
 	@Override

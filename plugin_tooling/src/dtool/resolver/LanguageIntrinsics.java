@@ -85,9 +85,6 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 	public final FullyQualifiedReference string_type = new FullyQualifiedReference("object", "string");
 	
 	
-	// /*BUG here*/ TODO: deprecate and remove usage of this
-	public final IntrinsicTypeDefUnit common_type = new DeeIntrinsicType("___", null) { };
-	
 	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit {
 		
 		public DeeIntrinsicType(String name, Ddoc doc) {
@@ -104,7 +101,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 	}
 	
-	protected ArrayList<IntrinsicDefUnit> createCommonProperties(INamedElement type) {
+	public ArrayList<IntrinsicDefUnit> createCommonProperties(INamedElement type) {
 		return CollectionUtil.<IntrinsicDefUnit>createArrayList( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
@@ -118,7 +115,6 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 	}
 	
 	{
-		common_type.createMembers();
 		
 		void_type.createMembers();
 		

@@ -154,7 +154,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		
 		IModuleResolver mr = search.getModuleResolver();
 		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
-		CommonRefQualified.resolveSearchInMultipleContainers(containers, search, true);
+		CommonRefQualified.resolveSearchInMultipleContainers(containers, search);
 	}
 	
 }

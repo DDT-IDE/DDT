@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
@@ -21,6 +22,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -118,11 +120,17 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		return EArcheType.Enum;
 	}
 	
+	protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
+	protected InstrinsicsScope createAggregateCommonTypeScope() {
+		return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
+	}
+	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		if(body != null) {
 			ReferenceResolver.findInNodeList(search, body.nodeList, false);
 		}
+		commonTypeScope.resolveSearchInScope(search);
 	}
 	
 	@Override

@@ -28,11 +28,13 @@ public class AggregateSemantics_Test extends CommonNodeSemanticsTest {
 	@Test
 	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
 	public void testCompletionSearch$() throws Exception {
-//		testResolveSearchInMembersScope(D2_063_intrinsics.bool_type, COMMON_PROPERTIES);
 		testExpressionResolution("class Foo {} ; Foo foo; auto _ = foo/*X*/;", OBJECT_PROPERTIES);
-//		testExpressionResolution("struct Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
+		testExpressionResolution("interface Foo {} ; Foo foo; auto _ = foo/*X*/;", OBJECT_PROPERTIES);
+		testExpressionResolution("struct Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
+		testExpressionResolution("union Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
+		
+		testExpressionResolution("enum Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
 	}
-	
 	
 	protected void testExpressionResolution(String source, String... expectedResults) {
 		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);

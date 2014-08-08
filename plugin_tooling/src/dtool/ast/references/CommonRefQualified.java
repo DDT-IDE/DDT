@@ -9,7 +9,6 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.LanguageIntrinsics;
 
 
 /**
@@ -45,28 +44,20 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 	
 	public void performQualifiedRefSearch(CommonDefUnitSearch search) {
 		Collection<INamedElement> defunits = findRootDefUnits(search.getModuleResolver());
-		CommonRefQualified.resolveSearchInMultipleContainers(defunits, search, true);
+		CommonRefQualified.resolveSearchInMultipleContainers(defunits, search);
 	}
 	
 	public static void resolveSearchInMultipleContainers(Collection<INamedElement> containers, 
-		CommonDefUnitSearch search, boolean isDotQualified) {
+			CommonDefUnitSearch search) {
 		if(containers == null)
 			return;
 		
-		boolean hasTypeContainer = false;
 		for (INamedElement container : containers) {
 			if(search.isFinished())
 				return;
 			container.resolveSearchInMembersScope(search);
-			
-			if(container.getArcheType().isType()) {
-				hasTypeContainer = true;
-			}
 		}
 		
-		if(isDotQualified && hasTypeContainer) {
-			LanguageIntrinsics.D2_063_intrinsics.common_type.resolveSearchInMembersScope(search);
-		}
 	}
 	
 }

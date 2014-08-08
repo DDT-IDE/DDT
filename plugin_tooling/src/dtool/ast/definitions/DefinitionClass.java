@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
@@ -85,12 +84,15 @@ public class DefinitionClass extends DefinitionAggregate {
 		acceptVisitor(visitor, aggrBody);
 	}
 	
-	protected final InstrinsicsScope objectPropertiesScope = D2_063_intrinsics.createObjectPropertiesScope(this);
+	@Override
+	protected InstrinsicsScope createAggregateCommonTypeScope() {
+		return LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
+	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInHierarchyScope(search);
-		objectPropertiesScope.resolveSearchInScope(search);
+		commonTypeScope.resolveSearchInScope(search);
 	}
 	
 	public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
