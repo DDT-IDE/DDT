@@ -64,8 +64,9 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 			}
 		}
 		
-		if(isDotQualified && hasTypeContainer) { 
-			LanguageIntrinsics.d_2_063_intrinsics.typePropertiesScope.resolveSearchInScope(search);
+		 /*BUG here: we should remove this code*/
+		if(isDotQualified && hasTypeContainer) {
+			LanguageIntrinsics.D2_063_intrinsics.commonPropertiesScope.resolveSearchInScope(search);
 		}
 	}
 	

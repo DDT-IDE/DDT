@@ -10,28 +10,25 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
+import static dtool.engine.operations.ExpLiteralSemantics_Test.COMMON_PROPERTIES;
+import static dtool.engine.operations.ExpLiteralSemantics_Test.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.ArrayUtil.concat;
 
 import org.junit.Test;
 
 import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.definitions.Module;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
-import dtool.tests.CommonDToolTest;
 
-public class DefVariableSemantics_Test extends CommonDToolTest {
+public class DefVariableSemantics_Test extends CommonNodeSemanticsTest {
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
 	
 	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
-		DeeTestsChecksParser parser = new DeeTestsChecksParser(source);
-		Module module = parser.parseModule("_tests", null).getNode();
-		ASTNode node = ASTNodeFinder.findElement(module, offset);
+		ASTNode node = parseSourceAndPickNode(source, offset);
 		if(node instanceof DefSymbol) {
 			DefSymbol defSymbol = (DefSymbol) node;
 			return assertInstance(defSymbol.getDefUnit(), IVarDefinitionLike.class);
@@ -40,8 +37,8 @@ public class DefVariableSemantics_Test extends CommonDToolTest {
 	}
 	
 	@Test
-	public void test() throws Exception { test$(); }
-	public void test$() throws Exception {
+	public void testResolveEffectiveType() throws Exception { testResolveEffectiveType$(); }
+	public void testResolveEffectiveType$() throws Exception {
 		
 		testMultiple_ResolveEffectiveType(array(
 			"int xxx = 123;",
@@ -83,13 +80,8 @@ public class DefVariableSemantics_Test extends CommonDToolTest {
 	
 	protected void testMultiple_ResolveEffectiveType(String[] sources, String expectedTypeFQN, String errorSuffix) {
 		for (String source : sources) {
-			testResolveEffectiveType(source, "xxx", expectedTypeFQN, errorSuffix);
+			testResolveEffectiveType(source, source.indexOf("xxx"), expectedTypeFQN, errorSuffix);
 		}
-	}
-	
-	protected void testResolveEffectiveType(String source, String defNameMarker, String expectedTypeFQN, 
-			String errorSuffix) {
-		testResolveEffectiveType(source, source.indexOf(defNameMarker), expectedTypeFQN, errorSuffix);
 	}
 	
 	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
@@ -103,6 +95,20 @@ public class DefVariableSemantics_Test extends CommonDToolTest {
 		if(errorSuffix != null) {
 			assertTrue(effectiveType.getExtendedName().endsWith(errorSuffix));
 		}
+	}
+	
+	@Test
+	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
+	public void testCompletionSearch$() throws Exception {
+		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
+		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
+		defVar_testResolveSearchInMembers("auto xxx = ; ", COMMON_PROPERTIES);
+		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ", COMMON_PROPERTIES);
+	}
+	
+	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
+		IVarDefinitionLike defVar = parseDefinitionVar(source, source.indexOf("xxx"));
+		testResolveSearchInMembersScope(defVar, expectedResults);
 	}
 	
 }

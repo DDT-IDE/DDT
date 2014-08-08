@@ -37,7 +37,7 @@ public class ExpLiteralInteger extends Expression {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return Collections.<INamedElement>singleton(LanguageIntrinsics.d_2_063_intrinsics.integral_type);
+		return Collections.<INamedElement>singleton(LanguageIntrinsics.D2_063_intrinsics.integral_type);
 	}
 	
 }

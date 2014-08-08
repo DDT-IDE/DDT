@@ -67,6 +67,10 @@ public class LanguageIntrinsics {
 			this(name, null);
 		}
 		
+		public Collection<IntrinsicDefUnit> getMembers() {
+			return members;
+		}
+		
 		@Override
 		public Ddoc resolveDDoc() {
 			return null;
@@ -159,7 +163,7 @@ public class LanguageIntrinsics {
 		return new DdocParser("/**" + ddocSource + "*/").parse();
 	}
 	
-	public static LanguageIntrinsics d_2_063_intrinsics = new LanguageIntrinsics();
+	public static LanguageIntrinsics D2_063_intrinsics = new LanguageIntrinsics();
 	
 	public LanguageIntrinsics() {} 
 	
@@ -201,7 +205,7 @@ public class LanguageIntrinsics {
 	
 	public final FullyQualifiedReference string_type = new FullyQualifiedReference("object", "string");
 	
-	public final IntrinsicScope typePropertiesScope = new IntrinsicScope(
+	public final IntrinsicScope commonPropertiesScope = new IntrinsicScope(
 		new IntrinsicProperty("init", null, parseDDoc("initializer")),
 		new IntrinsicProperty("sizeof", integral_type, 
 			parseDDoc("size in bytes (equivalent to C's $(D sizeof(type)))")),
@@ -212,11 +216,12 @@ public class LanguageIntrinsics {
 			parseDDoc("string representing the source representation of the type"))
 	);
 	
-	public final PrimitiveDefUnit bool_type = new PrimitiveDefUnit("bool", typePropertiesScope.members);
-	public final PrimitiveDefUnit char_type = new PrimitiveDefUnit("char", typePropertiesScope.members);
+	public final PrimitiveDefUnit bool_type = new PrimitiveDefUnit("bool", commonPropertiesScope.members);
+	public final PrimitiveDefUnit char_type = new PrimitiveDefUnit("char", commonPropertiesScope.members);
 	
 	{
 		
+		integralProperties.addAll(commonPropertiesScope.members);
 		integralProperties.addAll(Arrays.<IntrinsicDefUnit>asList(
 			new IntrinsicProperty("init", integral_type, parseDDoc("initializer")),
 			
@@ -224,6 +229,7 @@ public class LanguageIntrinsics {
 			new IntrinsicProperty("min", integral_type, parseDDoc("minimum value"))
 		));
 		
+		floatProperties.addAll(commonPropertiesScope.members);
 		floatProperties.addAll(Arrays.<IntrinsicDefUnit>asList(
 			new IntrinsicProperty("init", float_type, parseDDoc("initializer")),
 			

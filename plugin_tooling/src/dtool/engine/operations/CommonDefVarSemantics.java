@@ -17,6 +17,7 @@ import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IValueNode;
+import dtool.resolver.LanguageIntrinsics;
 
 public abstract class CommonDefVarSemantics {
 	
@@ -30,6 +31,8 @@ public abstract class CommonDefVarSemantics {
 		INamedElement effectiveType = resolveEffectiveType(search.getModuleResolver());
 		if(effectiveType != null) {
 			effectiveType.resolveSearchInMembersScope(search);
+		} else {
+			LanguageIntrinsics.D2_063_intrinsics.commonPropertiesScope.resolveSearchInScope(search);
 		}
 	}
 	

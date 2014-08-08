@@ -78,6 +78,10 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		checkResults(expectedResults, null);
 	}
 	
+	public void checkResults(String[] expectedResults) {
+		checkResults(expectedResults, null);
+	}
+	
 	public void checkResults(String[] expectedResults, Map<String, MetadataEntry> markers) {
 		HashSet<String> expectedResultsDeduplicated = hashSet(expectedResults);
 		

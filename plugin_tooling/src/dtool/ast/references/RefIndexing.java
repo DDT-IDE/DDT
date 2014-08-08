@@ -49,7 +49,7 @@ public class RefIndexing extends Reference {
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		//TODO infer if its a static array, map array, or tupe
 		// Assume it's a static array. 
-		return Resolvable.wrapResult(LanguageIntrinsics.d_2_063_intrinsics.staticArrayType);
+		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.staticArrayType);
 	}
 	
 	@Override

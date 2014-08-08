@@ -44,6 +44,23 @@ public class NewUtils {
 		return (T) object;
 	}
 	
+	/* ----------------- collection utils ----------------- */
+	
+	public static <T> T getSingleElementOrNull(Iterable<T> iterable) {
+		if(iterable == null) {
+			return null;
+		}
+		Iterator<T> iterator = iterable.iterator();
+		if(iterator.hasNext() == false) {
+			return null;
+		}
+		T next = iterator.next();
+		assertTrue(iterator.hasNext() == false);
+		return next;
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public static final String[] EMPTY_STRING_ARRAY = new String[0];
 	
 	/** Shortcut for creating a new {@link ArrayList} */

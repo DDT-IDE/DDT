@@ -76,7 +76,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInHierarchyScope(search);
-		LanguageIntrinsics.d_2_063_intrinsics.objectPropertiesScope.resolveSearchInScope(search);
+		LanguageIntrinsics.D2_063_intrinsics.objectPropertiesScope.resolveSearchInScope(search);
 	}
 	
 	public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
@@ -115,7 +115,7 @@ public class DefinitionClass extends DefinitionAggregate {
 			}
 		}
 		// TODO test implicit object reference
-		return LanguageIntrinsics.d_2_063_intrinsics.object_reference.findTargetDefElement(mr);
+		return LanguageIntrinsics.D2_063_intrinsics.object_reference.findTargetDefElement(mr);
 	}
 	
 }

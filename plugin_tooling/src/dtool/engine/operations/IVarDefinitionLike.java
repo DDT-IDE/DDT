@@ -10,13 +10,15 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
+import dtool.ast.IASTNode;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 
 /**
  * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
  */
-public interface IVarDefinitionLike {
+public interface IVarDefinitionLike extends INamedElement, IASTNode {
 	
 	Reference getDeclaredType();
 	

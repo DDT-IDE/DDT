@@ -40,7 +40,7 @@ public class ExpLiteralString extends Expression {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-		return LanguageIntrinsics.d_2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
+		return LanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
 	}
 	
 }

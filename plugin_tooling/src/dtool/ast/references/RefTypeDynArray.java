@@ -35,7 +35,7 @@ public class RefTypeDynArray extends CommonRefNative {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return Resolvable.wrapResult(LanguageIntrinsics.d_2_063_intrinsics.dynArrayType);
+		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 	}
 	
 }
