@@ -14,7 +14,7 @@ import java.util.Iterator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 import dtool.util.ArrayView;
 
 public class BlockStatementUnscoped extends CommonStatementList implements INonScopedContainer {

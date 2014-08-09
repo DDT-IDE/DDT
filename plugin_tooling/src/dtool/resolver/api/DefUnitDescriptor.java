@@ -7,25 +7,13 @@ package dtool.resolver.api;
 public class DefUnitDescriptor {
 	
 	protected final String qualifiedId;
-	protected final String idQualification;
-	
 	
 	public DefUnitDescriptor(String qualifiedId) {
 		this.qualifiedId = qualifiedId;
-		this.idQualification = null;
-	}
-	
-	public DefUnitDescriptor(String qualifiedId, String idQualification) {
-		this.qualifiedId = qualifiedId;
-		this.idQualification = idQualification;
 	}
 	
 	public String getQualifiedId() {
 		return qualifiedId;
-	}
-	
-	public String getIdQualification() {
-		return idQualification;
 	}
 	
 	public boolean isNative() {

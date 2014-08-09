@@ -12,12 +12,12 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.INonScopedContainer;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
 import dtool.parser.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.INonScopedContainer;
 import dtool.util.ArrayView;
 
 /**

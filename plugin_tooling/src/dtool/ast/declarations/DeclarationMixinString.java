@@ -9,7 +9,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 
 /**
  * Parse exp contents as code (exp must resolve to a string).

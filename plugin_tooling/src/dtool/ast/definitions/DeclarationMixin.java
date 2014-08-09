@@ -10,7 +10,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 
 /**
  * Declaration of a template mixin with no name:

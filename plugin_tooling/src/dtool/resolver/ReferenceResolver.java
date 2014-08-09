@@ -23,6 +23,7 @@ import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
+import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult;
 

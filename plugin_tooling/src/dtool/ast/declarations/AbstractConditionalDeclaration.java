@@ -12,7 +12,7 @@ import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.BlockStatement;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 
 public abstract class AbstractConditionalDeclaration extends ASTNode 
 	implements INonScopedContainer, IDeclaration, IStatement 

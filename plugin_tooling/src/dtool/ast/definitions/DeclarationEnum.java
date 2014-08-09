@@ -12,7 +12,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 
 public class DeclarationEnum extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	

@@ -31,7 +31,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			boolean findRefs) {
 		super(deeMatchLocator, findDecls, findRefs);
 		this.modelElement = focus;
-		this.defUnitDescriptor = new DefUnitDescriptor(modelElement.getElementName(), null);
+		this.defUnitDescriptor = new DefUnitDescriptor(modelElement.getElementName());
 	}
 	
 	@Override

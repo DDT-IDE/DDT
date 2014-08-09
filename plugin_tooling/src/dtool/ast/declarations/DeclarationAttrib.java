@@ -14,7 +14,7 @@ import dtool.ast.NodeList;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.INonScopedContainer;
+import dtool.engine.common.INonScopedContainer;
 import dtool.util.ArrayView;
 
 /**
@@ -105,7 +105,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	// TODO have CommonDefinition fetch attributes upwards,
 	// instead of the other way around
 	protected void applyBasicAttributes(AttribBasic attribute, INonScopedContainer block) {
-		Iterator<? extends ASTNode> iter = block.getMembersIterator();
+		Iterator<? extends IASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
 			IASTNode node = iter.next();
 			
@@ -119,17 +119,17 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	}
 	
 	protected void applyProtectionAttributes(EProtection protection, INonScopedContainer block) {
-		Iterator<? extends ASTNode> iter = block.getMembersIterator();
+		Iterator<? extends IASTNode> iter = block.getMembersIterator();
 		while(iter.hasNext()) {
-			ASTNode descendantNode = iter.next();
+			IASTNode descendantNode = iter.next();
 			
-			if (anotherProtectionAttribPresent(descendantNode)) {
+			if(anotherProtectionAttribPresent(descendantNode)) {
 				continue; // Do not descend, other attrib takes precedence
 			}
 			if(descendantNode instanceof CommonDefinition) {
 				CommonDefinition def = (CommonDefinition) descendantNode;
 				def.setProtection(protection);
-			} else if (descendantNode instanceof DeclarationImport && protection == EProtection.PUBLIC) {
+			} else if(descendantNode instanceof DeclarationImport && protection == EProtection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) descendantNode;
 				declImport.isTransitive = true;
 			} else if(descendantNode instanceof INonScopedContainer) {
@@ -138,7 +138,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 		}
 	}
 	
-	public boolean anotherProtectionAttribPresent(ASTNode node) {
+	public boolean anotherProtectionAttribPresent(IASTNode node) {
 		if(node instanceof DeclarationAttrib) {
 			DeclarationAttrib declAttrib = (DeclarationAttrib) node;
 			for (Attribute attrib : declAttrib.attributes) {

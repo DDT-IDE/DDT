@@ -14,8 +14,8 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.engine.common.INonScopedContainer;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.INonScopedContainer;
 import dtool.resolver.ReferenceResolver;
 import dtool.util.ArrayView;
 
