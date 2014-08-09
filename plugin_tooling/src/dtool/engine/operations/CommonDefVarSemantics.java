@@ -14,9 +14,10 @@ import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IValueNode;
+import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IValueNode;
 
 public abstract class CommonDefVarSemantics {
 	

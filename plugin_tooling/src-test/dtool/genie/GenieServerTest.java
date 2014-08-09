@@ -31,11 +31,11 @@ import org.junit.Test;
 
 import dtool.engine.DToolServer;
 import dtool.engine.operations.FindDefinitionOperation_Test;
+import dtool.engine.operations.FindDefinitionResult;
 import dtool.genie.GenieServer.GenieCommandException;
 import dtool.genie.cmdline.FindDefinitionRequest;
 import dtool.genie.cmdline.FindDefinitionRequest.FindDefinitionResultParser;
 import dtool.genie.cmdline.ShutdownServerRequest;
-import dtool.resolver.api.FindDefinitionResult;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
 import dtool.util.StatusException;

@@ -33,10 +33,10 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.SemanticManager;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.FindDefinitionResult;
 
 /**
  * Handle communication with DToolServer.

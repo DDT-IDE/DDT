@@ -33,8 +33,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.SourceRange;
-import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
+import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class OpenDefinitionOperation extends AbstractEditorOperation {
 	

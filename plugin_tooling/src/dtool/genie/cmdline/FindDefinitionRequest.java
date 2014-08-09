@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import dtool.ast.SourceRange;
+import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.genie.GenieServer.GenieCommandException;
 import dtool.genie.JsonDeserializeHelper;
-import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
 

@@ -30,6 +30,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ddoc.TextUI;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
+import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 
 public class ResolveDocViewOperation extends AbstractDToolOperation {

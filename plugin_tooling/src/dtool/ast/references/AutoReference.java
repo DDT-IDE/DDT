@@ -20,9 +20,9 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
+import dtool.engine.common.IValueNode;
+import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
-import dtool.engine.operations.IVarDefinitionLike;
-import dtool.resolver.IValueNode;
 import dtool.resolver.api.DefUnitDescriptor;
 
 /**

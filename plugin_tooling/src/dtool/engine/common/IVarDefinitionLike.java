@@ -8,12 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.common;
 
 import dtool.ast.IASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
+import dtool.engine.operations.CommonDefVarSemantics;
 
 /**
  * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).

@@ -21,7 +21,7 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.resolver.api.FindDefinitionResult;
+import dtool.engine.operations.FindDefinitionResult;
 
 public class OpenDefinitionHandler extends AbstractHandler  {
 	

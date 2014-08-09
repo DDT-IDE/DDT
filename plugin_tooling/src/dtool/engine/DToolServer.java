@@ -17,9 +17,9 @@ import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
+import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.ResolveDocViewOperation;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.FindDefinitionResult;
 
 public class DToolServer {
 	

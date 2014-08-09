@@ -21,9 +21,9 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
-import dtool.engine.operations.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {

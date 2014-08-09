@@ -17,8 +17,7 @@ import java.nio.file.Path;
 import org.junit.Test;
 
 import dtool.ast.SourceRange;
-import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
+import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 	

@@ -32,8 +32,7 @@ import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.FindDefinitionResult;
-import dtool.resolver.api.FindDefinitionResult.FindDefinitionResultEntry;
+import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class FindDefinitionOperation extends AbstractDToolOperation {
 	

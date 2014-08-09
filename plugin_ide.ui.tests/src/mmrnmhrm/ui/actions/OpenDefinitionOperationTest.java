@@ -38,7 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.engine.operations.FindDefinitionOperation;
-import dtool.resolver.api.FindDefinitionResult;
+import dtool.engine.operations.FindDefinitionResult;
 
 public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	

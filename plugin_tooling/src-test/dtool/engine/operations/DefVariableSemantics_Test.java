@@ -20,6 +20,7 @@ import org.junit.Test;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
 

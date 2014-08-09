@@ -15,6 +15,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
+import dtool.ast.util.ASTNodeFinderExtension;
 import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParser;
