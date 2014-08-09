@@ -42,9 +42,8 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.modules.IModuleResolver;
+import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.resolver.ResolverUtil;
-import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 
 public abstract class FindAction extends SelectionDispatchAction {
 
@@ -195,8 +194,9 @@ public abstract class FindAction extends SelectionDispatchAction {
 		if(moduleFQName == null) {
 			isInsideInterpreterEnvironment = false;
 		} else {
-			ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(moduleFQName);
-			ISourceModule element = SourceModuleFinder.findModuleUnit(scriptProject, nameDescriptor.packages, nameDescriptor.moduleName);
+			ModuleFullName nameDescriptor = new ModuleFullName(moduleFQName);
+			ISourceModule element = SourceModuleFinder.findModuleUnit(scriptProject, 
+				nameDescriptor.getPackages(), nameDescriptor.getBaseName());
 			// review this
 			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
 		}

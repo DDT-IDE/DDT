@@ -21,8 +21,6 @@ import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import dtool.resolver.ResolverUtil;
-import dtool.resolver.ResolverUtil.ModuleNameDescriptor;
 
 public class ModuleProxy implements INamedElement {
 	
@@ -80,9 +78,7 @@ public class ModuleProxy implements INamedElement {
 	
 	@Override
 	public Module resolveDefUnit() {
-		ModuleNameDescriptor nameDescriptor = ResolverUtil.getNameDescriptor(getModuleFullyQualifiedName());
-		return ReferenceResolver.findModuleUnchecked(moduleResolver, 
-				nameDescriptor.packages, nameDescriptor.moduleName);
+		return ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName()); 
 	}
 	
 	@Override

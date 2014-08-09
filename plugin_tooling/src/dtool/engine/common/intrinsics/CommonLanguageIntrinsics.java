@@ -24,7 +24,7 @@ import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IResolvable;
-import dtool.resolver.ResolverUtil;
+import dtool.resolver.ReferenceResolver;
 
 public interface CommonLanguageIntrinsics {
 
@@ -134,7 +134,7 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-			Module module = ResolverUtil.findModule_unchecked(mr, moduleFullName);
+			Module module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
 			if(module == null) 
 				return null;
 			

@@ -25,6 +25,7 @@ import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
+import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult;
 
 /**
@@ -36,12 +37,17 @@ public class ReferenceResolver {
 	
 	private static final String[] EMPTY_PACKAGE = new String[0];
 	
-	public static Module findModuleUnchecked(IModuleResolver modResolver, String[] packages, String module) {
+	public static Module findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
+		ModuleFullName moduleName = new ModuleFullName(moduleFullName);
+		return findModuleUnchecked(mr, moduleName.getPackages(), moduleName.getBaseName());
+	}
+	
+	public static Module findModuleUnchecked(IModuleResolver mr, String[] packages, String module) {
 		if(module.isEmpty())
 			return null;
 		
 		try {
-			return modResolver.findModule(packages, module);
+			return mr.findModule(packages, module);
 		} catch (Exception e) {
 			throw ExceptionAdapter.unchecked(e);
 		}
