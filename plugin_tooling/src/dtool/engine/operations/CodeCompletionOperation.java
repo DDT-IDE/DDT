@@ -23,14 +23,14 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		super(semanticManager);
 	}
 	
-	public PrefixDefUnitSearch doCodeCompletion2(Path filePath, int offset, Path compilerPath)
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath)
 			throws ExecutionException {
 		if(filePath == null) { 
 			throw new ExecutionException(new Exception("Invalid path for content assist source.")); 
 		}
 		
 		ResolvedModule resolvedModule = getSemanticManager().getUpdatedResolvedModule(filePath, compilerPath);
-		return PrefixDefUnitSearch.doCompletionSearch(resolvedModule.getParsedModule(), offset, 
+		return PrefixDefUnitSearch.completionSearch(resolvedModule.getParsedModule(), offset, 
 			resolvedModule.getModuleResolver());
 	}
 	

@@ -17,9 +17,9 @@ import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 
 import dtool.ast.definitions.INamedElement;
-import dtool.resolver.PrefixDefUnitSearch;
-import dtool.resolver.api.ECompletionResultStatus;
-import dtool.resolver.api.PrefixSearchOptions;
+import dtool.engine.operations.CompletionSearchResult;
+import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
+import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
@@ -36,7 +36,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			requestor.acceptContext(context);
 			
 			Path compilerPath = getCompilerPath(moduleSource);
-			PrefixDefUnitSearch search = DToolClient.getDefault().runCodeCompletion(
+			CompletionSearchResult search = DToolClient.getDefault().runCodeCompletion(
 				moduleSource, position, compilerPath);
 			if(search.getResults().isEmpty() && search.getResultCode() != ECompletionResultStatus.RESULT_OK) {
 				handleCompletionFailure(DeeCoreMessages.ContentAssist_LocationFailure, position);
@@ -64,8 +64,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
-	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset,
-		PrefixSearchOptions searchOptions) {
+	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
+			PrefixSearchOptions searchOptions) {
 		String rplName;
 		if(searchOptions.isImportModuleSearch) {
 			rplName = namedElem.getFullyQualifiedName();

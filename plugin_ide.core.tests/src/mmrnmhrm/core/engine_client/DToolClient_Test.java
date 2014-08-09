@@ -37,8 +37,8 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
+import dtool.engine.operations.CompletionSearchResult;
 import dtool.resolver.DefUnitResultsChecker;
-import dtool.resolver.PrefixDefUnitSearch;
 import dtool.tests.DToolTestResources;
 import dtool.tests.MockCompilerInstalls;
 
@@ -81,7 +81,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	protected void testCodeCompletion(ModuleSource moduleSource, int offset, String... results) throws CoreException {
-		PrefixDefUnitSearch cc = client.runCodeCompletion(moduleSource, offset, 
+		CompletionSearchResult cc = client.runCodeCompletion(moduleSource, offset, 
 			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}
@@ -231,7 +231,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
 	protected void doCodeCompletion(IFile file, int offset, String... results) throws CoreException {
 		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
-		PrefixDefUnitSearch cc = client.runCodeCompletion(sourceModule, offset, 
+		CompletionSearchResult cc = client.runCodeCompletion(sourceModule, offset, 
 			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}

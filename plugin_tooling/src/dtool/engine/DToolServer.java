@@ -18,8 +18,8 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.operations.CompletionSearchResult;
 import dtool.engine.operations.ResolveDocViewOperation;
-import dtool.resolver.PrefixDefUnitSearch;
 
 public class DToolServer {
 	
@@ -88,13 +88,9 @@ public class DToolServer {
 		return new ResolveDocViewOperation(getSemanticManager(), filePath, offset).perform();
 	}
 	
-	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset) throws ExecutionException {
-		return doCodeCompletion(filePath, offset, null);
-	}
-	
-	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset, Path compilerPath) 
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) 
 			throws ExecutionException {
-		return new CodeCompletionOperation(getSemanticManager()).doCodeCompletion2(filePath, offset, compilerPath);
+		return new CodeCompletionOperation(getSemanticManager()).doCodeCompletion(filePath, offset, compilerPath);
 	}
 	
 }

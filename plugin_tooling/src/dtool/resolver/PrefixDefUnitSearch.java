@@ -18,13 +18,14 @@ import dtool.ast.references.RefModule;
 import dtool.ast.util.ASTNodeFinderExtension;
 import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
+import dtool.engine.operations.CompletionSearchResult;
+import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
+import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.IToken;
 import dtool.parser.LexingUtil;
-import dtool.resolver.api.ECompletionResultStatus;
-import dtool.resolver.api.PrefixSearchOptions;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -37,7 +38,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	protected final Set<String> addedDefElements = new HashSet<>();
 	protected final ArrayList<INamedElement> results  = new ArrayList<>();
-	
 	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
 	
 	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
@@ -85,6 +85,15 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public ArrayList<INamedElement> getResults() {
 		return results;
+	}
+	
+	public CompletionSearchResult getOperationResult() {
+		return new CompletionSearchResult(searchOptions, results, resultCode);
+	}
+	
+	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
+			IModuleResolver mr) {
+		return doCompletionSearch(parseResult, offset, mr).getOperationResult();
 	}
 	
 	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, final int offset, 

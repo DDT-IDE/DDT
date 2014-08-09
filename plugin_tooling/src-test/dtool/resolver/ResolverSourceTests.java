@@ -8,6 +8,7 @@ import java.io.File;
 
 import dtool.ast.references.NamedReference;
 import dtool.engine.modules.NullModuleResolver;
+import dtool.engine.operations.CompletionSearchResult;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
@@ -50,13 +51,11 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		
-		PrefixDefUnitSearch search = 
-			PrefixDefUnitSearch.doCompletionSearch(parseResult, options.offset, mr);
+		CompletionSearchResult completion = PrefixDefUnitSearch.completionSearch(parseResult, options.offset, mr);
 		
-		assertEquals(search.getResultCode(), options.expectedStatusCode);
-		assertEquals(search.searchOptions.rplLen, options.rplLen);
-		
-		checkResults(search.getResults(), options.expectedResults);
+		assertEquals(completion.getResultCode(), options.expectedStatusCode);
+		assertEquals(completion.getSearchOptions().rplLen, options.rplLen);
+		checkResults(completion.getResults(), options.expectedResults);
 	}
 	
 	@Override

@@ -33,10 +33,10 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.SemanticManager;
+import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.operations.CompletionSearchResult;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.resolver.PrefixDefUnitSearch;
 
 /**
  * Handle communication with DToolServer.
@@ -218,7 +218,7 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public PrefixDefUnitSearch runCodeCompletion(IModuleSource moduleSource, int offset, Path compilerPath) 
+	public CompletionSearchResult runCodeCompletion(IModuleSource moduleSource, int offset, Path compilerPath) 
 			throws CoreException {
 		
 		if(moduleSource instanceof ISourceModule) {
@@ -240,7 +240,7 @@ public class DToolClient {
 		}
 	}
 	
-	public PrefixDefUnitSearch runCodeCompletion(ISourceModule sourceModule, int offset, Path compilerPath) 
+	public CompletionSearchResult runCodeCompletion(ISourceModule sourceModule, int offset, Path compilerPath) 
 			throws CoreException {
 		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
 		
@@ -262,8 +262,7 @@ public class DToolClient {
 	
 	public static Path defaultCompilerPathOverride = null; // For tests usage only
 	
-	public PrefixDefUnitSearch doCodeCompletion(Path filePath, int offset, Path compilerPath) 
-			throws CoreException {
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) throws CoreException {
 		try {
 			if(compilerPath == null) {
 				compilerPath = defaultCompilerPathOverride;
