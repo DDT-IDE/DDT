@@ -10,14 +10,13 @@
  *******************************************************************************/
 package dtool.ast;
 
-import dtool.engine.common.ILanguageNode;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 
 /**
  * Interface for {@link ASTNode} objects. No other class can implement. 
  */
-public interface IASTNode extends IElement, IVisitable<IASTVisitor>, ILanguageNode {
+public interface IASTNode extends IElement, IVisitable<IASTVisitor>	{
 	
 	int getOffset();
 	int getLength();
