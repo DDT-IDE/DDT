@@ -153,10 +153,11 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	
-	protected static final String ERROR_REGEX = "^([^():]*)"+"\\(([^:)]*)\\):"+"\\sError:\\s(.*)$";
+	protected static final String ERROR_REGEX = "^([^():\\n]*)"+"\\(([^:)\\n]*)\\):"+"\\sError:\\s(.*)$";
+	protected static final Pattern ERROR_MATCHER = Pattern.compile(ERROR_REGEX, Pattern.MULTILINE);
 	
 	protected void processCompilerErrors(String stderr) {
-		Matcher matcher = Pattern.compile(ERROR_REGEX, Pattern.MULTILINE).matcher(stderr);
+		Matcher matcher = ERROR_MATCHER.matcher(stderr);
 		while(matcher.find()) {
 			String file = matcher.group(1);
 			String lineStr = matcher.group(2);
@@ -170,9 +171,9 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		}
 	}
 	
-	private void processErrorLine(String file, String lineStr, String errorMsg) throws CoreException {
+	protected void processErrorLine(String file, String lineStr, String errorMsg) throws CoreException {
 		IResource resource = getProject().findMember(file);
-		if(!resource.exists()) {
+		if(resource == null || !resource.exists()) {
 			return;
 		}
 		
