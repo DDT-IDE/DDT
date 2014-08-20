@@ -21,7 +21,6 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.DefUnitDescriptor;
 
 public class RefSlice extends Reference {
 	
@@ -54,11 +53,6 @@ public class RefSlice extends Reference {
 		cp.append(startIndex);
 		cp.append(" .. ", endIndex);
 		cp.append("]");
-	}
-
-	@Override
-	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false;
 	}
 	
 	@Override

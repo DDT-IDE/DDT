@@ -21,7 +21,6 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokens;
-import dtool.resolver.api.DefUnitDescriptor;
 
 public class RefTypeModifier extends Reference implements IQualifierNode {
 	
@@ -73,11 +72,6 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		return findTargetElementsForReference(mr, ref, findFirstOnly);
-	}
-	
-	@Override
-	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false;
 	}
 	
 }

@@ -19,7 +19,6 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
-import dtool.resolver.api.DefUnitDescriptor;
 
 /**
  * An reference consisting of an element reference and an indexing paramater .
@@ -60,11 +59,6 @@ public class RefIndexing extends Reference {
 		//TODO infer if its a static array, map array, or tupe
 		// Assume it's a static array. 
 		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.staticArrayType);
-	}
-	
-	@Override
-	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false;
 	}
 	
 }

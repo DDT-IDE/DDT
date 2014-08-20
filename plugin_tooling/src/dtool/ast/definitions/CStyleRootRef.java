@@ -17,7 +17,6 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.DefUnitDescriptor;
 
 /**
  * Adapter class to parse C-style postfix declarator, i.e., 
@@ -34,11 +33,6 @@ public class CStyleRootRef extends Reference {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-	}
-	
-	@Override
-	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false;
 	}
 
 	@Override

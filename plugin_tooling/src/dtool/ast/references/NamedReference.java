@@ -16,7 +16,6 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.api.DefUnitDescriptor;
 
 /** 
  * A reference based on an identifier. These references also 
@@ -50,9 +49,8 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	 * This is a very lightweight method that only compares the defunit's name 
 	 * with the core identifier of this reference.
 	 */
-	@Override
-	public final boolean canMatch(DefUnitDescriptor defunit) {
-		return getCoreReferenceName().equals(defunit.getQualifiedId());
+	public final boolean canMatch(String qualifiedName) {
+		return getCoreReferenceName().equals(qualifiedName);
 	}
 	
 }

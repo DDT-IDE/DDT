@@ -20,18 +20,15 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.CommonRefQualified;
 import dtool.ast.references.NamedReference;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.DefUnitDescriptor;
 
 public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	
 	protected final IModelElement modelElement;
-	protected final DefUnitDescriptor defUnitDescriptor;
 	
 	public DeeFocusedNodeMatcher(DeeMatchLocator deeMatchLocator, IModelElement focus, boolean findDecls,
 			boolean findRefs) {
 		super(deeMatchLocator, findDecls, findRefs);
 		this.modelElement = focus;
-		this.defUnitDescriptor = new DefUnitDescriptor(modelElement.getElementName());
 	}
 	
 	@Override
@@ -53,7 +50,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(ref instanceof CommonRefQualified)
 			return;
 		
-		if(!ref.canMatch(defUnitDescriptor))
+		if(!ref.canMatch(modelElement.getElementName()))
 			return;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);

@@ -23,7 +23,6 @@ import dtool.ast.expressions.IInitializer;
 import dtool.engine.common.IValueNode;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.DefUnitDescriptor;
 
 /**
  * This reference node can only be parsed in special circumstances
@@ -65,11 +64,6 @@ public final class AutoReference extends Reference {
 			return valueNode.resolveTypeOfUnderlyingValue(mr);
 		}
 		return null;
-	}
-	
-	@Override
-	public boolean canMatch(DefUnitDescriptor defunit) {
-		return false;
 	}
 	
 }

@@ -17,14 +17,11 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
-import dtool.resolver.api.DefUnitDescriptor;
 
 /**
  * Common class for entity references.
  */
 public abstract class Reference extends Resolvable implements IResolvable {
-	
-	public abstract boolean canMatch(DefUnitDescriptor defunit);
 	
 	@Override
 	public abstract Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);

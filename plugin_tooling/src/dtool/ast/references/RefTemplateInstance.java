@@ -25,7 +25,6 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.api.DefUnitDescriptor;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	
@@ -64,11 +63,6 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		} else {
 			cp.appendNodeList("(", tplArgs, ", ", ")");
 		}
-	}
-	
-	@Override
-	public final boolean canMatch(DefUnitDescriptor defunit) {
-		return tplRef.canMatch(defunit);
 	}
 	
 	@Override
