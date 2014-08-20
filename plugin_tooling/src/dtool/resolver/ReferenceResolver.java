@@ -19,7 +19,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
-import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
@@ -308,7 +308,7 @@ public class ReferenceResolver {
 			}
 			this.pickedNode = nodeFinder.match;
 			
-			if(pickedRef instanceof CommonRefQualified || !(pickedRef instanceof NamedReference)) {
+			if(pickedRef instanceof CommonQualifiedReference || !(pickedRef instanceof NamedReference)) {
 				invalidPickRef = true;
 			}
 		}

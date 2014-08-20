@@ -24,7 +24,7 @@ import dtool.engine.modules.IModuleResolver;
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"
  */
-public class RefModuleQualified extends CommonRefQualified {
+public class RefModuleQualified extends CommonQualifiedReference {
 	
 	public RefModuleQualified(RefIdentifier qualifiedId) {
 		super(qualifiedId);

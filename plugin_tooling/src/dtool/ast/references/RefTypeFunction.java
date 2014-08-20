@@ -29,7 +29,7 @@ import dtool.util.ArrayView;
 /**
  * A function pointer type
  */
-public class RefTypeFunction extends CommonRefNative {
+public class RefTypeFunction extends CommonNativeTypeReference {
 	
 	public final Reference retType;
 	public final boolean isDelegate;

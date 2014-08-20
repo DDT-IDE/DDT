@@ -17,7 +17,7 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.engine.modules.IModuleResolver;
 
@@ -47,7 +47,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 	
 	protected void matchReferences(final NamedReference ref, final ISourceModule sourceModule, Path filePath) {
 		// don't match qualifieds, the match will be made in its children
-		if(ref instanceof CommonRefQualified)
+		if(ref instanceof CommonQualifiedReference)
 			return;
 		
 		if(!ref.canMatch(modelElement.getElementName()))

@@ -12,7 +12,7 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
 import dtool.ast.util.ASTNodeFinderExtension;
@@ -142,8 +142,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			}
 		}
 		
-		if(node instanceof CommonRefQualified) {
-			CommonRefQualified namedRef = (CommonRefQualified) node;
+		if(node instanceof CommonQualifiedReference) {
+			CommonQualifiedReference namedRef = (CommonQualifiedReference) node;
 			if(offset <= namedRef.getDotOffset()) {
 				return search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
 						"Invalid Location: before qualifier dot but not next to id.");

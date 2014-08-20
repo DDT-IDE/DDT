@@ -16,7 +16,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 // TODO: review this hierarchy
-public abstract class CommonRefNative extends Reference {
+public abstract class CommonNativeTypeReference extends Reference {
 	
 	@Override
 	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {

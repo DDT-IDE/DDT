@@ -20,7 +20,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
-public class RefTypeDynArray extends CommonRefNative {
+public class RefTypeDynArray extends CommonNativeTypeReference {
 	
 	public final Reference elemtype;
 	

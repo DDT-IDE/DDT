@@ -9,7 +9,7 @@ import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.SourceRange;
-import dtool.ast.references.CommonRefQualified;
+import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.util.NodeUtil;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokenSemantics;
@@ -154,7 +154,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		
 		IModuleResolver mr = search.getModuleResolver();
 		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
-		CommonRefQualified.resolveSearchInMultipleContainers(containers, search);
+		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	
 }

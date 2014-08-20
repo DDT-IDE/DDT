@@ -40,7 +40,7 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	public void performRefSearch(CommonDefUnitSearch search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
 		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.getModuleResolver(), false);
-		CommonRefQualified.resolveSearchInMultipleContainers(targetModules, search);
+		CommonQualifiedReference.resolveSearchInMultipleContainers(targetModules, search);
 	}
 	
 }

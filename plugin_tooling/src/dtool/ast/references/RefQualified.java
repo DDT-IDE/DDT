@@ -27,7 +27,7 @@ import dtool.engine.modules.IModuleResolver;
 /**
  * A normal qualified reference.
  */
-public class RefQualified extends CommonRefQualified {
+public class RefQualified extends CommonQualifiedReference {
 	
 	public final Resolvable qualifier;
 	public final boolean isExpressionQualifier;

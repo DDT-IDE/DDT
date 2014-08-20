@@ -28,8 +28,8 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
 		// Check if we are the qualifer of a parent qualified ref
-		if(getParent() instanceof CommonRefQualified) {
-			CommonRefQualified parent = (CommonRefQualified) getParent();
+		if(getParent() instanceof CommonQualifiedReference) {
+			CommonQualifiedReference parent = (CommonQualifiedReference) getParent();
 			if(parent.getQualifiedName() == this) {
 				// if so, then we must do qualified search (use root as the lookup scope)
 				parent.performRefSearch(search);

@@ -25,11 +25,11 @@ import dtool.resolver.CommonDefUnitSearch;
  * Common class for qualified references 
  * There are two: normal qualified references and Module qualified references.
  */
-public abstract class CommonRefQualified extends NamedReference implements ITemplateRefNode {
+public abstract class CommonQualifiedReference extends NamedReference implements ITemplateRefNode {
 	
 	public final RefIdentifier qualifiedId;
 	
-	public CommonRefQualified(RefIdentifier qualifiedId) {
+	public CommonQualifiedReference(RefIdentifier qualifiedId) {
 		this.qualifiedId = parentize(assertNotNull(qualifiedId));
 	}
 	
@@ -54,7 +54,7 @@ public abstract class CommonRefQualified extends NamedReference implements ITemp
 	
 	public void performQualifiedRefSearch(CommonDefUnitSearch search) {
 		Collection<INamedElement> defunits = findRootDefUnits(search.getModuleResolver());
-		CommonRefQualified.resolveSearchInMultipleContainers(defunits, search);
+		CommonQualifiedReference.resolveSearchInMultipleContainers(defunits, search);
 	}
 	
 	public static void resolveSearchInMultipleContainers(Collection<INamedElement> containers, 
