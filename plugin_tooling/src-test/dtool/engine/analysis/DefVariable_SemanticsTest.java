@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.analysis;
 
-import static dtool.engine.operations.ExpLiteralSemantics_Test.COMMON_PROPERTIES;
-import static dtool.engine.operations.ExpLiteralSemantics_Test.INT_PROPERTIES;
+import static dtool.engine.analysis.ExpLiteral_SemanticsTest.COMMON_PROPERTIES;
+import static dtool.engine.analysis.ExpLiteral_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 
@@ -24,7 +24,7 @@ import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
 
-public class DefVariableSemantics_Test extends CommonNodeSemanticsTest {
+public class DefVariable_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
 	

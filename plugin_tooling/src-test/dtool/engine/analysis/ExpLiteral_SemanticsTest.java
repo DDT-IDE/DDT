@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.analysis;
 
 import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import static dtool.util.NewUtils.getSingleElementOrNull;
@@ -25,7 +25,7 @@ import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefU
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
-public class ExpLiteralSemantics_Test extends CommonNodeSemanticsTest {
+public class ExpLiteral_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	protected static final String[] COMMON_PROPERTIES = array(
 		"init", "sizeof", "alignof", "mangleof", "stringof"

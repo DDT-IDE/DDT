@@ -1,4 +1,4 @@
-package dtool.parser.analysis;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.misc.ArrayUtil;

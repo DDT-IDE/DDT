@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -21,7 +21,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.tests.CommonDToolTest;
 
-public class DeclAttribSemantics_Test extends CommonDToolTest {
+public class DeclAttrib_SemanticsTest extends CommonDToolTest {
 	
 	@Test
 	public void test() throws Exception { test$(); }

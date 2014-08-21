@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.analysis;
 
-import static dtool.engine.operations.ExpLiteralSemantics_Test.COMMON_PROPERTIES;
+import static dtool.engine.analysis.ExpLiteral_SemanticsTest.COMMON_PROPERTIES;
 import static dtool.util.NewUtils.getSingleElementOrNull;
 import melnorme.utilbox.misc.ArrayUtil;
 
@@ -20,7 +20,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.engine.modules.NullModuleResolver;
 
-public class AggregateSemantics_Test extends CommonNodeSemanticsTest {
+public class DefAggregate_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	protected static final String[] OBJECT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"classinfo"
