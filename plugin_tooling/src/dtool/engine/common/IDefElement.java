@@ -52,7 +52,7 @@ public interface IDefElement {
 	/** 
 	 * Return the type of this defElement, when it is referenced as a value/expression.
 	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
-	 * and have an associated type, but are not type's themselves.
+	 * and have an associated type, but are not types themselves.
 	 */
 	public abstract INamedElement resolveTypeForValueContext(IModuleResolver mr);
 	

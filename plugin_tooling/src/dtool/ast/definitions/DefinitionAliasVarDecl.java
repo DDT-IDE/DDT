@@ -84,7 +84,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, target);
+		return DefElementCommon.resolveTypeForValueContext_Alias(mr, target);
 	}
 	
 	@Override
@@ -134,7 +134,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		
 		@Override
 		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, getAliasTarget());
+			return DefElementCommon.resolveTypeForValueContext_Alias(mr, getAliasTarget());
 		}
 		
 	}

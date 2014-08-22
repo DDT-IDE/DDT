@@ -10,21 +10,16 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static dtool.engine.analysis.ExpLiteral_SemanticsTest.COMMON_PROPERTIES;
-import static dtool.util.NewUtils.getSingleElementOrNull;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.INamedElement;
-import dtool.ast.expressions.Expression;
-import dtool.engine.modules.NullModuleResolver;
-
-public class DefAggregate_SemanticsTest extends CommonNodeSemanticsTest {
+public class DefAggregate_SemanticsTest extends DefElement_CommonTest {
 	
 	protected static final String[] OBJECT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"classinfo"
 	);
+	
 	@Test
 	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
 	public void testCompletionSearch$() throws Exception {
@@ -36,11 +31,14 @@ public class DefAggregate_SemanticsTest extends CommonNodeSemanticsTest {
 		testExpressionResolution("enum Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
 	}
 	
-	protected void testExpressionResolution(String source, String... expectedResults) {
-		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);
-		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
+		test_resolveTypeForValueContext("class XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("interface XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("struct XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("union XXX {} ", "XXX", true);
 		
-		testResolveSearchInMembersScope(expType, expectedResults);
+		test_resolveTypeForValueContext("enum XXX {} ", "XXX", true);
 	}
 	
 }

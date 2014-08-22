@@ -11,25 +11,15 @@
 package dtool.engine.analysis;
 
 import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
-import static dtool.util.NewUtils.getSingleElementOrNull;
 
 import java.util.ArrayList;
 
 import melnorme.utilbox.misc.ArrayUtil;
-
-import org.junit.Test;
-
 import dtool.ast.definitions.INamedElement;
-import dtool.ast.expressions.Expression;
 import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
-import dtool.engine.modules.NullModuleResolver;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
-public class ExpLiteral_SemanticsTest extends CommonNodeSemanticsTest {
+public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
 	
-	protected static final String[] COMMON_PROPERTIES = array(
-		"init", "sizeof", "alignof", "mangleof", "stringof"
-	);
 	protected static final String[] INT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"max", "min"
 	);
@@ -51,32 +41,32 @@ public class ExpLiteral_SemanticsTest extends CommonNodeSemanticsTest {
 		return names;
 	}
 	
-	@Test
-	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
-	public void testCompletionSearch$() throws Exception {
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
 		testResolveSearchInMembersScope(D2_063_intrinsics.bool_type, COMMON_PROPERTIES);
-		testExpressionResolution("true", COMMON_PROPERTIES);
+		testExpressionResolution2("true", COMMON_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.int_type, INT_PROPERTIES);
-		testExpressionResolution("123", INT_PROPERTIES);
+		testExpressionResolution2("123", INT_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.char_type, INT_PROPERTIES);
-		testExpressionResolution("'c'", INT_PROPERTIES);
+		testExpressionResolution2("'c'", INT_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.float_type, FLOAT_PROPERTIES);
-		testExpressionResolution("123.123", FLOAT_PROPERTIES);
-		testExpressionResolution("123.123f", FLOAT_PROPERTIES);
+		testExpressionResolution2("123.123", FLOAT_PROPERTIES);
+		testExpressionResolution2("123.123f", FLOAT_PROPERTIES);
 		
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.dynArrayType, DYN_ARRAY_PROPERTIES);
 		testResolveSearchInMembersScope(D2_063_intrinsics.staticArrayType, STATIC_ARRAY_PROPERTIES);
 	}
 	
-	protected static void testExpressionResolution(String source, String... expectedResults) {
-		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
-		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
-		
-		testResolveSearchInMembersScope(expType, expectedResults);
+	/* ----------------- ----------------- */
+	
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
+		// TODO
+		//super.test_resolveTypeForValueContext________();
 	}
 	
 }

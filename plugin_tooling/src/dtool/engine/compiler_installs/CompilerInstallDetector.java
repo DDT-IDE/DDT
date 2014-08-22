@@ -119,7 +119,7 @@ public class CompilerInstallDetector {
 	}
 	
 	protected boolean executableMatches(String fileName, String executableName) {
-		fileName = StringUtil.trimEnding(fileName, ".exe");
+		fileName = StringUtil.trimEnd(fileName, ".exe");
 		return fileName.equals(executableName);
 	}
 	

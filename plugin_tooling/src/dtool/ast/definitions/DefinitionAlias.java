@@ -117,7 +117,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		@Override
 		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return DefElementCommon.resolveTypeForValueContext_AliasBUG(mr, target);
+			return DefElementCommon.resolveTypeForValueContext_Alias(mr, target);
 		}
 		
 	}

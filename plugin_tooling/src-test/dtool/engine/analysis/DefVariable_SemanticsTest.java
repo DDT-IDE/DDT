@@ -10,31 +10,50 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static dtool.engine.analysis.ExpLiteral_SemanticsTest.COMMON_PROPERTIES;
-import static dtool.engine.analysis.ExpLiteral_SemanticsTest.INT_PROPERTIES;
+import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 
 import org.junit.Test;
 
-import dtool.ast.ASTNode;
-import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.INamedElement;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
 
-public class DefVariable_SemanticsTest extends CommonNodeSemanticsTest {
+public class DefVariable_SemanticsTest extends DefElement_CommonTest {
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
+		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
+		defVar_testResolveSearchInMembers("auto xxx = ; ");
+		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
+	}
+	
+	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
+		IVarDefinitionLike defVar = parseDefinitionVar(source, source.indexOf("xxx"));
+		testResolveSearchInMembersScope(defVar, expectedResults);
+	}
+	
+	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
+		return parseSourceAndPickNode(source, offset, IVarDefinitionLike.class);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
 	
-	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
-		ASTNode node = parseSourceAndPickNode(source, offset);
-		if(node instanceof DefSymbol) {
-			DefSymbol defSymbol = (DefSymbol) node;
-			return assertInstance(defSymbol.getDefUnit(), IVarDefinitionLike.class);
-		}
-		return assertInstance(node, IVarDefinitionLike.class);
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
+		test_resolveTypeForValueContext("char xxx;", "char");
+		test_resolveTypeForValueContext("char z, xxx;", "char");
+		
+		test_resolveTypeForValueContext("NotFound xxx;", null, true);
+		
+		test_resolveTypeForValueContext("auto xxx = 123;", "int");
+		test_resolveTypeForValueContext("auto z, xxx = 123;", "int");
+		test_resolveTypeForValueContext("enum xxx = 123;", "int");
 	}
 	
 	@Test
@@ -96,20 +115,6 @@ public class DefVariable_SemanticsTest extends CommonNodeSemanticsTest {
 		if(errorSuffix != null) {
 			assertTrue(effectiveType.getExtendedName().endsWith(errorSuffix));
 		}
-	}
-	
-	@Test
-	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
-	public void testCompletionSearch$() throws Exception {
-		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
-		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
-		defVar_testResolveSearchInMembers("auto xxx = ; ");
-		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
-	}
-	
-	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
-		IVarDefinitionLike defVar = parseDefinitionVar(source, source.indexOf("xxx"));
-		testResolveSearchInMembersScope(defVar, expectedResults);
 	}
 	
 }

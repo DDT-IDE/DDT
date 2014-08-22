@@ -28,11 +28,6 @@ public class DefElementCommon {
 		return reference.findTargetDefElement(mr);
 	}
 	
-	public static INamedElement resolveTypeForValueContext_AliasBUG(IModuleResolver mr, Reference alias) {
-		/*BUG here*/
-		return resolveTypeForValueContext(mr, alias);
-	}
-	
 	public static INamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Reference alias) {
 		Reference aliasTarget = alias;
 		if(aliasTarget != null) {
