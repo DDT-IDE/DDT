@@ -50,14 +50,35 @@ public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 				"int", true, null, null)
 		);
 		
-		// TODO: test error cases
+		// Test error cases
+		testFindDefinition(BASIC_FOO_FilePath, indexOf(BASIC_FOO_Contents, "intvar ="),
+			FindDefinitionOperation.FIND_DEF_PickedElementAlreadyADefinition
+		);
+		testFindDefinition(BASIC_FOO_FilePath, indexOf(BASIC_FOO_Contents, "123"),
+			FindDefinitionOperation.FIND_DEF_NoReferenceFoundAtCursor
+		);
+		testFindDefinition(BASIC_FOO_FilePath, indexOf(BASIC_FOO_Contents, "not_found"),
+			FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed
+		);
 		
 	}
 	
 	protected void testFindDefinition(Path modulePath, int offset, FindDefinitionResultEntry... expectedResults) 
 			throws Exception {
+		testFindDefinition(modulePath, offset, null, expectedResults);
+	}
+	
+	protected void testFindDefinition(Path modulePath, int offset, String errorMsg, 
+			FindDefinitionResultEntry... expectedResults) throws Exception {
 		FindDefinitionResult opResult = doOperation(modulePath, offset);
-		assertTrue(opResult.errorMessage == null);
+		
+		if(opResult.errorMessage == null) {
+			assertTrue(errorMsg == null);
+		} else {
+			assertTrue(opResult.errorMessage.startsWith(errorMsg));
+			assertTrue(expectedResults.length == 0);
+			return;
+		}
 		
 		assertTrue(expectedResults.length == opResult.results.size());
 		

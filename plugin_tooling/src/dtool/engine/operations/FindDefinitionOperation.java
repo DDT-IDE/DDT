@@ -42,10 +42,10 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		"No reference found next to cursor.";
 	public static final String FIND_DEF_MISSING_REFERENCE_AT_CURSOR = 
 		FIND_DEF_NoReferenceFoundAtCursor;
-	public static final String FIND_DEF_NoNamedReferenceAtCursor = 
-		"No named reference found next to cursor.";
+	public static final String FIND_DEF_NoNameReferenceAtCursor = 
+		"No name reference found next to cursor.";
 	public static final String FIND_DEF_ReferenceResolveFailed = 
-			"Definition not found for reference: ";
+		"Definition not found for reference: ";
 			
 	public FindDefinitionOperation(SemanticManager semanticManager) {
 		super(semanticManager);
@@ -82,7 +82,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 			
 			@Override
 			protected FindDefinitionResult nodeIsNonNamedReference(Reference reference) {
-				return new FindDefinitionResult(FIND_DEF_NoNamedReferenceAtCursor);
+				return new FindDefinitionResult(FIND_DEF_NoNameReferenceAtCursor);
 			}
 			
 			@Override
