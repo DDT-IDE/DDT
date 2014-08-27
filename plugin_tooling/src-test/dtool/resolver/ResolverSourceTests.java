@@ -54,7 +54,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		CompletionSearchResult completion = PrefixDefUnitSearch.completionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(completion.getResultCode(), options.expectedStatusCode);
-		assertEquals(completion.getSearchOptions().rplLen, options.rplLen);
+		assertEquals(completion.getReplaceLength(), options.rplLen);
 		checkResults(completion.getResults(), options.expectedResults);
 	}
 	

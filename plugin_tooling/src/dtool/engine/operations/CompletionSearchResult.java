@@ -11,6 +11,7 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,21 @@ public class CompletionSearchResult {
 	
 	public final ECompletionResultStatus resultCode;
 	public final PrefixSearchOptions searchOptions;
+	public final int replaceLength;
 	public final ArrayList<INamedElement> results;
 	
-	public CompletionSearchResult(ECompletionResultStatus resultCode, PrefixSearchOptions searchOptions,
-			ArrayList<INamedElement> results) {
+	public CompletionSearchResult(ECompletionResultStatus resultCode) {
+		assertTrue(resultCode != ECompletionResultStatus.RESULT_OK);
 		this.resultCode = resultCode;
+		this.replaceLength = 0;
+		this.results = null;
+		this.searchOptions = null;
+	}
+	
+	public CompletionSearchResult(PrefixSearchOptions searchOptions, ArrayList<INamedElement> results) {
+		this.resultCode = ECompletionResultStatus.RESULT_OK;
 		this.searchOptions = assertNotNull(searchOptions);
+		this.replaceLength = searchOptions.rplLen;
 		this.results = results;
 	}
 	
@@ -37,12 +47,8 @@ public class CompletionSearchResult {
 		return resultCode;
 	}
 	
-	public PrefixSearchOptions getSearchOptions() {
-		return searchOptions;
-	}
-	
 	public int getReplaceLength() {
-		return searchOptions.rplLen;
+		return replaceLength;
 	}
 	
 	public static class PrefixSearchOptions {
@@ -59,15 +65,26 @@ public class CompletionSearchResult {
 	
 	public enum ECompletionResultStatus {
 		
-		RESULT_OK("ok"),
-		INVALID_TOKEN_LOCATION("invalid_token"),
-		INVALID_REFQUAL_LOCATION("invalid_qualified"),
+		RESULT_OK("ok", null),
+		INVALID_TOKEN_LOCATION("invalid_token", "Invalid location (inside unmodifiable token)"),
+		INVALID_TOKEN_LOCATION_FLOAT("after_float", "Invalid location (after float)"),
+		INVALID_REFQUAL_LOCATION("invalid_qualified", "Invalid Location: before qualifier dot but not next to id."),
 		;
 		
 		protected final String id;
+		protected final String message;
 		
-		ECompletionResultStatus(String id) {
+		private ECompletionResultStatus(String id, String message) {
 			this.id = assertNotNull(id);
+			this.message = message;
+		}
+		
+		public String getId() {
+			return id;
+		}
+		
+		public String getMessage() {
+			return message;
 		}
 		
 		public static ECompletionResultStatus fromId(String statusId) {

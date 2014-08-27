@@ -38,7 +38,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	protected final Set<String> addedDefElements = new HashSet<>();
 	protected final ArrayList<INamedElement> results  = new ArrayList<>();
-	protected ECompletionResultStatus resultCode = ECompletionResultStatus.RESULT_OK;
 	
 	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
 		super(refOriginModule, refOffset, moduleResolver);
@@ -46,16 +45,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public int getOffset() {
 		return refOffset;
-	}
-	
-	public ECompletionResultStatus getResultCode() {
-		return resultCode;
-	}
-	
-	public PrefixDefUnitSearch assignResult(ECompletionResultStatus resultCode, 
-		@SuppressWarnings("unused") String errorMsg) {
-		this.resultCode = resultCode;
-		return this;
 	}
 	
 	@Override
@@ -87,17 +76,8 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		return results;
 	}
 	
-	public CompletionSearchResult getOperationResult() {
-		return new CompletionSearchResult(resultCode, searchOptions, results);
-	}
-	
 	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
 			IModuleResolver mr) {
-		return doCompletionSearch(parseResult, offset, mr).getOperationResult();
-	}
-	
-	public static PrefixDefUnitSearch doCompletionSearch(DeeParserResult parseResult, final int offset, 
-		IModuleResolver mr) {
 		
 		String source = parseResult.source;
 		assertTrue(offset >= 0 && offset <= source.length());		
@@ -110,13 +90,11 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		
 		if(isInsideRange(tokenAtOffset.getStartPos(), offset, tokenAtOffset.getEndPos()) 
 				&& canCompleteInsideToken(tokenAtOffset)) {
-			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
-				"Invalid location (inside unmodifiable token)");
+			return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
 		}
 		if(tokenAtOffset.getType().getGroupingToken() == DeeTokens.GROUP_FLOAT) {
 			if(tokenAtOffset.getSourceValue().endsWith(".")) {
-				return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
-					"Invalid location (after float)");
+				return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
 			}
 		}
 		
@@ -142,8 +120,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		if(node instanceof CommonQualifiedReference) {
 			CommonQualifiedReference namedRef = (CommonQualifiedReference) node;
 			if(offset <= namedRef.getDotOffset()) {
-				return search.assignResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION, 
-						"Invalid Location: before qualifier dot but not next to id.");
+				return new CompletionSearchResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION);
 			}
 			assertEquals(search.searchOptions.searchPrefix, "");
 			assertEquals(search.searchOptions.namePrefixLen, 0);
@@ -156,7 +133,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		}
 		
 		node.performRefSearch(search);
-		return search;
+		return new CompletionSearchResult(search.searchOptions, search.results);
 	}
 	
 	public static boolean canCompleteInsideToken(IToken token) {
