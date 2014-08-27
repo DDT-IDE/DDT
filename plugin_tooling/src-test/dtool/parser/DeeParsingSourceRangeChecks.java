@@ -17,6 +17,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.ForeachRangeExpression;
 import dtool.parser.DeeParsingChecks.DeeParsingNodeCheck;
+import dtool.parser.common.LexElement;
 import dtool.parser.common.LexElementProducer;
 
 public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {

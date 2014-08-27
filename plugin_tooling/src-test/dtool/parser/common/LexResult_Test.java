@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import dtool.ast.SourceRange;
 import dtool.parser.DeeLexer;
-import dtool.parser.IToken;
 import dtool.tests.CommonDToolTest;
 
 public class LexResult_Test extends CommonDToolTest {

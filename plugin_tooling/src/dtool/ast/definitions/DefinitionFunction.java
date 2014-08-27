@@ -9,7 +9,7 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.engine.modules.IModuleResolver;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 

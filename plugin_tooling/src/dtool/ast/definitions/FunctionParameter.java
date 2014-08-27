@@ -9,7 +9,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
-import dtool.parser.LexElement;
+import dtool.parser.common.LexElement;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 

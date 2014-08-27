@@ -14,7 +14,7 @@ import dtool.ast.util.NodeUtil;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IResolvable;
 

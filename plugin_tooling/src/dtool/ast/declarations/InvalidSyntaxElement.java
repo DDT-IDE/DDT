@@ -5,7 +5,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.statements.IStatement;
-import dtool.parser.IToken;
+import dtool.parser.common.IToken;
 
 public class InvalidSyntaxElement extends ASTNode implements IDeclaration, IStatement {
 	

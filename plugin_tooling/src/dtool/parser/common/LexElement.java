@@ -8,9 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
-import dtool.parser.common.BaseLexElement;
+import dtool.parser.DeeTokens;
+import dtool.parser.ParserError;
 
 
 public class LexElement extends BaseLexElement {

@@ -25,7 +25,7 @@ import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
-import dtool.parser.IToken;
+import dtool.parser.common.IToken;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 

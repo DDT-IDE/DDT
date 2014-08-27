@@ -9,6 +9,8 @@ import melnorme.utilbox.misc.Pair;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.BaseLexElement;
+import dtool.parser.common.IToken;
+import dtool.parser.common.Token;
 import dtool.util.NewUtils;
 
 public class DeeTokenSemantics {
@@ -34,7 +36,7 @@ public class DeeTokenSemantics {
 				break;
 			}
 			lexerErrors.add(createError(ParserErrorTypes.MALFORMED_TOKEN, token, 
-				LexerErrorTypes.CHAR_LITERAL_SIZE_GREATER_THAN_ONE));
+				DeeLexerErrors.CHAR_LITERAL_SIZE_GREATER_THAN_ONE));
 			break;
 		default:
 			break;

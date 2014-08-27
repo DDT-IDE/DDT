@@ -8,7 +8,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.parser.LexElement;
+import dtool.parser.common.LexElement;
 import dtool.util.ArrayView;
 
 

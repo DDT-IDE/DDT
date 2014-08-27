@@ -20,6 +20,7 @@ import java.util.List;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
+import dtool.parser.common.LexElement;
 import dtool.parser.common.LexerResult;
 
 public class DeeParserResult extends LexerResult {

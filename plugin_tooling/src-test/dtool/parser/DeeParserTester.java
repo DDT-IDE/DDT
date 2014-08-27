@@ -52,6 +52,7 @@ import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.Token;
 import dtool.parser.common.AbstractParser.ParseRuleDescription;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTests;

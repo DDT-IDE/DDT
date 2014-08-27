@@ -14,8 +14,7 @@ package dtool.parser.common;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokens;
-import dtool.parser.LexerErrorTypes;
-import dtool.parser.Token;
+import dtool.parser.DeeLexerErrors;
 import dtool.tests.CommonDToolTest;
 
 public class AbstractLexerTest extends CommonDToolTest {
@@ -79,18 +78,18 @@ public class AbstractLexerTest extends CommonDToolTest {
 	public static class TokenChecker {
 		
 		private DeeTokens expectedTokenType;
-		private LexerErrorTypes expectedError;
+		private DeeLexerErrors expectedError;
 		
 		public TokenChecker(DeeTokens deeToken) {
 			this(deeToken, null);
 		}
 		
-		public TokenChecker(DeeTokens tokenType, LexerErrorTypes error) {
+		public TokenChecker(DeeTokens tokenType, DeeLexerErrors error) {
 			this.expectedTokenType = tokenType;
 			this.expectedError = error;
 			if(tokenType == DeeTokens.INVALID_TOKEN) {
 				assertTrue(expectedError == null);
-				this.expectedError = LexerErrorTypes.INVALID_CHARACTERS;
+				this.expectedError = DeeLexerErrors.INVALID_CHARACTERS;
 			}
 		}
 		

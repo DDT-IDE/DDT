@@ -27,6 +27,7 @@ import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.ParserError.ErrorSourceRangeComparator;
 import dtool.parser.common.LexElementProducer;
 import dtool.parser.common.LexElementSource;
+import dtool.parser.common.Token;
 
 /**
  * Concrete D Parser class

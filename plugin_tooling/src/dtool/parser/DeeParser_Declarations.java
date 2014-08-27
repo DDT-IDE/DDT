@@ -57,6 +57,8 @@ import dtool.ast.statements.IStatement;
 import dtool.parser.DeeParser_Definitions.DefinitionStartInfo;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.BaseLexElement;
+import dtool.parser.common.IToken;
+import dtool.parser.common.LexElement;
 import dtool.util.ArrayView;
 
 

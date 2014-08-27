@@ -24,11 +24,9 @@ import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.DeeTokens;
-import dtool.parser.IToken;
-import dtool.parser.LexElement;
 import dtool.parser.ParserError;
-import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.LexElement.MissingLexElement;
 import dtool.util.ArrayView;
 
 /**

@@ -21,7 +21,7 @@ import dtool.ddoc.IDeeDocColorConstants;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 
 public class DeeDocAccessor {
 	

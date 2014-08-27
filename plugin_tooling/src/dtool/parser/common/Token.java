@@ -8,13 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
+import dtool.parser.DeeTokens;
+import dtool.parser.DeeLexerErrors;
 
 public class Token implements ISourceRepresentation, IToken {
 	
@@ -60,7 +62,7 @@ public class Token implements ISourceRepresentation, IToken {
 		return source;
 	}
 	
-	public LexerErrorTypes getError() {
+	public DeeLexerErrors getError() {
 		return null;
 	}
 	
@@ -71,19 +73,19 @@ public class Token implements ISourceRepresentation, IToken {
 	
 	public static class ErrorToken extends Token {
 		
-		protected final LexerErrorTypes error;
+		protected final DeeLexerErrors error;
 		
-		public ErrorToken(DeeTokens tokenType, String value, int start, LexerErrorTypes error) {
+		public ErrorToken(DeeTokens tokenType, String value, int start, DeeLexerErrors error) {
 			super(tokenType, value, start);
 			this.error = error;
-			if(tokenType == DeeTokens.INVALID_TOKEN || error == LexerErrorTypes.INVALID_CHARACTERS) {
+			if(tokenType == DeeTokens.INVALID_TOKEN || error == DeeLexerErrors.INVALID_CHARACTERS) {
 				assertTrue(tokenType == DeeTokens.INVALID_TOKEN);
-				assertTrue(error == LexerErrorTypes.INVALID_CHARACTERS);
+				assertTrue(error == DeeLexerErrors.INVALID_CHARACTERS);
 			}
 		}
 		
 		@Override
-		public LexerErrorTypes getError() {
+		public DeeLexerErrors getError() {
 			return error;
 		}
 	}

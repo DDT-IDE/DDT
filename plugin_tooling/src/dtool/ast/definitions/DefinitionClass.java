@@ -19,7 +19,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;

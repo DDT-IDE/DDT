@@ -21,7 +21,7 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;

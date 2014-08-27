@@ -19,9 +19,6 @@ import java.util.List;
 
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokens;
-import dtool.parser.IToken;
-import dtool.parser.LexElement;
-import dtool.parser.Token;
 
 
 public class LexerResult {

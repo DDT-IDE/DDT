@@ -3,7 +3,7 @@ package dtool.ast.declarations;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.parser.IToken;
+import dtool.parser.common.IToken;
 
 /**
  * Align declaration 

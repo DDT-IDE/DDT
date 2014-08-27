@@ -16,7 +16,7 @@ import dtool.engine.common.INonScopedContainer;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.util.ArrayView;
 

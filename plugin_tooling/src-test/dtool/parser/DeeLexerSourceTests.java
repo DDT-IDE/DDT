@@ -71,7 +71,7 @@ public class DeeLexerSourceTests extends CommonTemplatedSourceBasedTest {
 	
 	public static TokenChecker createTokenChecker(String expectedTokenStr) {
 		try {
-			LexerErrorTypes expectedError = null;
+			DeeLexerErrors expectedError = null;
 			
 			int errorMark = expectedTokenStr.indexOf('!');
 			if(errorMark != -1) {
@@ -107,10 +107,10 @@ public class DeeLexerSourceTests extends CommonTemplatedSourceBasedTest {
 		return expectedTokenName;
 	}
 	
-	protected static final Map<String, LexerErrorTypes> strToErrorType = new HashMap<String, LexerErrorTypes>();
+	protected static final Map<String, DeeLexerErrors> strToErrorType = new HashMap<String, DeeLexerErrors>();
 	
 	static {
-		for (LexerErrorTypes lexerErrorType : LexerErrorTypes.values()) {
+		for (DeeLexerErrors lexerErrorType : DeeLexerErrors.values()) {
 			switch (lexerErrorType) {
 			case INVALID_CHARACTERS: strToErrorType.put("xC", lexerErrorType); break;
 			
@@ -141,7 +141,7 @@ public class DeeLexerSourceTests extends CommonTemplatedSourceBasedTest {
 		}
 	}
 	
-	public static LexerErrorTypes parseExpectedError(String string) {
+	public static DeeLexerErrors parseExpectedError(String string) {
 		assertTrue(!string.isEmpty());
 		return assertNotNull(strToErrorType.get(string));
 	}

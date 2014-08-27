@@ -8,10 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import dtool.ast.ISourceRepresentation;
 import dtool.ast.SourceRange;
+import dtool.parser.DeeTokens;
 
 public interface IToken extends ISourceRepresentation {
 	

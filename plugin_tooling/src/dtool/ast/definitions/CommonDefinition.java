@@ -8,7 +8,7 @@ import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 
 /**
  * Abstract class for all declaration DefUnits that have preceding attributes and DDoc.

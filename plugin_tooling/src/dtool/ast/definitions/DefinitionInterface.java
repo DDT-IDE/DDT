@@ -5,7 +5,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.util.ArrayView;
 
 /**

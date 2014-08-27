@@ -13,8 +13,7 @@ package dtool.parser.common;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.parser.DeeTokens;
-import dtool.parser.LexerErrorTypes;
-import dtool.parser.Token;
+import dtool.parser.DeeLexerErrors;
 
 public abstract class AbstractLexer {
 	
@@ -26,7 +25,7 @@ public abstract class AbstractLexer {
 	protected int tokenStartPos = 0;
 	protected int pos = 0; // Temporary variable. When a match is finished this will be token end position. 
 	protected DeeTokens tokenType; // type for the last matched token 
-	protected LexerErrorTypes tokenError; // error for the last matched token
+	protected DeeLexerErrors tokenError; // error for the last matched token
 
 	public AbstractLexer(String source) {
 		this.source = assertNotNull(source);
@@ -90,7 +89,7 @@ public abstract class AbstractLexer {
 	
 	protected abstract Void doParseToken();
 	
-	protected final Void endMatchWithError(DeeTokens tokenType, LexerErrorTypes errorType) {
+	protected final Void endMatchWithError(DeeTokens tokenType, DeeLexerErrors errorType) {
 		this.tokenError = errorType;
 		return endMatch(tokenType);
 	}

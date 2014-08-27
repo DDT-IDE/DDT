@@ -1,6 +1,7 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import dtool.parser.common.Token;
 import melnorme.utilbox.misc.ArrayUtil;
 
 public class SourceEquivalenceChecker {

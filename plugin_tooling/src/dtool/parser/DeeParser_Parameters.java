@@ -39,6 +39,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTypeModifier;
 import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.Reference;
+import dtool.parser.common.LexElement;
 import dtool.util.ArrayView;
 
 public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {

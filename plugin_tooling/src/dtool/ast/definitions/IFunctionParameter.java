@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
 import dtool.parser.DeeTokens;
-import dtool.parser.LexElement;
+import dtool.parser.common.LexElement;
 import dtool.util.ArrayView;
 
 public interface IFunctionParameter extends IASTNode {

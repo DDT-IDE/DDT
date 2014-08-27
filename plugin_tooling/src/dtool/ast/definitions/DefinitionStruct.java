@@ -4,7 +4,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
-import dtool.parser.Token;
+import dtool.parser.common.Token;
 import dtool.util.ArrayView;
 
 /**

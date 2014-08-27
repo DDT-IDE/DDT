@@ -1,6 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.parser;
 
-public enum LexerErrorTypes {
+public enum DeeLexerErrors {
 	
 	INVALID_CHARACTERS("Invalid characters."),
 	
@@ -32,8 +42,10 @@ public enum LexerErrorTypes {
 	CHAR_LITERAL_SIZE_GREATER_THAN_ONE("Character literal has more than one character.");
 	
 	;
+	
 	public final String message;
-	private LexerErrorTypes(String message) {
+	private DeeLexerErrors(String message) {
 		this.message = message;
 	}
+	
 }

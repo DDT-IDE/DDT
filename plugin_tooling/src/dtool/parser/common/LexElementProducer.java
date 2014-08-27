@@ -14,8 +14,6 @@ import java.util.ArrayList;
 
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.DeeTokens;
-import dtool.parser.LexElement;
-import dtool.parser.Token;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**

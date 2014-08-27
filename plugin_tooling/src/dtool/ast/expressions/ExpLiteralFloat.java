@@ -10,7 +10,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.INamedElement;
 import dtool.engine.modules.IModuleResolver;
-import dtool.parser.IToken;
+import dtool.parser.common.IToken;
 import dtool.resolver.LanguageIntrinsics;
 
 public class ExpLiteralFloat extends Expression {

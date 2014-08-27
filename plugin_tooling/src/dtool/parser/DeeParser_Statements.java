@@ -66,6 +66,8 @@ import dtool.ast.statements.StatementWhile;
 import dtool.ast.statements.StatementWith;
 import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.IToken;
+import dtool.parser.common.LexElement;
 import dtool.util.ArrayView;
 
 

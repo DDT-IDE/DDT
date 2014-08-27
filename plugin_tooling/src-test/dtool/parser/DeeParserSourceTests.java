@@ -39,6 +39,8 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeParserTester.NamedNodeElement;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.IToken;
+import dtool.parser.common.LexElement;
 import dtool.parser.common.LexElementSource;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;

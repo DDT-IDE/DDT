@@ -16,7 +16,6 @@ import java.util.AbstractList;
 import java.util.List;
 
 import dtool.parser.DeeTokens;
-import dtool.parser.LexElement;
 
 /**
  * A list-like indexed source of {@link LexElement}'s.
