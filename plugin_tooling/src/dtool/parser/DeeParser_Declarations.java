@@ -56,6 +56,7 @@ import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
 import dtool.parser.DeeParser_Definitions.DefinitionStartInfo;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.BaseLexElement;
 import dtool.util.ArrayView;
 
 

@@ -8,10 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.parser.DeeLexer;
+import dtool.parser.DeeTokens;
+import dtool.parser.LexerErrorTypes;
+import dtool.parser.Token;
 import dtool.tests.CommonDToolTest;
 
 public class AbstractLexerTest extends CommonDToolTest {

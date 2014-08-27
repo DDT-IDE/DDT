@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import descent.core.ddoc.DdocSection.Parameter;
-import dtool.parser.LexingUtil;
+import dtool.parser.DeeLexingUtil;
 
 /**
  * Parser of ddoc documentation comments.
@@ -117,7 +117,7 @@ public class DdocParser {
 			}
 			
 			int colonIndex = getColonOfSectionIndex(line);
-			if (colonIndex != -1 && LexingUtil.isValidDIdentifier(line.substring(0, colonIndex).trim())) {
+			if (colonIndex != -1 && DeeLexingUtil.isValidDIdentifier(line.substring(0, colonIndex).trim())) {
 				if (currentSectionType == DdocSection.CODE_SECTION) {
 					currentSectionType = DdocSection.NORMAL_SECTION;
 				}

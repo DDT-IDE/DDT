@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -23,6 +23,10 @@ import dtool.ast.IASTNode;
 import dtool.ast.NodeListView;
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
+import dtool.parser.DeeTokens;
+import dtool.parser.IToken;
+import dtool.parser.LexElement;
+import dtool.parser.ParserError;
 import dtool.parser.LexElement.MissingLexElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.util.ArrayView;
@@ -93,8 +97,8 @@ public abstract class AbstractParser {
 	
 	public class ParserState {
 		
-		protected final LexElementSource lexSource;
-		protected final boolean enabled;
+		public final LexElementSource lexSource;
+		public final boolean enabled;
 		
 		public ParserState(LexElementSource lexSource, boolean enabled) {
 			this.lexSource = lexSource;
@@ -175,7 +179,7 @@ public abstract class AbstractParser {
 	/* ---- error helpers ---- */
 	
 	protected ParserError createError(ParserErrorTypes errorType, SourceRange sr, Object msgData) {
-		return new ParserError(errorType, sr, sr.getSubString(getSource()), msgData);
+		return new ParserError(errorType, sr, sr.getRangeSubString(getSource()), msgData);
 	}
 	
 	protected ParserError createError(ParserErrorTypes errorType, IToken errorToken, Object msgData) {
@@ -216,7 +220,7 @@ public abstract class AbstractParser {
 	
 	public static class NodeResult<T extends ASTNode> extends CommonRuleResult {
 		
-		protected final T node;
+		public final T node;
 		
 		public NodeResult(boolean ruleBroken, T result) {
 			super(ruleBroken);
@@ -225,7 +229,7 @@ public abstract class AbstractParser {
 		}
 		
 		@SuppressWarnings("unchecked")
-		protected final <SUPER_OF_T extends ASTNode> NodeResult<SUPER_OF_T> upcastTypeParam() {
+		public final <SUPER_OF_T extends ASTNode> NodeResult<SUPER_OF_T> upcastTypeParam() {
 			return (NodeResult<SUPER_OF_T>) this;
 		}
 		
@@ -318,10 +322,10 @@ public abstract class AbstractParser {
 	 */ 
 	public class ParseHelper {
 		
-		protected int nodeStart;
+		public int nodeStart;
 		protected ParserError error1 = null;
 		protected ParserError error2 = null;
-		protected boolean ruleBroken = false;
+		public boolean ruleBroken = false;
 		
 		public ParseHelper(int nodeStart) {
 			this.nodeStart = nodeStart;
@@ -441,7 +445,7 @@ public abstract class AbstractParser {
 			return nodeResult.node;
 		}
 		
-		protected final ParserError storeError(ParserError error) {
+		public final ParserError storeError(ParserError error) {
 			assertTrue(error2 == null);
 			if(error1 == null) {
 				error1 = error;

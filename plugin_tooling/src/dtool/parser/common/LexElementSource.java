@@ -8,11 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.AbstractList;
+import java.util.List;
+
+import dtool.parser.DeeTokens;
+import dtool.parser.LexElement;
 
 /**
  * A list-like indexed source of {@link LexElement}'s.
@@ -22,13 +26,17 @@ public class LexElementSource {
 	
 	public static final LexElement START_TOKEN = new LexElement(DeeTokens.EOF, "", 0, 0, null);
 	
-	protected final AbstractList<LexElement> lexElementList; // Immutable
+	public final AbstractList<LexElement> lexElementList; // Immutable
 	protected LexElement lastLexElement = START_TOKEN;
 	protected int lexElementPosition = 0;
 	protected int sourcePosition = 0;
 	
-	protected LexElementSource(AbstractList<LexElement> lexElementList) {
+	public LexElementSource(AbstractList<LexElement> lexElementList) {
 		this.lexElementList = lexElementList;
+	}
+	
+	public List<LexElement> getLexElementList() {
+		return lexElementList;
 	}
 	
 	public final LexElement lastLexElement() {

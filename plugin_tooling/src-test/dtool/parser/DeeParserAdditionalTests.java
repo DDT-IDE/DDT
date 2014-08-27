@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import dtool.ast.SourceRange;
 import dtool.ast.definitions.Module;
-import dtool.parser.AbstractParser.ParseHelper;
+import dtool.parser.common.AbstractParser.ParseHelper;
 import dtool.tests.CommonDToolTest;
 
 

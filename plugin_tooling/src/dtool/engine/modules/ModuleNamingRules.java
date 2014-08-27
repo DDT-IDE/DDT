@@ -6,7 +6,7 @@ import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.parser.LexingUtil;
+import dtool.parser.DeeLexingUtil;
 
 /**
  * Naming rules code for compilation units and packages.
@@ -49,7 +49,7 @@ public class ModuleNamingRules {
 			}
 			moduleBaseName = filePath.getName(count-1).toString();
 		}
-		if(!LexingUtil.isValidDIdentifier(moduleBaseName)) {
+		if(!DeeLexingUtil.isValidDIdentifier(moduleBaseName)) {
 			return null;
 		}
 		
@@ -80,7 +80,7 @@ public class ModuleNamingRules {
 			return null;
 		}
 		String moduleName = StringUtil.substringUntilMatch(fileName, ".");
-		if(LexingUtil.isValidDIdentifier(moduleName)) {
+		if(DeeLexingUtil.isValidDIdentifier(moduleName)) {
 			return moduleName;
 		}
 		if(allowPackageName && moduleName.equals("package")) {
@@ -90,7 +90,7 @@ public class ModuleNamingRules {
 	}
 	
 	public static boolean isValidPackageNameSegment(String partname) {
-		return LexingUtil.isValidDIdentifier(partname);
+		return DeeLexingUtil.isValidDIdentifier(partname);
 	}
 	
 	/* ----------------- ----------------- */

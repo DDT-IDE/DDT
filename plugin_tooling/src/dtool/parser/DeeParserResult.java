@@ -20,11 +20,10 @@ import java.util.List;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
+import dtool.parser.common.LexerResult;
 
-public class DeeParserResult {
+public class DeeParserResult extends LexerResult {
 	
-	public final String source;
-	public final List<LexElement> tokenList;
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
@@ -32,8 +31,7 @@ public class DeeParserResult {
 	
 	public DeeParserResult(String source, AbstractList<LexElement> tokenList, ASTNode node, boolean ruleBroken,
 		List<ParserError> errors) {
-		this.source = source;
-		this.tokenList = Collections.unmodifiableList(tokenList);
+		super(source, tokenList);
 		this.node = node;
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;

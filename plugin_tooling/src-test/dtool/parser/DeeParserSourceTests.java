@@ -20,7 +20,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +39,7 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.ast.SourceRange;
 import dtool.parser.DeeParserTester.NamedNodeElement;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.LexElementSource;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
@@ -78,7 +78,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 		final String DEFAULT_VALUE = "##DEFAULT VALUE";
 		
 		String fullSource = testSource.source;
-		final LexElementSource lexSource = new DeeParser(fullSource).lexSource;
+		final LexElementSource lexSource = new DeeParser(fullSource).getEnabledLexSource();
 		
 		String expectedParsedSource = fullSource;
 		String expectedRemainingSource = null;
@@ -318,7 +318,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 	}
 	
 	public static LexElement findLastEffectiveTokenBeforeOffset(int offset, LexElementSource lexSource) {
-		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
+		List<LexElement> lexElementList = lexSource.getLexElementList();
 		assertTrue(offset > 0 && offset <= lexElementList.get(lexElementList.size()-1).getEndPos());
 		
 		LexElement lastLexElement = LexElementSource.START_TOKEN;
@@ -331,7 +331,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 	}
 	
 	public static LexElement findNextEffectiveTokenAfterOffset(int offset, LexElementSource lexSource) {
-		AbstractList<LexElement> lexElementList = lexSource.lexElementList;
+		List<LexElement> lexElementList = lexSource.getLexElementList();
 		
 		for (LexElement lexElement : lexElementList) {
 			if(lexElement.isEOF()) {

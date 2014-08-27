@@ -25,6 +25,8 @@ import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.ParserError.ErrorSourceRangeComparator;
+import dtool.parser.common.LexElementProducer;
+import dtool.parser.common.LexElementSource;
 
 /**
  * Concrete D Parser class

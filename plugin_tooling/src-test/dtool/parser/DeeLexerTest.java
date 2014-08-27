@@ -14,6 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
+import dtool.parser.common.AbstractLexerTest;
+
 public class DeeLexerTest extends AbstractLexerTest {
 	
 	@Test
@@ -65,28 +67,28 @@ public class DeeLexerTest extends AbstractLexerTest {
 	@Test
 	public void test_isValidDIdentifier() throws Exception { test_isValidDIdentifier$(); }
 	public void test_isValidDIdentifier$() throws Exception {
-		assertTrue(LexingUtil.isValidDIdentifier("foo"));
-		assertTrue(LexingUtil.isValidDIdentifier("bar321"));
-		assertTrue(LexingUtil.isValidDIdentifier("_bar"));
-		assertTrue(LexingUtil.isValidDIdentifier("_foo_bar"));
-		assertTrue(LexingUtil.isValidDIdentifier("foo_bar"));
-		assertTrue(LexingUtil.isValidDIdentifier("Açores"));
-		assertTrue(LexingUtil.isValidDIdentifier("Солярис"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("foo"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("bar321"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("_bar"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("_foo_bar"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("foo_bar"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("Açores"));
+		assertTrue(DeeLexingUtil.isValidDIdentifier("Солярис"));
 		
-		assertTrue(!LexingUtil.isValidDIdentifier(""));
-		assertTrue(!LexingUtil.isValidDIdentifier("foo.d"));
-		assertTrue(!LexingUtil.isValidDIdentifier("123foo"));
-		assertTrue(!LexingUtil.isValidDIdentifier("bar.foo"));
-		assertTrue(!LexingUtil.isValidDIdentifier("bar foo"));
-		assertTrue(!LexingUtil.isValidDIdentifier("bar-foo"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier(""));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("foo.d"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("123foo"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("bar.foo"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("bar foo"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("bar-foo"));
 		
 		// Test keywords
-		assertTrue(!LexingUtil.isValidDIdentifier("while"));
-		assertTrue(!LexingUtil.isValidDIdentifier("package"));
-		assertTrue(!LexingUtil.isValidDIdentifier("__FILE__"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("while"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("package"));
+		assertTrue(!DeeLexingUtil.isValidDIdentifier("__FILE__"));
 		
 		for (DeeTokens token : DeeTokenHelper.keyWords_All) {
-			assertTrue(!LexingUtil.isValidDIdentifier(token.getSourceValue()));
+			assertTrue(!DeeLexingUtil.isValidDIdentifier(token.getSourceValue()));
 		}
 		
 	}

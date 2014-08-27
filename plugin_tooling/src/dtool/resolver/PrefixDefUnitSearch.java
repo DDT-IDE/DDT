@@ -2,6 +2,7 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +26,6 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.IToken;
-import dtool.parser.LexingUtil;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -88,7 +88,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	public CompletionSearchResult getOperationResult() {
-		return new CompletionSearchResult(searchOptions, results, resultCode);
+		return new CompletionSearchResult(resultCode, searchOptions, results);
 	}
 	
 	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
@@ -106,10 +106,10 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
 		
-		IToken tokenAtOffset = LexingUtil.findTokenAtOffset(offset, parseResult);
+		IToken tokenAtOffset = parseResult.findTokenAtOffset(offset);
 		
-		if((offset > tokenAtOffset.getStartPos() && offset < tokenAtOffset.getEndPos()) &&
-			canCompleteInsideToken(tokenAtOffset)) {
+		if(isInsideRange(tokenAtOffset.getStartPos(), offset, tokenAtOffset.getEndPos()) 
+				&& canCompleteInsideToken(tokenAtOffset)) {
 			return search.assignResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION, 
 				"Invalid location (inside unmodifiable token)");
 		}
@@ -120,19 +120,16 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			}
 		}
 		
-		int correctedOffset = offset;
 		String searchPrefix = "";
-		if(tokenIsAlphaNumeric(tokenAtOffset)) {
-			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
-			correctedOffset = tokenAtOffset.getStartPos();
-		}
 		int rplLen = 0;
 		if(tokenIsAlphaNumeric(tokenAtOffset)) {
+			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
 			rplLen = tokenAtOffset.getEndPos() - offset;
 		}
 		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
 		
 		// Determine node that will be starting point to determine lookup scope.
+		int correctedOffset = tokenAtOffset.getStartPos();
 		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(module, correctedOffset, true);
 		ASTNode node = nodeFinder.match;
 		if(nodeFinder.matchOnLeft instanceof NamedReference) {

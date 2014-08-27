@@ -8,6 +8,7 @@ import java.util.Map;
 import melnorme.utilbox.misc.Pair;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.BaseLexElement;
 import dtool.util.NewUtils;
 
 public class DeeTokenSemantics {

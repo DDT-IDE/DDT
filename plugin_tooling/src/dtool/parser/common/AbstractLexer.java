@@ -8,10 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import dtool.parser.DeeTokens;
+import dtool.parser.LexerErrorTypes;
+import dtool.parser.Token;
 
 public abstract class AbstractLexer {
 	

@@ -18,15 +18,15 @@ import dtool.ast.definitions.INamedElement;
 
 public class CompletionSearchResult {
 	
+	public final ECompletionResultStatus resultCode;
 	public final PrefixSearchOptions searchOptions;
 	public final ArrayList<INamedElement> results;
-	public final ECompletionResultStatus resultCode;
 	
-	public CompletionSearchResult(PrefixSearchOptions searchOptions, ArrayList<INamedElement> results,
-			ECompletionResultStatus resultCode) {
-		this.searchOptions = searchOptions;
-		this.results = results;
+	public CompletionSearchResult(ECompletionResultStatus resultCode, PrefixSearchOptions searchOptions,
+			ArrayList<INamedElement> results) {
 		this.resultCode = resultCode;
+		this.searchOptions = assertNotNull(searchOptions);
+		this.results = results;
 	}
 	
 	public ArrayList<INamedElement> getResults() {
@@ -39,6 +39,10 @@ public class CompletionSearchResult {
 	
 	public PrefixSearchOptions getSearchOptions() {
 		return searchOptions;
+	}
+	
+	public int getReplaceLength() {
+		return searchOptions.rplLen;
 	}
 	
 	public static class PrefixSearchOptions {

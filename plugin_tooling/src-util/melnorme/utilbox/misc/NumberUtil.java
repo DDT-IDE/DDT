@@ -14,7 +14,19 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
 public class NumberUtil {
-
+	
+	/** @return if given number is contained in range [min, max] (inclusive). */
+	public static boolean isInRange(int min, int number, int max) {
+		assertTrue(min <= max);
+		return min <= number && number <= max; 
+	}
+	
+	/** @return if given number is contained in range ]min, max[ (exclusive). */
+	public static boolean isInsideRange(int min, int number, int max) {
+		assertTrue(min <= max);
+		return min < number && number < max; 
+	}
+	
 	/** Caps given number betwen given min and max, inclusive. */
 	public static int capBetween(int min, int number, int max) {
 		assertTrue(min <= max);

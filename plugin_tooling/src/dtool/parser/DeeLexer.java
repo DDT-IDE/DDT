@@ -17,6 +17,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.Arrays;
 
+import dtool.parser.common.AbstractLexer;
+
 
 public class DeeLexer extends AbstractLexer {
 	

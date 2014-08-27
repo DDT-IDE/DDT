@@ -8,10 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.parser.common;
 
 import java.util.ArrayList;
 
+import dtool.parser.DeeTokenSemantics;
+import dtool.parser.DeeTokens;
+import dtool.parser.LexElement;
+import dtool.parser.Token;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**
@@ -25,7 +29,7 @@ public class LexElementProducer {
 		return new LexElementSource(new LexElementProducer().produceLexTokens(lexer));
 	}
 	
-	protected ArrayList<LexElement> produceLexTokens(AbstractLexer lexer) {
+	public ArrayList<LexElement> produceLexTokens(AbstractLexer lexer) {
 		ArrayList<LexElement> lexElementList = new ArrayList<>();
 		
 		while(true) {

@@ -89,6 +89,8 @@ import dtool.ast.statements.FunctionBodyOutBlock;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.InOutFunctionBody;
 import dtool.parser.ParserError.ParserErrorTypes;
+import dtool.parser.common.AbstractParser;
+import dtool.parser.common.BaseLexElement;
 import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 import dtool.util.SentinelArrayList;

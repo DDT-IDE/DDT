@@ -10,6 +10,8 @@ import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
+import dtool.parser.common.AbstractParser;
+import dtool.parser.common.BaseLexElement;
 
 
 public abstract class DeeParser_Common extends AbstractParser {

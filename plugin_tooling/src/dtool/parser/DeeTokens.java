@@ -241,9 +241,9 @@ public enum DeeTokens {
 	
 	;
 	
-	protected final String sourceValue;
-	protected final boolean isSubChannel; // Flag for tokens like whitespace and comments, that are mostly ignored
-	protected final DeeTokens groupToken;
+	public final String sourceValue;
+	public final boolean isSubChannel; // Flag for tokens like whitespace and comments, that are mostly ignored
+	public final DeeTokens groupToken;
 	
 	private DeeTokens(String sourceValue, boolean isSubChannel, DeeTokens groupToken) {
 		this.sourceValue = sourceValue;
