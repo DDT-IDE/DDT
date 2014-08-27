@@ -80,6 +80,7 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
+		//TODO review this code
 		if(search instanceof PrefixDefUnitSearch) {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);

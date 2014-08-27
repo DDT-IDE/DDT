@@ -1,31 +1,16 @@
 package dtool.resolver;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.CommonQualifiedReference;
-import dtool.ast.references.NamedReference;
-import dtool.ast.references.RefModule;
-import dtool.ast.util.ASTNodeFinderExtension;
 import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
-import dtool.engine.operations.CompletionSearchResult;
-import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
-import dtool.parser.DeeParser;
-import dtool.parser.DeeParserResult;
-import dtool.parser.DeeTokens;
-import dtool.parser.common.IToken;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -34,13 +19,18 @@ import dtool.parser.common.IToken;
  */
 public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
-	public final PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-	
+	public final PrefixSearchOptions searchOptions;
 	protected final Set<String> addedDefElements = new HashSet<>();
 	protected final ArrayList<INamedElement> results  = new ArrayList<>();
 	
 	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
+		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
+	}
+	
+	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver, 
+			PrefixSearchOptions searchOptions) {
 		super(refOriginModule, refOffset, moduleResolver);
+		this.searchOptions = searchOptions;
 	}
 	
 	public int getOffset() {
@@ -75,109 +65,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	public ArrayList<INamedElement> getResults() {
 		return results;
 	}
-	
-	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
-			IModuleResolver mr) {
-		
-		String source = parseResult.source;
-		assertTrue(offset >= 0 && offset <= source.length());		
-		
-		Module module = parseResult.getModuleNode();
-		
-		IToken tokenAtOffset = parseResult.findTokenAtOffset(offset);
-		
-		if(isInsideRange(tokenAtOffset.getStartPos(), offset, tokenAtOffset.getEndPos()) 
-				&& canCompleteInsideToken(tokenAtOffset)) {
-			return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
-		}
-		if(tokenAtOffset.getType().getGroupingToken() == DeeTokens.GROUP_FLOAT) {
-			if(tokenAtOffset.getSourceValue().endsWith(".")) {
-				return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
-			}
-		}
-		
-		// Determine node that will be starting point to determine lookup scope.
-		int correctedOffset = tokenAtOffset.getStartPos();
-		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(module, correctedOffset, true);
-		ASTNode node = nodeFinder.match;
-		if(nodeFinder.matchOnLeft instanceof NamedReference) {
-			NamedReference reference = (NamedReference) nodeFinder.matchOnLeft;
-			if(reference.isMissingCoreReference()) {
-				node = nodeFinder.matchOnLeft;
-			}
-		}
-		
-		String searchPrefix = "";
-		int rplLen = 0;
-		if(tokenIsAlphaNumeric(tokenAtOffset)) {
-			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
-			rplLen = tokenAtOffset.getEndPos() - offset;
-		}
-		
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
-		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
-		
-		if(node instanceof CommonQualifiedReference) {
-			CommonQualifiedReference namedRef = (CommonQualifiedReference) node;
-			if(offset <= namedRef.getDotOffset()) {
-				return new CompletionSearchResult(ECompletionResultStatus.INVALID_REFQUAL_LOCATION);
-			}
-			assertEquals(search.searchOptions.searchPrefix, "");
-			assertEquals(search.searchOptions.namePrefixLen, 0);
-			assertEquals(search.searchOptions.rplLen, 0);
-		} else if(node instanceof RefModule) {
-			RefModule refModule = (RefModule) node;
-			// RefModule has a specialized way to setup prefix len things
-			
-			setupRefModuleSearchPrefix(search, tokenAtOffset, source, refModule);
-		}
-		
-		node.performRefSearch(search);
-		return new CompletionSearchResult(search.searchOptions, search.results);
-	}
-	
-	public static boolean canCompleteInsideToken(IToken token) {
-		return !(token.getType() == DeeTokens.WHITESPACE || tokenIsAlphaNumeric(token));
-	}
-	
-	public static boolean tokenIsAlphaNumeric(IToken token) {
-		return token.getType() == DeeTokens.IDENTIFIER || token.getType().isKeyword();
-	}
-	
-	public void setupPrefixedSearchOptions(String searchPrefix, int rplLen) {
-		assertTrue(rplLen >= 0);
-		searchOptions.searchPrefix = searchPrefix;
-		searchOptions.namePrefixLen = searchOptions.searchPrefix.length();
-		searchOptions.rplLen = rplLen;
-	}
-	
-	public static void setupRefModuleSearchPrefix(PrefixDefUnitSearch search, IToken tokenAtOffset,
-		String source, RefModule refModule) {
-		final int offset = search.getOffset();
-		
-		int idEnd = refModule.getEndPos();
-		if(refModule.isMissingCoreReference()) {
-			if(tokenAtOffset.getType().isKeyword() && tokenAtOffset.getEndPos() > refModule.getEndPos()) {
-				idEnd = tokenAtOffset.getEndPos(); // Fix for attached keyword ids
-			} else {
-				idEnd = refModule.moduleToken.getFullRangeStartPos();
-			}
-		}
-		int rplLen = offset > idEnd ? 0 : idEnd - offset;
-		
-		// We reparse the snipped source as it's the easiest way to determine search prefix
-		String moduleQualifiedNameSnippedSource = source.substring(refModule.getStartPos(), offset);
-		DeeParser parser = new DeeParser(moduleQualifiedNameSnippedSource);
-		String moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
-		DeeTokens lookAhead = parser.lookAhead();
-		if(lookAhead != DeeTokens.EOF) {
-			assertTrue(lookAhead.isKeyword());
-			moduleQualifiedNameCanonicalPrefix += lookAhead.getSourceValue();
-		}
-		search.setupPrefixedSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
-		search.searchOptions.isImportModuleSearch = true;
-	}
-	
 	
 	@Override
 	public String toString() {

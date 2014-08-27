@@ -26,11 +26,11 @@ public abstract class CommonRefIdentifier extends NamedReference {
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
+	public final void visitChildren(IASTVisitor visitor) {
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
+	public final void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(identifier);
 	}
 	

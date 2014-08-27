@@ -28,20 +28,40 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	public static final Path MODULE_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve("completion_test.d");
 	public static final String MODULE_Contents = readStringFromFile(MODULE_FilePath);
 	
+	protected final String[] COMPLETION_TEST_MEMBERS = array("Foo", "bar", "abc1", "abc2");
+	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1*/"), 0,
-			"xx1", "xx2"
+			"abc1", "abc2"
+		);
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "abc/*CC1*/"), 3,
+			COMPLETION_TEST_MEMBERS
 		);
 		
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "xx/*CC1*/"), 2,
-			"completion_test",
+		
+		// Test qualified ref
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC2*/"), 0,
 			"xx1", "xx2"
 		);
-		
 		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "xx/*CC2*/"), 2,
-			"xx1", "xx2"
+			"xx1", "xx2", "other"
+		);
+		
+		// Test qualified ref - odd case before dot
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_beforeDot*/"), 0,
+			COMPLETION_TEST_MEMBERS
+		);
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, ". /*CC_afterDot*/"), 0,
+			COMPLETION_TEST_MEMBERS
+		);
+		// Test qualified ref - odd case after dot
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, " /*CC_afterDot*/"), 0,
+			"xx1", "xx2", "other"
+		);
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, " /*CC_afterDot*/"), 0,
+			"xx1", "xx2", "other"
 		);
 		
 	}
@@ -59,7 +79,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		assertTrue(opResult.getReplaceLength() == replaceLength);
 		
 		DefUnitResultsChecker checker = new DefUnitResultsChecker(opResult.results);
-		checker.removeIgnoredDefUnits(true, true);
+		checker.removeIgnoredDefUnits(true, true, true);
 		checker.removeStdLibObjectDefUnits();
 		checker.checkResults(expectedResults);
 	}

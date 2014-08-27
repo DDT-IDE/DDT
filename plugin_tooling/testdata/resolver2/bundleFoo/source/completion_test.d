@@ -1,11 +1,20 @@
-module completion_test;
+module _dummy;
 
-int xx1;
-int xx2;
+int abc1;
+int abc2;
+
+class Foo {
+	int xx1;
+	int xx2;
+	int other;
+}
+int bar;
 	
 void _dummy()
 {
-	auto _dummy = xx/*CC1*/;
+	auto _dummy = abc/*CC1*/;
 	
-	completion_test.xx/*CC2*/;
+	Foo.xx/*CC2*/;
+	
+	Foo /*CC_beforeDot*/ . /*CC_afterDot*/ xx ;
 }

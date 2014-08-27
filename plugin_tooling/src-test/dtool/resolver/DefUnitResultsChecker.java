@@ -42,20 +42,29 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
-		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives);
+		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
+	}
+	
+	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
+		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
 	}
 	
 	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
-		boolean ignoreDummyResults, boolean ignorePrimitives) {
+			boolean ignoreDummyResults, boolean ignorePrimitives) {
+		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
+	}
+	
+	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
+		boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
 		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
 			if(ignoreDummyResults && 
 				(defElement.getName().equals("_dummy") || defElement.getName().endsWith("_ignore"))) {
 				iterator.remove();
-			}
-			
-			if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
+			} else if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
+				iterator.remove();
+			} else if(ignoreIntrinsics && defElement.isLanguageIntrinsic()) {
 				iterator.remove();
 			}
 		}

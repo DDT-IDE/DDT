@@ -65,6 +65,13 @@ public class CompletionSearchResult {
 		public PrefixSearchOptions() {
 		}
 		
+		public void setPrefixSearchOptions(String searchPrefix, int rplLen) {
+			assertTrue(rplLen >= 0);
+			this.searchPrefix = searchPrefix;
+			this.namePrefixLen = searchPrefix.length();
+			this.rplLen = rplLen;
+		}
+		
 	}
 	
 	public enum ECompletionResultStatus {

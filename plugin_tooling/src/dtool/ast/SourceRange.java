@@ -2,6 +2,7 @@ package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
+import melnorme.utilbox.misc.NumberUtil;
 
 
 public final class SourceRange implements Comparable<SourceRange> {
@@ -62,6 +63,10 @@ public final class SourceRange implements Comparable<SourceRange> {
 	/** @return a substring of given source using the range of the receiver. */
 	public String getRangeSubString(String source) {
 		return source.substring(getStartPos(), getEndPos());
+	}
+	
+	public boolean containsInRange(int offset) {
+		return NumberUtil.isInRange(getStartPos(), offset, getEndPos());
 	}
 	
 }

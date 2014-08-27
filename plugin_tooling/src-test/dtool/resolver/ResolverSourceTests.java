@@ -8,9 +8,10 @@ import java.io.File;
 
 import dtool.ast.references.NamedReference;
 import dtool.engine.modules.NullModuleResolver;
+import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.CompletionSearchResult;
 import dtool.parser.DeeParser;
-import dtool.parser.DeeParserResult;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -22,7 +23,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
-	protected DeeParserResult parseResult;
+	protected ParsedModule parseResult;
 	
 	@Override
 	public void prepareTestCase(String moduleName, String projectFolderName, AnnotatedSource testCase) {
@@ -51,7 +52,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		
-		CompletionSearchResult completion = PrefixDefUnitSearch.completionSearch(parseResult, options.offset, mr);
+		CompletionSearchResult completion = CodeCompletionOperation.completionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(completion.getResultCode(), options.expectedStatusCode);
 		assertEquals(completion.getReplaceLength(), options.rplLen);
