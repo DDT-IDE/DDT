@@ -47,6 +47,10 @@ public class CompletionSearchResult {
 		return resultCode;
 	}
 	
+	public boolean isFailure() {
+		return resultCode != ECompletionResultStatus.RESULT_OK;
+	}
+	
 	public int getReplaceLength() {
 		return replaceLength;
 	}

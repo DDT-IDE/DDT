@@ -18,7 +18,6 @@ import org.eclipse.dltk.core.CompletionRequestor;
 
 import dtool.ast.definitions.INamedElement;
 import dtool.engine.operations.CompletionSearchResult;
-import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
@@ -36,15 +35,16 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			requestor.acceptContext(context);
 			
 			Path compilerPath = getCompilerPath(moduleSource);
-			CompletionSearchResult search = DToolClient.getDefault().runCodeCompletion(
+			CompletionSearchResult completionResult = DToolClient.getDefault().runCodeCompletion(
 				moduleSource, position, compilerPath);
-			if(search.getResults().isEmpty() && search.getResultCode() != ECompletionResultStatus.RESULT_OK) {
+			if(completionResult.isFailure()) {
 				handleCompletionFailure(DeeCoreMessages.ContentAssist_LocationFailure, position);
+				return;
 			}
 			
-			for (INamedElement result : search.getResults()) {
-				CompletionProposal proposal = createProposal(result, position, search.searchOptions);
-				requestor.accept(proposal);				
+			for (INamedElement result : completionResult.getResults()) {
+				CompletionProposal proposal = createProposal(result, position, completionResult);
+				requestor.accept(proposal);
 			}
 			
 		} catch (CoreException e) {
@@ -65,7 +65,9 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	}
 	
 	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
-			PrefixSearchOptions searchOptions) {
+			CompletionSearchResult completionResult) {
+		PrefixSearchOptions searchOptions = completionResult.searchOptions;
+		
 		String rplName;
 		if(searchOptions.isImportModuleSearch) {
 			rplName = namedElem.getFullyQualifiedName();
@@ -78,7 +80,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset, searchOptions.isImportModuleSearch);
 		proposal.setName(namedElem.getExtendedName());
 		proposal.setCompletion(rplStr);
-		proposal.setReplaceRange(ccOffset, ccOffset + searchOptions.rplLen);
+		proposal.setReplaceRange(ccOffset, ccOffset + completionResult.getReplaceLength());
 		proposal.setExtraInfo(namedElem);
 		
 		return proposal;

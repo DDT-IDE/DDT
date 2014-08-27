@@ -84,8 +84,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		
 		Module module = parseResult.getModuleNode();
 		
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
-		
 		IToken tokenAtOffset = parseResult.findTokenAtOffset(offset);
 		
 		if(isInsideRange(tokenAtOffset.getStartPos(), offset, tokenAtOffset.getEndPos()) 
@@ -98,14 +96,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 			}
 		}
 		
-		String searchPrefix = "";
-		int rplLen = 0;
-		if(tokenIsAlphaNumeric(tokenAtOffset)) {
-			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
-			rplLen = tokenAtOffset.getEndPos() - offset;
-		}
-		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
-		
 		// Determine node that will be starting point to determine lookup scope.
 		int correctedOffset = tokenAtOffset.getStartPos();
 		ASTNodeFinderExtension nodeFinder = new ASTNodeFinderExtension(module, correctedOffset, true);
@@ -116,6 +106,16 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 				node = nodeFinder.matchOnLeft;
 			}
 		}
+		
+		String searchPrefix = "";
+		int rplLen = 0;
+		if(tokenIsAlphaNumeric(tokenAtOffset)) {
+			searchPrefix = tokenAtOffset.getSourceValue().substring(0, offset - tokenAtOffset.getStartPos());
+			rplLen = tokenAtOffset.getEndPos() - offset;
+		}
+		
+		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr);
+		search.setupPrefixedSearchOptions(searchPrefix, rplLen);
 		
 		if(node instanceof CommonQualifiedReference) {
 			CommonQualifiedReference namedRef = (CommonQualifiedReference) node;
