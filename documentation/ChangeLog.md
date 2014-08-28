@@ -1,27 +1,26 @@
 ## DDT release ChangeLog
 
 ### DDT 0.10.2
- * Fixed - D application run/debug menu shortcut appearing in non-D editors.
- * Added: error message in status line when doing content assist in invalid source positions.
- * Greater DUB integrations for semantic operations. XXX: clarify 
-   * Can now do Open Definition, Content Assist, etc. in D files outside of a DDT Eclipse project.
-   * Better prevention of temporary UI freezes when doing semantic operations.
+ * Updated minimum required CDT version to 8.4. 
+  * For more info on new CDT debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 
+  * Added Dynamic printf action to DDT editor ruler.
+ * Changed DDT to be more lenient with CDT versions: it can now be installed with any CDT version except with major version changes. However each DDT release will still have a preferred CDT "major.minor" version, that has been tested against DDT. **Using a version other than the recommended one is not guaranteed to work correctly**.
+  * Current recommended CDT version is 8.4.
+ * Improved integration with DUB bundles when doing semantic operations: 
+   * Can now do Open Definition, Content Assist, etc. in D files outside of an Eclipse project. If they are part of a DUB package that will be recognized.
+ * Improved prevention of temporary UI freezes when doing semantic operations.
  * Added D Standard Library element to Project Explorer.
- * Added: detection of standard library source locations for Arch Linux DMD/LDC/GDC compiler installations.
-   * #/bin/dmd  -> #/include/dlang/dmd
-   * #/bin/ldc2 -> #/include/dlang/ldc
-   * #/bin/gdc  -> #/include/dlang/gdc
- * Removed D compilers preference page. This was replaced in favor of a more general, non-DDT-specific way of detecting compiler installations. See below: 
-   * Added UserGuide.md#compiler-setup section.
- * More lenient with CDT versions. DDT can now be installed with any CDT 8.x.x.
-  * However, there is a small change using DDT with a version other than the recommned/tested one will break things. Each DDT release will list a recommented/tested CDT version.
- * Updated/tested DDT to CDT 8.4. 
-  * Added Dynamic printf ruler action to DDT editor.
-  * For more info on these new CDT 8.4 debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug
+ * Removed D compilers preference page. This was replaced in favor of a more general and non-DDT-specific way of detecting compiler installations. See below: 
+   * Added [Compiler setup](documentation/UserGuide.md#compiler-setup) section to documentation.
+ * Added detection of standard library source locations for Arch Linux DMD/LDC/GDC compiler installations.
+   * $/bin/dmd  -> $/include/dlang/dmd
+   * $/bin/ldc2 -> $/include/dlang/ldc
+   * $/bin/gdc  -> $/include/dlang/gdc
+ * Added: Hovering the mouse (or pressing F2) over an auto keyword (or enum keyword for manifest constants) will display the type that the associated variable declaration resolves to.
+ * Added error message in status line when invoking content assist in invalid source positions.
  * Fixed #65 - MixinString parsing as expression.
- * Added: Hovering the mouse (or pressing F2) over an auto keyword (or enum keyword for manifest constants) will display 
- the type that the associated variable declaration resolves to.
- * Fixed: bug when parsing error messages of the D compiler, when non-standard output messages are emmited. 
+ * Fixed - bug when parsing error messages of the D compiler, when non-standard output messages are emmited. 
+ * Fixed - D Application run/debug menu shortcut appearing in non-D editors.
    
 ### DDT 0.10.1 (2014-05-02)
  * Build: now adds problem marker to project for DUB build failures. 
