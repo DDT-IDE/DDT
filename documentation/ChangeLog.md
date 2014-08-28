@@ -1,6 +1,6 @@
 ## DDT release ChangeLog
 
-### DDT 0.10.x
+### DDT 0.10.2
  * Fixed - D application run/debug menu shortcut appearing in non-D editors.
  * Added: error message in status line when doing content assist in invalid source positions.
  * Greater DUB integrations for semantic operations. XXX: clarify 
