@@ -12,7 +12,7 @@ ant -f repo-release-script.xml UploadUpdateSite.ToGit -DupdateSiteGitURL=https:/
 
 	<property name="localUpdateSiteDir" location="bin-maven/updateSite/" />
 	<property name="repoSrc" location="bin-maven/features.repository/repository" />
-	<property name="repoSrc.subdir" location="local-repo" />
+	<property name="repoSrc.subdir" value="local-repo" />
 	<property name="updateSiteSkeleton.Dir" location="releng/UpdateSite-skeleton" />
 
 	<property name="gitLocation" value="git" />
