@@ -10,12 +10,13 @@
  *******************************************************************************/
 package dtool.parser.common;
 
-import static dtool.ast.SourceRange.srStartToEnd;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.Test;
 
-import dtool.ast.SourceRange;
 import dtool.parser.DeeLexer;
+import dtool.parser.DeeTokens;
+import dtool.parser.common.LexerResult.TokenAtOffsetResult;
 import dtool.tests.CommonDToolTest;
 
 public class LexResult_Test extends CommonDToolTest {
@@ -23,21 +24,50 @@ public class LexResult_Test extends CommonDToolTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		testFindTokenAtOffset("", 0, "", srStartToEnd(0, 0));
-		testFindTokenAtOffset(" ", 0, " ", srStartToEnd(0, 1));
-		testFindTokenAtOffset(" ", 1, "", srStartToEnd(1, 1));
+		testFindTokenAtOffset("", 0, null, token("", 0));
+		testFindTokenAtOffset(";", 0, null, token(";", 0));
+		testFindTokenAtOffset(" ", 0, null, token(" ", 0));
 		
-		testFindTokenAtOffset(";", 0, ";", srStartToEnd(0, 1));
-		testFindTokenAtOffset(";", 1, "", srStartToEnd(1, 1));
+		testFindTokenAtOffset(";", 1, token(";", 0), token("", 1));
+		testFindTokenAtOffset(" ", 1, token("", 1), null);
+		
+		testFindTokenAtOffset(";", 0, null, token(";", 0));
+		testFindTokenAtOffset(";", 1, token(";", 0), token("", 1));
+		
+		testFindTokenAtOffset(";a", 1, token(";", 0), token("a", 1));
+		testFindTokenAtOffset("a;", 1, token("a", 0), token(";", 1));
+		
+		testFindTokenAtOffset("a ", 1, token("a", 0), token(" ", 1)); // This case could change in the future
 	}
 	
-	protected void testFindTokenAtOffset(String source, int offset, String tokenSource, SourceRange sr) {
+	protected Token token(String source, int startPos) {
+		return new Token(DeeTokens.IDENTIFIER, source, startPos);
+	}
+	
+	protected void testFindTokenAtOffset(String source, int offset, Token expected) {
+		testFindTokenAtOffset(source, offset, expected, expected);
+	}
+	
+	protected void testFindTokenAtOffset(String source, int offset, Token expectedLeft, Token expectedRight) {
 		LexerResult lexerResult = new LexerResult(source, 
 			new LexElementProducer().produceLexTokens(new DeeLexer(source)));
 		
-		IToken tokenAtZero = lexerResult.findTokenAtOffset(offset);
-		assertAreEqual(tokenAtZero.getSourceValue(), tokenSource);
-		assertAreEqual(tokenAtZero.getSourceRange(), sr);
+		TokenAtOffsetResult tokenAtOffsetResult = lexerResult.findTokenAtOffset(offset);
+		if(expectedLeft == expectedRight) {
+			assertTrue(tokenAtOffsetResult.atLeft == tokenAtOffsetResult.atRight);
+		}
+		
+		checkToken(tokenAtOffsetResult.atLeft, expectedLeft);
+		checkToken(tokenAtOffsetResult.atRight, expectedRight);
+	}
+	
+	protected void checkToken(IToken token, Token expectedToken) {
+		if(expectedToken == null) {
+			assertTrue(token == null);
+		} else {
+			assertAreEqual(token.getSourceValue(), expectedToken.getSourceValue());
+			assertAreEqual(token.getSourceRange(), expectedToken.getSourceRange());
+		}
 	}
 	
 }

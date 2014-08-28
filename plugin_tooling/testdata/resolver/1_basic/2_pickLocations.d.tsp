@@ -41,7 +41,7 @@ class#FINDFAIL#REFSEARCH¤【】 #FINDFAIL#REFSEARCH¤【Var▪Foo】{}
 class#FINDFAIL#REFSEARCH¤【】 #FINDFAIL#REFSEARCH¤【Var▪Foo】#comment(EOF):
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 module tests;
-auto x = 123.#REFSEARCH¤【!invalid_token】; //Float token
+auto x = 123.#REFSEARCH¤【!after_float_point】; //Float token
 auto x = 123 .#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto x = 123. #REFSEARCH¤【tests▪x】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂

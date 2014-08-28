@@ -78,8 +78,7 @@ public class CompletionSearchResult {
 		
 		RESULT_OK("ok", null),
 		INVALID_TOKEN_LOCATION("invalid_token", "Invalid location (inside unmodifiable token)"),
-		INVALID_TOKEN_LOCATION_FLOAT("after_float", "Invalid location (after float)"),
-		INVALID_REFQUAL_LOCATION("invalid_qualified", "Invalid Location: before qualifier dot but not next to id."),
+		INVALID_TOKEN_LOCATION_FLOAT("after_float_point", "Invalid location (after float decimal point)"),
 		;
 		
 		protected final String id;

@@ -30,7 +30,7 @@ import dtool.resolver.PrefixDefUnitSearch;
 
 public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	
-	protected static final String[] COMMON_PROPERTIES = array(
+	public static final String[] COMMON_PROPERTIES = array(
 		"init", "sizeof", "alignof", "mangleof", "stringof"
 	);
 	

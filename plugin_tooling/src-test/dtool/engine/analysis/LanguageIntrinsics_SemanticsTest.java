@@ -20,6 +20,15 @@ import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefU
 
 public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
 	
+	public static final String[] PRIMITIVE_TYPES = array(
+		"/bool", 
+		"/byte", "/ubyte", "/short", "/ushort", "/int", "/uint", "/long", "/ulong", 
+		"/char", "/wchar", "/dchar", 
+		"/float", "/double", "/real", 
+		"/void", 
+		"/ifloat", "/idouble", "/ireal", "/cfloat", "/cdouble", "/creal"
+	);
+	
 	protected static final String[] INT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"max", "min"
 	);

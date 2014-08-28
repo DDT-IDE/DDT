@@ -74,7 +74,7 @@ public class RefModule extends NamedReference {
 		return module;
 	}
 	
-	protected String getRefModuleFullyQualifiedName() {
+	public String getRefModuleFullyQualifiedName() {
 		return toStringAsCode();
 	}
 	

@@ -65,7 +65,7 @@ public final class SourceRange implements Comparable<SourceRange> {
 		return source.substring(getStartPos(), getEndPos());
 	}
 	
-	public boolean containsInRange(int offset) {
+	public boolean contains(int offset) {
 		return NumberUtil.isInRange(getStartPos(), offset, getEndPos());
 	}
 	

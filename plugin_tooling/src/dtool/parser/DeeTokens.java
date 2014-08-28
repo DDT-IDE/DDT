@@ -293,4 +293,8 @@ public enum DeeTokens {
 		return DeeTokenHelper.isKeyword(this);
 	}
 	
+	public boolean isAlphaNumeric() {
+		return this == DeeTokens.IDENTIFIER || isKeyword();
+	}
+	
 }

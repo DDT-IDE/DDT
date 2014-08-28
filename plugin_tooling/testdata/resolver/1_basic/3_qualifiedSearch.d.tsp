@@ -19,8 +19,8 @@ int other;
 	Foo.Var#REFSEARCH¤【Var▪Var2】;
 	
 	Foo#FIND¤【Foo】#REFSEARCH¤【Foo】.Var;
-	Foo #REFSEARCH¤【!invalid_qualified】#FINDFAIL.Var;
-	Foo #REFSEARCH¤【!invalid_qualified】.Var;
+	Foo #REFSEARCH¤【tests▪Foo▪other】#FINDFAIL.Var;
+	Foo #REFSEARCH¤【tests▪Foo▪other】.Var;
 	
 	Foo.#REFSEARCH¤【Var▪Var2▪member▪intro▪#@TYPE_PROPERTIES】#FINDMISSING;
 	Foo.#REFSEARCH¤【Var▪Var2▪member▪intro▪#@TYPE_PROPERTIES】#FINDMISSING  ;

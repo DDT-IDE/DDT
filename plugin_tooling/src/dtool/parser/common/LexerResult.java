@@ -10,13 +10,14 @@
  *******************************************************************************/
 package dtool.parser.common;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.NumberUtil.isInRange;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.parser.DeeLexer;
 import dtool.parser.DeeTokens;
 
@@ -34,37 +35,98 @@ public class LexerResult {
 		assertTrue(tokenList.get(tokenList.size()-1).isEOF());
 	}
 	
-	/** Find the token at given offset (end inclusive) of given parseResult.
-	 * If offset is the boundary between two tokens, preference is given to non-subchannel tokens.
-	 * Otherwise, if that is still ambiguous, return the first token.  
-	 */
-	public IToken findTokenAtOffset(final int offset) {
+	public ListIterator<LexElement> getFirstLexElementAtOffset(final int offset) {
 		assertTrue(offset <= source.length());
 		
-		for (LexElement lexElement : tokenList) {
+		ListIterator<LexElement> iterator = tokenList.listIterator();
+		
+		while(true) {
+			assertTrue(iterator.hasNext());
+			LexElement lexElement = iterator.next();
+			
 			assertTrue(lexElement.getFullRangeStartPos() <= offset);
 			
-			if(offset >= lexElement.getEndPos()) {
-				if(lexElement.isEOF()) {
-					return lexElement;
-				}
-				continue; // go to next token
-			}
-			assertTrue(isInRange(lexElement.getFullRangeStartPos(), offset, lexElement.getEndPos()));
-			
-			// We found the LexElement range where the offset is at, but we still need to figure out
-			// if the offset is in a subchannel token or in the main token.
-			
-			if(offset >= lexElement.getStartPos()) {
-				return lexElement;
-			} else {
-				// Search in comments, token is in the subchannel range [FullRangeStartPos .. StartPos]
-				int searchStartPos = lexElement.getFullRangeStartPos();
-				// We don't store subchannel tokens, so we have to reparse to find them:
-				return findFirstTokenAtOffset(source, searchStartPos, offset);
-			}
+			if(lexElement.isEOF())
+				break;
+			if(offset <= lexElement.getEndPos())
+				break;
 		}
-		throw assertFail();
+		return iterator;
+	}
+	
+	public IToken findFirstTokenAtOffset(final int offset) {
+		ListIterator<LexElement> iterator = getFirstLexElementAtOffset(offset);
+		LexElement lexElement = IteratorUtil.getCurrentElement(iterator);
+		return findTokenInLexElement(lexElement, offset);
+	}
+	
+	public IToken findTokenInLexElement(LexElement lexElement, int offset) {
+		assertTrue(isInRange(lexElement.getFullRangeStartPos(), offset, lexElement.getEndPos()));
+		
+		if(offset >= lexElement.getStartPos()) {
+			return lexElement;
+		} else {
+			// Search in comments, token is in the subchannel range [FullRangeStartPos .. StartPos]
+			int searchStartPos = lexElement.getFullRangeStartPos();
+			// We don't store subchannel tokens, so we have to reparse to find them:
+			return findFirstTokenAtOffset(source, searchStartPos, offset);
+		}
+	}
+	
+	public TokenAtOffsetResult findTokenAtOffset(int offset) {
+		ListIterator<LexElement> lexElementCursor = getFirstLexElementAtOffset(offset);
+		LexElement lexElement = IteratorUtil.getCurrentElement(lexElementCursor);		
+		
+		IToken tokenAtLeft;
+		IToken tokenAtRight;
+		
+		if(lexElement.getFullRangeStartPos() < offset) {
+			assertTrue(offset <= lexElement.getEndPos());
+			
+			tokenAtLeft = findTokenInLexElement(lexElement, offset);
+			
+			if(offset < tokenAtLeft.getEndPos()) {
+				tokenAtRight = tokenAtLeft;
+			} else {
+				assertTrue(tokenAtLeft.getEndPos() == offset);
+				
+				if(offset < lexElement.getEndPos()) {
+					tokenAtRight = findTokenInLexElement(lexElement, tokenAtLeft.getEndPos());
+				} else {  
+					assertTrue(tokenAtLeft.getEndPos() == offset);
+					
+					if(lexElementCursor.hasNext()) {
+						LexElement nextLexElement = lexElementCursor.next();
+						tokenAtRight = findTokenInLexElement(nextLexElement, offset);
+					} else {
+						tokenAtRight = null;
+					}
+				}
+			}
+			
+		} else {
+			tokenAtLeft = null;
+			assertTrue(offset == lexElement.getFullRangeStartPos());
+			tokenAtRight = findTokenInLexElement(lexElement, offset);
+		}
+		
+		return new TokenAtOffsetResult(tokenAtLeft, tokenAtRight);
+	}
+	
+	public static class TokenAtOffsetResult {
+		
+		public final IToken atLeft;
+		public final IToken atRight;
+		
+		public TokenAtOffsetResult(IToken tokenAtOffsetLeft, IToken tokenAtOffsetRight) {
+			this.atLeft = tokenAtOffsetLeft;
+			this.atRight = tokenAtOffsetRight;
+		}
+		
+		public boolean isSingleToken() {
+			return atLeft == atRight;
+		}
+		
 	}
 	
 	protected static Token findFirstTokenAtOffset(String source, int startPos, final int offset) {
