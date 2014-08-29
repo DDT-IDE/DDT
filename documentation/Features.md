@@ -1,5 +1,5 @@
 ## DDT - D Development Tools:
-![sample_basic](screenshots/sample_basic.png?raw=true)
+[![sample_basic](screenshots/sample_basic.png)](screenshots/sample_basic.png?raw=true)
 
 ## DDT features:
  * Build and project configuration/dependencies support using [DUB](http://code.dlang.org/about).
