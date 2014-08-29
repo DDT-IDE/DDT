@@ -5,7 +5,7 @@
  * Build and project configuration/dependencies support using [DUB](http://code.dlang.org/about).
  * Project viewer annotated with DUB elements (under the Project Explorer view).
  
-|[![sample_basic](screenshots/thumbs/sample_basic.png)](screenshots/sample_basic.png?raw=true)|
+|[![sample_basic](screenshots/ProjectExplorer.png)](screenshots/ProjectExplorer.png?raw=true)|
 |----|
 
  * D source editor:
