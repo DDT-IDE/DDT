@@ -26,13 +26,20 @@ Using Maven (and Tycho), it is possible to automatically build DDT, create an up
  * Run `mvn integration-test` to build DDT as above and also run the test suites. You can do `mvn integration-test -P TestsLiteMode` to run the test suites in "Lite Mode" (skip certain long-running tests).
  * Also, running `mvn package -P build-ide-product` will build a pre-packaged Eclipse installation with DDT already installed. This is not released to the public, but can potentially be of some use internally.
 
-#### Deploying a new release:
- Releases are made on the p2 update site. The DDT update site is the `updates` Git repository, accessed through plain HTTP: http://updates.ddt.googlecode.com/git/ . Therefore, a new DDT release is created by building a the p2 repository locally as described above (run `mvn integration-test`), then placing the p2 repository in the `https://code.google.com/p/ddt.updates/` Git repository (and pushing to origin of course):
- * The DDT update site is a composite p2 repository, containing the DDT feature repository, and a link to DDT repository dependencies (such as Kepler). This structure should be maintained when updating the repository.
- * There is an Ant script that can help with this task: repo-release-script.xml
+#### Creating and deploying a new release:
+A release is a web site with an Eclipse p2 update site. The website may contain no web pages at all, rather it can be just the p2 site. To create and deploy a new release:
 
-Additionally, a new release tag should be created, and the appropriate changelog added to the Github release notes (see [documentation/ChangeLog.md](documentation/ChangeLog.md)). The `latest` tag/branch should also be updated to refer to the new release, so that documentantion links are updated.
+ 1. Ensure the version numbers of all plugins/features/etc. are properly updated, if they haven't been already.
+ 1. Run `mvn clean integration-test` to perform the Tycho build (see section above). Ensure all tests pass.
+ 1. Create and push a new release tag for the current release commit. 
+ 1. Go to the Github releases page and edit the newly present release. Add the corresponding ([ChangeLog.md](documentation/ChangeLog.md)) entries to the release notes. 
+ 1. Locally, run `ant -f releng/ CreateProjectSite`. This last step will prepare the project web site under `bin-maven/ProjectSite`.
+ 1. To actually publish the project site, run `ant -f releng/ PublishProjectSite -DprojectSiteGitURL=https://code.google.com/p/ddt.updates/`. What happens here is that the whole project site will be pushed into a Git repository, to then be served in some way (for example Github Pages).
+   * For more info on the Release Engineering script, run `ant -f releng/`, this will print the help.
+ 1. A branch or tag named `latest` should also be created in Github, pointing to the latest release commit. The previous `latest` tag can be deleted/overwritten. The documentation pages use this tag/branch in their links.
 
+ * Note that in DDT, the released p2 update site is a composite site. Sometimes the composite structure may need to be updated.
+ 
 ## Project design info and notes
 
 #### Old source history:
