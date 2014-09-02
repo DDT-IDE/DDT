@@ -17,7 +17,7 @@
 		<parentBaseDirRelPath>..</parentBaseDirRelPath>
 		<rootBuildDirectory>${project.parent.basedir}/bin-maven</rootBuildDirectory>
 
-		<ide.targetPlatform>releng/target-platform/DDT</ide.targetPlatform>
+		<ide.targetPlatform>releng/target-platform/IDE</ide.targetPlatform>
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
 		<dtool.testdataDir>${parentBaseDir}/plugin_tooling/testdata</dtool.testdataDir>

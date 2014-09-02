@@ -10,13 +10,11 @@
  *******************************************************************************/
 package melnorme.utilbox.tests;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,16 +67,6 @@ public class CommonTestExt extends CommonTest {
 	public static void appendStringToFile(File file, String string) {
 		try {
 			StreamUtil.writeStringToStream(string, new FileOutputStream(file, true), DEFAULT_TESTDATA_ENCODING);
-		} catch (IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-	}
-	
-	public static String readStringFromResource(String name, Class<?> klass) {
-		InputStream is = klass.getResourceAsStream(name);
-		assertNotNull(is);
-		try {
-			return StreamUtil.readAllBytesFromStream(is).toString(DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

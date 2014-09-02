@@ -11,10 +11,13 @@
 package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.StreamUtil.readAllBytesFromStream;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -156,8 +159,14 @@ public class MiscUtil {
 	}
 	
 	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
+		return getClassResourceAsString(klass, resourceName, StringUtil.UTF8);
+	}
+	
+	public static String getClassResourceAsString(Class<?> klass, String resourceName, Charset charset) {
 		try {
-			return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
+			InputStream resourceStream = klass.getResourceAsStream(resourceName);
+			assertNotNull(resourceStream);
+			return readAllBytesFromStream(resourceStream).toString(charset);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
