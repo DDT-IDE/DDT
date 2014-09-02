@@ -155,8 +155,12 @@ public class MiscUtil {
 		return throwable instanceof RuntimeException || throwable instanceof Error;
 	}
 	
-	public static String getClassResourceAsString(Class<?> klass, String resourceName) throws IOException {
-		return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
+	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
+		try {
+			return readAllBytesFromStream(klass.getResourceAsStream(resourceName)).toString(StringUtil.UTF8);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 }

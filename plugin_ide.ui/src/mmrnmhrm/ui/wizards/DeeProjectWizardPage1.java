@@ -17,8 +17,25 @@ public class DeeProjectWizardPage1 extends ProjectWizardFirstPage {
 	}
 	
 	@Override
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+	}
+	
+	@Override
 	protected LocationGroup createLocationGroup() {
 		return new LocationGroup() {
+			
+			@Override
+			public void createControls(Composite composite) {
+				super.createControls(composite);
+			}
+			
+			@Override
+			protected void createModeControls(Composite group, int numColumns) {
+				super.createModeControls(group, numColumns);
+				fWorkspaceRadio.setLabelText(DeeNewWizardMessages.DltkNewProject_Page1_Location_workspaceDesc);
+			}
+			
 			@Override
 			protected void createEnvironmentControls(Composite group, int numColumns) {
 				//super.createEnvironmentControls(group, numColumns);

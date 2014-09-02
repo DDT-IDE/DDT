@@ -1,0 +1,6 @@
+{
+	"name" : "%BUNDLE_NAME%",
+	"description" : "Hello World - A minimal DUB bundle.",
+	"dependencies" : {
+	}
+}

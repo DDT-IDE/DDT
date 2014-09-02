@@ -1,5 +1,8 @@
 ## DDT release ChangeLog
 
+### DDT 0.10.x
+ * Changed: Creating a new DUB project now creates a Hello World app. (fix problem mentioned in #58)
+
 ### DDT 0.10.2
  * Updated minimum required CDT version to 8.4. 
   * For more info on new CDT debug features, see: https://wiki.eclipse.org/CDT/User/NewIn84#Debug 

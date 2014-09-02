@@ -26,7 +26,7 @@ public final class DeeNewWizardMessages extends NLS {
 		"Create a DUB project.";
 	public static String LangNewProject_Page1_pageDescription =
 		"Create a DUB project in the workspace or in an external location.";
-
+	
 	
 	public static String LangNewProject_Page1_NameGroup_label = 
 		"&Project name:";
@@ -40,6 +40,9 @@ public final class DeeNewWizardMessages extends NLS {
 		"&Directory:";
 	public static String LangNewProject_Page1_LocationGroup_browseButton_desc = 
 		"B&rowse...";
+	
+	public static final String DltkNewProject_Page1_Location_workspaceDesc = 
+			"Create new \"Hello World\" project in workspace";
 	
 	public static String LangNewProject_Page1_Message_enterProjectName = 
 		"Enter a project name.";

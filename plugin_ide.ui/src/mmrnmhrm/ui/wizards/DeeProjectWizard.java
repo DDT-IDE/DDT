@@ -1,13 +1,14 @@
 package mmrnmhrm.ui.wizards;
 
 
+import static melnorme.utilbox.misc.MiscUtil.getClassResourceAsString;
+
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeeUIPlugin;
 
@@ -42,6 +43,12 @@ import dtool.dub.BundlePath;
 public class DeeProjectWizard extends ProjectWizardExtension {
 	
 	public static final String WIZARD_ID = DeeUIPlugin.PLUGIN_ID + ".wizards.deeProjectWizard";
+	
+	protected static final String HelloWorld_DubJsonTemplate = getClassResourceAsString(
+		DeeProjectWizard.class, "hello_world.dub.json");
+	protected static final String HelloWorld_ModuleContents = getClassResourceAsString(
+		DeeProjectWizard.class, "hello_world.d");
+	
 	
 	protected final ProjectWizardFirstPage fFirstPage = new DeeProjectWizardPage1(this);
 	protected final DeeProjectWizardBuildSettingsPage fBuildSettingsPage = 
@@ -104,9 +111,9 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 			
 			final IFolder folder = project.getFolder("source");
 			ResourceUtils.createFolder(folder, true, true, null);
+			ResourceUtils.writeStringToFile(folder.getFile("app.d"), HelloWorld_ModuleContents);
 			
-			String dubManifestSource = getDefaultDubJSon();
-			ResourceUtils.writeToFile(dubManifest, createInputStream(dubManifestSource, StringUtil.UTF8));
+			ResourceUtils.writeStringToFile(dubManifest, getDefaultDubJSon());
 		}
 	}
 	
@@ -115,25 +122,11 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 	}
 	
 	protected String getDefaultDubJSon() {
-		return 
-			"{\n" +
-				jsEntry("name", getProject().getName()) +",\n"+
-				jsEntry("description", "A minimal D bundle.") +",\n"+
-				jsEntryValue("dependencies", "{\n\t}") +"\n"+
-			"}";
-	}
-	
-	protected String jsEntry(String idString, String valueString) {
-		return "\t" + '"' +idString+ '"' + " : " + '"' +valueString+ '"';
-	}
-	
-	protected String jsEntryValue(String idString, String valueString) {
-		return "\t" + '"' +idString+ '"' + " : " + valueString;
+		return HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", getProject().getName());
 	}
 	
 	@Override
-	protected void finishPage(IProgressMonitor monitor)
-			throws InterruptedException, CoreException {
+	protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
 		getProjectCreator().performFinish(monitor);
 	}
 	
