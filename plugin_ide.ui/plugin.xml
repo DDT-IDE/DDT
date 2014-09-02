@@ -82,7 +82,7 @@
              name="%LangAppearancePreferencePage.name"/>
       <page
              category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
-             class="mmrnmhrm.ui.preferences.pages.DeeDubPreferencePage"
+             class="mmrnmhrm.ui.preferences.pages.DubPreferencePage"
              id="org.dsource.ddt.ide.ui.preferences.Dub"
              name="%DeeDubPreferencePage.name"/>
       <page

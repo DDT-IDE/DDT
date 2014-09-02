@@ -10,19 +10,27 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
+import melnorme.util.swt.SWTFactoryUtil;
 import mmrnmhrm.core.DeeCorePreferencesConstants;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
-public class DeeDubPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class DubPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
-	public DeeDubPreferencePage() {
+	protected static final String LABEL_MSG = 
+			"The 'DUB path' control above is currently disabled due to a bug. Only the default value works.";
+	
+	public DubPreferencePage() {
 		super(GRID);
 	}
 	
@@ -43,8 +51,16 @@ public class DeeDubPreferencePage extends FieldEditorPreferencePage implements I
 				return true;
 			}
 		};
-		
 		addField(dubPathEditor);
+		dubPathEditor.setEnabled(false, getFieldEditorParent());
+		
+		SWTFactoryUtil.createLabel(getFieldEditorParent(), SWT.NONE, LABEL_MSG, 
+			GridDataFactory.swtDefaults().span(3, 1).create());
+	}
+	
+	@Override
+	protected Control createContents(Composite parent) {
+		return super.createContents(parent);
 	}
 	
 }
