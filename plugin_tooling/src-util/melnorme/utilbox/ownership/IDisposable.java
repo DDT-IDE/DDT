@@ -8,8 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.util.swt.components;
+package melnorme.utilbox.ownership;
 
+/**
+ * General interface for an object that can (and should) be disposed.
+ * 
+ * Unless otherwise specified, {@link #dispose()} can only be called once, and after
+ * that the underlying object will be in a dispose state, where most functionality is no longer available.
+ */
 public interface IDisposable {
 	
 	void dispose();

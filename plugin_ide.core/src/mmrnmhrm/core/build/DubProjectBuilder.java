@@ -77,7 +77,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		
 		deleteDubMarkers();
 		
-		String dubPath = DeeCorePreferences.getDubPath();
+		String dubPath = DeeCorePreferences.getEffectiveDubPath();
 		
 		ArrayList<String> commands = new ArrayList<String>();
 		commands.add(dubPath);
@@ -112,7 +112,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected String[] getExtraCommands() {
-		String extraOptionsString = DeeCorePreferences.getDubBuildOptions(getProject());
+		String extraOptionsString = DeeCorePreferences.DUB_BUILD_OPTIONS.get(getProject());
 		return DebugPlugin.parseArguments(extraOptionsString);
 	}
 	

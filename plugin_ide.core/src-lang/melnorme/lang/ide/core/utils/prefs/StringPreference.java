@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,27 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core;
+package melnorme.lang.ide.core.utils.prefs;
 
-
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
-
-public class DeeCorePreferenceInitializer extends AbstractPreferenceInitializer {
+/**
+ * Helper to work with a color preference.
+ */
+public class StringPreference extends PreferenceHelper<String> {
+	
+	public StringPreference(String key, String defaultValue) {
+		super(key, defaultValue);
+	}
 	
 	@Override
-	public void initializeDefaultPreferences() {
-		
-		IEclipsePreferences defaultPreferences = DefaultScope.INSTANCE.getNode(DeeCore.PLUGIN_ID);
-		
-		defaultPreferences.put(DeeCorePreferencesConstants.PREF_DUB_PATH, "dub");
-		
+	protected String doGet(PreferencesLookupHelper combinedPrefs) {
+		return combinedPrefs.getString(key);
+	}
+	
+	@Override
+	protected void doSet(IEclipsePreferences projectPreferences, String value) {
+		projectPreferences.put(key, value);
 	}
 	
 }

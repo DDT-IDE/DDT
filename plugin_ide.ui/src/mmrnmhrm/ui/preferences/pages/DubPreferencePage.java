@@ -11,7 +11,7 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.util.swt.SWTFactoryUtil;
-import mmrnmhrm.core.DeeCorePreferencesConstants;
+import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
@@ -43,7 +43,7 @@ public class DubPreferencePage extends FieldEditorPreferencePage implements IWor
 	
 	@Override
 	protected void createFieldEditors() {
-		dubPathEditor = new FileFieldEditor(DeeCorePreferencesConstants.PREF_DUB_PATH, 
+		dubPathEditor = new FileFieldEditor(DeeCorePreferences.PREF_DUB_PATH.key, 
 			DeeUIMessages.DubPrefPage_fieldLabel, false, FileFieldEditor.VALIDATE_ON_KEY_STROKE, 
 			getFieldEditorParent()) {
 			@Override

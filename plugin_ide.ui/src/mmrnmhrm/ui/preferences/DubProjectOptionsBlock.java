@@ -44,7 +44,7 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	@Override
 	public void updateComponentFromInput() {
 		if(project != null) {
-			dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptions(project));
+			dubBuildExtraOptions.setFieldValue(DeeCorePreferences.DUB_BUILD_OPTIONS.get(project));
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 			return false;
 		}
 		try {
-			DeeCorePreferences.putDubBuildOptions(project, dubBuildExtraOptions.getFieldValue());
+			DeeCorePreferences.DUB_BUILD_OPTIONS.set(project, dubBuildExtraOptions.getFieldValue());
 		} catch (BackingStoreException e) {
 			UIOperationExceptionHandler.handleException(e, "Error saving preferences.");
 		}
@@ -67,7 +67,7 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	}
 	
 	public void restoreDefaults() {
-		dubBuildExtraOptions.setFieldValue(DeeCorePreferences.getDubBuildOptionsDefault());
+		dubBuildExtraOptions.setFieldValue(DeeCorePreferences.DUB_BUILD_OPTIONS.getDefault());
 	}
 	
 }

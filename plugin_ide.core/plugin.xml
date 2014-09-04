@@ -70,12 +70,6 @@
       </definition>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="mmrnmhrm.core.DeeCorePreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="org.eclipse.dltk.core.language">
       <language
             class="org.dsource.ddt.ide.core.DeeLanguageToolkit"

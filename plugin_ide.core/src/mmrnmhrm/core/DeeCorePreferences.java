@@ -10,38 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.osgi.service.prefs.BackingStoreException;
-
 import dtool.dub.DubHelper;
-import melnorme.lang.ide.core.CorePreferencesLookup;
 
 public class DeeCorePreferences implements DeeCorePreferencesConstants {
 	
-	public static String getDubPath() {
-		return DubHelper.DUB_PATH_OVERRIDE != null ? 
-				DubHelper.DUB_PATH_OVERRIDE : 
-				new CorePreferencesLookup().getString(PREF_DUB_PATH, "");
-	}
-	
-	public static String getDubBuildOptions(IProject project) {
-		return new CorePreferencesLookup(project).getString(PREF_DUB_BUILD_OPTIONS, getDubBuildOptionsDefault());
-	}
-	
-	public static String getDubBuildOptionsDefault() {
-		return "";
-	}
-	
-	public static void putDubBuildOptions(IProject project, String value) throws BackingStoreException {
-		IEclipsePreferences projectPreferences = getProjectPreferences(project);
-		projectPreferences.put(PREF_DUB_BUILD_OPTIONS, value);
-		projectPreferences.flush();
-	}
-	
-	public static IEclipsePreferences getProjectPreferences(IProject project) {
-		return new ProjectScope(project).getNode(DeeCore.PLUGIN_ID);
+	public static String getEffectiveDubPath() {
+		return DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : PREF_DUB_PATH.get();
 	}
 	
 }
