@@ -6,8 +6,11 @@ package mmrnmhrm.lang.ui;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -16,6 +19,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -114,6 +118,18 @@ public class EditorUtil {
 			} catch (Exception e) {
 			}
 		}
+		if(editorInput instanceof IStorageEditorInput) {
+			IStorageEditorInput storageEditorInput = (IStorageEditorInput) editorInput;
+			try {
+				IPath fullPath = storageEditorInput.getStorage().getFullPath();
+				if(fullPath != null) {
+					return fullPath.toFile().toPath();
+				}
+			} catch (CoreException e) {
+				DeeCore.logError(e);
+			}
+		}
+		
 		return null;
 	}
 	

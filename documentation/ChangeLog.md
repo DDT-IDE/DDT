@@ -2,6 +2,7 @@
 
 ### DDT 0.10.x
  * Changed: Creating a new DUB project now creates a Hello World app. (fix problem mentioned in #58)
+ * Fixed: some editor operations (such as DDoc hover) not working on editors opened using Open Type dialog. 
 
 ### DDT 0.10.2
  * Updated minimum required CDT version to 8.4. 
