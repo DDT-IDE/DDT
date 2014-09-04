@@ -43,6 +43,9 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
 		this.inputPath = EditorUtil.getFilePathFromEditorInput(editorInput);
+		if(inputPath == null) {
+			DeeCore.logError("Could not determine filesystem path from editor input");
+		}
 		this.doc = assertNotNull(editor.getDocumentProvider().getDocument(editor.getEditorInput()));
 		this.sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
 	}
@@ -51,6 +54,9 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 	public void executeOperation() throws CoreException {
 		if(sourceModule == null) {
 			throw new CoreException(DeeUI.createErrorStatus("No valid editor input in current editor.", null));
+		}
+		if(inputPath == null) {
+			throw DeeCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
 		
 		try {
