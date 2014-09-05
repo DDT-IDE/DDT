@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -70,7 +70,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 	
 	protected Image createImage(CompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = getLabelProvider().createImageDescriptor(proposal);
-		return DeePluginImages.getImageDescriptorRegistry().get(imageDescriptor); 
+		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
 	@Override

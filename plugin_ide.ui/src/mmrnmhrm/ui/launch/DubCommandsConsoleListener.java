@@ -19,7 +19,7 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubProcessListener;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
@@ -38,7 +38,7 @@ public class DubCommandsConsoleListener extends LangOperationConsoleListener imp
 	public static class DubCommandsConsole extends LangOperationConsole {
 		
 		public DubCommandsConsole(String name) {
-			super(name, DeePluginImages.DUB_PROCESS.getDescriptor());
+			super(name, DeeImages.DUB_PROCESS.getDescriptor());
 		}
 		
 		@Override

@@ -15,7 +15,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.engine_client.DubProcessManager;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IFile;
@@ -86,7 +86,7 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				return;
 			
 			MenuManager dubMenu = new MenuManager(DeeUIMessages.DubActionMenu, 
-				DeePluginImages.DUB_DEPS_CONTAINER.getDescriptor(), "dubMenu");
+				DeeImages.DUB_DEPS_CONTAINER.getDescriptor(), "dubMenu");
 			dubMenu.add(action1);
 			dubMenu.add(action2);
 			dubMenu.add(action3);

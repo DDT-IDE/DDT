@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor;
 import org.eclipse.dltk.ui.ScriptElementImageDescriptor_Extension;
@@ -71,30 +71,30 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		
 		Point topRightPoint = new Point(fTopRightPos, 0);
 		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_STATIC)) {
-			addTopRightImage(DeePluginImages.DESC_OVR_STATIC, topRightPoint);
+			addTopRightImage(DeeImages.DESC_OVR_STATIC, topRightPoint);
 		}
 		
 		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_FINAL)) {
-			addTopRightImage(DeePluginImages.DESC_OVR_FINAL, topRightPoint);
+			addTopRightImage(DeeImages.DESC_OVR_FINAL, topRightPoint);
 		} else if(elementDesc.isFlag(DefElementFlagConstants.FLAG_ABSTRACT)) {
-			addTopRightImage(DeePluginImages.DESC_OVR_ABSTRACT, topRightPoint);
+			addTopRightImage(DeeImages.DESC_OVR_ABSTRACT, topRightPoint);
 		}
 		
 		if(elementDesc.isImmutable()) {
-			addTopRightImage(DeePluginImages.DESC_OVR_IMMUTABLE, topRightPoint);
+			addTopRightImage(DeeImages.DESC_OVR_IMMUTABLE, topRightPoint);
 		} else if(elementDesc.isConst()) {
-			addTopRightImage(DeePluginImages.DESC_OVR_CONST, topRightPoint);
+			addTopRightImage(DeeImages.DESC_OVR_CONST, topRightPoint);
 		}
 		
 		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_TEMPLATED)) {
 			int x = 0;
-			ImageData data = getImageData(DeePluginImages.DESC_OVR_TEMPLATED);
+			ImageData data = getImageData(DeeImages.DESC_OVR_TEMPLATED);
 			drawImage(data, x, 0);
 		}
 		
 		if(elementDesc.getArcheType() == EArcheType.Alias) {
 			int x = 0;
-			ImageData data = getImageData(DeePluginImages.DESC_OVR_ALIAS);
+			ImageData data = getImageData(DeeImages.DESC_OVR_ALIAS);
 			drawImage(data, x, getSize().y - data.height);
 		}
 		
@@ -109,17 +109,17 @@ public class DeeElementImageDescriptor extends ScriptElementImageDescriptor_Exte
 		
 		case PRIVATE:
 			pos = new Point(fBottomRightPos, getSize().y);
-			addBottomRightImage(DeePluginImages.DESC_OVR_PRIVATE, pos);
+			addBottomRightImage(DeeImages.DESC_OVR_PRIVATE, pos);
 			break;
 			
 		case PROTECTED:
 			pos = new Point(fBottomRightPos, getSize().y);
-			addBottomRightImage(DeePluginImages.DESC_OVR_PROTECTED, pos);
+			addBottomRightImage(DeeImages.DESC_OVR_PROTECTED, pos);
 			break;
 		
 		case PACKAGE:
 			pos = new Point(fBottomRightPos, getSize().y);
-			addBottomRightImage(DeePluginImages.DESC_OVR_DEFAULT, pos);
+			addBottomRightImage(DeeImages.DESC_OVR_DEFAULT, pos);
 			break;
 		
 		case PUBLIC:

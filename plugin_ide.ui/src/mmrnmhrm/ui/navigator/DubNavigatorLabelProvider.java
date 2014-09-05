@@ -16,7 +16,7 @@ import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
 
 import org.eclipse.core.resources.IFile;
@@ -178,47 +178,47 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {
-		return DeePluginImages.DUB_DEPS_CONTAINER.getImage();
+		return DeeImages.DUB_DEPS_CONTAINER.getImage();
 	}
 	
 	@Override
 	public Image visitStdLibContainer(StdLibContainer element) {
-		return DeePluginImages.DUB_STD_LIB.getImage();
+		return DeeImages.DUB_STD_LIB.getImage();
 	}
 	
 	@Override
 	public Image visitRawDepElement(DubRawDependencyElement element) {
-		return DeePluginImages.DUB_RAW_DEP.getImage();
+		return DeeImages.DUB_RAW_DEP.getImage();
 	}
 	
 	@Override
 	public Image visitErrorElement(DubErrorElement element) {
-		return DeePluginImages.DUB_ERROR_ELEMENT.getImage();
+		return DeeImages.DUB_ERROR_ELEMENT.getImage();
 	}
 	
 	@Override
 	public Image visitDepElement(DubDependencyElement element) {
-		return DeePluginImages.DUB_BUNDLE_DEP.getImage();
+		return DeeImages.DUB_BUNDLE_DEP.getImage();
 	}
 	
 	@Override
 	public Image visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-		return DeePluginImages.SOURCE_FOLDER.getImage();
+		return DeeImages.SOURCE_FOLDER.getImage();
 	}
 	
 	@Override
 	public Image visitDubManifestFile(IFile element) {
-		return DeePluginImages.DUB_MANIFEST.getImage();
+		return DeeImages.DUB_MANIFEST.getImage();
 	}
 	
 	@Override
 	public Image visitDubCacheFolder(IFolder element) {
-		return DeePluginImages.BINARY_FOLDER.getImage();
+		return DeeImages.BINARY_FOLDER.getImage();
 	}
 	
 	@Override
 	public Image visitDubSourceFolder(IFolder element) {
-		return DeePluginImages.SOURCE_FOLDER.getImage();
+		return DeeImages.SOURCE_FOLDER.getImage();
 	}
 	
 	// TODO: review this usage

@@ -3,7 +3,7 @@ package mmrnmhrm.ui.views;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
 import org.eclipse.dltk.core.IMember;
@@ -26,7 +26,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 	
 	public ImageDescriptorRegistry getImageDescriptorRegistry() {
-		return DeePluginImages.getImageDescriptorRegistry();
+		return DeeImages.getImageDescriptorRegistry();
 	}
 	
 	@Override
@@ -49,7 +49,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 			return getImageDescriptor(elementDescriptor, imageSize);
 		} catch (ModelException e) {
 			DeeCore.logWarning("Error opening element for element descriptor", e);
-			return DeePluginImages.getIDEInternalErrorImageDescriptor();
+			return DeeImages.getIDEInternalErrorImageDescriptor();
 		}
 	}
 	

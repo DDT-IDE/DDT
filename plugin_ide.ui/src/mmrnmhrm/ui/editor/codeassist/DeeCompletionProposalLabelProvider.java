@@ -3,7 +3,7 @@ package mmrnmhrm.ui.editor.codeassist;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
@@ -49,7 +49,7 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 				defDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
 			} catch (ModelException e) {
 				DeeCore.logError(e);
-				return DeePluginImages.getIDEInternalErrorImageDescriptor();
+				return DeeImages.getIDEInternalErrorImageDescriptor();
 			}
 		}
 		

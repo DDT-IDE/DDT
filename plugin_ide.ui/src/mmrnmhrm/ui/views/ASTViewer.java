@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.actions.OpenDefinitionHandler;
 import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
@@ -283,7 +283,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		};
 		actionExpand.setText("Expand All");
 		actionExpand.setToolTipText("Expand all nodes");
-		actionExpand.setImageDescriptor(DeePluginImages.EXPAND_ALL);
+		actionExpand.setImageDescriptor(DeeImages.EXPAND_ALL);
 		
 		actionCollapse = new Action() {
 			@Override
@@ -293,7 +293,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		};
 		actionCollapse.setText("Collapse All");
 		actionCollapse.setToolTipText("Collapse All nodes");
-		actionCollapse.setImageDescriptor(DeePluginImages.COLLAPSE_ALL);
+		actionCollapse.setImageDescriptor(DeeImages.COLLAPSE_ALL);
 		
 //		actionToggle = new Action() {
 //			@Override

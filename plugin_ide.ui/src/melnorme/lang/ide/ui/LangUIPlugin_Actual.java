@@ -4,7 +4,7 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
@@ -23,7 +23,7 @@ public final class LangUIPlugin_Actual {
 	// ID to start the debug plugin automatically, if present
 	protected static final String DEBUG_PLUGIN_ID = "org.dsource.ddt.ide.debug";
 	
-	protected static final Class<?> PLUGIN_IMAGES_CLASS = DeePluginImages.class;
+	protected static final Class<?> PLUGIN_IMAGES_CLASS = DeeImages.class;
 	
 	protected static void initTextHovers(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(AnnotationHover_Adapter.ProblemHover_Adapter.class);

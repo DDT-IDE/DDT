@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.editor;
 
-import mmrnmhrm.ui.DeePluginImages;
+import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.actions.OpenDefinitionHandler;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
@@ -24,7 +24,7 @@ public class DeeEditorActionContributor extends	SourceModuleEditorActionContribu
 		return new CommandContributionItem(new CommandContributionItemParameter(
 				workbenchWindow, null,
 				OpenDefinitionHandler.COMMAND_ID, null,
-				DeePluginImages.OPEN_DEF_DESC, null, null, null, null, null,
+				DeeImages.OPEN_DEF_DESC, null, null, null, null, null,
 				CommandContributionItem.STYLE_PUSH, null, true));
 	}
 	

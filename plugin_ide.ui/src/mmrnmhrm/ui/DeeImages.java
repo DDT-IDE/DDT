@@ -8,7 +8,7 @@ import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
 
-public abstract class DeePluginImages extends LangImages {
+public abstract class DeeImages extends LangImages {
 	
 	protected static final String T_ACTIONS = "action16e";
 	
