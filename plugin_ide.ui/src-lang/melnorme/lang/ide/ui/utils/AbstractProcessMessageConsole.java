@@ -15,10 +15,10 @@ import melnorme.util.swt.jface.text.ColorManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISharedTextColors;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.console.IOConsole;
 import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
 
-public abstract class AbstractProcessMessageConsole extends MessageConsole {
+public abstract class AbstractProcessMessageConsole extends IOConsole {
 	
 	public static class ProcessMessageConsole extends AbstractProcessMessageConsole {
 		protected ProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
@@ -30,6 +30,10 @@ public abstract class AbstractProcessMessageConsole extends MessageConsole {
 	public final IOConsoleOutputStream stdOut;
 	public final IOConsoleOutputStream stdErr;
 	
+	/**
+	 * Note: subclasse must call {@link #postToUI_initOutputStreamColors()} after all members
+	 * have been initialized.
+	 */
 	protected AbstractProcessMessageConsole(String name, ImageDescriptor imageDescriptor) {
 		super(name, imageDescriptor);
 		
@@ -45,13 +49,13 @@ public abstract class AbstractProcessMessageConsole extends MessageConsole {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				ui_initOutputStreamColors();
+				ui_initStreamColors();
 			}
 		});
 	}
 	
-	// Note: if overriden, make sure this method is called after all subclass members are initialized
-	protected void ui_initOutputStreamColors() {
+	/** Initialize stream colors. This method is only called in the UI thread. */
+	protected void ui_initStreamColors() {
 	}
 	
 	protected ISharedTextColors getColorManager() {

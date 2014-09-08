@@ -8,21 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.build;
+package melnorme.lang.ide.ui.tools.console;
 
 import static melnorme.utilbox.core.CoreUtil.array;
-
-import java.io.IOException;
-
 import melnorme.lang.ide.ui.LangOperationConsole_Actual;
 import melnorme.lang.ide.ui.utils.ConsoleUtils;
-import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.console.ConsolePlugin;
 
 
-public abstract class LangOperationConsoleListener {
+public abstract class AbstractToolsConsoleListener {
 	
 	public static LangOperationConsole_Actual recreateMessageConsole(String name, boolean recreateConsole) {
 		LangOperationConsole_Actual console = ConsoleUtils.findConsole(name, LangOperationConsole_Actual.class);
@@ -34,12 +30,12 @@ public abstract class LangOperationConsoleListener {
 			ConsolePlugin.getDefault().getConsoleManager().removeConsoles(array(console));
 		}
 		// create a new one
-		console = new LangOperationConsole_Actual(name);
+		console = createConsole(name);
 		ConsolePlugin.getDefault().getConsoleManager().addConsoles(array(console));
 		return console;
 	}
 	
-	public LangOperationConsoleListener() {
+	public AbstractToolsConsoleListener() {
 		super();
 	}
 	
@@ -62,45 +58,8 @@ public abstract class LangOperationConsoleListener {
 		return "["+ project.getName() +"]";
 	}
 	
-	
-	public static class ProcessOutputToConsoleListener implements IProcessOutputListener {
-		
-		private final LangOperationConsole console;
-		
-		public ProcessOutputToConsoleListener(LangOperationConsole console) {
-			this.console = console;
-		}
-		
-		@Override
-		public void notifyStdOutListeners(byte[] buffer, int offset, int readCount) {
-			try {
-				console.stdOut.write(buffer, offset, readCount);
-			} catch (IOException e) {
-				// Ignore, it could simply mean the console page has been closed
-			}
-		}
-		
-		@Override
-		public void notifyStdErrListeners(byte[] buffer, int offset, int readCount) {
-			try {
-				console.stdErr.write(buffer, offset, readCount);
-			} catch (IOException e) {
-				// Ignore, it could simply mean the console page has been closed
-			}
-		}
-		
-		@Override
-		public void notifyProcessTerminatedAndRead(int exitCode) {
-			try {
-				console.stdOut.flush();
-				console.stdErr.flush();
-				console.metaOut.write("--------  Terminated, exit code: " + exitCode +  "  --------\n");
-				console.metaOut.flush();
-			} catch (IOException e) {
-				// Ignore
-			}
-		}
-		
+	protected static LangOperationConsole_Actual createConsole(String name) {
+		return new LangOperationConsole_Actual(name);
 	}
 	
 }

@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.misc.ChainedIterator;
+import melnorme.utilbox.collections.ChainedIterator;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Pair;

@@ -1,23 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Bruno Medeiros - initial implementation
+ *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package melnorme.lang.ide.ui.tools.console;
 
-import java.util.Iterator;
 
-@Deprecated
-public class ChainedIterator<T> extends melnorme.utilbox.collections.ChainedIterator<T> {
+public class ConsoleMessages {
 	
-	public ChainedIterator(Iterator<? extends T> firstIter, Iterator<? extends T> secondIter) {
-		super(firstIter, secondIter);
-	}
-
+	public static String ScrollLockAction_Name = "&Scroll Lock";
+	public static String ScrollLockAction_Tooltip = "Scroll Lock";
+	
 }
-

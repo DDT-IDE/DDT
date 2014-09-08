@@ -13,8 +13,9 @@ package mmrnmhrm.ui.launch;
 import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
-import melnorme.lang.ide.ui.build.LangOperationConsoleListener;
-import melnorme.lang.ide.ui.build.LangOperationConsole;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
+import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
@@ -25,7 +26,7 @@ import mmrnmhrm.ui.DeeUIMessages;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.graphics.RGB;
 
-public class DubCommandsConsoleListener extends LangOperationConsoleListener implements IDubProcessListener {
+public class DubCommandsConsoleListener extends AbstractToolsConsoleListener implements IDubProcessListener {
 	
 	public DubCommandsConsoleListener() {
 	}
@@ -35,15 +36,15 @@ public class DubCommandsConsoleListener extends LangOperationConsoleListener imp
 		return DeeUIMessages.DUB_CONSOLE_NAME + " " + getProjectNameSuffix(project);
 	}
 	
-	public static class DubCommandsConsole extends LangOperationConsole {
+	public static class DubCommandsConsole extends ToolsConsole {
 		
 		public DubCommandsConsole(String name) {
 			super(name, DeeImages.DUB_PROCESS.getDescriptor());
 		}
 		
 		@Override
-		protected void ui_initOutputStreamColors() {
-			metaOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
+		protected void ui_initStreamColors() {
+			infoOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
 			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
@@ -53,7 +54,7 @@ public class DubCommandsConsoleListener extends LangOperationConsoleListener imp
 	public void handleDubOperationStarted(IDubOperation dubOperation) {
 		final DubCommandsConsole console = getOperationConsole(dubOperation.getProject(), true);
 		try {
-			console.metaOut.write("************  " + dubOperation.getOperationName() + "  ************\n");
+			console.infoOut.write("************  " + dubOperation.getOperationName() + "  ************\n");
 		} catch (IOException e) {
 			return;
 		}
@@ -78,8 +79,8 @@ public class DubCommandsConsoleListener extends LangOperationConsoleListener imp
 					IOException processStartException) {
 				try {
 					writeProcessDescription(pb, console);
-					console.metaOut.write(">>>  Failed to start process, exception: \n");
-					console.metaOut.write(processStartException.getMessage());
+					console.infoOut.write(">>>  Failed to start process, exception: \n");
+					console.infoOut.write(processStartException.getMessage());
 				} catch (IOException consoleIOE) {
 					return;
 				}
@@ -88,8 +89,8 @@ public class DubCommandsConsoleListener extends LangOperationConsoleListener imp
 	}
 	
 	protected void writeProcessDescription(ProcessBuilder pb, DubCommandsConsole console) throws IOException {
-		console.metaOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
-		console.metaOut.write("@ " + pb.directory() +"\n");
+		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
+		console.infoOut.write("@ " + pb.directory() +"\n");
 	}
 	
 }
