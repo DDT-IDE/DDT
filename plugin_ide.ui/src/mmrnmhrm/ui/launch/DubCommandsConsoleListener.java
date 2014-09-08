@@ -24,7 +24,6 @@ import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.graphics.RGB;
 
 public class DubCommandsConsoleListener extends AbstractToolsConsoleListener implements IDubProcessListener {
 	
@@ -40,12 +39,6 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 		
 		public DubCommandsConsole(String name) {
 			super(name, DeeImages.DUB_PROCESS.getDescriptor());
-		}
-		
-		@Override
-		protected void ui_initStreamColors() {
-			infoOut.setColor(getColorManager().getColor(new RGB(0, 0, 180)));
-			stdErr.setColor(getColorManager().getColor(new RGB(200, 0, 0)));
 		}
 		
 	}

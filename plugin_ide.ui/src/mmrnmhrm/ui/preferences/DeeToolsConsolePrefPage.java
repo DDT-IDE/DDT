@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package mmrnmhrm.ui.preferences;
 
-import org.eclipse.swt.graphics.RGB;
+import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefPage;
 
-public interface OperationsConsolePrefDefaults_Actual {
-	
-	static RGB INFO_COLOR_DEFAULT = new RGB(0, 113, 225);
-	static RGB STDERR_COLOR_DEFAULT = new RGB(255, 0, 0);
-	static RGB STDOUT_COLOR_DEFAULT = new RGB(0, 0, 0);
-	static RGB BACKGROUND_COLOR_DEFAULT = new RGB(255, 252, 215);
+public class DeeToolsConsolePrefPage extends ToolsConsolePrefPage {
 	
 }

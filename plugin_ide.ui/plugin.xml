@@ -69,12 +69,18 @@
          </enabledWhen>
       </page>
    </extension>
+   
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
             class="mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage"
             id="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
             name="%LangPreferencePage.name"/>
+      <page
+             category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
+             class="mmrnmhrm.ui.preferences.DeeToolsConsolePrefPage"
+             id="mmrnmhrm.ui.preferences.DeeToolsConsolePrefPage"
+             name="%LangToolsConsolePreferencePage.name"/>
       <page
              category="org.dsource.ddt.ide.ui.preferences.DeeRootPreferencePage"
              class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
