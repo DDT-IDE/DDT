@@ -6,6 +6,7 @@
  * Added build console preference page. 
   * Can now customize build console text colors.
   * Activate console on error message option.
+ * Can now use Eclipse variables in DUB project options.
 
 
 ### DDT 0.10.2

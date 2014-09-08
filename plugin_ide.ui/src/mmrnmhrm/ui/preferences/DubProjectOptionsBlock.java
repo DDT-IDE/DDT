@@ -10,9 +10,9 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
+import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.util.swt.components.AbstractComponentExt;
-import melnorme.util.swt.components.fields.TextField;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.ui.DeeUIMessages;
 
@@ -26,9 +26,8 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
 	protected IProject project;
 	
-	protected final TextField dubBuildExtraOptions = new TextField(
-		DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions,
-		SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
+	protected final ArgumentsGroupField dubBuildExtraOptions = new ArgumentsGroupField(
+		DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions
 	);
 	
 	public DubProjectOptionsBlock() {
@@ -36,9 +35,8 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	
 	@Override
 	protected void createContents(Composite topControl) {
-		dubBuildExtraOptions.createComponentInlined(topControl);
-		dubBuildExtraOptions.getFieldControl().setLayoutData(
-			GridDataFactory.fillDefaults().grab(true, true).hint(200, SWT.DEFAULT).create());
+		dubBuildExtraOptions.createComponent(topControl,
+			GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());
 	}
 	
 	@Override
