@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.editor;
 
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
@@ -18,10 +19,6 @@ public class DeeEditor extends DeeBaseEditor {
 	
 	public static final String EDITOR_ID = DeeUIPlugin.PLUGIN_ID + ".editors.DeeEditor";
 	public static final String CONTEXTS_DEE_EDITOR = DeeUIPlugin.PLUGIN_ID + ".contexts.DeeEditor";
-	
-	public static final String EDITOR_CONTEXT = "#DeeEditorContext";
-	public static final String RULER_CONTEXT = "#DeeRulerContext";
-	
 	
 	private ICharacterPairMatcher bracketMatcher = 
 		new DefaultCharacterPairMatcher("{}[]()".toCharArray());
@@ -59,8 +56,8 @@ public class DeeEditor extends DeeBaseEditor {
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
-		setEditorContextMenuId(EDITOR_CONTEXT);
-		setRulerContextMenuId(RULER_CONTEXT);
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	

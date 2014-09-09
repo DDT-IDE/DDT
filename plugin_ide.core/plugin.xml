@@ -190,16 +190,21 @@
       </builder>
    </extension>
    -->
-   <extension
-         point="org.eclipse.debug.core.launchConfigurationTypes">
-      <launchConfigurationType
-            delegate="mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate"
-            id="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            modes="run"
-            name="%localDeeApplication">
-      </launchConfigurationType>
-   </extension>
-   <extension
+   
+	
+	<!-- ============ Launch configuration type ============= -->
+	
+	<extension
+		 point="org.eclipse.debug.core.launchConfigurationTypes">
+		<launchConfigurationType
+			 delegate="mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate"
+			 id="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
+			 modes="run"
+			name="%localApplication">
+		</launchConfigurationType>
+	</extension>
+	
+	<extension
          id="org.dsource.ddt.ide.core.hierarchyResolverTODO"
          point="org.eclipse.dltk.core.fileHierarchyResolvers">
       <fileHierarchyResolver

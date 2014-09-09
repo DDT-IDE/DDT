@@ -11,65 +11,28 @@
 package org.dsource.ddt.debug.core;
 
 
-import melnorme.lang.ide.debug.core.GdbLaunchDelegateExtension;
-import melnorme.lang.ide.launching.ProcessSpawnInfo;
-import mmrnmhrm.core.launch.DeeLaunchConfigurationDelegate;
+import melnorme.lang.ide.debug.core.AbstractLangDebugLaunchConfigurationDelegate;
 
-import org.eclipse.cdt.debug.core.ICDTLaunchConfigurationConstants;
 import org.eclipse.cdt.dsf.gdb.launching.GdbLaunch;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.ISourceLocator;
 
-public class DeeDebugLaunchConfigurationDelegate extends DeeLaunchConfigurationDelegate {
-	
-	protected final GdbLaunchDelegateExtension gdbLaunchDelegate = new GdbLaunchDelegateExtension() {
-		@Override
-		protected GdbLaunch createGdbLaunch(ILaunchConfiguration configuration, String mode, ISourceLocator locator)
-				throws CoreException {
-			return new DeeGdbLaunch(configuration, mode, locator);
-		}
-	};
+public class DeeDebugLaunchConfigurationDelegate extends AbstractLangDebugLaunchConfigurationDelegate {
 	
 	@Override
-	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		throw abort_UnsupportedMode(mode); // Run not supported
-	}
-	
-	@Override
-	public ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		
-		// Setup CDT config parameters
-		String fullProgramPath = getProgramFullPath(configuration).toString();
-		String workingDirPath = getWorkingDirectoryOrDefault(configuration).toString();
-		// Need to pass raw args, because CDT will reevaluate variables.
-		String progArgs = getProgramArguments_Attribute(configuration);
-		
-		ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-		
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_NAME, fullProgramPath);
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, progArgs);
-		workingCopy.setAttribute(ICDTLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, workingDirPath);
-		// Note, environment is already setup, because it uses standard attributes:
-		// ILaunchManager.ATTR_ENVIRONMENT_VARIABLES and ILaunchManager.ATTR_APPEND_ENVIRONMENT_VARIABLES
+	protected void setAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy workingCopy)
+			throws CoreException {
+		super.setAttributes(configuration, workingCopy);
 		
 		// Remove some DLTK attributes that affect how our launch runs
 		cleanDLTKDebugConfig(workingCopy);
-		
-		workingCopy.doSave();
-		
-		ILaunch launch = gdbLaunchDelegate.getLaunch(configuration, mode);
-		return launch;
 	}
 	
 	@Override
-	protected void launchProcess(ProcessSpawnInfo processSpawnInfo, ILaunchConfiguration configuration, 
-			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		String mode = launch.getLaunchMode();
-		gdbLaunchDelegate.launch(configuration, mode, launch, monitor);
+	protected GdbLaunch doCreateGdbLaunch(ILaunchConfiguration configuration, String mode, ISourceLocator locator) {
+		return new DeeGdbLaunch(configuration, mode, locator);
 	}
 	
 }

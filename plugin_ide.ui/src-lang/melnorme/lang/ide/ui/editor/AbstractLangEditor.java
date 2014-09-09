@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -37,6 +38,12 @@ public abstract class AbstractLangEditor extends TextEditor {
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
+		initialize_setContextMenuIds();
+	}
+	
+	protected void initialize_setContextMenuIds() {
+		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
+		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
 	@Override

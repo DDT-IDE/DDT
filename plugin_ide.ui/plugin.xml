@@ -10,16 +10,16 @@
           priority="0"/>
    </extension>
    
-   <extension
-         id="DeeDocumentSetupParticipant"
-         name="D Document Setup Participant"
-         point="org.eclipse.core.filebuffers.documentSetup">
-      <participant
-            class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
-            contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-      </participant>
-   </extension>
-   
+	<extension
+		 id="DeeDocumentSetupParticipant"
+		 name="D Document Setup Participant"
+		 point="org.eclipse.core.filebuffers.documentSetup">
+		  <participant
+			class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
+			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
+		</participant>
+	</extension>
+	
    <extension
          point="org.eclipse.ui.ide.projectNatureImages">
       <image
@@ -126,20 +126,20 @@
       </page>
    </extension>
    
-   <!-- ============ EDITOR related ============= -->
-
-   <extension point="org.eclipse.ui.editors">
-      <editor
-         class="mmrnmhrm.ui.editor.DeeEditor"
-         contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
-         default="true"
-         icon="icons/obj16/dee_file.gif"
-         id="org.dsource.ddt.ide.ui.editors.DeeEditor"
-         name="%LangEditor.name">
-         <contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-         </contentTypeBinding>
-      </editor>
-   </extension>
+	<!-- ============ EDITOR related ============= -->
+	
+	<extension point="org.eclipse.ui.editors">
+		<editor
+		 class="mmrnmhrm.ui.editor.DeeEditor"
+		 contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
+		 default="true"
+		 icon="icons/obj16/dee_file.gif"
+		 id="org.dsource.ddt.ide.ui.editors.DeeEditor"
+		 name="%LangEditor.name">
+			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />
+		</editor>
+	</extension>
+	
    <extension point="org.eclipse.ui.contexts">
       <context
             name="%LangEditContext.name"
@@ -451,27 +451,26 @@
          <actionSet id="org.dsource.ddt.ide.ui.DeeActionSet" />
       </perspectiveExtension>
    </extension>
-   
-   <!-- ============ Launch ============= -->
-
-   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-      <launchConfigurationTypeImage
-            configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-            icon="$nl$/icons/action16e/d_app_launch.png"
-            id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
-      </launchConfigurationTypeImage>
-   </extension>
-
-   <extension
-         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-      <launchConfigurationTabGroup
-            class="org.dsource.ddt.ui.tabgroup.DeeTabGroup"
-            description="%LangTabGroup.description"
-            id="org.dsource.ddt.ide.ui.launchConfigurationTabGroup1"
-            type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
-      </launchConfigurationTabGroup>
-   </extension>
-   
+	
+	<!-- ============ Launch ============= -->
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+		<launchConfigurationTypeImage
+			configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
+			icon="$nl$/icons/action16e/d_app_launch.png"
+			id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
+		</launchConfigurationTypeImage>
+	</extension>
+	
+	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+		<launchConfigurationTabGroup
+			class="org.dsource.ddt.ui.tabgroup.DeeTabGroup"
+			description="%LangTabGroup.description"
+			id="org.dsource.ddt.ide.ui.launchConfigurationTabGroup1"
+			type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+		</launchConfigurationTabGroup>
+	</extension>
+	
    <extension point="org.eclipse.ui.actionSetPartAssociations">
       <actionSetPartAssociation targetID="org.eclipse.debug.ui.launchActionSet">
          <part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />

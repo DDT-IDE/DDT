@@ -6,7 +6,7 @@
       <sourceLocator
             class="melnorme.lang.ide.debug.core.LangSourceLookupDirector"
             id="org.dsource.ddt.ide.debug.sourceLocator"
-            name="D Source Locator">
+            name="Source Locator">
       </sourceLocator>
    </extension>
    <extension

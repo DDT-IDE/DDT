@@ -20,6 +20,10 @@ public final class LangUIPlugin_Actual {
 	
 	public static final String PLUGIN_ID = DeeUIPlugin.PLUGIN_ID;
 	
+	public static final String RULER_CONTEXT = "#DeeRulerContext";
+	public static final String EDITOR_CONTEXT = "#DeeEditorContext";
+	
+	
 	// ID to start the debug plugin automatically, if present
 	protected static final String DEBUG_PLUGIN_ID = "org.dsource.ddt.ide.debug";
 	

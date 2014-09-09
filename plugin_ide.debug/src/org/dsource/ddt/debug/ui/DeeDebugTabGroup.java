@@ -10,29 +10,8 @@
  *******************************************************************************/
 package org.dsource.ddt.debug.ui;
 
-import org.dsource.ddt.ui.tabgroup.DeeMainLaunchConfigurationTab;
-import org.dsource.ddt.ui.tabgroup.DeeProgramArgumentsTab;
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
-import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.EnvironmentTab;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
+import melnorme.lang.ide.debug.ui.AbstractLangDebugTabGroup;
 
-public class DeeDebugTabGroup extends AbstractLaunchConfigurationTabGroup {
-	
-	@Override
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new DeeMainLaunchConfigurationTab(),
-				new DeeProgramArgumentsTab(),
-				new EnvironmentTab(),
-				new org.eclipse.cdt.dsf.gdb.internal.ui.launching.LocalApplicationCDebuggerTab(),
-				new SourceLookupTab(),
-				new CommonTab(),
-		};
-		
-		setTabs(tabs);
-	}
+public class DeeDebugTabGroup extends AbstractLangDebugTabGroup {
 	
 }
