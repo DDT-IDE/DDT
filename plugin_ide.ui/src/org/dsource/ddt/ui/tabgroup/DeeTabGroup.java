@@ -10,24 +10,15 @@
  *******************************************************************************/
 package org.dsource.ddt.ui.tabgroup;
 
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
-import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.EnvironmentTab;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
+import melnorme.lang.ide.ui.launch.AbstractLangTabGroup;
+
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
-public class DeeTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class DeeTabGroup extends AbstractLangTabGroup {
 	
 	@Override
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new DeeMainLaunchConfigurationTab(),
-				new DeeProgramArgumentsTab(),
-				new EnvironmentTab(),
-				new CommonTab()
-		};
-		
-		setTabs(tabs);
+	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
+		return new DeeMainLaunchConfigurationTab();
 	}
 	
 }

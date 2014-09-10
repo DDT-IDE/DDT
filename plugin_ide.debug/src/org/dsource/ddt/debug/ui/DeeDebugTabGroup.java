@@ -10,8 +10,16 @@
  *******************************************************************************/
 package org.dsource.ddt.debug.ui;
 
+import org.dsource.ddt.ui.tabgroup.DeeMainLaunchConfigurationTab;
+import org.eclipse.debug.ui.ILaunchConfigurationTab;
+
 import melnorme.lang.ide.debug.ui.AbstractLangDebugTabGroup;
 
 public class DeeDebugTabGroup extends AbstractLangDebugTabGroup {
+	
+	@Override
+	protected ILaunchConfigurationTab createMainLaunchConfigTab() {
+		return new DeeMainLaunchConfigurationTab();
+	}
 	
 }

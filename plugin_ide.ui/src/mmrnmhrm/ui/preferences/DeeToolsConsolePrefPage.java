@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
-import melnorme.lang.ide.ui.tools.console.ToolsConsolePrefPage;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsolePrefPage;
 
-public class DeeToolsConsolePrefPage extends ToolsConsolePrefPage {
+public class DeeToolsConsolePrefPage extends AbstractToolsConsolePrefPage {
 	
 }

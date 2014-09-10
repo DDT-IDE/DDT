@@ -7,6 +7,9 @@ import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
+import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
+
+import org.eclipse.jface.text.source.ISourceViewer;
 
 /**
  * Actual/concrete IDE constants and other bindings, for Lang UI code. 
@@ -28,6 +31,10 @@ public final class LangUIPlugin_Actual {
 		textHoverSpecifications.add(AnnotationHover_Adapter.ProblemHover_Adapter.class);
 		textHoverSpecifications.add(DeeDocTextHover.class);
 		textHoverSpecifications.add(AnnotationHover_Adapter.class);
+	}
+	
+	public static DeeAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
+		return new DeeAutoEditStrategy(contentType, sourceViewer);
 	}
 	
 }
