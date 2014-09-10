@@ -10,16 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.ITextViewer;
-
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
 import mmrnmhrm.ui.text.DeePartitions;
 
+import org.eclipse.jface.text.ITextViewer;
+
 public class DeeAutoEditStrategy extends LangAutoEditStrategyExt {
 	
-	public DeeAutoEditStrategy(IPreferenceStore store, String contentType, ITextViewer viewer) {
-		super(store, DeePartitions.PARTITIONING_ID, contentType, viewer);
+	public DeeAutoEditStrategy(String contentType, ITextViewer viewer) {
+		super(DeePartitions.PARTITIONING_ID, contentType, viewer);
 	}
 	
 }

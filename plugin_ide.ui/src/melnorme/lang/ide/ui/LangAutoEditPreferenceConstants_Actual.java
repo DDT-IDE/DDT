@@ -10,13 +10,43 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+
 import org.eclipse.dltk.ui.PreferenceConstants;
 
 
 public interface LangAutoEditPreferenceConstants_Actual {
 	
-	String AE_CLOSE_STRINGS = PreferenceConstants.EDITOR_CLOSE_STRINGS;
-	String AE_CLOSE_BRACKETS = PreferenceConstants.EDITOR_CLOSE_BRACKETS;
-	String AE_CLOSE_BRACES = PreferenceConstants.EDITOR_CLOSE_BRACES;
+	public static final String QUALIFIER = LangUIPlugin.PLUGIN_ID;
+	
+	BooleanPreference AE_CLOSE_STRINGS = 
+			new BooleanPreference(QUALIFIER, PreferenceConstants.EDITOR_CLOSE_STRINGS, true);
+	BooleanPreference AE_CLOSE_BRACKETS = 
+			new BooleanPreference(QUALIFIER, PreferenceConstants.EDITOR_CLOSE_BRACKETS, true);
+	BooleanPreference AE_CLOSE_BRACES = 
+			new BooleanPreference(QUALIFIER, PreferenceConstants.EDITOR_CLOSE_BRACES, true);
+	
+	BooleanPreference AE_SMART_INDENT = 
+			new BooleanPreference(QUALIFIER, "autoedit.editorSmartIndent", true);
+	BooleanPreference AE_SMART_DEINDENT = 
+			new BooleanPreference(QUALIFIER, "autoedit.smart_deindent", true);
+	BooleanPreference AE_PARENTHESES_AS_BLOCKS = 
+			new BooleanPreference(QUALIFIER, "autoedit.parentheses_as_blocks", true);
+	
+	// Not used currently:
+	BooleanPreference AE_SMART_PASTE = 
+			new BooleanPreference(QUALIFIER, "autoedit.smartPaste", true);
+	
+	
+	class Helper {
+
+		public static void initDefaults() {
+			// This will ensure default value is initialized
+			AE_CLOSE_STRINGS.get();
+			AE_CLOSE_BRACKETS.get();
+			AE_CLOSE_BRACES.get();
+		}
+		
+	}
 	
 }

@@ -23,7 +23,7 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			autoEditStrategy = new DeeAutoEditStrategy(createPreferenceStore(), DeePartitions.DEE_CODE, null);
+			autoEditStrategy = new DeeAutoEditStrategy(DeePartitions.DEE_CODE, null);
 		}
 		return autoEditStrategy;
 	}

@@ -31,7 +31,7 @@ public abstract class PreferenceHelper<T> {
 	
 	protected static final HashMap<String, PreferenceHelper<?>> instances = new HashMap<>();
 	
-	public final String pluginId;
+	public final String qualifier;
 	public final String key;
 	protected final T defaultValue;
 	
@@ -39,8 +39,8 @@ public abstract class PreferenceHelper<T> {
 		this(LangCore.PLUGIN_ID, key, defaultValue);
 	}
 	
-	public PreferenceHelper(String pluginId, String key, T defaultValue) {
-		this.pluginId = pluginId;
+	public PreferenceHelper(String qualifier, String key, T defaultValue) {
+		this.qualifier = qualifier;
 		this.key = key;
 		this.defaultValue = assertNotNull(defaultValue);
 		
@@ -54,7 +54,7 @@ public abstract class PreferenceHelper<T> {
 	}
 	
 	public final String getQualifier() {
-		return pluginId;
+		return qualifier;
 	}
 	
 	public T getDefault() {

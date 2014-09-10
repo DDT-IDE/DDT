@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.PreferenceConstants2;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
@@ -17,7 +18,6 @@ import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 import mmrnmhrm.ui.text.color.DeeColorPreferenceInitializer;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -61,21 +61,11 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		
 		
 		// Formatter
-		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
-		store.setDefault(CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, 4);
-		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, 4);
+		CodeFormatterConstants.Helper.initDefaults();
 		
-		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_STRINGS, true);
-		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_BRACES, true);
-		store.setDefault(LangAutoEditPreferenceConstants.AE_CLOSE_BRACKETS, true);
-		
-		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_INDENT, true);
-		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_DEINDENT, true);
-		store.setDefault(LangAutoEditPreferenceConstants.AE_PARENTHESES_AS_BLOCKS, true);
+		LangAutoEditPreferenceConstants.Helper.initDefaults();
 		
 		store.setDefault(PreferenceConstants.EDITOR_SMART_TAB, true); // Not used currently
-		store.setDefault(LangAutoEditPreferenceConstants.AE_SMART_PASTE, true); // Not used currently
-		
 		
 		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
 		

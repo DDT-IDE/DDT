@@ -118,7 +118,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 		} else if (DeePartitions.$Methods.isString(contentType)) {
 			return new IAutoEditStrategy[] { };
 		} else {
-			return array(new DeeAutoEditStrategy(LangUIPlugin.getPrefStore(), contentType, sourceViewer));
+			return array(new DeeAutoEditStrategy(contentType, sourceViewer));
 		}
 	}
 	
