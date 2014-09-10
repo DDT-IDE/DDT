@@ -33,7 +33,7 @@ public interface LangAutoEditPreferenceConstants_Actual {
 	BooleanPreference AE_PARENTHESES_AS_BLOCKS = 
 			new BooleanPreference(QUALIFIER, "autoedit.parentheses_as_blocks", true);
 	
-	// Not used currently:
+	// Not used currently?
 	BooleanPreference AE_SMART_PASTE = 
 			new BooleanPreference(QUALIFIER, "autoedit.smartPaste", true);
 	
@@ -41,7 +41,8 @@ public interface LangAutoEditPreferenceConstants_Actual {
 	class Helper {
 
 		public static void initDefaults() {
-			// This will ensure default value is initialized
+			// This will ensure default value is initialized 
+			// -- because DLTK may use this prefs without accessing this class first, and thus before default init. 
 			AE_CLOSE_STRINGS.get();
 			AE_CLOSE_BRACKETS.get();
 			AE_CLOSE_BRACES.get();

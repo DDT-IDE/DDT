@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.text.Scanner_BaseTest;
 
 import org.eclipse.jface.text.Document;
@@ -18,7 +18,7 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 
 public class DeeTextTestUtils {
 	
-	public static final String[] LEGAL_CONTENT_TYPES = LangUIPlugin_Actual.LEGAL_CONTENT_TYPES; // accessor
+	public static final String[] LEGAL_CONTENT_TYPES = LangDocumentPartitionerSetup.LEGAL_CONTENT_TYPES; // accessor
 	
 	public static FastPartitioner installDeePartitioner(Document document) {
 		DeePartitionScanner partitionScanner = new DeePartitionScanner();

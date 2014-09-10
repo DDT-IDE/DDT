@@ -65,35 +65,30 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	}
 	
 	@Override
-	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
-		return DeePartitions.DEE_PARTITION_TYPES;
-	}
-	
-	@Override
 	protected void createScanners() {
 		
 		addScanner(new DeeCodeScanner(getTokenStoreFactory()), 
 				DeePartitions.DEE_CODE);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_COMMENT.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.COMMENT.key), 
 				DeePartitions.DEE_SINGLE_COMMENT, 
 				DeePartitions.DEE_MULTI_COMMENT, 
 				DeePartitions.DEE_NESTED_COMMENT);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_DOCCOMMENT.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DOCCOMMENT.key), 
 				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
 				DeePartitions.DEE_MULTI_DOCCOMMENT, 
 				DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_STRING.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.STRING.key), 
 				DeePartitions.DEE_STRING,
 				DeePartitions.DEE_RAW_STRING,
 				DeePartitions.DEE_RAW_STRING2);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_DELIM_STRING.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DELIM_STRING.key), 
 				DeePartitions.DEE_DELIM_STRING);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_CHARACTER_LITERALS.key),
+		addScanner(createSingleTokenScanner(DeeColorPreferences.CHARACTER_LITERALS.key),
 				DeePartitions.DEE_CHARACTER);
 	}
 	

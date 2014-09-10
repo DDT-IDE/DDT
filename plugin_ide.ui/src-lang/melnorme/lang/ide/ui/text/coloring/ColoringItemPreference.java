@@ -10,19 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text.coloring;
 
+import melnorme.lang.ide.core.utils.prefs.AbstractPreferenceHelper;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.swt.graphics.RGB;
 
-public class ColoringItemPreference {
+public class ColoringItemPreference extends AbstractPreferenceHelper {
 	
-	public final String key;
-
 	public ColoringItemPreference(String key, 
 			boolean enabled, RGB color, boolean bold, boolean italic, boolean underline) {
-		this.key = key;
+		super(key);
 		setStyleDefault(enabled, color, bold, italic, underline);
 	}
 	

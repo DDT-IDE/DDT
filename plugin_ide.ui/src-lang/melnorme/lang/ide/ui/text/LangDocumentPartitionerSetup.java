@@ -10,7 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui.text;
 
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.jface.text.IDocument;
@@ -20,6 +22,9 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
+	
+	public static final String[] LEGAL_CONTENT_TYPES = 
+			ArrayUtil.remove(DeePartitions.DEE_PARTITION_TYPES, DeePartitions.DEE_CODE);
 	
 	protected static LangDocumentPartitionerSetup instance = new LangDocumentPartitionerSetup();
 	
@@ -32,16 +37,16 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	
 	@Override
 	public void setup(IDocument document) {
-		setupDocumentPartitioner(document, LangUIPlugin_Actual.LANG_PARTITIONING);
+		setupDocumentPartitioner(document, TextSettings_Actual.PARTITIONING_ID);
 	}
 	
 	public IPartitionTokenScanner createPartitionScanner() {
-		return LangUIPlugin_Actual.createPartitionScanner();
+		return TextSettings_Actual.createPartitionScanner();
 	}
 	
 	public IDocumentPartitioner createDocumentPartitioner() {
 		IPartitionTokenScanner scanner = createPartitionScanner();
-		return new FastPartitioner(scanner, LangUIPlugin_Actual.LEGAL_CONTENT_TYPES);
+		return new FastPartitioner(scanner, LEGAL_CONTENT_TYPES);
 	}
 	
 	protected void setupDocumentPartitioner(IDocument document, String partitioning) {

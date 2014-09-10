@@ -2,8 +2,6 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 public interface CodeFormatterConstants extends CodeFormatterConstants_Actual {
 	
 	public final String[] FORMATTER_TAB_CHAR__VALUES = array(

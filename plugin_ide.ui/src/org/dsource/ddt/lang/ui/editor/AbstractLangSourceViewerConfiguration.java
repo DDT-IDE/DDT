@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 
@@ -61,6 +62,11 @@ public abstract class AbstractLangSourceViewerConfiguration extends ScriptSource
 	
 	protected org.eclipse.cdt.ui.text.IColorManager getColorManager2() {
 		return colorManager;
+	}
+	
+	@Override
+	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
+		return TextSettings_Actual.PARTITION_TYPES;
 	}
 	
 	protected abstract void createScanners();

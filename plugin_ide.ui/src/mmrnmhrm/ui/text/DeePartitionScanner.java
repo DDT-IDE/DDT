@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.text;
 
-import java.util.ArrayList;
-import java.util.List;
+import melnorme.lang.ide.ui.text.PatternRule_Fixed;
+import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -29,7 +29,7 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		IToken tkNestedComment = new Token(DeePartitions.DEE_NESTED_COMMENT);
 		IToken tkNestedDocComment = new Token(DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
-		List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
+		ArrayList2<IPredicateRule> rules = new ArrayList2<>();
 		
 		rules.add(new PatternRule_Fixed("`", "`", tkRawString, NO_ESCAPE_CHAR, false, true));
 		rules.add(new PatternRule_Fixed("r\"", "\"", tkRawString2, NO_ESCAPE_CHAR, false, true));
@@ -48,7 +48,7 @@ public class DeePartitionScanner extends RuleBasedPartitionScanner {
 		rules.add(new PatternRule_Fixed("/*", "*/", tkMultiComment, NO_ESCAPE_CHAR, false, true));
 		
 		
-		setPredicateRules(rules.toArray(new IPredicateRule[rules.size()]));
+		setPredicateRules(rules.toArray(IPredicateRule.class));
 	}
 	
 }

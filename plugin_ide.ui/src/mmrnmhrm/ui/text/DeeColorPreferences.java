@@ -24,38 +24,38 @@ interface ColorConstants {
 
 public interface DeeColorPreferences {
 	
-	/** Prefix for D preference keys. */
+	/** Prefix for the color preference keys. */
 	String PREFIX = "editor.coloring."; 
 	
-	ColoringItemPreference DEE_COMMENT = new ColoringItemPreference(PREFIX + "comment",
+	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
 		true, new RGB(63, 127, 95), false, false, false);
 	
-	ColoringItemPreference DEE_DOCCOMMENT = new ColoringItemPreference(PREFIX + "doccomment",
+	ColoringItemPreference DOCCOMMENT = new ColoringItemPreference(PREFIX + "doccomment",
 		true, new RGB(63, 95, 191), false, false, false);
 	
-	ColoringItemPreference DEE_DEFAULT = new ColoringItemPreference(PREFIX + "default",
+	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
 		true, ColorConstants.COLOR_BLACK_RGB, false, false, false);
-	ColoringItemPreference DEE_KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
+	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
 		true, new RGB(0, 0, 127), true, false, false);
-	ColoringItemPreference DEE_BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
+	ColoringItemPreference BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
 		true, new RGB(0, 0, 127), false, false, false);
-	ColoringItemPreference DEE_ANNOTATIONS = new ColoringItemPreference(PREFIX + "annotations",
+	ColoringItemPreference ANNOTATIONS = new ColoringItemPreference(PREFIX + "annotations",
 		true, new RGB(100, 100, 100), false, false, false);
-	ColoringItemPreference DEE_LITERALS = new ColoringItemPreference(PREFIX + "literals",
+	ColoringItemPreference LITERALS = new ColoringItemPreference(PREFIX + "literals",
 		true, new RGB(127, 64, 64), false, false, false);
-	ColoringItemPreference DEE_OPERATORS = new ColoringItemPreference(PREFIX + "operators",
+	ColoringItemPreference OPERATORS = new ColoringItemPreference(PREFIX + "operators",
 		true, ColorConstants.COLOR_BLACK_RGB, false, false, false); // Not supported yet  
-	ColoringItemPreference DEE_SPECIAL = new ColoringItemPreference(PREFIX + "special",
+	ColoringItemPreference SPECIAL = new ColoringItemPreference(PREFIX + "special",
 		false, ColorConstants.COLOR_CYAN_RGB, false, false, true); // For debug purposes only
 	
 	
-	ColoringItemPreference DEE_STRING = new ColoringItemPreference(PREFIX + "string",
+	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
 		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
 	
-	ColoringItemPreference DEE_DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
+	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
 		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
 	
-	ColoringItemPreference DEE_CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
+	ColoringItemPreference CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
 		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
 	
 }

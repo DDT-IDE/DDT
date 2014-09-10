@@ -20,8 +20,6 @@ import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.IWhitespaceDetector;
-import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
@@ -31,12 +29,12 @@ import dtool.parser.DeeTokens;
 public class DeeCodeScanner extends AbstractLangScanner {
 	
 	public static String COLOR_TOKENS__PROPERTY_KEYS[] = new String[] {
-		DeeColorPreferences.DEE_DEFAULT.key,
-		DeeColorPreferences.DEE_KEYWORDS.key,
-		DeeColorPreferences.DEE_BASICTYPES.key,
-		DeeColorPreferences.DEE_ANNOTATIONS.key,
-		DeeColorPreferences.DEE_LITERALS.key,
-		DeeColorPreferences.DEE_OPERATORS.key,
+		DeeColorPreferences.DEFAULT.key,
+		DeeColorPreferences.KEYWORDS.key,
+		DeeColorPreferences.BASICTYPES.key,
+		DeeColorPreferences.ANNOTATIONS.key,
+		DeeColorPreferences.LITERALS.key,
+		DeeColorPreferences.OPERATORS.key,
 	};
 	
 	public DeeCodeScanner(ITokenStoreFactory factory) {
@@ -47,10 +45,10 @@ public class DeeCodeScanner extends AbstractLangScanner {
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkOther = getToken(DeeColorPreferences.DEE_DEFAULT.key);
-		IToken tkKeyword = getToken(DeeColorPreferences.DEE_KEYWORDS.key);
-		IToken tkBasics = getToken(DeeColorPreferences.DEE_BASICTYPES.key);
-		IToken tkLiterals = getToken(DeeColorPreferences.DEE_LITERALS.key);
+		IToken tkOther = getToken(DeeColorPreferences.DEFAULT.key);
+		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS.key);
+		IToken tkBasics = getToken(DeeColorPreferences.BASICTYPES.key);
+		IToken tkLiterals = getToken(DeeColorPreferences.LITERALS.key);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add generic whitespace rule.
@@ -67,7 +65,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
 		
 		
-		IToken tkAnnotation = getToken(DeeColorPreferences.DEE_ANNOTATIONS.key);
+		IToken tkAnnotation = getToken(DeeColorPreferences.ANNOTATIONS.key);
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
 		rules.add(annotationsRule);
 		
@@ -78,26 +76,6 @@ public class DeeCodeScanner extends AbstractLangScanner {
 	protected void addWordsFromTokens(WordRule wordRule, List<DeeTokens> tokenTypes, IToken token) {
 		for (DeeTokens type : tokenTypes) {
 			wordRule.addWord(type.getSourceValue(), token);
-		}
-	}
-	
-	public static class LangWhitespaceDetector implements IWhitespaceDetector {
-		@Override
-		public boolean isWhitespace(char character) {
-			return Character.isWhitespace(character);
-		}
-	}
-	
-	public static class JavaWordDetector implements IWordDetector {
-		
-		@Override
-		public boolean isWordPart(char character) {
-			return Character.isJavaIdentifierPart(character);
-		}
-		
-		@Override
-		public boolean isWordStart(char character) {
-			return Character.isJavaIdentifierPart(character);
 		}
 	}
 	

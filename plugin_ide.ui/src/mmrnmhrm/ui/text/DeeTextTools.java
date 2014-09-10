@@ -11,7 +11,8 @@
 package mmrnmhrm.ui.text;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
+import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.utilbox.core.Assert;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
@@ -25,13 +26,13 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class DeeTextTools extends ScriptTextTools {
 	
 	public DeeTextTools(boolean autoDisposeOnDisplayDispose) {
-		super(LangUIPlugin_Actual.LANG_PARTITIONING, LangUIPlugin_Actual.LEGAL_CONTENT_TYPES, 
+		super(DeePartitions.PARTITIONING_ID, LangDocumentPartitionerSetup.LEGAL_CONTENT_TYPES, 
 			autoDisposeOnDisplayDispose);
 	}
 	
 	@Override
 	public IPartitionTokenScanner createPartitionScanner() {
-		return LangUIPlugin_Actual.createPartitionScanner();
+		return TextSettings_Actual.createPartitionScanner();
 	}
 	
 	@Override
