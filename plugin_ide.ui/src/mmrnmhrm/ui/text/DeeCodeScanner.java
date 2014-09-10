@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
-import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;
@@ -31,27 +30,27 @@ import dtool.parser.DeeTokens;
 
 public class DeeCodeScanner extends AbstractLangScanner {
 	
-	private static String fgTokenProperties[] = new String[] {
-		IDeeColorConstants.DEE_DEFAULT,
-		IDeeColorConstants.DEE_KEYWORDS,
-		IDeeColorConstants.DEE_BASICTYPES,
-		IDeeColorConstants.DEE_ANNOTATIONS,
-		IDeeColorConstants.DEE_LITERALS,
-		IDeeColorConstants.DEE_OPERATORS,
+	public static String COLOR_TOKENS__PROPERTY_KEYS[] = new String[] {
+		DeeColorPreferences.DEE_DEFAULT.key,
+		DeeColorPreferences.DEE_KEYWORDS.key,
+		DeeColorPreferences.DEE_BASICTYPES.key,
+		DeeColorPreferences.DEE_ANNOTATIONS.key,
+		DeeColorPreferences.DEE_LITERALS.key,
+		DeeColorPreferences.DEE_OPERATORS.key,
 	};
 	
 	public DeeCodeScanner(ITokenStoreFactory factory) {
-		super(factory.createTokenStore(fgTokenProperties));
+		super(factory.createTokenStore(COLOR_TOKENS__PROPERTY_KEYS));
 		setRules(createRules());
 	}
 	
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkOther = getToken(IDeeColorConstants.DEE_DEFAULT);
-		IToken tkKeyword = getToken(IDeeColorConstants.DEE_KEYWORDS);
-		IToken tkBasics = getToken(IDeeColorConstants.DEE_BASICTYPES);
-		IToken tkLiterals = getToken(IDeeColorConstants.DEE_LITERALS);
+		IToken tkOther = getToken(DeeColorPreferences.DEE_DEFAULT.key);
+		IToken tkKeyword = getToken(DeeColorPreferences.DEE_KEYWORDS.key);
+		IToken tkBasics = getToken(DeeColorPreferences.DEE_BASICTYPES.key);
+		IToken tkLiterals = getToken(DeeColorPreferences.DEE_LITERALS.key);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add generic whitespace rule.
@@ -68,7 +67,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
 		
 		
-		IToken tkAnnotation = getToken(IDeeColorConstants.DEE_ANNOTATIONS);
+		IToken tkAnnotation = getToken(DeeColorPreferences.DEE_ANNOTATIONS.key);
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
 		rules.add(annotationsRule);
 		
@@ -108,4 +107,5 @@ public class DeeCodeScanner extends AbstractLangScanner {
 			return character == '@';
 		}
 	}
+	
 }

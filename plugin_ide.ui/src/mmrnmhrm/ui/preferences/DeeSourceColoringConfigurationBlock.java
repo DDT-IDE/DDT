@@ -17,7 +17,7 @@ import java.io.InputStream;
 import melnorme.lang.ide.ui.text.coloring.EditorSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.text.color.IDeeColorConstants;
+import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -31,18 +31,18 @@ public class DeeSourceColoringConfigurationBlock extends EditorSourceColoringCon
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Default", IDeeColorConstants.DEE_DEFAULT),
-			new SourceColoringElement("Keywords", IDeeColorConstants.DEE_KEYWORDS),
-			new SourceColoringElement("Keywords - Basic Types", IDeeColorConstants.DEE_BASICTYPES),
-			new SourceColoringElement("Keywords - Literals", IDeeColorConstants.DEE_LITERALS),
-			new SourceColoringElement("Character Literals", IDeeColorConstants.DEE_CHARACTER_LITERALS),
-			new SourceColoringElement("Strings", IDeeColorConstants.DEE_STRING),
-			new SourceColoringElement("Delimited String", IDeeColorConstants.DEE_DELIM_STRING),
-			new SourceColoringElement("@Annotations", IDeeColorConstants.DEE_ANNOTATIONS)
+			new SourceColoringElement("Default", DeeColorPreferences.DEE_DEFAULT.key),
+			new SourceColoringElement("Keywords", DeeColorPreferences.DEE_KEYWORDS.key),
+			new SourceColoringElement("Keywords - Basic Types", DeeColorPreferences.DEE_BASICTYPES.key),
+			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.DEE_LITERALS.key),
+			new SourceColoringElement("Character Literals", DeeColorPreferences.DEE_CHARACTER_LITERALS.key),
+			new SourceColoringElement("Strings", DeeColorPreferences.DEE_STRING.key),
+			new SourceColoringElement("Delimited String", DeeColorPreferences.DEE_DELIM_STRING.key),
+			new SourceColoringElement("@Annotations", DeeColorPreferences.DEE_ANNOTATIONS.key)
 		)),
 		new SourceColoringCategory("Comments", array(
-			new SourceColoringElement("Comment", IDeeColorConstants.DEE_COMMENT),
-			new SourceColoringElement("Doc Comment", IDeeColorConstants.DEE_DOCCOMMENT)
+			new SourceColoringElement("Comment", DeeColorPreferences.DEE_COMMENT.key),
+			new SourceColoringElement("Doc Comment", DeeColorPreferences.DEE_DOCCOMMENT.key)
 		))
 	);
 	

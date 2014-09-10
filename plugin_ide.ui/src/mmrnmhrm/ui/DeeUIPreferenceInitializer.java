@@ -15,7 +15,6 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.PreferenceConstants2;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
-import mmrnmhrm.ui.text.color.DeeColorPreferenceInitializer;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -41,7 +40,6 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		// Fix DLTK bug
 		store.setDefault(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT, true);
 		
-		DeeColorPreferenceInitializer.initializeDefaults(store);
 		DeeDoc_initializeDefaultValues(store);
 		
 		// Explorer

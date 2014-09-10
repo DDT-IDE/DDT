@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -25,8 +24,8 @@ import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.text.DeeCodeScanner;
+import mmrnmhrm.ui.text.DeeColorPreferences;
 import mmrnmhrm.ui.text.DeePartitions;
-import mmrnmhrm.ui.text.color.IDeeColorConstants;
 
 import org.dsource.ddt.lang.ui.editor.AbstractLangSourceViewerConfiguration;
 import org.eclipse.cdt.ui.text.IColorManager;
@@ -76,25 +75,25 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 		addScanner(new DeeCodeScanner(getTokenStoreFactory()), 
 				DeePartitions.DEE_CODE);
 		
-		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_COMMENT), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_COMMENT.key), 
 				DeePartitions.DEE_SINGLE_COMMENT, 
 				DeePartitions.DEE_MULTI_COMMENT, 
 				DeePartitions.DEE_NESTED_COMMENT);
 		
-		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_DOCCOMMENT), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_DOCCOMMENT.key), 
 				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
 				DeePartitions.DEE_MULTI_DOCCOMMENT, 
 				DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
-		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_STRING), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_STRING.key), 
 				DeePartitions.DEE_STRING,
 				DeePartitions.DEE_RAW_STRING,
 				DeePartitions.DEE_RAW_STRING2);
 		
-		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_DELIM_STRING), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_DELIM_STRING.key), 
 				DeePartitions.DEE_DELIM_STRING);
 		
-		addScanner(createSingleTokenScanner(IDeeColorConstants.DEE_CHARACTER_LITERALS),
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DEE_CHARACTER_LITERALS.key),
 				DeePartitions.DEE_CHARACTER);
 	}
 	
