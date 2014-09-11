@@ -15,6 +15,8 @@ import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.part.IShowInTargetList;
 
 public abstract class ScriptEditorLangExtension extends ScriptEditor {
 	
@@ -30,5 +32,20 @@ public abstract class ScriptEditorLangExtension extends ScriptEditor {
 	}
 	
 	protected abstract String getPartitioningToConnect();
+	
+	
+	@Override
+	public Object getAdapter(Class required) {
+		if (required == IShowInTargetList.class) {
+			return new IShowInTargetList() {
+				@Override
+				public String[] getShowInTargetIds() {
+					// Prevent showing Script Explorer
+					return new String[] { IPageLayout.ID_OUTLINE };
+				}
+			};
+		}
+		return super.getAdapter(required);
+	}
 	
 }

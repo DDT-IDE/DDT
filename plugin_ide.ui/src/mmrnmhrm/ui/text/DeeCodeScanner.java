@@ -45,17 +45,17 @@ public class DeeCodeScanner extends AbstractLangScanner {
 	protected List<IRule> createRules() {
 		List<IRule> rules = new ArrayList<IRule>();
 		
-		IToken tkOther = getToken(DeeColorPreferences.DEFAULT.key);
+		// Add generic whitespace rule.
+		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
+		
+		IToken tkDefault = getToken(DeeColorPreferences.DEFAULT.key);
 		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS.key);
 		IToken tkBasics = getToken(DeeColorPreferences.BASICTYPES.key);
 		IToken tkLiterals = getToken(DeeColorPreferences.LITERALS.key);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
-		// Add generic whitespace rule.
-		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
-		
 		// Add word rule for keywords, types, and constants.
-		WordRule wordRule = new WordRule(new JavaWordDetector(), tkOther);
+		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_control, tkKeyword);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_nativeTypes, tkBasics);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_literalValues, tkLiterals);
@@ -69,7 +69,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
 		rules.add(annotationsRule);
 		
-		setDefaultReturnToken(tkOther);
+		setDefaultReturnToken(tkDefault);
 		return rules;
 	}
 	

@@ -204,14 +204,4 @@
 		</launchConfigurationType>
 	</extension>
 	
-	<extension
-         id="org.dsource.ddt.ide.core.hierarchyResolverTODO"
-         point="org.eclipse.dltk.core.fileHierarchyResolvers">
-      <fileHierarchyResolver
-            class="mmrnmhrm.core.search.DeeFileHierarchyResolver"
-            nature="org.dsource.ddt.ide.core.nature"
-            priority="0">
-      </fileHierarchyResolver>
-   </extension>
-
 </plugin>
