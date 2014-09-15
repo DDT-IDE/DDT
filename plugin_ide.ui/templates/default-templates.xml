@@ -75,6 +75,7 @@
 
 <template name="main" description="%Templates.main" id="descent.ui.templates.main" context="DeeUniversalTemplateContextType" enabled="true" autoinsert="false">int main(string[] args) {
 	${cursor}
+	return 0;
 }</template>
 
 <template name="public_method" description="%Templates.public_method" id="descent.ui.templates.public_method" context="DeeUniversalTemplateContextType" enabled="true" autoinsert="false">public ${return_type} ${name}(${}) {
