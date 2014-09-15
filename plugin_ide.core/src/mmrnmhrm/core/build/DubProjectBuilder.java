@@ -98,9 +98,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 				throw new OperationCanceledException();
 			}
 			DeeCore.logStatus(ce.getStatus());
-			// Don't rethrow, just forget build state
-			forgetLastBuiltState();
-			return null;
+			throw ce;
 		} finally {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}
