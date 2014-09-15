@@ -50,6 +50,22 @@ public class CompilerInstallDetector {
 				cmdDir.resolve("../../src/druntime/import"),
 				cmdDir.resolve("../../src/phobos"));
 		}
+		// a MacOSX layout:
+		if(cmdDir.resolve("../src/druntime").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.DMD, 
+				cmdDir.resolve("../src/druntime/import"),
+				cmdDir.resolve("../src/phobos"));
+		}
+		// another MacOSX layout
+		Path resolvedCmdPath = cmdDir.resolve("../share/dmd/bin/dmd");
+		if(resolvedCmdPath.toFile().exists()) {
+			Path resolvedCmdDir = resolvedCmdPath.getParent();
+			if(resolvedCmdDir.resolve("../src/druntime").toFile().exists()) {
+				return new CompilerInstall(resolvedCmdPath, ECompilerType.DMD, 
+					resolvedCmdDir.resolve("../src/druntime/import"),
+					resolvedCmdDir.resolve("../src/phobos"));
+			}
+		}
 		
 		if(cmdDir.resolve("../include/dlang/dmd").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 

@@ -68,6 +68,16 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			"include/d/dmd/druntime/import",
 			"include/d/dmd/phobos"
 		));
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve("DMD-macosx/share/dmd"), "bin/dmd", ECompilerType.DMD, list(
+			"src/druntime/import",
+			"src/phobos"
+		));
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve("DMD-macosx/share/dmd"), "../../bin/dmd", "bin/dmd", 
+			ECompilerType.DMD, list(
+			"src/druntime/import",
+			"src/phobos"
+		));
+		
 		
 		testDetectInstall(MOCK_GDC, "bin/gdc", ECompilerType.GDC, list(
 			"include/d2/4.5.2/"
@@ -95,9 +105,15 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 	
 	protected void testDetectInstall(Path installPath, String compilerPathStr, ECompilerType type, 
 			List<String> pathStrings) {
-		Path compilerPath = installPath.resolve(compilerPathStr);
+		testDetectInstall(installPath, compilerPathStr, compilerPathStr, type, pathStrings);
+	}
+	
+	protected void testDetectInstall(Path installPath, String compilerPathStr, String resolvedCompilerPathStr,
+			ECompilerType type, List<String> pathStrings) {
+		Path compilerPath = installPath.resolve(compilerPathStr).normalize();
 		CompilerInstall install = detector.detectInstallFromCompilerCommandPath(compilerPath);
-		checkInstall(install, compilerPath, type, installPath, pathStrings);
+		Path resolvedCompilerPath = installPath.resolve(resolvedCompilerPathStr).normalize();
+		checkInstall(install, resolvedCompilerPath, type, installPath, pathStrings);
 	}
 	
 	protected void checkInstall(CompilerInstall install, Path compilerPath, ECompilerType compilerType, 

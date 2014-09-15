@@ -7,6 +7,9 @@
   * Can now customize build console text colors.
   * Activate console on error message option.
  * Can now use Eclipse variables in DUB project options.
+ * Added: Now recognizes Mac OS X common DMD compiler layouts:
+   * $/bin/dmd -> $/src/druntime/import ; $/src/phobs 
+   * $/bin/dmd -> $/share/dmd/src/druntime/import ; $/share/dmd/src/phobos
 
 
 ### DDT 0.10.2

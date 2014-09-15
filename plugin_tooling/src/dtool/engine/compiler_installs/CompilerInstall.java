@@ -35,7 +35,7 @@ public class CompilerInstall {
 	}
 	
 	public CompilerInstall(Path compilerPath, ECompilerType compilerType, List<Path> librarySourceFolders) {
-		this.compilerPath = compilerPath;
+		this.compilerPath = compilerPath.normalize();
 		this.compilerType = compilerType;
 		this.librarySourceFolders = Collections.unmodifiableList(librarySourceFolders);
 		for (Path path : librarySourceFolders) {
