@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +34,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 
 
 public class DubProjectBuilder extends IncrementalProjectBuilder {
@@ -92,13 +90,13 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 		ExternalProcessResult processResult;
 		try {
 			processResult = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
-			
 		} catch (CoreException ce) {
-			if(ce.getCause() instanceof TimeoutException && monitor.isCanceled()) {
-				throw new OperationCanceledException();
+			if(!monitor.isCanceled()) {
+				DeeCore.logStatus(ce.getStatus());
 			}
-			DeeCore.logStatus(ce.getStatus());
-			throw ce;
+			
+			forgetLastBuiltState();
+			throw ce; // Note: if monitor is cancelled, exception will be ignored.
 		} finally {
 			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}

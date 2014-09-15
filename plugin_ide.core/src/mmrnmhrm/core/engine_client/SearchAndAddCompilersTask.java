@@ -49,7 +49,7 @@ public class SearchAndAddCompilersTask extends SearchPathEnvOperation {
 			task.searchForCompilers();
 			task.applyFoundInstalls();
 			
-			return LangCore.createStatus("ok");
+			return LangCore.createOkStatus("ok");
 		}
 	}
 	

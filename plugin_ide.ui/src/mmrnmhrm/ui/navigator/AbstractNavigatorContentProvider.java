@@ -106,7 +106,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		protected final IStatus run(IProgressMonitor monitor) {
 			//System.out.println(getRunningTimeMillis() + " :job#run");
 			runThrottledCode();
-			return DeeCore.createStatus("ok");
+			return DeeCore.createOkStatus("ok");
 		}
 		
 		public void markRequestFinished() {
