@@ -142,15 +142,15 @@
 		</editor>
 	</extension>
 	
-   <extension point="org.eclipse.ui.contexts">
-      <context
-            name="%LangEditContext.name"
-            description="%LangEditContext.description"
-            parentId="org.eclipse.dltk.ui.scriptEditorScope"
-            id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
-      </context>
-   </extension>
-   
+	<extension point="org.eclipse.ui.contexts">
+		<context
+			name="%LangEditContext.name"
+			description="%LangEditContext.description"
+			parentId="org.eclipse.dltk.ui.scriptEditorScope"
+			id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
+		</context>
+	</extension>
+	
    <extension
        id="DeeCodeCompletionProposalComputer"
        point="org.eclipse.dltk.ui.scriptCompletionProposalComputer">
@@ -194,24 +194,23 @@
            nature="org.dsource.ddt.ide.core.nature">
       </blockProvider>
    </extension>
-   
-   <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-      <target
-            id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
-            name="%hyperlinkDetector.target.name">
-         <context type="org.eclipse.ui.texteditor.ITextEditor">
-         </context>
-      </target>
-   </extension>
-   <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
-      <hyperlinkDetector
-            class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
-            id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
-            name="%hyperlinkDetector.name"
-            targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
-      </hyperlinkDetector>
-   </extension>
-   
+	
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+		<target 
+			id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
+			name="%hyperlinkDetector.target.name">
+		<context type="org.eclipse.ui.texteditor.ITextEditor" />
+		</target>
+	</extension>
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+			class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
+			id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
+			name="%hyperlinkDetector.name"
+			targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
+		</hyperlinkDetector>
+	</extension>
+	
    <!-- ============ other extensions ============= -->
    
    <extension

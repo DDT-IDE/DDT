@@ -59,11 +59,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 			throw DeeCore.createCoreException("Could not determine filesystem path from editor input", null); 
 		}
 		
-		try {
-			performLongRunningComputation();
-		} catch (InterruptedException e) {
-			return;
-		}
+		super.executeOperation();
 		
 		performOperation_handleResult();
 	}

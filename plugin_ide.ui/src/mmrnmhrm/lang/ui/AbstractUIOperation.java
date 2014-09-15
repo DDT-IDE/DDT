@@ -57,8 +57,13 @@ public abstract class AbstractUIOperation {
 		}
 	}
 	
-	public abstract void executeOperation() throws CoreException;
-	
+	public void executeOperation() throws CoreException {
+		try {
+			performLongRunningComputation();
+		} catch (InterruptedException e) {
+			return;
+		}
+	}
 	
 	protected void performLongRunningComputation() throws InterruptedException, CoreException {
 		if(Display.getCurrent() == null) {
