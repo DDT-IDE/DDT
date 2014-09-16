@@ -11,12 +11,14 @@
 package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.process.AbstractRunExternalProcessTask;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
@@ -25,6 +27,7 @@ import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.misc.ListenersHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 import org.eclipse.core.resources.IProject;
@@ -34,7 +37,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * Manages an executor agent to run external DUB commands
  */
-public class DubProcessManager {
+public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 	
 	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
@@ -47,22 +50,6 @@ public class DubProcessManager {
 	
 	/* ----------------- listeners ----------------- */
 	
-	public static interface IDubProcessListener {
-		
-		void handleDubOperationStarted(IDubOperation dubOperation);
-		
-	}
-	
-	protected final ListenerListHelper<IDubProcessListener> processListenersHelper = new ListenerListHelper<>();
-	
-	public void addDubProcessListener(IDubProcessListener dubProcessListener) {
-		processListenersHelper.addListener(dubProcessListener);
-	}
-	
-	public void removeDubProcessListener(IDubProcessListener dubProcessListener) {
-		processListenersHelper.removeListener(dubProcessListener);
-	}
-	
 	public static interface IDubOperation {
 		public IProject getProject();
 		public String getOperationName();
@@ -72,7 +59,7 @@ public class DubProcessManager {
 	}
 	
 	public void notifyOperationStarted(IDubOperation dubOperation) {
-		for(IDubProcessListener processListener : processListenersHelper.getListeners()) {
+		for(IDubProcessListener processListener : getListeners()) {
 			processListener.handleDubOperationStarted(dubOperation);
 		}
 	}
@@ -120,14 +107,16 @@ public class DubProcessManager {
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	
-	public class RunDubProcessOperation extends RunExternalProcessTask<IExternalProcessListener> 
+	public class RunDubProcessOperation extends AbstractRunExternalProcessTask<IExternalProcessListener> 
 		implements IDubOperation {
 		
 		protected final String operationName;
+		protected ListenersHelper<IExternalProcessListener> listenersHelper = new ListenersHelper<>();
 		
 		protected RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
 				IProgressMonitor cancelMonitor) {
-			super(pb, project, cancelMonitor, new ListenerListHelper<IExternalProcessListener>());
+			super(pb, project, cancelMonitor);
+			
 			this.operationName = operationName;
 		}
 		
@@ -148,8 +137,13 @@ public class DubProcessManager {
 		}
 		
 		@Override
+		protected List<IExternalProcessListener> getListeners() {
+			return listenersHelper.getListeners();
+		}
+		
+		@Override
 		public void addExternalProcessListener(IExternalProcessListener processListener) {
-			listenersList.addListener(processListener);
+			listenersHelper.addListener(processListener);
 		}
 		
 	}

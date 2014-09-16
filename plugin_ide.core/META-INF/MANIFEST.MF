@@ -20,6 +20,7 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.10.2,0.11.0)";visibilit
  org.eclipse.core.filesystem;bundle-version="1.4.0"
 Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
+ melnorme.lang.ide.core.operations,
  melnorme.lang.ide.core.utils,
  melnorme.lang.ide.core.utils.prefs,
  melnorme.lang.ide.core.utils.process,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.misc;
+package mmrnmhrm.core.engine_client;
 
-import java.util.List;
+import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
 
-
-public interface IListenerList<LISTENER> {
+public interface IDubProcessListener {
 	
-	public List<LISTENER> getListeners();
-	
-	public void removeListener(LISTENER listener);
-	
-	public void addListener(LISTENER listener);
+	void handleDubOperationStarted(IDubOperation dubOperation);
 	
 }

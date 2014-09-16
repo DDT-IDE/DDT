@@ -29,7 +29,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	protected void doCustomStart_finalStage() {
 		// Add process listener and start model manager. 
 		dubProcessListener = new DubCommandsConsoleListener();
-		DeeCore.getDubProcessManager().addDubProcessListener(dubProcessListener);
+		DeeCore.getDubProcessManager().addListener(dubProcessListener);
 		DeeCore.startModelManager();
 		
 		super.doCustomStart_finalStage();
@@ -37,7 +37,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected void doCustomStop(BundleContext context) {
-		DeeCore.getDubProcessManager().removeDubProcessListener(dubProcessListener);
+		DeeCore.getDubProcessManager().removeListener(dubProcessListener);
 	}
 	
 	/* --------  -------- */

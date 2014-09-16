@@ -52,8 +52,8 @@ public abstract class AbstractUIOperation {
 			UIOperationExceptionHandler.handle(ce, operationName, 
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName));
 		} catch (RuntimeException re) {
-			UIOperationExceptionHandler.handle(re, operationName,
-				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName));
+			UIOperationExceptionHandler.doHandleException(operationName, 
+				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 		}
 	}
 	

@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.PreferenceConstants2;
+import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
 import melnorme.lang.jdt.ui.JavaPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
 
@@ -138,22 +138,22 @@ public class HoverUtil {
 		String boolString;
 		boolean bool, bool2;
 		
-		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + PreferenceConstants2.EDITOR_BOLD_SUFFIX, null);
+		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + TextColoringConstants.EDITOR_BOLD_SUFFIX, null);
 		bool = convertToBool(boolString);
 		if (bool) {
 			buffer.append("font-weight: bold;"); //$NON-NLS-1$
 		}
 		
-		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, null);
+		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + TextColoringConstants.EDITOR_ITALIC_SUFFIX, null);
 		bool = convertToBool(boolString);
 		if (bool) {
 			buffer.append("font-style: italic;"); //$NON-NLS-1$
 		}
 		
-		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + PreferenceConstants2.EDITOR_UNDERLINE_SUFFIX, null);
+		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + TextColoringConstants.EDITOR_UNDERLINE_SUFFIX, null);
 		bool = convertToBool(boolString);
 		
-		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + PreferenceConstants2.EDITOR_STRIKETHROUGH_SUFFIX, null);
+		boolString = DeePluginPreferences.getPreference(partialPreferenceKey + TextColoringConstants.EDITOR_STRIKETHROUGH_SUFFIX, null);
 		bool2 = convertToBool(boolString);
 		
 		if (bool || bool2) {

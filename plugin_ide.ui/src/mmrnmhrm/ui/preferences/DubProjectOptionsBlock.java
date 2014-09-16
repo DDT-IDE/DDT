@@ -59,7 +59,7 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 		try {
 			DeeCorePreferences.DUB_BUILD_OPTIONS.set(project, dubBuildExtraOptions.getFieldValue());
 		} catch (BackingStoreException e) {
-			UIOperationExceptionHandler.handleException(e, "Error saving preferences.");
+			UIOperationExceptionHandler.handleException("Error saving preferences.", e);
 		}
 		return true;
 	}

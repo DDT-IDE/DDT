@@ -199,7 +199,7 @@
 		<target 
 			id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
 			name="%hyperlinkDetector.target.name">
-		<context type="org.eclipse.ui.texteditor.ITextEditor" />
+			<context type="org.eclipse.ui.texteditor.ITextEditor" />
 		</target>
 	</extension>
 	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">

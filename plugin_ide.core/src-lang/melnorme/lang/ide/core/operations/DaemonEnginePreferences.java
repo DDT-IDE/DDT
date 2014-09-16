@@ -8,17 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui;
+package melnorme.lang.ide.core.operations;
 
+import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
+public interface DaemonEnginePreferences {
 
-public interface PreferenceConstants_Actual {
-	
-	public static final String EDITOR_BOLD_SUFFIX = "_bold";
-	public static final String EDITOR_ITALIC_SUFFIX = "_italic";
-	public static final String EDITOR_STRIKETHROUGH_SUFFIX = "_strikethrough";
-	public static final String EDITOR_UNDERLINE_SUFFIX = "_underline";
-	
-	public static final String EDITOR_SEMANTIC_HIGHLIGHTING_ENABLED_SUFFIX = "_enabled";
-	
+	public static final BooleanPreference AUTO_START_SERVER =
+			new BooleanPreference("auto_start_daemon", true);
+	public static final StringPreference DAEMON_PATH =
+			new StringPreference("daemon_path", "");
+	public static final BooleanPreference DAEMON_CONSOLE_ENABLE =
+			new BooleanPreference("daemon_console_enable", true);
+			
 }

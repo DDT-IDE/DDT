@@ -12,8 +12,8 @@ package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.PreferenceConstants2;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -110,72 +110,72 @@ public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		//store.setDefault(PreferenceConstants.DDOC_SHOW_PARAMETER_TYPES, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT, new RGB(63, 127, 95));
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_COMMENT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT, new RGB(63, 127, 95));
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_COMMENT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT, new RGB(63, 95, 191));
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_MULTI_LINE_PLUS_DOC_COMMENT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT, new RGB(63, 127, 95));
-		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_COMMENT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT, new RGB(63, 95, 191));
-		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_SINGLE_LINE_DOC_COMMENT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_KEYWORD, new RGB(127, 0, 85));
-		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD + PreferenceConstants2.EDITOR_BOLD_SUFFIX, true);
-		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD + TextColoringConstants.EDITOR_BOLD_SUFFIX, true);
+		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_STRING, new RGB(42, 0, 255));
-		store.setDefault(IDeeDocColorConstants.JAVA_STRING + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_STRING + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_STRING + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_STRING + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_PRAGMA, new RGB(100, 100, 100));
-		store.setDefault(IDeeDocColorConstants.JAVA_PRAGMA + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_PRAGMA + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_PRAGMA + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_PRAGMA + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_DEFAULT, new RGB(0, 0, 0));
-		store.setDefault(IDeeDocColorConstants.JAVA_DEFAULT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_DEFAULT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_DEFAULT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_DEFAULT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_KEYWORD_RETURN, new RGB(127, 0, 85));
-		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD_RETURN + PreferenceConstants2.EDITOR_BOLD_SUFFIX, true);
-		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD_RETURN + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD_RETURN + TextColoringConstants.EDITOR_BOLD_SUFFIX, true);
+		store.setDefault(IDeeDocColorConstants.JAVA_KEYWORD_RETURN + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_SPECIAL_TOKEN, new RGB(100, 100, 100));
-		store.setDefault(IDeeDocColorConstants.JAVA_SPECIAL_TOKEN + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_SPECIAL_TOKEN + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, true);
+		store.setDefault(IDeeDocColorConstants.JAVA_SPECIAL_TOKEN + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_SPECIAL_TOKEN + TextColoringConstants.EDITOR_ITALIC_SUFFIX, true);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVA_OPERATOR, new RGB(0, 0, 0));
-		store.setDefault(IDeeDocColorConstants.JAVA_OPERATOR + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVA_OPERATOR + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_OPERATOR + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVA_OPERATOR + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.TASK_TAG, new RGB(127, 159, 191));
-		store.setDefault(IDeeDocColorConstants.TASK_TAG + PreferenceConstants2.EDITOR_BOLD_SUFFIX, true);
-		store.setDefault(IDeeDocColorConstants.TASK_TAG + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.TASK_TAG + TextColoringConstants.EDITOR_BOLD_SUFFIX, true);
+		store.setDefault(IDeeDocColorConstants.TASK_TAG + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVADOC_KEYWORD, new RGB(127, 159, 191));
-		store.setDefault(IDeeDocColorConstants.JAVADOC_KEYWORD + PreferenceConstants2.EDITOR_BOLD_SUFFIX, true);
-		store.setDefault(IDeeDocColorConstants.JAVADOC_KEYWORD + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_KEYWORD + TextColoringConstants.EDITOR_BOLD_SUFFIX, true);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_KEYWORD + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVADOC_TAG, new RGB(127, 127, 159));
-		store.setDefault(IDeeDocColorConstants.JAVADOC_TAG + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVADOC_TAG + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_TAG + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_TAG + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVADOC_LINK, new RGB(63, 63, 191));
-		store.setDefault(IDeeDocColorConstants.JAVADOC_LINK + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVADOC_LINK + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_LINK + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_LINK + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 		PreferenceConverter.setDefault(store, IDeeDocColorConstants.JAVADOC_DEFAULT, new RGB(63, 95, 191));
-		store.setDefault(IDeeDocColorConstants.JAVADOC_DEFAULT + PreferenceConstants2.EDITOR_BOLD_SUFFIX, false);
-		store.setDefault(IDeeDocColorConstants.JAVADOC_DEFAULT + PreferenceConstants2.EDITOR_ITALIC_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_DEFAULT + TextColoringConstants.EDITOR_BOLD_SUFFIX, false);
+		store.setDefault(IDeeDocColorConstants.JAVADOC_DEFAULT + TextColoringConstants.EDITOR_ITALIC_SUFFIX, false);
 		
 	}
 	

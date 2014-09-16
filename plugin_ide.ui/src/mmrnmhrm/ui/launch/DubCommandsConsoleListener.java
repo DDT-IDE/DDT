@@ -19,11 +19,12 @@ import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
-import mmrnmhrm.core.engine_client.DubProcessManager.IDubProcessListener;
+import mmrnmhrm.core.engine_client.IDubProcessListener;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
 public class DubCommandsConsoleListener extends AbstractToolsConsoleListener implements IDubProcessListener {
 	
@@ -84,6 +85,16 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 	protected void writeProcessDescription(ProcessBuilder pb, DubCommandsConsole console) throws IOException {
 		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
 		console.infoOut.write("@ " + pb.directory() +"\n");
+	}
+	
+	@Override
+	public void engineDaemonStarted(ProcessBuilder pb, ExternalProcessNotifyingHelper processHelper) {
+		// TODO Auto-generated method stub
+	}
+	
+	@Override
+	public void engineDaemonFailedToStart(CoreException ce) {
+		// TODO Auto-generated method stub
 	}
 	
 }

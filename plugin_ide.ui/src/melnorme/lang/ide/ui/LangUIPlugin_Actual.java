@@ -37,4 +37,6 @@ public final class LangUIPlugin_Actual {
 		return new DeeAutoEditStrategy(contentType, sourceViewer);
 	}
 	
+	public static final String DAEMON_TOOL_ConsoleName = "lang_daemon log";
+	
 }
