@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.ui.actions.AbstractEditorOperation;
+import mmrnmhrm.ui.actions.AbstractEditorOperationExt;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
@@ -69,7 +69,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		return null;
 	}
 	
-	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation {
+	public static class GetDDocHTMLViewOperation extends AbstractEditorOperationExt {
 		
 		protected final int offset;
 		protected String info;

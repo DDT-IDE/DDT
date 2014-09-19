@@ -2,13 +2,13 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.core.search.SourceModuleFinder;
-import mmrnmhrm.ui.actions.AbstractEditorOperation;
-import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
+import mmrnmhrm.ui.actions.AbstractEditorOperationExt;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
@@ -76,7 +76,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		
 	}
 	
-	protected class FindReferencesOperation extends AbstractEditorOperation {
+	protected class FindReferencesOperation extends AbstractEditorOperationExt {
 		
 		protected final int offset;
 		

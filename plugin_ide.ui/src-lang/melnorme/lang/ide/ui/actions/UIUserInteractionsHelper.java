@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.actions;
+package melnorme.lang.ide.ui.actions;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class UIUserInteractionsHelper {
 	
-	protected static boolean unitTestsMode = false;
+	public static boolean unitTestsMode = false;
 	
 	public UIUserInteractionsHelper() {
 		super();

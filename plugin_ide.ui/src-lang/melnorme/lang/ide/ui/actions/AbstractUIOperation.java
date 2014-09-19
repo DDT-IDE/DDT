@@ -8,17 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.lang.ui;
+package melnorme.lang.ide.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 
+import melnorme.lang.ide.core.LangCoreMessages;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.ui.DeeUI;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -86,7 +85,8 @@ public abstract class AbstractUIOperation {
 				}
 			});
 		} catch (InvocationTargetException e) {
-			new CoreException(DeeUI.createErrorStatus(DeeCoreMessages.LangCore_error, e.getTargetException()));
+			throw new CoreException(LangUIPlugin.createErrorStatus(
+				LangCoreMessages.LangCore_error, e.getTargetException()));
 		}
 	}
 	

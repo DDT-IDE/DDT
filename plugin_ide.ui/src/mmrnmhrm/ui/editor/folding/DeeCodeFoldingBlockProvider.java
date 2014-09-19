@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.editor.EditorUtil;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;

@@ -1,4 +1,4 @@
-package mmrnmhrm.lang.ui;
+package mmrnmhrm.ui.editor;
 
 
 

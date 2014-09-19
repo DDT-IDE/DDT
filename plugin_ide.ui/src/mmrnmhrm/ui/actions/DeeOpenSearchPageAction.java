@@ -1,6 +1,5 @@
 package mmrnmhrm.ui.actions;
 
-import mmrnmhrm.lang.ui.AbstractWorkbenchWindowActionDelegate;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.action.IAction;

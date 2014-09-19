@@ -1,7 +1,6 @@
 package mmrnmhrm.ui.actions;
 
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import mmrnmhrm.lang.ui.AbstractWorkbenchWindowActionDelegate;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorPart;

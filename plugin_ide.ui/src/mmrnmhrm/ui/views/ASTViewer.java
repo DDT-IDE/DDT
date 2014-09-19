@@ -6,10 +6,10 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.actions.OpenDefinitionHandler;
+import mmrnmhrm.ui.editor.EditorUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

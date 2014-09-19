@@ -1,9 +1,9 @@
 package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
+import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
-import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;

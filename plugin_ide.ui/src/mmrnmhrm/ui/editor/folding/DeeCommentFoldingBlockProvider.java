@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
-import mmrnmhrm.lang.ui.EditorUtil;
+import mmrnmhrm.ui.editor.EditorUtil;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 

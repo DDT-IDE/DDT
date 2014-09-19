@@ -31,7 +31,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
-public class OpenDefinitionOperation extends AbstractEditorOperation {
+public class OpenDefinitionOperation extends AbstractEditorOperationExt {
 	
 	protected static final String OPEN_DEFINITION_OPNAME = "Open Definition";
 	
