@@ -11,10 +11,10 @@
 package dtool.parser.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.SourceRange;
 
 import org.junit.Test;
 
-import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.AbstractLexer;
 import dtool.parser.common.LexElementProducer;

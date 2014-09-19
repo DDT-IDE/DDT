@@ -6,8 +6,8 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.SourceRange;
 
 public class AnnotatedSource {
 	

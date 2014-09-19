@@ -12,6 +12,7 @@ package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.NodeData.CreatedStatusNodeData;
 import dtool.ast.NodeData.ParsedNodeData;

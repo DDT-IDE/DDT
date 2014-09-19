@@ -16,9 +16,9 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.Comparator;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ISourceRange;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 

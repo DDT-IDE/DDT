@@ -18,9 +18,9 @@ import static melnorme.utilbox.core.CoreUtil.blindCast;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTNode;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionParameter;

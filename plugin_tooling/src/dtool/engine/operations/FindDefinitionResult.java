@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.List;
 
-import dtool.ast.SourceRange;
+import melnorme.lang.tooling.ast.SourceRange;
 
 public class FindDefinitionResult {
 	

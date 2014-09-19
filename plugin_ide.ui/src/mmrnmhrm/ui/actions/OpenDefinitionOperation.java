@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DeeCore;
@@ -32,7 +33,6 @@ import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.SourceRange;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 

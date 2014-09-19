@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 
-import dtool.ast.SourceRange;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.genie.GenieServer.GenieCommandException;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.StringUtil;
 
 public class FindDefinitionCommandHandler extends JsonCommandHandler {

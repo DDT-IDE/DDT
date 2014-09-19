@@ -14,9 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.SourceRange;
+
 import org.junit.Test;
 
-import dtool.ast.SourceRange;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {

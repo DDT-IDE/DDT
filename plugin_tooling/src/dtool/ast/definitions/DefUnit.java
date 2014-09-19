@@ -5,10 +5,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
-import dtool.ast.SourceRange;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.util.NodeUtil;
 import dtool.engine.modules.IModuleResolver;

@@ -1,4 +1,4 @@
-package dtool.ast;
+package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;

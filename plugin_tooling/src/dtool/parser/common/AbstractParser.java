@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
 import dtool.ast.NodeListView;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.DeeTokens;
 import dtool.parser.ParserError;

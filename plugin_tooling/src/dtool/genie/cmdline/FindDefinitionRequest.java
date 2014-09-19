@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dtool.ast.SourceRange;
+import melnorme.lang.tooling.ast.SourceRange;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.genie.GenieServer.GenieCommandException;

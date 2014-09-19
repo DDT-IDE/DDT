@@ -17,9 +17,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.NodeListView;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;

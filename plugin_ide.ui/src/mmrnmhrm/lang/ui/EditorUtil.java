@@ -6,6 +6,7 @@ package mmrnmhrm.lang.ui;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -29,7 +30,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
-import dtool.ast.SourceRange;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 

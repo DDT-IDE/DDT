@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser.common;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import dtool.ast.ISourceRepresentation;
-import dtool.ast.SourceRange;
 import dtool.parser.DeeTokens;
 
 public interface IToken extends ISourceRepresentation {

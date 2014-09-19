@@ -15,11 +15,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.SourceRange;
 import dtool.ast.references.RefModule;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;

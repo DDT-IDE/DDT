@@ -18,10 +18,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
-import dtool.ast.SourceRange;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationAliasThis;

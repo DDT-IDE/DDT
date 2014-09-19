@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
@@ -36,7 +37,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.SourceRange;
 import dtool.parser.DeeParserTester.NamedNodeElement;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.IToken;
