@@ -12,25 +12,20 @@ package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IReusableEditor;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.engine.operations.FindDefinitionResult;
@@ -40,16 +35,14 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 	
 	protected static final String OPEN_DEFINITION_OPNAME = "Open Definition";
 	
-	public static enum EOpenNewEditor { ALWAYS, TRY_REUSING_EXISTING_EDITORS, NEVER }
-	
-	protected final EOpenNewEditor openNewEditor;
+	protected final OpenNewEditorMode openNewEditorMode;
 	protected final int offset;
 	
 	protected FindDefinitionResult findDefResult;
 	
-	public OpenDefinitionOperation(ITextEditor editor, EOpenNewEditor openNewEditor, int offset) {
+	public OpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode, int offset) {
 		super(OPEN_DEFINITION_OPNAME, editor);
-		this.openNewEditor = openNewEditor;
+		this.openNewEditorMode = openNewEditorMode;
 		this.offset = offset;
 	}
 	
@@ -109,8 +102,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
 		}
 		
-		IWorkbenchPage page = window.getActivePage();
-		openEditor(page, newInput, openNewEditor, editor, sourceRange);
+		EditorUtils.openEditor(editor, DeeEditor.EDITOR_ID, newInput, sourceRange, openNewEditorMode);
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {
@@ -120,34 +112,6 @@ public class OpenDefinitionOperation extends AbstractEditorOperation {
 				return obj.extendedName;
 			}
 		});
-	}
-	
-	public void openEditor(IWorkbenchPage page, IEditorInput newInput, EOpenNewEditor openNewEditor, 
-			ITextEditor currentEditor, SourceRange sourceRange) throws CoreException {
-		if(sourceRange == null) {
-			return;
-		}
-		
-		if(openNewEditor == EOpenNewEditor.NEVER) {
-			if(currentEditor.getEditorInput().equals(newInput)) {
-				EditorUtil.setEditorSelection(currentEditor, sourceRange);
-			} else if(currentEditor instanceof IReusableEditor) {
-				IReusableEditor reusableEditor = (IReusableEditor) currentEditor;
-				reusableEditor.setInput(newInput);
-				EditorUtil.setEditorSelection(currentEditor, sourceRange);
-			} else {
-				openEditor(page, newInput, EOpenNewEditor.ALWAYS, currentEditor, sourceRange);
-			}
-		} else {
-			int matchFlags = openNewEditor == EOpenNewEditor.ALWAYS ? 
-				IWorkbenchPage.MATCH_NONE : IWorkbenchPage.MATCH_INPUT | IWorkbenchPage.MATCH_ID;
-			IEditorPart editor = page.openEditor(newInput, DeeEditor.EDITOR_ID, true, matchFlags);
-			ITextEditor targetEditor = tryCast(editor, ITextEditor.class);
-			if(targetEditor == null) {
-				throw new CoreException(DeeCore.createErrorStatus("Not a text editor"));
-			}
-			EditorUtil.setEditorSelection(targetEditor, sourceRange);
-		}
 	}
 	
 }

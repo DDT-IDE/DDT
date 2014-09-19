@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import mmrnmhrm.ui.actions.OpenDefinitionOperation;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.IRegion;
@@ -47,7 +47,7 @@ public class DeeElementHyperlink implements IHyperlink {
 	
 	@Override
 	public void open() {
-		new OpenDefinitionOperation(fTextEditor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS, offset).executeHandled();
+		new OpenDefinitionOperation(fTextEditor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS, offset).executeHandled();
 	}
 	
 	@Override

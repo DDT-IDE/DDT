@@ -12,8 +12,8 @@ package mmrnmhrm.ui.editor.text;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.jface.text.IRegion;
@@ -37,7 +37,7 @@ public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
 			return null;
 		
 		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
-		Path filePath = EditorUtil.getFilePathFromEditorInput(textEditor.getEditorInput());
+		Path filePath = EditorUtils.getFilePathFromEditorInput(textEditor.getEditorInput());
 		
 		ASTNode module = DToolClient.getDefaultModuleCache().getExistingParsedModuleNode(filePath);
 		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);

@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.AbstractUIOperation;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +42,7 @@ public abstract class AbstractEditorOperation extends AbstractUIOperation {
 		this.editor = editor;
 		this.window = editor.getSite().getWorkbenchWindow();
 		this.editorInput = editor.getEditorInput();
-		this.inputPath = EditorUtil.getFilePathFromEditorInput(editorInput);
+		this.inputPath = EditorUtils.getFilePathFromEditorInput(editorInput);
 		if(inputPath == null) {
 			DeeCore.logError("Could not determine filesystem path from editor input");
 		}

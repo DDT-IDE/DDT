@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.actions;
 
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import mmrnmhrm.lang.ui.AbstractWorkbenchWindowActionDelegate;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IEditorPart;
@@ -17,7 +17,7 @@ public class OpenDefinitionAction extends AbstractWorkbenchWindowActionDelegate 
 		}
 		
 		IEditorPart editor = window.getActivePage().getActiveEditor();
-		OpenDefinitionHandler.executeOperation((ITextEditor) editor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
+		OpenDefinitionHandler.executeOperation((ITextEditor) editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
 	}
 	
 }

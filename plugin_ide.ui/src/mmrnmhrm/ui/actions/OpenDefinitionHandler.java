@@ -10,9 +10,9 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
-import mmrnmhrm.lang.ui.EditorUtil;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,13 +30,13 @@ public class OpenDefinitionHandler extends AbstractHandler  {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
-		executeOperation(editor, EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
+		executeOperation(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
 		return null;
 	}
 	
 	
-	public static FindDefinitionResult executeOperation(ITextEditor srcEditor, EOpenNewEditor openNewEditor) {
-		TextSelection sel = EditorUtil.getSelection(srcEditor);
+	public static FindDefinitionResult executeOperation(ITextEditor srcEditor, OpenNewEditorMode openNewEditor) {
+		TextSelection sel = EditorUtils.getSelection(srcEditor);
 		return new OpenDefinitionOperation(srcEditor, openNewEditor, sel.getOffset()).executeWithResult();
 	}
 	

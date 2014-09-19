@@ -2,11 +2,11 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.core.search.SourceModuleFinder;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.actions.AbstractEditorOperation;
 import mmrnmhrm.ui.actions.UIUserInteractionsHelper;
 
@@ -69,7 +69,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 	
 	@Override
 	public void run() {
-		TextSelection sel = EditorUtil.getSelection(deeEditor);
+		TextSelection sel = EditorUtils.getSelection(deeEditor);
 		final int offset = sel.getOffset();
 		
 		new FindReferencesOperation(offset).executeHandled();

@@ -12,14 +12,14 @@
 package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.tests.SampleNonDeeProject;
 import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.resources.IFile;
@@ -151,9 +151,9 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
 			throws CoreException {
-		EditorUtil.setEditorSelection(srcEditor, offset, 0);
+		EditorUtils.setEditorSelection(srcEditor, offset, 0);
 		FindDefinitionResult opResult = OpenDefinitionHandler.executeOperation(srcEditor, 
-			EOpenNewEditor.TRY_REUSING_EXISTING_EDITORS);
+			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
 		assertTrue(errorMessageContains == null || opResult.errorMessage.contains(errorMessageContains));
 		
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);

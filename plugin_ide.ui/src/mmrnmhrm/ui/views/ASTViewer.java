@@ -2,12 +2,14 @@ package mmrnmhrm.ui.views;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.lang.ui.EditorUtil;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.actions.OpenDefinitionHandler;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation.EOpenNewEditor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -113,7 +115,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		hookContextMenu();
 		
 		viewer.setInput(this);
-		selectionChanged(EditorUtil.getActiveEditor(), null);
+		selectionChanged(WorkbenchUtils.getActiveEditor(), null);
 	}
 	
 	@Override
@@ -148,7 +150,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		} else {
 			fEditor = editor;
 			
-			inputFilePath = EditorUtil.getFilePathFromEditorInput(fEditor.getEditorInput());
+			inputFilePath = EditorUtils.getFilePathFromEditorInput(fEditor.getEditorInput());
 			
 			if(inputFilePath != null) {
 				fDocument = fEditor.getDocumentProvider().getDocument(editor.getEditorInput());
@@ -202,7 +204,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 		makeVisible(viewer.getControl());
 		
-		int offset = EditorUtil.getSelection(fEditor).getOffset();
+		int offset = EditorUtils.getSelection(fEditor).getOffset();
 		setContentDescription("AST, sel: " + offset);
 		
 		//viewer.getControl().setRedraw(false);
@@ -310,7 +312,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		OpenDefinitionHandler.executeOperation(fEditor, EOpenNewEditor.NEVER);
+		OpenDefinitionHandler.executeOperation(fEditor, OpenNewEditorMode.NEVER);
 	}
 	
 	@Override
