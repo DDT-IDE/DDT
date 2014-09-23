@@ -10,6 +10,8 @@ import mmrnmhrm.core.search.DeeDefPatternLocator;
 import mmrnmhrm.core.search.SourceModuleFinder;
 import mmrnmhrm.ui.actions.AbstractEditorOperationExt;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
@@ -72,7 +74,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		TextSelection sel = EditorUtils.getSelection(deeEditor);
 		final int offset = sel.getOffset();
 		
-		new FindReferencesOperation(offset).executeHandled();
+		new FindReferencesOperation(offset).executeAndHandle();
 		
 	}
 	
@@ -89,7 +91,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 		
 		@Override
-		protected void performLongRunningComputation_do() {
+		protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
 			ModuleParseCache clientModuleCache = DToolClient.getDefault().getClientModuleCache();
 			try {
 				clientModuleCache.setWorkingCopyAndGetParsedModule(inputPath, doc.get());

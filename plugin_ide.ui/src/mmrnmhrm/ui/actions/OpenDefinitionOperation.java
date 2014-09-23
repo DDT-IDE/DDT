@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -47,7 +48,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperationExt {
 	}
 	
 	public FindDefinitionResult executeWithResult() {
-		executeHandled();
+		executeAndHandle();
 		return findDefResult;
 	}
 	
@@ -83,22 +84,20 @@ public class OpenDefinitionOperation extends AbstractEditorOperationExt {
 					+ "symbol \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
 			return;
 		}
-		SourceRange sourceRange = fdResultEntry.sourceRange;
+		final SourceRange sourceRange = fdResultEntry.sourceRange;
 		if(sourceRange == null) {
 			String msg = "Symbol " + fdResultEntry.extendedName + " has no source range info!";
-			handleSystemError(msg);
-			return;
+			throw LangCore.createCoreException(msg, null);
 		}
 		
 		Path newEditorFilePath = fdResultEntry.modulePath;
+		if(newEditorFilePath == null) {
+			throw LangCore.createCoreException("no file path provided", null);
+		}
 		IEditorInput newInput;
 		if(areEqual(newEditorFilePath, inputPath)) {
 			newInput = editor.getEditorInput();
 		} else {
-			if(newEditorFilePath == null) {
-				handleSystemError("no file path provided");
-				return;
-			}
 			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
 		}
 		

@@ -44,8 +44,14 @@ public class UIOperationExceptionHandler {
 		doHandleException(title, errorMessage, exception);
 	}
 	
-	public static void doHandleException(String title, String errorMessage, Throwable exception) {
-		LangCore.logError(errorMessage, exception);
+	public static void doHandleException(String title, String dialogMessage, Throwable exception) {
+		handleError(true, title, dialogMessage, exception);
+	}
+	
+	public static void handleError(boolean logError, String title, String dialogMessage, Throwable exception) {
+		if(logError) {
+			LangCore.logError(dialogMessage, exception);
+		}
 		
 		Shell shell = WorkbenchUtils.getActiveWorkbenchShell();
 		
@@ -53,8 +59,9 @@ public class UIOperationExceptionHandler {
 		if(reasonMessage == null) {
 			reasonMessage = exception.getClass().getSimpleName();
 		}
+		
 		Status status = LangCore.createErrorStatus(reasonMessage, exception);
-		ErrorDialog.openError(shell, title, errorMessage, status);
+		ErrorDialog.openError(shell, title, dialogMessage, status);
 	}
 	
 }

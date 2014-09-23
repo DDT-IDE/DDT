@@ -139,9 +139,6 @@ public class EditorUtils {
 
 	public static void openEditor(ITextEditor currentEditor, String editorId, 
 			IEditorInput newInput, SourceRange sourceRange, OpenNewEditorMode openNewEditor) throws CoreException {
-		if(sourceRange == null) {
-			return;
-		}
 		
 		IWorkbenchPage page = currentEditor.getEditorSite().getWorkbenchWindow().getActivePage();
 		

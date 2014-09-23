@@ -15,6 +15,7 @@ import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -29,16 +30,16 @@ public abstract class AbstractEditorOperationExt extends AbstractEditorOperation
 	}
 	
 	@Override
-	public void executeOperation() throws CoreException {
+	protected void prepareOperation() throws CoreException {
+		super.prepareOperation();
+		
 		if(sourceModule == null) {
 			throw new CoreException(DeeUI.createErrorStatus("No valid editor input in current editor.", null));
 		}
-		
-		super.executeOperation();
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do() {
+	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
 		try {
 			DToolClient.getDefault().updateWorkingCopyIfInconsistent(inputPath, doc.get(), sourceModule);
 			performLongRunningComputation_withUpdatedServerWorkingCopy();
