@@ -142,7 +142,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 				try {
 					activePage.openEditor(new FileEditorInput(file), EditorsUI.DEFAULT_TEXT_EDITOR_ID);
 				} catch (PartInitException e) {
-					DeeCore.logError(e);
+					DeeCore.logInternalError(e);
 				}
 			}
 			return fBuildSettingsPage.performOk();
@@ -162,7 +162,7 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 		try {
 			getContainer().run(true, true, op);
 		} catch (InvocationTargetException e) {
-			DeeCore.logError(e);
+			DeeCore.logError("Error removing implicit project", e);
 		} catch (InterruptedException e) {
 			// cancel pressed
 		}

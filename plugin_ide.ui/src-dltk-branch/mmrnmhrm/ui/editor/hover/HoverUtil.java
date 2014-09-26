@@ -60,7 +60,7 @@ public class HoverUtil {
 				}
 				return buffer.toString();
 			} catch (IOException ex) {
-				JavaPlugin.log(ex);
+				JavaPlugin.logInternalError(ex);
 			}
 		}
 		return null;

@@ -85,7 +85,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 				deeMatchLocator.addMatch(definition, PatternLocator.ACCURATE_MATCH, sourceModule);
 			}
 		} catch (ModelException e) {
-			DeeCore.logError(e);
+			DeeCore.logStatus(e);
 			return;
 		}
 		

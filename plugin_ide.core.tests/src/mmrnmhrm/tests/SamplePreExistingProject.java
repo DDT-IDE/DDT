@@ -2,7 +2,6 @@ package mmrnmhrm.tests;
 
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.core.ExceptionAdapter;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
@@ -37,8 +36,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 				project = sampleDeeProj.getProject();
 				DeeCoreTestResources.createSrcFolderFromCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
-				DeeCore.logError(e);
-				ExceptionAdapter.unchecked(e);
+				DeeCore.logInternalError(e);
 			}
 			// And throw up, to force restarting the unit tests
 			if(REQUIRE_PREEXISTING_PROJ)

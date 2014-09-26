@@ -56,9 +56,9 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		GetDDocHTMLViewOperation ddocOp = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
 		try {
 			ddocOp.executeOperation();
-		} catch (CoreException e) {
-			DeeCore.logError(e);
-			return TextUI.convertoToHTML("Error: " + e.getMessage() + " " + e.getCause());					
+		} catch (CoreException ce) {
+			DeeCore.logStatus(ce);
+			return TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());					
 		}
 		String info = ddocOp.info;
 		

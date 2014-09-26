@@ -209,7 +209,7 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 			try {
 				report(match);
 			} catch (CoreException e) {
-				DeeCore.logError(e);
+				DeeCore.logStatus(e);
 			}
 		}
 	}

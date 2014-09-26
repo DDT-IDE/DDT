@@ -48,7 +48,7 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 			try {
 				defDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
 			} catch (ModelException e) {
-				DeeCore.logError(e);
+				DeeCore.logStatus(e);
 				return DeeImages.getIDEInternalErrorImageDescriptor();
 			}
 		}

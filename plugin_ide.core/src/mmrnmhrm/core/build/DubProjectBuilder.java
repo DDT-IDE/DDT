@@ -64,7 +64,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 				marker.delete();
 			}
 		} catch (CoreException ce) {
-			DeeCore.logError(ce);
+			DeeCore.logStatus(ce);
 		}
 	}
 	
@@ -155,7 +155,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			try {
 				processErrorLine(file, lineStr, errorMsg);
 			} catch (CoreException e) {
-				DeeCore.logError(e);
+				DeeCore.logStatus(e);
 				// ignore, continue
 			}
 		}

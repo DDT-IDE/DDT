@@ -127,7 +127,7 @@ public class WorkspaceModelManager {
 		try {
 			modelAgent.awaitTermination();
 		} catch (InterruptedException e) {
-			DeeCore.logError(e);
+			DeeCore.logInternalError(e);
 		}
 	}
 	
@@ -148,8 +148,8 @@ public class WorkspaceModelManager {
 					initializeProjectsInfo(monitor);
 				}
 			}, null);
-		} catch (CoreException e) {
-			DeeCore.logError(e);
+		} catch (CoreException ce) {
+			DeeCore.logStatus(ce);
 			// This really should not happen, but still try to recover by registering listener.
 			EclipseUtils.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		}
@@ -312,7 +312,7 @@ public class WorkspaceModelManager {
 		}
 		
 		protected void logInternalError(CoreException ce) {
-			DeeCore.logError(ce);
+			DeeCore.logInternalError(ce);
 		}
 		
 	}
