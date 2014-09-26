@@ -309,27 +309,28 @@
    </extension>
    
    
-   <!-- ============ commands/actions ============= -->
-   <extension
-         point="org.eclipse.ui.commands">
-      <category
-            description="%LangCommandCategory.description"
-            id="org.dsource.ddt.ide.ui.commands.category1"
-            name="%LangCommandCategory.name">
-      </category>
-      <command
-       categoryId="org.dsource.ddt.ide.ui.commands.category1"
-       description="%OpenDefinitionAction.tooltip"
-       id="org.dsource.ddt.ide.ui.commands.openDefinition"
-       name="%OpenDefinitionAction.name">
-      </command>
-      <command
-       categoryId="org.dsource.ddt.ide.ui.commands.category1"
-       defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
-       description="%OpenTypeAction.tooltip"
-       id="org.dsource.ddt.ide.ui.commands.openDeeType"
-       name="%OpenTypeAction.name">
-      </command>
+	<!-- ============ commands/actions ============= -->
+	<extension point="org.eclipse.ui.commands">
+		<category
+			description="%LangCommandCategory.description"
+			id="org.dsource.ddt.ide.ui.commands.category1"
+			name="%LangCommandCategory.name">
+		</category>
+		
+		<command
+			categoryId="org.dsource.ddt.ide.ui.commands.category1"
+			description="%OpenDefinitionAction.tooltip"
+			id="org.dsource.ddt.ide.ui.commands.openDefinition"
+			name="%OpenDefinitionAction.name">
+		</command>
+		
+		<command
+			categoryId="org.dsource.ddt.ide.ui.commands.category1"
+			defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
+			description="%OpenTypeAction.tooltip"
+			id="org.dsource.ddt.ide.ui.commands.openDeeType"
+			name="%OpenTypeAction.name">
+		</command>
 
       <command
        categoryId="org.dsource.ddt.ide.ui.commands.category1"
@@ -355,15 +356,15 @@
 -->
    </extension>
    
-   <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F3">
-      </key>
-      <key
+	<extension point="org.eclipse.ui.bindings">
+		<key
+			commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
+			contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="F3">
+		</key>
+		
+		<key
             commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
