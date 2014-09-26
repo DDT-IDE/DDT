@@ -30,7 +30,6 @@ public class DeeUIPlugin extends LangUIPlugin {
 		// Add process listener and start model manager. 
 		dubProcessListener = new DubCommandsConsoleListener();
 		DeeCore.getDubProcessManager().addListener(dubProcessListener);
-		DeeCore.startModelManager();
 		
 		super.doCustomStart_finalStage();
 	}

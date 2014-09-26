@@ -117,7 +117,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	private static void initDubRepositoriesPath() {
 		DubDescribeParserTest.initDubRepositoriesPath();
 		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
-		DeeCore.startModelManager();
+		DeeCore.getInstance().doInitializeAfterUIStart();
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override

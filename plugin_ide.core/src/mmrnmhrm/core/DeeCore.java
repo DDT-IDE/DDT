@@ -46,15 +46,11 @@ public class DeeCore extends LangCore {
 	@Override
 	protected void doCustomStart(BundleContext context) {
 		dtoolClient = DToolClient.initializeNew();
-		
-		// Note: the core plugin does not start the WorkspaceModelManager... it is the responsiblity of
-		// the Dee UI plugin (or some other "application" code) to start it, 
-		// so that such code can register listeners before model changes or DUB process events occur.
-		//startDefaultManager();
 	}
 	
-	public static void startModelManager() {
-		modelManager.startManager();
+	@Override
+	public void doInitializeAfterUIStart() {
+		modelManager.startManager(); // Start this after UI, to allow UI listener to register.
 	}
 	
 	@Override
