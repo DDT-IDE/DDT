@@ -154,8 +154,8 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
 			throws CoreException {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
-		FindDefinitionResult opResult = new OpenDefinitionHandler().executeOperation(srcEditor, 
-			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+		FindDefinitionResult opResult = new DeeOpenDefinitionHandler().createOperation(srcEditor, 
+			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeWithResult();
 		assertTrue(errorMessageContains == null || opResult.errorMessage.contains(errorMessageContains));
 		
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);

@@ -12,7 +12,7 @@ package mmrnmhrm.ui.editor.text;
 
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.editor.LangHyperlinkDetector;
-import mmrnmhrm.ui.actions.OpenDefinitionOperation;
+import mmrnmhrm.ui.actions.DeeOpenDefinitionOperation;
 
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -33,7 +33,7 @@ public class DeeHyperlinkDetector extends LangHyperlinkDetector {
 		
 		@Override
 		public void open() {
-			new OpenDefinitionOperation(textEditor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS, offset)
+			new DeeOpenDefinitionOperation(textEditor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS, offset)
 				.executeAndHandle();
 		}
 		

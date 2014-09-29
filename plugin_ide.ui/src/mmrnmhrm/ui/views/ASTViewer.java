@@ -8,7 +8,7 @@ import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.actions.OpenDefinitionHandler;
+import mmrnmhrm.ui.actions.DeeOpenDefinitionHandler;
 import mmrnmhrm.ui.editor.EditorUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -312,7 +312,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		new OpenDefinitionHandler().executeOperation(fEditor, OpenNewEditorMode.NEVER);
+		new DeeOpenDefinitionHandler().createOperation(fEditor, OpenNewEditorMode.NEVER).executeAndHandle();
 	}
 	
 	@Override

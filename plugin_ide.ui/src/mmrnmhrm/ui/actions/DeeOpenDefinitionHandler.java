@@ -10,31 +10,33 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
-import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.actions.AbstractOpenDefinitionHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.tooling.ast.SourceRange;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.engine.operations.FindDefinitionResult;
-
-public class OpenDefinitionHandler extends AbstractHandler  {
+public class DeeOpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
-		executeOperation(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+		runOperation(editor);
 		return null;
 	}
 	
+	@Override
+	public DeeOpenDefinitionOperation createOperation(ITextEditor editor, OpenNewEditorMode newEditorMode) {
+		return (DeeOpenDefinitionOperation) super.createOperation(editor, newEditorMode);
+	}
 	
-	public FindDefinitionResult executeOperation(ITextEditor srcEditor, OpenNewEditorMode openNewEditor) {
-		TextSelection sel = EditorUtils.getSelection(srcEditor);
-		return new OpenDefinitionOperation(srcEditor, openNewEditor, sel.getOffset()).executeWithResult();
+	@Override
+	public DeeOpenDefinitionOperation createOperation(ITextEditor editor, SourceRange range,
+			OpenNewEditorMode newEditorMode) {
+		return new DeeOpenDefinitionOperation(editor, newEditorMode, range.getOffset());
 	}
 	
 }

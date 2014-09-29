@@ -32,7 +32,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
-public class OpenDefinitionOperation extends AbstractEditorOperationExt {
+public class DeeOpenDefinitionOperation extends AbstractEditorOperationExt {
 	
 	protected static final String OPEN_DEFINITION_OPNAME = "Open Definition";
 	
@@ -41,7 +41,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperationExt {
 	
 	protected FindDefinitionResult findDefResult;
 	
-	public OpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode, int offset) {
+	public DeeOpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode, int offset) {
 		super(OPEN_DEFINITION_OPNAME, editor);
 		this.openNewEditorMode = openNewEditorMode;
 		this.offset = offset;
