@@ -66,7 +66,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		if(node == null) {
 			return new FindDefinitionResult("No node found at offset: " + offset);
 		}
-		assertEquals(node.getModuleNode().compilationUnitPath, filePath); /*BUG here normalization */
+		assertEquals(node.getModuleNode().compilationUnitPath, filePath); /*FIXME: BUG here normalization */
 		
 		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {
 			

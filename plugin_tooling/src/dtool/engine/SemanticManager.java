@@ -230,7 +230,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		BundleResolution semanticResolution = info.getSemanticResolution();
 		if(info.checkIsResolutionStale() || 
 			(compilerPath != null && !areEqual(semanticResolution.getCompilerPath(), compilerPath))) {
-			/*BUG here*/
+			/*FIXME: BUG here*/
 			return updateSemanticResolutionEntry(info, compilerPath);
 		}
 		return semanticResolution;
