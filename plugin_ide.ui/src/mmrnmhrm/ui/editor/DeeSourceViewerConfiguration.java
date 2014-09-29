@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -22,7 +23,6 @@ import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
-import mmrnmhrm.ui.editor.text.DeeHyperlinkDetector;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 import mmrnmhrm.ui.text.DeePartitions;
@@ -175,7 +175,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	@Override 
 	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
 		Map<String, ITextEditor> targets = CoreUtil.downCast(super.getHyperlinkDetectorTargets(sourceViewer));
-		targets.put(DeeHyperlinkDetector.DEE_EDITOR_TARGET, getEditor()); 
+		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, getEditor()); 
 		return targets;
 	}
 	

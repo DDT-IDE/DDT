@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper.IProcessOutputListener;
 
-public class DaemonTool_ConsoleListener implements IProcessOutputListener {
+public class ConsoleOuputProcessListener implements IProcessOutputListener {
 	
 	public static DaemonToolMessageConsole getConsole() {
 		return DaemonToolMessageConsole.getConsole();

@@ -10,43 +10,37 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import java.nio.file.Path;
-
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.ui.DeeUIPlugin;
+import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.LangHyperlinkDetector;
+import mmrnmhrm.ui.actions.OpenDefinitionOperation;
 
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
-import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
-import dtool.ast.references.NamedReference;
-
-public class DeeHyperlinkDetector extends AbstractHyperlinkDetector {
-	
-	public static final String DEE_EDITOR_TARGET = DeeUIPlugin.PLUGIN_ID + ".texteditor.deeCodeTarget";
+public class DeeHyperlinkDetector extends LangHyperlinkDetector {
 	
 	@Override
-	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks) {
-		if (region == null)
-			return null;
+	protected AbstractLangElementHyperlink createHyperlink(IRegion region, ITextEditor textEditor, 
+			IRegion elemRegion) {
+		return new DeeElementHyperlink(region.getOffset(), region, textEditor);
+	}
+	
+	public class DeeElementHyperlink extends AbstractLangElementHyperlink {
 		
-		ITextEditor textEditor= (ITextEditor) getAdapter(ITextEditor.class);
-		Path filePath = EditorUtils.getFilePathFromEditorInput(textEditor.getEditorInput());
+		public DeeElementHyperlink(int offset, IRegion region, ITextEditor textEditor) {
+			super(offset, region, textEditor);
+		}
 		
-		ASTNode module = DToolClient.getDefaultModuleCache().getExistingParsedModuleNode(filePath);
-		ASTNode selNode = ASTNodeFinder.findElement(module, region.getOffset(), false);
-		if(!(selNode instanceof NamedReference))
-			return null;
+		@Override
+		public void open() {
+			new OpenDefinitionOperation(textEditor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS, offset)
+				.executeAndHandle();
+		}
 		
-		IRegion elemRegion = new Region(selNode.getOffset(), selNode.getLength());
-
-		return new IHyperlink[] { new DeeElementHyperlink(region.getOffset(), elemRegion, textEditor) };
+		@Override
+		public String getHyperlinkText() {
+			return "Go to D element definition";
+		}
 	}
 	
 }

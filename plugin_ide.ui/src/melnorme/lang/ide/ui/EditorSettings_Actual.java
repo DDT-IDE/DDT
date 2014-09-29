@@ -10,8 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+
 public class EditorSettings_Actual {
 	
+	public static final String EDITOR_ID = "org.dsource.ddt.ide.ui.editors.DeeEditor";
+	public static final String EDITOR_CONTEXT_ID = "org.dsource.ddt.ide.ui.contexts.DeeEditor";
+	
 	public static final String EDITOR_CODE_TARGET = "org.dsource.ddt.ide.ui.texteditor.deeCodeTarget";
+	
+	/* ----------------- actions ----------------- */
+	
+	public static final String COMMAND_OpenDef_ID = "org.dsource.ddt.ide.ui.commands.openDefinition";
 	
 }

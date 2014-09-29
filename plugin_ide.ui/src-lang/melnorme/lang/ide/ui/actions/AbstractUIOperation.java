@@ -53,7 +53,7 @@ public abstract class AbstractUIOperation {
 			UIOperationExceptionHandler.handleOperationStatus(
 				MessageFormat.format(MSG_ERROR_EXECUTING_OPERATION, operationName), ce);
 		} catch (RuntimeException re) {
-			UIOperationExceptionHandler.handleError(true,  
+			UIOperationExceptionHandler.handleError(
 				MessageFormat.format(MSG_INTERNAL_ERROR_EXECUTING_OPERATION, operationName), re);
 		}
 	}

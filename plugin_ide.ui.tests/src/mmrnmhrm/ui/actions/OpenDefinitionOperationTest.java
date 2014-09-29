@@ -12,6 +12,7 @@
 package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -62,7 +63,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		file = project.getFile(path);
 		assertTrue(file.exists());
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+		editor = IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 		srcEditor = (ITextEditor) editor;
 	}
 	
@@ -153,7 +154,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
 			throws CoreException {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
-		FindDefinitionResult opResult = OpenDefinitionHandler.executeOperation(srcEditor, 
+		FindDefinitionResult opResult = new OpenDefinitionHandler().executeOperation(srcEditor, 
 			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
 		assertTrue(errorMessageContains == null || opResult.errorMessage.contains(errorMessageContains));
 		

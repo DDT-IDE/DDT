@@ -11,9 +11,9 @@
 package mmrnmhrm.ui;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.tests.CommonUITest;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
@@ -27,7 +27,7 @@ public class CommonDeeUITest extends CommonUITest {
 	public static ScriptEditor openDeeEditorForFile(IFile file) {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		try {
-			ScriptEditor editor = (ScriptEditor) IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+			ScriptEditor editor = (ScriptEditor) IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 			assertTrue(editor.getScriptSourceViewer() != null);
 			return editor;
 		} catch(PartInitException e) {

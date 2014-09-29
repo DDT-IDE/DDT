@@ -8,10 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.actions;
+package melnorme.lang.ide.ui.actions;
+
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.tooling.ast.SourceRange;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -20,21 +21,23 @@ import org.eclipse.jface.text.TextSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.engine.operations.FindDefinitionResult;
-
-public class OpenDefinitionHandler extends AbstractHandler  {
+public abstract class AbstractOpenDefinitionHandler extends AbstractHandler {
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
-		executeOperation(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+		if(editor == null) {
+			throw new ExecutionException("Internal error: No editor for action");
+		}
+		
+		TextSelection sel = EditorUtils.getSelection(editor);
+		SourceRange range = new SourceRange(sel.getOffset(), sel.getLength());
+		
+		createOperation(editor, range).executeAndHandle();
+		
 		return null;
 	}
 	
-	
-	public FindDefinitionResult executeOperation(ITextEditor srcEditor, OpenNewEditorMode openNewEditor) {
-		TextSelection sel = EditorUtils.getSelection(srcEditor);
-		return new OpenDefinitionOperation(srcEditor, openNewEditor, sel.getOffset()).executeWithResult();
-	}
+	public abstract AbstractOpenElementOperation createOperation(ITextEditor editor, SourceRange range);
 	
 }

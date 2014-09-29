@@ -17,13 +17,13 @@ import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
@@ -101,7 +101,7 @@ public class OpenDefinitionOperation extends AbstractEditorOperationExt {
 			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
 		}
 		
-		EditorUtils.openEditor(editor, DeeEditor.EDITOR_ID, newInput, sourceRange, openNewEditorMode);
+		EditorUtils.openEditor(editor, EditorSettings_Actual.EDITOR_ID, newInput, sourceRange, openNewEditorMode);
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {

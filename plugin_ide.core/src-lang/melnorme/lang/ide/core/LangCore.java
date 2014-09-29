@@ -64,6 +64,11 @@ public abstract class LangCore extends Plugin {
 		return createStatus(IStatus.OK, message, null);
 	}
 	
+	/** Creates an Info status with given message. */
+	public static StatusExt createInfoStatus(String message) {
+		return createStatus(IStatus.INFO, message, null);
+	}
+	
 	/** Creates a status describing an error in this plugin, with given message. */
 	public static StatusExt createErrorStatus(String message) {
 		return createErrorStatus(message, null);
@@ -88,7 +93,7 @@ public abstract class LangCore extends Plugin {
 			this.plugin = plugin;
 		}
 		
-		protected void logInPlugin() {
+		public void logInPlugin() {
 			plugin.getLog().log(this);
 		}
 	}

@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.CommonDeeUITest;
@@ -37,7 +38,7 @@ public class DeeEditorTest extends CommonDeeUITest {
 		IFile file = SampleMainProject.sampleBigFile;
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+		IEditorPart editor = IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 		assertTrue(editor instanceof DeeEditor);
 		
 		page.showView("org.eclipse.ui.views.ContentOutline");
@@ -49,7 +50,7 @@ public class DeeEditorTest extends CommonDeeUITest {
 		IFile file = SampleMainProject.sampleOutOfModelFile;
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+		IEditorPart editor = IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 		assertTrue(editor instanceof DeeEditor);
 		
 		page.showView("org.eclipse.ui.views.ContentOutline");
@@ -60,7 +61,7 @@ public class DeeEditorTest extends CommonDeeUITest {
 	public void testDeeEditor3() throws CoreException {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		IFile file = SampleMainProject.sampleNonExistantFile;
-		IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+		IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 		logErrorListener.reset();
 	}
 	

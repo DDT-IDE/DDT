@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
@@ -52,7 +52,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	@Override
 	public String getEditorId(Object inputElement) {
-		return DeeEditor.EDITOR_ID;
+		return EditorSettings_Actual.EDITOR_ID;
 	}
 	
 	@Override

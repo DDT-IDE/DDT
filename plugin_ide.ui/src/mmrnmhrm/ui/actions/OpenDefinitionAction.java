@@ -16,7 +16,8 @@ public class OpenDefinitionAction extends AbstractWorkbenchWindowActionDelegate 
 		}
 		
 		IEditorPart editor = window.getActivePage().getActiveEditor();
-		OpenDefinitionHandler.executeOperation((ITextEditor) editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+		ITextEditor textEditor = (ITextEditor) editor;
+		new OpenDefinitionHandler().executeOperation(textEditor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
 	}
 	
 }

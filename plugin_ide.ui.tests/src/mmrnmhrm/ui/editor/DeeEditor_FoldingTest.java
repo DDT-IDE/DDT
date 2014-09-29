@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.editor;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
@@ -22,7 +23,7 @@ public class DeeEditor_FoldingTest extends CommonDeeUITest {
 		IFile file = SampleMainProject.getFile(ITestResourcesConstants.TR_SAMPLE_SRC1 + "/testFolding.d");
 		
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
-		IEditorPart editor = IDE.openEditor(page, file, DeeEditor.EDITOR_ID);
+		IEditorPart editor = IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 		assertTrue(editor instanceof DeeEditor);
 	}
 	
