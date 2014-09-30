@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 
@@ -41,11 +42,9 @@ public interface LangAutoEditPreferenceConstants_Actual {
 	class Helper {
 
 		public static void initDefaults() {
-			// This will ensure default value is initialized 
-			// -- because DLTK may use this prefs without accessing this class first, and thus before default init. 
-			AE_CLOSE_STRINGS.get();
-			AE_CLOSE_BRACKETS.get();
-			AE_CLOSE_BRACES.get();
+			// Ensure all default values are initialized, in case prefs are accessed by means other
+			// than by referencing the constants above 
+			MiscUtil.loadClass(LangAutoEditPreferenceConstants_Actual.class);
 		}
 		
 	}

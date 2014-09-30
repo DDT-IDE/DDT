@@ -2,6 +2,7 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import melnorme.utilbox.misc.MiscUtil;
 
 
 public interface CodeFormatterConstants_Actual {
@@ -23,10 +24,9 @@ public interface CodeFormatterConstants_Actual {
 	class Helper {
 		
 		public static void initDefaults() {
-			// This will ensure default value is initialized
-			FORMATTER_INDENT_MODE.get();
-			FORMATTER_TAB_SIZE.get();
-			FORMATTER_INDENTATION_SPACES_SIZE.get();
+			// Ensure all default values are initialized, in case prefs are accessed by means other
+			// than by referencing the constants above 
+			MiscUtil.loadClass(LangAutoEditPreferenceConstants_Actual.class);
 		}
 		
 	}
