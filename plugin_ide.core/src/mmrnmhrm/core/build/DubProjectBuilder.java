@@ -10,13 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -31,12 +30,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 
-public class DubProjectBuilder extends IncrementalProjectBuilder {
+public class DubProjectBuilder extends LangProjectBuilder {
 	
 	public static final String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
 	
@@ -44,36 +42,21 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 	public static final String DEE_PROBLEM_ID = DUB_BUILD_PROBLEM_ID + "_DeeSourceProblem";
 	
 	@Override
-	protected void startupOnInitialize() {
-		assertTrue(getProject() != null);
-	}
-	
-	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IFolder dubCacheFolder = getProject().getFolder(".dub");
 		if(dubCacheFolder.exists()) {
 			dubCacheFolder.delete(true, monitor);
 		}
-		deleteDubMarkers();
-	}
-	
-	protected void deleteDubMarkers() {
-		try {
-			IMarker[] markers = getProject().findMarkers(DUB_BUILD_PROBLEM_ID, true, IResource.DEPTH_INFINITE);
-			for (IMarker marker : markers) {
-				marker.delete();
-			}
-		} catch (CoreException ce) {
-			DeeCore.logStatus(ce);
-		}
+		deleteBuildMarkers();
 	}
 	
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
-		assertTrue(kind != CLEAN_BUILD);
-		
-		deleteDubMarkers();
-		
+	protected String getBuildProblemId() {
+		return DUB_BUILD_PROBLEM_ID;
+	}
+	
+	@Override
+	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		String dubPath = DeeCorePreferences.getEffectiveDubPath();
 		
 		ArrayList<String> commands = new ArrayList<String>();
@@ -84,7 +67,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			commands.add("--force");
 		}
 		
-		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(getProject());
+		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
 		ExternalProcessResult processResult;
@@ -98,7 +81,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 			forgetLastBuiltState();
 			throw ce; // Note: if monitor is cancelled, exception will be ignored.
 		} finally {
-			getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		}
 		
 		processBuildOutput(processResult);
@@ -126,7 +109,7 @@ public class DubProjectBuilder extends IncrementalProjectBuilder {
 				dubErrorLine = DeeCoreMessages.RunningDubBuild_Error;
 			}
 			
-			IMarker dubMarker = getProject().createMarker(DUB_BUILD_PROBLEM_ID);
+			IMarker dubMarker = getProject().createMarker(getBuildProblemId());
 			dubMarker.setAttribute(IMarker.MESSAGE, dubErrorLine);
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		}
