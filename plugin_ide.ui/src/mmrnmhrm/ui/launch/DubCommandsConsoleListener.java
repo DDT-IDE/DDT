@@ -12,11 +12,11 @@ package mmrnmhrm.ui.launch;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.core.utils.process.IExternalProcessListener;
+import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
-import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
 import mmrnmhrm.core.engine_client.IDubProcessListener;
@@ -24,7 +24,6 @@ import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 
 public class DubCommandsConsoleListener extends AbstractToolsConsoleListener implements IDubProcessListener {
 	
@@ -53,47 +52,41 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 			return;
 		}
 		
-		dubOperation.addExternalProcessListener(new IExternalProcessListener() {
+		dubOperation.addExternalProcessListener(new IStartProcessListener() {
 			
 			@Override
-			public void handleProcessStarted(ProcessBuilder pb, IProject project, 
-					ExternalProcessNotifyingHelper processHelper) {
-				try {
-					writeProcessDescription(pb, console);
-					
-					ProcessOutputToConsoleListener outputListener = new ProcessOutputToConsoleListener(console);
-					processHelper.getOutputListenersHelper().addListener(outputListener);
-				} catch (IOException e) {
-					return;
+			public void handleProcessStartResult(ProcessBuilder pb, IProject project,
+					ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+				printProcessStartResult(console.infoOut, "> ", pb, ce);
+				
+				if(processHelper != null) {
+					processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
 				}
 			}
 			
-			@Override
-			public void handleProcessStartFailure(ProcessBuilder pb, IProject project, 
-					IOException processStartException) {
-				try {
-					writeProcessDescription(pb, console);
-					console.infoOut.write(">>>  Failed to start process, exception: \n");
-					console.infoOut.write(processStartException.getMessage());
-				} catch (IOException consoleIOE) {
-					return;
-				}
-			}
 		});
 	}
 	
-	protected void writeProcessDescription(ProcessBuilder pb, DubCommandsConsole console) throws IOException {
-		console.infoOut.write(StringUtil.collToString(pb.command(), " ") + "\n");
-		console.infoOut.write("@ " + pb.directory() +"\n");
+	@Override
+	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
+			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
+		final DubCommandsConsole console = getOperationConsole(project, true);
+		
+		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
+		
+		if(processHelper != null) {
+			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
+		}
 	}
 	
 	@Override
-	public void engineDaemonStarted(ProcessBuilder pb, ExternalProcessNotifyingHelper processHelper) {
+	public void engineDaemonStart(ProcessBuilder pb, CommonException ce, ExternalProcessNotifyingHelper processHelper) {
 		// TODO Auto-generated method stub
 	}
 	
 	@Override
-	public void engineDaemonFailedToStart(CoreException ce) {
+	public void engineClientToolStart(ProcessBuilder pb, CommonException ce,
+			ExternalProcessNotifyingHelper processHelper) {
 		// TODO Auto-generated method stub
 	}
 	

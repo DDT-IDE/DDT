@@ -13,7 +13,7 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.AbstractLangEditorMenuContributor;
+import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 
 import org.dsource.ddt.lang.ui.editor.ScriptEditorExtension;
 import org.eclipse.jface.action.IMenuManager;
@@ -41,14 +41,25 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditorExtension {
 		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
 	}
 	
+	protected AbstractLangEditorActions editorActionsManager;
+	
 	@Override
-	public final void editorContextMenuAboutToShow(IMenuManager menu) {
+	protected void createActions() {
+		super.createActions();
+		
+		editorActionsManager = createActionsManager();
+	}
+	
+	protected abstract AbstractLangEditorActions createActionsManager();
+	
+	@Override
+	public void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		editorContextMenuAboutToShow_extend(menu);
 	}
 	
 	protected void editorContextMenuAboutToShow_extend(IMenuManager menu) {
-		new AbstractLangEditorMenuContributor(this).editorContextMenuAboutToShow(menu);
+		editorActionsManager.editorContextMenuAboutToShow(menu);
 	}
 	
 }

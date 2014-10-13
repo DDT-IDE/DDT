@@ -14,19 +14,9 @@ import melnorme.lang.ide.ui.actions.AbstractOpenDefinitionHandler;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 public class DeeOpenDefinitionHandler extends AbstractOpenDefinitionHandler  {
-	
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ITextEditor editor = (ITextEditor) HandlerUtil.getActiveEditorChecked(event);
-		runOperation(editor);
-		return null;
-	}
 	
 	@Override
 	public DeeOpenDefinitionOperation createOperation(ITextEditor editor, OpenNewEditorMode newEditorMode) {

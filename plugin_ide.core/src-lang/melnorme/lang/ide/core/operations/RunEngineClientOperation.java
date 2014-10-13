@@ -16,11 +16,11 @@ import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
-public class StartEngineDaemonOperation extends AbstractRunProcessTask {
+public class RunEngineClientOperation extends AbstractRunProcessTask {
 	
 	protected final AbstractToolsManager<?> abstractToolsManager;
 	
-	public StartEngineDaemonOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb,
+	public RunEngineClientOperation(AbstractToolsManager<?> abstractToolsManager, ProcessBuilder pb,
 			IProgressMonitor cancelMonitor) {
 		super(pb, cancelMonitor);
 		this.abstractToolsManager = abstractToolsManager;
@@ -29,7 +29,7 @@ public class StartEngineDaemonOperation extends AbstractRunProcessTask {
 	@Override
 	protected void handleProcessStartResult(ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 		for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
-			listener.engineDaemonStart(pb, ce, processHelper);
+			listener.engineClientToolStart(pb, ce, processHelper);
 		}
 	}
 	

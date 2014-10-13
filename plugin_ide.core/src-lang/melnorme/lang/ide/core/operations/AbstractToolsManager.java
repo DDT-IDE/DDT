@@ -10,12 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
+import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.misc.ListenerListHelper;
+import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Abstract class for running external tools and notifying interested listeners (normally the UI only).
@@ -23,22 +24,23 @@ import melnorme.utilbox.misc.ListenerListHelper;
 public abstract class AbstractToolsManager<LISTENER extends ILangOperationsListener> 
 		extends ListenerListHelper<LISTENER> {
 	
-	public ProcessBuilder createDefaultProcessBuilder(List<String> commandLine) {
-		return createDefaultProcessBuilder(commandLine, (File) null);
+	/* ----------------- ----------------- */
+	
+	public RunExternalProcessTask newRunToolTask(ProcessBuilder pb, IProject project, IProgressMonitor pm) {
+		return new RunExternalProcessTask(pb, project, pm, this);
 	}
 	
-	public ProcessBuilder createDefaultProcessBuilder(List<String> commandLine, File workingDir) {
-		assertTrue(commandLine.size() > 0);
-		ProcessBuilder pb = new ProcessBuilder(commandLine);
-		setupDefaultEnvironment(pb);
-		if(workingDir != null) {
-			pb.directory(workingDir);
-		}
-		return pb;
+	public ExternalProcessResult runTool(IProject project, IProgressMonitor pm, ProcessBuilder pb) 
+			throws CoreException {
+		// Note: project can be null
+		return newRunToolTask(pb, project, pm).runProcess();
 	}
 	
-	@SuppressWarnings("unused")
-	protected void setupDefaultEnvironment(ProcessBuilder pb) {
+	/* ----------------- ----------------- */
+	
+	public ExternalProcessResult runEngineTool(ProcessBuilder pb, String clientInput, IProgressMonitor pm)
+			throws CoreException {
+		return new RunEngineClientOperation(this, pb, pm).runProcess(clientInput);
 	}
 	
 }

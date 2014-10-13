@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
@@ -51,6 +52,15 @@ public class DeeEditor extends DeeBaseEditor {
 	@Override
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { EditorSettings_Actual.EDITOR_CONTEXT_ID });
+	}
+	
+	@Override
+	protected AbstractLangEditorActions createActionsManager() {
+		return new AbstractLangEditorActions(this) {
+			@Override
+			protected void doDispose() {
+			}
+		};
 	}
 	
 	@Override
