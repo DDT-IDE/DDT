@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.operations;
 
 import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.process.EclipseExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 
@@ -37,7 +38,12 @@ public class StartEngineDaemonOperation {
 			throw ce;
 		}
 		
-		ExternalProcessNotifyingHelper processHelper = new ExternalProcessNotifyingHelper(process, true, false);
+		ExternalProcessNotifyingHelper processHelper = new ExternalProcessNotifyingHelper(process, true, false) {
+			@Override
+			protected void handleListenerException(RuntimeException e) {
+				LangCore.logError("Internal error notifying listener", e);
+			}
+		};
 		
 		for (ILangOperationsListener listener : abstractToolsManager.getListeners()) {
 			listener.engineDaemonStarted(pb, processHelper);
