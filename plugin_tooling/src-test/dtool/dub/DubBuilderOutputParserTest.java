@@ -8,21 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.build;
+package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.utilbox.tests.CommonTest;
 
-import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
-public class DubProjectBuilderTest extends CommonTest {
+import dtool.dub.DubBuildOutputParser;
+
+public class DubBuilderOutputParserTest extends CommonTest {
 	
 	protected static final String NL = System.getProperty("line.separator");
 	
 	@Test
-	public void testBasic() throws Exception { testBasic$(); }
-	public void testBasic$() throws Exception {
+	public void testParseErrorLine() throws Exception { testParseErrorLine$(); }
+	public void testParseErrorLine$() throws Exception {
 		testParseErrorLine("somefile.d(12): Error: blah" + NL, "somefile.d", "12", "blah");
 		testParseErrorLine("nana/somefile.d(12): Error: blah" + NL, "nana/somefile.d", "12", "blah");
 		testParseErrorLine("nana/somefile.d(12): blah" + NL);
@@ -42,14 +44,19 @@ public class DubProjectBuilderTest extends CommonTest {
 		
 		lineCount = 0;
 		
-		new DubProjectBuilder() {
+		new DubBuildOutputParser<Exception>() {
+			@Override
+			protected void processDubFailure(String dubErrorLine) throws Exception {
+				assertFail();
+			};
+			
 			 @Override
-			protected void processErrorLine(String file, String lineStr, String errorMsg) throws CoreException {
+			protected void processCompilerError(String file, String lineStr, String errorMsg) {
 				assertEquals(file, expectedFile);
 				assertEquals(lineStr, expectedLineStr);
 				assertEquals(errorMsg, expectedErrorMsg);
 				lineCount++;
-			};
+			}
 		 }.processCompilerErrors(output);
 		 
 		 if(expectedFile == null) {

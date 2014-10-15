@@ -12,14 +12,11 @@ package mmrnmhrm.core.build;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -32,6 +29,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+
+import dtool.dub.DubBuildOutputParser;
 
 
 public class DubProjectBuilder extends LangProjectBuilder {
@@ -56,7 +55,8 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
-	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
+			throws CoreException {
 		String dubPath = DeeCorePreferences.getEffectiveDubPath();
 		
 		ArrayList<String> commands = new ArrayList<String>();
@@ -99,52 +99,34 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
-		int buildExitValue = processResult.exitValue;
-		
-		String stderr = processResult.stderr.toString(StringUtil.UTF8);
-		
-		if(buildExitValue != 0) {
-			String dubErrorLine = getDubError(stderr);
-			if(dubErrorLine == null) {
-				dubErrorLine = DeeCoreMessages.RunningDubBuild_Error;
-			}
+		new DubBuildOutputParser<CoreException>() {
+			@Override
+			protected void processDubFailure(String dubErrorLine) throws CoreException {
+				addDubFailureMarker(dubErrorLine);
+			};
 			
-			IMarker dubMarker = getProject().createMarker(getBuildProblemId());
-			dubMarker.setAttribute(IMarker.MESSAGE, dubErrorLine);
-			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		}
-		
-		processCompilerErrors(stderr);
-	}
-	
-	protected String getDubError(String stderr) {
-		Matcher matcher = Pattern.compile("^(Error executing command.*)$", Pattern.MULTILINE).
-				matcher(stderr);
-		if(matcher.find()) {
-			return matcher.group(1);
-		}
-		return null;
-	}
-	
-	protected static final String ERROR_REGEX = "^([^():\\n]*)"+"\\(([^:)\\n]*)\\):"+"\\sError:\\s(.*)$";
-	protected static final Pattern ERROR_MATCHER = Pattern.compile(ERROR_REGEX, Pattern.MULTILINE);
-	
-	protected void processCompilerErrors(String stderr) {
-		Matcher matcher = ERROR_MATCHER.matcher(stderr);
-		while(matcher.find()) {
-			String file = matcher.group(1);
-			String lineStr = matcher.group(2);
-			String errorMsg = matcher.group(3);
-			try {
-				processErrorLine(file, lineStr, errorMsg);
-			} catch (CoreException e) {
-				DeeCore.logStatus(e);
-				// ignore, continue
+			@Override
+			protected void processCompilerError(String file, String lineStr, String errorMsg) {
+				try {
+					addCompilerErrorMarker(file, lineStr, errorMsg);
+				} catch (CoreException e) {
+					// log, but otherwise ignore & continue
+					DeeCore.logStatus(e);
+				}
 			}
-		}
+		}.handleResult(processResult);
+	}
+
+	public void addDubFailureMarker(String dubErrorLine) throws CoreException {
+		String errorMessage = 
+				dubErrorLine == null ? DeeCoreMessages.RunningDubBuild_Error : dubErrorLine;
+		
+		IMarker dubMarker = getProject().createMarker(getBuildProblemId());
+		dubMarker.setAttribute(IMarker.MESSAGE, errorMessage);
+		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
 	
-	protected void processErrorLine(String file, String lineStr, String errorMsg) throws CoreException {
+	protected void addCompilerErrorMarker(String file, String lineStr, String errorMsg) throws CoreException {
 		IResource resource = getProject().findMember(file);
 		if(resource == null || !resource.exists()) {
 			return;
