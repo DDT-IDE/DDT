@@ -35,6 +35,11 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 		return DeeUIMessages.DUB_CONSOLE_NAME + " " + getProjectNameSuffix(project);
 	}
 	
+	@Override
+	protected ToolsConsole createConsole(String name) {
+		return new DubCommandsConsole(name);
+	}
+	
 	public static class DubCommandsConsole extends ToolsConsole {
 		
 		public DubCommandsConsole(String name) {
@@ -45,7 +50,7 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 	
 	@Override
 	public void handleDubOperationStarted(IDubOperation dubOperation) {
-		final DubCommandsConsole console = getOperationConsole(dubOperation.getProject(), true);
+		final ToolsConsole console = getOperationConsole(dubOperation.getProject(), true);
 		try {
 			console.infoOut.write("************  " + dubOperation.getOperationName() + "  ************\n");
 		} catch (IOException e) {
@@ -65,18 +70,6 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 			}
 			
 		});
-	}
-	
-	@Override
-	public void handleProcessStartResult(ProcessBuilder pb, IProject project,
-			ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-		final DubCommandsConsole console = getOperationConsole(project, true);
-		
-		printProcessStartResult(console.infoOut, ">> Running: ", pb, ce);
-		
-		if(processHelper != null) {
-			processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
-		}
 	}
 	
 	@Override
