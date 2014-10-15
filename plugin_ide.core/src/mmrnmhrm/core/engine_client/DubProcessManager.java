@@ -124,7 +124,7 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 		@Override
 		protected ExternalProcessNotifyingHelper startProcess(IProgressMonitor pm) throws CommonException {
 			notifyOperationStarted(this);
-			return super.startProcess();
+			return super.startProcess(pm);
 		}
 		
 		@Override
