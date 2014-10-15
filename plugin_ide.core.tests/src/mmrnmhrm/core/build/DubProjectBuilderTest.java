@@ -15,31 +15,27 @@ import mmrnmhrm.tests.SampleProject;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DubProjectBuilderTest extends CommonCoreTest {
 	
 	protected static SampleProject sampleProj;
 	
-	@BeforeClass
-	public static void init() throws CoreException {
-		sampleProj = new SampleProject(DubProjectBuilderTest.class.getSimpleName());
-	}
-	
-	@AfterClass
-	public static void cleanup() throws CoreException {
-		if(sampleProj != null) sampleProj.cleanUp();
-	}
-	
 	@Test
-	public void testBuilder() throws Exception { testBuilder$(); }
-	public void testBuilder$() throws Exception {
-		 sampleProj.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-		 sampleProj.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-		 sampleProj.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-		 sampleProj.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+	public void test() throws Exception { test$(); }
+	public void test$() throws Exception {
+		try(SampleProject project = new SampleProject(getClass().getSimpleName())) {
+			sampleProj = project;
+			
+			testBuilder();
+		}
+	}
+	
+	protected void testBuilder() throws CoreException {
+		sampleProj.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+		sampleProj.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+		sampleProj.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+		sampleProj.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
 	}
 	
 }

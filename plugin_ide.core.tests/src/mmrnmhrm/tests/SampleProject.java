@@ -21,7 +21,7 @@ import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-public class SampleProject {
+public class SampleProject implements AutoCloseable {
 	
 	public final IProject project;
 	
@@ -44,6 +44,11 @@ public class SampleProject {
 	
 	public void cleanUp() throws CoreException {
 		project.delete(true, null);
+	}
+	
+	@Override
+	public void close() throws CoreException {
+		cleanUp();
 	}
 	
 }
