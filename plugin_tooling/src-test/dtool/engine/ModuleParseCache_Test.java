@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -32,7 +33,6 @@ import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;
-import dtool.tests.utils.MiscFileUtils;
 
 public class ModuleParseCache_Test extends CommonDToolTest {
 	

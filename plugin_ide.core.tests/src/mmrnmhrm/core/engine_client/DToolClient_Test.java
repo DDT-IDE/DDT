@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -114,7 +115,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		@Override
 		protected void createContents() throws CoreException {
 			sourceFolder = project.getFolder("source");
-			DeeCoreTestResources.createFolderFromCoreResource("simple-source", sourceFolder);
+			LangCoreTestResources.createFolderFromCoreTestsResource("simple-source", sourceFolder);
 			writeManifestFile();
 		}
 	}

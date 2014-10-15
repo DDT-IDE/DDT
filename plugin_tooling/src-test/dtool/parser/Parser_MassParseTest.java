@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -21,7 +22,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
-import dtool.tests.utils.MiscFileUtils;
 
 /**
  * Test conversion of common sources (Phobos, Tango)

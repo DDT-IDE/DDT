@@ -20,9 +20,6 @@ import org.osgi.framework.BundleContext;
 
 public class DeeCore extends LangCore {
 	
-	public static final String PLUGIN_ID = "org.dsource.ddt.ide.core";
-	public static final String TESTS_PLUGIN_ID = PLUGIN_ID + ".tests";
-	
 	protected static DToolClient dtoolClient;
 	protected static final WorkspaceModel dubModel = new WorkspaceModel();
 	protected static final WorkspaceModelManager modelManager = new WorkspaceModelManager(dubModel);

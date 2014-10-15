@@ -15,38 +15,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import melnorme.lang.utils.CommonToolingTest;
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.fntypes.VoidFunction;
-import melnorme.utilbox.misc.SimpleLogger;
-import melnorme.utilbox.tests.CommonTestExt;
-
-import org.junit.Before;
-
 import dtool.engine.modules.ModuleNamingRules;
-import dtool.tests.utils.MiscFileUtils;
 import dtool.util.NewUtils;
 
-public class CommonDToolTest extends CommonTestExt {
-	
-	public static PrintStream testsLogger = System.out;
-	public static SimpleLogger testsLogVerbose = SimpleLogger.create("verbose");
-	
-	public static Set<String> executedTests = new HashSet<String>();
-	
-	@Before
-	public void printSeparator() throws Exception {
-		String simpleName = getClass().getSimpleName();
-		if(!executedTests.contains(simpleName)) {
-			testsLogger.println("===============================  "+simpleName+"  ===============================");
-			executedTests.add(simpleName);
-		}
-	}
+public class CommonDToolTest extends CommonToolingTest {
 	
 	public static String readStringFromFile_PreserveBOM(File file) {
 		try {

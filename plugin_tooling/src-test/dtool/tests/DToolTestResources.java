@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import dtool.tests.utils.MiscFileUtils;
+import melnorme.lang.utils.MiscFileUtils;
 
 
 public class DToolTestResources {

@@ -2,6 +2,7 @@ package mmrnmhrm.tests;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.core.ExceptionAdapter;
 
@@ -46,7 +47,7 @@ public abstract class SampleNonDeeProject {
 		project.create(null);
 		project.open(null);
 		// Watch out when changing these values, tests may depend on these paths
-		DeeCoreTestResources.createFolderFromCoreResource(
+		LangCoreTestResources.createFolderFromCoreTestsResource(
 				ITestResourcesConstants.TR_SAMPLE_SRC1, project.getFolder(TEST_OUT_SRC));
 		return project;
 	}

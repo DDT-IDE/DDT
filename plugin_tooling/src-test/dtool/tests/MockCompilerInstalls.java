@@ -15,10 +15,10 @@ import static dtool.tests.DToolTestResources.getTestResourcePath;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
-import dtool.tests.utils.MiscFileUtils;
 
 public class MockCompilerInstalls {
 	

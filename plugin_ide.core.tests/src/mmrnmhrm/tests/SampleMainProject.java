@@ -37,7 +37,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		try {
 			scriptProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();
-		} catch (Exception e) {
+		} catch (CoreException e) {
 			throw ExceptionAdapter.unchecked(e);
 		}
 	}
@@ -56,7 +56,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		createSrcFolderFromCoreResource(TR_CA, project.getFolder(TR_CA));
 		createSrcFolderFromCoreResource(TR_REFS, project.getFolder(TR_REFS));
 		
-		createFolderFromCoreResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
+		createFolderFromCoreTestsResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");
 		
 		CommonDeeWorkspaceTest.writeDubManifest(project, SAMPLEPROJNAME, 

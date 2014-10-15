@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -40,7 +41,6 @@ import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.modules.ModuleFullName;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
-import dtool.tests.utils.MiscFileUtils;
 
 public class CommonSemanticManagerTest extends CommonDToolTest {
 	
