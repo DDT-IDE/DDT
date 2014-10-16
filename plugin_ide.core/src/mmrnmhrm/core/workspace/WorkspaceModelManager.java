@@ -188,7 +188,7 @@ public class WorkspaceModelManager {
 			
 			DubBundleDescription existingProjectModel = model.getBundleInfo(project);
 			
-			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAcessible(project, true)) {
+			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAccessible(project, true)) {
 				if(existingProjectModel == null) {
 					return; // Nothing to remove, might not have been a DUB model project.
 				}

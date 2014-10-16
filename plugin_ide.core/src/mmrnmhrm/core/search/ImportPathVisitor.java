@@ -16,7 +16,7 @@ import org.eclipse.dltk.core.ModelException;
 public class ImportPathVisitor {
 	
 	protected static boolean isAccessible(IScriptProject scriptProject) {
-		return DeeNature.isAcessible(scriptProject.getProject(), false);
+		return DeeNature.isAccessible(scriptProject.getProject(), false);
 	}
 	
 	protected void iteratonFullImportPath(IScriptProject deeProject) throws ModelException {
@@ -66,7 +66,7 @@ public class ImportPathVisitor {
 	protected IScriptProject getDeeScriptProject(String projectName) {
 		IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
 		try {
-			if(DeeNature.isAcessible(project)) {
+			if(DeeNature.isAccessible(project)) {
 				return DLTKCore.create(project);
 			}
 		} catch (CoreException e) {
