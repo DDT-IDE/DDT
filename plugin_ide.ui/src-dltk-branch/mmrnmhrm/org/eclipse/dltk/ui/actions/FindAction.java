@@ -198,7 +198,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		} else {
 			ModuleFullName nameDescriptor = new ModuleFullName(moduleFQName);
 			ISourceModule element = SourceModuleFinder.findModuleUnit(scriptProject, 
-				nameDescriptor.getPackages(), nameDescriptor.getBaseName());
+				nameDescriptor.getPackages(), nameDescriptor.getModuleSimpleName());
 			// review this
 			isInsideInterpreterEnvironment = element == null? false : factory.isInsideInterpreter(element);
 		}

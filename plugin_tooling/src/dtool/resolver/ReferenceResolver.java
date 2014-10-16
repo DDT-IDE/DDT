@@ -39,7 +39,7 @@ public class ReferenceResolver {
 	
 	public static Module findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
 		ModuleFullName moduleName = new ModuleFullName(moduleFullName);
-		return findModuleUnchecked(mr, moduleName.getPackages(), moduleName.getBaseName());
+		return findModuleUnchecked(mr, moduleName.getPackages(), moduleName.getModuleSimpleName());
 	}
 	
 	public static Module findModuleUnchecked(IModuleResolver mr, String[] packages, String module) {

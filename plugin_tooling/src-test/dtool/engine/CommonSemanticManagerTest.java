@@ -247,7 +247,7 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		assertAreEqual(modulePath, expectedPath);
 		
 		if(expectedPath != null) {
-			assertEquals(bundleRes.findModule(moduleFullName.getPackages(), moduleFullName.getBaseName()), 
+			assertEquals(bundleRes.findModule(moduleFullName.getPackages(), moduleFullName.getModuleSimpleName()), 
 				resolvedModule.getModuleNode());
 		}
 	}
