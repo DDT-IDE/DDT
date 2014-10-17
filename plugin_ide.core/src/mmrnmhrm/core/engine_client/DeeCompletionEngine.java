@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 
 import org.eclipse.core.runtime.CoreException;
@@ -48,6 +49,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			}
 			
 		} catch (CoreException e) {
+			DeeCore.logStatus(e);
 			handleCompletionFailure(e.getMessage(), position);
 		} finally {
 			requestor.endReporting();
