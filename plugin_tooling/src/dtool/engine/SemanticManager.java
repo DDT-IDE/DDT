@@ -216,7 +216,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		
 		@Override
 		protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
-			dtoolServer.logError("Error visiting path/director: " + file, exc);
+			dtoolServer.logError("Error visiting directory/file path: " + file, exc);
 			return FileVisitResult.CONTINUE;
 		}
 	}
