@@ -52,7 +52,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 			resolvedModule = null;
 		}
 		if(resolvedModule == null) {
-			return null;
+			return null; /*FIXME: BUG here: show error message. */
 		}
 		Module module = resolvedModule.getModuleNode();
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
