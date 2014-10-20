@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import melnorme.lang.utils.CommonToolingTest;
+import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import dtool.engine.modules.ModuleNamingRules;
