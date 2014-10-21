@@ -17,7 +17,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 /**
  * A valid directory path for a dub bundle.

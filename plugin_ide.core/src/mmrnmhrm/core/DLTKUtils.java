@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import melnorme.utilbox.misc.ReflectionUtils;
 
 import org.eclipse.core.filesystem.IFileStore;

@@ -22,7 +22,7 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;

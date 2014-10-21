@@ -13,7 +13,7 @@ package mmrnmhrm.core.engine_client;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.utilbox.misc.MiscUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 
