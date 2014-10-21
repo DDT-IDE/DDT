@@ -77,7 +77,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	public File getProjectDirectory(String projectFolderName) {
 		File projectFolder = new File(file.getParent(), assertNotNull(projectFolderName));
 		if(projectFolder.exists() == false) {
-			File commonDir = DToolTestResources.getTestResource(TESTFILESDIR, "0_common"); 
+			File commonDir = DToolTestResources.getTestResourceFile(TESTFILESDIR, "0_common"); 
 			assertTrue(commonDir.exists());
 			projectFolder = new File(commonDir, assertNotNull(projectFolderName));
 		}

@@ -44,7 +44,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		final Collection<Object[]> testList = new ArrayList<>();
 		
 		FileUtil.deleteDir(getMassParseUnpackedResource()); // Allways delete unpackFolder
-		File massParseZipFilesFolder = DToolTestResources.getTestResource(MASSPARSE_ZIPFOLDER);
+		File massParseZipFilesFolder = DToolTestResources.getTestResourceFile(MASSPARSE_ZIPFOLDER);
 		for (File zipFile : collectZipFiles(massParseZipFilesFolder)) {
 			File unzippedFolder = unzipSource(zipFile);
 			testList.add(array(unzippedFolder.getName(), new MassParseTestRunnable(unzippedFolder, zipFile)));

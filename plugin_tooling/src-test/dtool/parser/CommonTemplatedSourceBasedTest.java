@@ -11,7 +11,7 @@
 package dtool.parser;
 
 
-import static dtool.tests.DToolTestResources.getTestResource;
+import static dtool.tests.DToolTestResources.getTestResourceFile;
 import static dtool.tests.DToolTestResources.resourceFileToString;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -49,7 +49,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 	public static SimpleLogger expandedTestCaseLog = SimpleLogger.create("TemplatedSourceBasedTest");
 	
 	public static ArrayList<File> getDeeModuleList(String testFolder) {
-		return getDeeModuleList(getTestResource(testFolder), true);
+		return getDeeModuleList(getTestResourceFile(testFolder), true);
 	}
 	
 	public static void addCommonDefinitions(Class<?> klass, String testFolder,
