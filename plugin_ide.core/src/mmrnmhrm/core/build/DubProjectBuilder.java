@@ -46,7 +46,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 		if(dubCacheFolder.exists()) {
 			dubCacheFolder.delete(true, monitor);
 		}
-		deleteBuildMarkers();
+		deleteProjectBuildMarkers();
 	}
 	
 	@Override
