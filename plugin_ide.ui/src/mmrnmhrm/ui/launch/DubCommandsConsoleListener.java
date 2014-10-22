@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
-import melnorme.lang.ide.ui.tools.console.ProcessOutputToConsoleListener;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
@@ -62,11 +61,13 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 			@Override
 			public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 					ExternalProcessNotifyingHelper processHelper, CommonException ce) {
-				printProcessStartResult(console.infoOut, "> ", pb, ce);
 				
-				if(processHelper != null) {
-					processHelper.getOutputListenersHelper().addListener(new ProcessOutputToConsoleListener(console));
-				}
+				new ProcessUIConsoleHandler(pb, project, "> ", false, processHelper, ce) {
+					@Override
+					protected ToolsConsole getConsole() {
+						return console;
+					}
+				};
 			}
 			
 		});
