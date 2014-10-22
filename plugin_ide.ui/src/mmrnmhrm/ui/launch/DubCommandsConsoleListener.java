@@ -31,7 +31,7 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 	
 	@Override
 	protected String getOperationConsoleName(IProject project) {
-		return DeeUIMessages.DUB_CONSOLE_NAME + " " + getProjectNameSuffix(project);
+		return DeeUIMessages.DUB_CONSOLE_NAME + getProjectNameSuffix(project);
 	}
 	
 	@Override
@@ -62,12 +62,7 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 			public void handleProcessStartResult(ProcessBuilder pb, IProject project,
 					ExternalProcessNotifyingHelper processHelper, CommonException ce) {
 				
-				new ProcessUIConsoleHandler(pb, project, "> ", false, processHelper, ce) {
-					@Override
-					protected ToolsConsole getConsole() {
-						return console;
-					}
-				};
+				new ProcessUIConsoleHandler().init(pb, project, "> ", false, processHelper, ce).handle(console);
 			}
 			
 		});
