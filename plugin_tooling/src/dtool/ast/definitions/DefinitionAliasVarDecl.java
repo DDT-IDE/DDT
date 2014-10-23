@@ -24,7 +24,7 @@ import dtool.util.ArrayView;
 
 /**
  * A definition of an alias, in the old syntax:
- * <code>alias BasicType Declarator ;</code>
+ * <code>alias StorageClasses BasicType Declarators</code>
  * when declarator declares one or more variable-like aliases.
  * 
  * @see http://dlang.org/declaration.html#AliasDeclaration
