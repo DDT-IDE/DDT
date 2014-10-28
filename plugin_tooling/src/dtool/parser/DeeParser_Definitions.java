@@ -496,6 +496,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		ASTNodeTypes lastAttribKind = getLastAttributeKind(attributes);
 		switch (lastAttribKind) {
 		case ATTRIB_LINKAGE:
+		case ATTRIB_CPP_LINKAGE:
 		case ATTRIB_ALIGN:
 		case ATTRIB_PRAGMA:
 		case ATTRIB_CUSTOM:

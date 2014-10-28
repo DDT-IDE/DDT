@@ -97,6 +97,7 @@ public enum ASTNodeTypes {
 	/* -------------------  Declarations  ------------------- */
 	DECLARATION_ATTRIB,
 	ATTRIB_LINKAGE,
+	ATTRIB_CPP_LINKAGE,
 	ATTRIB_ALIGN,
 	ATTRIB_PRAGMA,
 	ATTRIB_PROTECTION,

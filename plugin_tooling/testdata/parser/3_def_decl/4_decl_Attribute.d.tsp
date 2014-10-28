@@ -70,7 +70,7 @@ DeclarationAttrib(AttribBasic DeclList(
 
 #@ATTRIBS_BROKEN《 
  ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID) #@PARENS_BREAK● AttribLinkage】●
- ►#?STRUCTURE_EXPECTED!【extern(C++ #@PARENS_BREAK● AttribLinkage】●
+ ►#?STRUCTURE_EXPECTED!【extern(C++, foo #@PARENS_BREAK● AttribCppLinkage(RefIdentifier)】●
  ►#?STRUCTURE_EXPECTED!【align(#error(EXP_INTEGER_DECIMAL) #@PARENS_BREAK● AttribAlign】●
  ►#?STRUCTURE_EXPECTED!【align(16 #@PARENS_BREAK● AttribAlign】●
  

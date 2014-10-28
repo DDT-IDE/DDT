@@ -10,6 +10,8 @@
  * Added: Now recognizes Mac OS X common DMD compiler layouts:
    * $/bin/dmd -> $/src/druntime/import ; $/src/phobs 
    * $/bin/dmd -> $/share/dmd/src/druntime/import ; $/share/dmd/src/phobos
+ * Added: Support for DMD 2.066 changes:
+   * `extern ( C++, IdentifierList )` syntax
 
 
 ### DDT 0.10.2

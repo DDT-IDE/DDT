@@ -23,6 +23,7 @@ import dtool.ast.declarations.AttribAlign;
 import dtool.ast.declarations.AttribAtKeyword;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
+import dtool.ast.declarations.AttribCppLinkage;
 import dtool.ast.declarations.AttribCustom;
 import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.AttribLinkage.Linkage;
@@ -53,6 +54,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
+import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.DeeParser_Definitions.DefinitionStartInfo;
 import dtool.parser.ParserError.ParserErrorTypes;
@@ -221,7 +223,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		return lastAttrib.getNodeType();
 	}
 	
-	public NodeResult<AttribLinkage> parseAttribLinkage() {
+	public NodeResult<? extends AttribLinkage> parseAttribLinkage() {
 		if(!tryConsume(DeeTokens.KW_EXTERN))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -244,11 +246,25 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 					parse.storeError(createErrorOnLastToken(ParserErrorTypes.INVALID_EXTERN_ID, null));
 				}
 				
+				if(linkageStr.equals(Linkage.CPP.name)) {
+					return parseAttribCppLinkage_fromLinkaged(parse, linkageStr);
+				}
+				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
 			}
 		}
 		
 		return parse.resultConclude(new AttribLinkage(linkageStr));
+	}
+	
+	protected NodeResult<AttribCppLinkage> parseAttribCppLinkage_fromLinkaged(ParseHelper parse, String linkageStr) {
+		Reference typeRef = null;
+		if(parse.consumeExpected(DeeTokens.COMMA)) {
+			typeRef = parseTypeReference_ToMissing().node;
+		}
+		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
+		
+		return parse.resultConclude(new AttribCppLinkage(linkageStr, typeRef));
 	}
 	
 	public NodeResult<AttribAlign> parseAttribAlign() {
