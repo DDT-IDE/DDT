@@ -26,7 +26,7 @@ public interface CodeFormatterConstants_Actual {
 		public static void initDefaults() {
 			// Ensure all default values are initialized, in case prefs are accessed by means other
 			// than by referencing the constants above 
-			MiscUtil.loadClass(LangAutoEditPreferenceConstants_Actual.class);
+			MiscUtil.loadClass(CodeFormatterConstants_Actual.class);
 		}
 		
 	}
