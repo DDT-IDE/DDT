@@ -19,16 +19,19 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
+import dtool.parser.common.LexElement;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class ForeachVariableDef extends DefUnit {
 	
 	public final boolean isRef;
+	public final LexElement typeMod;
 	public final Reference type;
 	
-	public ForeachVariableDef(boolean isRef, Reference type, ProtoDefSymbol defId) {
+	public ForeachVariableDef(boolean isRef, LexElement typeMod, Reference type, ProtoDefSymbol defId) {
 		super(defId);
 		this.isRef = isRef;
+		this.typeMod = typeMod;
 		this.type = parentize(type);
 	}
 	
@@ -46,6 +49,7 @@ public class ForeachVariableDef extends DefUnit {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isRef, "ref ");
+		cp.appendToken(typeMod, " ");
 		cp.append(type, " ");
 		cp.append(defname);
 	}

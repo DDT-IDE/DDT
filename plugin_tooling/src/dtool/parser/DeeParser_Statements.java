@@ -495,17 +495,22 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	}
 	
 	public ForeachVariableDef parseForeachVariableDef() {
-		ParseHelper parse = new ParseHelper(-1);
+		ParseHelper parse = new ParseHelper(lookAheadElement());
 		boolean isRef = false;
 		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Id_RuleFragment();
 		
 		if(tryConsume(DeeTokens.KW_REF)) {
 			isRef = true;
-			parse.setStartPosition(lastLexElement().getStartPos());
 		}
+		
+		LexElement typeMod = null;
+		if(isImmutabilitySpecifier(lookAhead())) {
+			typeMod = consumeLookAhead();
+		}
+		
 		typeRef_defId.parseRuleFragment(parse, true);
 		
-		return parse.conclude(new ForeachVariableDef(isRef, typeRef_defId.type, typeRef_defId.defId));
+		return parse.conclude(new ForeachVariableDef(isRef, typeMod, typeRef_defId.type, typeRef_defId.defId));
 	}
 	
 	public Expression parseForeachIterableExpression() {

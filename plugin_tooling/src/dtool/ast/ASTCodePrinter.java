@@ -24,6 +24,14 @@ public class ASTCodePrinter {
 		}
 	}
 	
+	public void appendToken(ISourceRepresentation obj, String sep) {
+		if(obj != null) {
+			sb.append(obj.getSourceValue());
+			assertNotNull(sep);
+			append(sep);
+		}
+	}
+	
 	public void append(String string) {
 		if(string != null) {
 			sb.append(string);
