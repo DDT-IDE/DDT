@@ -15,6 +15,7 @@
  * Fixed #74: Syntax error parsing immutable in foreach
  * Fixed #70: Syntax error parsing Template instance UDAs
  * Fixed #67: Syntax error parsing multidimensional slices
+ * Fixed #76: Incorrect D editor tab icon if filename not a valid module name 
 
 
 ### DDT 0.10.2

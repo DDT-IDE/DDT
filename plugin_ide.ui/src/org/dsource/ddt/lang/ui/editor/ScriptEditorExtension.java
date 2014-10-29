@@ -12,14 +12,18 @@ package org.dsource.ddt.lang.ui.editor;
 
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.org.eclipse.dltk.ui.actions.ReferencesSearchGroup;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.actions.ActionGroup;
@@ -90,6 +94,28 @@ public abstract class ScriptEditorExtension extends ScriptEditor {
 			};
 		}
 		return super.getAdapter(required);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected ScriptEditorErrorTickUpdater2 fScriptEditorErrorTickUpdater = new ScriptEditorErrorTickUpdater2(this);
+	
+	@Override
+	protected void doSetInput(IEditorInput input) throws CoreException {
+		super.doSetInput(input);
+		
+		fScriptEditorErrorTickUpdater.updateEditorImage(EditorUtils.getAssociatedFile(input));
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void dispose() {
+		if (fScriptEditorErrorTickUpdater != null) {
+			fScriptEditorErrorTickUpdater.dispose();
+			fScriptEditorErrorTickUpdater = null;
+		}
+		super.dispose();
 	}
 	
 }

@@ -74,7 +74,6 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	@Override
 	public ScriptUILabelProvider createScriptUILabelProvider() {
-		// XXX: DLTK review this later and see if it will be used again
 		return null;
 	}
 	
