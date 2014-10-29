@@ -51,7 +51,6 @@ import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.expressions.Expression;
-import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.Reference;
@@ -343,7 +342,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		
 		ParseHelper parse = new ParseHelper();
 		
-		RefIdentifier refId = null;
+		Reference baseRef = null;
 		NodeListView<Expression> args = null;
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && DeeTokenSemantics.isPredefinedAttribId(lookAheadElement())) {
@@ -353,16 +352,22 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		}
 		
 		parsing: {
-			refId = attemptParseRefIdentifier();
+			baseRef = attemptParseRefIdentifier();
+			if(parse.ruleBroken) break parsing;
+			
+			if(lookAhead() == DeeTokens.NOT) {
+				baseRef = parse.checkResult(
+					parseTypeReference_withLeftReference(baseRef, RefParseRestrictions.TEMPLATE_ONLY));
+			}
 			if(parse.ruleBroken) break parsing;
 			
 			args = parseParenthesesDelimited_ExpArgumentList(parse);
 			
-			if(args == null && refId == null) {
+			if(args == null && baseRef == null) {
 				parse.storeError(createErrorExpectedRule(RULE_ID_OR_EXP_ARGLIST));
 			}
 		}
-		return parse.resultConclude(new AttribCustom(refId, args));		
+		return parse.resultConclude(new AttribCustom(baseRef, args));		
 	}
 	
 	public NodeResult<DeclarationStaticIf> parseDeclarationStaticIf(boolean isStatement) {

@@ -20,7 +20,7 @@
                          #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP_NB__LITE   #@ASSIGNEXP__LITE】 ●
 ¤》 
 
-// Expression list which allows ending terminator
+// Expression list which allows ending separator (ESEP)
 #@EXPARGS_ESEP《
   ►#?STRUCTURE_EXPECTED!【/* NO EXTRA ARG */ ● 】●
   ►#?STRUCTURE_EXPECTED!【#@ASSIGNEXP_NBNE #@《 ●,》● #@ASSIGNEXP_NBNE】 ●

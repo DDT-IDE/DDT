@@ -1,0 +1,13 @@
+Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
+
+#@TPL_ARGLIST__SAMPLE《
+  ►#?STRUCTURE_EXPECTED!【( ) ● 】●
+  ►#?STRUCTURE_EXPECTED!【( #@NO_TOE , ) ● #@NO_TOE 】●
+  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE ) ● #@EXP_ASSIGN__LITE】●
+  ►#?STRUCTURE_EXPECTED!【( #@TYPEREF_NBNE__LITE ) ● #@TYPEREF_NBNE__LITE】●
+  ►#?STRUCTURE_EXPECTED!【( bar[foo*] ) ● RefIndexing(RefIdentifier RefTypePointer(RefIdentifier)) 】●
+  
+  ►#?STRUCTURE_EXPECTED!【( #@EXP_ASSIGN__LITE , #@TYPEREF_NBNE__LITE ) ● #@EXP_ASSIGN__LITE #@TYPEREF_NBNE__LITE】●
+  
+  ►#?STRUCTURE_EXPECTED!【 #@EXP_PRIMARY_SIMPLE ● #@EXP_PRIMARY_SIMPLE 】●
+¤》

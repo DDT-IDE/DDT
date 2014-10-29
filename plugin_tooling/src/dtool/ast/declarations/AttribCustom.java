@@ -1,11 +1,14 @@
 package dtool.ast.declarations;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.Reference;
 
 /**
  * Node for User Defined Attributes ( http://dlang.org/attribute.html#uda )
@@ -15,12 +18,14 @@ import dtool.ast.references.RefIdentifier;
  */
 public class AttribCustom extends Attribute {
 	
-	public final RefIdentifier ref;
+	public final Reference ref;
 	public final NodeListView<Expression> args; // if null, no argument list
 	
-	public AttribCustom(RefIdentifier ref, NodeListView<Expression> args) {
+	public AttribCustom(Reference ref, NodeListView<Expression> args) {
 		this.ref = parentize(ref);
 		this.args = parentize(args);
+		
+		assertTrue(ref == null || ref instanceof RefIdentifier || ref instanceof RefTemplateInstance);
 	}
 	
 	@Override
