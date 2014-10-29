@@ -18,6 +18,8 @@ public class ExpInfix extends Expression {
 	public static enum InfixOpType {
 		COMMA(DeeTokens.COMMA),
 		
+		SLICE(DeeTokens.DOUBLE_DOT),
+		
 		ASSIGN(DeeTokens.ASSIGN),
 		MINUS_ASSIGN(        ASSIGN, DeeTokens.MINUS_ASSIGN),
 		PLUS_ASSIGN(         ASSIGN, DeeTokens.PLUS_ASSIGN), 

@@ -15,7 +15,6 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.statements.CommonStatementList;
-import dtool.ast.statements.ForeachRangeExpression;
 import dtool.parser.DeeParsingChecks.DeeParsingNodeCheck;
 import dtool.parser.common.LexElement;
 import dtool.parser.common.LexElementProducer;
@@ -110,10 +109,6 @@ public class DeeParsingSourceRangeChecks extends DeeParsingNodeCheck {
 		case MAPARRAY_ENTRY: {
 			MapArrayLiteralKeyValue mapArrayEntry = (MapArrayLiteralKeyValue) node;
 			return canBeginWithEmptySpace(mapArrayEntry.key);
-		}
-		case FOREACH_RANGE_EXPRESSION: {
-			ForeachRangeExpression fre = (ForeachRangeExpression) node;
-			return canBeginWithEmptySpace(fre.lower);
 		}
 		
 		case BLOCK_STATEMENT:

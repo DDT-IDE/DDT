@@ -63,7 +63,6 @@ import dtool.ast.expressions.ExpPrefix.PrefixOpType;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSimpleLambda;
 import dtool.ast.expressions.ExpSimpleLambda.SimpleLambdaDefUnit;
-import dtool.ast.expressions.ExpSlice;
 import dtool.ast.expressions.ExpSuper;
 import dtool.ast.expressions.ExpThis;
 import dtool.ast.expressions.ExpTraits;
@@ -766,6 +765,7 @@ protected class ParseRule_Expression {
 	
 	public InfixOpType getPrecedenceForInfixOpRightExp(InfixOpType infixOpLA) {
 		switch (infixOpLA.category) {
+		case SLICE: return InfixOpType.SLICE;
 		case COMMA: return InfixOpType.COMMA;
 		case ASSIGN: return InfixOpType.ASSIGN;
 		case CONDITIONAL: return InfixOpType.CONDITIONAL;
@@ -850,7 +850,6 @@ protected class ParseRule_Expression {
 	}
 	
 		protected Expression parseBracketList(Expression calleeExp) {
-			LexElement tokenBeforeBracket = lastLexElement();
 			if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
 				return null;
 			
@@ -867,7 +866,7 @@ protected class ParseRule_Expression {
 				Expression exp2 = null;
 				ParseHelper exp2parse = null;
 				
-				exp1 = parseAssignExpression().node;
+				exp1 = parseExpression(InfixOpType.SLICE).node;
 				if(lookAhead() == DeeTokens.COMMA) {
 					exp1 = nullExpToParseMissing(exp1);
 				}
@@ -880,21 +879,6 @@ protected class ParseRule_Expression {
 						exp2parse = new ParseHelper(exp1);
 						exp2 = parseAssignExpression_toMissing();
 						mapElements = new ArrayList<MapArrayLiteralKeyValue>();
-					} else if(lookAhead() == DeeTokens.DOUBLE_DOT) {
-						exp1 = nullExpToParseMissing(exp1);
-						consumeLookAhead(DeeTokens.DOUBLE_DOT);
-						exp2 = parseAssignExpression_toMissing();
-						
-						parse.consumeRequired(DeeTokens.CLOSE_BRACKET);
-						setToEParseBroken(parse.ruleBroken);
-						
-						if(calleeExp == null) {
-							int nodePos = parse.nodeStart; // This is bracket start
-							calleeExp = createMissingExpression(RULE_EXPRESSION, tokenBeforeBracket, nodePos, nodePos);
-							parse.nodeStart = calleeExp.getStartPos();
-						}
-						
-						return parse.conclude(new ExpSlice(calleeExp, exp1, exp2));
 					} else if(exp1 == null) {
 						break;
 					}

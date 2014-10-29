@@ -34,7 +34,6 @@ import dtool.ast.statements.BlockStatementUnscoped;
 import dtool.ast.statements.CatchClause;
 import dtool.ast.statements.CommonStatementList;
 import dtool.ast.statements.EmptyStatement;
-import dtool.ast.statements.ForeachRangeExpression;
 import dtool.ast.statements.ForeachVariableDef;
 import dtool.ast.statements.IStatement;
 import dtool.ast.statements.ScopedStatementList;
@@ -514,14 +513,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	}
 	
 	public Expression parseForeachIterableExpression() {
-		Expression iterable = parseExpression_toMissing();
-		if(tryConsume(DeeTokens.DOUBLE_DOT)) {
-			ParseHelper parse = new ParseHelper(iterable);
-			Expression lower = iterable; 
-			Expression upper = parseExpression_toMissing();
-			return parse.conclude(new ForeachRangeExpression(lower, upper));
-		}
-		return iterable;
+		return parseExpression_toMissing();
 	}
 	
 	public NodeResult<StatementSwitch> parseStatementSwitch() {

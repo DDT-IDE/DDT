@@ -38,7 +38,6 @@
   
   ►#?STRUCTURE_EXPECTED!【foo++●                 ExpPostfix(#@ExpIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【typeof(foo)(1, 3)●             ExpCall(ExpReference(RefTypeof(#@ExpIdentifier)) Integer Integer)】●
-  ►#?STRUCTURE_EXPECTED!【foo[7..[123]]#_EXP_AMBIG(flag)●ExpSlice(#@ExpIdentifier Integer ExpLiteralArray(?))】●
 
   ►#?STRUCTURE_EXPECTED!【is(foo : bar[])●ExpIs(RefIdentifier RefTypeDynArray(RefIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【__traits(isStaticFunction, myfn, int, 123)●ExpTraits(Symbol RefIdentifier RefPrimitive Integer)】●
@@ -155,9 +154,15 @@ Lambda expression is here because it's right side is an "open-ended" parsing of 
 #@ASSIGNEXP__LITE《#@EXP_ASSIGN__LITE》
 
 
-#@EXP_COMMA《#@EXP_ASSIGN●#@EXP_CONDITIONAL__LITE》
+#@EXP_COMMA《
+  ►#@EXP_ASSIGN●
+  ►#@EXP_CONDITIONAL__LITE●
+  ►#@EXP_COMMA__LITE●
+¤》
+
 #@EXP_COMMA__LITE《
   ►#?STRUCTURE_EXPECTED!【12,"asd"●ExpInfix(Integer String)】●
+  ►#?STRUCTURE_EXPECTED!【7 .. [123]●ExpInfix(Integer ExpLiteralArray(?))】●
 ¤》
 
 

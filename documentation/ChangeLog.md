@@ -12,8 +12,9 @@
    * $/bin/dmd -> $/share/dmd/src/druntime/import ; $/share/dmd/src/phobos
  * Added: Support for DMD 2.066 changes:
    * `extern ( C++, IdentifierList )` syntax
- * Fix #74: Parsing immutable in foreach
- * Fix #70: Template instance UDAs
+ * Fixed #74: Syntax error parsing immutable in foreach
+ * Fixed #70: Syntax error parsing Template instance UDAs
+ * Fixed #67: Syntax error parsing multidimensional slices
 
 
 ### DDT 0.10.2
