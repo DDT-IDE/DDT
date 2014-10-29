@@ -44,7 +44,7 @@ Test function/template interactions - paramDefault convertion :
 #@FN_PARAMS_SINGLE《
   ►#@FN_PARAM_BASE ●
   
-  ►#?STRUCTURE_EXPECTED!【Foo foo=bar[] ●FunctionParameter(RefIdentifier DefSymbol ExpSlice(#@ExpIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【Foo foo=bar[] ●FunctionParameter(RefIdentifier DefSymbol ExpIndex(#@ExpIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=bar* #@NO_EXP●FunctionParameter(RefIdentifier DefSymbol ExpInfix(#@ExpIdentifier #@NO_EXP))】●
   ►#?STRUCTURE_EXPECTED!【Foo foo=#@TYPE_AS_EXP●FunctionParameter(RefIdentifier DefSymbol #@TYPE_AS_EXP)】●
   ►#?STRUCTURE_EXPECTED!【Foo foo= #@_EXP_REFS_BREAK!《#?FN_PARAM__NO_BROKEN【#:DISCARD_CASE●#@PARENS_BREAK】》 #@EXP_REFS ●

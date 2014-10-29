@@ -71,9 +71,9 @@ _EXP_AMBIG : marker for cases that can be cleanly parsed as refs
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag)  .foo.bar ● ExpReference(RefQualified(RefModuleQualified(?) RefIdentifier))】●
   
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo!(int)●ExpReference(RefTemplateInstance(RefIdentifier RefPrimitive) )】●
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[]● ExpSlice(#@ExpIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[]● ExpIndex(#@ExpIdentifier)】●
   
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【int】[]   ●ExpSlice(#@INT_AS_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【int】[]   ●ExpIndex(#@INT_AS_EXP)】●
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[#error(TYPE_AS_EXP_VALUE)【int】]●ExpIndex(#@ExpIdentifier #@INT_AS_EXP)】●
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【int】[foo]●ExpIndex(#@INT_AS_EXP #@ExpIdentifier)】●
 ¤》
@@ -91,7 +91,7 @@ _EXP_AMBIG : marker for cases that can be cleanly parsed as refs
 #@EXP_REFS《
   ►#@EXP_UNARY_REFS●
   ►#@EXP_NON_UNARY_REFS●
-  ►#?STRUCTURE_EXPECTED!【foo[] #@_EXP_REFS_BREAK function(bar) ● ExpSlice(#@ExpIdentifier) #@BREAK】●
+  ►#?STRUCTURE_EXPECTED!【foo[] #@_EXP_REFS_BREAK function(bar) ● ExpIndex(#@ExpIdentifier) #@BREAK】●
 ¤》
 
 #@EXP_UNARY《
@@ -101,7 +101,7 @@ _EXP_AMBIG : marker for cases that can be cleanly parsed as refs
   ►#?STRUCTURE_EXPECTED!【new(123, foo) .bar.Foo(+1, foo[123])●ExpNew(? #@ExpIdentifier RefQualified(* *) * *)】●
   ►#?STRUCTURE_EXPECTED!【cast(Foo) foo●         ExpCast(RefIdentifier #@ExpIdentifier)】●
 
-  ►#?STRUCTURE_EXPECTED!【*foo[]●      ExpPrefix(ExpSlice(#@ExpIdentifier))】●
+  ►#?STRUCTURE_EXPECTED!【*foo[]●      ExpPrefix(ExpIndex(#@ExpIdentifier))】●
   ►#?STRUCTURE_EXPECTED!【!foo[[123]]● ExpPrefix(ExpIndex(#@ExpIdentifier ExpLiteralArray(?)))】●
 ¤》
 #@EXP_UNARY__LITE《

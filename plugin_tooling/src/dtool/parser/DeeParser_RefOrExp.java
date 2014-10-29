@@ -941,9 +941,6 @@ protected class ParseRule_Expression {
 					return parse.conclude(new ExpLiteralArray(nodeListView(elements)));
 				}
 			}
-			if(elements == null || elements.size() == 0) {
-				return parse.conclude(new ExpSlice(calleeExp));
-			}
 			return parse.conclude(new ExpIndex(calleeExp, nodeListView(elements)));
 		}
 		

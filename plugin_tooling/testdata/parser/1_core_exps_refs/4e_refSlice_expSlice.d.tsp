@@ -11,7 +11,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION)    slicee[ #@CLOSEBRACKET_OR_BREAK
-#STRUCTURE_EXPECTED:  ExpSlice( #@ExpIdentifier )
+#STRUCTURE_EXPECTED:  ExpIndex( #@ExpIdentifier )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(EXPRESSION)    #@EXP_POSTFIX [#@EXP_ASSIGN__LITE  ..  #@EXP_ASSIGN__LITE  #@CLOSEBRACKET_OR_BREAK
 #STRUCTURE_EXPECTED:  ExpSlice( #@EXP_POSTFIX #@EXP_ASSIGN__LITE #@EXP_ASSIGN__LITE  #@CLOSEBRACKET_OR_BREAK )
