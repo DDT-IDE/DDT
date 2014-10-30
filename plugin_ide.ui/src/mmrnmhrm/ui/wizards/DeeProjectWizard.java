@@ -145,7 +145,8 @@ public class DeeProjectWizard extends ProjectWizardExtension {
 					DeeCore.logInternalError(e);
 				}
 			}
-			return fBuildSettingsPage.performOk();
+			fBuildSettingsPage.performOk();
+			return true;
 		}
 		return res;
 	}
