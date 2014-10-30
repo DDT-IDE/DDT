@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="DDT Target" sequenceNumber="32">
+<?pde version="3.8"?><target name="DDT Target" sequenceNumber="35">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.junit" version="4.11.0.v201303080030"/>
@@ -12,8 +12,8 @@
 <repository location="http://download.eclipse.org/releases/kepler/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.cdt.platform.feature.group" version="8.4.0.201406111759"/>
-<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.4.0.201406111759"/>
+<unit id="org.eclipse.cdt.platform.feature.group" version="8.5.0.201409172108"/>
+<unit id="org.eclipse.cdt.gnu.dsf.feature.group" version="8.5.0.201409172108"/>
 <repository location="http://download.eclipse.org/releases/luna/"/>
 </location>
 </locations>

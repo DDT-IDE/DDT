@@ -17,7 +17,9 @@
  * Fixed #67: Syntax error parsing multidimensional slices
  * Fixed #76: Incorrect D editor tab icon if filename not a valid module name
  * Fixed: New D project wizard dialog doesn't get closed when Finish is pressed in first page.
- * Fixed #78: Go to Matching Bracket not working.   
+ * Fixed #78: Go to Matching Bracket not working.
+ 
+▶ Recommended/tested CDT version: 8.5.0
 
 
 ### DDT 0.10.2
