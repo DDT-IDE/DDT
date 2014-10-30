@@ -1,6 +1,6 @@
 ## DDT release ChangeLog
 
-### DDT 0.10.x
+### DDT 0.10.3
  * Changed: Creating a new DUB project now creates a Hello World app. (fix problem mentioned in #58)
  * Fixed: some editor operations (such as DDoc hover) not working on editors opened using Open Type dialog. 
  * Added build console preference page. 
@@ -16,7 +16,8 @@
  * Fixed #70: Syntax error parsing Template instance UDAs
  * Fixed #67: Syntax error parsing multidimensional slices
  * Fixed #76: Incorrect D editor tab icon if filename not a valid module name
- * Fixed: New D project wizard dialog doesn't get closed when Finish is pressed in first page.  
+ * Fixed: New D project wizard dialog doesn't get closed when Finish is pressed in first page.
+ * Fixed #78: Go to Matching Bracket not working.   
 
 
 ### DDT 0.10.2

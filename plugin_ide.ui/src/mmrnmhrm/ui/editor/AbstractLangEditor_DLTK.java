@@ -17,6 +17,9 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 
 import org.dsource.ddt.lang.ui.editor.ScriptEditorExtension;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
+import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 /**
  * A similar class to {@link AbstractLangEditor}, based on the DLTK hieararchy.
@@ -32,6 +35,24 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditorExtension {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		initialize_setContextMenuIds();
+	}
+	
+	/* ----------------- text presentation ----------------- */
+	
+	protected ICharacterPairMatcher bracketMatcher = 
+			new DefaultCharacterPairMatcher("{}[]()".toCharArray());
+	
+	@Override
+	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+		support.setCharacterPairMatcher(bracketMatcher);
+		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
+		
+		super.configureSourceViewerDecorationSupport(support);
+	}
+	
+	@Override
+	protected ICharacterPairMatcher createBracketMatcher() {
+		return bracketMatcher;
 	}
 	
 	/* ----------------- actions ----------------- */

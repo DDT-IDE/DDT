@@ -10,14 +10,8 @@ import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 public class DeeEditor extends DeeBaseEditor {
-	
-	private ICharacterPairMatcher bracketMatcher = 
-		new DefaultCharacterPairMatcher("{}[]()".toCharArray());
 	
 	@Override
 	public String getEditorId() {
@@ -61,14 +55,6 @@ public class DeeEditor extends DeeBaseEditor {
 			protected void doDispose() {
 			}
 		};
-	}
-	
-	@Override
-	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
-		support.setCharacterPairMatcher(bracketMatcher);
-		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
-		
-		super.configureSourceViewerDecorationSupport(support);
 	}
 	
 	@SuppressWarnings("restriction") 

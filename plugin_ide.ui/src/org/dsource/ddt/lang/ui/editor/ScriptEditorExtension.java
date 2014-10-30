@@ -23,7 +23,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.actions.ActionGroup;
@@ -116,6 +116,13 @@ public abstract class ScriptEditorExtension extends ScriptEditor {
 			fScriptEditorErrorTickUpdater = null;
 		}
 		super.dispose();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected ICharacterPairMatcher createBracketMatcher() {
+		return super.createBracketMatcher();
 	}
 	
 }
