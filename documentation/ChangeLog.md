@@ -1,8 +1,6 @@
 ## DDT release ChangeLog
 
 ### DDT 0.10.3
- * Changed: Creating a new DUB project now creates a Hello World app. (fix problem mentioned in #58)
- * Fixed: some editor operations (such as DDoc hover) not working on editors opened using Open Type dialog. 
  * Added build console preference page. 
   * Can now customize build console text colors.
   * Activate console on error message option.
@@ -10,14 +8,16 @@
  * Added: Now recognizes Mac OS X common DMD compiler layouts:
    * $/bin/dmd -> $/src/druntime/import ; $/src/phobs 
    * $/bin/dmd -> $/share/dmd/src/druntime/import ; $/share/dmd/src/phobos
- * Added: Support for DMD 2.066 changes:
-   * `extern ( C++, IdentifierList )` syntax
- * Fixed #74: Syntax error parsing immutable in foreach
- * Fixed #70: Syntax error parsing Template instance UDAs
- * Fixed #67: Syntax error parsing multidimensional slices
+ * Minimum CDT version is now 8.5.0 .
+ * Added: Creating a new DUB project now creates a "Hello World" app. (fix problem mentioned in #58)
+ * Added: support for D's 2.066 `extern ( C++, IdentifierList )` syntax
+ * Added/fixed #74: Syntax error parsing immutable in foreach
+ * Added/fixed #70: Syntax error parsing Template instance UDAs
+ * Added/fixed #67: Syntax error parsing multidimensional slices
  * Fixed #76: Incorrect D editor tab icon if filename not a valid module name
- * Fixed: New D project wizard dialog doesn't get closed when Finish is pressed in first page.
  * Fixed #78: Go to Matching Bracket not working.
+ * Fixed: New D project wizard dialog doesn't get closed when Finish is pressed in first page.
+ * Fixed: some editor operations (such as DDoc hover) not working on editors opened using Open Type dialog. 
  
 ▶ Recommended/tested CDT version: 8.5.0
 
