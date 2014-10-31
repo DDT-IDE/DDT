@@ -20,12 +20,13 @@ import java.util.List;
 
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
+import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
+import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -37,7 +38,7 @@ import dtool.ast.definitions.INamedElement;
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	protected final ISourceModule srcModule;
-	protected final ScriptEditor editor;
+	protected final DeeEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.editor = CommonDeeUITest.openDeeEditorForFile(file);
@@ -63,7 +64,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		return ccOffset + markerString.length();
 	}
 	
-	public static void invokeContentAssist(ScriptEditor editor, int offset) {
+	public static void invokeContentAssist(AbstractLangEditor_DLTK editor, int offset) {
 		editor.getViewer().setSelectedRange(offset, 0);
 		ITextOperationTarget target= (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
 		if (target != null && target.canDoOperation(ISourceViewer.CONTENTASSIST_PROPOSALS)) {
@@ -71,7 +72,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		}
 	}
 	
-	public static ContentAssistant getContentAssistant(ScriptEditor scriptEditor) {
+	public static ContentAssistant getContentAssistant(AbstractLangEditor_DLTK scriptEditor) {
 		// Need to do this because AdaptedSourceViewer is not extendable
 		try {
 			Object caField = ReflectionUtils.readField(scriptEditor.getScriptSourceViewer(), "fContentAssistant");

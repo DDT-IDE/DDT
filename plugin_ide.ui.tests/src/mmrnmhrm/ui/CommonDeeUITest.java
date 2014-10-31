@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.tests.CommonUITest;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
@@ -24,10 +24,10 @@ import org.eclipse.ui.ide.IDE;
 
 public class CommonDeeUITest extends CommonUITest {
 	
-	public static ScriptEditor openDeeEditorForFile(IFile file) {
+	public static AbstractLangEditor_DLTK openDeeEditorForFile(IFile file) {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		try {
-			ScriptEditor editor = (ScriptEditor) IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
+			AbstractLangEditor_DLTK editor = (AbstractLangEditor_DLTK) IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
 			assertTrue(editor.getScriptSourceViewer() != null);
 			return editor;
 		} catch(PartInitException e) {

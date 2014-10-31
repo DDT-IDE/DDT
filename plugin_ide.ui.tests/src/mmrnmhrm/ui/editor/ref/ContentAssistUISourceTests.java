@@ -15,12 +15,12 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.engine_client.CompletionEngineSourceTests;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.CommonDeeUITest;
+import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.AfterClass;
@@ -51,7 +51,7 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		DToolClient.defaultCompilerPathOverride = null;
 	}
 	
-	protected static ScriptEditor editor;
+	protected static AbstractLangEditor_DLTK editor;
 	
 	@Override
 	public void cleanupTestCase() {
