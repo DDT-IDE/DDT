@@ -19,11 +19,12 @@ import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.texteditor.ITextEditor;
+
+import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
 public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	

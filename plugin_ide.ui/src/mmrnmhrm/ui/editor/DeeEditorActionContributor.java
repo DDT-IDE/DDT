@@ -1,12 +1,13 @@
 package mmrnmhrm.ui.editor;
 
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
+
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 
 public class DeeEditorActionContributor extends	SourceModuleEditorActionContributor {
 
@@ -48,7 +49,7 @@ public class DeeEditorActionContributor extends	SourceModuleEditorActionContribu
 	@Override
 	public void setActiveEditor(IEditorPart part) {
 		super.setActiveEditor(part);
-		if (part instanceof ScriptEditor) {
+		if (part instanceof ScriptEditor2) {
 			getActionBars().setGlobalActionHandler(DLTKActionConstants.OPEN_TYPE_HIERARCHY, null);
 			getActionBars().setGlobalActionHandler(DLTKActionConstants.OPEN_CALL_HIERARCHY, null);
 		}

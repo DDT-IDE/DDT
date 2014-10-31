@@ -7,7 +7,6 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
 import org.eclipse.dltk.ui.DLTKPluginImages;
@@ -15,11 +14,12 @@ import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesAction extends FindAction {
 
-	public FindReferencesAction(ScriptEditor deeEditor) {
+	public FindReferencesAction(ScriptEditor2 deeEditor) {
 		super(deeEditor);
 	}
 	

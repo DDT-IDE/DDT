@@ -217,26 +217,4 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 		};
 	}
 	
-	
-	@Override
-	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
-		// Do not create hierarchy presenter if there's no Compilation Unit.
-		if (getEditor() != null
-				&& getEditor().getEditorInput() != null
-				&& EditorUtility.getEditorInputModelElement(getEditor(), true) == null)
-			return null;
-		
-		InformationPresenter presenter = new InformationPresenter(getHierarchyPresenterControlCreator());
-		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		presenter.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
-		@SuppressWarnings("restriction")
-		IInformationProvider provider = new org.eclipse.dltk.internal.ui.text.ScriptElementProvider(getEditor(), doCodeResolve);
-//		IInformationProvider provider = new ScriptElementProvider(getEditor(), doCodeResolve);
-		
-		presenter.setInformationProvider(provider, DeePartitions.DEE_CODE);
-		
-		presenter.setSizeConstraints(50, 20, true, false);
-		return presenter;
-	}
-	
 }

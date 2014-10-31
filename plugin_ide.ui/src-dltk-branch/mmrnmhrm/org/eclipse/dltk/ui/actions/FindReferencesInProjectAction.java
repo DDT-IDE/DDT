@@ -7,18 +7,18 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesInProjectAction extends FindAction {
 
-	public FindReferencesInProjectAction(ScriptEditor deeEditor) {
+	public FindReferencesInProjectAction(ScriptEditor2 deeEditor) {
 		super(deeEditor);
 	}
 	
@@ -36,7 +36,7 @@ public final class FindReferencesInProjectAction extends FindAction {
 	@Override
 	protected QuerySpecification createQuery(INamedElement defunit) throws ModelException {
 		DLTKSearchScopeFactory factory= DLTKSearchScopeFactory.getInstance();
-		ScriptEditor editor= deeEditor;
+		ScriptEditor2 editor= deeEditor;
 		
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
 		

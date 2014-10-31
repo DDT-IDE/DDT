@@ -3,7 +3,8 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 
 
 /**
@@ -27,7 +28,7 @@ public class WorkingSetFindAction extends FindAction {
 	/**
 	 * Note: This constructor is for internal use only. Clients should not call this constructor.
 	 */
-	public WorkingSetFindAction(ScriptEditor editor, FindAction action, String workingSetName) {
+	public WorkingSetFindAction(ScriptEditor2 editor, FindAction action, String workingSetName) {
 		super(editor);
 		init(action, workingSetName);
 		toolkit = action.getLanguageToolkit();

@@ -21,7 +21,6 @@ import java.util.List;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
-import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 
 import org.eclipse.core.resources.IFile;
@@ -38,7 +37,7 @@ import dtool.ast.definitions.INamedElement;
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	protected final ISourceModule srcModule;
-	protected final DeeEditor editor;
+	protected final AbstractLangEditor_DLTK editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.editor = CommonDeeUITest.openDeeEditorForFile(file);

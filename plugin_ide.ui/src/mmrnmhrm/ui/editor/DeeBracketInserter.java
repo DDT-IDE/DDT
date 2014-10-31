@@ -1,12 +1,13 @@
 package mmrnmhrm.ui.editor;
 
-import org.eclipse.dltk.internal.ui.editor.BracketInserter;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.swt.events.VerifyEvent;
 
-public class DeeBracketInserter extends BracketInserter {
+import _org.eclipse.dltk.internal.ui.editor.BracketInserter2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 
-	public DeeBracketInserter(ScriptEditor editor) {
+public class DeeBracketInserter extends BracketInserter2 {
+
+	public DeeBracketInserter(ScriptEditor2 editor) {
 		super(editor);
 	}
 
@@ -14,7 +15,7 @@ public class DeeBracketInserter extends BracketInserter {
 	public void verifyKey(VerifyEvent event) {
 		// early pruning to slow down normal typing as little as possible
 		if (!event.doit
-				|| this.editor.getInsertMode() != ScriptEditor.SMART_INSERT)
+				|| this.editor.getInsertMode() != ScriptEditor2.SMART_INSERT)
 			return;
 		switch (event.character) {
 		case '(':

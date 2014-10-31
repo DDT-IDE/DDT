@@ -12,19 +12,19 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesInHierarchyAction extends FindAction {
 
-	public FindReferencesInHierarchyAction(ScriptEditor deeEditor) {
+	public FindReferencesInHierarchyAction(ScriptEditor2 deeEditor) {
 		super(deeEditor);
 	}
 	

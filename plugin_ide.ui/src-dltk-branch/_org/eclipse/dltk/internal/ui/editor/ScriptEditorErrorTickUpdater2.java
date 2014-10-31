@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.internal.ui.editor;
+package _org.eclipse.dltk.internal.ui.editor;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.ui.DeeImages;
@@ -29,11 +29,11 @@ import org.eclipse.ui.IEditorInput;
  */
 public class ScriptEditorErrorTickUpdater2 implements IProblemChangedListener {
 	
-	private ScriptEditor fScriptEditor;
+	private ScriptEditor2 fScriptEditor;
 	
 	protected ProblemsLabelDecorator problemsDecorator = new ProblemsLabelDecorator(null);
 	
-	public ScriptEditorErrorTickUpdater2(ScriptEditor editor) {
+	public ScriptEditorErrorTickUpdater2(ScriptEditor2 editor) {
 		Assert.isNotNull(editor);
 		fScriptEditor = editor;
 		DLTKUIPlugin.getDefault().getProblemMarkerManager().addListener(this);

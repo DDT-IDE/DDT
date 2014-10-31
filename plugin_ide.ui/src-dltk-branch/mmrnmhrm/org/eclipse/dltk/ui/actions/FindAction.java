@@ -19,7 +19,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchQuery;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
@@ -36,6 +35,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
@@ -51,10 +51,10 @@ public abstract class FindAction extends SelectionDispatchAction {
 
 	protected static final String SEARCH_REFS = "References";
 
-	protected final ScriptEditor deeEditor;
+	protected final ScriptEditor2 deeEditor;
 	protected IWorkbenchSite fSite;
 
-	public FindAction(ScriptEditor deeEditor) {
+	public FindAction(ScriptEditor2 deeEditor) {
 		super(deeEditor.getSite());
 		this.deeEditor = deeEditor;
 		this.fSite = deeEditor.getSite();

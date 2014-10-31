@@ -1,14 +1,15 @@
 package mmrnmhrm.ui.editor;
 
-import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 
+import _org.eclipse.dltk.internal.ui.editor.BracketInserter2;
+
 public abstract class DeeBaseEditor extends AbstractLangEditor_DLTK {
 	
-	protected BracketInserter fBracketInserter = new DeeBracketInserter(this);
+	protected BracketInserter2 fBracketInserter = new DeeBracketInserter(this);
 	
 	@Override
 	public void createPartControl(Composite parent) {

@@ -7,7 +7,6 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.internal.ui.callhierarchy.SearchUtil;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.DLTKSearchScopeFactory;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
 import org.eclipse.dltk.ui.DLTKPluginImages;
@@ -15,17 +14,18 @@ import org.eclipse.dltk.ui.search.PatternQuerySpecification;
 import org.eclipse.dltk.ui.search.QuerySpecification;
 import org.eclipse.ui.IWorkingSet;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.INamedElement;
 
 public final class FindReferencesInWorkingSetAction extends FindAction {
 
 	private IWorkingSet[] fWorkingSets;
 	
-	public FindReferencesInWorkingSetAction(ScriptEditor deeEditor) {
+	public FindReferencesInWorkingSetAction(ScriptEditor2 deeEditor) {
 		super(deeEditor);
 	}
 	
-	public FindReferencesInWorkingSetAction(ScriptEditor deeEditor, IWorkingSet[] workingSets) {
+	public FindReferencesInWorkingSetAction(ScriptEditor2 deeEditor, IWorkingSet[] workingSets) {
 		super(deeEditor);
 		fWorkingSets= workingSets;
 	}

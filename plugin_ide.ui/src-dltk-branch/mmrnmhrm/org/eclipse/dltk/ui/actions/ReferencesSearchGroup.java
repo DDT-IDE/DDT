@@ -5,7 +5,6 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.callhierarchy.SearchUtil;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.search.SearchMessages;
 import org.eclipse.dltk.ui.IContextMenuConstants;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
@@ -24,6 +23,8 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+
 
 /**
  * Action group that adds the search for references actions to a context menu
@@ -41,7 +42,7 @@ public class ReferencesSearchGroup extends ActionGroup {
 
 	private IWorkbenchSite fSite;
 
-	private ScriptEditor fEditor;
+	private ScriptEditor2 fEditor;
 
 	private IActionBars fActionBars;
 
@@ -108,7 +109,7 @@ public class ReferencesSearchGroup extends ActionGroup {
 	 * @param editor
 	 *            the Script editor
 	 */
-	public ReferencesSearchGroup(ScriptEditor editor, IDLTKLanguageToolkit tk) {
+	public ReferencesSearchGroup(ScriptEditor2 editor, IDLTKLanguageToolkit tk) {
 		Assert.isNotNull(editor);
 		this.toolkit = tk;
 		fEditor = editor;
