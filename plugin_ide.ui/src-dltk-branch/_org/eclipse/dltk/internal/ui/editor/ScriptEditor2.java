@@ -48,7 +48,6 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
-import org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
@@ -56,7 +55,6 @@ import org.eclipse.dltk.internal.ui.editor.IScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
-import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
@@ -70,7 +68,6 @@ import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
-import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingUpdater;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -79,8 +76,6 @@ import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -94,7 +89,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension5;
@@ -139,20 +133,16 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.part.IShowInTargetList;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
-import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -160,11 +150,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingReconciler;
-import _org.eclipse.dltk.ui.actions.GenerateActionGroup;
-import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
-import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
 
-public abstract class ScriptEditor2 extends ScriptEditor_Actions
+public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
 		IScriptEditor {
 	
@@ -210,19 +197,9 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	 */
 	private IFoldingStructureProvider fProjectionModelUpdater;
 
-	/**
-	 * The action group for folding.
-	 */
-	private ActionGroup fFoldingGroup;
 
 	/** The information presenter. */
 	private InformationPresenter fInformationPresenter;
-
-	private CompositeActionGroup fContextMenuGroup;
-
-	// private SelectionHistory fSelectionHistory;
-
-	private CompositeActionGroup fActionGroups;
 
 	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 
@@ -490,139 +467,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return true;
 	}
 
-	/*
-	 * @see AbstractTextEditor#editorContextMenuAboutToShow
-	 */
-	@Override
-	public void editorContextMenuAboutToShow(IMenuManager menu) {
-		super.editorContextMenuAboutToShow(menu);
-		
-		menu.insertAfter(ICommonMenuConstants.GROUP_OPEN, new GroupMarker(ICommonMenuConstants.GROUP_SHOW));
-		
-		ActionContext context = new ActionContext(getSelectionProvider()
-				.getSelection());
-		context.setInput(getEditorInput());
-		fContextMenuGroup.setContext(context);
-		fContextMenuGroup.fillContextMenu(menu);
-		fContextMenuGroup.setContext(null);
-		// Quick views
-		menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN,
-				getAction(IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
-	}
-
-	@Override
-	protected void createActions() {
-		super.createActions();
-
-		fActionGroups = new CompositeActionGroup(new ActionGroup[] { });
-
-		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { });
-
-		fFoldingGroup = createFoldingActionGroup();
-
-		// ResourceAction resAction = new TextOperationAction(DLTKEditorMessages
-		// .getBundleForConstructedKeys(), "ShowDocumentaion.", this,
-		// ISourceViewer.INFORMATION, true);
-		//
-		// resAction = new InformationDispatchAction(DLTKEditorMessages
-		// .getBundleForConstructedKeys(), "ShowDocumentation.",
-		// (TextOperationAction) resAction);
-		//
-		// resAction
-		// .setActionDefinitionId(IScriptEditorActionDefinitionIds.
-		// SHOW_DOCUMENTATION);
-		// setAction("ShowDocumentation", resAction);
-
-		Action action = new GotoMatchingBracketAction(this);
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
-		setAction(GotoMatchingBracketAction.GOTO_MATCHING_BRACKET, action);
-
-		Action outlineAction = new TextOperationAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ShowOutline.", this, //$NON-NLS-1$
-				ScriptSourceViewer.SHOW_OUTLINE, true);
-		outlineAction
-				.setActionDefinitionId(IScriptEditorActionDefinitionIds.SHOW_OUTLINE);
-		setAction(IScriptEditorActionDefinitionIds.SHOW_OUTLINE, outlineAction);
-
-		// ContentAssistProposal
-		action = new ContentAssistAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ContentAssistProposal.", this); //$NON-NLS-1$
-		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-		setAction("ContentAssistProposal", action); //$NON-NLS-1$
-		markAsStateDependentAction("ContentAssistProposal", true); //$NON-NLS-1$
-
-		// ContentAssistContextInformation
-		action = new TextOperationAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ContentAssistContextInformation.", this, ISourceViewer.CONTENTASSIST_CONTEXT_INFORMATION); //$NON-NLS-1$
-		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_CONTEXT_INFORMATION);
-		setAction("ContentAssistContextInformation", action); //$NON-NLS-1$
-		markAsStateDependentAction("ContentAssistContextInformation", true); //$NON-NLS-1$
-
-		// GoToNextMember
-		action = GoToNextPreviousMemberAction.newGoToNextMemberAction(this);
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_NEXT_MEMBER);
-		setAction(GoToNextPreviousMemberAction.NEXT_MEMBER, action);
-
-		// GoToPreviousMember
-		action = GoToNextPreviousMemberAction.newGoToPreviousMemberAction(this);
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_PREVIOUS_MEMBER);
-		setAction(GoToNextPreviousMemberAction.PREVIOUS_MEMBER, action);
-
-		// Source menu actions
-		action = new TextOperationAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"Comment.", this, ITextOperationTarget.PREFIX); //$NON-NLS-1$
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.COMMENT);
-		setAction(DLTKActionConstants.COMMENT, action);
-		markAsStateDependentAction(DLTKActionConstants.COMMENT, true);
-
-		action = new TextOperationAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"Uncomment.", this, ITextOperationTarget.STRIP_PREFIX); //$NON-NLS-1$
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.UNCOMMENT);
-		setAction(DLTKActionConstants.UNCOMMENT, action);
-		markAsStateDependentAction(DLTKActionConstants.UNCOMMENT, true);
-
-		action = new ToggleCommentAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ToggleComment.", this); //$NON-NLS-1$
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.TOGGLE_COMMENT);
-		setAction(DLTKActionConstants.TOGGLE_COMMENT, action);
-		markAsStateDependentAction(DLTKActionConstants.TOGGLE_COMMENT, true);
-
-		ISourceViewer sourceViewer = getSourceViewer();
-		SourceViewerConfiguration configuration = getSourceViewerConfiguration();
-		((ToggleCommentAction) action).configure(sourceViewer, configuration);
-
-		final ActionGroup generateActions = createGenerateActionGroup();
-		if (generateActions != null) {
-			fActionGroups.addGroup(generateActions);
-			fContextMenuGroup.addGroup(generateActions);
-		}
-	}
-
-	/**
-	 * @since 3.0
-	 */
-	protected ActionGroup createGenerateActionGroup() {
-		return new GenerateActionGroup(this,
-				ITextEditorActionConstants.GROUP_EDIT);
-	}
-
-	/**
-	 * Creates action group for folding.
-	 * 
-	 * @return
-	 * @since 3.0
-	 */
-	protected ActionGroup createFoldingActionGroup() {
-		return new FoldingActionGroup(this, getSourceViewer_(),
-				getScriptPreferenceStore());
-	}
-
 	@Override
 	protected IVerticalRulerColumn createAnnotationRulerColumn(
 			CompositeRuler ruler) {
@@ -659,16 +503,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return column;
 	}
 
-	/**
-	 * Returns the folding action group, or <code>null</code> if there is none.
-	 * 
-	 * @return the folding action group, or <code>null</code> if there is none
-	 * 
-	 */
-	ActionGroup getFoldingActionGroup() {
-		return fFoldingGroup;
-	}
-	
 	@Override
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
@@ -1432,19 +1266,9 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	 * @return folding structure provider or <code>null</code>.
 	 */
 	protected IFoldingStructureProvider createFoldingStructureProvider() {
-		return getFoldingStructureProvider();
-	}
-
-	/**
-	 * Returns folding structure provider.
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	protected IFoldingStructureProvider getFoldingStructureProvider() {
 		return FoldingProviderManager.getStructureProvider(getNatureId());
 	}
-
+	
 	private boolean isEditorHoverProperty(String property) {
 		return PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS.equals(property);
 	}
@@ -1461,10 +1285,10 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 
 			String t = types[i];
 
-			ISourceViewer sourceViewer = getSourceViewer();
+			AdaptedSourceViewer sourceViewer = getSourceViewer_();
 			if (sourceViewer instanceof ITextViewerExtension2) {
 				// Remove existing hovers
-				((ITextViewerExtension2) sourceViewer).removeTextHovers(t);
+				sourceViewer.removeTextHovers(t);
 
 				int[] stateMasks = configuration
 						.getConfiguredTextHoverStateMasks(getSourceViewer(), t);
@@ -1474,19 +1298,17 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 						int stateMask = stateMasks[j];
 						ITextHover textHover = configuration.getTextHover(
 								sourceViewer, t, stateMask);
-						((ITextViewerExtension2) sourceViewer).setTextHover(
-								textHover, t, stateMask);
+						sourceViewer.setTextHover(textHover, t, stateMask);
 					}
 				} else {
 					ITextHover textHover = configuration.getTextHover(
 							sourceViewer, t);
-					((ITextViewerExtension2) sourceViewer).setTextHover(
+					sourceViewer.setTextHover(
 							textHover, t,
 							ITextViewerExtension2.DEFAULT_HOVER_STATE_MASK);
 				}
 			} else
-				sourceViewer.setTextHover(
-						configuration.getTextHover(sourceViewer, t), t);
+				sourceViewer.setTextHover(configuration.getTextHover(sourceViewer, t), t);
 		}
 	}
 
@@ -1702,45 +1524,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		}
 	}
 
-	/*
-	 * @see AbstractTextEditor#rulerContextMenuAboutToShow(IMenuManager)
-	 */
-	@Override
-	protected void rulerContextMenuAboutToShow(IMenuManager menu) {
-		super.rulerContextMenuAboutToShow(menu);
-		IMenuManager foldingMenu = new MenuManager(
-				DLTKEditorMessages.Editor_FoldingMenu_name, "projection"); //$NON-NLS-1$
-		menu.appendToGroup(ITextEditorActionConstants.GROUP_RULERS, foldingMenu);
-
-		IAction action = getAction("FoldingToggle"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-		action = getAction("FoldingExpandAll"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-		action = getAction("FoldingCollapseAll"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-		action = getAction("FoldingRestore"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-		action = getAction("FoldingCollapseMembers"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-		action = getAction("FoldingCollapseComments"); //$NON-NLS-1$
-		if (action != null) {
-			foldingMenu.add(action);
-		}
-	}
-
-	/*
-	 * @see org.eclipse.ui.texteditor.AbstractTextEditor#performRevert()
-	 */
 	@Override
 	protected void performRevert() {
 		ProjectionViewer projectionViewer = (ProjectionViewer) getSourceViewer();

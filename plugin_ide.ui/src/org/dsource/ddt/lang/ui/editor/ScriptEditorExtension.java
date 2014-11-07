@@ -24,10 +24,10 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.IShowInTargetList;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor_Actions;
 
-public abstract class ScriptEditorExtension extends ScriptEditor2 {
+public abstract class ScriptEditorExtension extends ScriptEditor_Actions {
 	
 	@Override
 	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
