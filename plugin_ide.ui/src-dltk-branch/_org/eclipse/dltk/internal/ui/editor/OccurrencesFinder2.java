@@ -109,7 +109,7 @@ public class OccurrencesFinder2 {
 		final NatureExtensionManager<IOccurrencesFinder> occurrencesFinderManager = new NatureExtensionManager<IOccurrencesFinder>(
 				DLTKUIPlugin.PLUGIN_ID + ".search", IOccurrencesFinder.class);
 		finders = (IOccurrencesFinder[]) occurrencesFinderManager
-				.getInstances(editor.getLanguageToolkit().getNatureId());
+				.getInstances(editor.getNatureId());
 	}
 
 	/**

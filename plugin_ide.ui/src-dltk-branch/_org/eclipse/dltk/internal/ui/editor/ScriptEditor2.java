@@ -16,6 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import mmrnmhrm.ui.DeeUIPlugin;
+
+import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
@@ -202,29 +205,28 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	 * Text operation code for requesting common prefix completion.
 	 */
 	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
-
-	interface ITextConverter {
-		void customizeDocumentCommand(IDocument document,
-				DocumentCommand command);
-	}
-
-	public class AdaptedSourceViewer extends ScriptSourceViewer implements
+	
+	public static class AdaptedSourceViewer extends ScriptSourceViewer implements
 			ICompletionListener {
+		
+		protected static interface ITextConverter {
+			void customizeDocumentCommand(IDocument document, DocumentCommand command);
+		}
+
 		private List<ITextConverter> fTextConverters;
 
 		protected boolean fIgnoreTextConverters = false;
 		protected boolean fInCompletionSession;
-
-		public IContentAssistant getContentAssistant() {
-			return fContentAssistant;
-		}
-
+		
+		protected final ScriptEditor2 editor;
+		
 		public AdaptedSourceViewer(Composite parent,
 				IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 				boolean showAnnotationsOverview, int styles,
-				IPreferenceStore store) {
+				IPreferenceStore store, ScriptEditor2 editor) {
 			super(parent, verticalRuler, overviewRuler,
 					showAnnotationsOverview, styles, store);
+			this.editor = editor;
 		}
 
 		@Override
@@ -247,10 +249,11 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 
 			super.unconfigure();
 		}
+		
+		public IContentAssistant getContentAssistant() {
+			return fContentAssistant;
+		}
 
-		/*
-		 * @see ITextOperationTarget#doOperation(int)
-		 */
 		@Override
 		public void doOperation(int operation) {
 
@@ -260,7 +263,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			switch (operation) {
 			case CONTENTASSIST_PROPOSALS:
 				String msg = fContentAssistant.showPossibleCompletions();
-				setStatusLineErrorMessage(msg);
+				editor.setStatusLineErrorMessage(msg);
 				return;
 			case QUICK_ASSIST:
 				/*
@@ -269,7 +272,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 				 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=133787
 				 */
 				msg = fQuickAssistAssistant.showPossibleQuickAssists();
-				setStatusLineErrorMessage(msg);
+				editor.setStatusLineErrorMessage(msg);
 				return;
 			case UNDO:
 				fIgnoreTextConverters = true;
@@ -351,7 +354,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		}
 
 		private IProject getProject() {
-			final IModelElement input = getInputModelElement();
+			final IModelElement input = editor.getInputModelElement();
 			if (input != null) {
 				final IScriptProject scriptProject = input.getScriptProject();
 				if (scriptProject != null) {
@@ -362,7 +365,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		}
 
 		private ISourceModule getSourceModule() {
-			final IModelElement input = getInputModelElement();
+			final IModelElement input = editor.getInputModelElement();
 			if (input != null) {
 				return (ISourceModule) input
 						.getAncestor(IModelElement.SOURCE_MODULE);
@@ -379,7 +382,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			context.setProperty(
 					ScriptFormattingContextProperties.CONTEXT_PROJECT, project);
 			final IScriptFormatterFactory factory = ScriptFormatterManager
-					.getSelected(getLanguageToolkit().getNatureId(), project);
+					.getSelected(editor.getNatureId(), project);
 			if (factory != null) {
 				context.setProperty(
 						ScriptFormattingContextProperties.CONTEXT_FORMATTER_ID,
@@ -594,32 +597,22 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			stores.add(new EclipsePreferencesAdapter(DefaultScope.INSTANCE,
 					preferenceQualifier));
 		}
-		stores.add(new PreferencesAdapter(DLTKCore.getDefault()
-				.getPluginPreferences()));
+		stores.add(new PreferencesAdapter(DLTKCore.getDefault().getPluginPreferences()));
 		stores.add(EditorsUI.getPreferenceStore());
 		stores.add(PlatformUI.getPreferenceStore());
-		return new ChainedPreferenceStore(
-				stores.toArray(new IPreferenceStore[stores.size()]));
+		return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));
 	}
-
+	
 	public IPreferenceStore getScriptPreferenceStore() {
-		IDLTKLanguageToolkit toolkit = getLanguageToolkit();
-		if (toolkit != null) {
-			IDLTKUILanguageToolkit uiToolkit = DLTKUILanguageManager
-					.getLanguageToolkit(toolkit.getNatureId());
-			if (uiToolkit != null) {
-				return uiToolkit.getPreferenceStore();
-			}
-		}
-		return null;
+		return DeeUIPlugin.getInstance().getPreferenceStore();
 	}
-
+	
+	@Deprecated
 	public ScriptTextTools getTextTools() {
 		return null;
 	}
 
-	protected void connectPartitioningToElement(IEditorInput input,
-			IDocument document) {
+	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 	}
 
 	protected void internalDoSetInput(IEditorInput input) throws CoreException {
@@ -933,14 +926,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	protected ScriptOutlinePage doCreateOutlinePage() {
 		return new ScriptOutlinePage(this, getPreferenceStore());
 	}
-
-	/**
-	 * String identifiying concrete language editor. Used for ex. for fetching
-	 * available filters
-	 * 
-	 * @return
-	 */
-	public abstract String getEditorId();
 
 	/**
 	 * Informs the editor that its outliner has been closed.
@@ -1987,7 +1972,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 			boolean isOverviewRulerVisible, int styles, IPreferenceStore store) {
 		return new AdaptedSourceViewer(parent, verticalRuler,
-				getOverviewRuler(), isOverviewRulerVisible(), styles, store);
+				getOverviewRuler(), isOverviewRulerVisible(), styles, store, this);
 	}
 
 	/**
@@ -2094,21 +2079,14 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	protected String getNatureId() {
 		return getLanguageToolkit().getNatureId();
 	}
-
+	
 	@Override
-	public abstract IDLTKLanguageToolkit getLanguageToolkit();
-
+	public DeeLanguageToolkit getLanguageToolkit() {
+		return DeeLanguageToolkit.getDefault();
+	}
+	
 	protected IDLTKUILanguageToolkit getUILanguageToolkit() {
 		return DLTKUILanguageManager.getLanguageToolkit(getNatureId());
-	}
-
-	/**
-	 * Return identifier of call hierarchy. Used by call hierarchy actions.
-	 * 
-	 * @return
-	 */
-	public String getCallHierarchyID() {
-		return null;
 	}
 
 	/*

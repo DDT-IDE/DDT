@@ -1,5 +1,6 @@
 package org.dsource.ddt.ide.core;
 
+import melnorme.lang.ide.core.LangNature;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IResource;
@@ -7,7 +8,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.core.AbstractLanguageToolkit;
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.environment.IEnvironment;
 
 import dtool.engine.modules.ModuleNamingRules;
@@ -16,10 +16,10 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	
 	private static final String DEE_LANGUAGE_CONTENT_DSOURCE = DeeCore.PLUGIN_ID + ".content.dsource";
 	
-	private static final IDLTKLanguageToolkit instance = new DeeLanguageToolkit();
+	private static final DeeLanguageToolkit instance = new DeeLanguageToolkit();
 	
-	public static IDLTKLanguageToolkit getDefault() {
-		return instance ;
+	public static DeeLanguageToolkit getDefault() {
+		return instance;
 	}
 	
 	@Override
@@ -28,8 +28,8 @@ public class DeeLanguageToolkit extends AbstractLanguageToolkit  {
 	}
 
 	@Override
-	public String getNatureId() {
-		return DeeNature.NATURE_ID;
+	public final String getNatureId() {
+		return LangNature.NATURE_ID;
 	}
 	
 	@Override
