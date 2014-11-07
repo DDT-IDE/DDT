@@ -51,9 +51,9 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		event.character = character;
 		event.keyCode = keycode;
 		event.type = SWT.KeyDown;
-		editor.getViewer().getTextWidget().notifyListeners(SWT.KeyDown, event);
+		editor.getSourceViewer_().getTextWidget().notifyListeners(SWT.KeyDown, event);
 		event.type = SWT.KeyUp;
-		editor.getViewer().getTextWidget().notifyListeners(SWT.KeyUp, event);
+		editor.getSourceViewer_().getTextWidget().notifyListeners(SWT.KeyUp, event);
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		if(TRUE()) 
 			return; // This test is disable because this functionality was removed, not even JDT has it
 		
-		ISourceViewer viewer = editor.getViewer();
+		ISourceViewer viewer = editor.getSourceViewer_();
 		
 		int ccOffset = getMarkerStartPos("/+@CC.I+/");
 		viewer.setSelectedRange(ccOffset, 0);
@@ -116,7 +116,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 	@Test
 	public void testFilteringProposals() throws Exception { testFilteringProposals$(); }
 	public void testFilteringProposals$() throws Exception {
-		ISourceViewer viewer = editor.getViewer();
+		ISourceViewer viewer = editor.getSourceViewer_();
 		
 		int ccOffset = getMarkerStartPos("/+@CC.I+/");
 		viewer.setSelectedRange(ccOffset, 0);

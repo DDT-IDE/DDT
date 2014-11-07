@@ -61,7 +61,7 @@ public class DeeEditor extends DeeBaseEditor {
 	@Override
 	protected org.eclipse.dltk.internal.ui.actions.FoldingActionGroup createFoldingActionGroup() {
 		return new org.eclipse.dltk.internal.ui.actions.
-		FoldingActionGroup(this, getViewer(), DeeUIPlugin.getInstance().getPreferenceStore());
+		FoldingActionGroup(this, getSourceViewer_(), DeeUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

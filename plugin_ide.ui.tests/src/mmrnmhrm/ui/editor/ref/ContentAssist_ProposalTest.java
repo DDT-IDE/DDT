@@ -30,7 +30,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 				ContentAssistant ca = getContentAssistant(editor);
 				
 				DeeCodeCompletionProcessor caProcessor = new DeeCodeCompletionProcessor(editor, ca, DeePartitions.DEE_CODE);
-				ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
+				ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getSourceViewer_(), offset);
 				
 				for (ICompletionProposal completionProposal : proposals) {
 					if(completionProposal instanceof ScriptTemplateProposal) {

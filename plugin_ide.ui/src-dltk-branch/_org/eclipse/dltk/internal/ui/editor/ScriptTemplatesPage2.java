@@ -72,7 +72,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	 */
 	public ScriptTemplatesPage2(ScriptEditor2 scriptEditor,
 			ITemplateAccess templateAccess) {
-		super(scriptEditor, scriptEditor.getViewer());
+		super(scriptEditor, scriptEditor.getSourceViewer_());
 		fScriptEditor = scriptEditor;
 		fTemplateProcessor = new TemplateVariableProcessor();
 		fTemplateAccess = templateAccess;
@@ -83,7 +83,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 		if (!fScriptEditor.validateEditorInputState())
 			return;
 
-		ISourceViewer contextViewer = fScriptEditor.getViewer();
+		ISourceViewer contextViewer = fScriptEditor.getSourceViewer_();
 		ITextSelection textSelection = (ITextSelection) contextViewer
 				.getSelectionProvider().getSelection();
 		if (!isValidTemplate(document, template, textSelection.getOffset(),
@@ -146,7 +146,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 		TemplateProposal proposal = new TemplateProposal(template, context,
 				region, null);
 		fScriptEditor.getSite().getPage().activate(fScriptEditor);
-		proposal.apply(fScriptEditor.getViewer(), ' ', 0, region.getOffset());
+		proposal.apply(fScriptEditor.getSourceViewer_(), ' ', 0, region.getOffset());
 		endCompoundChange(contextViewer);
 	}
 

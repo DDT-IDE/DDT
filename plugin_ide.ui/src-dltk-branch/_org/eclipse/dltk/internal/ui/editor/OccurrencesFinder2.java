@@ -654,7 +654,7 @@ public class OccurrencesFinder2 {
 	}
 
 	protected ISourceViewer getViewer() {
-		return editor.getViewer();
+		return editor.getSourceViewer_();
 	}
 
 	/**

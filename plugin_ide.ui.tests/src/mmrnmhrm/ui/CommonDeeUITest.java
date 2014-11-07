@@ -28,7 +28,7 @@ public class CommonDeeUITest extends CommonUITest {
 		IWorkbenchPage page = WorkbenchUtils.getActivePage();
 		try {
 			AbstractLangEditor_DLTK editor = (AbstractLangEditor_DLTK) IDE.openEditor(page, file, EditorSettings_Actual.EDITOR_ID);
-			assertTrue(editor.getScriptSourceViewer() != null);
+			assertTrue(editor.getSourceViewer_() != null);
 			return editor;
 		} catch(PartInitException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);

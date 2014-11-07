@@ -42,7 +42,7 @@ public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 
 	@Override
 	protected Point computeMenuLocation(StyledText text) {
-		if (fEditor == null || text != fEditor.getViewer().getTextWidget())
+		if (fEditor == null || text != fEditor.getSourceViewer_().getTextWidget())
 			return null;
 		return computeWordStart();
 	}
@@ -50,7 +50,7 @@ public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 	private Point computeWordStart() {
 		ITextSelection selection = (ITextSelection) fEditor
 				.getSelectionProvider().getSelection();
-		IRegion textRegion = ScriptWordFinder.findWord(fEditor.getViewer()
+		IRegion textRegion = ScriptWordFinder.findWord(fEditor.getSourceViewer_()
 				.getDocument(), selection.getOffset());
 		if (textRegion == null)
 			return null;
@@ -61,7 +61,7 @@ public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 
 		int start = widgetRegion.getOffset();
 
-		StyledText styledText = fEditor.getViewer().getTextWidget();
+		StyledText styledText = fEditor.getSourceViewer_().getTextWidget();
 		Point result = styledText.getLocationAtOffset(start);
 		result.y += styledText.getLineHeight(start);
 
@@ -71,7 +71,7 @@ public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 	}
 
 	private IRegion modelRange2WidgetRange(IRegion region) {
-		ISourceViewer viewer = fEditor.getViewer();
+		ISourceViewer viewer = fEditor.getSourceViewer_();
 		if (viewer instanceof ITextViewerExtension5) {
 			ITextViewerExtension5 extension = (ITextViewerExtension5) viewer;
 			return extension.modelRange2WidgetRange(region);

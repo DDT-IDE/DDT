@@ -11,12 +11,10 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.editor;
 
-import java.text.CharacterIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.resources.IProject;
@@ -57,8 +55,6 @@ import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
-import org.eclipse.dltk.internal.ui.text.DLTKWordIterator;
-import org.eclipse.dltk.internal.ui.text.DocumentCharacterIterator;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
@@ -92,14 +88,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.DocumentCommand;
-import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextOperationTarget;
@@ -119,11 +112,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.link.ILinkedModeListener;
-import org.eclipse.jface.text.link.LinkedModeModel;
-import org.eclipse.jface.text.link.LinkedModeUI;
-import org.eclipse.jface.text.link.LinkedModeUI.ExitFlags;
-import org.eclipse.jface.text.link.LinkedModeUI.IExitPolicy;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
@@ -148,9 +136,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ST;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -179,7 +165,6 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.TextNavigationAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
@@ -213,174 +198,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT,
 			PreferenceConstants.EDITOR_COMMENT_FOLDING_JOIN_NEWLINES };
 
-	public ISourceViewer getScriptSourceViewer() {
-		return super.getSourceViewer();
-	}
-
-	public static class BracketLevel {
-		public int fOffset;
-		public int fLength;
-		public LinkedModeUI fUI;
-		public Position fFirstPosition;
-		public Position fSecondPosition;
-	}
-
-	public class ExitPolicy implements IExitPolicy {
-
-		public final char fExitCharacter;
-		public final char fEscapeCharacter;
-		public final Stack fStack;
-		public final int fSize;
-
-		public ExitPolicy(char exitCharacter, char escapeCharacter, Stack stack) {
-			fExitCharacter = exitCharacter;
-			fEscapeCharacter = escapeCharacter;
-			fStack = stack;
-			fSize = fStack.size();
-		}
-
-		/*
-		 * @see
-		 * org.eclipse.jdt.internal.ui.text.link.LinkedPositionUI.ExitPolicy
-		 * #doExit(org.eclipse.jdt.internal.ui.text.link.LinkedPositionManager,
-		 * org.eclipse.swt.events.VerifyEvent, int, int)
-		 */
-		@Override
-		public ExitFlags doExit(LinkedModeModel model, VerifyEvent event,
-				int offset, int length) {
-
-			if (fSize == fStack.size() && !isMasked(offset)) {
-				if (event.character == fExitCharacter) {
-					BracketLevel level = (BracketLevel) fStack.peek();
-					if (level.fFirstPosition.offset > offset
-							|| level.fSecondPosition.offset < offset)
-						return null;
-					if (level.fSecondPosition.offset == offset && length == 0)
-						// don't enter the character if if its the closing peer
-						return new ExitFlags(ILinkedModeListener.UPDATE_CARET,
-								false);
-				}
-				// when entering an anonymous class between the parenthesis', we
-				// don't want
-				// to jump after the closing parenthesis when return is pressed
-				if (event.character == SWT.CR && offset > 0) {
-					// ssanders: If completion popup is displayed, Enter
-					// dismisses it
-					if (((AdaptedSourceViewer) getScriptSourceViewer()).fInCompletionSession)
-						return new ExitFlags(ILinkedModeListener.NONE, true);
-
-					IDocument document = getSourceViewer().getDocument();
-					try {
-						if (document.getChar(offset - 1) == '{')
-							return new ExitFlags(ILinkedModeListener.EXIT_ALL,
-									true);
-					} catch (BadLocationException e) {
-					}
-				}
-			}
-			return null;
-		}
-
-		private boolean isMasked(int offset) {
-			IDocument document = getSourceViewer().getDocument();
-			try {
-				return fEscapeCharacter == document.getChar(offset - 1);
-			} catch (BadLocationException e) {
-			}
-			return false;
-		}
-	}
-
-	static class ExclusivePositionUpdater implements IPositionUpdater {
-
-		/** The position category. */
-		private final String fCategory;
-
-		/**
-		 * Creates a new updater for the given <code>category</code>.
-		 * 
-		 * @param category
-		 *            the new category.
-		 */
-		public ExclusivePositionUpdater(String category) {
-			fCategory = category;
-		}
-
-		/*
-		 * @see
-		 * org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.
-		 * text.DocumentEvent)
-		 */
-		@Override
-		public void update(DocumentEvent event) {
-
-			int eventOffset = event.getOffset();
-			int eventOldLength = event.getLength();
-			int eventNewLength = event.getText() == null ? 0 : event.getText()
-					.length();
-			int deltaLength = eventNewLength - eventOldLength;
-
-			try {
-				Position[] positions = event.getDocument().getPositions(
-						fCategory);
-
-				for (int i = 0; i != positions.length; i++) {
-
-					Position position = positions[i];
-
-					if (position.isDeleted())
-						continue;
-
-					int offset = position.getOffset();
-					int length = position.getLength();
-					int end = offset + length;
-
-					if (offset >= eventOffset + eventOldLength)
-						// position comes
-						// after change - shift
-						position.setOffset(offset + deltaLength);
-					else if (end <= eventOffset) {
-						// position comes way before change -
-						// leave alone
-					} else if (offset <= eventOffset
-							&& end >= eventOffset + eventOldLength) {
-						// event completely internal to the position - adjust
-						// length
-						position.setLength(length + deltaLength);
-					} else if (offset < eventOffset) {
-						// event extends over end of position - adjust length
-						int newEnd = eventOffset;
-						position.setLength(newEnd - offset);
-					} else if (end > eventOffset + eventOldLength) {
-						// event extends from before position into it - adjust
-						// offset
-						// and length
-						// offset becomes end of event, length adjusted
-						// accordingly
-						int newOffset = eventOffset + eventNewLength;
-						position.setOffset(newOffset);
-						position.setLength(end - newOffset);
-					} else {
-						// event consumes the position - delete it
-						position.delete();
-					}
-				}
-			} catch (BadPositionCategoryException e) {
-				// ignore and return
-			}
-		}
-
-		/**
-		 * Returns the position category.
-		 * 
-		 * @return the position category
-		 */
-		public String getCategory() {
-			return fCategory;
-		}
-
-	}
-
 	/**
 	 * Text operation code for requesting common prefix completion.
 	 */
@@ -391,14 +208,14 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 				DocumentCommand command);
 	}
 
-	class AdaptedSourceViewer extends ScriptSourceViewer implements
+	public class AdaptedSourceViewer extends ScriptSourceViewer implements
 			ICompletionListener {
 		private List<ITextConverter> fTextConverters;
 
-		private boolean fIgnoreTextConverters = false;
-		private boolean fInCompletionSession;
+		protected boolean fIgnoreTextConverters = false;
+		protected boolean fInCompletionSession;
 
-		protected IContentAssistant getContentAssistant() {
+		public IContentAssistant getContentAssistant() {
 			return fContentAssistant;
 		}
 
@@ -697,12 +514,12 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	protected void handleElementContentReplaced() {
 		super.handleElementContentReplaced();
 
-		IAnnotationModel annotationModel = getScriptSourceViewer()
+		IAnnotationModel annotationModel = getSourceViewer_()
 				.getAnnotationModel();
 		if (annotationModel instanceof IPersistableAnnotationModel) {
 			try {
 				((IPersistableAnnotationModel) annotationModel)
-						.reinitialize(getScriptSourceViewer().getDocument());
+						.reinitialize(getSourceViewer_().getDocument());
 			} catch (CoreException ex) {
 				ex.printStackTrace();
 			}
@@ -990,7 +807,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	 * @since 3.0
 	 */
 	protected ActionGroup createFoldingActionGroup() {
-		return new FoldingActionGroup(this, getViewer(),
+		return new FoldingActionGroup(this, getSourceViewer_(),
 				getScriptPreferenceStore());
 	}
 
@@ -1041,9 +858,14 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	ActionGroup getFoldingActionGroup() {
 		return fFoldingGroup;
 	}
-
-	public final ISourceViewer getViewer() {
+	
+	// BM: TODO: cleanup these methods
+	public ISourceViewer getSourceViewer_() {
 		return getSourceViewer();
+	}
+	
+	public AdaptedSourceViewer getAdaptedSourceViewer() {
+		return (AdaptedSourceViewer) getSourceViewer();
 	}
 
 	@Override

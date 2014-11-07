@@ -50,21 +50,21 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	}
 	
 	protected int getMarkerStartPos(String markerString) {
-		String source = editor.getScriptSourceViewer().getDocument().get();
+		String source = editor.getSourceViewer_().getDocument().get();
 		int ccOffset = source.indexOf(markerString);
 		assertTrue(ccOffset >= 0);
 		return ccOffset;
 	}
 	
 	protected int getMarkerEndPos(String markerString) {
-		String source = editor.getScriptSourceViewer().getDocument().get();
+		String source = editor.getSourceViewer_().getDocument().get();
 		int ccOffset = source.indexOf(markerString);
 		assertTrue(ccOffset >= 0);
 		return ccOffset + markerString.length();
 	}
 	
 	public static void invokeContentAssist(AbstractLangEditor_DLTK editor, int offset) {
-		editor.getViewer().setSelectedRange(offset, 0);
+		editor.getSourceViewer_().setSelectedRange(offset, 0);
 		ITextOperationTarget target= (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
 		if (target != null && target.canDoOperation(ISourceViewer.CONTENTASSIST_PROPOSALS)) {
 			target.doOperation(ISourceViewer.CONTENTASSIST_PROPOSALS);
@@ -72,13 +72,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	}
 	
 	public static ContentAssistant getContentAssistant(AbstractLangEditor_DLTK scriptEditor) {
-		// Need to do this because AdaptedSourceViewer is not extendable
-		try {
-			Object caField = ReflectionUtils.readField(scriptEditor.getScriptSourceViewer(), "fContentAssistant");
-			return (ContentAssistant) caField;
-		} catch (NoSuchFieldException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		return (ContentAssistant) scriptEditor.getAdaptedSourceViewer().getContentAssistant();
 	}
 	
 	protected static boolean isProposalPopupActive(ContentAssistant ca) {
