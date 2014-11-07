@@ -72,7 +72,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	}
 	
 	public static ContentAssistant getContentAssistant(AbstractLangEditor_DLTK scriptEditor) {
-		return (ContentAssistant) scriptEditor.getAdaptedSourceViewer().getContentAssistant();
+		return (ContentAssistant) scriptEditor.getSourceViewer_().getContentAssistant();
 	}
 	
 	protected static boolean isProposalPopupActive(ContentAssistant ca) {

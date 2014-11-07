@@ -11,16 +11,16 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.editor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,7 +45,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
@@ -74,8 +73,6 @@ import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingUpdater;
-import org.eclipse.dltk.ui.formatter.IScriptFormatterFactory;
-import org.eclipse.dltk.ui.formatter.ScriptFormatterManager;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
@@ -92,7 +89,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -102,18 +98,11 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension5;
-import org.eclipse.jface.text.IWidgetTokenKeeper;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.ICompletionListener;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
-import org.eclipse.jface.text.formatter.FormattingContextProperties;
-import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
@@ -179,7 +168,6 @@ import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighli
 import _org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
 import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
-import _org.eclipse.dltk.ui.formatter.internal.ScriptFormattingContextProperties;
 
 public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
@@ -206,198 +194,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	 */
 	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
 	
-	public static class AdaptedSourceViewer extends ScriptSourceViewer implements
-			ICompletionListener {
-		
-		protected static interface ITextConverter {
-			void customizeDocumentCommand(IDocument document, DocumentCommand command);
-		}
-
-		private List<ITextConverter> fTextConverters;
-
-		protected boolean fIgnoreTextConverters = false;
-		protected boolean fInCompletionSession;
-		
-		protected final ScriptEditor2 editor;
-		
-		public AdaptedSourceViewer(Composite parent,
-				IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
-				boolean showAnnotationsOverview, int styles,
-				IPreferenceStore store, ScriptEditor2 editor) {
-			super(parent, verticalRuler, overviewRuler,
-					showAnnotationsOverview, styles, store);
-			this.editor = editor;
-		}
-
-		@Override
-		public void configure(SourceViewerConfiguration configuration) {
-			super.configure(configuration);
-
-			final IContentAssistant ca = getContentAssistant();
-			if (ca instanceof IContentAssistantExtension2) {
-				((IContentAssistantExtension2) ca).addCompletionListener(this);
-			}
-		}
-
-		@Override
-		public void unconfigure() {
-			final IContentAssistant ca = getContentAssistant();
-			if (ca instanceof IContentAssistantExtension2) {
-				((IContentAssistantExtension2) ca)
-						.removeCompletionListener(this);
-			}
-
-			super.unconfigure();
-		}
-		
-		public IContentAssistant getContentAssistant() {
-			return fContentAssistant;
-		}
-
-		@Override
-		public void doOperation(int operation) {
-
-			if (getTextWidget() == null)
-				return;
-
-			switch (operation) {
-			case CONTENTASSIST_PROPOSALS:
-				String msg = fContentAssistant.showPossibleCompletions();
-				editor.setStatusLineErrorMessage(msg);
-				return;
-			case QUICK_ASSIST:
-				/*
-				 * XXX: We can get rid of this once the SourceViewer has a way
-				 * to update the status line
-				 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=133787
-				 */
-				msg = fQuickAssistAssistant.showPossibleQuickAssists();
-				editor.setStatusLineErrorMessage(msg);
-				return;
-			case UNDO:
-				fIgnoreTextConverters = true;
-				super.doOperation(operation);
-				fIgnoreTextConverters = false;
-				return;
-			case REDO:
-				fIgnoreTextConverters = true;
-				super.doOperation(operation);
-				fIgnoreTextConverters = false;
-				return;
-			}
-
-			super.doOperation(operation);
-		}
-
-		public void insertTextConverter(ITextConverter textConverter, int index) {
-			throw new UnsupportedOperationException();
-		}
-
-		public void addTextConverter(ITextConverter textConverter) {
-			if (fTextConverters == null) {
-				fTextConverters = new ArrayList<ITextConverter>(1);
-				fTextConverters.add(textConverter);
-			} else if (!fTextConverters.contains(textConverter))
-				fTextConverters.add(textConverter);
-		}
-
-		public void removeTextConverter(ITextConverter textConverter) {
-			if (fTextConverters != null) {
-				fTextConverters.remove(textConverter);
-				if (fTextConverters.size() == 0)
-					fTextConverters = null;
-			}
-		}
-
-		/*
-		 * @see TextViewer#customizeDocumentCommand(DocumentCommand)
-		 */
-		@Override
-		protected void customizeDocumentCommand(DocumentCommand command) {
-			super.customizeDocumentCommand(command);
-			if (!fIgnoreTextConverters && fTextConverters != null) {
-				for (ITextConverter c : fTextConverters)
-					c.customizeDocumentCommand(getDocument(), command);
-			}
-		}
-
-		@Override
-		public boolean requestWidgetToken(IWidgetTokenKeeper requester) {
-			if (PlatformUI.getWorkbench().getHelpSystem()
-					.isContextHelpDisplayed())
-				return false;
-			return super.requestWidgetToken(requester);
-		}
-
-		@Override
-		public boolean requestWidgetToken(IWidgetTokenKeeper requester,
-				int priority) {
-			if (PlatformUI.getWorkbench().getHelpSystem()
-					.isContextHelpDisplayed())
-				return false;
-			return super.requestWidgetToken(requester, priority);
-		}
-
-		@Override
-		public void assistSessionEnded(ContentAssistEvent event) {
-			fInCompletionSession = false;
-		}
-
-		@Override
-		public void assistSessionStarted(ContentAssistEvent event) {
-			fInCompletionSession = true;
-		}
-
-		@Override
-		public void selectionChanged(ICompletionProposal proposal,
-				boolean smartToggle) {
-		}
-
-		private IProject getProject() {
-			final IModelElement input = editor.getInputModelElement();
-			if (input != null) {
-				final IScriptProject scriptProject = input.getScriptProject();
-				if (scriptProject != null) {
-					return scriptProject.getProject();
-				}
-			}
-			return null;
-		}
-
-		private ISourceModule getSourceModule() {
-			final IModelElement input = editor.getInputModelElement();
-			if (input != null) {
-				return (ISourceModule) input
-						.getAncestor(IModelElement.SOURCE_MODULE);
-			}
-			return null;
-		}
-
-		@Override
-		public IFormattingContext createFormattingContext() {
-			final IFormattingContext context = super.createFormattingContext();
-			context.setProperty(ScriptFormattingContextProperties.MODULE,
-					getSourceModule());
-			final IProject project = getProject();
-			context.setProperty(
-					ScriptFormattingContextProperties.CONTEXT_PROJECT, project);
-			final IScriptFormatterFactory factory = ScriptFormatterManager
-					.getSelected(editor.getNatureId(), project);
-			if (factory != null) {
-				context.setProperty(
-						ScriptFormattingContextProperties.CONTEXT_FORMATTER_ID,
-						factory.getId());
-				final Map<String, String> preferences = factory
-						.retrievePreferences(new PreferencesLookupDelegate(
-								project));
-				context.setProperty(
-						FormattingContextProperties.CONTEXT_PREFERENCES,
-						preferences);
-			}
-			return context;
-		}
-	}
-
 	/**
 	 * Internal implementation class for a change listener.
 	 * 
@@ -660,6 +456,11 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		// installOverrideIndicator(false);
 		setOutlinePageInput(fOutlinePage, input);
 	}
+	
+	@Override
+	public void setStatusLineErrorMessage(String message) {
+		super.setStatusLineErrorMessage(message);
+	}
 
 	private boolean isFoldingEnabled() {
 		return getPreferenceStore().getBoolean(
@@ -852,15 +653,10 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return fFoldingGroup;
 	}
 	
-	// BM: TODO: cleanup these methods
-	public ISourceViewer getSourceViewer_() {
-		return getSourceViewer();
-	}
-	
-	public AdaptedSourceViewer getAdaptedSourceViewer() {
+	public AdaptedSourceViewer getSourceViewer_() {
 		return (AdaptedSourceViewer) getSourceViewer();
 	}
-
+	
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		ISourceViewer sourceViewer = getSourceViewer();
@@ -1893,88 +1689,63 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	}
 
 	@Override
-	protected final ISourceViewer createSourceViewer(Composite parent,
-			IVerticalRuler verticalRuler, int styles) {
+	protected final AdaptedSourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, 
+			int styles) {
 
 		IPreferenceStore store = getPreferenceStore();
-		ISourceViewer viewer = createScriptSourceViewer(parent, verticalRuler,
-				getOverviewRuler(), isOverviewRulerVisible(), styles, store);
-
-		if (DLTKCore.DEBUG) {
-			System.err.println("Create help contexts"); //$NON-NLS-1$
-		}
+		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
+			isOverviewRulerVisible(), styles, store, this);
+		assertNotNull(viewer);
+		
 		// ScriptUIHelp.setHelp(this, viewer.getTextWidget(),
 		// IScriptHelpContextIds.JAVA_EDITOR);
-
-		ScriptSourceViewer scriptSourceViewer = null;
-		if (viewer instanceof ScriptSourceViewer)
-			scriptSourceViewer = (ScriptSourceViewer) viewer;
 
 		/*
 		 * This is a performance optimization to reduce the computation of the
 		 * text presentation triggered by {@link #setVisibleDocument(IDocument)}
 		 */
-		if (scriptSourceViewer != null
-				&& isFoldingEnabled()
-				&& (store == null || !store
-						.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-			scriptSourceViewer.prepareDelayedProjection();
-
+		if (isFoldingEnabled() && (store == null || !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS))) {
+			viewer.prepareDelayedProjection();
+		}
+		
 		ProjectionViewer projectionViewer = (ProjectionViewer) viewer;
-		fProjectionSupport = new ProjectionSupport(projectionViewer,
-				getAnnotationAccess(), getSharedColors());
-		fProjectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
-		fProjectionSupport
-				.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
+		fProjectionSupport = new ProjectionSupport(projectionViewer, getAnnotationAccess(), getSharedColors());
+		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
+		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
+		
 		final IDLTKLanguageToolkit toolkit = this.getLanguageToolkit();
-		fProjectionSupport
-				.setHoverControlCreator(new IInformationControlCreator() {
-					@Override
-					public IInformationControl createInformationControl(
-							Shell shell) {
-						int shellStyle = SWT.TOOL | SWT.NO_TRIM
-								| getOrientation();
-						String statusFieldText = EditorsUI
-								.getTooltipAffordanceString();
-						return new SourceViewerInformationControl(shell,
-								shellStyle, SWT.NONE, statusFieldText, toolkit);
-					}
-				});
-		fProjectionSupport
-				.setInformationPresenterControlCreator(new IInformationControlCreator() {
-					@Override
-					public IInformationControl createInformationControl(
-							Shell shell) {
-						int shellStyle = SWT.RESIZE | SWT.TOOL
-								| getOrientation();
-						int style = SWT.V_SCROLL | SWT.H_SCROLL;
-						return new SourceViewerInformationControl(shell,
-								shellStyle, style, toolkit);
-					}
-				});
-
+		fProjectionSupport.setHoverControlCreator(new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell shell) {
+				int shellStyle = SWT.TOOL | SWT.NO_TRIM | getOrientation();
+				String statusFieldText = EditorsUI.getTooltipAffordanceString();
+				return new SourceViewerInformationControl(shell,
+						shellStyle, SWT.NONE, statusFieldText, toolkit);
+			}
+		});
+		fProjectionSupport.setInformationPresenterControlCreator(new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(
+					Shell shell) {
+				int shellStyle = SWT.RESIZE | SWT.TOOL | getOrientation();
+				int style = SWT.V_SCROLL | SWT.H_SCROLL;
+				return new SourceViewerInformationControl(shell, shellStyle, style, toolkit);
+			}
+		});
+		
 		fProjectionSupport.install();
-
+		
 		fProjectionModelUpdater = createFoldingStructureProvider();
-		if (fProjectionModelUpdater != null)
-			fProjectionModelUpdater.install(this, projectionViewer,
-					getPreferenceStore());
+		if (fProjectionModelUpdater != null) {
+			fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
+		}
 
-		// ensure source viewer decoration support has been created and
-		// configured
+		// ensure source viewer decoration support has been created and configured
 		getSourceViewerDecorationSupport(viewer);
-
+		
 		return viewer;
 	}
-
-	protected ISourceViewer createScriptSourceViewer(Composite parent,
-			IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
-			boolean isOverviewRulerVisible, int styles, IPreferenceStore store) {
-		return new AdaptedSourceViewer(parent, verticalRuler,
-				getOverviewRuler(), isOverviewRulerVisible(), styles, store, this);
-	}
-
+	
 	/**
 	 * Resets the foldings structure according to the folding preferences.
 	 */

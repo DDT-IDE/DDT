@@ -262,11 +262,12 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 
 		public final char fExitCharacter;
 		public final char fEscapeCharacter;
-		public final Stack fStack;
+		public final Stack<BracketLevel> fStack;
 		public final int fSize;
 		protected final ScriptEditor2 editor;
 
-		public ExitPolicy(ScriptEditor2 scriptEditor, char exitCharacter, char escapeCharacter, Stack stack) {
+		public ExitPolicy(ScriptEditor2 scriptEditor, char exitCharacter, char escapeCharacter, 
+				Stack<BracketLevel> stack) {
 			this.editor = scriptEditor;
 			fExitCharacter = exitCharacter;
 			fEscapeCharacter = escapeCharacter;
@@ -301,7 +302,7 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 				if (event.character == SWT.CR && offset > 0) {
 					// ssanders: If completion popup is displayed, Enter
 					// dismisses it
-					if (editor.getAdaptedSourceViewer().fInCompletionSession)
+					if (editor.getSourceViewer_().fInCompletionSession)
 						return new ExitFlags(ILinkedModeListener.NONE, true);
 
 					IDocument document = editor.getSourceViewer_().getDocument();
