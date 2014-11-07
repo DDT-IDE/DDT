@@ -11,10 +11,19 @@
 
 package _org.eclipse.dltk.internal.ui.editor.semantic.highlighting;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Collections;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.compiler.env.ModuleSource;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.ui.ColorPreferenceConverter;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.editor.highlighting.HighlightedPosition;
@@ -45,6 +54,51 @@ import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
  * Semantic highlighting manager
  */
 public class SemanticHighlightingManager implements IPropertyChangeListener {
+	
+	public static SemanticHighlightingManager install(ScriptTextTools textTools, ScriptEditor2 editor, 
+			IPreferenceStore store) {
+		SemanticHighlightingManager semanticManager = null;
+		
+		final ISemanticHighlightingUpdater updater = textTools.getSemanticPositionUpdater(editor.getNatureId());
+		if (updater != null) {
+			semanticManager = new SemanticHighlightingManager(updater);
+			semanticManager.install(editor, editor.getSourceViewer_(), textTools.getColorManager(), store);
+		}
+		
+		final IModelElement element = editor.getInputModelElement();
+		if (element instanceof ISourceModule) {
+			if (!editor.isEditable()) {
+				/*
+				 * Manually call semantic highlighting for read only editor, since
+				 * usually it's done from reconciler, but
+				 * ScriptSourceViewerConfiguration.getReconciler(ISourceViewer)
+				 * doesn't create reconciler for read only editor.
+				 */
+				updateSemanticHighlighting(semanticManager, (ISourceModule) element);
+			}
+		}
+		
+		return semanticManager;
+	}
+
+	private static void updateSemanticHighlighting(final SemanticHighlightingManager fSemanticManager, 
+			final ISourceModule element) {
+		Job job = new Job(DLTKEditorMessages.ScriptEditor_InitializeSemanticHighlighting) {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				if (fSemanticManager != null) {
+					SemanticHighlightingReconciler reconciler = fSemanticManager.getReconciler();
+					if (reconciler != null)
+						reconciler.reconciled(element, false, monitor);
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		job.setPriority(Job.DECORATE);
+		job.setSystem(true);
+		job.schedule();
+	}
+
 
 	private final ISemanticHighlightingUpdater fHighlightingUpdater;
 
@@ -144,6 +198,8 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	public void install(ScriptEditor2 editor, ScriptSourceViewer sourceViewer,
 			IColorManager colorManager, IPreferenceStore preferenceStore) {
 		fEditor = editor;
+		assertNotNull(editor);
+		
 		fSourceViewer = sourceViewer;
 		fColorManager = colorManager;
 		fPreferenceStore = preferenceStore;
@@ -185,26 +241,6 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	 */
 	public void install(ScriptSourceViewer sourceViewer,
 			IColorManager colorManager, IPreferenceStore preferenceStore) {
-		install(null, sourceViewer, colorManager, preferenceStore);
-	}
-
-	/**
-	 * Install the semantic highlighting on the given source viewer
-	 * infrastructure. No reconciliation will be performed.
-	 * 
-	 * @param sourceViewer
-	 *            the source viewer
-	 * @param colorManager
-	 *            the color manager
-	 * @param preferenceStore
-	 *            the preference store
-	 * @param hardcodedRanges
-	 *            the hard-coded ranges to be highlighted
-	 * @deprecated
-	 */
-	public void install(ScriptSourceViewer sourceViewer,
-			IColorManager colorManager, IPreferenceStore preferenceStore,
-			HighlightedRange[][] hardcodedRanges) {
 		install(null, sourceViewer, colorManager, preferenceStore);
 	}
 

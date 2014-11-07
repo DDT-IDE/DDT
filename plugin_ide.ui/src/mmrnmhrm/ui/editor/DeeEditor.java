@@ -6,15 +6,8 @@ import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 
 public class DeeEditor extends DeeBaseEditor {
-	
-	@Deprecated
-	@Override
-	public ScriptTextTools getTextTools() {
-		return DeeUIPlugin.getDefault().getTextTools();
-	}
 	
 	@Override
 	protected ScriptOutlinePage doCreateOutlinePage() {

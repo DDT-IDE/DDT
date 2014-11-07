@@ -24,10 +24,6 @@ import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.compiler.CharOperation;
@@ -47,7 +43,6 @@ import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
-import org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
@@ -69,7 +64,6 @@ import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
-import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingUpdater;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
@@ -77,8 +71,6 @@ import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -133,7 +125,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -149,7 +140,6 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
-import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingReconciler;
 
 public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
@@ -251,7 +241,10 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		// fCorrectionCommands.deregisterCommands();
 		// fCorrectionCommands= null;
 		// }
-		uninstallSemanticHighlighting();
+		if (fSemanticManager != null) {
+			fSemanticManager.uninstall();
+			fSemanticManager = null;
+		}
 		super.dispose();
 	}
 
@@ -310,9 +303,9 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	
 	@Deprecated
 	public ScriptTextTools getTextTools() {
-		return null;
+		return DeeUIPlugin.getDefault().getTextTools();
 	}
-
+	
 	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 	}
 	
@@ -371,15 +364,6 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		
 		installSemanticHighlighting();
 		
-		if (!isEditable()) {
-			/*
-			 * Manually call semantic highlighting for read only editor, since
-			 * usually it's done from reconciler, but
-			 * ScriptSourceViewerConfiguration.getReconciler(ISourceViewer)
-			 * doesn't create reconciler for read only editor.
-			 */
-			updateSemanticHighlighting();
-		}
 		if (occurrencesFinder != null) {
 			occurrencesFinder.install();
 		}
@@ -629,21 +613,6 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		}
 
 		return super.getAdapter(required);
-	}
-
-	/**
-	 * Returns the mutex for the reconciler. See
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
-	 * the problem.
-	 * <p>
-	 * XXX remove once the underlying problem
-	 * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
-	 * </p>
-	 * 
-	 * @return the lock reconcilers may use to synchronize on
-	 */
-	public Object getReconcilerLock() {
-		return fReconcilerLock;
 	}
 
 	protected void doSelectionChanged(SelectionChangedEvent event) {
@@ -1551,7 +1520,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		}
 	}
 	
-	protected String getNatureId() {
+	public String getNatureId() {
 		return LangNature.NATURE_ID;
 	}
 	
@@ -1806,43 +1775,18 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		setTitleImage(image);
 	}
 
-	private ListenerList fReconcilingListeners = new ListenerList(
-			ListenerList.IDENTITY);
-
-	/**
-	 * Mutex for the reconciler. See
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63898 for a description of
-	 * the problem.
-	 * <p>
-	 * XXX remove once the underlying problem
-	 * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=66176) is solved.
-	 * </p>
-	 */
-	private final Object fReconcilerLock = new Object();
 
 	@Override
 	public void aboutToBeReconciled() {
+		
+		if(fSemanticManager != null && fSemanticManager.getReconciler() != null) {
+			fSemanticManager.getReconciler().aboutToBeReconciled();
+		}
 
-		// Notify AST provider
-		// JavaPlugin.getDefault().getASTProvider().aboutToBeReconciled(
-		// getInputJavaElement());
-
-		// Notify listeners
-		Object[] listeners = fReconcilingListeners.getListeners();
-		for (int i = 0, length = listeners.length; i < length; ++i)
-			((IScriptReconcilingListener) listeners[i]).aboutToBeReconciled();
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.jdt.internal.ui.text.java.IJavaReconcilingListener#reconciled
-	 * (CompilationUnit, boolean, IProgressMonitor)
-	 * 
-	 * @since 3.0
-	 */
 	@Override
-	public void reconciled(ISourceModule ast, boolean forced,
-			IProgressMonitor progressMonitor) {
+	public void reconciled(ISourceModule ast, boolean forced, IProgressMonitor progressMonitor) {
 
 		// see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=58245
 		// JavaPlugin javaPlugin= JavaPlugin.getDefault();
@@ -1852,13 +1796,11 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		// // Always notify AST provider
 		// javaPlugin.getASTProvider().reconciled(ast, getInputJavaElement(),
 		// progressMonitor);
-
-		// Notify listeners
-		Object[] listeners = fReconcilingListeners.getListeners();
-		for (int i = 0, length = listeners.length; i < length; ++i)
-			((IScriptReconcilingListener) listeners[i]).reconciled(ast, forced,
-					progressMonitor);
-
+		
+		if(fSemanticManager != null && fSemanticManager.getReconciler() != null) {
+			fSemanticManager.getReconciler().reconciled(ast, forced, progressMonitor);
+		}
+		
 		// Update Outline page selection
 		if (!forced && !progressMonitor.isCanceled()) {
 			Shell shell = getSite().getShell();
@@ -1873,63 +1815,10 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		}
 	}
 
-	public void addReconcileListener(
-			IScriptReconcilingListener semanticHighlightingReconciler) {
-		fReconcilingListeners.add(semanticHighlightingReconciler);
-	}
-
-	public void removeReconcileListener(
-			IScriptReconcilingListener semanticHighlightingReconciler) {
-		fReconcilingListeners.remove(semanticHighlightingReconciler);
-	}
-
 	private SemanticHighlightingManager fSemanticManager;
 
 	protected void installSemanticHighlighting() {
-		ScriptTextTools textTools = getTextTools();
-		if (fSemanticManager == null && textTools != null) {
-			final ISemanticHighlightingUpdater updater = textTools.getSemanticPositionUpdater(getNatureId());
-			if (updater != null) {
-				fSemanticManager = new SemanticHighlightingManager(updater);
-				fSemanticManager.install(this, getSourceViewer_(), textTools.getColorManager(), getPreferenceStore());
-			}
-		}
-	}
-
-	private void updateSemanticHighlighting() {
-		final IModelElement element = getInputModelElement();
-		if (!(element instanceof ISourceModule)) {
-			return;
-		}
-		Job job = new Job(
-				DLTKEditorMessages.ScriptEditor_InitializeSemanticHighlighting) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				if (fSemanticManager != null) {
-					SemanticHighlightingReconciler reconciler = fSemanticManager
-							.getReconciler();
-					if (reconciler != null)
-						reconciler.reconciled((ISourceModule) element, false,
-								monitor);
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		job.setPriority(Job.DECORATE);
-		job.setSystem(true);
-		job.schedule();
-	}
-
-	/**
-	 * Uninstall Semantic Highlighting.
-	 * 
-	 * @since 3.0
-	 */
-	private void uninstallSemanticHighlighting() {
-		if (fSemanticManager != null) {
-			fSemanticManager.uninstall();
-			fSemanticManager = null;
-		}
+		fSemanticManager = SemanticHighlightingManager.install(getTextTools(), this, this.getPreferenceStore());
 	}
 
 	@Override

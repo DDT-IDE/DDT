@@ -23,7 +23,6 @@ import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingPresenter;
 import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.editor.highlighting.HighlightedPosition;
@@ -222,7 +221,7 @@ public class SemanticHighlightingReconciler implements
 		fSourceViewer = sourceViewer;
 
 		if (fEditor != null) {
-			fEditor.addReconcileListener(this);
+			
 		} else {
 			fSourceViewer.addTextInputListener(this);
 			scheduleJob();
@@ -237,8 +236,6 @@ public class SemanticHighlightingReconciler implements
 			fPresenter.setCanceled(true);
 
 		if (fEditor != null) {
-			fEditor.removeReconcileListener(this);
-			fEditor = null;
 		} else {
 			fSourceViewer.removeTextInputListener(this);
 		}
