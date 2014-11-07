@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import melnorme.lang.ide.core.LangNature;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -119,10 +119,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -193,51 +190,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
 	
 	/**
-	 * Internal implementation class for a change listener.
-	 * 
-	 * 
-	 */
-	protected abstract class AbstractSelectionChangedListener implements
-			ISelectionChangedListener {
-		/**
-		 * Installs this selection changed listener with the given selection
-		 * provider. If the selection provider is a post selection provider,
-		 * post selection changed events are the preferred choice, otherwise
-		 * normal selection changed events are requested.
-		 * 
-		 * @param selectionProvider
-		 */
-		public void install(ISelectionProvider selectionProvider) {
-			if (selectionProvider == null)
-				return;
-			if (selectionProvider instanceof IPostSelectionProvider) {
-				IPostSelectionProvider provider = (IPostSelectionProvider) selectionProvider;
-				provider.addPostSelectionChangedListener(this);
-			} else {
-				selectionProvider.addSelectionChangedListener(this);
-			}
-		}
-
-		/**
-		 * Removes this selection changed listener from the given selection
-		 * provider.
-		 * 
-		 * @param selectionProvider
-		 *            the selection provider
-		 */
-		public void uninstall(ISelectionProvider selectionProvider) {
-			if (selectionProvider == null)
-				return;
-			if (selectionProvider instanceof IPostSelectionProvider) {
-				IPostSelectionProvider provider = (IPostSelectionProvider) selectionProvider;
-				provider.removePostSelectionChangedListener(this);
-			} else {
-				selectionProvider.removeSelectionChangedListener(this);
-			}
-		}
-	}
-
-	/**
 	 * Updates the selection in the editor's widget with the selection of the
 	 * outline page.
 	 */
@@ -275,13 +227,9 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 
 	/**
-	 * Updates the script outline page selection and this editor's range
-	 * indicator.
-	 * 
-	 * 
+	 * Updates the script outline page selection and this editor's range indicator.
 	 */
-	private class EditorSelectionChangedListener extends
-			AbstractSelectionChangedListener {
+	private class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
 		/*
 		 * @see
 		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
@@ -305,26 +253,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	}
 	
 	
-
-	/**
-	 * @see org.eclipse.ui.texteditor.StatusTextEditor#handleElementContentReplaced()
-	 */
-	@Override
-	protected void handleElementContentReplaced() {
-		super.handleElementContentReplaced();
-
-		IAnnotationModel annotationModel = getSourceViewer_()
-				.getAnnotationModel();
-		if (annotationModel instanceof IPersistableAnnotationModel) {
-			try {
-				((IPersistableAnnotationModel) annotationModel)
-						.reinitialize(getSourceViewer_().getDocument());
-			} catch (CoreException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
 	@Override
 	public void dispose() {
 
@@ -430,6 +358,54 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	
 	public AdaptedSourceViewer getSourceViewer_() {
 		return (AdaptedSourceViewer) getSourceViewer();
+	}
+	
+	@Override
+	protected void handleElementContentReplaced() {
+		super.handleElementContentReplaced();
+		getSourceViewer_().hadnleElementContentReplaced();
+	}
+	
+	@Override
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+
+		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
+			@Override
+			public IInformationControl createInformationControl(Shell shell) {
+				boolean cutDown = false;
+				//int style = cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
+				// return new DefaultInformationControl(shell, SWT.RESIZE
+				// | SWT.TOOL, style, new HTMLTextPresenter(cutDown));
+				if (BrowserInformationControl.isAvailable(shell))
+					return new BrowserInformationControl(shell, JFaceResources.DIALOG_FONT, true);
+				else
+					return new DefaultInformationControl(shell, new HTMLTextPresenter(cutDown));
+			}
+		};
+
+		fInformationPresenter = new InformationPresenter(informationControlCreator);
+		fInformationPresenter.setSizeConstraints(60, 10, true, true);
+		fInformationPresenter.install(getSourceViewer());
+		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
+
+		fEditorSelectionChangedListener = new EditorSelectionChangedListener();
+		fEditorSelectionChangedListener.install(getSelectionProvider());
+		
+		installSemanticHighlighting();
+		
+		if (!isEditable()) {
+			/*
+			 * Manually call semantic highlighting for read only editor, since
+			 * usually it's done from reconciler, but
+			 * ScriptSourceViewerConfiguration.getReconciler(ISourceViewer)
+			 * doesn't create reconciler for read only editor.
+			 */
+			updateSemanticHighlighting();
+		}
+		if (occurrencesFinder != null) {
+			occurrencesFinder.install();
+		}
 	}
 	
 	/* ----------------- set input ----------------- */
@@ -1210,51 +1186,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return (ISourceReference) element;
 	}
 
-	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-
-		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell shell) {
-				boolean cutDown = false;
-				//int style = cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
-				// return new DefaultInformationControl(shell, SWT.RESIZE
-				// | SWT.TOOL, style, new HTMLTextPresenter(cutDown));
-				if (BrowserInformationControl.isAvailable(shell))
-					return new BrowserInformationControl(shell,
-							JFaceResources.DIALOG_FONT, true);
-				else
-					return new DefaultInformationControl(shell,
-							new HTMLTextPresenter(cutDown));
-			}
-		};
-
-		fInformationPresenter = new InformationPresenter(
-				informationControlCreator);
-		fInformationPresenter.setSizeConstraints(60, 10, true, true);
-		fInformationPresenter.install(getSourceViewer());
-		fInformationPresenter
-				.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
-
-		fEditorSelectionChangedListener = new EditorSelectionChangedListener();
-		fEditorSelectionChangedListener.install(getSelectionProvider());
-		if (true)
-			installSemanticHighlighting();
-		if (!isEditable()) {
-			/*
-			 * Manually call semantic highlighting for read only editor, since
-			 * usually it's done from reconciler, but
-			 * ScriptSourceViewerConfiguration.getReconciler(ISourceViewer)
-			 * doesn't create reconciler for read only editor.
-			 */
-			updateSemanticHighlighting();
-		}
-		if (occurrencesFinder != null) {
-			occurrencesFinder.install();
-		}
-	}
-
 	/**
 	 * React to changed selection.
 	 * 
@@ -1836,9 +1767,9 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 			projectionViewer.setRedraw(true);
 		}
 	}
-
+	
 	protected String getNatureId() {
-		return getLanguageToolkit().getNatureId();
+		return LangNature.NATURE_ID;
 	}
 	
 	@Override
@@ -2171,16 +2102,13 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 
 	private SemanticHighlightingManager fSemanticManager;
 
-	private void installSemanticHighlighting() {
+	protected void installSemanticHighlighting() {
 		ScriptTextTools textTools = getTextTools();
 		if (fSemanticManager == null && textTools != null) {
-			final ISemanticHighlightingUpdater updater = textTools
-					.getSemanticPositionUpdater(getNatureId());
+			final ISemanticHighlightingUpdater updater = textTools.getSemanticPositionUpdater(getNatureId());
 			if (updater != null) {
 				fSemanticManager = new SemanticHighlightingManager(updater);
-				fSemanticManager.install(this,
-						(ScriptSourceViewer) getSourceViewer(),
-						textTools.getColorManager(), getPreferenceStore());
+				fSemanticManager.install(this, getSourceViewer_(), textTools.getColorManager(), getPreferenceStore());
 			}
 		}
 	}

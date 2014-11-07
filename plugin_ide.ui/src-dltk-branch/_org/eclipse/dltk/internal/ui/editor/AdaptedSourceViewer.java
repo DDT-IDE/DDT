@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
@@ -32,6 +34,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
+import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
@@ -87,7 +90,19 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements
 	public IContentAssistant getContentAssistant() {
 		return fContentAssistant;
 	}
-
+	
+	protected void hadnleElementContentReplaced() {
+		IAnnotationModel annotationModel = getAnnotationModel();
+		if (annotationModel instanceof IPersistableAnnotationModel) {
+			IPersistableAnnotationModel persistableAnnotationModel = (IPersistableAnnotationModel) annotationModel;
+			try {
+				persistableAnnotationModel.reinitialize(getDocument());
+			} catch (CoreException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
 	@Override
 	public void doOperation(int operation) {
 
@@ -230,4 +245,5 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements
 		}
 		return context;
 	}
+	
 }
