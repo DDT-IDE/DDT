@@ -110,9 +110,7 @@ import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
-import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.IVerticalRulerColumn;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
@@ -305,6 +303,8 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		super();
 		setDocumentProvider(DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider());
 	}
+	
+	
 
 	/**
 	 * @see org.eclipse.ui.texteditor.StatusTextEditor#handleElementContentReplaced()
@@ -410,7 +410,49 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 
 	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 	}
+	
+	@Override
+	protected final AdaptedSourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, 
+			int styles) {
 
+		IPreferenceStore store = getPreferenceStore();
+		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
+			isOverviewRulerVisible(), styles, store, this);
+		assertNotNull(viewer);
+		
+		installProjectionSupport(store, viewer);
+
+		// ensure source viewer decoration support has been created and configured
+		getSourceViewerDecorationSupport(viewer);
+		
+		return viewer;
+	}
+	
+	public AdaptedSourceViewer getSourceViewer_() {
+		return (AdaptedSourceViewer) getSourceViewer();
+	}
+	
+	/* ----------------- set input ----------------- */
+	
+	@Override
+	protected void doSetInput(IEditorInput input) throws CoreException {
+		AdaptedSourceViewer sourceViewer = getSourceViewer_();
+		assertNotNull(sourceViewer);
+		
+		// uninstall & unregister preference store listener
+		getSourceViewerDecorationSupport(sourceViewer).uninstall();
+		sourceViewer.unconfigure();
+		setPreferenceStore(createCombinedPreferenceStore(input));
+		sourceViewer.configure(getSourceViewerConfiguration());
+		getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
+		try {
+			internalDoSetInput(input);
+		} catch (ModelException e) {
+			DLTKUIPlugin.log(e);
+			this.close(false);
+		}
+	}
+	
 	protected void internalDoSetInput(IEditorInput input) throws CoreException {
 		ISourceViewer sourceViewer = getSourceViewer();
 		ScriptSourceViewer scriptSourceViewer = null;
@@ -608,12 +650,10 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 	@Override
 	protected IVerticalRulerColumn createAnnotationRulerColumn(
 			CompositeRuler ruler) {
-		if (!getPreferenceStore().getBoolean(
-				PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER))
+		if (!getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER))
 			return super.createAnnotationRulerColumn(ruler);
 
-		AnnotationRulerColumn column = new AnnotationRulerColumn(
-				VERTICAL_RULER_WIDTH, getAnnotationAccess());
+		AnnotationRulerColumn column = new AnnotationRulerColumn(VERTICAL_RULER_WIDTH, getAnnotationAccess());
 		column.setHover(new ScriptExpandHover(ruler, getAnnotationAccess(),
 				new IDoubleClickListener() {
 
@@ -653,40 +693,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return fFoldingGroup;
 	}
 	
-	public AdaptedSourceViewer getSourceViewer_() {
-		return (AdaptedSourceViewer) getSourceViewer();
-	}
-	
-	@Override
-	protected void doSetInput(IEditorInput input) throws CoreException {
-		ISourceViewer sourceViewer = getSourceViewer();
-		if (!(sourceViewer instanceof ISourceViewerExtension2)) {
-			setPreferenceStore(createCombinedPreferenceStore(input));
-			try {
-				internalDoSetInput(input);
-			} catch (ModelException e) {
-				DLTKUIPlugin.log(e);
-				this.close(false);
-			}
-		} else {
-			// uninstall & unregister preference store listener
-			getSourceViewerDecorationSupport(sourceViewer).uninstall();
-			((ISourceViewerExtension2) sourceViewer).unconfigure();
-			setPreferenceStore(createCombinedPreferenceStore(input));
-			// install & register preference store listener
-			sourceViewer.configure(getSourceViewerConfiguration());
-			getSourceViewerDecorationSupport(sourceViewer).install(
-					getPreferenceStore());
-			try {
-				internalDoSetInput(input);
-			} catch (ModelException e) {
-				DLTKUIPlugin.log(e);
-				this.close(false);
-			}
-		}
-
-	}
-
 	@Override
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
@@ -1688,18 +1694,7 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		return CharOperation.NO_STRINGS;
 	}
 
-	@Override
-	protected final AdaptedSourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, 
-			int styles) {
-
-		IPreferenceStore store = getPreferenceStore();
-		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
-			isOverviewRulerVisible(), styles, store, this);
-		assertNotNull(viewer);
-		
-		// ScriptUIHelp.setHelp(this, viewer.getTextWidget(),
-		// IScriptHelpContextIds.JAVA_EDITOR);
-
+	protected void installProjectionSupport(IPreferenceStore store, AdaptedSourceViewer viewer) {
 		/*
 		 * This is a performance optimization to reduce the computation of the
 		 * text presentation triggered by {@link #setVisibleDocument(IDocument)}
@@ -1739,11 +1734,6 @@ public abstract class ScriptEditor2 extends ScriptEditor_Actions
 		if (fProjectionModelUpdater != null) {
 			fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
 		}
-
-		// ensure source viewer decoration support has been created and configured
-		getSourceViewerDecorationSupport(viewer);
-		
-		return viewer;
 	}
 	
 	/**
