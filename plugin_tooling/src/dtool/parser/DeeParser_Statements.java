@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;
@@ -67,7 +68,6 @@ import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;
-import dtool.util.ArrayView;
 
 
 public abstract class DeeParser_Statements extends DeeParser_Definitions {

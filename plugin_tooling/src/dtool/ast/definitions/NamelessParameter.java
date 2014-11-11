@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 import static dtool.ast.definitions.FunctionParameter.getStringRepresentation;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -9,7 +10,6 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
-import dtool.util.ArrayView;
 
 
 /** 

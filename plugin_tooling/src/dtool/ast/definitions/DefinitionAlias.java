@@ -5,6 +5,7 @@ import static dtool.util.NewUtils.assertCast;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -18,7 +19,6 @@ import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 /**
  * A definition of an alias, in the new syntax:

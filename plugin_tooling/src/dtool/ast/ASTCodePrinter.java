@@ -1,7 +1,7 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import dtool.util.ArrayView;
+import melnorme.utilbox.collections.ArrayView;
 
 public class ASTCodePrinter {
 	

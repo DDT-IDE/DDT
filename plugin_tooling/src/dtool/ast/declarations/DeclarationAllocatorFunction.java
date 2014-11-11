@@ -1,5 +1,6 @@
 package dtool.ast.declarations;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -7,7 +8,6 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.statements.IFunctionBody;
-import dtool.util.ArrayView;
 
 /**
  * Declaration of special function like elements, like allocator/deallocator:

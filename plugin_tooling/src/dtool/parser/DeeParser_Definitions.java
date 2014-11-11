@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -94,7 +95,6 @@ import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;
 import dtool.parser.common.Token;
-import dtool.util.ArrayView;
 import dtool.util.NewUtils;
 import dtool.util.SentinelArrayList;
 

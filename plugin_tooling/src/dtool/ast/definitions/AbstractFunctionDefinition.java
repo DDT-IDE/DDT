@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -20,7 +21,6 @@ import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
 	implements ICallableElement, IScopeNode, ITemplatableElement

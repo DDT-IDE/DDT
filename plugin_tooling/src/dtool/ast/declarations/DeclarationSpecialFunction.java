@@ -1,13 +1,13 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.statements.IFunctionBody;
-import dtool.util.ArrayView;
 
 public class DeclarationSpecialFunction extends ASTNode implements IDeclaration {
 	

@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.ASTNode;
@@ -27,7 +28,6 @@ import dtool.parser.DeeTokens;
 import dtool.parser.ParserError;
 import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.LexElement.MissingLexElement;
-import dtool.util.ArrayView;
 
 /**
  * Basic parsing functionality.

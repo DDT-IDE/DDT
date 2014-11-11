@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
 import dtool.ast.IASTVisitor;
@@ -25,7 +26,6 @@ import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 /**
  * A definition of a aggregate. 

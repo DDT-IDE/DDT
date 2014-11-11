@@ -1,11 +1,11 @@
 package dtool.ast.expressions;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.references.Reference;
-import dtool.util.ArrayView;
 
 public class ExpNewAnonClass extends Expression {
 	

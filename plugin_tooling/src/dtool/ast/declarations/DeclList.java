@@ -1,10 +1,10 @@
 package dtool.ast.declarations;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.NodeList;
-import dtool.util.ArrayView;
 
 public class DeclList extends NodeList<ASTNode> {
 	

@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
@@ -23,7 +24,6 @@ import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 /**
  * A definition of a class aggregate.

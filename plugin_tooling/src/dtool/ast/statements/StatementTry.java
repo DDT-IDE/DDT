@@ -11,10 +11,10 @@
 package dtool.ast.statements;
 
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.util.ArrayView;
 
 public class StatementTry extends Statement {
 	

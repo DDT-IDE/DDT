@@ -19,6 +19,7 @@ import static melnorme.utilbox.core.CoreUtil.blindCast;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.CStyleVarArgsParameter;
@@ -40,7 +41,6 @@ import dtool.ast.references.RefTypeModifier;
 import dtool.ast.references.RefTypeModifier.TypeModifierKinds;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
-import dtool.util.ArrayView;
 
 public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 

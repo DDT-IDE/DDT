@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -15,7 +16,6 @@ import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.INonScopedContainer;
-import dtool.util.ArrayView;
 
 /**
  * Attribute declarations

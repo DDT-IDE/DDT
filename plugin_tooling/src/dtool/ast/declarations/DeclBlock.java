@@ -1,5 +1,6 @@
 package dtool.ast.declarations;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
@@ -9,7 +10,6 @@ import dtool.ast.definitions.DefinitionClass;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeNode {
 	

@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import dtool.util.ArrayView;
+import melnorme.utilbox.collections.ArrayView;
 
 public interface ICallableElement {
 	

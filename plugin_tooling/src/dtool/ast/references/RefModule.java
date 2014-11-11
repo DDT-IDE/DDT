@@ -12,6 +12,7 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -22,7 +23,6 @@ import dtool.parser.common.IToken;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
-import dtool.util.ArrayView;
 
 /** 
  * A module reference (in import declarations only).

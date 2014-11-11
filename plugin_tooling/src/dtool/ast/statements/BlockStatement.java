@@ -10,11 +10,11 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTNodeTypes;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.

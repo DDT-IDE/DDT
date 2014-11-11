@@ -15,12 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
-import dtool.util.ArrayView;
 
 public abstract class CommonStatementList extends Statement {
 	

@@ -12,6 +12,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.core.model_elements.DefElementFlagsUtil.getCommonDefinitionModifiersInfo;
+import melnorme.utilbox.collections.ArrayView;
 
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.TypeInfo;
@@ -47,7 +48,6 @@ import dtool.ast.expressions.ExpReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.util.ArrayView;
 
 public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	

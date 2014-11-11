@@ -12,6 +12,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -24,7 +25,6 @@ import dtool.ast.expressions.Resolvable;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.LanguageIntrinsics.DeeIntrinsicType;
-import dtool.util.ArrayView;
 
 /**
  * A function pointer type

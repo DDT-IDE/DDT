@@ -13,6 +13,7 @@ package dtool.ast.declarations;
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -26,7 +27,6 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 public class StaticIfExpIs extends Expression {
 	

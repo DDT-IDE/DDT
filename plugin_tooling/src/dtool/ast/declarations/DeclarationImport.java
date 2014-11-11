@@ -2,6 +2,7 @@ package dtool.ast.declarations;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -13,7 +14,6 @@ import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.INonScopedContainer;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 /**
  * An import Declaration.

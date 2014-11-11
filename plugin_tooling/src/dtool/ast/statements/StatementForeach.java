@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -17,7 +18,6 @@ import dtool.ast.expressions.Expression;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 public class StatementForeach extends Statement implements IScopeNode {
 	

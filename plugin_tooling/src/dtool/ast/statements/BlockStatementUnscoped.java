@@ -12,10 +12,10 @@ package dtool.ast.statements;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.engine.common.INonScopedContainer;
-import dtool.util.ArrayView;
 
 public class BlockStatementUnscoped extends CommonStatementList implements INonScopedContainer {
 	

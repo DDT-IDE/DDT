@@ -1,10 +1,10 @@
 package dtool.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
-import dtool.util.ArrayView;
 
 public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {
 	

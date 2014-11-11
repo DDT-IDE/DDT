@@ -2,11 +2,11 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.IASTNode;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.LexElement;
-import dtool.util.ArrayView;
 
 public interface IFunctionParameter extends IASTNode {
 	

@@ -18,6 +18,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.NodeListView;
 import dtool.ast.declarations.DeclBlock;
@@ -93,7 +94,6 @@ import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;
-import dtool.util.ArrayView;
 
 
 public abstract class DeeParser_RefOrExp extends DeeParser_Common {

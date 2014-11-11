@@ -1,6 +1,7 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -10,7 +11,6 @@ import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
-import dtool.util.ArrayView;
 
 public class ExpFunctionLiteral extends Expression {
 	

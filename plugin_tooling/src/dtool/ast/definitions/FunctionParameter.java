@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -11,7 +12,6 @@ import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.LexElement;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	

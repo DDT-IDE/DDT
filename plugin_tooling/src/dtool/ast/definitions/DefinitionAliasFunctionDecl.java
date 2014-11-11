@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -13,7 +14,6 @@ import dtool.ast.statements.IStatement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 /**
  * A definition of an alias, in the old syntax:

@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
@@ -31,7 +32,6 @@ import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 /**
  * A definition of an enum variable (aka manifest constant):

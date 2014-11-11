@@ -2,8 +2,8 @@ package dtool.ast;
 
 import java.util.Iterator;
 
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
-import dtool.util.ArrayView;
 
 /**
  * Utility class for lists of nodes.

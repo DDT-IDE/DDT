@@ -1,5 +1,6 @@
 package dtool.ast.definitions;
 
+import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
@@ -11,7 +12,6 @@ import dtool.ast.statements.IStatement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.util.ArrayView;
 
 /**
  * A definition of a function.
