@@ -370,15 +370,19 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	
 	@Override
 	protected void doSetInput(IEditorInput input) throws CoreException {
-		AdaptedSourceViewer sourceViewer = getSourceViewer_();
-		assertNotNull(sourceViewer);
+		AdaptedSourceViewer sourceViewer = getSourceViewer_(); // can be null
 		
-		// uninstall & unregister preference store listener
-		getSourceViewerDecorationSupport(sourceViewer).uninstall();
-		sourceViewer.unconfigure();
-		setPreferenceStore(createCombinedPreferenceStore(input));
-		sourceViewer.configure(getSourceViewerConfiguration());
-		getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
+		if(sourceViewer != null) {
+			// uninstall & unregister preference store listener
+			getSourceViewerDecorationSupport(sourceViewer).uninstall();
+			sourceViewer.unconfigure();
+			setPreferenceStore(createCombinedPreferenceStore(input));
+			sourceViewer.configure(getSourceViewerConfiguration());
+			getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
+		} else {
+			setPreferenceStore(createCombinedPreferenceStore(input));
+		}
+		
 		try {
 			internalDoSetInput(input);
 		} catch (ModelException e) {
@@ -388,17 +392,13 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	}
 	
 	protected void internalDoSetInput(IEditorInput input) throws CoreException {
-		ISourceViewer sourceViewer = getSourceViewer();
-		ScriptSourceViewer scriptSourceViewer = null;
-		if (sourceViewer instanceof ScriptSourceViewer)
-			scriptSourceViewer = (ScriptSourceViewer) sourceViewer;
+		ScriptSourceViewer sourceViewer = getSourceViewer_(); // Can be null
 		IPreferenceStore store = getPreferenceStore();
-
-		if (scriptSourceViewer != null
-				&& isFoldingEnabled()
-				&& (store == null || !store
-						.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS)))
-			scriptSourceViewer.prepareDelayedProjection();
+		
+		if (sourceViewer != null && isFoldingEnabled()
+				&& (store == null || !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS))) {
+			sourceViewer.prepareDelayedProjection();
+		}
 
 		// correct connection code here.
 
@@ -407,19 +407,17 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		final IDocumentProvider docProvider = getDocumentProvider();
 		final IAnnotationModel model = docProvider.getAnnotationModel(input);
 		if (model instanceof SourceModuleAnnotationModel) {
-			((SourceModuleAnnotationModel) model).problemFactory = DLTKLanguageManager
-					.getProblemFactory(getNatureId());
+			((SourceModuleAnnotationModel) model).problemFactory = 
+					DLTKLanguageManager.getProblemFactory(getNatureId());
 		}
 		final IDocument doc = docProvider.getDocument(input);
 		connectPartitioningToElement(input, doc);
 
-		if (scriptSourceViewer != null
-				&& scriptSourceViewer.getReconciler() == null) {
-			IReconciler reconciler = getSourceViewerConfiguration()
-					.getReconciler(scriptSourceViewer);
+		if (sourceViewer != null && sourceViewer.getReconciler() == null) {
+			IReconciler reconciler = getSourceViewerConfiguration().getReconciler(sourceViewer);
 			if (reconciler != null) {
-				reconciler.install(scriptSourceViewer);
-				scriptSourceViewer.setReconciler(reconciler);
+				reconciler.install(sourceViewer);
+				sourceViewer.setReconciler(reconciler);
 			}
 		}
 		if (DLTKCore.DEBUG) {
