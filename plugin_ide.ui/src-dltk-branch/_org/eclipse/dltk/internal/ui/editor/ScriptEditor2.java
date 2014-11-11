@@ -74,18 +74,15 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
@@ -1612,55 +1609,6 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		}
 	}
 
-	/**
-	 * Returns the signed current selection. The length will be negative if the
-	 * resulting selection is right-to-left (RtoL).
-	 * <p>
-	 * The selection offset is model based.
-	 * </p>
-	 * 
-	 * @param sourceViewer
-	 *            the source viewer
-	 * @return a region denoting the current signed selection, for a resulting
-	 *         RtoL selections length is < 0
-	 */
-	protected IRegion getSignedSelection(ISourceViewer sourceViewer) {
-		StyledText text = sourceViewer.getTextWidget();
-		Point selection = text.getSelectionRange();
-
-		if (text.getCaretOffset() == selection.x) {
-			selection.x = selection.x + selection.y;
-			selection.y = -selection.y;
-		}
-
-		selection.x = widgetOffset2ModelOffset(sourceViewer, selection.x);
-
-		return new Region(selection.x, selection.y);
-	}
-
-	protected final static char[] BRACKETS = { '{', '}', '(', ')', '[', ']' };
-
-	protected static boolean isBracket(char character) {
-		for (int i = 0; i != BRACKETS.length; ++i)
-			if (character == BRACKETS[i])
-				return true;
-		return false;
-	}
-
-	protected static boolean isSurroundedByBrackets(IDocument document,
-			int offset) {
-		if (offset == 0 || offset == document.getLength())
-			return false;
-
-		try {
-			return isBracket(document.getChar(offset - 1))
-					&& isBracket(document.getChar(offset));
-
-		} catch (BadLocationException e) {
-			return false;
-		}
-	}
-
 	private ICharacterPairMatcher fBracketMatcher;
 
 	/**
@@ -1669,7 +1617,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	 * 
 	 * @return the bracket matcher or <code>null</code>
 	 */
-	protected final ICharacterPairMatcher getBracketMatcher() {
+	public final ICharacterPairMatcher getBracketMatcher() {
 		if (fBracketMatcher == null) {
 			fBracketMatcher = createBracketMatcher();
 		}
@@ -1700,75 +1648,6 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 			support.setMatchingCharacterPainterPreferenceKeys(
 					MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
 		}
-	}
-
-	/**
-	 * Jumps to the matching bracket.
-	 */
-	public void gotoMatchingBracket() {
-		final ICharacterPairMatcher bracketMatcher = getBracketMatcher();
-		if (bracketMatcher == null) {
-			return;
-		}
-		ISourceViewer sourceViewer = getSourceViewer();
-		IDocument document = sourceViewer.getDocument();
-		if (document == null)
-			return;
-
-		IRegion selection = getSignedSelection(sourceViewer);
-
-		int selectionLength = Math.abs(selection.getLength());
-		if (selectionLength > 1) {
-			setStatusLineErrorMessage(DLTKEditorMessages.ScriptEditor_nobracketSelected);
-			sourceViewer.getTextWidget().getDisplay().beep();
-			return;
-		}
-
-		// #26314
-		int sourceCaretOffset = selection.getOffset() + selection.getLength();
-		if (isSurroundedByBrackets(document, sourceCaretOffset))
-			sourceCaretOffset -= selection.getLength();
-
-		IRegion region = bracketMatcher.match(document, sourceCaretOffset);
-		if (region == null) {
-			setStatusLineErrorMessage(DLTKEditorMessages.ScriptEditor_noMatchingBracketFound);
-			sourceViewer.getTextWidget().getDisplay().beep();
-			return;
-		}
-
-		int offset = region.getOffset();
-		int length = region.getLength();
-
-		if (length < 1)
-			return;
-
-		int anchor = bracketMatcher.getAnchor();
-		// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-		int targetOffset = (ICharacterPairMatcher.RIGHT == anchor) ? offset + 1
-				: offset + length;
-
-		boolean visible = false;
-		if (sourceViewer instanceof ITextViewerExtension5) {
-			ITextViewerExtension5 extension = (ITextViewerExtension5) sourceViewer;
-			visible = (extension.modelOffset2WidgetOffset(targetOffset) > -1);
-		} else {
-			IRegion visibleRegion = sourceViewer.getVisibleRegion();
-			// http://dev.eclipse.org/bugs/show_bug.cgi?id=34195
-			visible = (targetOffset >= visibleRegion.getOffset() && targetOffset <= visibleRegion
-					.getOffset() + visibleRegion.getLength());
-		}
-
-		if (!visible) {
-			setStatusLineErrorMessage(DLTKEditorMessages.ScriptEditor_matchingBracketIsOutsideSelectedElement);
-			sourceViewer.getTextWidget().getDisplay().beep();
-			return;
-		}
-
-		if (selection.getLength() < 0)
-			targetOffset -= selection.getLength();
-
-		sourceViewer.setSelectedRange(targetOffset, selection.getLength());
-		sourceViewer.revealRange(targetOffset, selection.getLength());
 	}
 
 	public void updatedTitleImage(Image image) {
@@ -1877,5 +1756,9 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	protected IProgressMonitor getProgressMonitor() {
 		return super.getProgressMonitor();
 	}
-
+	
+	public static int widgetOffset2ModelOffset_(ISourceViewer viewer, int widgetOffset) {
+		return widgetOffset2ModelOffset(viewer, widgetOffset);
+	}
+	
 }
