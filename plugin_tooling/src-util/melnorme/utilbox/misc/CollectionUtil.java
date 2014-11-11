@@ -149,4 +149,13 @@ public class CollectionUtil {
 		return coll;
 	}
 	
+	/** @return whether given coll contains all elements of other, using a naive/basic algorithm. */
+	public static boolean containsAll(Collection<?> coll, Collection<?> other) {
+		Iterator<?> citer = other.iterator();
+		while (citer.hasNext())
+			if (!coll.contains(citer.next()))
+				return false;
+		return true;
+	}
+	
 }

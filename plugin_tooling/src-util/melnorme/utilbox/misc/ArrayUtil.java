@@ -270,7 +270,19 @@ public class ArrayUtil {
 	
 	/** @return the same as {@link List#indexOf(Object)}, using given array as a collection. */
 	public static <T> int indexOf(T[] array, T elem) {
-		return Arrays.asList(array).indexOf(elem);
+		// return Arrays.asList(array).indexOf(elem);
+		if(elem == null) {
+			for(int ix = 0; ix < array.length; ix++) {
+				if(array[ix] == null)
+					return ix;
+			}
+		} else {
+			for(int ix = 0; ix < array.length; ix++) {
+				if(elem.equals(array[ix]))
+					return ix;
+			}
+		}
+		return -1;
 	}
 	
 	/** @return true if array contains an element equal to obj. */
