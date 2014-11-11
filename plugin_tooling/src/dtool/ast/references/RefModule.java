@@ -23,7 +23,6 @@ import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
 import dtool.util.ArrayView;
-import dtool.util.ArrayViewExt;
 
 /** 
  * A module reference (in import declarations only).
@@ -32,13 +31,13 @@ public class RefModule extends NamedReference {
 	
 	public final ArrayView<IToken> packageList;
 	public final BaseLexElement moduleToken;
-	public final ArrayViewExt<String> packages; // TODO: Old API, refactor?
+	public final ArrayView<String> packages; // TODO: Old API, refactor?
 	public final String module;
 	
 	public RefModule(ArrayView<IToken> packageList, BaseLexElement moduleToken) {
 		this.packageList = assertNotNull(packageList);
 		this.moduleToken = assertNotNull(moduleToken);
-		this.packages = ArrayViewExt.create(tokenArrayToStringArray(packageList));
+		this.packages = ArrayView.create(tokenArrayToStringArray(packageList));
 		this.module = moduleToken.getSourceValue();
 	}
 	

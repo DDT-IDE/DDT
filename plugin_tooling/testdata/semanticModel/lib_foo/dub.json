@@ -1,5 +1,5 @@
 {
-	"name": "_bundle",
+	"name": "lib_foo",
 	"dependencies": {
 	},
 	"targetPath": ".dub"

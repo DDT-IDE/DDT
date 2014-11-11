@@ -24,6 +24,7 @@ import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
+import dtool.engine.ISemanticResolution;
 import dtool.engine.modules.IModuleResolver;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
@@ -69,6 +70,11 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		// Not accurate, this will ignore the template parameters:
 		return tplRef.findTargetDefElements(moduleResolver, findOneOnly);
+	}
+	
+	@Override
+	public INamedElement resolveTargetElement(ISemanticResolution sr) {
+		return super.resolveTargetElement(sr);
 	}
 	
 }

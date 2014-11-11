@@ -1,6 +1,7 @@
 {
-	"name": "_bundle",
+	"name": "lib_tpl",
 	"dependencies": {
+		"lib_foo" : "~master",
 	},
 	"targetPath": ".dub"
 }

@@ -48,7 +48,7 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(WORKING_DIR); // workaround to remove terminated tests
+		CommonDubTest.dubRemovePath(WORKING_DIR); // workaround to cleanup abruptly-terminated tests
 		CommonDubTest.dubAddPath(SEMMODEL_TEST_BUNDLES);
 	}
 	

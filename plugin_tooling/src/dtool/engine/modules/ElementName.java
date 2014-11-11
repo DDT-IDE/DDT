@@ -10,27 +10,23 @@
  *******************************************************************************/
 package dtool.engine.modules;
 
-import melnorme.utilbox.misc.ArrayUtil;
+
+import melnorme.lang.tooling.AbstractElementName2;
 
 /**
- * A fully qualified name of a module.
+ * A qualified element name.
  */
-public class ModuleFullName extends ElementName {
+public class ElementName extends AbstractElementName2 {
 	
-	public ModuleFullName(String moduleFullName) {
-		super(moduleFullName);
+	public static final String NAME_SEP = ".";
+	
+	public ElementName(String fullName) {
+		super(fullName, NAME_SEP);
 	}
 	
-	public ModuleFullName(String[] segments) {
-		super(segments);
-	}
-	
-	public String[] getPackages() {
-		return ArrayUtil.copyFrom(segments.getInternalArray(), segments.size() - 1);
-	}
-	
-	public String getModuleSimpleName() {
-		return getLastSegment();
+	/** Note: the new class will own segments array, it should not be modified. */
+	public ElementName(String[] segments) {
+		super(segments, NAME_SEP);
 	}
 	
 }

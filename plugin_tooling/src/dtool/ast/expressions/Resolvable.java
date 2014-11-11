@@ -20,6 +20,7 @@ import dtool.ast.IASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
+import dtool.engine.ISemanticResolution;
 import dtool.engine.common.IValueNode;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
@@ -41,11 +42,16 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 		assertTrue(this instanceof Reference || this instanceof Expression);
 	}
 	
+	// TODO: deprecate this method in favor of resolveTargetElement
 	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		if(namedElems == null || namedElems.isEmpty())
 			return null;
 		return namedElems.iterator().next();
+	}
+	
+	public INamedElement resolveTargetElement(ISemanticResolution sr) {
+		return findTargetDefElement(sr);
 	}
 	
 	/** Convenience method for wraping a single defunit as a search result. */

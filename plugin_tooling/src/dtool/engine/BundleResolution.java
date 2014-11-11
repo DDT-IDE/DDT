@@ -18,10 +18,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import dtool.ast.definitions.INamedElement;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.modules.ElementName;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 
@@ -130,6 +132,27 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 			resolvedModule = depBundleRes.findResolvedModule(moduleFullName);
 			if(resolvedModule != null) 
 				return resolvedModule;
+		}
+		return null;
+	}
+	
+	/* ----------------- ----------------- */
+	
+	public INamedElement findContainedElement(String elementName) throws ParseSourceException {
+		ElementName name = new ElementName(elementName);
+		
+		String possibleModuleName = null;
+		for (String segment : name.getSegments()) {
+			
+			possibleModuleName = possibleModuleName == null ? 
+					segment :
+					possibleModuleName + ElementName.NAME_SEP + segment;
+			
+			ResolvedModule mr = getBundleResolvedModule(possibleModuleName);
+			if(mr != null) {
+				/*FIXME: BUG here TODO*/
+				//return mr.getModuleNode().findElement(elementName);
+			}
 		}
 		return null;
 	}

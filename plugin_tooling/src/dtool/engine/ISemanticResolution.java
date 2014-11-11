@@ -12,6 +12,6 @@ package dtool.engine;
 
 import dtool.engine.modules.IModuleResolver;
 
-public interface IBundleResolution extends IModuleResolver {
+public interface ISemanticResolution extends IModuleResolver {
 	
 }

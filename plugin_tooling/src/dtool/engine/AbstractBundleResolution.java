@@ -27,7 +27,7 @@ import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public abstract class AbstractBundleResolution implements IBundleResolution {
+public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	protected final SemanticManager manager;
 	protected final BundleModules bundleModules;
@@ -110,6 +110,7 @@ public abstract class AbstractBundleResolution implements IBundleResolution {
 		return getBundleResolvedModule(new ModuleFullName(moduleFullName));
 	}
 	
+	/** @return the module contained in this bundle, denoted by moduleFullName, or null if not found. */
 	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
 		Path modulePath = getBundleModulePath(moduleFullName);
 		return modulePath == null ? null : getBundleResolvedModule(modulePath);
