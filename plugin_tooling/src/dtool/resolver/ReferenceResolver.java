@@ -56,28 +56,23 @@ public class ReferenceResolver {
 	/* ====================  reference lookup  ==================== */
 	
 	public static void resolveSearchInFullLexicalScope(final ASTNode node, CommonDefUnitSearch search) {
-		IScopeNode scope = getNearestLexicalScope(node);
-		if(scope == null) {
-			return;
-		}
-		
 		findDefUnitInPrimitivesScope(search);
+		if(search.isFinished())
+			return;
 		
-		while(true) {
+		IScopeNode scope = getNearestLexicalScope(node);
+		
+		while(scope != null) {
 			findDefUnitInScope(scope, search);
 			if(search.isFinished())
 				return;
-
-			IScopeNode outerScope = scope.getOuterLexicalScope();
-			if(outerScope == null) {
-				if(scope instanceof Module) {
-					Module module = (Module) scope;
-					findDefUnitInModuleDec(module, search);
-					findDefUnitInObjectIntrinsic(search);
-				}
-				return;
+			if(scope instanceof Module) {
+				Module module = (Module) scope;
+				findDefUnitInModuleDec(module, search);
+				findDefUnitInObjectIntrinsic(search);
 			}
-			scope = outerScope; 
+			
+			scope = scope.getOuterLexicalScope();
 		}
 	}
 	

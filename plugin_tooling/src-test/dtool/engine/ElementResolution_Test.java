@@ -13,7 +13,10 @@ package dtool.engine;
 import org.junit.Test;
 
 import dtool.ast.definitions.INamedElement;
+import dtool.ast.references.RefPrimitive;
 import dtool.dub.BundlePath;
+import dtool.parser.DeeTokens;
+import dtool.parser.common.Token;
 
 public class ElementResolution_Test extends CommonSemanticManagerTest {
 	
@@ -28,7 +31,14 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 		
 		BundleResolution libFooSR = sm.getUpdatedResolution(LIB_FOO);
 		
-		INamedElement node = libFooSR.findContainedElement("test.native_ref");
+		RefPrimitive refInt = new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0));
+		
+		INamedElement result = refInt.resolveTargetElement(libFooSR);
+		assertAreEqual(result.getFullyQualifiedName(), "int");
+		
+		INamedElement node = libFooSR.findContainedElement("test.ref_int");
+//		DefinitionVariable devVar = assertCast(node, DefinitionVariable.class);
+		
 	}
 	
 }

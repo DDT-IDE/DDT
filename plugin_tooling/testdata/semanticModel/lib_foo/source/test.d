@@ -1,2 +1,5 @@
+import lib_foo.mod;
 
-int native_ref1;
+int ref_int;
+
+lib_foo.mod.Foo ref_Foo;
