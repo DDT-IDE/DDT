@@ -25,6 +25,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.engine.ISemanticResolution;
+import dtool.engine.common.ResolutionResult;
 import dtool.engine.modules.IModuleResolver;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
@@ -73,7 +74,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	@Override
-	public INamedElement resolveTargetElement(ISemanticResolution sr) {
+	public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
 		return super.resolveTargetElement(sr);
 	}
 	

@@ -10,11 +10,16 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.junit.Test;
 
+import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefPrimitive;
+import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
+import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
@@ -31,14 +36,30 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 		
 		BundleResolution libFooSR = sm.getUpdatedResolution(LIB_FOO);
 		
-		RefPrimitive refInt = new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0));
+		testRefResolve(libFooSR, new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0)), 
+			"int");
 		
-		INamedElement result = refInt.resolveTargetElement(libFooSR);
-		assertAreEqual(result.getFullyQualifiedName(), "int");
+		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_int"), 
+			"int");
 		
-		INamedElement node = libFooSR.findContainedElement("test.ref_int");
-//		DefinitionVariable devVar = assertCast(node, DefinitionVariable.class);
-		
+		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_Foo"), 
+			"lib_foo.mod.Foo");
+		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_Foo_2"), 
+			"lib_foo.mod.Foo");
+//		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_Foo_3"), 
+//			"lib_foo.mod.Foo");
+
+	}
+	
+	protected Reference getSampleType(BundleResolution sr, String elementName) throws ParseSourceException {
+		INamedElement element = sr.findContainedElement(elementName);
+		assertNotNull(element);
+		return assertCast(element, DefinitionVariable.class).type;
+	}
+	
+	protected void testRefResolve(BundleResolution libFooSR, Reference ref, String elementName) {
+		INamedElement result = ref.resolveTargetElement(libFooSR).getSingleResult();
+		assertAreEqual(result.getFullyQualifiedName(), elementName);
 	}
 	
 }

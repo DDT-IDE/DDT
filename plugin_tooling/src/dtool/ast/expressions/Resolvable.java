@@ -22,6 +22,7 @@ import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.engine.ISemanticResolution;
 import dtool.engine.common.IValueNode;
+import dtool.engine.common.ResolutionResult;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
 
@@ -50,8 +51,8 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 		return namedElems.iterator().next();
 	}
 	
-	public INamedElement resolveTargetElement(ISemanticResolution sr) {
-		return findTargetDefElement(sr);
+	public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
+		return new ResolutionResult(findTargetDefElement(sr));
 	}
 	
 	/** Convenience method for wraping a single defunit as a search result. */

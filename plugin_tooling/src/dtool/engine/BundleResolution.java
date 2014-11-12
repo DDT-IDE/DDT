@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.ASTNode;
 import dtool.ast.definitions.INamedElement;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
@@ -136,7 +138,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 		return null;
 	}
 	
-	/* ----------------- ----------------- */
+	/* ----------------- used by tests only, at the moment ----------------- */
 	
 	public INamedElement findContainedElement(String elementName) throws ParseSourceException {
 		ElementName name = new ElementName(elementName);
@@ -150,10 +152,32 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 			
 			ResolvedModule mr = getBundleResolvedModule(possibleModuleName);
 			if(mr != null) {
-				/*FIXME: BUG here TODO*/
-				//return mr.getModuleNode().findElement(elementName);
+				String elementSubName = StringUtil.segmentAfterMatch(elementName, 
+					possibleModuleName + ElementName.NAME_SEP);
+				return findElement(mr.getModuleNode(), elementSubName);
 			}
 		}
+		return null;
+	}
+	
+	protected static INamedElement findElement(ASTNode moduleNode, String elementNameLocator) {
+		String segmentName = StringUtil.substringUntilMatch(elementNameLocator, ElementName.NAME_SEP); 
+		String restOfName = StringUtil.segmentAfterMatch(elementNameLocator, ElementName.NAME_SEP);
+		
+		// TODO should iterate over visible INamedElements
+		for (ASTNode childNode : moduleNode.getChildren()) {
+			if(childNode instanceof INamedElement) {
+				INamedElement namedElement = (INamedElement) childNode;
+				if(namedElement.getExtendedName().equals(segmentName)) {
+					if(restOfName != null) {
+						return findElement(childNode, restOfName);
+					} else {
+						return namedElement;
+					}
+				}
+			}
+		}
+		
 		return null;
 	}
 	
