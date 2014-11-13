@@ -44,7 +44,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(null, 0, new NullModuleResolver());
 		namedElement.resolveSearchInMembersScope(search);
 		
-		DefUnitResultsChecker resultsChecker = new DefUnitResultsChecker(search.getResults());
+		DefUnitResultsChecker resultsChecker = new DefUnitResultsChecker(search.getMatchedElements());
 		resultsChecker.removeIgnoredDefUnits(true, true);
 		resultsChecker.checkResults(expectedResults);
 	}

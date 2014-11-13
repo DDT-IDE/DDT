@@ -1,14 +1,11 @@
 package dtool.resolver;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import melnorme.utilbox.core.fntypes.Function;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
@@ -21,7 +18,6 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	
 	public final PrefixSearchOptions searchOptions;
 	protected final Set<String> addedDefElements = new HashSet<>();
-	protected final ArrayList<INamedElement> results  = new ArrayList<>();
 	
 	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
 		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
@@ -59,24 +55,16 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	public void addMatchDirectly(INamedElement namedElem) {
-		results.add(namedElem);
-	}
-	
-	public ArrayList<INamedElement> getResults() {
-		return results;
+		super.addMatch(namedElem);
 	}
 	
 	@Override
 	public String toString() {
-		String str = super.toString();
+		String str = getClass().getName() + " ---\n";
 		str += "searchPrefix: " + searchOptions.searchPrefix +"\n";
 		str += "----- Results: -----\n";
-		str += StringUtil.iterToString(results, "\n", new Function<INamedElement, String>() {
-			@Override
-			public String evaluate(INamedElement obj) {
-				return NamedElementUtil.getElementTypedQualification(obj); 
-			}
-		});
+		str += toString_matches();
 		return str;
 	}
+	
 }

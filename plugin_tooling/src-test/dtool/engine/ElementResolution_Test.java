@@ -48,7 +48,9 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 			"lib_foo.mod.Foo");
 //		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_Foo_3"), 
 //			"lib_foo.mod.Foo");
-
+		
+		Object foo;
+		// TODO: tests for caching
 	}
 	
 	protected Reference getSampleType(BundleResolution sr, String elementName) throws ParseSourceException {

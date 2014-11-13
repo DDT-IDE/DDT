@@ -13,7 +13,7 @@ package dtool.engine.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import dtool.ast.definitions.INamedElement;
 
@@ -22,7 +22,7 @@ public class CompletionSearchResult {
 	public final ECompletionResultStatus resultCode;
 	public final PrefixSearchOptions searchOptions;
 	public final int replaceLength;
-	public final ArrayList<INamedElement> results;
+	public final List<INamedElement> results;
 	
 	public CompletionSearchResult(ECompletionResultStatus resultCode) {
 		assertTrue(resultCode != ECompletionResultStatus.RESULT_OK);
@@ -32,14 +32,14 @@ public class CompletionSearchResult {
 		this.searchOptions = null;
 	}
 	
-	public CompletionSearchResult(PrefixSearchOptions searchOptions, ArrayList<INamedElement> results) {
+	public CompletionSearchResult(PrefixSearchOptions searchOptions, List<INamedElement> results) {
 		this.resultCode = ECompletionResultStatus.RESULT_OK;
 		this.searchOptions = assertNotNull(searchOptions);
 		this.replaceLength = searchOptions.rplLen;
 		this.results = results;
 	}
 	
-	public ArrayList<INamedElement> getResults() {
+	public List<INamedElement> getResults() {
 		return results;
 	}
 	

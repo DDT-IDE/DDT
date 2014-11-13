@@ -102,7 +102,9 @@ public class DefinitionTemplate extends CommonDefinition
 	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		ReferenceResolver.findInNodeList(search, tplParams, true);
+		boolean isSequentialLookup = search.isSequentialLookup();
+		/* FIXME: need to refactor this */
+		ReferenceResolver.findInNodeList(search, tplParams, isSequentialLookup);
 	}
 	
 	@Override

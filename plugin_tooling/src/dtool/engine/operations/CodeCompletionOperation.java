@@ -179,7 +179,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			ASTNode node, PrefixSearchOptions searchOptions) {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr, searchOptions);
 		node.performRefSearch(search);
-		return new CompletionSearchResult(search.searchOptions, search.getResults());
+		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements());
 	}
 	
 }

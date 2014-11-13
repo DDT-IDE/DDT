@@ -20,9 +20,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.common.ScopeSemantics;
 import dtool.engine.modules.BundleModulesVisitor;
+import dtool.engine.modules.ElementName;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -165,6 +169,28 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 			return bundleRes;
 		}
 		
+	}
+	
+	/* ----------------- used by tests only, at the moment ----------------- */
+	
+	public INamedElement findContainedElement(String elementName) throws ParseSourceException {
+		ElementName name = new ElementName(elementName);
+		
+		String possibleModuleName = null;
+		for (String segment : name.getSegments()) {
+			
+			possibleModuleName = possibleModuleName == null ? 
+					segment :
+					possibleModuleName + ElementName.NAME_SEP + segment;
+			
+			ResolvedModule mr = getBundleResolvedModule(possibleModuleName);
+			if(mr != null) {
+				String elementSubName = StringUtil.segmentAfterMatch(elementName, 
+					possibleModuleName + ElementName.NAME_SEP);
+				return ScopeSemantics.findElement(mr.getModuleNode(), elementSubName);
+			}
+		}
+		return null;
 	}
 	
 }

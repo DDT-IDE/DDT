@@ -4,19 +4,20 @@ package dtool.resolver;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
 
 public abstract class CommonDefUnitSearch {
-
-	public static final Collection<DefUnit> NO_DEFUNITS = Collections.emptySet();
-
+	
 	/** Flag for stop searching when suitable matches are found. */
 	protected final boolean findOnlyOne;
 	/** The offset of the reference. 
@@ -25,9 +26,13 @@ public abstract class CommonDefUnitSearch {
 	/** Module Resolver */
 	protected final IModuleResolver modResolver;
 	/** The module where the search started. */
-	protected Module refOriginModule;
+	protected final Module refOriginModule;
+	
 	/** The scopes that have already been searched */
 	protected ArrayList<IScopeProvider> searchedScopes;
+	
+	protected ArrayList<INamedElement> matches = new ArrayList<>(2);
+	protected boolean matchesArePartialDefUnits = false;
 	
 	
 	public CommonDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
@@ -45,6 +50,22 @@ public abstract class CommonDefUnitSearch {
 	
 	public IModuleResolver getModuleResolver() {
 		return modResolver;
+	}
+	
+	public boolean isSequentialLookup() {
+		return refOffset >= 0;
+	}
+	
+	public List<INamedElement> getMatchedElements() {
+		return matches;
+	}
+	
+	/** Adds the matched defunit. */
+	public void addMatch(INamedElement namedElem) {
+		matches.add(namedElem);
+		if(namedElem instanceof PackageNamespace) {
+			matchesArePartialDefUnits = true;
+		}
 	}
 	
 	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
@@ -97,13 +118,18 @@ public abstract class CommonDefUnitSearch {
 	/** Returns whether this search matches the given name or not. */
 	public abstract boolean matchesName(String defName);
 	
-	
-	/** Adds the matched defunit. */
-	public abstract void addMatch(INamedElement defElement);
-	
 	@Override
 	public String toString() {
-		return getClass().getName() + " ---\n";
+		return getClass().getName() + " ---\n" + toString_matches();
+	}
+	
+	public String toString_matches() {
+		return StringUtil.iterToString(matches, "\n", new Function<INamedElement, String>() {
+			@Override
+			public String evaluate(INamedElement obj) {
+				return NamedElementUtil.getElementTypedQualification(obj); 
+			}
+		});
 	}
 	
 }
