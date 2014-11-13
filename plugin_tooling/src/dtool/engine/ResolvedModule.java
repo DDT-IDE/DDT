@@ -31,6 +31,7 @@ public class ResolvedModule implements ICompilationUnitData {
 		return parsedModule;
 	}
 	
+	@Override
 	public Module getModuleNode() {
 		return parsedModule.module;
 	}
@@ -39,6 +40,7 @@ public class ResolvedModule implements ICompilationUnitData {
 		return parsedModule.modulePath;
 	}
 	
+	@Override
 	public AbstractBundleResolution getSemanticResolution() {
 		return bundleRes;
 	}

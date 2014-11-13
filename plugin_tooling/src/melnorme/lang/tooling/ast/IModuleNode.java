@@ -10,14 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
 
 
 /**
  * The node that resulting from the parsing of an entire compilation unit (a file usually).
  */
 public interface IModuleNode extends IASTNode {
-	
-	ModuleFullName getModuleFullName();
 	
 }

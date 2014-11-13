@@ -23,11 +23,11 @@ import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -67,13 +67,8 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	}
 	
 	/** @return a resolved module from this bundle's full import path (including dependencies). */
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 		return getBundleResolvedModule(moduleFullName);
-	}
-	
-	@Override
-	public ResolvedModule findCompilationUnit(ModuleFullName moduleName) throws ParseSourceException {
-		return findResolvedModule(moduleName);
 	}
 	
 	public boolean checkIsStale() {
@@ -115,17 +110,17 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return false;
 	}
 	
-	protected ResolvedModule getBundleResolvedModule(String moduleFullName) throws ParseSourceException {
+	protected ResolvedModule getBundleResolvedModule(String moduleFullName) throws ModuleSourceException {
 		return getBundleResolvedModule(new ModuleFullName(moduleFullName));
 	}
 	
 	/** @return the module contained in this bundle, denoted by moduleFullName, or null if not found. */
-	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 		Path modulePath = getBundleModulePath(moduleFullName);
 		return modulePath == null ? null : getBundleResolvedModule(modulePath);
 	}
 	
-	public synchronized ResolvedModule getBundleResolvedModule(Path filePath) throws ParseSourceException {
+	public synchronized ResolvedModule getBundleResolvedModule(Path filePath) throws ModuleSourceException {
 		ModuleParseCache parseCache = manager.parseCache;
 		
 		ResolvedModule resolvedModule = resolvedModules.get(filePath);
@@ -138,12 +133,12 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	}
 	
 	@Override
-	public Module findModule(ModuleFullName moduleFullName) throws ParseSourceException {
+	public Module findModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
-	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ParseSourceException {
+	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ModuleSourceException {
 		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
@@ -151,7 +146,7 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	/* ----------------- used by tests only, at the moment ----------------- */
 	
-	public ILangNamedElement findContainedElement(String elementName) throws ParseSourceException {
+	public ILangNamedElement findContainedElement(String elementName) throws ModuleSourceException {
 		ElementName name = new ElementName(elementName);
 		
 		String possibleModuleName = null;

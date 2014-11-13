@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.bundles;
 
-import java.util.HashSet;
-
-import dtool.ast.definitions.Module;
-
-public class NullModuleResolver extends CommonModuleResolver {
+/**
+ * An exception representing a failure to retrieve the source of a module.
+ */
+public class ModuleSourceException extends Exception {
 	
-	@Override
-	protected HashSet<String> findModules_do(String fqNamePrefix) {
-		return new HashSet<>();
+	private static final long serialVersionUID = 1L;
+	
+	public ModuleSourceException() {
 	}
 	
-	@Override
-	protected Module findModule_do(String[] packages, String module) {
-		return null;
+	public ModuleSourceException(Throwable cause) {
+		super(cause);
 	}
 	
 }

@@ -17,10 +17,10 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.Module;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.IResolvable;
@@ -134,12 +134,12 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-			Module module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
+			INamedElement module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
 			if(module == null) 
 				return null;
 			
 			DefUnitSearch search = new DefUnitSearch(elementName, null, -1, findFirstOnly, mr);
-			module.resolveSearchInScope(search);
+			module.resolveSearchInMembersScope(search);
 			return search.getMatchedElements();
 		}
 		

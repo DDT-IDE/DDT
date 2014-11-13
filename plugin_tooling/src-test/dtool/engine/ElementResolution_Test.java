@@ -12,6 +12,7 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 
 import org.junit.Test;
 
@@ -19,7 +20,6 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
@@ -53,7 +53,7 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 		// TODO: tests for caching
 	}
 	
-	protected Reference getSampleType(BundleResolution sr, String elementName) throws ParseSourceException {
+	protected Reference getSampleType(BundleResolution sr, String elementName) throws ModuleSourceException {
 		ILangNamedElement element = sr.findContainedElement(elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;

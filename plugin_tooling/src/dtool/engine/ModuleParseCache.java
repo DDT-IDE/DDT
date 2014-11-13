@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
@@ -42,12 +43,12 @@ public class ModuleParseCache {
 	
 	/* -----------------  ----------------- */
 	
-	public ParsedModule getParsedModule(Path filePath) throws ParseSourceException {
+	public ParsedModule getParsedModule(Path filePath) throws ModuleSourceException {
 		ModuleEntry entry = getEntry(filePath);
 		try {
 			return assertNotNull(entry.getParsedModule());
 		} catch (IOException e) {
-			throw new ParseSourceException(e);
+			throw new ModuleSourceException(e);
 		}
 	}
 	
@@ -66,17 +67,6 @@ public class ModuleParseCache {
 		return parseModuleWithNewSource(filePath, source);
 	}
 	
-	public static class ParseSourceException extends Exception {
-		
-		private static final long serialVersionUID = 1L;
-		
-		public ParseSourceException() {
-		}
-		
-		public ParseSourceException(Throwable cause) {
-			super(cause);
-		}
-	}
 	
 	/* -----------------  ----------------- */
 	

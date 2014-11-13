@@ -12,8 +12,7 @@ package melnorme.lang.tooling.bundles;
 
 import java.util.Set;
 
-import dtool.ast.definitions.Module;
-import dtool.engine.ModuleParseCache.ParseSourceException;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
  * An interface for a service that given module names knows how to find parsed Module's in an 
@@ -30,6 +29,6 @@ public interface IModuleResolver {
 	 * @param module The name of the modules to find. 
 	 * @return the respective module or null if not found
 	 */
-	Module findModule(ModuleFullName moduleName) throws ParseSourceException;
+	INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
 	
 }

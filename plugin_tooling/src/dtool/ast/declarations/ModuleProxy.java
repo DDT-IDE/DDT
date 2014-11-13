@@ -15,11 +15,11 @@ import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.Module;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
@@ -66,8 +66,12 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public Module resolveDefUnit() {
-		return ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName()); 
+	public DefUnit resolveDefUnit() {
+		INamedElement module = ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName());
+		if(module instanceof DefUnit) {
+			return (DefUnit) module;
+		}
+		return null; 
 	}
 	
 	@Override

@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -37,7 +38,6 @@ import org.junit.BeforeClass;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 
@@ -203,16 +203,16 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 		return sm.getUpdatedResolution(bundlePath);
 	}
 	
-	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ParseSourceException {
+	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ModuleSourceException {
 		checkGetModule(sm.getStoredResolution(bundlePath), moduleName, moduleName);
 	}
 	protected void checkGetModule(BundlePath bundlePath, String moduleName, 
-			String expectedModuleName) throws ParseSourceException {
+			String expectedModuleName) throws ModuleSourceException {
 		checkGetModule(sm.getStoredResolution(bundlePath), moduleName, expectedModuleName);
 	}
 	
 	protected ResolvedModule checkGetModule(BundleResolution bundleRes, String moduleName, 
-			String expectedModuleName) throws ParseSourceException {
+			String expectedModuleName) throws ModuleSourceException {
 		ResolvedModule resolvedModule = bundleRes.getBundleResolvedModule(moduleName);
 		
 		if(expectedModuleName != null) {
@@ -233,13 +233,13 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 	}
 	
 	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Path expectedPath) 
-			throws ParseSourceException, ExecutionException {
+			throws ModuleSourceException, ExecutionException {
 		BundleResolution bundleRes = sm.getStoredResolution(bundlePath);
 		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
 	}
 	
 	protected void testFindResolvedModule(AbstractBundleResolution bundleRes, String moduleNameStr, Path expectedPath)
-			throws ParseSourceException {
+			throws ModuleSourceException {
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
 		ResolvedModule resolvedModule = bundleRes.findResolvedModule(moduleFullName);
 		Path modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();

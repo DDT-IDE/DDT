@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.bundles.NullModuleResolver;
+import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		
 		
-		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new NullModuleResolver());
+		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new MockSemanticResolution());
 		ReferenceResolver.findDefUnitInScope(LanguageIntrinsics.D2_063_intrinsics.primitivesScope, search);
 		defElement = search.getMatchedElements().iterator().next();
 		

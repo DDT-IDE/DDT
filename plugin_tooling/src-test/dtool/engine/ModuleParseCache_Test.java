@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
@@ -30,7 +31,6 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;
 
@@ -92,7 +92,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		assertTrue(mpc.getEntry(filePath).isStale() == isEntryStale);
 	}
 	
-	protected void basicSequence(Path cuPath) throws ParseSourceException, IOException, FileNotFoundException {
+	protected void basicSequence(Path cuPath) throws ModuleSourceException, IOException, FileNotFoundException {
 		
 		ParsedModule parsedModule = mpc.getParsedModule(CU_PATH);
 		assertTrue(mpc.getParsedModule(cuPath) == parsedModule);
@@ -153,7 +153,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		assertTrue(mpc.getParsedModule(CU_PATH) != parsedModule);
 	}
 	
-	protected void testUpdateWorkingCopyAndParse(Path modulePath, String source) throws ParseSourceException {
+	protected void testUpdateWorkingCopyAndParse(Path modulePath, String source) throws ModuleSourceException {
 		ParsedModule parsedModule = mpc.setWorkingCopyAndGetParsedModule(modulePath, source);
 		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
 		assertTrue(mpc.getParsedModule(modulePath) == parsedModule);
@@ -162,14 +162,14 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	protected void testDiscardWorkingCopy(Path filePath, String previousSource, String expectedNewSource) 
-			throws ParseSourceException {
+			throws ModuleSourceException {
 		assertTrue(mpc.getExistingParsedModule(CU_PATH).source.equals(previousSource));
 		mpc.discardWorkingCopy(filePath);
 		assertTrue(mpc.getEntry(filePath).isStale());
 		assertTrue(mpc.getParsedModule(filePath).source.equals(expectedNewSource));
 	}
 	
-	protected void testOptimizationsWithIdenticalSource() throws IOException, ParseSourceException {
+	protected void testOptimizationsWithIdenticalSource() throws IOException, ModuleSourceException {
 		mpc.discardWorkingCopy(CU_PATH);
 		ParsedModule parsedModule;
 		
@@ -187,7 +187,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		testNoReparseHappened(parsedModule, CU_PATH);
 	}
 	
-	protected void testNoReparseHappened(ParsedModule previousModule, Path filePath) throws ParseSourceException {
+	protected void testNoReparseHappened(ParsedModule previousModule, Path filePath) throws ModuleSourceException {
 		assertTrue(previousModule == getParsedModuleIfNotStale(filePath));
 		assertTrue(mpc.getEntry(filePath).isStale() == false);
 		assertTrue(previousModule == mpc.getParsedModule(filePath));

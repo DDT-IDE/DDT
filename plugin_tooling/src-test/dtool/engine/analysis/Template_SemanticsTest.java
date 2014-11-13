@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.utilbox.misc.PathUtil;
@@ -31,7 +32,6 @@ import dtool.ast.references.Reference;
 import dtool.engine.AbstractBundleResolution;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.engine.DToolServer;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.ResolvedModule;
 import dtool.resolver.PrefixDefUnitSearch;
 
@@ -81,7 +81,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		return sm.getUpdatedResolvedModule(path);
 	}
 	
-	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ParseSourceException {
+	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ModuleSourceException {
 		ILangNamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;

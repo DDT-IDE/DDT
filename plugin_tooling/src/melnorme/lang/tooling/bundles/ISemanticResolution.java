@@ -10,10 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.bundles;
 
-import dtool.engine.ModuleParseCache.ParseSourceException;
 
 public interface ISemanticResolution extends IModuleResolver {
-	
-	ICompilationUnitData findCompilationUnit(ModuleFullName moduleName) throws ParseSourceException;
 	
 }

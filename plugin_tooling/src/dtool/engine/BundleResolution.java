@@ -18,14 +18,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 
-public class BundleResolution extends AbstractBundleResolution implements IModuleResolver {
+public class BundleResolution extends AbstractBundleResolution {
 	
 	protected final ResolvedManifest manifest;
 	protected final DubBundle dubBundle;
@@ -115,7 +114,7 @@ public class BundleResolution extends AbstractBundleResolution implements IModul
 	}
 	
 	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 		ResolvedModule resolvedModule;
 		
 		resolvedModule = stdLibResolution.findResolvedModule(moduleFullName);

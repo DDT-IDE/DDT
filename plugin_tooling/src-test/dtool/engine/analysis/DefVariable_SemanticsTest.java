@@ -14,7 +14,7 @@ import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERT
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.bundles.NullModuleResolver;
+import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 
 import org.junit.Test;
@@ -103,7 +103,7 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	}
 	
 	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
-		NullModuleResolver mr = new NullModuleResolver();
+		MockSemanticResolution mr = new MockSemanticResolution();
 		ILangNamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);

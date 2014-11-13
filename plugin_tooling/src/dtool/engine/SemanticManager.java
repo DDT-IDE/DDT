@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
@@ -343,7 +343,7 @@ public class SemanticManager extends AbstractSemanticManager {
 				bundleRes = getUpdatedResolution(bundlePath, compilerPath);
 			}
 			return bundleRes.getBundleResolvedModule(filePath);
-		} catch (ParseSourceException e) {
+		} catch (ModuleSourceException e) {
 			throw new ExecutionException(e);
 		}
 	}
@@ -364,7 +364,7 @@ public class SemanticManager extends AbstractSemanticManager {
 		}
 		
 		@Override
-		public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
+		public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 			return stdLibResolution.findResolvedModule(moduleFullName);
 		}
 		

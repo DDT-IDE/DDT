@@ -12,8 +12,10 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -27,7 +29,6 @@ import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.parser.DeeParserResult;
 
 /**
@@ -37,23 +38,14 @@ import dtool.parser.DeeParserResult;
  */
 public class ReferenceResolver {
 	
-	private static final String[] EMPTY_PACKAGE = new String[0];
-	
-	public static Module findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
+	public static INamedElement findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
 		return findModuleUnchecked(mr, new ModuleFullName(moduleFullName));
 	}
 	
-	public static Module findModuleUnchecked(IModuleResolver mr, String[] packages, String module) {
-		if(module.isEmpty())
-			return null;
-		
-		return findModuleUnchecked(mr, new ModuleFullName(ArrayUtil.concat(packages, module)));
-	}
-	
-	public static Module findModuleUnchecked(IModuleResolver mr, ModuleFullName moduleName) {
+	public static INamedElement findModuleUnchecked(IModuleResolver mr, ModuleFullName moduleName) {
 		try {
 			return mr.findModule(moduleName);
-		} catch (ParseSourceException pse) {
+		} catch (ModuleSourceException pse) {
 			/* FIXME: TODO: add error to SemanticResolution / semantic operation. */
 			return null;
 		}
@@ -209,9 +201,9 @@ public class ReferenceResolver {
 	/* ====================  ==================== */
 	
 	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
-		Module targetModule = ReferenceResolver.findModuleUnchecked(search.modResolver, EMPTY_PACKAGE, "object");
+		INamedElement targetModule = ReferenceResolver.findModuleUnchecked(search.modResolver, "object");
 		if (targetModule != null) {
-			findDefUnitInScope(targetModule, search);
+			targetModule.resolveSearchInMembersScope(search);
 		}
 	}
 	
@@ -243,23 +235,23 @@ public class ReferenceResolver {
 		findDefUnitInStaticImport(impContent, search);
 		//if(search.isScopeFinished()) return;
 		
-		Module targetModule = findImportTargetModule(search.modResolver, impContent);
+		INamedElement targetModule = findImportTargetModule(search.modResolver, impContent);
 		if(targetModule != null) {
-			findDefUnitInScope(targetModule, search);
+			targetModule.resolveSearchInMembersScope(search);
 		}
 	}
 	
-	private static Module findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
+	private static INamedElement findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
-		String module = impSelective.getModuleRef().module;
-		Module targetModule = findModuleUnchecked(modResolver, packages, module);
-		return targetModule;
+		String moduleName = impSelective.getModuleRef().module;
+		
+		return findModuleUnchecked(modResolver, new ModuleFullName(ArrayUtil.concat(packages, moduleName)));
 	}
 	
 	public static void findDefUnitInSelectiveImport(
 			ImportSelective impSelective, CommonDefUnitSearch search) {
 
-		Module targetModule = findImportTargetModule(search.modResolver, impSelective);
+		INamedElement targetModule = findImportTargetModule(search.modResolver, impSelective);
 		if (targetModule == null)
 			return;
 			

@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
@@ -31,7 +32,6 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
-import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.FindDefinitionResult;
@@ -95,7 +95,7 @@ public class DToolClient {
 		public ParsedModule getParsedModuleOrNull(Path filePath) {
 			try {
 				return getParsedModule(filePath);
-			} catch (ParseSourceException e) {
+			} catch (ModuleSourceException e) {
 				// Most likely a file IO error ocurred. 
 				DeeCore.logWarning("Error in getParsedModule", e);
 				return null;
@@ -170,7 +170,7 @@ public class DToolClient {
 				}
 				return getClientModuleCache().getParsedModule(filePath);
 			}
-		} catch (ParseSourceException | ModelException e) {
+		} catch (ModuleSourceException | ModelException e) {
 			DeeCore.logWarning("Error in parseModule", e);
 			return null;
 		}

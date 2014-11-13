@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.NullModuleResolver;
+import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
@@ -33,7 +33,7 @@ public class DToolClient_Bad {
 		try {
 			return DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
 		} catch (ExecutionException e) {
-			return new NullModuleResolver();
+			return new MockSemanticResolution();
 		}
 	}
 	

@@ -10,6 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.tooling.bundles;
 
+import melnorme.lang.tooling.ast.IModuleNode;
+
 public interface ICompilationUnitData {
+	
+	IModuleNode getModuleNode();
+	
+	IModuleResolver getSemanticResolution();
 	
 }
