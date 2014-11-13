@@ -27,6 +27,11 @@ public interface IDefElement {
 	 */
 	public abstract String getExtendedName();
 	
+	/** @return the name by which this element can be referred to in the normal namespace.
+	 * Usually it's the same as the name, but it can be null or empty, 
+	 * meaning that the element cannot be referred by name (for example constructors elements). */
+	public String getNameInRegularNamespace();
+	
 	/** @return true if this is a pre-defined/native language element. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types) 
 	 */

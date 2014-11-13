@@ -4,19 +4,16 @@ package dtool.resolver;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.declarations.PackageNamespace;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NamedElementUtil;
 import dtool.engine.modules.IModuleResolver;
 
-public abstract class CommonDefUnitSearch {
+public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	
 	/** Flag for stop searching when suitable matches are found. */
 	protected final boolean findOnlyOne;
@@ -30,9 +27,6 @@ public abstract class CommonDefUnitSearch {
 	
 	/** The scopes that have already been searched */
 	protected ArrayList<IScopeProvider> searchedScopes;
-	
-	protected ArrayList<INamedElement> matches = new ArrayList<>(2);
-	protected boolean matchesArePartialDefUnits = false;
 	
 	
 	public CommonDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
@@ -54,18 +48,6 @@ public abstract class CommonDefUnitSearch {
 	
 	public boolean isSequentialLookup() {
 		return refOffset >= 0;
-	}
-	
-	public List<INamedElement> getMatchedElements() {
-		return matches;
-	}
-	
-	/** Adds the matched defunit. */
-	public void addMatch(INamedElement namedElem) {
-		matches.add(namedElem);
-		if(namedElem instanceof PackageNamespace) {
-			matchesArePartialDefUnits = true;
-		}
 	}
 	
 	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
@@ -99,25 +81,6 @@ public abstract class CommonDefUnitSearch {
 	/** Return whether the search has found all matches. */
 	public abstract boolean isFinished();
 
-	/** Returns whether this search matches the given defUnit or not. */
-	public boolean matches(DefUnit defUnit) {
-		if(!defUnit.availableInRegularNamespace()) {
-			return false;
-		}
-		if(defUnit.syntaxIsMissingName()) {
-			return false;
-		}
-		return matchesName(defUnit.getName());
-	}
-	
-	// TODO: subside into #matches(DefUnit)
-	public boolean matches(INamedElement defElement) {
-		return matchesName(defElement.getName());
-	}
-	
-	/** Returns whether this search matches the given name or not. */
-	public abstract boolean matchesName(String defName);
-	
 	@Override
 	public String toString() {
 		return getClass().getName() + " ---\n" + toString_matches();

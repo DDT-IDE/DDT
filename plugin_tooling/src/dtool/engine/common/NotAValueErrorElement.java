@@ -38,6 +38,11 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	@Override
+	public String getNameInRegularNamespace() {
+		return wrappedElement.getNameInRegularNamespace();
+	}
+	
+	@Override
 	public boolean isLanguageIntrinsic() {
 		return wrappedElement.isLanguageIntrinsic();
 	}

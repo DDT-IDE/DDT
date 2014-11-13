@@ -4,17 +4,17 @@ import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.AbstractNamedElement;
 
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
  */
-public abstract class IntrinsicDefUnit implements INamedElement {
+public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	
-	protected final String name;
 	protected final Ddoc doc;
 	
 	public IntrinsicDefUnit(String name, Ddoc doc) {
-		this.name = name;
+		super(name);
 		this.doc = doc;
 	}
 	
@@ -26,16 +26,6 @@ public abstract class IntrinsicDefUnit implements INamedElement {
 	@Override
 	public boolean isLanguageIntrinsic() {
 		return true;
-	}
-	
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return name;
 	}
 	
 	@Override

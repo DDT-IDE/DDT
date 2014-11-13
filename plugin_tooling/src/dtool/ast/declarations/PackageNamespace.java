@@ -17,6 +17,7 @@ import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.AbstractNamedElement;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
@@ -28,15 +29,14 @@ import dtool.resolver.ReferenceResolver;
  * It does not represent the full package namespace, but just one of the elements containted in the namespace.
  * (the containted element must be a sub-package, or a module) 
  */
-public class PackageNamespace implements INamedElement, IScopeProvider {
+public class PackageNamespace extends AbstractNamedElement implements IScopeProvider {
 	
-	protected final String name;
 	protected final String fqName;
 	protected final INamedElement containedElement;
 	
 	public PackageNamespace(String fqName, INamedElement module) {
+		super(StringUtil.substringAfterLastMatch(fqName, "."));
 		this.fqName = fqName;
-		this.name = StringUtil.substringAfterLastMatch(fqName, ".");
 		this.containedElement = assertNotNull(module);
 	}
 	
@@ -61,16 +61,6 @@ public class PackageNamespace implements INamedElement, IScopeProvider {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Package;
-	}
-	
-	@Override
-	public String getName() {
-		return name;
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return name;
 	}
 	
 	@Override

@@ -17,20 +17,19 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.AbstractNamedElement;
 import dtool.engine.common.DefElementCommon;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
-public class ModuleProxy implements INamedElement {
+public class ModuleProxy extends AbstractNamedElement {
 	
 	protected final IModuleResolver moduleResolver;
 	protected final String fqModuleName;
-	protected final String moduleName;
 	
 	public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
-		// TODO: assertNotNull
-		this.moduleName = StringUtil.substringAfterLastMatch(fqModuleName, "."); 
+		super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fqModuleName = fqModuleName;
 		this.moduleResolver = moduleResolver;
@@ -39,16 +38,6 @@ public class ModuleProxy implements INamedElement {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
-	}
-	
-	@Override
-	public String getName() {
-		return moduleName;
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return moduleName;
 	}
 	
 	@Override

@@ -157,7 +157,7 @@ public class ReferenceResolver {
 		}
 		if(!importsOnly && node instanceof DefUnit) {
 			DefUnit defunit = (DefUnit) node;
-			evaluateDefUnitForSearch(search, defunit);
+			search.visitElement(defunit);
 		}
 		else if(importsOnly && node instanceof DeclarationImport) {
 			DeclarationImport declImport = (DeclarationImport) node;
@@ -169,12 +169,6 @@ public class ReferenceResolver {
 				impFrag.searchInSecondaryScope(search);
 				// continue regardless of search.findOnlyOne because of partial packages
 			}
-		}
-	}
-	
-	public static void evaluateDefUnitForSearch(CommonDefUnitSearch search, DefUnit defunit) {
-		if(defunit != null && search.matches(defunit)) {
-			search.addMatch(defunit);
 		}
 	}
 	
@@ -192,15 +186,9 @@ public class ReferenceResolver {
 		}
 	}
 	
-	// TODO: refactor this code maybe?
 	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, INamedElement namedElement) {
-		if(namedElement instanceof DefUnit) {
-			DefUnit defUnit = (DefUnit) namedElement;
-			evaluateDefUnitForSearch(search, defUnit);
-		} else {
-			if(namedElement != null && search.matches(namedElement)) {
-				search.addMatch(namedElement);
-			}
+		if(namedElement != null) {
+			search.visitElement(namedElement);
 		}
 	}
 	

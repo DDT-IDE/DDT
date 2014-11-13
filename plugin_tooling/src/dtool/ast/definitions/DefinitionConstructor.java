@@ -56,8 +56,8 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	}
 	
 	@Override
-	public boolean availableInRegularNamespace() {
-		return false;
+	public String getNameInRegularNamespace() {
+		return null;
 	}
 	
 	@Override

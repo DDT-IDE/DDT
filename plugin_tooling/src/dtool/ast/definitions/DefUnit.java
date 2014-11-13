@@ -87,8 +87,9 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		return getName().isEmpty();
 	}
 	
-	public boolean availableInRegularNamespace() {
-		return true;
+	@Override
+	public String getNameInRegularNamespace() {
+		return getName();
 	}
 	
 	@Override
