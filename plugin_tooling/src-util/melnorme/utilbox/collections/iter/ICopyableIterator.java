@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.iteration;
+package melnorme.utilbox.collections.iter;
 
 import java.util.Iterator;
 

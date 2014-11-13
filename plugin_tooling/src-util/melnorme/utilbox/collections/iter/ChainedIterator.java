@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.utilbox.iteration;
+package melnorme.utilbox.collections.iter;
 
 
 /**
@@ -24,37 +24,54 @@ public class ChainedIterator<T> implements ICopyableIterator<T> {
 	protected ICopyableIterator<T> firstIterator;
 	protected final ICopyableIterator<T> secondIterator;
 	
+	protected ICopyableIterator<T> currentIterator;
+	
 	public ChainedIterator(ICopyableIterator<T> _firstIter, ICopyableIterator<T> _secondIter) {
 		this.firstIterator = _firstIter.optimizedSelf();
 		this.secondIterator = _secondIter.optimizedSelf();
+		
+		currentIterator = firstIterator;
+		updateCurrentIterator();
+	}
+	
+	public boolean isOnLastIterator() {
+		return !firstIterator.hasNext();
+	}
+	
+	protected void updateCurrentIterator() {
+		if(!currentIterator.hasNext() && currentIterator != secondIterator) {
+			currentIterator = secondIterator;
+		}
 	}
 	
 	@Override
 	public boolean hasNext() {
-		return firstIterator.hasNext() || secondIterator.hasNext();
-		
+		return currentIterator.hasNext();
 	}
 	
 	@Override
 	public T next() {
-		if(firstIterator.hasNext())
-			return firstIterator.next();
-		return secondIterator.next();
-		
+		T next = currentIterator.next();
+		updateCurrentIterator();
+		return next;
 	}
 	
 	@Override
 	public ICopyableIterator<T> copyState() {
+		if(isOnLastIterator()) {
+			return secondIterator.copyState().optimizedSelf(); // No need for ChainedIterator any more
+		}
+		
 		return new ChainedIterator<T>(firstIterator.copyState(), secondIterator.copyState());
 	}
 	
 	@Override
 	public ICopyableIterator<T> optimizedSelf() {
-		if(firstIterator.hasNext()) {
+		if(isOnLastIterator()) {
+			return secondIterator.optimizedSelf(); // No need for ChainedIterator any more
+		} else {
 			firstIterator = firstIterator.optimizedSelf();
 			return this;
-		} else {
-			return secondIterator.optimizedSelf();
 		}
 	}
 	
