@@ -16,11 +16,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.MiscUtil;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
 

@@ -14,8 +14,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import dtool.engine.common.DefElementCommon;
-import dtool.engine.modules.IModuleResolver;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTupleParam extends TemplateParameter {

@@ -1,10 +1,10 @@
-package dtool.engine.common.intrinsics;
+package melnorme.lang.tooling.engine.intrinsics;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.engine.common.AbstractNamedElement;
 
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 

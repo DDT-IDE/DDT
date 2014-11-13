@@ -15,14 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.NullModuleResolver;
+import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
-import dtool.engine.common.NotAValueErrorElement;
-import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.resolver.PrefixDefUnitSearch;

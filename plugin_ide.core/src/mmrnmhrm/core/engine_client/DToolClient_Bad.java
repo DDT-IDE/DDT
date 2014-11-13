@@ -13,6 +13,8 @@ package mmrnmhrm.core.engine_client;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.NullModuleResolver;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
@@ -20,9 +22,6 @@ import mmrnmhrm.core.DeeCore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
-
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.NullModuleResolver;
 
 /**
  * Bad API that needs to be replaced eventually

@@ -8,13 +8,13 @@ import static melnorme.utilbox.misc.MiscUtil.createValidPath;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
 
 import org.junit.Test;
 
-import dtool.engine.modules.ModuleFullName;
 import dtool.engine.modules.ModuleNamingRules;
 
 public class ModuleNamingRules_Test extends CommonTest {

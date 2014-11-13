@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.ModuleFullName;
 
 public class BundleResolution extends AbstractBundleResolution implements IModuleResolver {
 	

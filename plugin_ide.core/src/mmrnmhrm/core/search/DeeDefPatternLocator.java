@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -13,7 +14,6 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
-import dtool.engine.modules.IModuleResolver;
 
 /// XXX: get rid of this class
 @Deprecated

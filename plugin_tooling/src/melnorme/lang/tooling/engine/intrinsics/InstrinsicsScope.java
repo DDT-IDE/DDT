@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common.intrinsics;
+package melnorme.lang.tooling.engine.intrinsics;
 
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.engine.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;

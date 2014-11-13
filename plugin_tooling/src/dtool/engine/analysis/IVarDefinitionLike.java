@@ -8,20 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common;
-
-import java.util.Iterator;
+package dtool.engine.analysis;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import dtool.ast.expressions.IInitializer;
+import dtool.ast.references.Reference;
 
 /**
- * Interface for a node that potentially contains named elements visible 
- * in the same scope/namespace as the container. 
+ * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
  */
-public interface INonScopedContainer {
+public interface IVarDefinitionLike extends ILangNamedElement, IASTNode {
 	
-	/** @return an iterator for the members of this {@link INonScopedContainer}. Non-null. 
-	 * Used mainly for resolving. */
-	Iterator<? extends IASTNode> getMembersIterator();
+	Reference getDeclaredType();
+	
+	IInitializer getDeclaredInitializer();
+	
+	CommonDefVarSemantics getNodeSemantics();
 	
 }

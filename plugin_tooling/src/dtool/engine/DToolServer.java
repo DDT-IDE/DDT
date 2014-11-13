@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;

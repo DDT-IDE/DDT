@@ -22,6 +22,7 @@ import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -29,9 +30,8 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
+import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
-import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class FindDefinitionOperation extends AbstractDToolOperation {

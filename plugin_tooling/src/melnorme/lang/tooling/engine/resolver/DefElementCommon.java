@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common;
+package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.references.Reference;
-import dtool.engine.modules.IModuleResolver;
 
 public class DefElementCommon {
 	

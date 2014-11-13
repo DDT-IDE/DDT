@@ -2,8 +2,8 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.Module;
-import dtool.engine.modules.IModuleResolver;
 
 /**
  * Normal DefUnit search, 

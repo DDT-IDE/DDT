@@ -6,10 +6,10 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.expressions.ExpMixinString;
 import dtool.ast.statements.IStatement;
-import dtool.engine.common.INonScopedContainer;
 
 /**
  * Parse exp contents as code (exp must resolve to a string).

@@ -3,7 +3,7 @@ package dtool.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import dtool.engine.modules.IModuleResolver;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 
 /** 
  * A node that is a reference (or a value implicitly referring) to a named element.

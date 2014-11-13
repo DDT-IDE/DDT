@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.engine.IScopeProvider;
-import melnorme.lang.tooling.engine.NamedElementsVisitor;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.NamedElementsVisitor;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NamedElementUtil;
-import dtool.engine.modules.IModuleResolver;
 
 public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	

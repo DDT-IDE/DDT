@@ -8,10 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine;
+package melnorme.lang.tooling.bundles;
 
-import dtool.engine.modules.IModuleResolver;
+import dtool.engine.ModuleParseCache.ParseSourceException;
 
 public interface ISemanticResolution extends IModuleResolver {
+	
+	ICompilationUnitData findCompilationUnit(ModuleFullName moduleName) throws ParseSourceException;
 	
 }

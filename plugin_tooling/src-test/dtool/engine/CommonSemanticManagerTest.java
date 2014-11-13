@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
@@ -36,9 +37,7 @@ import org.junit.BeforeClass;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.modules.ModuleFullName;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 

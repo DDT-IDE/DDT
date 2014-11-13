@@ -10,7 +10,10 @@ import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.engine.IScopeProvider;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -25,9 +28,6 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.common.INonScopedContainer;
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult;
 
 /**

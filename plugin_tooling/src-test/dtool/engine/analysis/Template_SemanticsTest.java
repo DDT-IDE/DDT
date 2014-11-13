@@ -17,7 +17,9 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.engine.IScopeProvider;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
@@ -27,12 +29,10 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.AbstractBundleResolution;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.common.ScopeSemantics;
-import dtool.engine.modules.IModuleResolver;
+import dtool.engine.ResolvedModule;
 import dtool.resolver.PrefixDefUnitSearch;
 
 

@@ -19,13 +19,13 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
+import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
-import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 import dtool.parser.DeeParser;

@@ -1,11 +1,11 @@
 package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 
 import org.junit.Test;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 import dtool.resolver.LanguageIntrinsics;
 
 public class DeeElementFlagsTest {

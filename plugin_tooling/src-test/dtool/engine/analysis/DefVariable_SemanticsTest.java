@@ -14,12 +14,10 @@ import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERT
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.NullModuleResolver;
+import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 
 import org.junit.Test;
-
-import dtool.engine.common.IVarDefinitionLike;
-import dtool.engine.common.NotAValueErrorElement;
-import dtool.engine.modules.NullModuleResolver;
 
 public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	

@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.NullModuleResolver;
 import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
@@ -8,7 +9,6 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ddoc.TextUI;
-import dtool.engine.modules.NullModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;

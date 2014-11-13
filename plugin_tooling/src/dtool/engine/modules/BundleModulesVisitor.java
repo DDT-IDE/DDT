@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import dtool.engine.BundleModules;
 
 public abstract class BundleModulesVisitor {

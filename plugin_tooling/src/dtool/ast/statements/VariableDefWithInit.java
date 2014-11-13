@@ -15,15 +15,15 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
-import dtool.engine.common.DefElementCommon;
-import dtool.engine.common.IVarDefinitionLike;
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.operations.CommonDefVarSemantics;
+import dtool.engine.analysis.CommonDefVarSemantics;
+import dtool.engine.analysis.IVarDefinitionLike;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {

@@ -8,32 +8,30 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common;
+package melnorme.lang.tooling.bundles;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.ElementName;
+import melnorme.utilbox.misc.ArrayUtil;
 
-public abstract class AbstractNamedElement implements ILangNamedElement {
+/**
+ * A fully qualified name of a module.
+ */
+public class ModuleFullName extends ElementName {
 	
-	protected final String name;
-	
-	public AbstractNamedElement(String name) {
-		this.name = assertNotNull(name);
+	public ModuleFullName(String moduleFullName) {
+		super(moduleFullName);
 	}
 	
-	@Override
-	public final String getName() {
-		return name;
+	public ModuleFullName(String[] segments) {
+		super(segments);
 	}
 	
-	@Override
-	public String getExtendedName() {
-		return name;
+	public String[] getPackages() {
+		return ArrayUtil.copyFrom(segments.getInternalArray(), segments.size() - 1);
 	}
 	
-	@Override
-	public String getNameInRegularNamespace() {
-		return getName();
+	public String getModuleSimpleName() {
+		return getLastSegment();
 	}
 	
 }

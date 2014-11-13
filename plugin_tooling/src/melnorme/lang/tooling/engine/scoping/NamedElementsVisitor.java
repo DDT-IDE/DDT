@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine;
+package melnorme.lang.tooling.engine.scoping;
 
 import java.util.ArrayList;
 import java.util.List;

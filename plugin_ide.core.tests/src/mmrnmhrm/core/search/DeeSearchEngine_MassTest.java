@@ -14,6 +14,7 @@ import java.util.HashSet;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -32,7 +33,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {

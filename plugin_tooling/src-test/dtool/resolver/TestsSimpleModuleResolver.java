@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import melnorme.lang.tooling.bundles.CommonModuleResolver;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
-import dtool.engine.modules.CommonModuleResolver;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;

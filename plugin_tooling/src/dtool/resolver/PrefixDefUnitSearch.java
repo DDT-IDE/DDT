@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.Module;
-import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
 /** 

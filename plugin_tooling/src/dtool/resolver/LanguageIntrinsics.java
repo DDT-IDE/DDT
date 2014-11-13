@@ -16,13 +16,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
+import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
+import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
 import dtool.ddoc.TextUI;
-import dtool.engine.common.intrinsics.CommonLanguageIntrinsics;
-import dtool.engine.common.intrinsics.InstrinsicsScope;
-import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 
 /** 
  * Aggregator for all language intrinsics 

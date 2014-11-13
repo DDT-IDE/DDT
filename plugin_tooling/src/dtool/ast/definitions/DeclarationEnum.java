@@ -7,12 +7,12 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.engine.common.INonScopedContainer;
 
 public class DeclarationEnum extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	

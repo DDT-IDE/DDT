@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -31,8 +32,6 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
-import dtool.engine.modules.ModuleFullName;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 

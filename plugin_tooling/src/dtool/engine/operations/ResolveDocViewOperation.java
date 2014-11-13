@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -28,10 +29,9 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.AutoReference;
 import dtool.ast.references.NamedReference;
 import dtool.ddoc.TextUI;
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
+import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
-import dtool.engine.common.IVarDefinitionLike;
-import dtool.engine.modules.IModuleResolver;
+import dtool.engine.analysis.IVarDefinitionLike;
 
 public class ResolveDocViewOperation extends AbstractDToolOperation {
 	

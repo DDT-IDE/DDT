@@ -16,8 +16,8 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 
+import melnorme.lang.tooling.bundles.NullModuleResolver;
 import dtool.ast.references.NamedReference;
-import dtool.engine.modules.NullModuleResolver;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.CompletionSearchResult;
 import dtool.parser.DeeParser;

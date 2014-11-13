@@ -8,29 +8,32 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common;
+package melnorme.lang.tooling.symbols;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.List;
-
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.utilbox.collections.ArrayList2;
 
-public class ResolutionResult {
+public abstract class AbstractNamedElement implements ILangNamedElement {
 	
-	protected final List<ILangNamedElement> results;
+	protected final String name;
 	
-	public ResolutionResult(ILangNamedElement... results) {
-		this.results = new ArrayList2<>(results);
+	public AbstractNamedElement(String name) {
+		this.name = assertNotNull(name);
 	}
 	
-	public ILangNamedElement getSingleResult() {
-		assertTrue(results.size() <= 1);
-		if(results.isEmpty()) {
-			return null;
-		}
-		return results.get(0);
+	@Override
+	public final String getName() {
+		return name;
+	}
+	
+	@Override
+	public String getExtendedName() {
+		return name;
+	}
+	
+	@Override
+	public String getNameInRegularNamespace() {
+		return getName();
 	}
 	
 }

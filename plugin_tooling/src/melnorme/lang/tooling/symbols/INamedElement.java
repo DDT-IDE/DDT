@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import dtool.engine.modules.IModuleResolver;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 

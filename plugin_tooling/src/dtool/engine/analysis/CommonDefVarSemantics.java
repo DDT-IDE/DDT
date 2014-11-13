@@ -8,15 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.operations;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.IValueNode;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IValueNode;
-import dtool.engine.common.IVarDefinitionLike;
-import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class CommonDefVarSemantics {

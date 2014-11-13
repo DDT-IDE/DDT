@@ -19,10 +19,10 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.IValueNode;
 import dtool.ast.expressions.IInitializer;
-import dtool.engine.common.IValueNode;
-import dtool.engine.common.IVarDefinitionLike;
-import dtool.engine.modules.IModuleResolver;
+import dtool.engine.analysis.IVarDefinitionLike;
 
 /**
  * This reference node can only be parsed in special circumstances

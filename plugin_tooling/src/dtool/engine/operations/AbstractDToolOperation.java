@@ -13,7 +13,7 @@ package dtool.engine.operations;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
+import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 
 public class AbstractDToolOperation {

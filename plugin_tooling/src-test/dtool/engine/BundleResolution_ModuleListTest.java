@@ -18,12 +18,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
+
 import org.junit.Test;
 
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
-import dtool.engine.modules.ModuleFullName;
 
 public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	

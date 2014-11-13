@@ -13,8 +13,8 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
 
 /** 

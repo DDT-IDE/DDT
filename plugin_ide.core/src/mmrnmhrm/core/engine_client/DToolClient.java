@@ -29,10 +29,10 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.CompletionSearchResult;

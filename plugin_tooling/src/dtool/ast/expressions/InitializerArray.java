@@ -11,7 +11,7 @@ import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import dtool.engine.modules.IModuleResolver;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
 public class InitializerArray extends Expression implements IInitializer {

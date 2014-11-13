@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -21,7 +22,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
-import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.utils.MiscNodeUtils;
 

@@ -17,9 +17,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
-import dtool.engine.modules.IModuleResolver;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"

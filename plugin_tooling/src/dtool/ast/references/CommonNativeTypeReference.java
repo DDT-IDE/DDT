@@ -13,7 +13,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import dtool.engine.modules.IModuleResolver;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 
 // TODO: review this hierarchy
 public abstract class CommonNativeTypeReference extends Reference {

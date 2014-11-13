@@ -15,8 +15,8 @@ import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 
 public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
 	

@@ -1,4 +1,4 @@
-package melnorme.lang.tooling.engine;
+package melnorme.lang.tooling.engine.scoping;
 
 import dtool.resolver.CommonDefUnitSearch;
 

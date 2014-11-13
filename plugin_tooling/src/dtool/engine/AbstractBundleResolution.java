@@ -20,14 +20,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.common.ScopeSemantics;
 import dtool.engine.modules.BundleModulesVisitor;
-import dtool.engine.modules.IModuleResolver;
-import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public abstract class AbstractBundleResolution implements ISemanticResolution {
@@ -68,6 +68,11 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	/** @return a resolved module from this bundle's full import path (including dependencies). */
 	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ParseSourceException {
 		return getBundleResolvedModule(moduleFullName);
+	}
+	
+	@Override
+	public ResolvedModule findCompilationUnit(ModuleFullName moduleName) throws ParseSourceException {
+		return findResolvedModule(moduleName);
 	}
 	
 	public boolean checkIsStale() {
@@ -137,37 +142,6 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
-	public static class ResolvedModule {
-		
-		protected final ParsedModule parsedModule;
-		protected final AbstractBundleResolution bundleRes;
-		
-		public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution bundleRes) {
-			this.parsedModule = parsedModule;
-			this.bundleRes = bundleRes;
-		}
-		
-		public ParsedModule getParsedModule() {
-			return parsedModule;
-		}
-		
-		public Module getModuleNode() {
-			return parsedModule.module;
-		}
-		
-		public Path getModulePath() {
-			return parsedModule.modulePath;
-		}
-		
-		public AbstractBundleResolution getSemanticResolution() {
-			return bundleRes;
-		}
-		
-		public IModuleResolver getModuleResolver() {
-			return bundleRes;
-		}
-		
-	}
 	
 	/* ----------------- used by tests only, at the moment ----------------- */
 	

@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -30,7 +31,6 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.util.NamedElementUtil;
-import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {

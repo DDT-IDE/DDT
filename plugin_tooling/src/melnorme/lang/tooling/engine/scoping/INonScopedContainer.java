@@ -8,30 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.modules;
+package melnorme.lang.tooling.engine.scoping;
 
-import melnorme.lang.tooling.symbols.ElementName;
-import melnorme.utilbox.misc.ArrayUtil;
+import java.util.Iterator;
+
+import melnorme.lang.tooling.ast.IASTNode;
 
 /**
- * A fully qualified name of a module.
+ * Interface for a node that potentially contains named elements visible 
+ * in the same scope/namespace as the container. 
  */
-public class ModuleFullName extends ElementName {
+public interface INonScopedContainer {
 	
-	public ModuleFullName(String moduleFullName) {
-		super(moduleFullName);
-	}
-	
-	public ModuleFullName(String[] segments) {
-		super(segments);
-	}
-	
-	public String[] getPackages() {
-		return ArrayUtil.copyFrom(segments.getInternalArray(), segments.size() - 1);
-	}
-	
-	public String getModuleSimpleName() {
-		return getLastSegment();
-	}
+	/** @return an iterator for the members of this {@link INonScopedContainer}. Non-null. 
+	 * Used mainly for resolving. */
+	Iterator<? extends IASTNode> getMembersIterator();
 	
 }

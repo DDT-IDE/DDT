@@ -8,26 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.expressions;
+package melnorme.lang.tooling.engine.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import dtool.ast.expressions.Resolvable.IQualifierNode;
+import melnorme.utilbox.collections.ArrayList2;
 
-public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
+public class ResolutionResult {
 	
-	@Override
-	public Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-		return findTargetDefElements(mr, true); // TODO
+	protected final List<ILangNamedElement> results;
+	
+	public ResolutionResult(ILangNamedElement... results) {
+		this.results = new ArrayList2<>(results);
 	}
 	
-	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-		return Collections.emptySet();
+	public ILangNamedElement getSingleResult() {
+		assertTrue(results.size() <= 1);
+		if(results.isEmpty()) {
+			return null;
+		}
+		return results.get(0);
 	}
 	
 }

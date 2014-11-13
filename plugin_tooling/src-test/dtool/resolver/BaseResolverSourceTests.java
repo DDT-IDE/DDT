@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
@@ -23,7 +24,6 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;

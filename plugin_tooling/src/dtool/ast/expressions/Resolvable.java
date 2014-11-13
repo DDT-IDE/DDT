@@ -18,12 +18,12 @@ import java.util.Collections;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.engine.resolver.IValueNode;
+import melnorme.lang.tooling.engine.resolver.ResolutionResult;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
-import dtool.engine.ISemanticResolution;
-import dtool.engine.common.IValueNode;
-import dtool.engine.common.ResolutionResult;
-import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IResolvable;
 
 /**
