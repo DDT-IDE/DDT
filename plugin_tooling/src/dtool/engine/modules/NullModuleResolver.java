@@ -12,7 +12,7 @@ public class NullModuleResolver extends CommonModuleResolver {
 	}
 	
 	@Override
-	protected Module findModule_do(String[] packages, String module) throws Exception {
+	protected Module findModule_do(String[] packages, String module) {
 		return null;
 	}
 	

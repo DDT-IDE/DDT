@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import melnorme.utilbox.core.ExceptionAdapter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.IASTNode;
@@ -23,6 +22,7 @@ import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
+import dtool.engine.ModuleParseCache.ParseSourceException;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
@@ -48,8 +48,9 @@ public class ReferenceResolver {
 		
 		try {
 			return mr.findModule(packages, module);
-		} catch (Exception e) {
-			throw ExceptionAdapter.unchecked(e);
+		} catch (ParseSourceException pse) {
+			/* FIXME: TODO: add error to SemanticResolution / semantic operation. */
+			return null;
 		}
 	}
 	

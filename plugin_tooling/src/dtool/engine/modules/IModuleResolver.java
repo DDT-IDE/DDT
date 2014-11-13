@@ -13,6 +13,7 @@ package dtool.engine.modules;
 import java.util.Set;
 
 import dtool.ast.definitions.Module;
+import dtool.engine.ModuleParseCache.ParseSourceException;
 
 /** 
  * An interface for a service that given module names knows how to find parsed Module's in an 
@@ -29,6 +30,6 @@ public interface IModuleResolver {
 	 * @param module The name of the modules to find. 
 	 * @return the respective module or null if not found
 	 */
-	Module findModule(String[] packages, String module) throws Exception;
+	Module findModule(String[] packages, String module) throws ParseSourceException;
 	
 }

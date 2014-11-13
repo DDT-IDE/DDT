@@ -17,6 +17,7 @@ import java.util.Set;
 
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
+import dtool.engine.ModuleParseCache.ParseSourceException;
 
 public abstract class CommonModuleResolver implements IModuleResolver {
 	
@@ -29,7 +30,7 @@ public abstract class CommonModuleResolver implements IModuleResolver {
 	protected abstract Set<String> findModules_do(String fqNamePrefix);
 	
 	@Override
-	public Module findModule(String[] packages, String module) throws Exception {
+	public Module findModule(String[] packages, String module) throws ParseSourceException {
 		assertNotNull(packages);
 		assertTrue(ArrayUtil.contains(packages, null) == false);
 		assertTrue(ArrayUtil.contains(packages, "") == false);
@@ -38,6 +39,6 @@ public abstract class CommonModuleResolver implements IModuleResolver {
 		return findModule_do(packages, module);
 	}
 	
-	protected abstract Module findModule_do(String[] packages, String module) throws Exception;
+	protected abstract Module findModule_do(String[] packages, String module) throws ParseSourceException;
 	
 }

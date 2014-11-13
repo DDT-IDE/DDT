@@ -81,7 +81,7 @@ public final class TestsSimpleModuleResolver extends CommonModuleResolver {
 	}
 	
 	@Override
-	public Module findModule_do(String[] packages, String module) throws Exception {
+	public Module findModule_do(String[] packages, String module) {
 		String fullName = StringUtil.collToString(packages, ".");
 		if(packages.length > 0) {
 			fullName += ".";
