@@ -12,6 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 
 public abstract class AbstractNamedElement implements ILangNamedElement {
 	
@@ -34,6 +35,11 @@ public abstract class AbstractNamedElement implements ILangNamedElement {
 	@Override
 	public String getNameInRegularNamespace() {
 		return getName();
+	}
+	
+	@Override
+	public ModuleFullName getModuleFullName() {
+		return ModuleFullName.fromString(getModuleFullyQualifiedName());
 	}
 	
 }

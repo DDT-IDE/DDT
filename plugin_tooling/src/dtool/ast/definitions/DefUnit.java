@@ -10,6 +10,7 @@ import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.references.CommonQualifiedReference;
@@ -114,6 +115,11 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement {
 		} else {
 			return parentNamespace.getFullyQualifiedName() + "." + getName();
 		}
+	}
+	
+	@Override
+	public ModuleFullName getModuleFullName() {
+		return ModuleFullName.fromString(getModuleFullyQualifiedName());
 	}
 	
 	@Override

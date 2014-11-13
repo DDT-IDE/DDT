@@ -15,11 +15,8 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.EnumMember;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
-import dtool.ast.util.NodeUtil;
 import dtool.util.NewUtils;
 
 /**
@@ -52,11 +49,12 @@ public class DeeModelEngine {
 		return searchForModelElement(defUnit, sourceModule, false);
 	}
 	
-	public static IMember searchForModelElement(DefUnit defUnit, ISourceModule sourceModule, boolean returnNonExisting)
+	public static IMember searchForModelElement(ILangNamedElement defUnit, ISourceModule sourceModule, 
+			boolean returnNonExisting)
 			throws ModelException {
 		assertNotNull(sourceModule);
 		
-		DefUnit parentDefUnit = NodeUtil.getOuterDefUnit(defUnit);
+		ILangNamedElement parentDefUnit = defUnit.getParentElement();
 		
 		if(parentDefUnit == null) {
 			return sourceModule.getType(defUnit.getName());
@@ -90,7 +88,8 @@ public class DeeModelEngine {
 					
 					IMember member = (IMember) modelElement;
 					ISourceRange nameRange = member.getNameRange();
-					if(nameRange != null && nameRange.getOffset() == defUnit.defname.getStartPos()) {
+					DefUnit node = defUnit.resolveDefUnit();
+					if(nameRange != null && nameRange.getOffset() == node.defname.getStartPos()) {
 						return member; // We found a perfect match
 					}
 					bestMatch = member;
@@ -114,15 +113,16 @@ public class DeeModelEngine {
 		}
 	}
 	
-	private static boolean isFieldElement(DefUnit defUnit) {
-		return defUnit instanceof DefinitionVariable || defUnit instanceof EnumMember;
+	private static boolean isFieldElement(ILangNamedElement defUnit) {
+		EArcheType archeType = defUnit.getArcheType();
+		return archeType == EArcheType.Variable || archeType == EArcheType.EnumMember; 
 	}
 	
-	private static boolean isMethodElement(DefUnit defUnit) {
-		return defUnit instanceof DefinitionFunction /*|| defUnit instanceof DefinitionCtor*/;
+	private static boolean isMethodElement(ILangNamedElement defUnit) {
+		return defUnit.getArcheType() == EArcheType.Function;
 	}
 	
-	private static boolean isTypeElement(DefUnit defUnit) {
+	private static boolean isTypeElement(ILangNamedElement defUnit) {
 		return !isFieldElement(defUnit) && !isMethodElement(defUnit);
 	}
 	

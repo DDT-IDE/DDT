@@ -1,5 +1,6 @@
 package mmrnmhrm.core.search;
 
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
 
@@ -53,8 +54,15 @@ public class SourceModuleFinder extends ImportPathVisitor {
 	}
 	
 	public static ISourceModule findModuleUnit(Module module, IScriptProject scriptProject) throws ModelException {
-		String[] packages = module.getDeclaredPackages();
-		String moduleName = module.getName();
+		ModuleFullName moduleFullName = module.getModuleFullName();
+		
+		return findModuleUnit(scriptProject, moduleFullName);
+	}
+	
+	public static ISourceModule findModuleUnit(IScriptProject scriptProject, ModuleFullName moduleFullName)
+			throws ModelException {
+		String[] packages = moduleFullName.getPackages();
+		String moduleName = moduleFullName.getModuleSimpleName();
 		
 		return findModuleUnit(scriptProject, packages, moduleName);
 	}

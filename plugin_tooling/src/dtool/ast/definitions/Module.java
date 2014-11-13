@@ -16,12 +16,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.references.RefModule;
@@ -37,7 +39,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IScopeNode {
+public class Module extends DefUnit implements IScopeNode, IModuleNode {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		
@@ -159,6 +161,11 @@ public class Module extends DefUnit implements IScopeNode {
 		}
 		cp.append(getName());
 		return cp.toString();
+	}
+	
+	@Override
+	public ModuleFullName getModuleFullName() {
+		return new ModuleFullName(getFullyQualifiedName());
 	}
 	
 	@Override

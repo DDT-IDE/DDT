@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
@@ -138,6 +139,11 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	@Override
 	public Module findModule(ModuleFullName moduleFullName) throws ParseSourceException {
+		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
+		return resolvedModule == null ? null : resolvedModule.getModuleNode();
+	}
+	
+	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ParseSourceException {
 		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}

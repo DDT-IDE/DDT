@@ -1,5 +1,6 @@
 package mmrnmhrm.core.search;
 
+import static melnorme.lang.tooling.ast.util.NodeUtil.getOuterNamedElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -8,6 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -31,8 +33,6 @@ import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
-import dtool.ast.definitions.DefUnit;
-import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
@@ -186,7 +186,9 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	}
 	
 	public void addMatch(ASTNode node, int accLevel, ISourceModule sourceModule) {
-		DefUnit defUnit = (node instanceof DefUnit) ? (DefUnit) node : NodeUtil.getOuterDefUnit(node);
+		ILangNamedElement defUnit = (node instanceof ILangNamedElement) ? 
+				(ILangNamedElement) node : 
+				getOuterNamedElement(node);
 		IModelElement enclosingType;
 		try {
 			enclosingType = DeeModelEngine.searchForModelElement(defUnit, sourceModule, true);

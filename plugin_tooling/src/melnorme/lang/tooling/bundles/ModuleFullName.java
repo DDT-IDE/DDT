@@ -18,6 +18,10 @@ import melnorme.utilbox.misc.ArrayUtil;
  */
 public class ModuleFullName extends ElementName {
 	
+	public static ModuleFullName fromString(String nameString) {
+		return nameString == null ? null : new ModuleFullName(nameString);
+	}
+	
 	public ModuleFullName(String moduleFullName) {
 		super(moduleFullName);
 	}

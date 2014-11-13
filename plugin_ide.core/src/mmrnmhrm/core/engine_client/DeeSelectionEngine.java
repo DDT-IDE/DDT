@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.SourceModuleFinder;
@@ -26,6 +27,7 @@ import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
@@ -81,9 +83,8 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
-		for (ILangNamedElement defElement : defElements) {
-			DefUnit defUnit = defElement.resolveDefUnit();
-			IMember modelElement = getModelElement(defUnit, sourceModule);
+		for (ILangNamedElement namedElement : defElements) {
+			IMember modelElement = getModelElement(namedElement, sourceModule);
 			if(modelElement != null) {
 				list.add(modelElement);
 			}
@@ -92,16 +93,18 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		return ArrayUtil.createFrom(list, IModelElement.class);
 	}
 	
-	protected IMember getModelElement(DefUnit defUnit, ISourceModule sourceModule) {
+	protected IMember getModelElement(ILangNamedElement namedElement, ISourceModule sourceModule) {
+		DefUnit defUnit = namedElement.resolveDefUnit();
 		if(defUnit == null) {
 			return null;
 		}
-		Module module = defUnit.getModuleNode();
-		if(module == null) {
+		ModuleFullName moduleFullName = namedElement.getModuleFullName();
+		if(moduleFullName == null) {
 			return null;
 		}
 		try {
-			ISourceModule moduleUnit = SourceModuleFinder.findModuleUnit(module, sourceModule.getScriptProject());
+			IScriptProject scriptProject = sourceModule.getScriptProject();
+			ISourceModule moduleUnit = SourceModuleFinder.findModuleUnit(scriptProject, moduleFullName);
 			return DeeModelEngine.findCorrespondingModelElement(defUnit, moduleUnit);
 		} catch (ModelException e) {
 			return null;

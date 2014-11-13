@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -55,6 +56,11 @@ public class NotAValueErrorElement implements ILangNamedElement {
 	@Override
 	public String getModuleFullyQualifiedName() {
 		return wrappedElement.getModuleFullyQualifiedName();
+	}
+	
+	@Override
+	public ModuleFullName getModuleFullName() {
+		return wrappedElement.getModuleFullName();
 	}
 	
 	@Override

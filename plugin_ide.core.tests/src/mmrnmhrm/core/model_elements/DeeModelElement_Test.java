@@ -25,12 +25,7 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
-import dtool.ast.declarations.ImportAlias;
-import dtool.ast.declarations.ImportSelectiveAlias;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.FunctionParameter;
-import dtool.ast.definitions.TemplateParameter;
 
 public class DeeModelElement_Test extends CommonDeeWorkspaceTest implements ITestResourcesConstants,
 	DefElementFlagConstants {
@@ -39,16 +34,6 @@ public class DeeModelElement_Test extends CommonDeeWorkspaceTest implements ITes
 		ISourceModule sourceModule = SampleMainProject.getSourceModule(srcFolder, cuPath);
 		assertTrue(sourceModule.exists());
 		return sourceModule;
-	}
-	
-	/*  ------  */
-	public static boolean defunitIsReportedAsModelElement(DefUnit defunit) {
-		boolean result = 
-				defunit instanceof FunctionParameter || 
-				defunit instanceof TemplateParameter ||
-				defunit instanceof ImportSelectiveAlias ||
-				defunit instanceof ImportAlias;
-		return !result;
 	}
 	
 	@Test

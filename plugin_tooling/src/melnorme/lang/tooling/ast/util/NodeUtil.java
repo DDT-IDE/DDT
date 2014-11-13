@@ -18,7 +18,7 @@ public class NodeUtil {
 //	}
 	
 	/** @return the innermost {@link ILangNamedElement} containing given node (non-inclusive), or null if not found. */
-	public static ILangNamedElement getOuterDefUnit(ASTNode node) {
+	public static ILangNamedElement getOuterNamedElement(ASTNode node) {
 		node = node.getParent();
 		while(true) {
 			if (node instanceof ILangNamedElement) {
@@ -32,7 +32,7 @@ public class NodeUtil {
 	}
 	
 	public static ILangNamedElement getParentDefUnit(ASTNode node) {
-		return getOuterDefUnit(node);
+		return getOuterNamedElement(node);
 	}
 	
 	public static boolean isContainedIn(ASTNode node, ASTNode container) {

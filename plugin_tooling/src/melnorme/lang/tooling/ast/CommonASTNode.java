@@ -12,24 +12,15 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ASTVisitor;
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.IASTVisitor;
-import melnorme.lang.tooling.ast.NodeData;
-import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.definitions.Module;
-import dtool.ast.util.NodeUtil;
 import dtool.parser.ParserError;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 

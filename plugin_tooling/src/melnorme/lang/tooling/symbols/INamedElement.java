@@ -12,6 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import dtool.resolver.CommonDefUnitSearch;
 
 
@@ -48,6 +49,9 @@ public interface INamedElement {
 	/** @return the fully qualified name of the module this element belongs to. 
 	 * Can be null if element is not contained in a module. */
 	public abstract String getModuleFullyQualifiedName();
+	
+	public ModuleFullName getModuleFullName();
+	
 	
 	/** @return the nearest enclosing {@link ILangNamedElement}.
 	 * For modules and packages, that is null. */
