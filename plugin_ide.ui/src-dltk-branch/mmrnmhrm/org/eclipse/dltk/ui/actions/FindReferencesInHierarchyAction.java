@@ -2,6 +2,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 
@@ -20,7 +21,6 @@ import org.eclipse.dltk.ui.search.QuerySpecification;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.DefUnit;
-import dtool.engine.common.IDeeNamedElement;
 
 public final class FindReferencesInHierarchyAction extends FindAction {
 

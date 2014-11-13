@@ -7,8 +7,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public class ExpThis extends Expression {
@@ -31,12 +31,12 @@ public class ExpThis extends Expression {
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		DefinitionClass definitionClass = getClassNodeParent(this);
 		if(definitionClass == null) {
 			return null;
 		}
-		return Collections.<IDeeNamedElement>singleton(definitionClass);
+		return Collections.<ILangNamedElement>singleton(definitionClass);
 	}
 	
 	public static DefinitionClass getClassNodeParent(ASTNode node) {

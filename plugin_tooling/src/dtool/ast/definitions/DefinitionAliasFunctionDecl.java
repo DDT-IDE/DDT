@@ -6,12 +6,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -79,7 +79,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// TODO
 		return null;
 	}

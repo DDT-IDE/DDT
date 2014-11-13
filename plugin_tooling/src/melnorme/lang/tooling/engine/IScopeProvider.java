@@ -1,4 +1,7 @@
-package dtool.resolver;
+package melnorme.lang.tooling.engine;
+
+import dtool.resolver.CommonDefUnitSearch;
+
 
 /**
  * Simple scope provider interface

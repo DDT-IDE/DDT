@@ -11,6 +11,7 @@
 package dtool.engine.common;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.operations.CommonDefVarSemantics;
@@ -18,7 +19,7 @@ import dtool.engine.operations.CommonDefVarSemantics;
 /**
  * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
  */
-public interface IVarDefinitionLike extends IDeeNamedElement, IASTNode {
+public interface IVarDefinitionLike extends ILangNamedElement, IASTNode {
 	
 	Reference getDeclaredType();
 	

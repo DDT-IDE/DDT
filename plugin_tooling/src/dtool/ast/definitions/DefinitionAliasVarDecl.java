@@ -10,6 +10,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.Attribute;
@@ -17,7 +18,6 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -84,7 +84,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.resolveTypeForValueContext_Alias(mr, target);
 	}
 	
@@ -134,7 +134,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		}
 		
 		@Override
-		public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return DefElementCommon.resolveTypeForValueContext_Alias(mr, getAliasTarget());
 		}
 		

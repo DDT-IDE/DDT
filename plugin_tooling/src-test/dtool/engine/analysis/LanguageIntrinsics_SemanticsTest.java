@@ -14,8 +14,8 @@ import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 
 public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
@@ -44,7 +44,7 @@ public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
 	
 	public static ArrayList<String> getMemberNames2(IntrinsicTypeDefUnit intrinsicDefUnit) {
 		ArrayList<String> names = new ArrayList<>();
-		for (IDeeNamedElement defUnit : intrinsicDefUnit.getMembersScope().members) {
+		for (ILangNamedElement defUnit : intrinsicDefUnit.getMembersScope().members) {
 			names.add(defUnit.getName());
 		}
 		return names;

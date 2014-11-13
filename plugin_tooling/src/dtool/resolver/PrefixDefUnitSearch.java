@@ -3,8 +3,8 @@ package dtool.resolver;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.definitions.Module;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
@@ -43,7 +43,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	@Override
-	public void addMatch(IDeeNamedElement namedElem) {
+	public void addMatch(ILangNamedElement namedElem) {
 		String extendedName = namedElem.getExtendedName();
 		
 		if(addedDefElements.contains(extendedName)) {
@@ -53,7 +53,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		addMatchDirectly(namedElem);
 	}
 	
-	public void addMatchDirectly(IDeeNamedElement namedElem) {
+	public void addMatchDirectly(ILangNamedElement namedElem) {
 		super.addMatch(namedElem);
 	}
 	

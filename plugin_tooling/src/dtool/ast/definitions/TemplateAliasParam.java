@@ -3,8 +3,8 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -51,7 +51,7 @@ public class TemplateAliasParam extends TemplateParameter {
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return null; // TODO: need instance
 	}
 	

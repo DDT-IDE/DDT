@@ -4,9 +4,9 @@ import static dtool.util.NewUtils.assertCast;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CommonDefVarSemantics;
@@ -67,7 +67,7 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return getNodeSemantics().resolveEffectiveType(mr);
 	}
 	

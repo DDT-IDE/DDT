@@ -14,19 +14,19 @@ package dtool.ast.expressions;
 import java.util.Collection;
 import java.util.Collections;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	
 	@Override
-	public Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
 		return findTargetDefElements(mr, true); // TODO
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		return Collections.emptySet();
 	}
 	

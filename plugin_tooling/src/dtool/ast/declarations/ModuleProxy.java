@@ -11,6 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
@@ -18,7 +19,6 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.engine.common.AbstractNamedElement;
 import dtool.engine.common.DefElementCommon;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -61,7 +61,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement getParentElement() {
+	public ILangNamedElement getParentElement() {
 		return null;
 	}
 	
@@ -88,7 +88,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

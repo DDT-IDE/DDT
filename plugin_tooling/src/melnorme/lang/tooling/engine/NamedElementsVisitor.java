@@ -8,31 +8,31 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.resolver;
+package melnorme.lang.tooling.engine;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.declarations.PackageNamespace;
-import dtool.engine.common.IDeeNamedElement;
 
 public abstract class NamedElementsVisitor {
 	
-	protected ArrayList<IDeeNamedElement> matches = new ArrayList<>(2);
+	protected ArrayList<ILangNamedElement> matches = new ArrayList<>(2);
 	
 	protected boolean matchesArePartialDefUnits = false;
 	
-	public List<IDeeNamedElement> getMatchedElements() {
+	public List<ILangNamedElement> getMatchedElements() {
 		return matches;
 	}
 	
-	public void visitElement(IDeeNamedElement namedElement) {
+	public void visitElement(ILangNamedElement namedElement) {
 		if(matches(namedElement)) {
 			addMatch(namedElement);
 		}
 	}
 	
-	public boolean matches(IDeeNamedElement namedElement) {
+	public boolean matches(ILangNamedElement namedElement) {
 		String name = namedElement.getNameInRegularNamespace();
 		if(name == null || name.isEmpty()) {
 			// Never match an element with missing name;
@@ -46,7 +46,7 @@ public abstract class NamedElementsVisitor {
 	public abstract boolean matchesName(String name);
 	
 	/** Adds the matched named element. */
-	public void addMatch(IDeeNamedElement namedElem) {
+	public void addMatch(ILangNamedElement namedElem) {
 		matches.add(namedElem);
 		if(namedElem instanceof PackageNamespace) {
 			matchesArePartialDefUnits = true;

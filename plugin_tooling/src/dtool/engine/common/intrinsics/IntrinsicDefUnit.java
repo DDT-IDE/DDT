@@ -1,10 +1,10 @@
 package dtool.engine.common.intrinsics;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.common.AbstractNamedElement;
-import dtool.engine.common.IDeeNamedElement;
 
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
@@ -39,7 +39,7 @@ public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement getParentElement() {
+	public ILangNamedElement getParentElement() {
 		return null;
 	}
 	

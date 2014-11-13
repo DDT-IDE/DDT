@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -18,7 +19,6 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
@@ -54,12 +54,12 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<IDeeNamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
+		Collection<ILangNamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;
 		
-		for (Iterator<IDeeNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
-			IDeeNamedElement targetDefElement = iter.next();
+		for (Iterator<ILangNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
+			ILangNamedElement targetDefElement = iter.next();
 			DefUnit targetDefUnit = targetDefElement.resolveDefUnit();
 			
 			try {

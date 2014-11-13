@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.editor.codeassist;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
@@ -13,8 +14,6 @@ import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
-
-import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelProvider {
 	
@@ -39,8 +38,8 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
 			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
 		}
-		else if(proposal.getExtraInfo() instanceof IDeeNamedElement) {
-			IDeeNamedElement defElement = (IDeeNamedElement) proposal.getExtraInfo();
+		else if(proposal.getExtraInfo() instanceof ILangNamedElement) {
+			ILangNamedElement defElement = (ILangNamedElement) proposal.getExtraInfo();
 			defDescriptor = new DefElementDescriptor(defElement);
 		} 
 		else if(proposal.getModelElement() instanceof IMember) {

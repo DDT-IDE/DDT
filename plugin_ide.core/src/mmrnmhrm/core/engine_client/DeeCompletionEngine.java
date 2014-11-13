@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 
@@ -17,7 +18,6 @@ import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.operations.CompletionSearchResult;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
@@ -43,7 +43,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				return;
 			}
 			
-			for (IDeeNamedElement result : completionResult.getResults()) {
+			for (ILangNamedElement result : completionResult.getResults()) {
 				CompletionProposal proposal = createProposal(result, position, completionResult);
 				requestor.accept(proposal);
 			}
@@ -66,7 +66,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
-	protected CompletionProposal createProposal(IDeeNamedElement namedElem, int ccOffset, 
+	protected CompletionProposal createProposal(ILangNamedElement namedElem, int ccOffset, 
 			CompletionSearchResult completionResult) {
 		PrefixSearchOptions searchOptions = completionResult.searchOptions;
 		
@@ -99,13 +99,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		
 		@Override
 		public void setExtraInfo(Object extraInfo) {
-			assertTrue(extraInfo instanceof IDeeNamedElement);
+			assertTrue(extraInfo instanceof ILangNamedElement);
 			super.setExtraInfo(extraInfo);
 		}
 		
 		@Override
-		public IDeeNamedElement getExtraInfo() {
-			return (IDeeNamedElement) super.getExtraInfo();
+		public ILangNamedElement getExtraInfo() {
+			return (ILangNamedElement) super.getExtraInfo();
 		}
 		
 		public boolean isModuleImportCompletion() {

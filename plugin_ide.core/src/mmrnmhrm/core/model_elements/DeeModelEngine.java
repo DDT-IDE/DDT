@@ -2,6 +2,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.search.SourceModuleFinder;
 
@@ -19,7 +20,6 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.util.NewUtils;
 
 /**
@@ -153,7 +153,7 @@ public class DeeModelEngine {
 	 * Returns the fully qualified name for given defUnit.
 	 * TODO think more about the naming of local elements 
 	 */
-	public static String[] getQualification(final IDeeNamedElement defUnit) {
+	public static String[] getQualification(final ILangNamedElement defUnit) {
 		String fqName = defUnit.getFullyQualifiedName();
 		String qualification = StringUtil.segmentUntilLastMatch(fqName, ".");
 		if(qualification == null) {

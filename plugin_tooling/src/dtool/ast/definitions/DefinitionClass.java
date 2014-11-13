@@ -14,11 +14,11 @@ import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -108,7 +108,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		IModuleResolver mr = search.getModuleResolver();
 		
 		for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-			IDeeNamedElement baseClassElem = baseclass.findTargetDefElement(mr);
+			ILangNamedElement baseClassElem = baseclass.findTargetDefElement(mr);
 			if(baseClassElem == null)
 				continue;
 			
@@ -119,10 +119,10 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 	}
 	
-	public IDeeNamedElement resolveSuperClass(IModuleResolver mr) {
+	public ILangNamedElement resolveSuperClass(IModuleResolver mr) {
 		
 		for (Reference baseClassRef : nonNullIterable(baseClasses)) {
-			IDeeNamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+			ILangNamedElement baseClass = baseClassRef.findTargetDefElement(mr);
 			
 			if(baseClass.getArcheType() == EArcheType.Interface) {
 				continue;

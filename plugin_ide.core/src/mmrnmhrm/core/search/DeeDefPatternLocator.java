@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -12,7 +13,6 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /// XXX: get rid of this class
@@ -20,9 +20,9 @@ import dtool.engine.modules.IModuleResolver;
 public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 	
 	/** XXX: DLTK limitation: A global needed to pass parameters for the search.*/
-	public static IDeeNamedElement GLOBAL_param_defunit;
+	public static ILangNamedElement GLOBAL_param_defunit;
 	
-	public final IDeeNamedElement defunit;
+	public final ILangNamedElement defunit;
 	
 	public DeeDefPatternLocator(DeeMatchLocator deeMatchLocator) {
 		super(deeMatchLocator, false, true);
@@ -42,11 +42,11 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 				return true;
 			
 			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<IDeeNamedElement> defUnits = ref.findTargetDefElements(mr, false);
+			Collection<ILangNamedElement> defUnits = ref.findTargetDefElements(mr, false);
 			if(defUnits == null)
 				return true;
-			for (Iterator<IDeeNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
-				IDeeNamedElement targetdefunit = iter.next();
+			for (Iterator<ILangNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
+				ILangNamedElement targetdefunit = iter.next();
 				if(defunit.equals(targetdefunit)) {
 					deeMatchLocator.addMatch(ref, PatternLocator.ACCURATE_MATCH, sourceModule);
 					return true;

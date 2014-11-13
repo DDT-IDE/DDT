@@ -14,17 +14,18 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.List;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class ResolutionResult {
 	
-	protected final List<IDeeNamedElement> results;
+	protected final List<ILangNamedElement> results;
 	
-	public ResolutionResult(IDeeNamedElement... results) {
+	public ResolutionResult(ILangNamedElement... results) {
 		this.results = new ArrayList2<>(results);
 	}
 	
-	public IDeeNamedElement getSingleResult() {
+	public ILangNamedElement getSingleResult() {
 		assertTrue(results.size() <= 1);
 		if(results.isEmpty()) {
 			return null;

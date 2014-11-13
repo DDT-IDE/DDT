@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.tests.CommonDToolTest;
 
 /**
@@ -19,29 +19,29 @@ import dtool.tests.CommonDToolTest;
  */
 public class CompareDefUnits extends CommonDToolTest {
 	
-	public static Function<IDeeNamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
-		return new Function<IDeeNamedElement, String>() {
+	public static Function<ILangNamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
+		return new Function<ILangNamedElement, String>() {
 			@Override
-			public String evaluate(IDeeNamedElement defUnit) {
+			public String evaluate(ILangNamedElement defUnit) {
 				return defUnit == null ? null : defUnit.getExtendedName().substring(prefixLen);
 			}
 		};
 	}
 	
-	public static Function<IDeeNamedElement, String> fnElementToFullyQualifiedName() {
-		return new Function<IDeeNamedElement, String>() {
+	public static Function<ILangNamedElement, String> fnElementToFullyQualifiedName() {
+		return new Function<ILangNamedElement, String>() {
 			@Override
-			public String evaluate(IDeeNamedElement obj) {
+			public String evaluate(ILangNamedElement obj) {
 				return obj == null ? null : obj.getFullyQualifiedName();
 			}
 		};
 	}
 	
 	// TODO need to add code to DefUnitResultsChecker to removed function names
-	public static void checkResults(Collection<? extends IDeeNamedElement> originalResults, String[] expectedProposalsArr) {
+	public static void checkResults(Collection<? extends ILangNamedElement> originalResults, String[] expectedProposalsArr) {
 		//new DefUnitResultsChecker(originalResults).simpleCheckResults(expectedProposalsArr);
 		
-		LinkedList<IDeeNamedElement> results = new LinkedList<>(originalResults);
+		LinkedList<ILangNamedElement> results = new LinkedList<>(originalResults);
 		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);

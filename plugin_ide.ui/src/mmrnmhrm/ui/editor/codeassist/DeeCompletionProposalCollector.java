@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
@@ -14,8 +15,6 @@ import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-
-import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposalCollector extends ScriptCompletionProposalCollector {
 	
@@ -47,7 +46,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		
 		if(proposal instanceof RefSearchCompletionProposal) {
 			RefSearchCompletionProposal refSearchProposal = (RefSearchCompletionProposal) proposal;
-			IDeeNamedElement namedElement = refSearchProposal.getExtraInfo();
+			ILangNamedElement namedElement = refSearchProposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();

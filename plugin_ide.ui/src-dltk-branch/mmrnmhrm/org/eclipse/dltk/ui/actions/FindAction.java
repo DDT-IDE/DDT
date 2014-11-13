@@ -6,6 +6,7 @@ import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
@@ -42,7 +43,6 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.ModuleParseCache;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -82,7 +82,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		
 		protected final int offset;
 		
-		protected IDeeNamedElement defunit;
+		protected ILangNamedElement defunit;
 		protected String errorMessage;
 		
 		public FindReferencesOperation(int offset) {
@@ -139,7 +139,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		
 	}
 	
-	protected void startNewSearch(IDeeNamedElement defunit) throws ModelException {
+	protected void startNewSearch(ILangNamedElement defunit) throws ModelException {
 		assertNotNull(defunit);
 		DLTKSearchQuery query= new DLTKSearchQuery(createQuery(defunit));
 		if (query.canRunInBackground()) {
@@ -165,7 +165,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		}
 	}
 
-	protected QuerySpecification createQuery(IDeeNamedElement defunit) throws ModelException {
+	protected QuerySpecification createQuery(ILangNamedElement defunit) throws ModelException {
 		DLTKSearchScopeFactory factory= DLTKSearchScopeFactory.getInstance();
 		IDLTKSearchScope scope= factory.createWorkspaceScope(true, getLanguageToolkit());
 		String description= factory.getWorkspaceScopeDescription(true);
@@ -188,7 +188,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		return "This operation is not available for the selected element."; 
 	}
 	
-	protected boolean isInsideInterpreterEnv(IDeeNamedElement defunit, DLTKSearchScopeFactory factory) throws ModelException {
+	protected boolean isInsideInterpreterEnv(ILangNamedElement defunit, DLTKSearchScopeFactory factory) throws ModelException {
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
 		
 		boolean isInsideInterpreterEnvironment;

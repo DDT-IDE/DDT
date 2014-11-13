@@ -2,7 +2,7 @@ package dtool.resolver;
 
 import java.util.Collection;
 
-import dtool.engine.common.IDeeNamedElement;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /** 
@@ -12,6 +12,6 @@ public interface IResolvable {
 	
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
-	Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
+	Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
 }

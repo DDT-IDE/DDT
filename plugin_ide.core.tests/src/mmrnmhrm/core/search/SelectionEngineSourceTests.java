@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.core.engine_client.CoreResolverSourceTests;
 import mmrnmhrm.core.engine_client.DeeSelectionEngine;
 import mmrnmhrm.core.model_elements.DeeModelElement_Test;
@@ -27,7 +28,6 @@ import org.junit.Ignore;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.util.NodeUtil;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -44,8 +44,8 @@ public class SelectionEngineSourceTests extends CoreResolverSourceTests {
 		DirectDefUnitResolve resolveResult = null;
 		
 		// TODO: adapt test to more than one defUnit returned?
-		Iterator<IDeeNamedElement> iterator = resolveResult.getResolvedDefUnits().iterator();
-		IDeeNamedElement defElement = iterator.hasNext() ? iterator.next() : null;
+		Iterator<ILangNamedElement> iterator = resolveResult.getResolvedDefUnits().iterator();
+		ILangNamedElement defElement = iterator.hasNext() ? iterator.next() : null;
 		if(defElement instanceof DefUnit) {
 			DefUnit defUnit = (DefUnit) defElement;
 			SelectionEngineSourceTests.testDeeSelectionEngine(sourceModule, mde.offset, defUnit);

@@ -14,13 +14,13 @@ import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -90,7 +90,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

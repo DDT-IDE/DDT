@@ -5,9 +5,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefModule;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -73,7 +73,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public IDeeNamedElement getPartialDefUnit(IModuleResolver mr) {
+	public ILangNamedElement getPartialDefUnit(IModuleResolver mr) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
 			return moduleRef.findTargetDefElement(mr);
 		}
@@ -83,7 +83,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 			if(moduleRef.isMissingCoreReference()) {
 				defunit = null;
 			} else {
-				IDeeNamedElement moduleElem = moduleRef.getModuleProxy(mr);
+				ILangNamedElement moduleElem = moduleRef.getModuleProxy(mr);
 				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem); 
 			}
 		}

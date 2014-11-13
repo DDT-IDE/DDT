@@ -11,9 +11,9 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IValueNode;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
@@ -28,13 +28,13 @@ public abstract class CommonDefVarSemantics {
 	}
 	
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		IDeeNamedElement effectiveType = resolveEffectiveType(search.getModuleResolver());
+		ILangNamedElement effectiveType = resolveEffectiveType(search.getModuleResolver());
 		if(effectiveType != null) {
 			effectiveType.resolveSearchInMembersScope(search);
 		}
 	}
 	
-	public IDeeNamedElement resolveEffectiveType(IModuleResolver mr) {
+	public ILangNamedElement resolveEffectiveType(IModuleResolver mr) {
 		Reference declaredType = varDef.getDeclaredType();
 		if(declaredType != null) {
 			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));

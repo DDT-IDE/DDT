@@ -21,13 +21,13 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
@@ -131,7 +131,7 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		}
 		
 		@Override
-		public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return getNodeSemantics().resolveEffectiveType(mr);
 		}
 		

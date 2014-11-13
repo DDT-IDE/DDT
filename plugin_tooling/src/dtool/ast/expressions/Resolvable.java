@@ -17,10 +17,10 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.engine.ISemanticResolution;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IValueNode;
 import dtool.engine.common.ResolutionResult;
 import dtool.engine.modules.IModuleResolver;
@@ -44,8 +44,8 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 	}
 	
 	// TODO: deprecate this method in favor of resolveTargetElement
-	public final IDeeNamedElement findTargetDefElement(IModuleResolver moduleResolver) {
-		Collection<IDeeNamedElement> namedElems = findTargetDefElements(moduleResolver, true);
+	public final ILangNamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+		Collection<ILangNamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		if(namedElems == null || namedElems.isEmpty())
 			return null;
 		return namedElems.iterator().next();
@@ -56,13 +56,13 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 	}
 	
 	/** Convenience method for wraping a single defunit as a search result. */
-	public static Collection<IDeeNamedElement> wrapResult(IDeeNamedElement elem) {
+	public static Collection<ILangNamedElement> wrapResult(ILangNamedElement elem) {
 		if(elem == null)
 			return null;
 		return Collections.singletonList(elem);
 	}
 	
-	public static Collection<IDeeNamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
+	public static Collection<ILangNamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
 		boolean findFirstOnly) {
 		if(resolvable == null) {
 			return null;

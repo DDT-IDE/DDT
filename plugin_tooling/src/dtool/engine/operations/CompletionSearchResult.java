@@ -15,14 +15,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.List;
 
-import dtool.engine.common.IDeeNamedElement;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 public class CompletionSearchResult {
 	
 	public final ECompletionResultStatus resultCode;
 	public final PrefixSearchOptions searchOptions;
 	public final int replaceLength;
-	public final List<IDeeNamedElement> results;
+	public final List<ILangNamedElement> results;
 	
 	public CompletionSearchResult(ECompletionResultStatus resultCode) {
 		assertTrue(resultCode != ECompletionResultStatus.RESULT_OK);
@@ -32,14 +32,14 @@ public class CompletionSearchResult {
 		this.searchOptions = null;
 	}
 	
-	public CompletionSearchResult(PrefixSearchOptions searchOptions, List<IDeeNamedElement> results) {
+	public CompletionSearchResult(PrefixSearchOptions searchOptions, List<ILangNamedElement> results) {
 		this.resultCode = ECompletionResultStatus.RESULT_OK;
 		this.searchOptions = assertNotNull(searchOptions);
 		this.replaceLength = searchOptions.rplLen;
 		this.results = results;
 	}
 	
-	public List<IDeeNamedElement> getResults() {
+	public List<ILangNamedElement> getResults() {
 		return results;
 	}
 	

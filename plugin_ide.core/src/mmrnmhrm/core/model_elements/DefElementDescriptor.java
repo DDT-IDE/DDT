@@ -1,9 +1,10 @@
 package mmrnmhrm.core.model_elements;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+
 import org.eclipse.dltk.core.IModelElement;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.engine.common.IDeeNamedElement;
 
 /**
  * A flag descriptor of a language element (usually a DefUnit) with enough info do determine an icon
@@ -18,7 +19,7 @@ public class DefElementDescriptor {
 		this.elementFlags = elementFlags;
 	}
 	
-	public DefElementDescriptor(IDeeNamedElement namedElement) {
+	public DefElementDescriptor(ILangNamedElement namedElement) {
 		this.elementFlags = DefElementFlagsUtil.elementFlagsForNamedElement(namedElement);
 	}
 	

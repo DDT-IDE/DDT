@@ -1,7 +1,7 @@
 package melnorme.lang.tooling.ast.util;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import dtool.engine.common.IDeeNamedElement;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 public class NodeUtil {
 
@@ -17,12 +17,12 @@ public class NodeUtil {
 //		return ((Module)elem);
 //	}
 	
-	/** @return the innermost {@link IDeeNamedElement} containing given node (non-inclusive), or null if not found. */
-	public static IDeeNamedElement getOuterDefUnit(ASTNode node) {
+	/** @return the innermost {@link ILangNamedElement} containing given node (non-inclusive), or null if not found. */
+	public static ILangNamedElement getOuterDefUnit(ASTNode node) {
 		node = node.getParent();
 		while(true) {
-			if (node instanceof IDeeNamedElement) {
-				return (IDeeNamedElement) node;
+			if (node instanceof ILangNamedElement) {
+				return (ILangNamedElement) node;
 			}
 			if(node == null) {
 				return null;
@@ -31,7 +31,7 @@ public class NodeUtil {
 		}
 	}
 	
-	public static IDeeNamedElement getParentDefUnit(ASTNode node) {
+	public static ILangNamedElement getParentDefUnit(ASTNode node) {
 		return getOuterDefUnit(node);
 	}
 	

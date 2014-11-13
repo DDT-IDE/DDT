@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.editor.codeassist;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -9,14 +10,13 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import dtool.ddoc.TextUI;
-import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
-	public final IDeeNamedElement namedElement; 
+	public final ILangNamedElement namedElement; 
 	
 	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
-			Image image, String displayString, IDeeNamedElement namedElement,
+			Image image, String displayString, ILangNamedElement namedElement,
 			IContextInformation contextInformation) {
 		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);
 		this.namedElement = namedElement;

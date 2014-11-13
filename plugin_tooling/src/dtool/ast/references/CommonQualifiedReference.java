@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -45,7 +45,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	
 	public abstract int getDotOffset();
 	
-	public abstract Collection<IDeeNamedElement> findRootDefUnits(IModuleResolver moduleResolver);
+	public abstract Collection<ILangNamedElement> findRootDefUnits(IModuleResolver moduleResolver);
 	
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
@@ -53,16 +53,16 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	}
 	
 	public void performQualifiedRefSearch(CommonDefUnitSearch search) {
-		Collection<IDeeNamedElement> defunits = findRootDefUnits(search.getModuleResolver());
+		Collection<ILangNamedElement> defunits = findRootDefUnits(search.getModuleResolver());
 		CommonQualifiedReference.resolveSearchInMultipleContainers(defunits, search);
 	}
 	
-	public static void resolveSearchInMultipleContainers(Collection<IDeeNamedElement> containers, 
+	public static void resolveSearchInMultipleContainers(Collection<ILangNamedElement> containers, 
 			CommonDefUnitSearch search) {
 		if(containers == null)
 			return;
 		
-		for (IDeeNamedElement container : containers) {
+		for (ILangNamedElement container : containers) {
 			if(search.isFinished())
 				return;
 			container.resolveSearchInMembersScope(search);

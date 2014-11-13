@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -16,7 +17,6 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
@@ -66,12 +66,12 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
 			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<IDeeNamedElement> defUnits = node.findTargetDefElements(mr, false);
+			Collection<ILangNamedElement> defUnits = node.findTargetDefElements(mr, false);
 			
 			int matched = 0;
 			int notMatched = 0;
 			if(defUnits != null) {
-				for (IDeeNamedElement defUnit : defUnits) {
+				for (ILangNamedElement defUnit : defUnits) {
 					
 					String[] qualificationArray = DeeModelEngine.getQualification(defUnit);
 					char[] nodeQualification = StringUtil.collToString(qualificationArray, "$").toCharArray();

@@ -7,8 +7,8 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /**
@@ -39,12 +39,12 @@ public class ExpReference extends Expression {
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return ref.findTargetDefElements(moduleResolver, findFirstOnly);
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
 		return ref.resolveTypeOfUnderlyingValue(mr);
 	}
 	

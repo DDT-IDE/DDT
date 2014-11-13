@@ -18,10 +18,10 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.ast.expressions.ExpLiteralInteger;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /**
@@ -68,7 +68,7 @@ public class RefQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
+	public Collection<ILangNamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
 		return qualifier.findTargetDefElements(moduleResolver, false);
 	}
 	

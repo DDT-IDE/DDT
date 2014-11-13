@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
@@ -31,8 +32,6 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
-
-import dtool.engine.common.IDeeNamedElement;
 
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
@@ -111,8 +110,8 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		}
 	}
 	
-	public static List<IDeeNamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
-		List<IDeeNamedElement> results = new ArrayList<>();
+	public static List<ILangNamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<ILangNamedElement> results = new ArrayList<>();
 		for (ICompletionProposal iCompletionProposal : proposals) {
 			if(iCompletionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;

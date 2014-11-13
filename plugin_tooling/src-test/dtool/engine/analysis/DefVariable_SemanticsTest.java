@@ -13,10 +13,10 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 import org.junit.Test;
 
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
@@ -106,7 +106,7 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	
 	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
 		NullModuleResolver mr = new NullModuleResolver();
-		IDeeNamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
+		ILangNamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);
 			return;

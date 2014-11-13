@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
-import dtool.engine.common.IDeeNamedElement;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -49,9 +49,9 @@ public interface INamedElement {
 	 * Can be null if element is not contained in a module. */
 	public abstract String getModuleFullyQualifiedName();
 	
-	/** @return the nearest enclosing {@link IDeeNamedElement}.
+	/** @return the nearest enclosing {@link ILangNamedElement}.
 	 * For modules and packages, that is null. */
-	public abstract IDeeNamedElement getParentElement();
+	public abstract ILangNamedElement getParentElement();
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.
@@ -64,6 +64,6 @@ public interface INamedElement {
 	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
 	 * and have an associated type, but are not types themselves.
 	 */
-	public abstract IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr);
+	public abstract ILangNamedElement resolveTypeForValueContext(IModuleResolver mr);
 	
 }

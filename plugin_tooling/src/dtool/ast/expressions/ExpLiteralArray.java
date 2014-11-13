@@ -7,7 +7,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import dtool.engine.common.IDeeNamedElement;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
@@ -35,8 +35,8 @@ public class ExpLiteralArray extends Expression {
 	}
 	
 	@Override
-	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return Collections.<IDeeNamedElement>singleton(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return Collections.<ILangNamedElement>singleton(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 	}
 	
 }

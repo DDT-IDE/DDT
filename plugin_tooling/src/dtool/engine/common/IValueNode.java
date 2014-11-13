@@ -12,10 +12,11 @@ package dtool.engine.common;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public interface IValueNode {
 	
-	Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
 	
 }

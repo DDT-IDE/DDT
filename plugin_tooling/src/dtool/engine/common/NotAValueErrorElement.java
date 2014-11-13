@@ -10,19 +10,20 @@
  *******************************************************************************/
 package dtool.engine.common;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class NotAValueErrorElement implements IDeeNamedElement {
+public class NotAValueErrorElement implements ILangNamedElement {
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
-	protected final IDeeNamedElement wrappedElement;
+	protected final ILangNamedElement wrappedElement;
 
-	public NotAValueErrorElement(IDeeNamedElement wrappedElement) {
+	public NotAValueErrorElement(ILangNamedElement wrappedElement) {
 		this.wrappedElement = wrappedElement;
 	}
 	
@@ -57,7 +58,7 @@ public class NotAValueErrorElement implements IDeeNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement getParentElement() {
+	public ILangNamedElement getParentElement() {
 		return wrappedElement.getParentElement();
 	}
 	
@@ -67,7 +68,7 @@ public class NotAValueErrorElement implements IDeeNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// Do nothing.
 		return null;
 	}

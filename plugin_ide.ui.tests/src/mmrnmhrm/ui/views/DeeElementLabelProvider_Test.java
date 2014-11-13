@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.views;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
@@ -7,7 +8,6 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ddoc.TextUI;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.LanguageIntrinsics;
@@ -19,7 +19,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		IDeeNamedElement defElement;
+		ILangNamedElement defElement;
 		defElement = new ModuleProxy("foo", null);
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "foo");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "foo");

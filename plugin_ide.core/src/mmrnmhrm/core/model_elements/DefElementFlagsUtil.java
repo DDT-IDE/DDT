@@ -2,6 +2,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.Flags;
@@ -11,7 +12,6 @@ import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplatableElement;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 
 public class DefElementFlagsUtil {
@@ -69,7 +69,7 @@ public class DefElementFlagsUtil {
 		}
 	}
 	
-	public static int elementFlagsForNamedElement(IDeeNamedElement defElement) {
+	public static int elementFlagsForNamedElement(ILangNamedElement defElement) {
 		EArcheType archeType = defElement.getArcheType();
 		int modifiers = elementFlagsForArchetype(archeType);
 		

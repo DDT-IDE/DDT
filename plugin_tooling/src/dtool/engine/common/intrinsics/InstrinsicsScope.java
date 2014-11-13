@@ -12,9 +12,9 @@ package dtool.engine.common.intrinsics;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.engine.IScopeProvider;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeProvider;
 import dtool.resolver.ReferenceResolver;
 
 public class InstrinsicsScope implements IScopeProvider {

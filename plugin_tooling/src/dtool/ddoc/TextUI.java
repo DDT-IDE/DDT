@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.util.Collections;
 
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.definitions.DefUnit;
@@ -23,11 +24,10 @@ import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 
 public class TextUI extends HTMLWriterUtil {
 	
-	public static String getLabelForHoverSignature(IDeeNamedElement namedElement) {
+	public static String getLabelForHoverSignature(ILangNamedElement namedElement) {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:
@@ -89,7 +89,7 @@ public class TextUI extends HTMLWriterUtil {
 	
 	/* -----------------  ----------------- */
 	
-	public static String getDDocHTMLRender(IDeeNamedElement defElement) {
+	public static String getDDocHTMLRender(ILangNamedElement defElement) {
 		Ddoc ddoc = defElement.resolveDDoc();
 		
 		String sig = TextUI.getLabelForHoverSignature(defElement);

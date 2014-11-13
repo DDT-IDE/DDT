@@ -16,6 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.engine.IScopeProvider;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
@@ -29,10 +31,8 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.ScopeSemantics;
 import dtool.engine.modules.IModuleResolver;
-import dtool.resolver.IScopeProvider;
 import dtool.resolver.PrefixDefUnitSearch;
 
 
@@ -57,10 +57,10 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 			super(refOriginModule, refOffset, moduleResolver);
 		}
 		
-		public IDeeNamedElement findElement(String elementName) {
-			IDeeNamedElement foundMatch = null;
+		public ILangNamedElement findElement(String elementName) {
+			ILangNamedElement foundMatch = null;
 			
-			for (IDeeNamedElement match : getMatchedElements()) {
+			for (ILangNamedElement match : getMatchedElements()) {
 				if(match.getName().equals(elementName)) {
 					assertTrue(foundMatch == null);
 					foundMatch = match;
@@ -82,7 +82,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ParseSourceException {
-		IDeeNamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
+		ILangNamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;
 	}
@@ -108,11 +108,11 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		Reference tplRef = getSampleType(module, "ref1");
 		TestsElementSearch search = resolveAllMembers(module, tplRef);
 		
-		IDeeNamedElement tplArg = search.findElement("TYPE1");
+		ILangNamedElement tplArg = search.findElement("TYPE1");
 //		assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
 	}
 	
-	protected IDeeNamedElement resolveEffectiveType(IDeeNamedElement tplArg) {
+	protected ILangNamedElement resolveEffectiveType(ILangNamedElement tplArg) {
 		return tplArg; // TODO
 	}
 	

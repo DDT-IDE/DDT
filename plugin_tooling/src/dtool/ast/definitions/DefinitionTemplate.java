@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
@@ -21,7 +22,6 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -117,7 +117,7 @@ public class DefinitionTemplate extends CommonDefinition
 	}
 	
 	@Override
-	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		if(wrapper) {
 			// TODO: 
 		}

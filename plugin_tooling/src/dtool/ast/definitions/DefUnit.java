@@ -8,10 +8,10 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.references.CommonQualifiedReference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
@@ -22,7 +22,7 @@ import dtool.resolver.IResolvable;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements IDeeNamedElement {
+public abstract class DefUnit extends ASTNode implements ILangNamedElement {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -108,7 +108,7 @@ public abstract class DefUnit extends ASTNode implements IDeeNamedElement {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		IDeeNamedElement parentNamespace = getParentElement();
+		ILangNamedElement parentNamespace = getParentElement();
 		if(parentNamespace == null) {
 			return getName();
 		} else {
@@ -117,7 +117,7 @@ public abstract class DefUnit extends ASTNode implements IDeeNamedElement {
 	}
 	
 	@Override
-	public IDeeNamedElement getParentElement() {
+	public ILangNamedElement getParentElement() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	
@@ -155,7 +155,7 @@ public abstract class DefUnit extends ASTNode implements IDeeNamedElement {
 		}
 		
 		IModuleResolver mr = search.getModuleResolver();
-		Collection<IDeeNamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		Collection<ILangNamedElement> containers = resolvable.findTargetDefElements(mr, true);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	

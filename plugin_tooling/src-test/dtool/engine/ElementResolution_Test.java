@@ -11,6 +11,7 @@
 package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 import org.junit.Test;
 
@@ -19,7 +20,6 @@ import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.ModuleParseCache.ParseSourceException;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
@@ -54,13 +54,13 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected Reference getSampleType(BundleResolution sr, String elementName) throws ParseSourceException {
-		IDeeNamedElement element = sr.findContainedElement(elementName);
+		ILangNamedElement element = sr.findContainedElement(elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;
 	}
 	
 	protected void testRefResolve(BundleResolution libFooSR, Reference ref, String elementName) {
-		IDeeNamedElement result = ref.resolveTargetElement(libFooSR).getSingleResult();
+		ILangNamedElement result = ref.resolveTargetElement(libFooSR).getSingleResult();
 		assertAreEqual(result.getFullyQualifiedName(), elementName);
 	}
 	

@@ -16,6 +16,7 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.SourceModuleFinder;
@@ -31,7 +32,6 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /**
@@ -74,14 +74,14 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		Reference ref = (Reference) node;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<IDeeNamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+		Collection<ILangNamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
 			return new IModelElement[0];
 		}
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
-		for (IDeeNamedElement defElement : defElements) {
+		for (ILangNamedElement defElement : defElements) {
 			DefUnit defUnit = defElement.resolveDefUnit();
 			IMember modelElement = getModelElement(defUnit, sourceModule);
 			if(modelElement != null) {

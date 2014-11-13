@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -85,12 +85,12 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<IDeeNamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
+					Collection<ILangNamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
 					}
 					
-					for (IDeeNamedElement defElement : targetDefElements) {
+					for (ILangNamedElement defElement : targetDefElements) {
 						DefUnit defUnit = defElement.resolveDefUnit();
 						if(defUnit == null) {
 							continue;
