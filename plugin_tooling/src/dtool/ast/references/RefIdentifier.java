@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import dtool.ast.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
 

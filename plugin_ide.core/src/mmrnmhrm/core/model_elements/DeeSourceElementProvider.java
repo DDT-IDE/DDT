@@ -12,6 +12,8 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.core.model_elements.DefElementFlagsUtil.getCommonDefinitionModifiersInfo;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTSwitchVisitor;
 import melnorme.utilbox.collections.ArrayView;
 
 import org.eclipse.dltk.compiler.IElementRequestor.FieldInfo;
@@ -20,8 +22,6 @@ import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTSwitchVisitor;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;

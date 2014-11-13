@@ -1,6 +1,6 @@
 package dtool.ast.declarations;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 /** 
  * Marker interface for nodes that can appear in DeclDef rule.

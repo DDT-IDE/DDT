@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.SourceModuleFinder;
@@ -25,8 +27,6 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;

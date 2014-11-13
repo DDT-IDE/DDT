@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 /** 
  * Marker for nodes that can be a function body.

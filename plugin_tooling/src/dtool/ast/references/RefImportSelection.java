@@ -12,7 +12,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import dtool.ast.ASTNodeTypes;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.engine.common.IDeeNamedElement;

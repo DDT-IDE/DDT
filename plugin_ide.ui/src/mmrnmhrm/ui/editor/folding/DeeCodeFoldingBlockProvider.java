@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import mmrnmhrm.ui.editor.EditorUtil;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -19,8 +21,6 @@ import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {

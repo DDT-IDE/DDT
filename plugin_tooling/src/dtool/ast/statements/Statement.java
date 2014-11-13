@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 
 public abstract class Statement extends ASTNode implements IStatement {
 	

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.util;
 
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;

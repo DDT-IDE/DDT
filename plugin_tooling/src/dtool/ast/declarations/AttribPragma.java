@@ -1,9 +1,9 @@
 package dtool.ast.declarations;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
-import dtool.ast.NodeListView;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
 

@@ -4,6 +4,8 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
@@ -36,8 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;

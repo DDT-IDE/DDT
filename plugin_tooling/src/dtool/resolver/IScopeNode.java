@@ -1,6 +1,6 @@
 package dtool.resolver;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 public interface IScopeNode extends IScopeProvider, IASTNode {
 	

@@ -3,10 +3,10 @@ package dtool.ast.expressions;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;

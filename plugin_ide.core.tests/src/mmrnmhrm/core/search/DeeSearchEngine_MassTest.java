@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -27,7 +28,6 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.SearchMatch;
 import org.junit.Test;
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;

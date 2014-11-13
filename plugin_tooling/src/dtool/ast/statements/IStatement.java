@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 /** Marker interface for nodes that can appear as statements. */
 public interface IStatement extends IASTNode {

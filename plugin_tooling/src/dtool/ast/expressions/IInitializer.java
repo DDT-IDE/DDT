@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 public interface IInitializer extends IASTNode {
 	

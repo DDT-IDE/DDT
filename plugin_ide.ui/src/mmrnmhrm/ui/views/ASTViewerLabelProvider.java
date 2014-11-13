@@ -1,5 +1,8 @@
 package mmrnmhrm.ui.views;
 
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -9,8 +12,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import dtool.ast.ASTNode;
-import dtool.ast.IASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.Reference;
 

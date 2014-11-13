@@ -2,10 +2,10 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.engine.common.DefElementCommon;

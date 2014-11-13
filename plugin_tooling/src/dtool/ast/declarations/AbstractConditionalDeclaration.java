@@ -4,10 +4,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.collections.ChainedIterator;
 import melnorme.utilbox.misc.IteratorUtil;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.statements.BlockStatement;

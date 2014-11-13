@@ -5,13 +5,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNode;
-import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;

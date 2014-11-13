@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;

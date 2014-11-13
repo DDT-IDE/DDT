@@ -1,7 +1,8 @@
-package dtool.ast;
+package melnorme.lang.tooling.ast_actual;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.ASTVisitor;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;

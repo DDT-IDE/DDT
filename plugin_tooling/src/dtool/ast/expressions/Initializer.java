@@ -1,6 +1,6 @@
 package dtool.ast.expressions;
 
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 
 /**
  * Default class for initializers.

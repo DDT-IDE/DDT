@@ -1,12 +1,12 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;

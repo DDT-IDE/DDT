@@ -8,11 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.util;
+package melnorme.lang.tooling.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 
 /** This extension also determines the last node boundary. */
 public class ASTNodeFinderExtension extends ASTNodeFinder {

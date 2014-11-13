@@ -4,8 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import dtool.ast.ASTNode;
-import dtool.ast.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefIdentifier;

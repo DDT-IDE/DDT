@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.common;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.operations.CommonDefVarSemantics;

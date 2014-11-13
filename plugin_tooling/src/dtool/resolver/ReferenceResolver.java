@@ -6,9 +6,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;

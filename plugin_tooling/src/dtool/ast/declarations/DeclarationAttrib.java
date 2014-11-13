@@ -4,14 +4,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeList;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTNode;
-import dtool.ast.IASTVisitor;
-import dtool.ast.NodeList;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.IStatement;

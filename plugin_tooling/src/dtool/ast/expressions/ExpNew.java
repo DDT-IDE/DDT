@@ -2,10 +2,10 @@ package dtool.ast.expressions;
 
 import java.util.Collection;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
-import dtool.ast.NodeListView;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
 import dtool.engine.common.IDeeNamedElement;

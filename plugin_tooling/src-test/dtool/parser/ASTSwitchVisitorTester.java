@@ -11,8 +11,8 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTSwitchVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTSwitchVisitor;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;

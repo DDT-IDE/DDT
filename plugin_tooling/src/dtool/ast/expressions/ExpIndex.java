@@ -10,10 +10,10 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
-import dtool.ast.NodeListView;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 
 /**
  * Index expression.

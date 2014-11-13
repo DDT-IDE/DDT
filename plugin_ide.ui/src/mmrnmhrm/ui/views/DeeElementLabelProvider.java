@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import dtool.ast.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;

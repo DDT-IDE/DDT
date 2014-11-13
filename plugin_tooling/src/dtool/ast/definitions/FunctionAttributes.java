@@ -1,6 +1,6 @@
 package dtool.ast.definitions;
 
-import dtool.ast.ISourceRepresentation;
+import melnorme.lang.tooling.parser.ISourceRepresentation;
 import dtool.parser.DeeTokens;
 
 public enum FunctionAttributes implements ISourceRepresentation {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast;
+package melnorme.lang.tooling.ast;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 

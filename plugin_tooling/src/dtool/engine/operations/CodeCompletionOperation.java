@@ -17,12 +17,12 @@ import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
-import dtool.ast.util.ASTNodeFinderExtension;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.modules.IModuleResolver;

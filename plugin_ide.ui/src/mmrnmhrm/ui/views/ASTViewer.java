@@ -5,6 +5,8 @@ import java.nio.file.Path;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.IASTNode;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -47,8 +49,6 @@ import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import dtool.ast.ASTNodeFinder;
-import dtool.ast.IASTNode;
 import dtool.parser.DeeParserResult;
 
 

@@ -15,10 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.NodeListView;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.AttribAlign;
 import dtool.ast.declarations.AttribAtKeyword;

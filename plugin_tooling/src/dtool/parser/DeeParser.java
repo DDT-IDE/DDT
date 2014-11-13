@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;

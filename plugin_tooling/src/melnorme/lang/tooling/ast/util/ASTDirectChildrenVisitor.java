@@ -8,10 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.util;
+package melnorme.lang.tooling.ast.util;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 
 
 /**

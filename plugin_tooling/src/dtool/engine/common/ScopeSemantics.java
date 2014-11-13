@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.engine.common;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.ASTNode;
 
 public class ScopeSemantics {
 

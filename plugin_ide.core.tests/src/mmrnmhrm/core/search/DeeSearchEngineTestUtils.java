@@ -6,6 +6,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -18,8 +20,6 @@ import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 

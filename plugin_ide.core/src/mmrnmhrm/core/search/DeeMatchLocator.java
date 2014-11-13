@@ -7,6 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -30,7 +31,6 @@ import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 import org.eclipse.dltk.core.search.matching.PossibleMatch;
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.DeeParserResult.ParsedModule;

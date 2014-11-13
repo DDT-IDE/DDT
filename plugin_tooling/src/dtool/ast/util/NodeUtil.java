@@ -1,6 +1,6 @@
 package dtool.ast.util;
 
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 

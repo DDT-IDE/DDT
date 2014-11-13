@@ -1,8 +1,8 @@
 package dtool.ast.expressions;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 
 /**
  * The dollar operator, only valid inside an indexing.

@@ -3,10 +3,11 @@ package mmrnmhrm.core.search;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+
 import org.eclipse.dltk.core.ISourceModule;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public abstract class AbstractNodePatternMatcher {

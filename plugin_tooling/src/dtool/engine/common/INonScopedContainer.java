@@ -12,7 +12,7 @@ package dtool.engine.common;
 
 import java.util.Iterator;
 
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
 
 /**
  * Interface for a node that potentially contains named elements visible 

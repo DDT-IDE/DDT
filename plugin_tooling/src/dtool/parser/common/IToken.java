@@ -11,7 +11,7 @@
 package dtool.parser.common;
 
 import melnorme.lang.tooling.ast.SourceRange;
-import dtool.ast.ISourceRepresentation;
+import melnorme.lang.tooling.parser.ISourceRepresentation;
 import dtool.parser.DeeTokens;
 
 public interface IToken extends ISourceRepresentation {

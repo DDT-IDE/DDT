@@ -4,6 +4,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
@@ -17,7 +18,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-import dtool.ast.ASTNode;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;

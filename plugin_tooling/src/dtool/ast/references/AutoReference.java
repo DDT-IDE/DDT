@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.CoreUtil.assertCast;
 
 import java.util.Collection;
 
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.expressions.IInitializer;
 import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IValueNode;

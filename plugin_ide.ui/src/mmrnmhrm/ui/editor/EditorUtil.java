@@ -6,6 +6,7 @@ package mmrnmhrm.ui.editor;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import mmrnmhrm.core.engine_client.DToolClient;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -15,7 +16,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 

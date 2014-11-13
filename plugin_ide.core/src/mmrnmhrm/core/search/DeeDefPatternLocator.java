@@ -4,12 +4,12 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
-import dtool.ast.ASTNode;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.engine.common.IDeeNamedElement;

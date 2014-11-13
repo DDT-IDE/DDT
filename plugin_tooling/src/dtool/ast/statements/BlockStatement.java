@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.ASTNodeTypes;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;

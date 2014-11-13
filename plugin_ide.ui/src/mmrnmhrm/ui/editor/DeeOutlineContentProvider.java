@@ -12,13 +12,13 @@ package mmrnmhrm.ui.editor;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.util.swt.jface.ElementContentProvider;
 import melnorme.utilbox.tree.IElement;
 
 import org.eclipse.jface.viewers.Viewer;
 
-import dtool.ast.ASTNode;
-import dtool.ast.IASTNode;
 import dtool.ast.declarations.AbstractConditionalDeclaration;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationImport;

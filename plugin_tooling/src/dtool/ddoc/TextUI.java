@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.util.Collections;
 
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
-import dtool.ast.ASTCodePrinter;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;

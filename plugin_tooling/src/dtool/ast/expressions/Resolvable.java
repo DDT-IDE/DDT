@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.ASTNode;
-import dtool.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.engine.ISemanticResolution;

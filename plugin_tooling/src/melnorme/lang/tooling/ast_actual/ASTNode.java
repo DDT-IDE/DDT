@@ -8,18 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast;
+package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.NodeData;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
+import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
+import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.NodeData.CreatedStatusNodeData;
-import dtool.ast.NodeData.ParsedNodeData;
 import dtool.ast.definitions.Module;
-import dtool.ast.util.ASTChildrenCollector;
-import dtool.ast.util.ASTDirectChildrenVisitor;
 import dtool.ast.util.NodeUtil;
 import dtool.parser.ParserError;
 import dtool.resolver.CommonDefUnitSearch;
@@ -238,7 +243,7 @@ public abstract class ASTNode implements IASTNode {
 	}
 	
 	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
-	protected final void setData(NodeData data) {
+	public final void setData(NodeData data) {
 		assertNotNull(data);
 		this.data = data;
 	}

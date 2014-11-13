@@ -3,6 +3,7 @@ package mmrnmhrm.core.search;
 import java.nio.file.Path;
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -12,7 +13,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
 
-import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;

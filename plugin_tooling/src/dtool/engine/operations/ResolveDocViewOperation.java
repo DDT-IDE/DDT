@@ -13,8 +13,8 @@ package dtool.engine.operations;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationAttrib;

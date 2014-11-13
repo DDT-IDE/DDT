@@ -11,8 +11,8 @@
 package dtool.engine.analysis;
 
 
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.tests.CommonDToolTest;

@@ -19,10 +19,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationAliasThis;

@@ -11,10 +11,10 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 
 import org.junit.Test;
 
-import dtool.ast.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefinitionVariable;

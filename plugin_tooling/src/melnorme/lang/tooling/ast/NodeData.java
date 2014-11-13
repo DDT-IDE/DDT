@@ -1,4 +1,14 @@
-package dtool.ast;
+/*******************************************************************************
+ * Copyright (c) 2013, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -8,7 +18,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.util.ASTDirectChildrenVisitor;
+import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.parser.ParserError;
 
 public abstract class NodeData {

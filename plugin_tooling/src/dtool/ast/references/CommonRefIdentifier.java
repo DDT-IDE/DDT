@@ -12,8 +12,8 @@ package dtool.ast.references;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 
 public abstract class CommonRefIdentifier extends NamedReference {
 	

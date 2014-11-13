@@ -1,7 +1,7 @@
 package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.ast.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.declarations.ImportContent;

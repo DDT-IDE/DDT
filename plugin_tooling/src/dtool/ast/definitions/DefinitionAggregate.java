@@ -11,10 +11,10 @@
 package dtool.ast.definitions;
 
 import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNode;
-import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;

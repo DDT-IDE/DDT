@@ -2,9 +2,9 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.IASTNode;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.LexElement;
 

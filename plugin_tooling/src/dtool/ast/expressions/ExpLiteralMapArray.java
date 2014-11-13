@@ -1,11 +1,11 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import dtool.ast.ASTCodePrinter;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.IASTVisitor;
-import dtool.ast.NodeListView;
+import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 
 public class ExpLiteralMapArray extends Expression {
 	

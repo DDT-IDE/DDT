@@ -2,12 +2,12 @@ package dtool.tests.utils;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.util.NodeList;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.ASTNode;
-import dtool.ast.ASTNodeTypes;
-import dtool.ast.ASTVisitor;
-import dtool.ast.IASTNode;
-import dtool.ast.NodeList;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 
