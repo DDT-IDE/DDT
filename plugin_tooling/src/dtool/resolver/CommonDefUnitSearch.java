@@ -56,10 +56,6 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 		return modResolver.findModules(fqNamePrefix);
 	}
 	
-	public Module resolveModule(String[] packages, String module) {
-		return ReferenceResolver.findModuleUnchecked(modResolver, packages, module);
-	}
-	
 	/** Return whether we have already search the given scope or not. */
 	public boolean hasSearched(IScopeProvider scope) {
 		// TODO: shit performance here, make it a hash, or sorted search

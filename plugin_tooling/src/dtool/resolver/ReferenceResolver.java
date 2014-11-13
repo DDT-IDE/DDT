@@ -11,6 +11,7 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.engine.IScopeProvider;
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
@@ -39,16 +40,19 @@ public class ReferenceResolver {
 	private static final String[] EMPTY_PACKAGE = new String[0];
 	
 	public static Module findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
-		ModuleFullName moduleName = new ModuleFullName(moduleFullName);
-		return findModuleUnchecked(mr, moduleName.getPackages(), moduleName.getModuleSimpleName());
+		return findModuleUnchecked(mr, new ModuleFullName(moduleFullName));
 	}
 	
 	public static Module findModuleUnchecked(IModuleResolver mr, String[] packages, String module) {
 		if(module.isEmpty())
 			return null;
 		
+		return findModuleUnchecked(mr, new ModuleFullName(ArrayUtil.concat(packages, module)));
+	}
+	
+	public static Module findModuleUnchecked(IModuleResolver mr, ModuleFullName moduleName) {
 		try {
-			return mr.findModule(packages, module);
+			return mr.findModule(moduleName);
 		} catch (ParseSourceException pse) {
 			/* FIXME: TODO: add error to SemanticResolution / semantic operation. */
 			return null;
@@ -205,7 +209,7 @@ public class ReferenceResolver {
 	/* ====================  ==================== */
 	
 	private static void findDefUnitInObjectIntrinsic(CommonDefUnitSearch search) {
-		Module targetModule = search.resolveModule(EMPTY_PACKAGE, "object");
+		Module targetModule = ReferenceResolver.findModuleUnchecked(search.modResolver, EMPTY_PACKAGE, "object");
 		if (targetModule != null) {
 			findDefUnitInScope(targetModule, search);
 		}

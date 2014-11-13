@@ -29,7 +29,6 @@ public abstract class CommonModuleResolver implements IModuleResolver {
 	
 	protected abstract Set<String> findModules_do(String fqNamePrefix);
 	
-	@Override
 	public Module findModule(String[] packages, String module) throws ParseSourceException {
 		assertNotNull(packages);
 		assertTrue(ArrayUtil.contains(packages, null) == false);
@@ -37,6 +36,11 @@ public abstract class CommonModuleResolver implements IModuleResolver {
 		assertNotNull(module);
 		assertTrue(!module.isEmpty());
 		return findModule_do(packages, module);
+	}
+	
+	@Override
+	public Module findModule(ModuleFullName moduleName) throws ParseSourceException {
+		return findModule(moduleName.getPackages(), moduleName.getLastSegment());
 	}
 	
 	protected abstract Module findModule_do(String[] packages, String module) throws ParseSourceException;

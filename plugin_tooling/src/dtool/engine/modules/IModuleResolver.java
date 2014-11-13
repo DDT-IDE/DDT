@@ -30,6 +30,6 @@ public interface IModuleResolver {
 	 * @param module The name of the modules to find. 
 	 * @return the respective module or null if not found
 	 */
-	Module findModule(String[] packages, String module) throws ParseSourceException;
+	Module findModule(ModuleFullName moduleName) throws ParseSourceException;
 	
 }

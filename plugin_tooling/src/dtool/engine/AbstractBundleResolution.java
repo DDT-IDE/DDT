@@ -21,7 +21,6 @@ import java.util.Set;
 
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.symbols.ElementName;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
@@ -133,8 +132,7 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	}
 	
 	@Override
-	public Module findModule(String[] packages, String module) throws ParseSourceException {
-		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, module));
+	public Module findModule(ModuleFullName moduleFullName) throws ParseSourceException {
 		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
