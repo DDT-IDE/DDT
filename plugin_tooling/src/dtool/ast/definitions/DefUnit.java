@@ -6,11 +6,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.references.CommonQualifiedReference;
-import dtool.ast.util.NodeUtil;
 import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokenSemantics;

@@ -12,8 +12,8 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import dtool.ast.util.NodeUtil;
 
 
 /**
