@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.utilbox.iteration.ChainedIterator2;
+import melnorme.utilbox.iteration.ChainedIterator;
 import melnorme.utilbox.iteration.CopyableListIterator;
 import melnorme.utilbox.iteration.ICopyableIterator;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -248,11 +248,11 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 				sourceCase.topLevelMDE = temporaryParentMDE;
 			}
 			
-			ICopyableIterator<TspElement> mdArgIter = ChainedIterator2.create(
+			ICopyableIterator<TspElement> mdArgIter = ChainedIterator.create(
 				CopyableListIterator.create(sourceArgument),
 				CopyableListIterator.create(Collections.<TspElement>singletonList(mdEndElem))
 			);
-			elementStream = ChainedIterator2.create(mdArgIter, elementStream);
+			elementStream = ChainedIterator.create(mdArgIter, elementStream);
 		} else {
 			processMetadataEndElem(sourceCase, mdEndElem);
 		}
@@ -413,7 +413,7 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 		
 		ICopyableIterator<TspElement> newElements = (argument == null) ? 
 			elementStream.copyState() : 
-			ChainedIterator2.create(CopyableListIterator.create(argument), elementStream.copyState())
+			ChainedIterator.create(CopyableListIterator.create(argument), elementStream.copyState())
 			;
 		processCaseContents(newState, newElements);
 	}
@@ -437,7 +437,7 @@ public class TemplatedSourceProcessor extends SplitProcessor {
 		}
 		if(sourceArgument != null) {
 			ICopyableIterator<TspElement> mdArgIter = CopyableListIterator.create(sourceArgument);
-			elementStream = ChainedIterator2.create(mdArgIter, elementStream);
+			elementStream = ChainedIterator.create(mdArgIter, elementStream);
 		}
 		return elementStream;
 	}
