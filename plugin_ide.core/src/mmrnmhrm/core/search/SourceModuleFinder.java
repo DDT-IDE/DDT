@@ -12,7 +12,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 
 public class SourceModuleFinder extends ImportPathVisitor {
@@ -51,12 +50,6 @@ public class SourceModuleFinder extends ImportPathVisitor {
 			}
 		}
 		return false;
-	}
-	
-	public static ISourceModule findModuleUnit(Module module, IScriptProject scriptProject) throws ModelException {
-		ModuleFullName moduleFullName = module.getModuleFullName();
-		
-		return findModuleUnit(scriptProject, moduleFullName);
 	}
 	
 	public static ISourceModule findModuleUnit(IScriptProject scriptProject, ModuleFullName moduleFullName)

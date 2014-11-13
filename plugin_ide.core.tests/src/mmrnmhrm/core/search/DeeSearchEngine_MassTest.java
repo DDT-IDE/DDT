@@ -15,6 +15,7 @@ import java.util.HashSet;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -95,12 +96,12 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 						if(defUnit == null) {
 							continue;
 						}
-						Module moduleNode = defUnit.getModuleNode();
-						if(moduleNode == null) {
+						ModuleFullName moduleFullName = defElement.getModuleFullName();
+						if(moduleFullName == null) {
 							continue; // consider this case more
 						}
-							
-						ISourceModule defUnitSrcModule = findSourceModule(moduleNode, searchProj);
+						
+						ISourceModule defUnitSrcModule = findSourceModule(moduleFullName, searchProj);
 						
 						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
 						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
@@ -176,10 +177,10 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 		}
 	}
 	
-	public static ISourceModule findSourceModule(Module module, IScriptProject searchProj) {
+	public static ISourceModule findSourceModule(ModuleFullName moduleFullName, IScriptProject searchProj) {
 		try {
 			// TODO: test this, consider multiple named source Packages
-			return SourceModuleFinder.findModuleUnit(module, searchProj);
+			return SourceModuleFinder.findModuleUnit(searchProj, moduleFullName);
 		} catch (ModelException e) {
 			return null;
 		}

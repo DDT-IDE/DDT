@@ -3,6 +3,7 @@ package mmrnmhrm.core.model_elements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.search.SourceModuleFinder;
 
@@ -16,7 +17,6 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.Module;
 import dtool.util.NewUtils;
 
 /**
@@ -25,26 +25,27 @@ import dtool.util.NewUtils;
  */
 public class DeeModelEngine {
 	
-	public static IMember findCorrespondingModelElement(DefUnit targetDefUnit, IScriptProject scriptProject)
+	public static IMember findCorrespondingModelElement(ILangNamedElement targetDefUnit, IScriptProject scriptProject)
 		throws ModelException {
 		if(targetDefUnit == null) 
 			return null;
 		
-		Module module = targetDefUnit.getModuleNode();
+		ModuleFullName moduleFullName = targetDefUnit.getModuleFullName();
 		// TODO: would be nice to have test for module == null path
-		if(module != null) {
-			ISourceModule targetSrcModule = SourceModuleFinder.findModuleUnit(module, scriptProject); 
-			// TODO: would be nice to have test for targetSrcModule == null path
-			// TODO consider out of buildpath scenario
-			if(targetSrcModule != null) {
-				return findCorrespondingModelElement(targetDefUnit, targetSrcModule);
-				
-			}
+		if(moduleFullName == null) {
+			return null;
+		}
+		
+		ISourceModule targetSrcModule = SourceModuleFinder.findModuleUnit(scriptProject, moduleFullName); 
+		// TODO: would be nice to have test for targetSrcModule == null path
+		// TODO consider out of buildpath scenario
+		if(targetSrcModule != null) {
+			return findCorrespondingModelElement(targetDefUnit, targetSrcModule);
 		}
 		return null;
 	}
 	
-	public static IMember findCorrespondingModelElement(DefUnit defUnit, ISourceModule sourceModule)
+	public static IMember findCorrespondingModelElement(ILangNamedElement defUnit, ISourceModule sourceModule)
 			throws ModelException {
 		return searchForModelElement(defUnit, sourceModule, false);
 	}

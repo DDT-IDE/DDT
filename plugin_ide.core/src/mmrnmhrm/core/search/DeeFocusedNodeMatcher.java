@@ -59,11 +59,10 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		for (Iterator<ILangNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
-			ILangNamedElement targetDefElement = iter.next();
-			DefUnit targetDefUnit = targetDefElement.resolveDefUnit();
+			ILangNamedElement targetNamedElement = iter.next();
 			
 			try {
-				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetDefUnit, 
+				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetNamedElement, 
 					sourceModule.getScriptProject());
 
 				if(targetModelElement != null && modelElement.equals(targetModelElement)) {
