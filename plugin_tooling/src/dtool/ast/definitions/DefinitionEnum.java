@@ -22,6 +22,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -134,7 +135,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

@@ -16,9 +16,9 @@ import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.engine.common.AbstractNamedElement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.IScopeProvider;
@@ -32,21 +32,21 @@ import dtool.resolver.ReferenceResolver;
 public class PackageNamespace extends AbstractNamedElement implements IScopeProvider {
 	
 	protected final String fqName;
-	protected final INamedElement containedElement;
+	protected final IDeeNamedElement containedElement;
 	
-	public PackageNamespace(String fqName, INamedElement module) {
+	public PackageNamespace(String fqName, IDeeNamedElement module) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."));
 		this.fqName = fqName;
 		this.containedElement = assertNotNull(module);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String[] packages, IDeeNamedElement module) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
 		return createPartialDefUnits(defName, packages, module);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, IDeeNamedElement module) {
 		if(packages.length == 0) {
 			return new PackageNamespace(fqName, module);
 		} else {
@@ -74,7 +74,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public IDeeNamedElement getParentElement() {
 		return null;
 	}
 	
@@ -105,7 +105,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

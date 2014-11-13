@@ -29,9 +29,9 @@ import org.junit.Test;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -85,12 +85,12 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
+					Collection<IDeeNamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
 					}
 					
-					for (INamedElement defElement : targetDefElements) {
+					for (IDeeNamedElement defElement : targetDefElements) {
 						DefUnit defUnit = defElement.resolveDefUnit();
 						if(defUnit == null) {
 							continue;

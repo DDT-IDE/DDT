@@ -15,8 +15,8 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Resolvable;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
@@ -44,7 +44,7 @@ public class RefTypeDynArray extends CommonNativeTypeReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 	}
 	

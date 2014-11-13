@@ -16,7 +16,7 @@ import static melnorme.utilbox.misc.ArrayUtil.concat;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
@@ -106,7 +106,7 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	
 	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
 		NullModuleResolver mr = new NullModuleResolver();
-		INamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
+		IDeeNamedElement effectiveType = parseDefinitionVar(source, offset).getNodeSemantics().resolveEffectiveType(mr);
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);
 			return;

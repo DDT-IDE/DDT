@@ -14,9 +14,9 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
@@ -66,12 +66,12 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
 			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<INamedElement> defUnits = node.findTargetDefElements(mr, false);
+			Collection<IDeeNamedElement> defUnits = node.findTargetDefElements(mr, false);
 			
 			int matched = 0;
 			int notMatched = 0;
 			if(defUnits != null) {
-				for (INamedElement defUnit : defUnits) {
+				for (IDeeNamedElement defUnit : defUnits) {
 					
 					String[] qualificationArray = DeeModelEngine.getQualification(defUnit);
 					char[] nodeQualification = StringUtil.collToString(qualificationArray, "$").toCharArray();

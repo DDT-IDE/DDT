@@ -6,9 +6,9 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /**
@@ -56,7 +56,7 @@ public class ExpNew extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		// This is not entirely correct for struct-like types, 
 		// in that case a pointer to the the type is actually the type of the new exp.
 		// But current behavior is acceptable for now.

@@ -17,7 +17,7 @@ import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.operations.CompletionSearchResult;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
@@ -43,7 +43,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				return;
 			}
 			
-			for (INamedElement result : completionResult.getResults()) {
+			for (IDeeNamedElement result : completionResult.getResults()) {
 				CompletionProposal proposal = createProposal(result, position, completionResult);
 				requestor.accept(proposal);
 			}
@@ -66,7 +66,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
-	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
+	protected CompletionProposal createProposal(IDeeNamedElement namedElem, int ccOffset, 
 			CompletionSearchResult completionResult) {
 		PrefixSearchOptions searchOptions = completionResult.searchOptions;
 		
@@ -99,13 +99,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		
 		@Override
 		public void setExtraInfo(Object extraInfo) {
-			assertTrue(extraInfo instanceof INamedElement);
+			assertTrue(extraInfo instanceof IDeeNamedElement);
 			super.setExtraInfo(extraInfo);
 		}
 		
 		@Override
-		public INamedElement getExtraInfo() {
-			return (INamedElement) super.getExtraInfo();
+		public IDeeNamedElement getExtraInfo() {
+			return (IDeeNamedElement) super.getExtraInfo();
 		}
 		
 		public boolean isModuleImportCompletion() {

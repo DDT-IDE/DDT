@@ -6,8 +6,8 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefModule;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -73,7 +73,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public INamedElement getPartialDefUnit(IModuleResolver mr) {
+	public IDeeNamedElement getPartialDefUnit(IModuleResolver mr) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
 			return moduleRef.findTargetDefElement(mr);
 		}
@@ -83,7 +83,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 			if(moduleRef.isMissingCoreReference()) {
 				defunit = null;
 			} else {
-				INamedElement moduleElem = moduleRef.getModuleProxy(mr);
+				IDeeNamedElement moduleElem = moduleRef.getModuleProxy(mr);
 				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem); 
 			}
 		}

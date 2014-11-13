@@ -11,6 +11,7 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -78,7 +79,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// TODO
 		return null;
 	}

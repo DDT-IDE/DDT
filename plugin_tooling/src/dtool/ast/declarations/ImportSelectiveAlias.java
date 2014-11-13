@@ -6,9 +6,9 @@ import dtool.ast.IASTVisitor;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefImportSelection;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -49,7 +49,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.resolveTypeForValueContext(mr, target);
 	}
 	

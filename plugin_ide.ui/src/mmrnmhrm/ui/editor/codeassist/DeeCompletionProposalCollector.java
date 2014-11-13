@@ -15,7 +15,7 @@ import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposalCollector extends ScriptCompletionProposalCollector {
 	
@@ -47,7 +47,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		
 		if(proposal instanceof RefSearchCompletionProposal) {
 			RefSearchCompletionProposal refSearchProposal = (RefSearchCompletionProposal) proposal;
-			INamedElement namedElement = refSearchProposal.getExtraInfo();
+			IDeeNamedElement namedElement = refSearchProposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();

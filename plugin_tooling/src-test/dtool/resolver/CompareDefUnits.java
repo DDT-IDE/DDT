@@ -11,7 +11,7 @@ import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.tests.CommonDToolTest;
 
 /**
@@ -19,29 +19,29 @@ import dtool.tests.CommonDToolTest;
  */
 public class CompareDefUnits extends CommonDToolTest {
 	
-	public static Function<INamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
-		return new Function<INamedElement, String>() {
+	public static Function<IDeeNamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
+		return new Function<IDeeNamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement defUnit) {
+			public String evaluate(IDeeNamedElement defUnit) {
 				return defUnit == null ? null : defUnit.getExtendedName().substring(prefixLen);
 			}
 		};
 	}
 	
-	public static Function<INamedElement, String> fnElementToFullyQualifiedName() {
-		return new Function<INamedElement, String>() {
+	public static Function<IDeeNamedElement, String> fnElementToFullyQualifiedName() {
+		return new Function<IDeeNamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
+			public String evaluate(IDeeNamedElement obj) {
 				return obj == null ? null : obj.getFullyQualifiedName();
 			}
 		};
 	}
 	
 	// TODO need to add code to DefUnitResultsChecker to removed function names
-	public static void checkResults(Collection<? extends INamedElement> originalResults, String[] expectedProposalsArr) {
+	public static void checkResults(Collection<? extends IDeeNamedElement> originalResults, String[] expectedProposalsArr) {
 		//new DefUnitResultsChecker(originalResults).simpleCheckResults(expectedProposalsArr);
 		
-		LinkedList<INamedElement> results = new LinkedList<>(originalResults);
+		LinkedList<IDeeNamedElement> results = new LinkedList<>(originalResults);
 		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);

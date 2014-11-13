@@ -20,6 +20,7 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -89,7 +90,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

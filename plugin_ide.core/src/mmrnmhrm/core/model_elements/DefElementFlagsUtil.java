@@ -10,8 +10,8 @@ import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.ITemplatableElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.IntrinsicDefUnit;
 
 public class DefElementFlagsUtil {
@@ -69,7 +69,7 @@ public class DefElementFlagsUtil {
 		}
 	}
 	
-	public static int elementFlagsForNamedElement(INamedElement defElement) {
+	public static int elementFlagsForNamedElement(IDeeNamedElement defElement) {
 		EArcheType archeType = defElement.getArcheType();
 		int modifiers = elementFlagsForArchetype(archeType);
 		

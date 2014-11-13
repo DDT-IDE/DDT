@@ -15,9 +15,9 @@ import java.util.Collection;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public class RefTypeof extends Reference implements IQualifierNode {
@@ -64,12 +64,12 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return expression.resolveTypeOfUnderlyingValue(moduleResolver);
 	}
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
 		return super.resolveToInvalidValue();
 	}
 	

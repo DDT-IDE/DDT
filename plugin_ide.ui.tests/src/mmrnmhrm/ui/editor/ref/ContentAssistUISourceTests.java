@@ -26,8 +26,8 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.TextUI;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.tests.MockCompilerInstalls;
 
@@ -118,22 +118,22 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		assertNotNull(proposals);
 		
 		if(expectedResults != null) {
-			List<INamedElement> results = proposalResultsToDefUnit(proposals);
+			List<IDeeNamedElement> results = proposalResultsToDefUnit(proposals);
 			checkResults(results, expectedResults);
 		}
 		ContentAssistUI_CommonTest.checkProposals(proposals, repOffset, repLen, prefixLen);
 	}
 	
 	@Override
-	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
-		for (INamedElement defElement : resultDefElementsOriginal) {
+	public void precheckOriginalResults(Collection<IDeeNamedElement> resultDefElementsOriginal) {
+		for (IDeeNamedElement defElement : resultDefElementsOriginal) {
 			TextUI.getLabelForHoverSignature(defElement);
 			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	
-	public List<INamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
-		ArrayList<INamedElement> results = new ArrayList<>();
+	public List<IDeeNamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
+		ArrayList<IDeeNamedElement> results = new ArrayList<>();
 		for (ICompletionProposal completionProposal : proposals) {
 			if(completionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;

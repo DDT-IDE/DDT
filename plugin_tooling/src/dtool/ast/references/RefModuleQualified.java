@@ -16,9 +16,9 @@ import java.util.Collections;
 import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /** An entity reference starting at module scope. 
@@ -52,9 +52,9 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
+	public Collection<IDeeNamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
-		return Collections.<INamedElement>singletonList(module);
+		return Collections.<IDeeNamedElement>singletonList(module);
 	}
 	
 }

@@ -19,12 +19,12 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -117,7 +117,7 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return null;
 		}
 		

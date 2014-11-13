@@ -15,17 +15,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.List;
 
 import melnorme.utilbox.collections.ArrayList2;
-import dtool.ast.definitions.INamedElement;
 
 public class ResolutionResult {
 	
-	protected final List<INamedElement> results;
+	protected final List<IDeeNamedElement> results;
 	
-	public ResolutionResult(INamedElement... results) {
+	public ResolutionResult(IDeeNamedElement... results) {
 		this.results = new ArrayList2<>(results);
 	}
 	
-	public INamedElement getSingleResult() {
+	public IDeeNamedElement getSingleResult() {
 		assertTrue(results.size() <= 1);
 		if(results.isEmpty()) {
 			return null;

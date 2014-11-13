@@ -15,7 +15,6 @@ import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.CommonQualifiedReference;
@@ -23,6 +22,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.Reference;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
@@ -174,12 +174,12 @@ public class ReferenceResolver {
 	}
 	
 	public static void findInNamedElementList(CommonDefUnitSearch search, 
-		Iterable<? extends INamedElement> elementIterable) {
+		Iterable<? extends IDeeNamedElement> elementIterable) {
 		if(elementIterable != null) {
 			if(search.isFinished())
 				return;
 			
-			for (INamedElement namedElement : elementIterable) {
+			for (IDeeNamedElement namedElement : elementIterable) {
 				evaluateNamedElementForSearch(search, namedElement);
 				if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
 					return;
@@ -187,7 +187,7 @@ public class ReferenceResolver {
 		}
 	}
 	
-	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, INamedElement namedElement) {
+	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, IDeeNamedElement namedElement) {
 		if(namedElement != null) {
 			search.visitElement(namedElement);
 		}
@@ -212,7 +212,7 @@ public class ReferenceResolver {
 	
 	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
 		DeclarationModule decMod = module.md;
-		INamedElement moduleElement;
+		IDeeNamedElement moduleElement;
 		if(decMod != null) {
 			
 			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
@@ -230,7 +230,7 @@ public class ReferenceResolver {
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
-		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
+		IDeeNamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
 		evaluateNamedElementForSearch(search, namedElement);
 	}
 	
@@ -266,7 +266,7 @@ public class ReferenceResolver {
 				if(!search.matchesName(name)) {
 					continue;
 				}
-				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				IDeeNamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
 				if(namedElement != null) { 
 					search.addMatch(namedElement);
 				}
@@ -278,7 +278,7 @@ public class ReferenceResolver {
 		
 		protected ASTNode pickedNode;
 		protected Reference pickedRef;
-		public Collection<INamedElement> resolvedDefUnits;
+		public Collection<IDeeNamedElement> resolvedDefUnits;
 		public boolean invalidPickRef = false;
 		
 		public void pickLocation(Module module, int offset) {
@@ -301,7 +301,7 @@ public class ReferenceResolver {
 			return pickedRef != null && invalidPickRef == false;
 		}
 		
-		public Collection<INamedElement> getResolvedDefUnits() {
+		public Collection<IDeeNamedElement> getResolvedDefUnits() {
 			assertTrue(isValidPickRef()); // a valid ref must have picked from offset
 			return resolvedDefUnits;
 		}

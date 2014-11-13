@@ -18,6 +18,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -107,7 +108,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		IModuleResolver mr = search.getModuleResolver();
 		
 		for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-			INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
+			IDeeNamedElement baseClassElem = baseclass.findTargetDefElement(mr);
 			if(baseClassElem == null)
 				continue;
 			
@@ -118,10 +119,10 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 	}
 	
-	public INamedElement resolveSuperClass(IModuleResolver mr) {
+	public IDeeNamedElement resolveSuperClass(IModuleResolver mr) {
 		
 		for (Reference baseClassRef : nonNullIterable(baseClasses)) {
-			INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+			IDeeNamedElement baseClass = baseClassRef.findTargetDefElement(mr);
 			
 			if(baseClass.getArcheType() == EArcheType.Interface) {
 				continue;

@@ -23,6 +23,7 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.references.RefModule;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
@@ -183,7 +184,7 @@ public class Module extends DefUnit implements IScopeNode {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

@@ -20,7 +20,7 @@ import org.eclipse.dltk.ui.search.QuerySpecification;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public final class FindReferencesInHierarchyAction extends FindAction {
 

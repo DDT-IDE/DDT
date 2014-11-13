@@ -23,13 +23,13 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.DefinitionEnumVar;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.AutoReference;
 import dtool.ast.references.NamedReference;
 import dtool.ddoc.TextUI;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
 
@@ -58,7 +58,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		IModuleResolver mr = resolvedModule.getModuleResolver();
 		
-		INamedElement relevantElementForDoc = null;
+		IDeeNamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
@@ -100,7 +100,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 	}
 	
 	protected String getDDocHTMLViewForAutoLike(IModuleResolver mr, IVarDefinitionLike defVar) {
-		INamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
+		IDeeNamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
 		
 		if(resolvedType == null) {
 			return TextUI.span("semantic_error", "color:red;",

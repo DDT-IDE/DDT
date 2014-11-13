@@ -8,14 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.common;
+package melnorme.lang.tooling.symbols;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
 
-public interface IDefElement {
+/**
+ * A handle to a defined, named language element. 
+ * May exists in source or outside source, it can be implicitly or explicitly defined.
+ * Implementation may be an AST node (that is the more common case), but it can be a non AST node too.
+ */
+public interface INamedElement {
 	
 	/** The name of the element that is referred to. */
 	public abstract String getName();
@@ -44,9 +49,9 @@ public interface IDefElement {
 	 * Can be null if element is not contained in a module. */
 	public abstract String getModuleFullyQualifiedName();
 	
-	/** @return the nearest enclosing {@link INamedElement}.
+	/** @return the nearest enclosing {@link IDeeNamedElement}.
 	 * For modules and packages, that is null. */
-	public abstract INamedElement getParentElement();
+	public abstract IDeeNamedElement getParentElement();
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.
@@ -59,6 +64,6 @@ public interface IDefElement {
 	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
 	 * and have an associated type, but are not types themselves.
 	 */
-	public abstract INamedElement resolveTypeForValueContext(IModuleResolver mr);
+	public abstract IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr);
 	
 }

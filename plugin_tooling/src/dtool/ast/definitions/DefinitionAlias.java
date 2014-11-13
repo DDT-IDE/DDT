@@ -15,6 +15,7 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.INonScopedContainer;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
@@ -116,7 +117,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return DefElementCommon.resolveTypeForValueContext_Alias(mr, target);
 		}
 		

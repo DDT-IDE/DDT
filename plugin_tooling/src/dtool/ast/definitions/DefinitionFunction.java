@@ -9,6 +9,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -54,7 +55,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return EArcheType.Function;
 	}
 	
-	public INamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
+	public IDeeNamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
 		if(retType == null) 
 			return null;
 		return retType.findTargetDefElement(moduleResolver);
@@ -94,7 +95,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// TODO implicit function call
 		return null;
 	}

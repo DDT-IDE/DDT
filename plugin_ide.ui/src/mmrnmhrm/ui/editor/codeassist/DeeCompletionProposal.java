@@ -8,15 +8,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
-import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.TextUI;
+import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
 	
-	public final INamedElement namedElement; 
+	public final IDeeNamedElement namedElement; 
 	
 	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
-			Image image, String displayString, INamedElement namedElement,
+			Image image, String displayString, IDeeNamedElement namedElement,
 			IContextInformation contextInformation) {
 		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);
 		this.namedElement = namedElement;

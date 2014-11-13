@@ -1,11 +1,10 @@
 package dtool.resolver;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
@@ -44,7 +43,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	}
 	
 	@Override
-	public void addMatch(INamedElement namedElem) {
+	public void addMatch(IDeeNamedElement namedElem) {
 		String extendedName = namedElem.getExtendedName();
 		
 		if(addedDefElements.contains(extendedName)) {
@@ -54,7 +53,7 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 		addMatchDirectly(namedElem);
 	}
 	
-	public void addMatchDirectly(INamedElement namedElem) {
+	public void addMatchDirectly(IDeeNamedElement namedElem) {
 		super.addMatch(namedElem);
 	}
 	

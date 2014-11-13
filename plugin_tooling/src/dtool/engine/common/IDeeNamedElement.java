@@ -8,23 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.definitions;
+package dtool.engine.common;
 
+import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
-import dtool.engine.common.IDefElement;
+import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.EArcheType;
 
-/**
- * A handle to a defined, named language element. 
- * May exists in source or outside source, it can be implicitly or explicitly defined.
- * Implementation may be an AST node such as {@link DefUnit} (that is the more common case).
- */
-public interface INamedElement extends IDefElement {
+public interface IDeeNamedElement extends INamedElement {
 	
 	/** Gets the archetype (the kind) of this DefElement. */
 	EArcheType getArcheType();
 	
 	/** @return the DefUnit this def element represents. In most cases this is the same as the receiver, 
-	 * but this method allows proxy {@link INamedElement} classes to resolve to their proxied {@link DefUnit}. 
+	 * but this method allows proxy {@link IDeeNamedElement} classes to resolve to their proxied {@link DefUnit}. 
 	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
 	 */
 	DefUnit resolveDefUnit();

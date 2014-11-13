@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.modules;
+package melnorme.lang.tooling.symbols;
 
 
 import melnorme.lang.tooling.AbstractElementName2;

@@ -22,12 +22,12 @@ import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 
 public class TextUI extends HTMLWriterUtil {
 	
-	public static String getLabelForHoverSignature(INamedElement namedElement) {
+	public static String getLabelForHoverSignature(IDeeNamedElement namedElement) {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:
@@ -89,7 +89,7 @@ public class TextUI extends HTMLWriterUtil {
 	
 	/* -----------------  ----------------- */
 	
-	public static String getDDocHTMLRender(INamedElement defElement) {
+	public static String getDDocHTMLRender(IDeeNamedElement defElement) {
 		Ddoc ddoc = defElement.resolveDDoc();
 		
 		String sig = TextUI.getLabelForHoverSignature(defElement);

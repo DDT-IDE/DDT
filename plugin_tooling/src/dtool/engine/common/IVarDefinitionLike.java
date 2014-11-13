@@ -11,7 +11,6 @@
 package dtool.engine.common;
 
 import dtool.ast.IASTNode;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.operations.CommonDefVarSemantics;
@@ -19,7 +18,7 @@ import dtool.engine.operations.CommonDefVarSemantics;
 /**
  * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
  */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+public interface IVarDefinitionLike extends IDeeNamedElement, IASTNode {
 	
 	Reference getDeclaredType();
 	

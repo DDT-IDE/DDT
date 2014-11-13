@@ -26,8 +26,8 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Ignore;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NodeUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
@@ -44,8 +44,8 @@ public class SelectionEngineSourceTests extends CoreResolverSourceTests {
 		DirectDefUnitResolve resolveResult = null;
 		
 		// TODO: adapt test to more than one defUnit returned?
-		Iterator<INamedElement> iterator = resolveResult.getResolvedDefUnits().iterator();
-		INamedElement defElement = iterator.hasNext() ? iterator.next() : null;
+		Iterator<IDeeNamedElement> iterator = resolveResult.getResolvedDefUnits().iterator();
+		IDeeNamedElement defElement = iterator.hasNext() ? iterator.next() : null;
 		if(defElement instanceof DefUnit) {
 			DefUnit defUnit = (DefUnit) defElement;
 			SelectionEngineSourceTests.testDeeSelectionEngine(sourceModule, mde.offset, defUnit);

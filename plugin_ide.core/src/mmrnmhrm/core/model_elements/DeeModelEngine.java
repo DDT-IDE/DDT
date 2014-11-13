@@ -17,9 +17,9 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EnumMember;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.util.NewUtils;
 
 /**
@@ -153,7 +153,7 @@ public class DeeModelEngine {
 	 * Returns the fully qualified name for given defUnit.
 	 * TODO think more about the naming of local elements 
 	 */
-	public static String[] getQualification(final INamedElement defUnit) {
+	public static String[] getQualification(final IDeeNamedElement defUnit) {
 		String fqName = defUnit.getFullyQualifiedName();
 		String qualification = StringUtil.segmentUntilLastMatch(fqName, ".");
 		if(qualification == null) {

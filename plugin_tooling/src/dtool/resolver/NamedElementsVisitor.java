@@ -14,25 +14,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dtool.ast.declarations.PackageNamespace;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public abstract class NamedElementsVisitor {
 	
-	protected ArrayList<INamedElement> matches = new ArrayList<>(2);
+	protected ArrayList<IDeeNamedElement> matches = new ArrayList<>(2);
 	
 	protected boolean matchesArePartialDefUnits = false;
 	
-	public List<INamedElement> getMatchedElements() {
+	public List<IDeeNamedElement> getMatchedElements() {
 		return matches;
 	}
 	
-	public void visitElement(INamedElement namedElement) {
+	public void visitElement(IDeeNamedElement namedElement) {
 		if(matches(namedElement)) {
 			addMatch(namedElement);
 		}
 	}
 	
-	public boolean matches(INamedElement namedElement) {
+	public boolean matches(IDeeNamedElement namedElement) {
 		String name = namedElement.getNameInRegularNamespace();
 		if(name == null || name.isEmpty()) {
 			// Never match an element with missing name;
@@ -46,7 +46,7 @@ public abstract class NamedElementsVisitor {
 	public abstract boolean matchesName(String name);
 	
 	/** Adds the matched named element. */
-	public void addMatch(INamedElement namedElem) {
+	public void addMatch(IDeeNamedElement namedElem) {
 		matches.add(namedElem);
 		if(namedElem instanceof PackageNamespace) {
 			matchesArePartialDefUnits = true;

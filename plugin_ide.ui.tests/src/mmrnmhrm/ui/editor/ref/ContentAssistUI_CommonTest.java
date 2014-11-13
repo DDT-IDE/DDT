@@ -32,7 +32,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
@@ -111,8 +111,8 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		}
 	}
 	
-	public static List<INamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
-		List<INamedElement> results = new ArrayList<>();
+	public static List<IDeeNamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<IDeeNamedElement> results = new ArrayList<>();
 		for (ICompletionProposal iCompletionProposal : proposals) {
 			if(iCompletionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;

@@ -18,8 +18,8 @@ import java.util.Arrays;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
-import dtool.ast.definitions.INamedElement;
 import dtool.ddoc.TextUI;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.CommonLanguageIntrinsics;
 import dtool.engine.common.intrinsics.InstrinsicsScope;
 import dtool.engine.common.intrinsics.IntrinsicDefUnit;
@@ -101,7 +101,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 	}
 	
-	public ArrayList<IntrinsicDefUnit> createCommonProperties(INamedElement type) {
+	public ArrayList<IntrinsicDefUnit> createCommonProperties(IDeeNamedElement type) {
 		return CollectionUtil.<IntrinsicDefUnit>createArrayList( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
@@ -284,7 +284,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public final IntrinsicTypeDefUnit object_type = new DeeIntrinsicType("___", null) { };
 	
-	public InstrinsicsScope createObjectPropertiesScope(INamedElement type) {
+	public InstrinsicsScope createObjectPropertiesScope(IDeeNamedElement type) {
 		
 		return new InstrinsicsScope(CollectionUtil.addAll(
 			createCommonProperties(type), 

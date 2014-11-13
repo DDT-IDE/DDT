@@ -29,9 +29,9 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 /**
@@ -74,14 +74,14 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		Reference ref = (Reference) node;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+		Collection<IDeeNamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
 			return new IModelElement[0];
 		}
 		
 		ArrayList<IModelElement> list = new ArrayList<IModelElement>();
-		for (INamedElement defElement : defElements) {
+		for (IDeeNamedElement defElement : defElements) {
 			DefUnit defUnit = defElement.resolveDefUnit();
 			IMember modelElement = getModelElement(defUnit, sourceModule);
 			if(modelElement != null) {

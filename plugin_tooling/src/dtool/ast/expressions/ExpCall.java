@@ -10,8 +10,8 @@ import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.DefUnitSearch;
 
@@ -43,13 +43,13 @@ public class ExpCall extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		INamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		IDeeNamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
 		if(calleeElem == null)
 			return null;		
 		if (calleeElem instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-			INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
+			IDeeNamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 			return Collections.singleton(calleeResult);
 		}
 		
@@ -65,11 +65,11 @@ public class ExpCall extends Expression {
 		DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, moduleResolver);
 		calleeElem.resolveSearchInMembersScope(search);
 		
-		for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
-			INamedElement defOpCall = iter.next();
+		for (Iterator<IDeeNamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
+			IDeeNamedElement defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
+				IDeeNamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 				return Collections.singleton(targetDefUnit);
 			}
 		}

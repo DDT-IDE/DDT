@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.modules;
 
+import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.ArrayUtil;
 
 /**

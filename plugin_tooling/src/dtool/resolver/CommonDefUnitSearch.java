@@ -8,9 +8,9 @@ import java.util.Set;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NamedElementUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
@@ -87,9 +87,9 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(matches, "\n", new Function<INamedElement, String>() {
+		return StringUtil.iterToString(matches, "\n", new Function<IDeeNamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
+			public String evaluate(IDeeNamedElement obj) {
 				return NamedElementUtil.getElementTypedQualification(obj); 
 			}
 		});

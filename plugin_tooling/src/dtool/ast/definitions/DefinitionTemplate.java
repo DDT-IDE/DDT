@@ -21,6 +21,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
@@ -116,7 +117,7 @@ public class DefinitionTemplate extends CommonDefinition
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		if(wrapper) {
 			// TODO: 
 		}

@@ -28,16 +28,16 @@ import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	
-	protected LinkedList<INamedElement> resultDefUnits;
+	protected LinkedList<IDeeNamedElement> resultDefUnits;
 	
-	public DefUnitResultsChecker(Collection<? extends INamedElement> resultDefUnits) {
+	public DefUnitResultsChecker(Collection<? extends IDeeNamedElement> resultDefUnits) {
 		this.resultDefUnits = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	
@@ -49,15 +49,15 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
+	public static void removeIgnoredDefUnits(LinkedList<IDeeNamedElement> resultDefUnits, 
 			boolean ignoreDummyResults, boolean ignorePrimitives) {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
+	public static void removeIgnoredDefUnits(LinkedList<IDeeNamedElement> resultDefUnits, 
 		boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			INamedElement defElement = iterator.next();
+		for (Iterator<IDeeNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			IDeeNamedElement defElement = iterator.next();
 			
 			if(ignoreDummyResults && 
 				(defElement.getName().equals("_dummy") || defElement.getName().endsWith("_ignore"))) {
@@ -71,8 +71,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public void removeStdLibObjectDefUnits() {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			INamedElement defElement = iterator.next();
+		for (Iterator<IDeeNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			IDeeNamedElement defElement = iterator.next();
 			
 			String moduleName = defElement.getModuleFullyQualifiedName();
 			if(areEqual(moduleName, "object")) {
@@ -118,8 +118,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		
 		boolean removed = false;
 		if(moduleName == null ) {
-			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				INamedElement element = iterator.next();
+			for (Iterator<IDeeNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				IDeeNamedElement element = iterator.next();
 				
 				if(element.getName().equals(expectedTarget)) {
 					iterator.remove();
@@ -130,8 +130,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			String expectedFullyTypedQualification = moduleName + 
 				(defUnitModuleQualifiedName != null ? "/" + defUnitModuleQualifiedName : "");
 			
-			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				INamedElement element = iterator.next();
+			for (Iterator<IDeeNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				IDeeNamedElement element = iterator.next();
 				
 				String defUnitTypedQualification = NamedElementUtil.getElementTypedQualification(element);
 				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
@@ -156,9 +156,9 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		return ArrayUtil.map(coll, evalFunction, String.class);
 	}
 	
-	public static void removeDefUnitByMarker(Collection<INamedElement> resolvedDefUnits, MetadataEntry marker) {
-		for (Iterator<INamedElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
-			INamedElement element = iterator.next();
+	public static void removeDefUnitByMarker(Collection<IDeeNamedElement> resolvedDefUnits, MetadataEntry marker) {
+		for (Iterator<IDeeNamedElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
+			IDeeNamedElement element = iterator.next();
 			if(element instanceof DefUnit) {
 				DefUnit defNode = (DefUnit) element;
 				if(defNode.defname.getEndPos() == marker.offset || defNode.defname.getStartPos() == marker.offset) {

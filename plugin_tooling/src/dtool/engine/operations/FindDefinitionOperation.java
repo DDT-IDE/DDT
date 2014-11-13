@@ -24,13 +24,13 @@ import dtool.ast.ASTNodeFinder;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
 import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.SemanticManager;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
@@ -101,14 +101,14 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	
 	protected FindDefinitionResult doFindDefinitionForRef(Reference ref, ResolvedModule resolvedModule) {
 		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
-		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+		Collection<IDeeNamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		
 		if(defElements == null || defElements.size() == 0) {
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode());
 		}
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
-		for (INamedElement namedElement : defElements) {
+		for (IDeeNamedElement namedElement : defElements) {
 			final DefUnit defUnit = namedElement.resolveDefUnit();
 			
 			Path compilationUnitPath = null;

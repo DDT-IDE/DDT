@@ -17,10 +17,10 @@ import java.util.Collections;
 
 import dtool.ast.ASTNode;
 import dtool.ast.IASTNode;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.RefQualified;
 import dtool.ast.references.Reference;
 import dtool.engine.ISemanticResolution;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IValueNode;
 import dtool.engine.common.ResolutionResult;
 import dtool.engine.modules.IModuleResolver;
@@ -44,8 +44,8 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 	}
 	
 	// TODO: deprecate this method in favor of resolveTargetElement
-	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
-		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
+	public final IDeeNamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+		Collection<IDeeNamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		if(namedElems == null || namedElems.isEmpty())
 			return null;
 		return namedElems.iterator().next();
@@ -56,13 +56,13 @@ public abstract class Resolvable extends ASTNode implements IValueNode, IResolva
 	}
 	
 	/** Convenience method for wraping a single defunit as a search result. */
-	public static Collection<INamedElement> wrapResult(INamedElement elem) {
+	public static Collection<IDeeNamedElement> wrapResult(IDeeNamedElement elem) {
 		if(elem == null)
 			return null;
 		return Collections.singletonList(elem);
 	}
 	
-	public static Collection<INamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
+	public static Collection<IDeeNamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
 		boolean findFirstOnly) {
 		if(resolvable == null) {
 			return null;

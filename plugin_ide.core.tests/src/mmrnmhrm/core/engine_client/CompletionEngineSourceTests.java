@@ -19,8 +19,8 @@ import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRe
 import org.eclipse.dltk.compiler.env.IModuleSource;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.util.NamedElementUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.MockCompilerInstalls;
 
@@ -58,9 +58,9 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDefUnitsFromExpected(Collection<INamedElement> resultDefUnits) {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			INamedElement defElement = iterator.next();
+	public void removeDefUnitsFromExpected(Collection<IDeeNamedElement> resultDefUnits) {
+		for (Iterator<IDeeNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			IDeeNamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {
 				String fqName = NamedElementUtil.getElementTypedQualification(defElement);

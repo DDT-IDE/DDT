@@ -20,7 +20,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.tests.MockCompilerInstalls;
 
 // These tests could be expanded
@@ -73,7 +73,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	public static final class CompletionEngineTestsRequestor extends CompletionRequestor {
 		protected final int offset;
 		protected final int rplLen;
-		protected final ArrayList<INamedElement> results = new ArrayList<>();
+		protected final ArrayList<IDeeNamedElement> results = new ArrayList<>();
 		
 		private CompletionEngineTestsRequestor(int offset, int rplLen) {
 			this.offset = offset;
@@ -88,7 +88,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 			assertTrue(proposal.getCompletionLocation() == offset);
 			assertTrue(proposal.getReplaceStart() == offset);
 			assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
-			INamedElement defUnit = refProposal.getExtraInfo();
+			IDeeNamedElement defUnit = refProposal.getExtraInfo();
 			results.add(defUnit);
 		}
 	}

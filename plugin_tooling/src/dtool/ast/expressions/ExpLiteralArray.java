@@ -7,7 +7,7 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.NodeListView;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.LanguageIntrinsics;
 
@@ -35,8 +35,8 @@ public class ExpLiteralArray extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		return Collections.<INamedElement>singleton(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		return Collections.<IDeeNamedElement>singleton(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 	}
 	
 }

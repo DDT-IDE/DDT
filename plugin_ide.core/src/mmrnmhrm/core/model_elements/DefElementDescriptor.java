@@ -3,7 +3,7 @@ package mmrnmhrm.core.model_elements;
 import org.eclipse.dltk.core.IModelElement;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 /**
  * A flag descriptor of a language element (usually a DefUnit) with enough info do determine an icon
@@ -18,7 +18,7 @@ public class DefElementDescriptor {
 		this.elementFlags = elementFlags;
 	}
 	
-	public DefElementDescriptor(INamedElement namedElement) {
+	public DefElementDescriptor(IDeeNamedElement namedElement) {
 		this.elementFlags = DefElementFlagsUtil.elementFlagsForNamedElement(namedElement);
 	}
 	

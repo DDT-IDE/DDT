@@ -12,14 +12,14 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 // TODO: review this hierarchy
 public abstract class CommonNativeTypeReference extends Reference {
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
 		return resolveToInvalidValue(); // This ref refers to a type, not a value
 	}
 	

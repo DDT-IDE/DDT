@@ -13,17 +13,16 @@ package dtool.engine.common;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.INamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class NotAValueErrorElement implements INamedElement {
+public class NotAValueErrorElement implements IDeeNamedElement {
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
-	protected final INamedElement wrappedElement;
+	protected final IDeeNamedElement wrappedElement;
 
-	public NotAValueErrorElement(INamedElement wrappedElement) {
+	public NotAValueErrorElement(IDeeNamedElement wrappedElement) {
 		this.wrappedElement = wrappedElement;
 	}
 	
@@ -58,7 +57,7 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public IDeeNamedElement getParentElement() {
 		return wrappedElement.getParentElement();
 	}
 	
@@ -68,7 +67,7 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// Do nothing.
 		return null;
 	}

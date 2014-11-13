@@ -11,6 +11,7 @@ import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.ASTNode;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.util.NodeUtil;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
@@ -21,7 +22,7 @@ import dtool.resolver.IResolvable;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements INamedElement {
+public abstract class DefUnit extends ASTNode implements IDeeNamedElement {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -107,7 +108,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		INamedElement parentNamespace = getParentElement();
+		IDeeNamedElement parentNamespace = getParentElement();
 		if(parentNamespace == null) {
 			return getName();
 		} else {
@@ -116,7 +117,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public IDeeNamedElement getParentElement() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	
@@ -154,7 +155,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement {
 		}
 		
 		IModuleResolver mr = search.getModuleResolver();
-		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		Collection<IDeeNamedElement> containers = resolvable.findTargetDefElements(mr, true);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	

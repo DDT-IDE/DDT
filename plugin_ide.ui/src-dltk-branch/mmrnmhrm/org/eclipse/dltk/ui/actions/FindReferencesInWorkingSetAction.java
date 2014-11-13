@@ -15,7 +15,7 @@ import org.eclipse.dltk.ui.search.QuerySpecification;
 import org.eclipse.ui.IWorkingSet;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public final class FindReferencesInWorkingSetAction extends FindAction {
 
@@ -43,7 +43,7 @@ public final class FindReferencesInWorkingSetAction extends FindAction {
 
 	
 	@Override
-	protected QuerySpecification createQuery(INamedElement defunit) throws ModelException {
+	protected QuerySpecification createQuery(IDeeNamedElement defunit) throws ModelException {
 	//QuerySpecification createQuery(IModelElement element) throws ModelException {
 		DLTKSearchScopeFactory factory= DLTKSearchScopeFactory.getInstance();
 		

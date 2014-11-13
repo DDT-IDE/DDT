@@ -19,8 +19,8 @@ import melnorme.utilbox.misc.StringUtil;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.Expression;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.NotAValueErrorElement;
 import dtool.engine.modules.NullModuleResolver;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
@@ -40,7 +40,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		 
 	}
 	
-	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
+	protected static void testResolveSearchInMembersScope(IDeeNamedElement namedElement, String... expectedResults) {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(null, 0, new NullModuleResolver());
 		namedElement.resolveSearchInMembersScope(search);
 		
@@ -67,7 +67,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		assertTrue(offset != -1);
 		DefUnit defElem = parseSourceAndPickNode(source, offset, DefUnit.class);
 		
-		INamedElement resolvedType = defElem.resolveTypeForValueContext(new NullModuleResolver());
+		IDeeNamedElement resolvedType = defElem.resolveTypeForValueContext(new NullModuleResolver());
 		if(expectedFullName == null) {
 			assertTrue(resolvedType == null);
 			assertTrue(isError);
@@ -83,13 +83,13 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	protected static void testExpressionResolution(String source, String... expectedResults) {
 		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
-		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
+		IDeeNamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}
 	protected static void testExpressionResolution2(String source, String... expectedResults) {
 		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
-		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
+		IDeeNamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new NullModuleResolver()));
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}

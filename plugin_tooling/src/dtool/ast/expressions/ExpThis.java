@@ -8,7 +8,7 @@ import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
 import dtool.ast.definitions.DefinitionClass;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public class ExpThis extends Expression {
@@ -31,12 +31,12 @@ public class ExpThis extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		DefinitionClass definitionClass = getClassNodeParent(this);
 		if(definitionClass == null) {
 			return null;
 		}
-		return Collections.<INamedElement>singleton(definitionClass);
+		return Collections.<IDeeNamedElement>singleton(definitionClass);
 	}
 	
 	public static DefinitionClass getClassNodeParent(ASTNode node) {

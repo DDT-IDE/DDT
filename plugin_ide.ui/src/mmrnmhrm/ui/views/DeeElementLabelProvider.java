@@ -11,13 +11,13 @@ import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.Reference;
 import dtool.ddoc.TextUI;
+import dtool.engine.common.IDeeNamedElement;
 
 public class DeeElementLabelProvider {
 	
-	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
+	public static String getLabelForContentAssistPopup(IDeeNamedElement namedElement) {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:

@@ -19,14 +19,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.ScopeSemantics;
 import dtool.engine.modules.BundleModulesVisitor;
-import dtool.engine.modules.ElementName;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.modules.ModuleFullName;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -173,7 +173,7 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	/* ----------------- used by tests only, at the moment ----------------- */
 	
-	public INamedElement findContainedElement(String elementName) throws ParseSourceException {
+	public IDeeNamedElement findContainedElement(String elementName) throws ParseSourceException {
 		ElementName name = new ElementName(elementName);
 		
 		String possibleModuleName = null;

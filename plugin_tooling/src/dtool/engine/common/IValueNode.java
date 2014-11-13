@@ -12,11 +12,10 @@ package dtool.engine.common;
 
 import java.util.Collection;
 
-import dtool.ast.definitions.INamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public interface IValueNode {
 	
-	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	Collection<IDeeNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
 	
 }

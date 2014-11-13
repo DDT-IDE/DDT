@@ -16,9 +16,9 @@ import org.eclipse.dltk.core.search.matching.PatternLocator;
 
 import dtool.ast.ASTNode;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 
 public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
@@ -54,12 +54,12 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
+		Collection<IDeeNamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;
 		
-		for (Iterator<INamedElement> iter = defUnits.iterator(); iter.hasNext();) {
-			INamedElement targetDefElement = iter.next();
+		for (Iterator<IDeeNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
+			IDeeNamedElement targetDefElement = iter.next();
 			DefUnit targetDefUnit = targetDefElement.resolveDefUnit();
 			
 			try {

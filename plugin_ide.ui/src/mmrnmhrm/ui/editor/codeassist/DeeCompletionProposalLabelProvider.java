@@ -14,7 +14,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 
 public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelProvider {
 	
@@ -39,8 +39,8 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
 			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
 		}
-		else if(proposal.getExtraInfo() instanceof INamedElement) {
-			INamedElement defElement = (INamedElement) proposal.getExtraInfo();
+		else if(proposal.getExtraInfo() instanceof IDeeNamedElement) {
+			IDeeNamedElement defElement = (IDeeNamedElement) proposal.getExtraInfo();
 			defDescriptor = new DefElementDescriptor(defElement);
 		} 
 		else if(proposal.getModelElement() instanceof IMember) {

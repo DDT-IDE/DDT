@@ -22,7 +22,6 @@ import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.AbstractBundleResolution;
@@ -30,6 +29,7 @@ import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache.ParseSourceException;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.ScopeSemantics;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.IScopeProvider;
@@ -57,10 +57,10 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 			super(refOriginModule, refOffset, moduleResolver);
 		}
 		
-		public INamedElement findElement(String elementName) {
-			INamedElement foundMatch = null;
+		public IDeeNamedElement findElement(String elementName) {
+			IDeeNamedElement foundMatch = null;
 			
-			for (INamedElement match : getMatchedElements()) {
+			for (IDeeNamedElement match : getMatchedElements()) {
 				if(match.getName().equals(elementName)) {
 					assertTrue(foundMatch == null);
 					foundMatch = match;
@@ -82,7 +82,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ParseSourceException {
-		INamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
+		IDeeNamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;
 	}
@@ -108,11 +108,11 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		Reference tplRef = getSampleType(module, "ref1");
 		TestsElementSearch search = resolveAllMembers(module, tplRef);
 		
-		INamedElement tplArg = search.findElement("TYPE1");
+		IDeeNamedElement tplArg = search.findElement("TYPE1");
 //		assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
 	}
 	
-	protected INamedElement resolveEffectiveType(INamedElement tplArg) {
+	protected IDeeNamedElement resolveEffectiveType(IDeeNamedElement tplArg) {
 		return tplArg; // TODO
 	}
 	

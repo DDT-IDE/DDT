@@ -11,9 +11,8 @@
 package dtool.engine.common;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import dtool.ast.definitions.INamedElement;
 
-public abstract class AbstractNamedElement implements INamedElement {
+public abstract class AbstractNamedElement implements IDeeNamedElement {
 	
 	protected final String name;
 	

@@ -19,6 +19,7 @@ import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.engine.common.DefElementCommon;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -69,7 +70,7 @@ public class EnumMember extends DefUnit {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public IDeeNamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.resolveTypeForValueContext(mr, getEffectiveTypeReference());
 	}
 	

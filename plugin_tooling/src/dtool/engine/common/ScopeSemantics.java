@@ -10,21 +10,20 @@
  *******************************************************************************/
 package dtool.engine.common;
 
+import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.ASTNode;
-import dtool.ast.definitions.INamedElement;
-import dtool.engine.modules.ElementName;
 
 public class ScopeSemantics {
 
-	public static INamedElement findElement(ASTNode moduleNode, String elementNameLocator) {
+	public static IDeeNamedElement findElement(ASTNode moduleNode, String elementNameLocator) {
 		String segmentName = StringUtil.substringUntilMatch(elementNameLocator, ElementName.NAME_SEP); 
 		String restOfName = StringUtil.segmentAfterMatch(elementNameLocator, ElementName.NAME_SEP);
 		
 		// FIXME: should iterate over visible INamedElements, use search mechanism
 		for (ASTNode childNode : moduleNode.getChildren()) {
-			if(childNode instanceof INamedElement) {
-				INamedElement namedElement = (INamedElement) childNode;
+			if(childNode instanceof IDeeNamedElement) {
+				IDeeNamedElement namedElement = (IDeeNamedElement) childNode;
 				if(namedElement.getExtendedName().equals(segmentName)) {
 					if(restOfName != null) {
 						return findElement(childNode, restOfName);

@@ -18,8 +18,8 @@ import dtool.ast.ASTCodePrinter;
 import dtool.ast.ASTNode;
 import dtool.ast.ASTNodeTypes;
 import dtool.ast.IASTVisitor;
-import dtool.ast.definitions.INamedElement;
 import dtool.ast.expressions.IInitializer;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.common.IValueNode;
 import dtool.engine.common.IVarDefinitionLike;
 import dtool.engine.modules.IModuleResolver;
@@ -57,7 +57,7 @@ public final class AutoReference extends Reference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<IDeeNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		IInitializer initializer = getParent_().getDeclaredInitializer();
 		if(initializer instanceof IValueNode) {
 			IValueNode valueNode = (IValueNode) initializer;

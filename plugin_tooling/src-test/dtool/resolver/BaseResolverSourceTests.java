@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.INamedElement;
+import dtool.engine.common.IDeeNamedElement;
 import dtool.engine.modules.IModuleResolver;
 import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.parser.CommonTemplatedSourceBasedTest;
@@ -196,7 +196,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		return expectedResults;
 	}
 	
-	protected final void checkResults(Collection<INamedElement> resultDefUnitsOriginal, String[] expectedResults) {
+	protected final void checkResults(Collection<IDeeNamedElement> resultDefUnitsOriginal, String[] expectedResults) {
 		boolean ignoreNativeResults = true;
 		for (String expectedResult : expectedResults) {
 			if(expectedResult.startsWith("/")) {
@@ -207,7 +207,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults);
 	}
 	
-	public void checkResults(Collection<INamedElement> resultElementsOriginal, String[] expectedResults,
+	public void checkResults(Collection<IDeeNamedElement> resultElementsOriginal, String[] expectedResults,
 		boolean ignoreDummyResults, boolean ignoreNativeResults) {
 		
 		if(resultElementsOriginal != null) {
@@ -224,8 +224,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	/** Run these extra functions to test that they don't crash.
 	 * TODO: Ideally we would also check the results of these functions, but it's too much work for now. */
-	public void precheckOriginalResults(Collection<INamedElement> resultElementsOriginal) {
-		for (INamedElement elem : resultElementsOriginal) {
+	public void precheckOriginalResults(Collection<IDeeNamedElement> resultElementsOriginal) {
+		for (IDeeNamedElement elem : resultElementsOriginal) {
 			elem.getExtendedName();
 			elem.getModuleFullyQualifiedName();
 			if(elem instanceof DefUnit) {
@@ -236,7 +236,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	@SuppressWarnings("unused")
-	public void removeDefUnitsFromExpected(Collection<INamedElement> resultElements) {
+	public void removeDefUnitsFromExpected(Collection<IDeeNamedElement> resultElements) {
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {
