@@ -44,7 +44,7 @@ public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	}
 	
 	@Override
-	public DefUnit resolveDefUnit() {
+	public DefUnit resolveUnderlyingNode() {
 		return null;
 	}
 	

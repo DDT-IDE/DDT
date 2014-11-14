@@ -146,14 +146,6 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode {
 	}
 	
 	@Override
-	public Token[] getDocComments() {
-		if(md != null) {
-			return md.comments;
-		}
-		return null;
-	}
-	
-	@Override
 	public String getFullyQualifiedName() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		if(md != null) {
@@ -178,6 +170,19 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode {
 			return md.packages;
 		}
 		return NewUtils.EMPTY_STRING_ARRAY;
+	}
+	
+	@Override
+	public Path getCompilationUnitPath() {
+		return compilationUnitPath;
+	}
+	
+	@Override
+	public Token[] getDocComments() {
+		if(md != null) {
+			return md.comments;
+		}
+		return null;
 	}
 	
 	@Override

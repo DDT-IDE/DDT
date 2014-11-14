@@ -88,7 +88,7 @@ public class RefModule extends NamedReference {
 			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
 			IModuleResolver mr = search.getModuleResolver();
 			ModuleProxy moduleProxy = getModuleProxy(mr);
-			if(moduleProxy.resolveDefUnit() != null) {
+			if(moduleProxy.resolveUnderlyingNode() != null) {
 				defUnitSearch.addMatch(moduleProxy);
 			}
 		}

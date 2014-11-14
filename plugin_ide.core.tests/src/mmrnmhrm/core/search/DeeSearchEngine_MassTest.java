@@ -2,23 +2,20 @@ package mmrnmhrm.core.search;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-import static melnorme.utilbox.core.CoreUtil.blindCast;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 import static mmrnmhrm.core.search.DeeSearchEngineTestUtils.getSourceModule;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.Pair;
-import mmrnmhrm.core.DLTKUtils;
-import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 
@@ -32,9 +29,7 @@ import org.eclipse.dltk.core.search.SearchMatch;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	
@@ -72,8 +67,8 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	public void testSearchForAllModelElementRefs() throws Exception { testSearchForAllModelElementRefs$(); }
 	public void testSearchForAllModelElementRefs$() throws Exception {
 		
-		final HashMap<Pair<ISourceModule, ?>, HashSet<Reference>> defUnitToReferencesMap 
-		= new HashMap<Pair<ISourceModule, ?>, HashSet<Reference>>();
+		final HashMap<Pair<ISourceModule, INamedElementNode>, HashSet<Reference>> defUnitToReferencesMap 
+		= new HashMap<>();
 		
 		new DeeSearchEngineTestUtils.ElementsAndDefUnitVisitor() {
 			@Override
@@ -92,7 +87,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					for (ILangNamedElement defElement : targetDefElements) {
-						DefUnit defUnit = defElement.resolveDefUnit();
+						INamedElementNode defUnit = defElement.resolveUnderlyingNode();
 						if(defUnit == null) {
 							continue;
 						}
@@ -103,8 +98,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 						
 						ISourceModule defUnitSrcModule = findSourceModule(moduleFullName, searchProj);
 						
-						ArrayList<Integer> nodeTreePath = DeeSearchEngineTestUtils.getNodeTreePath(defUnit);
-						Pair<ISourceModule, ?> key = Pair.create(defUnitSrcModule, nodeTreePath);
+						Pair<ISourceModule, INamedElementNode> key = Pair.create(defUnitSrcModule, defUnit);
 						
 						if(defUnitToReferencesMap.get(key) == null) {
 							defUnitToReferencesMap.put(key, new HashSet<Reference>());
@@ -118,17 +112,10 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 		
 		
 		
-		for (Pair<ISourceModule, ?> key : defUnitToReferencesMap.keySet()) {
+		for (Pair<ISourceModule, INamedElementNode> key : defUnitToReferencesMap.keySet()) {
 			ISourceModule sourceModule = key.getFirst();
-			ArrayList<Integer> nodeTreePath = blindCast(key.getSecond());
+			ILangNamedElement defUnit = key.getSecond();
 			
-			Path filePath = DLTKUtils.getFilePath(sourceModule);
-			
-			ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
-			Module deeModule = parseModule == null ? null : parseModule.module;
-			ASTNode node = DeeSearchEngineTestUtils.getNodeFromPath(deeModule, nodeTreePath);
-			
-			final DefUnit defUnit = (DefUnit) node;
 			final HashSet<Reference> expectedReferences = defUnitToReferencesMap.get(key);
 			
 			IMember element = DeeModelEngine.findCorrespondingModelElement(defUnit, sourceModule);

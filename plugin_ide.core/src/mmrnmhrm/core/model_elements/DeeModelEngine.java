@@ -2,6 +2,8 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.StringUtil;
@@ -15,7 +17,6 @@ import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.util.NewUtils;
 
@@ -89,8 +90,9 @@ public class DeeModelEngine {
 					
 					IMember member = (IMember) modelElement;
 					ISourceRange nameRange = member.getNameRange();
-					DefUnit node = defUnit.resolveDefUnit();
-					if(nameRange != null && nameRange.getOffset() == node.defname.getStartPos()) {
+					INamedElementNode otherNode = defUnit.resolveUnderlyingNode();
+					SourceRange otherNodeSR = otherNode == null ? null : otherNode.getNameSourceRangeOrNull();
+					if(nameRange != null && otherNodeSR != null && nameRange.getOffset() == otherNodeSR.getOffset()) {
 						return member; // We found a perfect match
 					}
 					bestMatch = member;

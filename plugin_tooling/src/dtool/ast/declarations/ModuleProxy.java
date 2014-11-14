@@ -66,7 +66,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public DefUnit resolveDefUnit() {
+	public DefUnit resolveUnderlyingNode() {
 		INamedElement module = ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName());
 		if(module instanceof DefUnit) {
 			return (DefUnit) module;
@@ -76,16 +76,16 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	public Ddoc resolveDDoc() {
-		DefUnit resolvedModule = resolveDefUnit();
+		DefUnit resolvedModule = resolveUnderlyingNode();
 		if(resolvedModule != null) {
-			return resolveDefUnit().getDDoc();
+			return resolveUnderlyingNode().getDDoc();
 		}
 		return null;
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		DefUnit resolvedModule = resolveDefUnit();
+		DefUnit resolvedModule = resolveUnderlyingNode();
 		if(resolvedModule != null) {
 			resolvedModule.resolveSearchInMembersScope(search);
 		}

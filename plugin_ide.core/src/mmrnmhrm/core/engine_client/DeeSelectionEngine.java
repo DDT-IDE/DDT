@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
@@ -94,7 +95,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 	}
 	
 	protected IMember getModelElement(ILangNamedElement namedElement, ISourceModule sourceModule) {
-		DefUnit defUnit = namedElement.resolveDefUnit();
+		INamedElementNode defUnit = namedElement.resolveUnderlyingNode();
 		if(defUnit == null) {
 			return null;
 		}

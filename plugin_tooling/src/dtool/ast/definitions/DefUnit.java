@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -23,7 +24,7 @@ import dtool.resolver.IResolvable;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements ILangNamedElement {
+public abstract class DefUnit extends ASTNode implements ILangNamedElement, INamedElementNode {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -85,6 +86,11 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement {
 		return defname.name;
 	}
 	
+	@Override
+	public SourceRange getNameSourceRangeOrNull() {
+		return defname.getSourceRange();
+	}
+	
 	public boolean syntaxIsMissingName() {
 		return getName().isEmpty();
 	}
@@ -128,7 +134,7 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement {
 	}
 	
 	@Override
-	public DefUnit resolveDefUnit() {
+	public DefUnit resolveUnderlyingNode() {
 		return this;
 	}
 	

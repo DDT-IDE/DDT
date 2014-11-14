@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
@@ -56,6 +57,12 @@ public interface INamedElement {
 	/** @return the nearest enclosing {@link ILangNamedElement}.
 	 * For modules and packages, that is null. */
 	public abstract ILangNamedElement getParentElement();
+	
+	/** @return the node this named element represents. In most cases this is the same as the receiver, 
+	 * but this method allows proxy {@link ILangNamedElement} classes to resolve to their proxied node. 
+	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
+	 */
+	INamedElementNode resolveUnderlyingNode();
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.

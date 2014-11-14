@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.DefSymbol;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
@@ -109,16 +109,16 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
 		for (ILangNamedElement namedElement : defElements) {
-			final DefUnit defUnit = namedElement.resolveDefUnit();
+			final INamedElementNode node = namedElement.resolveUnderlyingNode();
 			
 			Path compilationUnitPath = null;
 			SourceRange sourceRange = null;
 			
-			if(defUnit != null) { // This can happen with intrinsic elements 
+			if(node != null) { // This can happen with intrinsic elements 
 				
-				compilationUnitPath = defUnit.getModuleNode().compilationUnitPath;
-				sourceRange = defUnit.defname.getSourceRangeOrNull();
-				if(defUnit.getArcheType() == EArcheType.Module && sourceRange == null) {
+				compilationUnitPath = node.getModuleNode().getCompilationUnitPath();
+				sourceRange = node.getNameSourceRangeOrNull();
+				if(node.getArcheType() == EArcheType.Module && sourceRange == null) {
 					sourceRange = new SourceRange(0, 0);
 				}
 			}

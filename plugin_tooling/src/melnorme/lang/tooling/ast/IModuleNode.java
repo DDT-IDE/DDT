@@ -10,11 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
+import java.nio.file.Path;
 
 
 /**
  * The node that resulting from the parsing of an entire compilation unit (a file usually).
  */
 public interface IModuleNode extends IASTNode {
+	
+	/** @return the compilation unit path for this module. Can be null. */
+	Path getCompilationUnitPath();
 	
 }

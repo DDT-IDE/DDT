@@ -10,11 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import descent.core.ddoc.Ddoc;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -85,8 +85,8 @@ public class NotAValueErrorElement implements ILangNamedElement {
 	}
 	
 	@Override
-	public DefUnit resolveDefUnit() {
-		return wrappedElement.resolveDefUnit();
+	public INamedElementNode resolveUnderlyingNode() {
+		return wrappedElement.resolveUnderlyingNode();
 	}
 	
 	@Override

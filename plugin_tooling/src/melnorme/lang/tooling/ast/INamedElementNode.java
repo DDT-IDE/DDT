@@ -8,19 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ast_actual;
+package melnorme.lang.tooling.ast;
 
-import melnorme.lang.tooling.symbols.INamedElement;
-import descent.core.ddoc.Ddoc;
-import dtool.ast.definitions.EArcheType;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
-public interface ILangNamedElement extends INamedElement {
+
+public interface INamedElementNode extends ILangNamedElement, IASTNode {
 	
-	/** Gets the archetype (the kind) of this DefElement. */
-	EArcheType getArcheType();
+	SourceRange getNameSourceRangeOrNull();
 	
-	/** Resolve the underlying element and return its DDoc. See {@link #resolveUnderlyingNode()}.
-	 * Can be null. */
-	Ddoc resolveDDoc();
+	IModuleNode getModuleNode();
 	
 }

@@ -11,6 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
@@ -84,7 +85,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public DefUnit resolveDefUnit() {
+	public DefUnit resolveUnderlyingNode() {
 		return null;
 	}
 	
@@ -112,7 +113,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
 		if(containedElement.getArcheType() == EArcheType.Module) {
-			DefUnit resolvedDefUnit = containedElement.resolveDefUnit();
+			INamedElementNode resolvedDefUnit = containedElement.resolveUnderlyingNode();
 			if(resolvedDefUnit == null) {
 				// Note that we dont use resolvedDefUnit for evaluateNodeForSearch,
 				// this means modules with mismatched names will match again the import name (file name),
