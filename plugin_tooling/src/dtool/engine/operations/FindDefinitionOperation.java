@@ -25,7 +25,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.DefSymbol;
-import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
@@ -118,9 +117,6 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 				
 				compilationUnitPath = node.getModuleNode().getCompilationUnitPath();
 				sourceRange = node.getNameSourceRangeOrNull();
-				if(node.getArcheType() == EArcheType.Module && sourceRange == null) {
-					sourceRange = new SourceRange(0, 0);
-				}
 			}
 			
 			results.add(new FindDefinitionResultEntry(
