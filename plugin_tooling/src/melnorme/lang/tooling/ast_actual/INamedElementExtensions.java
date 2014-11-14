@@ -10,11 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast_actual;
 
-import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 
-public interface ILangNamedElement extends INamedElement {
+public interface INamedElementExtensions {
 	
 	/** Gets the archetype (the kind) of this DefElement. */
 	EArcheType getArcheType();

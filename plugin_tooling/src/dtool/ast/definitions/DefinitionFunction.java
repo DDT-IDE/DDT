@@ -3,8 +3,8 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
@@ -55,7 +55,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return EArcheType.Function;
 	}
 	
-	public ILangNamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
+	public INamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
 		if(retType == null) 
 			return null;
 		return retType.findTargetDefElement(moduleResolver);
@@ -95,7 +95,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// TODO implicit function call
 		return null;
 	}

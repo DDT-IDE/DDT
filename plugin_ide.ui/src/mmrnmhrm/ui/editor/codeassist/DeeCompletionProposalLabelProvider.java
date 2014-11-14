@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.editor.codeassist;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
@@ -38,8 +38,8 @@ public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelP
 		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
 			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
 		}
-		else if(proposal.getExtraInfo() instanceof ILangNamedElement) {
-			ILangNamedElement defElement = (ILangNamedElement) proposal.getExtraInfo();
+		else if(proposal.getExtraInfo() instanceof INamedElement) {
+			INamedElement defElement = (INamedElement) proposal.getExtraInfo();
 			defDescriptor = new DefElementDescriptor(defElement);
 		} 
 		else if(proposal.getModelElement() instanceof IMember) {

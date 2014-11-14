@@ -11,7 +11,6 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
@@ -61,7 +60,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public ILangNamedElement getParentElement() {
+	public INamedElement getParentElement() {
 		return null;
 	}
 	
@@ -92,7 +91,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

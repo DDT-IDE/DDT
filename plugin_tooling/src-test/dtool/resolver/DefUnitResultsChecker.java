@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -35,9 +35,9 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	
-	protected LinkedList<ILangNamedElement> resultDefUnits;
+	protected LinkedList<INamedElement> resultDefUnits;
 	
-	public DefUnitResultsChecker(Collection<? extends ILangNamedElement> resultDefUnits) {
+	public DefUnitResultsChecker(Collection<? extends INamedElement> resultDefUnits) {
 		this.resultDefUnits = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	
@@ -49,15 +49,15 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<ILangNamedElement> resultDefUnits, 
+	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
 			boolean ignoreDummyResults, boolean ignorePrimitives) {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<ILangNamedElement> resultDefUnits, 
+	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
 		boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
-		for (Iterator<ILangNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			ILangNamedElement defElement = iterator.next();
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
 			
 			if(ignoreDummyResults && 
 				(defElement.getName().equals("_dummy") || defElement.getName().endsWith("_ignore"))) {
@@ -71,8 +71,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public void removeStdLibObjectDefUnits() {
-		for (Iterator<ILangNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			ILangNamedElement defElement = iterator.next();
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
 			
 			String moduleName = defElement.getModuleFullyQualifiedName();
 			if(areEqual(moduleName, "object")) {
@@ -118,8 +118,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		
 		boolean removed = false;
 		if(moduleName == null ) {
-			for (Iterator<ILangNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				ILangNamedElement element = iterator.next();
+			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				INamedElement element = iterator.next();
 				
 				if(element.getName().equals(expectedTarget)) {
 					iterator.remove();
@@ -130,8 +130,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			String expectedFullyTypedQualification = moduleName + 
 				(defUnitModuleQualifiedName != null ? "/" + defUnitModuleQualifiedName : "");
 			
-			for (Iterator<ILangNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-				ILangNamedElement element = iterator.next();
+			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+				INamedElement element = iterator.next();
 				
 				String defUnitTypedQualification = NamedElementUtil.getElementTypedQualification(element);
 				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
@@ -156,9 +156,9 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		return ArrayUtil.map(coll, evalFunction, String.class);
 	}
 	
-	public static void removeDefUnitByMarker(Collection<ILangNamedElement> resolvedDefUnits, MetadataEntry marker) {
-		for (Iterator<ILangNamedElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
-			ILangNamedElement element = iterator.next();
+	public static void removeDefUnitByMarker(Collection<INamedElement> resolvedDefUnits, MetadataEntry marker) {
+		for (Iterator<INamedElement> iterator = resolvedDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement element = iterator.next();
 			if(element instanceof DefUnit) {
 				DefUnit defNode = (DefUnit) element;
 				if(defNode.defname.getEndPos() == marker.offset || defNode.defname.getStartPos() == marker.offset) {

@@ -10,25 +10,25 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.references.Reference;
 
 public class DefElementCommon {
 	
-	public static ILangNamedElement returnError_ElementIsNotAValue(ILangNamedElement defElement) {
+	public static INamedElement returnError_ElementIsNotAValue(INamedElement defElement) {
 		return new NotAValueErrorElement(defElement);
 	}
 	
-	public static ILangNamedElement resolveTypeForValueContext(IModuleResolver mr, Reference reference) {
+	public static INamedElement resolveTypeForValueContext(IModuleResolver mr, Reference reference) {
 		if(reference == null) {
 			return null;
 		}
 		return reference.findTargetDefElement(mr);
 	}
 	
-	public static ILangNamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Reference alias) {
+	public static INamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Reference alias) {
 		Reference aliasTarget = alias;
 		if(aliasTarget != null) {
 			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));

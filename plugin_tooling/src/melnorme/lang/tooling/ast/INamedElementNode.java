@@ -10,10 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 
-public interface INamedElementNode extends ILangNamedElement, IASTNode {
+public interface INamedElementNode extends INamedElement, IASTNode {
 	
 	SourceRange getNameSourceRangeOrNull();
 	

@@ -2,7 +2,7 @@ package mmrnmhrm.org.eclipse.dltk.ui.actions;
 
 
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.DeeDefPatternLocator;
 

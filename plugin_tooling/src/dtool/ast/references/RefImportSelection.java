@@ -13,7 +13,7 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.resolver.CommonDefUnitSearch;
@@ -39,7 +39,7 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		Collection<ILangNamedElement> targetModules = refMod.findTargetDefElements(search.getModuleResolver(), false);
+		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.getModuleResolver(), false);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(targetModules, search);
 	}
 	

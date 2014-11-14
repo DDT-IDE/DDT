@@ -12,9 +12,9 @@ import java.util.HashSet;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -81,12 +81,12 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<ILangNamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
+					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;
 					}
 					
-					for (ILangNamedElement defElement : targetDefElements) {
+					for (INamedElement defElement : targetDefElements) {
 						INamedElementNode defUnit = defElement.resolveUnderlyingNode();
 						if(defUnit == null) {
 							continue;
@@ -114,7 +114,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 		
 		for (Pair<ISourceModule, INamedElementNode> key : defUnitToReferencesMap.keySet()) {
 			ISourceModule sourceModule = key.getFirst();
-			ILangNamedElement defUnit = key.getSecond();
+			INamedElement defUnit = key.getSecond();
 			
 			final HashSet<Reference> expectedReferences = defUnitToReferencesMap.get(key);
 			

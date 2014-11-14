@@ -6,8 +6,8 @@ import java.util.Collections;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionClass;
 
 public class ExpSuper extends Expression {
@@ -30,17 +30,17 @@ public class ExpSuper extends Expression {
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		DefinitionClass definitionClass = ExpThis.getClassNodeParent(this);
 		if(definitionClass == null) {
 			return null;
 		}
 		
-		ILangNamedElement superClass = definitionClass.resolveSuperClass(moduleResolver);
+		INamedElement superClass = definitionClass.resolveSuperClass(moduleResolver);
 		if(superClass == null) {
 			return null;
 		}
-		return Collections.<ILangNamedElement>singleton(superClass);
+		return Collections.<INamedElement>singleton(superClass);
 	}
 	
 }

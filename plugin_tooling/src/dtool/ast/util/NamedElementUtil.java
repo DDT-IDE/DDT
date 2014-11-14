@@ -1,7 +1,7 @@
 package dtool.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
 
 public class NamedElementUtil {
@@ -12,7 +12,7 @@ public class NamedElementUtil {
 	 * the containing defunits.
 	 * (the name is not enough to uniquely locate a defUnit in a project. That's the goal anyways)
 	 */
-	public static String getElementTypedQualification(ILangNamedElement namedElement) {
+	public static String getElementTypedQualification(INamedElement namedElement) {
 		switch(namedElement.getArcheType()) {
 		case Package:
 			return namedElement.getFullyQualifiedName() + "/";
@@ -21,7 +21,7 @@ public class NamedElementUtil {
 		return getElementTypeQualificationBase(namedElement);
 	}
 	
-	public static String getElementTypeQualificationBase(ILangNamedElement namedElement) {
+	public static String getElementTypeQualificationBase(INamedElement namedElement) {
 		if(namedElement.getArcheType() == EArcheType.Module) {
 			return namedElement.getModuleFullyQualifiedName() + "/";
 		}
@@ -30,7 +30,7 @@ public class NamedElementUtil {
 			return NATIVES_ROOT + namedElement.getName();
 		}
 		
-		ILangNamedElement parentNamespace = namedElement.getParentElement();
+		INamedElement parentNamespace = namedElement.getParentElement();
 		assertNotNull(parentNamespace);
 		String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
 		String parentQualifedName = getElementTypeQualificationBase(parentNamespace);

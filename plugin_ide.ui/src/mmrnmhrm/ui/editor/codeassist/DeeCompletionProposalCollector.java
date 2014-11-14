@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
@@ -46,7 +46,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 		
 		if(proposal instanceof RefSearchCompletionProposal) {
 			RefSearchCompletionProposal refSearchProposal = (RefSearchCompletionProposal) proposal;
-			ILangNamedElement namedElement = refSearchProposal.getExtraInfo();
+			INamedElement namedElement = refSearchProposal.getExtraInfo();
 			
 			String completion = proposal.getCompletion();
 			int repStart = proposal.getReplaceStart();

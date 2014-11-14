@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -58,9 +58,9 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDefUnitsFromExpected(Collection<ILangNamedElement> resultDefUnits) {
-		for (Iterator<ILangNamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			ILangNamedElement defElement = iterator.next();
+	public void removeDefUnitsFromExpected(Collection<INamedElement> resultDefUnits) {
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {
 				String fqName = NamedElementUtil.getElementTypedQualification(defElement);

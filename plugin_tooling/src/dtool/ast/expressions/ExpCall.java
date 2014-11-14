@@ -9,8 +9,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
 import dtool.resolver.DefUnitSearch;
@@ -43,13 +43,13 @@ public class ExpCall extends Expression {
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
-		ILangNamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+		INamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
 		if(calleeElem == null)
 			return null;		
 		if (calleeElem instanceof DefinitionFunction) {
 			DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-			ILangNamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
+			INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 			return Collections.singleton(calleeResult);
 		}
 		
@@ -65,11 +65,11 @@ public class ExpCall extends Expression {
 		DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, moduleResolver);
 		calleeElem.resolveSearchInMembersScope(search);
 		
-		for (Iterator<ILangNamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
-			ILangNamedElement defOpCall = iter.next();
+		for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
+			INamedElement defOpCall = iter.next();
 			if (defOpCall instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				ILangNamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
+				INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
 				return Collections.singleton(targetDefUnit);
 			}
 		}

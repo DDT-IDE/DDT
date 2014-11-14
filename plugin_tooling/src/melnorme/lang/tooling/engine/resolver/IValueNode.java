@@ -12,11 +12,11 @@ package melnorme.lang.tooling.engine.resolver;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface IValueNode {
 	
-	Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
 	
 }

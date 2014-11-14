@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -73,7 +73,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	public static final class CompletionEngineTestsRequestor extends CompletionRequestor {
 		protected final int offset;
 		protected final int rplLen;
-		protected final ArrayList<ILangNamedElement> results = new ArrayList<>();
+		protected final ArrayList<INamedElement> results = new ArrayList<>();
 		
 		private CompletionEngineTestsRequestor(int offset, int rplLen) {
 			this.offset = offset;
@@ -88,7 +88,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 			assertTrue(proposal.getCompletionLocation() == offset);
 			assertTrue(proposal.getReplaceStart() == offset);
 			assertTrue(proposal.getReplaceEnd() - proposal.getReplaceStart() == rplLen);
-			ILangNamedElement defUnit = refProposal.getExtraInfo();
+			INamedElement defUnit = refProposal.getExtraInfo();
 			results.add(defUnit);
 		}
 	}

@@ -14,9 +14,9 @@ import static dtool.util.NewUtils.getSingleElementOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
@@ -40,7 +40,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		 
 	}
 	
-	protected static void testResolveSearchInMembersScope(ILangNamedElement namedElement, String... expectedResults) {
+	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(null, 0, new MockSemanticResolution());
 		namedElement.resolveSearchInMembersScope(search);
 		
@@ -67,7 +67,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		assertTrue(offset != -1);
 		DefUnit defElem = parseSourceAndPickNode(source, offset, DefUnit.class);
 		
-		ILangNamedElement resolvedType = defElem.resolveTypeForValueContext(new MockSemanticResolution());
+		INamedElement resolvedType = defElem.resolveTypeForValueContext(new MockSemanticResolution());
 		if(expectedFullName == null) {
 			assertTrue(resolvedType == null);
 			assertTrue(isError);
@@ -83,13 +83,13 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	protected static void testExpressionResolution(String source, String... expectedResults) {
 		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
-		ILangNamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));
+		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}
 	protected static void testExpressionResolution2(String source, String... expectedResults) {
 		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
-		ILangNamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));
+		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}

@@ -14,9 +14,9 @@ import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
@@ -108,7 +108,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		IModuleResolver mr = search.getModuleResolver();
 		
 		for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-			ILangNamedElement baseClassElem = baseclass.findTargetDefElement(mr);
+			INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
 			if(baseClassElem == null)
 				continue;
 			
@@ -119,10 +119,10 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 	}
 	
-	public ILangNamedElement resolveSuperClass(IModuleResolver mr) {
+	public INamedElement resolveSuperClass(IModuleResolver mr) {
 		
 		for (Reference baseClassRef : nonNullIterable(baseClasses)) {
-			ILangNamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+			INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
 			
 			if(baseClass.getArcheType() == EArcheType.Interface) {
 				continue;

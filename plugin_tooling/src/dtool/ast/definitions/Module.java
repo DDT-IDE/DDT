@@ -21,10 +21,10 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.references.RefModule;
 import dtool.parser.common.BaseLexElement;
@@ -196,7 +196,7 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode {
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

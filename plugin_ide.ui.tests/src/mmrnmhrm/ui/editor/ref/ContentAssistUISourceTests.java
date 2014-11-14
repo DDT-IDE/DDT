@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
@@ -118,22 +118,22 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		assertNotNull(proposals);
 		
 		if(expectedResults != null) {
-			List<ILangNamedElement> results = proposalResultsToDefUnit(proposals);
+			List<INamedElement> results = proposalResultsToDefUnit(proposals);
 			checkResults(results, expectedResults);
 		}
 		ContentAssistUI_CommonTest.checkProposals(proposals, repOffset, repLen, prefixLen);
 	}
 	
 	@Override
-	public void precheckOriginalResults(Collection<ILangNamedElement> resultDefElementsOriginal) {
-		for (ILangNamedElement defElement : resultDefElementsOriginal) {
+	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
+		for (INamedElement defElement : resultDefElementsOriginal) {
 			TextUI.getLabelForHoverSignature(defElement);
 			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	
-	public List<ILangNamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
-		ArrayList<ILangNamedElement> results = new ArrayList<>();
+	public List<INamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
+		ArrayList<INamedElement> results = new ArrayList<>();
 		for (ICompletionProposal completionProposal : proposals) {
 			if(completionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;

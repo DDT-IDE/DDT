@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
@@ -110,8 +110,8 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		}
 	}
 	
-	public static List<ILangNamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
-		List<ILangNamedElement> results = new ArrayList<>();
+	public static List<INamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
+		List<INamedElement> results = new ArrayList<>();
 		for (ICompletionProposal iCompletionProposal : proposals) {
 			if(iCompletionProposal instanceof DeeCompletionProposal) {
 				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;

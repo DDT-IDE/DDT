@@ -5,9 +5,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -90,7 +90,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.resolveTypeForValueContext(mr, type);
 	}
 	

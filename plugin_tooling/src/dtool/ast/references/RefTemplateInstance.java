@@ -20,10 +20,10 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.resolver.ResolutionResult;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.ast.expressions.Resolvable.ITemplateRefNode;
@@ -68,7 +68,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		// Not accurate, this will ignore the template parameters:
 		return tplRef.findTargetDefElements(moduleResolver, findOneOnly);
 	}

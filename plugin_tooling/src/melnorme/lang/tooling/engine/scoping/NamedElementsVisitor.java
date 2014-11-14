@@ -13,26 +13,26 @@ package melnorme.lang.tooling.engine.scoping;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.PackageNamespace;
 
 public abstract class NamedElementsVisitor {
 	
-	protected ArrayList<ILangNamedElement> matches = new ArrayList<>(2);
+	protected ArrayList<INamedElement> matches = new ArrayList<>(2);
 	
 	protected boolean matchesArePartialDefUnits = false;
 	
-	public List<ILangNamedElement> getMatchedElements() {
+	public List<INamedElement> getMatchedElements() {
 		return matches;
 	}
 	
-	public void visitElement(ILangNamedElement namedElement) {
+	public void visitElement(INamedElement namedElement) {
 		if(matches(namedElement)) {
 			addMatch(namedElement);
 		}
 	}
 	
-	public boolean matches(ILangNamedElement namedElement) {
+	public boolean matches(INamedElement namedElement) {
 		String name = namedElement.getNameInRegularNamespace();
 		if(name == null || name.isEmpty()) {
 			// Never match an element with missing name;
@@ -46,7 +46,7 @@ public abstract class NamedElementsVisitor {
 	public abstract boolean matchesName(String name);
 	
 	/** Adds the matched named element. */
-	public void addMatch(ILangNamedElement namedElem) {
+	public void addMatch(INamedElement namedElem) {
 		matches.add(namedElem);
 		if(namedElem instanceof PackageNamespace) {
 			matchesArePartialDefUnits = true;

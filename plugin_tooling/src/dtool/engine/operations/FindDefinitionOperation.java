@@ -21,8 +21,8 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -101,14 +101,14 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	
 	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, IModuleResolver moduleResolver) {
 		
-		Collection<ILangNamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
+		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
 		
 		if(namedElements == null || namedElements.size() == 0) {
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);
 		}
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
-		for (ILangNamedElement namedElement : namedElements) {
+		for (INamedElement namedElement : namedElements) {
 			final INamedElementNode node = namedElement.resolveUnderlyingNode();
 			
 			Path compilationUnitPath = null;

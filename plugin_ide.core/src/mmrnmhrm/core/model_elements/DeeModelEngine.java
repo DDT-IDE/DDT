@@ -4,8 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.search.SourceModuleFinder;
 
@@ -26,7 +26,7 @@ import dtool.util.NewUtils;
  */
 public class DeeModelEngine {
 	
-	public static IMember findCorrespondingModelElement(ILangNamedElement targetDefUnit, IScriptProject scriptProject)
+	public static IMember findCorrespondingModelElement(INamedElement targetDefUnit, IScriptProject scriptProject)
 		throws ModelException {
 		if(targetDefUnit == null) 
 			return null;
@@ -46,17 +46,17 @@ public class DeeModelEngine {
 		return null;
 	}
 	
-	public static IMember findCorrespondingModelElement(ILangNamedElement defUnit, ISourceModule sourceModule)
+	public static IMember findCorrespondingModelElement(INamedElement defUnit, ISourceModule sourceModule)
 			throws ModelException {
 		return searchForModelElement(defUnit, sourceModule, false);
 	}
 	
-	public static IMember searchForModelElement(ILangNamedElement defUnit, ISourceModule sourceModule, 
+	public static IMember searchForModelElement(INamedElement defUnit, ISourceModule sourceModule, 
 			boolean returnNonExisting)
 			throws ModelException {
 		assertNotNull(sourceModule);
 		
-		ILangNamedElement parentDefUnit = defUnit.getParentElement();
+		INamedElement parentDefUnit = defUnit.getParentElement();
 		
 		if(parentDefUnit == null) {
 			return sourceModule.getType(defUnit.getName());
@@ -116,16 +116,16 @@ public class DeeModelEngine {
 		}
 	}
 	
-	private static boolean isFieldElement(ILangNamedElement defUnit) {
+	private static boolean isFieldElement(INamedElement defUnit) {
 		EArcheType archeType = defUnit.getArcheType();
 		return archeType == EArcheType.Variable || archeType == EArcheType.EnumMember; 
 	}
 	
-	private static boolean isMethodElement(ILangNamedElement defUnit) {
+	private static boolean isMethodElement(INamedElement defUnit) {
 		return defUnit.getArcheType() == EArcheType.Function;
 	}
 	
-	private static boolean isTypeElement(ILangNamedElement defUnit) {
+	private static boolean isTypeElement(INamedElement defUnit) {
 		return !isFieldElement(defUnit) && !isMethodElement(defUnit);
 	}
 	
@@ -156,7 +156,7 @@ public class DeeModelEngine {
 	 * Returns the fully qualified name for given defUnit.
 	 * TODO think more about the naming of local elements 
 	 */
-	public static String[] getQualification(final ILangNamedElement defUnit) {
+	public static String[] getQualification(final INamedElement defUnit) {
 		String fqName = defUnit.getFullyQualifiedName();
 		String qualification = StringUtil.segmentUntilLastMatch(fqName, ".");
 		if(qualification == null) {

@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.views;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.MockSemanticResolution;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		ILangNamedElement defElement;
+		INamedElement defElement;
 		defElement = new ModuleProxy("foo", null);
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "foo");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "foo");

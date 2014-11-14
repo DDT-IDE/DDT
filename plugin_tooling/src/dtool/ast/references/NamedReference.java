@@ -12,8 +12,8 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable.IQualifierNode;
 import dtool.resolver.DefUnitSearch;
 
@@ -35,7 +35,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 		if(isMissingCoreReference()) {
 			return null;
 		}

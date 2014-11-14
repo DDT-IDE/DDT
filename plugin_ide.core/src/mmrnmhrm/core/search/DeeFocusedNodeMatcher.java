@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -54,12 +54,12 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<ILangNamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
+		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;
 		
-		for (Iterator<ILangNamedElement> iter = defUnits.iterator(); iter.hasNext();) {
-			ILangNamedElement targetNamedElement = iter.next();
+		for (Iterator<INamedElement> iter = defUnits.iterator(); iter.hasNext();) {
+			INamedElement targetNamedElement = iter.next();
 			
 			try {
 				IMember targetModelElement = DeeModelEngine.findCorrespondingModelElement(targetNamedElement, 

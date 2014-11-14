@@ -1,6 +1,6 @@
 package mmrnmhrm.core.model_elements;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.eclipse.dltk.core.IModelElement;
 
@@ -19,7 +19,7 @@ public class DefElementDescriptor {
 		this.elementFlags = elementFlags;
 	}
 	
-	public DefElementDescriptor(ILangNamedElement namedElement) {
+	public DefElementDescriptor(INamedElement namedElement) {
 		this.elementFlags = DefElementFlagsUtil.elementFlagsForNamedElement(namedElement);
 	}
 	

@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import dtool.resolver.CommonDefUnitSearch;
@@ -22,7 +22,7 @@ import dtool.resolver.CommonDefUnitSearch;
  * May exists in source or outside source, it can be implicitly or explicitly defined.
  * Implementation may be an AST node (that is the more common case), but it can be a non AST node too.
  */
-public interface INamedElement {
+public interface INamedElement extends INamedElementExtensions {
 	
 	/** The name of the element that is referred to. */
 	public abstract String getName();
@@ -54,12 +54,12 @@ public interface INamedElement {
 	public ModuleFullName getModuleFullName();
 	
 	
-	/** @return the nearest enclosing {@link ILangNamedElement}.
+	/** @return the nearest enclosing {@link INamedElement}.
 	 * For modules and packages, that is null. */
-	public abstract ILangNamedElement getParentElement();
+	public abstract INamedElement getParentElement();
 	
 	/** @return the node this named element represents. In most cases this is the same as the receiver, 
-	 * but this method allows proxy {@link ILangNamedElement} classes to resolve to their proxied node. 
+	 * but this method allows proxy {@link INamedElement} classes to resolve to their proxied node. 
 	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
 	 */
 	INamedElementNode resolveUnderlyingNode();
@@ -75,6 +75,6 @@ public interface INamedElement {
 	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
 	 * and have an associated type, but are not types themselves.
 	 */
-	public abstract ILangNamedElement resolveTypeForValueContext(IModuleResolver mr);
+	public abstract INamedElement resolveTypeForValueContext(IModuleResolver mr);
 	
 }

@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationAttrib;
@@ -58,7 +58,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		IModuleResolver mr = resolvedModule.getModuleResolver();
 		
-		ILangNamedElement relevantElementForDoc = null;
+		INamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
@@ -100,7 +100,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 	}
 	
 	protected String getDDocHTMLViewForAutoLike(IModuleResolver mr, IVarDefinitionLike defVar) {
-		ILangNamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
+		INamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
 		
 		if(resolvedType == null) {
 			return TextUI.span("semantic_error", "color:red;",

@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
@@ -164,7 +163,7 @@ public class ReferenceResolver {
 	}
 	
 	public static void findInNamedElementList(CommonDefUnitSearch search, 
-			Iterable<? extends ILangNamedElement> elementIterable) {
+			Iterable<? extends INamedElement> elementIterable) {
 		if(elementIterable == null) {
 			return;
 		}
@@ -172,14 +171,14 @@ public class ReferenceResolver {
 		if(search.isFinished())
 			return;
 		
-		for (ILangNamedElement namedElement : elementIterable) {
+		for (INamedElement namedElement : elementIterable) {
 			evaluateNamedElementForSearch(search, namedElement);
 			if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
 				return;
 		}
 	}
 	
-	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, ILangNamedElement namedElement) {
+	public static void evaluateNamedElementForSearch(CommonDefUnitSearch search, INamedElement namedElement) {
 		if(namedElement != null) {
 			search.visitElement(namedElement);
 		}
@@ -204,7 +203,7 @@ public class ReferenceResolver {
 	
 	private static void findDefUnitInModuleDec(Module module, CommonDefUnitSearch search) {
 		DeclarationModule decMod = module.md;
-		ILangNamedElement moduleElement;
+		INamedElement moduleElement;
 		if(decMod != null) {
 			
 			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
@@ -222,7 +221,7 @@ public class ReferenceResolver {
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonDefUnitSearch search) {
-		ILangNamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
+		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
 		evaluateNamedElementForSearch(search, namedElement);
 	}
 	
@@ -258,7 +257,7 @@ public class ReferenceResolver {
 				if(!search.matchesName(name)) {
 					continue;
 				}
-				ILangNamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
 				if(namedElement != null) { 
 					search.addMatch(namedElement);
 				}

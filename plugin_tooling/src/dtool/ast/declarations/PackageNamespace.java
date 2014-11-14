@@ -12,11 +12,11 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
@@ -33,21 +33,21 @@ import dtool.resolver.ReferenceResolver;
 public class PackageNamespace extends AbstractNamedElement implements IScopeProvider {
 	
 	protected final String fqName;
-	protected final ILangNamedElement containedElement;
+	protected final INamedElement containedElement;
 	
-	public PackageNamespace(String fqName, ILangNamedElement module) {
+	public PackageNamespace(String fqName, INamedElement module) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."));
 		this.fqName = fqName;
 		this.containedElement = assertNotNull(module);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String[] packages, ILangNamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
 		return createPartialDefUnits(defName, packages, module);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, ILangNamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module) {
 		if(packages.length == 0) {
 			return new PackageNamespace(fqName, module);
 		} else {
@@ -75,7 +75,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public ILangNamedElement getParentElement() {
+	public INamedElement getParentElement() {
 		return null;
 	}
 	
@@ -106,7 +106,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	

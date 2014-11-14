@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 
@@ -43,7 +43,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 				return;
 			}
 			
-			for (ILangNamedElement result : completionResult.getResults()) {
+			for (INamedElement result : completionResult.getResults()) {
 				CompletionProposal proposal = createProposal(result, position, completionResult);
 				requestor.accept(proposal);
 			}
@@ -66,7 +66,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
-	protected CompletionProposal createProposal(ILangNamedElement namedElem, int ccOffset, 
+	protected CompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
 			CompletionSearchResult completionResult) {
 		PrefixSearchOptions searchOptions = completionResult.searchOptions;
 		
@@ -99,13 +99,13 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		
 		@Override
 		public void setExtraInfo(Object extraInfo) {
-			assertTrue(extraInfo instanceof ILangNamedElement);
+			assertTrue(extraInfo instanceof INamedElement);
 			super.setExtraInfo(extraInfo);
 		}
 		
 		@Override
-		public ILangNamedElement getExtraInfo() {
-			return (ILangNamedElement) super.getExtraInfo();
+		public INamedElement getExtraInfo() {
+			return (INamedElement) super.getExtraInfo();
 		}
 		
 		public boolean isModuleImportCompletion() {

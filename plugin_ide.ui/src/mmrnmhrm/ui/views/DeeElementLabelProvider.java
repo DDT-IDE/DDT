@@ -2,7 +2,7 @@ package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -17,7 +17,7 @@ import dtool.ddoc.TextUI;
 
 public class DeeElementLabelProvider {
 	
-	public static String getLabelForContentAssistPopup(ILangNamedElement namedElement) {
+	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:

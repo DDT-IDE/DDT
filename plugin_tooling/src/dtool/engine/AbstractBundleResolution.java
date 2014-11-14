@@ -20,12 +20,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IModuleNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.ElementName;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
@@ -146,7 +146,7 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	/* ----------------- used by tests only, at the moment ----------------- */
 	
-	public ILangNamedElement findContainedElement(String elementName) throws ModuleSourceException {
+	public INamedElement findContainedElement(String elementName) throws ModuleSourceException {
 		ElementName name = new ElementName(elementName);
 		
 		String possibleModuleName = null;

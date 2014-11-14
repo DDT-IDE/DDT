@@ -15,9 +15,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -70,7 +70,7 @@ public class EnumMember extends DefUnit {
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return DefElementCommon.resolveTypeForValueContext(mr, getEffectiveTypeReference());
 	}
 	

@@ -19,7 +19,7 @@ import java.util.List;
 
 import dtool.ast.references.Reference;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 public class FindDefinitionResult {
 	
@@ -27,7 +27,7 @@ public class FindDefinitionResult {
 	public final List<FindDefinitionResultEntry> results;
 	
 	// Optional extra info:
-	public final Collection<ILangNamedElement> resultsRaw; // Can be null
+	public final Collection<INamedElement> resultsRaw; // Can be null
 	public final Reference pickedReference;
 	
 	public FindDefinitionResult(String errorMessage) {
@@ -42,7 +42,7 @@ public class FindDefinitionResult {
 	}
 	
 	public FindDefinitionResult(List<FindDefinitionResultEntry> results, Reference pickReference,
-			Collection<ILangNamedElement> resultsRaw) {
+			Collection<INamedElement> resultsRaw) {
 		this.errorMessage = null;
 		this.results = results;
 		this.resultsRaw = resultsRaw;

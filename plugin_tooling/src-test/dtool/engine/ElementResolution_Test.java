@@ -11,8 +11,8 @@
 package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
@@ -54,13 +54,13 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected Reference getSampleType(BundleResolution sr, String elementName) throws ModuleSourceException {
-		ILangNamedElement element = sr.findContainedElement(elementName);
+		INamedElement element = sr.findContainedElement(elementName);
 		assertNotNull(element);
 		return assertCast(element, DefinitionVariable.class).type;
 	}
 	
 	protected void testRefResolve(BundleResolution libFooSR, Reference ref, String elementName) {
-		ILangNamedElement result = ref.resolveTargetElement(libFooSR).getSingleResult();
+		INamedElement result = ref.resolveTargetElement(libFooSR).getSingleResult();
 		assertAreEqual(result.getFullyQualifiedName(), elementName);
 	}
 	

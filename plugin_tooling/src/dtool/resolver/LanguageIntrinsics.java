@@ -15,10 +15,10 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
@@ -101,7 +101,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 	}
 	
-	public ArrayList<IntrinsicDefUnit> createCommonProperties(ILangNamedElement type) {
+	public ArrayList<IntrinsicDefUnit> createCommonProperties(INamedElement type) {
 		return CollectionUtil.<IntrinsicDefUnit>createArrayList( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
@@ -284,7 +284,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public final IntrinsicTypeDefUnit object_type = new DeeIntrinsicType("___", null) { };
 	
-	public InstrinsicsScope createObjectPropertiesScope(ILangNamedElement type) {
+	public InstrinsicsScope createObjectPropertiesScope(INamedElement type) {
 		
 		return new InstrinsicsScope(CollectionUtil.addAll(
 			createCommonProperties(type), 

@@ -13,8 +13,8 @@ package dtool.ast.references;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.IResolvable;
 
@@ -24,15 +24,15 @@ import dtool.resolver.IResolvable;
 public abstract class Reference extends Resolvable implements IResolvable {
 	
 	@Override
-	public abstract Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
+	public abstract Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
 	@Override
-	public Collection<ILangNamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-		Collection<ILangNamedElement> resolvedElements = findTargetDefElements(mr, false);
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+		Collection<INamedElement> resolvedElements = findTargetDefElements(mr, false);
 		
-		ArrayList<ILangNamedElement> resolvedTypeForValueContext = new ArrayList<>();
-		for (ILangNamedElement defElement : resolvedElements) {
-			ILangNamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
+		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
+		for (INamedElement defElement : resolvedElements) {
+			INamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
 			if(resolvedTypeForValueContext != null) {
 				resolvedTypeForValueContext.add(resolveTypeForValueContext);
 			}
@@ -40,7 +40,7 @@ public abstract class Reference extends Resolvable implements IResolvable {
 		return resolvedTypeForValueContext; 
 	}
 	
-	protected static Collection<ILangNamedElement> resolveToInvalidValue() {
+	protected static Collection<INamedElement> resolveToInvalidValue() {
 		return null; 
 	}
 	

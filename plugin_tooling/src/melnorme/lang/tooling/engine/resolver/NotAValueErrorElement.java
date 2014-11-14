@@ -11,20 +11,20 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class NotAValueErrorElement implements ILangNamedElement {
+public class NotAValueErrorElement implements INamedElement {
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
-	protected final ILangNamedElement wrappedElement;
+	protected final INamedElement wrappedElement;
 
-	public NotAValueErrorElement(ILangNamedElement wrappedElement) {
+	public NotAValueErrorElement(INamedElement wrappedElement) {
 		this.wrappedElement = wrappedElement;
 	}
 	
@@ -64,7 +64,7 @@ public class NotAValueErrorElement implements ILangNamedElement {
 	}
 	
 	@Override
-	public ILangNamedElement getParentElement() {
+	public INamedElement getParentElement() {
 		return wrappedElement.getParentElement();
 	}
 	
@@ -74,7 +74,7 @@ public class NotAValueErrorElement implements ILangNamedElement {
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		// Do nothing.
 		return null;
 	}

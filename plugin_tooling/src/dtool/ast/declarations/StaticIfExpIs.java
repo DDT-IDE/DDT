@@ -16,8 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -117,7 +117,7 @@ public class StaticIfExpIs extends Expression {
 		}
 		
 		@Override
-		public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return null;
 		}
 		

@@ -5,8 +5,8 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
 public class ExpCast extends Expression {
@@ -38,7 +38,7 @@ public class ExpCast extends Expression {
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		return findTargetElementsForReference(mr, type, findFirstOnly);
 	}
 	

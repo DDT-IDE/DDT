@@ -1,7 +1,7 @@
 package melnorme.lang.tooling.engine.intrinsics;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -39,7 +39,7 @@ public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	}
 	
 	@Override
-	public ILangNamedElement getParentElement() {
+	public INamedElement getParentElement() {
 		return null;
 	}
 	

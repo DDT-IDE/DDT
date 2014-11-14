@@ -6,10 +6,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ArrayList;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.engine.scoping.NamedElementsVisitor;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
@@ -85,9 +85,9 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(matches, "\n", new Function<ILangNamedElement, String>() {
+		return StringUtil.iterToString(matches, "\n", new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(ILangNamedElement obj) {
+			public String evaluate(INamedElement obj) {
 				return NamedElementUtil.getElementTypedQualification(obj); 
 			}
 		});

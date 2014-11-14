@@ -16,8 +16,8 @@ import java.util.Collections;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
 
@@ -52,9 +52,9 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
+	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
 		final Module module = NodeUtil.getParentModule(this);
-		return Collections.<ILangNamedElement>singletonList(module);
+		return Collections.<INamedElement>singletonList(module);
 	}
 	
 }

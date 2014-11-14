@@ -15,8 +15,8 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.LanguageIntrinsics;
 
@@ -44,7 +44,7 @@ public class RefTypeDynArray extends CommonNativeTypeReference {
 	}
 	
 	@Override
-	public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
 		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 	}
 	

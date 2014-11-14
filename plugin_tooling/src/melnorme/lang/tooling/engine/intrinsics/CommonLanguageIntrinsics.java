@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -43,7 +42,7 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicDefUnit... members);
 		
 		@Override
-		public final ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			assertNotNull(membersScope);
 			return DefElementCommon.returnError_ElementIsNotAValue(this);
 		}
@@ -67,7 +66,7 @@ public interface CommonLanguageIntrinsics {
 			return EArcheType.Variable;
 		}
 		
-		protected abstract ILangNamedElement resolveType(IModuleResolver mr);
+		protected abstract INamedElement resolveType(IModuleResolver mr);
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
@@ -75,7 +74,7 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 			return resolveType(mr);
 		}
 		
@@ -83,15 +82,15 @@ public interface CommonLanguageIntrinsics {
 	
 	public class IntrinsicProperty extends AbstractIntrinsicProperty {
 		
-		public final ILangNamedElement type;
+		public final INamedElement type;
 		
-		public IntrinsicProperty(String name, ILangNamedElement type, Ddoc ddoc) {
+		public IntrinsicProperty(String name, INamedElement type, Ddoc ddoc) {
 			super(name, ddoc);
 			this.type = assertNotNull(type);
 		}
 		
 		@Override
-		protected ILangNamedElement resolveType(IModuleResolver mr) {
+		protected INamedElement resolveType(IModuleResolver mr) {
 			return type;
 		}
 		
@@ -111,7 +110,7 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected ILangNamedElement resolveType(IModuleResolver mr) {
+		protected INamedElement resolveType(IModuleResolver mr) {
 			return CollectionUtil.getFirstElementOrNull(typeRef.findTargetDefElements(mr, true));
 		}
 		
@@ -127,13 +126,13 @@ public interface CommonLanguageIntrinsics {
 			this.elementName = elementName;
 		}
 		
-		public final ILangNamedElement findTargetDefElement(IModuleResolver moduleResolver) {
-			Collection<ILangNamedElement> namedElems = findTargetDefElements(moduleResolver, true);
+		public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+			Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 			return CollectionUtil.getFirstElementOrNull(namedElems);
 		}
 		
 		@Override
-		public Collection<ILangNamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 			INamedElement module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
 			if(module == null) 
 				return null;

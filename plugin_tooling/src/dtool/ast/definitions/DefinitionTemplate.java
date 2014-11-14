@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
@@ -117,7 +117,7 @@ public class DefinitionTemplate extends CommonDefinition
 	}
 	
 	@Override
-	public ILangNamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		if(wrapper) {
 			// TODO: 
 		}

@@ -9,9 +9,9 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.ast.references.CommonQualifiedReference;
@@ -24,7 +24,7 @@ import dtool.resolver.IResolvable;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements ILangNamedElement, INamedElementNode {
+public abstract class DefUnit extends ASTNode implements INamedElement, INamedElementNode {
 	
 	public static class ProtoDefSymbol {
 		public final String name;
@@ -115,7 +115,7 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement, INam
 	
 	@Override
 	public String getFullyQualifiedName() {
-		ILangNamedElement parentNamespace = getParentElement();
+		INamedElement parentNamespace = getParentElement();
 		if(parentNamespace == null) {
 			return getName();
 		} else {
@@ -129,7 +129,7 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement, INam
 	}
 	
 	@Override
-	public ILangNamedElement getParentElement() {
+	public INamedElement getParentElement() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	
@@ -167,7 +167,7 @@ public abstract class DefUnit extends ASTNode implements ILangNamedElement, INam
 		}
 		
 		IModuleResolver mr = search.getModuleResolver();
-		Collection<ILangNamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	

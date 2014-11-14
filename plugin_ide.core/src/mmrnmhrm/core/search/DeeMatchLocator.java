@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ILangNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -186,8 +186,8 @@ public class DeeMatchLocator extends MatchLocator implements IMatchLocator {
 	}
 	
 	public void addMatch(ASTNode node, int accLevel, ISourceModule sourceModule) {
-		ILangNamedElement defUnit = (node instanceof ILangNamedElement) ? 
-				(ILangNamedElement) node : 
+		INamedElement defUnit = (node instanceof INamedElement) ? 
+				(INamedElement) node : 
 				getOuterNamedElement(node);
 		IModelElement enclosingType;
 		try {
