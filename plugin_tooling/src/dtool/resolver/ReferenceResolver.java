@@ -1,12 +1,9 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
 import java.util.Iterator;
 
-import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
@@ -25,11 +22,7 @@ import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
-import dtool.ast.references.CommonQualifiedReference;
-import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefImportSelection;
-import dtool.ast.references.Reference;
-import dtool.parser.DeeParserResult;
 
 /**
  * Class with static methods encoding D entity lookup rules.
@@ -171,16 +164,18 @@ public class ReferenceResolver {
 	}
 	
 	public static void findInNamedElementList(CommonDefUnitSearch search, 
-		Iterable<? extends ILangNamedElement> elementIterable) {
-		if(elementIterable != null) {
-			if(search.isFinished())
+			Iterable<? extends ILangNamedElement> elementIterable) {
+		if(elementIterable == null) {
+			return;
+		}
+		
+		if(search.isFinished())
+			return;
+		
+		for (ILangNamedElement namedElement : elementIterable) {
+			evaluateNamedElementForSearch(search, namedElement);
+			if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
 				return;
-			
-			for (ILangNamedElement namedElement : elementIterable) {
-				evaluateNamedElementForSearch(search, namedElement);
-				if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
-					return;
-			}
 		}
 	}
 	
@@ -269,54 +264,6 @@ public class ReferenceResolver {
 				}
 			}
 		}
-	}
-	
-	public static class DirectDefUnitResolve {
-		
-		protected ASTNode pickedNode;
-		protected Reference pickedRef;
-		public Collection<ILangNamedElement> resolvedDefUnits;
-		public boolean invalidPickRef = false;
-		
-		public void pickLocation(Module module, int offset) {
-			ASTNodeFinder nodeFinder = new ASTNodeFinder(module, offset, true);
-			
-			if(nodeFinder.matchOnLeft instanceof Reference) {
-				this.pickedNode = nodeFinder.matchOnLeft;
-				this.pickedRef = (Reference) pickedNode;
-			} else if(nodeFinder.match instanceof Reference) {
-				this.pickedRef = (Reference) nodeFinder.match;
-			}
-			this.pickedNode = nodeFinder.match;
-			
-			if(pickedRef instanceof CommonQualifiedReference || !(pickedRef instanceof NamedReference)) {
-				invalidPickRef = true;
-			}
-		}
-		
-		public boolean isValidPickRef() {
-			return pickedRef != null && invalidPickRef == false;
-		}
-		
-		public Collection<ILangNamedElement> getResolvedDefUnits() {
-			assertTrue(isValidPickRef()); // a valid ref must have picked from offset
-			return resolvedDefUnits;
-		}
-		
-		public void resolveAtoffset(DeeParserResult parseResult, int offset, IModuleResolver mr) {
-			pickLocation(parseResult.module, offset);
-			
-			if(isValidPickRef()) {
-				resolvedDefUnits = pickedRef.findTargetDefElements(mr, false);
-			}
-		}
-		
-	}
-	
-	public static DirectDefUnitResolve resolveAtOffset(DeeParserResult parseResult, int offset, IModuleResolver mr) {
-		DirectDefUnitResolve refResolve = new DirectDefUnitResolve();
-		refResolve.resolveAtoffset(parseResult, offset, mr);
-		return refResolve;
 	}
 	
 }

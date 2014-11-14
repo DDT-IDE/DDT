@@ -20,12 +20,12 @@ import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.CompletionSearchResult;
+import dtool.engine.operations.FindDefinitionOperation;
+import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.resolver.ReferenceResolver.DirectDefUnitResolve;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.util.NewUtils;
 
 public class ResolverSourceTests extends BaseResolverSourceTests {
 	
@@ -71,12 +71,22 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	
 	@Override
 	protected void runFindFailTest_________(MetadataEntry mde) {
-		DirectDefUnitResolve resolveResult = resolveAtOffset(mde.offset);
-		assertTrue(resolveResult.pickedRef == null || resolveResult.invalidPickRef);
+		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
+		assertTrue(!findDefResult.isValidPickRef());
 	}
 	
-	public DirectDefUnitResolve resolveAtOffset(int offset) {
-		return ReferenceResolver.resolveAtOffset(parseResult, offset, mr);
+	public FindDefinitionResult resolveAtOffset(int offset) {
+		return FindDefinitionOperation.findDefinition(parseResult.module, offset, mr);
+	}
+	
+	@Override
+	public void runFindMissingTest_________(MetadataEntry mde) {
+		assertTrue(mde.sourceValue == null);
+		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
+		assertTrue(findDefResult.isValidPickRef() == false);
+		assertTrue(findDefResult.pickedReference instanceof NamedReference);
+		NamedReference pickedRef_named = (NamedReference) findDefResult.pickedReference;
+		assertTrue(pickedRef_named.isMissingCoreReference());
 	}
 	
 	@Override
@@ -84,25 +94,12 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		doFindTest(mde);
 	}
 	
-	public DirectDefUnitResolve doFindTest(MetadataEntry mde) {
+	public void doFindTest(MetadataEntry mde) {
 		String[] expectedResults = splitValues(mde.sourceValue);
-		return doRunFindTest(mde.offset, expectedResults);
-	}
-	
-	@Override
-	public void runFindMissingTest_________(MetadataEntry mde) {
-		assertTrue(mde.sourceValue == null);
-		DirectDefUnitResolve result = doRunFindTest(mde.offset, NewUtils.EMPTY_STRING_ARRAY);
-		assertTrue(result.resolvedDefUnits == null);
-		assertTrue(result.pickedRef instanceof NamedReference);
-		NamedReference pickedRef_named = (NamedReference) result.pickedRef;
-		assertTrue(pickedRef_named.isMissingCoreReference());
-	}
-	
-	public DirectDefUnitResolve doRunFindTest(int offset, String[] expectedResults) {
-		DirectDefUnitResolve resolveResult = resolveAtOffset(offset);
-		checkResults(resolveResult.getResolvedDefUnits(), expectedResults, false, false);
-		return resolveResult;
+		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
+		assertTrue(findDefResult.isValidPickRef());
+		checkResults(findDefResult.resultsRaw, expectedResults, false, false);
+		resolveAtOffset(mde.offset);
 	}
 	
 }

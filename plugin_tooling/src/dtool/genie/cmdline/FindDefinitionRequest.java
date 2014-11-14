@@ -94,7 +94,7 @@ public class FindDefinitionRequest extends AbstractClientOperation {
 				results.add(findDefResult(jsonResultEntry));
 			}
 			
-			return new FindDefinitionResult(results);
+			return new FindDefinitionResult(results, null, null);
 		}
 		
 		protected FindDefinitionResultEntry findDefResult(Object object) throws GenieCommandException {

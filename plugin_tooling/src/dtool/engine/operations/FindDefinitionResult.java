@@ -10,32 +10,52 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
+import static dtool.engine.operations.FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 
+import dtool.ast.references.Reference;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 
 public class FindDefinitionResult {
 	
 	public final String errorMessage;
 	public final List<FindDefinitionResultEntry> results;
 	
+	// Optional extra info:
+	public final Collection<ILangNamedElement> resultsRaw; // Can be null
+	public final Reference pickedReference;
+	
 	public FindDefinitionResult(String errorMessage) {
-		this.errorMessage = errorMessage;
-		this.results = null;
+		this(errorMessage, null);
 	}
 	
-	public FindDefinitionResult(List<FindDefinitionResultEntry> results) {
+	public FindDefinitionResult(String errorMessage, Reference pickReference) {
+		this.errorMessage = errorMessage;
+		this.results = null;
+		this.resultsRaw = null;
+		this.pickedReference = pickReference;
+	}
+	
+	public FindDefinitionResult(List<FindDefinitionResultEntry> results, Reference pickReference,
+			Collection<ILangNamedElement> resultsRaw) {
 		this.errorMessage = null;
 		this.results = results;
+		this.resultsRaw = resultsRaw;
+		this.pickedReference = pickReference;
 	}
 	
 	public FindDefinitionResult createFailureResult(String errorMessage) {
-		return new FindDefinitionResult(errorMessage);
+		return new FindDefinitionResult(errorMessage, null);
 	}
 	
+	public boolean isValidPickRef() {
+		return (errorMessage == null || errorMessage.startsWith(FIND_DEF_ReferenceResolveFailed));
+	}
 	
 	public static class FindDefinitionResultEntry {
 		

@@ -21,14 +21,13 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ILangNamedElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
-import dtool.ast.util.ReferenceSwitchHelper;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
@@ -60,61 +59,62 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		} catch (ExecutionException e) {
 			return new FindDefinitionResult("Error awaiting operation result: " + e);
 		}
+		final IModuleResolver mr = resolvedModule.getModuleResolver();
 		Module module = resolvedModule.getModuleNode();
-		ASTNode node = ASTNodeFinder.findElement(module, offset);
-		if(node == null) {
-			return new FindDefinitionResult("No node found at offset: " + offset);
-		}
-		assertEquals(node.getModuleNode().compilationUnitPath, filePath); /*FIXME: BUG here normalization */
 		
-		ReferenceSwitchHelper<FindDefinitionResult> refPickHelper = new ReferenceSwitchHelper<FindDefinitionResult>() {
-			
-			@Override
-			protected FindDefinitionResult nodeIsDefSymbol(DefSymbol defSymbol) {
-				return new FindDefinitionResult(FIND_DEF_PickedElementAlreadyADefinition);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNotReference() {
-				return new FindDefinitionResult(FIND_DEF_NoReferenceFoundAtCursor);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNonNamedReference(Reference reference) {
-				return new FindDefinitionResult(FIND_DEF_NoNameReferenceAtCursor);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNamedReference_missing(NamedReference namedReference) {
-				return new FindDefinitionResult(FIND_DEF_MISSING_REFERENCE_AT_CURSOR);
-			}
-			
-			@Override
-			protected FindDefinitionResult nodeIsNamedReference_ok(NamedReference namedReference) {
-				return doFindDefinitionForRef(namedReference, resolvedModule);
-			}
-		};
-		
-		return refPickHelper.switchOnPickedNode(node);
+		assertEquals(module.compilationUnitPath, filePath); /*FIXME: BUG here normalization */
+		return findDefinition(module, offset, mr);
 	}
 	
-	protected FindDefinitionResult doFindDefinitionForRef(Reference ref, ResolvedModule resolvedModule) {
-		IModuleResolver moduleResolver = resolvedModule.getModuleResolver();
-		Collection<ILangNamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+	public static FindDefinitionResult findDefinition(Module module, final int offset, final IModuleResolver mr) {
 		
-		if(defElements == null || defElements.size() == 0) {
-			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode());
+		ASTNodeFinder nodeFinder = new ASTNodeFinder(module, offset, true);
+		
+		if(nodeFinder.matchOnLeft instanceof NamedReference) {
+			NamedReference namedReference = (NamedReference) nodeFinder.matchOnLeft;
+			return doFindDefinition(namedReference, mr);
+		} else if(nodeFinder.match instanceof Reference) {
+			Reference reference = (Reference) nodeFinder.match;
+			return doFindDefinition(reference, mr);
+		} else if(nodeFinder.match instanceof DefSymbol){
+			return new FindDefinitionResult(FIND_DEF_PickedElementAlreadyADefinition);
+		}
+		
+		return new FindDefinitionResult(FIND_DEF_NoReferenceFoundAtCursor);
+	}
+	
+	public static FindDefinitionResult doFindDefinition(Reference reference, final IModuleResolver mr) {
+		if(reference instanceof NamedReference) {
+			NamedReference namedReference = (NamedReference) reference;
+			if(namedReference.isMissingCoreReference()) {
+				return new FindDefinitionResult(FIND_DEF_MISSING_REFERENCE_AT_CURSOR, namedReference);
+			} if(namedReference instanceof CommonQualifiedReference) {
+				// Then the cursor is not actually next to an identifier.
+				return new FindDefinitionResult(FIND_DEF_NoNameReferenceAtCursor);
+			} else {
+				return doFindDefinitionForRef(namedReference, mr);
+			}
+		} else {
+			return new FindDefinitionResult(FIND_DEF_NoNameReferenceAtCursor);
+		}
+	}
+	
+	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, IModuleResolver moduleResolver) {
+		
+		Collection<ILangNamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
+		
+		if(namedElements == null || namedElements.size() == 0) {
+			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);
 		}
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
-		for (ILangNamedElement namedElement : defElements) {
+		for (ILangNamedElement namedElement : namedElements) {
 			final INamedElementNode node = namedElement.resolveUnderlyingNode();
 			
 			Path compilationUnitPath = null;
 			SourceRange sourceRange = null;
 			
 			if(node != null) { // This can happen with intrinsic elements 
-				
 				compilationUnitPath = node.getModuleNode().getCompilationUnitPath();
 				sourceRange = node.getNameSourceRangeOrNull();
 			}
@@ -126,7 +126,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 				sourceRange));
 		}
 		
-		return new FindDefinitionResult(results);
+		return new FindDefinitionResult(results, ref, namedElements);
 	}
 
 }
