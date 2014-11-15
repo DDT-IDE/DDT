@@ -4,13 +4,10 @@ import static dtool.util.NewUtils.assertCast;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.CommonDefVarSemantics;
 import dtool.engine.analysis.IVarDefinitionLike;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A fragment of a variable definition in a multi-identifier variable declaration
@@ -61,21 +58,13 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 		return initializer;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		getNodeSemantics().resolveSearchInMembersScope(search);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return getNodeSemantics().resolveTypeForValueContext(mr);
-	}
-	
-	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
+	/* ----------------- ----------------- */
 	
 	@Override
 	public CommonDefVarSemantics getNodeSemantics() {
 		return nodeSemantics;
 	}
+	
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 	
 }

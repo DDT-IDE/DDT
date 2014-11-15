@@ -12,7 +12,8 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -66,11 +67,6 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return null; /*FIXME: BUG here TODO*/
-	}
-	
-	@Override
 	public DefUnit resolveUnderlyingNode() {
 		INamedElement module = ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName());
 		if(module instanceof DefUnit) {
@@ -88,17 +84,28 @@ public class ModuleProxy extends AbstractNamedElement {
 		return null;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		DefUnit resolvedModule = resolveUnderlyingNode();
-		if(resolvedModule != null) {
-			resolvedModule.resolveSearchInMembersScope(search);
-		}
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
+	public final INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public IConcreteNamedElement resolveConcreteElement() {
+			return null; /*FIXME: BUG here TODO*/
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			DefUnit resolvedModule = resolveUnderlyingNode();
+			if(resolvedModule != null) {
+				resolvedModule.resolveSearchInMembersScope(search);
+			}
+		}
+		
+	};
 	
 }

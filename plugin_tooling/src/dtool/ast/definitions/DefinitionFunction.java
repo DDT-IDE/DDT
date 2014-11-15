@@ -4,6 +4,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
@@ -82,22 +84,37 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return strParams + ")";
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInMembersScopeForFunction(search, retType, tplParams, fnParams, tplConstraint);
-	}
-	
-	@SuppressWarnings("unused")
-	public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType,
-		 ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, Expression tplConstraint) {
-		// Do nothing, a function has no members scope
-		// TODO: except for implicit function calls syntax, that needs to be implemented
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		// TODO implicit function call
-		return null;
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final FunctionElementSemantics semantics = new FunctionElementSemantics() {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			resolveSearchInMembersScopeForFunction(search, retType, tplParams, fnParams, tplConstraint);
+		}
+		
+	};
+	
+	public static abstract class FunctionElementSemantics extends AbstractNamedElementSemantics {
+		
+		@SuppressWarnings("unused")
+		public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType,
+			 ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, Expression tplConstraint) {
+			// Do nothing, a function has no members scope
+			// TODO: except for implicit function calls syntax, that needs to be implemented
+		}
+		
+		@Override
+		public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			// TODO implicit function call
+			return null;
+		}
+		
 	}
 	
 }

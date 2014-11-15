@@ -3,11 +3,10 @@ package dtool.ast.expressions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A lambda expression in the short, simple syntax:
@@ -66,15 +65,14 @@ public class ExpSimpleLambda extends Expression {
 			return EArcheType.Variable;
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			// TODO:
-		}
+		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return null; // TODO
+		public INamedElementSemantics getNodeSemantics() {
+			return semantics;
 		}
+		
+		protected final INamedElementSemantics semantics = new NullElementSemantics(); // TODO
 		
 	}
 	

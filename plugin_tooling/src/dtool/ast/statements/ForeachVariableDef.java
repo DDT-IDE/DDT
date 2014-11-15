@@ -13,14 +13,13 @@ package dtool.ast.statements;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class ForeachVariableDef extends DefUnit {
 	
@@ -59,14 +58,20 @@ public class ForeachVariableDef extends DefUnit {
 		return EArcheType.Variable;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, type);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext(mr, type);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final VarSemantics semantics = new VarSemantics() {
+		
+		@Override
+		protected Resolvable getTypeReference() {
+			return type;
+		};
+		
+	};
 	
 }

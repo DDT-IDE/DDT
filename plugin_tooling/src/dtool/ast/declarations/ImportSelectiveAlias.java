@@ -3,14 +3,13 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
-import dtool.resolver.CommonDefUnitSearch;
+import dtool.ast.references.Reference;
 
 public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSelection {
 	
@@ -43,14 +42,21 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 		return EArcheType.Alias;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, target);
-	}
+	/* -----------------  ----------------- */
+	
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext(mr, target);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final INamedElementSemantics semantics = new AliasSemantics() {
+		
+		@Override
+		protected Reference getAliasTarget() {
+			return target;
+		}
+		
+	};
 	
 }

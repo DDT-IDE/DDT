@@ -14,7 +14,6 @@ import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
@@ -89,32 +88,29 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	protected AggregateSemantics createAggregateSemantics() {
 		InstrinsicsScope commonTypeScope = new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
-		return new AggregateSemantics(commonTypeScope);
+		return new AggregateSemantics(this, commonTypeScope);
 	}
 	
 	public class AggregateSemantics extends TypeSemantics {
 		
 		protected final InstrinsicsScope commonTypeScope;
 		
-		public AggregateSemantics(InstrinsicsScope commonTypeScope) {
+		public AggregateSemantics(INamedElement typeElement, InstrinsicsScope commonTypeScope) {
+			super(typeElement);
 			this.commonTypeScope = commonTypeScope;
 		}
 		
-	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return DefinitionAggregate.this;
-	}
+		@Override
+		public IConcreteNamedElement resolveConcreteElement() {
+			return DefinitionAggregate.this;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+			commonTypeScope.resolveSearchInScope(search);
+		}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		ReferenceResolver.resolveSearchInScope(search, getBodyScope());
-		commonTypeScope.resolveSearchInScope(search);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return resolveTypeForValueContext(mr, DefinitionAggregate.this);
-	}
 	}
 	
 	@Override

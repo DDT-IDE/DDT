@@ -10,8 +10,34 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.engine.INamedElementSemantics;
+import java.util.Collection;
 
-public abstract class TypeSemantics extends TypeSemanticsHelper implements INamedElementSemantics {
+import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.references.CommonQualifiedReference;
+import dtool.resolver.CommonDefUnitSearch;
+
+public abstract class TypeSemantics extends AbstractNamedElementSemantics {
+	
+	protected INamedElement typeElement;
+	
+	public TypeSemantics(INamedElement typeElement) {
+		this.typeElement = typeElement;
+	}
+	
+	@Override
+	public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return new NotAValueErrorElement(typeElement);
+	}
+	
+	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
+		if(resolvable == null) {
+			return;
+		}
+		
+		IModuleResolver mr = search.getModuleResolver();
+		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
+	}
 	
 }

@@ -18,10 +18,10 @@ import dtool.resolver.CommonDefUnitSearch;
 
 public interface INamedElementSemantics extends INodeSemantics {
 	
+	IConcreteNamedElement resolveConcreteElement();
+	
 	void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	
 	INamedElement resolveTypeForValueContext(IModuleResolver mr);
-	
-	IConcreteNamedElement resolveConcreteElement();
 	
 }

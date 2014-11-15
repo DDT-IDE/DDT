@@ -14,9 +14,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.TypeAliasElement;
@@ -57,15 +56,21 @@ public class TemplateTypeParam extends TemplateParameter {
 		return EArcheType.TypeParameter;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		TypeSemanticsHelper.resolveSearchInReferredContainer(search, specializationType);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return typeSemantics.resolveTypeForValueContext(mr, this);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			resolveSearchInReferredContainer(search, specializationType);
+		}
+		
+	};
 	
 	@Override
 	public ASTNode createTemplateArgument(Resolvable resolvable) {

@@ -14,9 +14,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 import dtool.resolver.CommonDefUnitSearch;
@@ -48,20 +47,26 @@ public class TemplateTupleParam extends TemplateParameter {
 		return EArcheType.Tuple;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		// TODO return intrinsic universal
-		return;
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			// TODO return intrinsic universal
+			return;
+		}
+		
+	};
 	
 	@Override
 	public ASTNode createTemplateArgument(Resolvable argument) {
 		return new AliasElement(defname, null);  // TODO: correct instantiation
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

@@ -16,8 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -25,8 +25,8 @@ import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class StaticIfExpIs extends Expression {
 	
@@ -110,16 +110,21 @@ public class StaticIfExpIs extends Expression {
 			return EArcheType.Alias;
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			StaticIfExpIs staticIfIsExp = getParent_Concrete();
-			resolveSearchInReferredContainer(search, staticIfIsExp.typeRef);
-		}
+		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return null;
+		public INamedElementSemantics getNodeSemantics() {
+			return semantics;
 		}
+		
+		protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
+			
+			@Override
+			protected Resolvable getAliasTarget() {
+				return getParent_Concrete().typeRef;
+			}
+			
+		};
 		
 	}
 	

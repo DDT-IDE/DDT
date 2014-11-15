@@ -125,22 +125,14 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 			return initializer;
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			getNodeSemantics().resolveSearchInMembersScope(search);
-		}
-		
-		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return getNodeSemantics().resolveTypeForValueContext(mr);
-		}
-		
-		protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
+		/* -----------------  ----------------- */
 		
 		@Override
 		public CommonDefVarSemantics getNodeSemantics() {
 			return nodeSemantics;
 		}
+		
+		protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 		
 	}
 	

@@ -10,18 +10,21 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.intrinsics;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -43,21 +46,24 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicDefUnit... members);
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
-			return null; /*FIXME: BUG here TODO*/
+		public TypeSemantics getNodeSemantics() {
+			return semantics;
 		}
 		
-		@Override
-		public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			assertNotNull(membersScope);
-			return DefElementCommon.returnError_ElementIsNotAValue(this);
-		}
-		
-		@Override
-		public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			assertNotNull(membersScope);
-			membersScope.resolveSearchInScope(search);
-		}
+		protected final TypeSemantics semantics = new TypeSemantics(this) {
+			
+			@Override
+			public IConcreteNamedElement resolveConcreteElement() {
+				return null; /*FIXME: BUG here TODO*/
+			}
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+				assertNotNull(membersScope);
+				membersScope.resolveSearchInScope(search);
+			}
+			
+		};
 		
 	}
 	
@@ -75,19 +81,28 @@ public interface CommonLanguageIntrinsics {
 		protected abstract INamedElement resolveType(IModuleResolver mr);
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
-			return this;
+		public VarSemantics getNodeSemantics() {
+			return semantics;
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveType(search.getModuleResolver()).resolveSearchInMembersScope(search);
-		}
-		
-		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return resolveType(mr);
-		}
+		protected final VarSemantics semantics = new VarSemantics() {
+			
+			@Override
+			public IConcreteNamedElement resolveConcreteElement() {
+				return AbstractIntrinsicProperty.this;
+			}
+			
+			@Override
+			public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+				return resolveType(mr);
+			};
+			
+			@Override
+			protected Resolvable getTypeReference() {
+				throw assertFail();
+			};
+			
+		};
 		
 	}
 	

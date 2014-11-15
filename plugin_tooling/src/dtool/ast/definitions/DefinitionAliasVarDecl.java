@@ -10,10 +10,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.Attribute;
@@ -21,7 +20,6 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A definition of an alias, in the old syntax:
@@ -78,20 +76,28 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		return EArcheType.Alias;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, target);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext_Alias(mr, target);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
 	public Iterator<? extends ASTNode> getMembersIterator() {
 		return IteratorUtil.nonNullIterator(fragments);
 	}
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final INamedElementSemantics semantics = new AliasSemantics() {
+		
+		@Override
+		protected Reference getAliasTarget() {
+			return target;
+		}
+		
+	};
+	
+	/* -----------------  ----------------- */
 	
 	public static class AliasVarDeclFragment extends DefUnit {
 		
@@ -128,15 +134,21 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 			return getParent_Concrete().target;
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveSearchInReferredContainer(search, getAliasTarget());
-		}
+		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			return DefElementCommon.resolveTypeForValueContext_Alias(mr, getAliasTarget());
+		public INamedElementSemantics getNodeSemantics() {
+			return semantics;
 		}
+		
+		protected final INamedElementSemantics semantics = new AliasSemantics() {
+			
+			@Override
+			protected Reference getAliasTarget() {
+				return AliasVarDeclFragment.this.getAliasTarget();
+			}
+			
+		};
 		
 	}
 	

@@ -95,12 +95,13 @@ public class DefinitionClass extends DefinitionAggregate {
 	@Override
 	protected AggregateSemantics createAggregateSemantics() {
 		InstrinsicsScope commonTypeScope = LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
-		return new ClassSemantics(commonTypeScope);
+		return new ClassSemantics(this, commonTypeScope);
 	}
 	
 	public class ClassSemantics extends AggregateSemantics {
-		public ClassSemantics(InstrinsicsScope commonTypeScope) {
-			super(commonTypeScope);
+		
+		public ClassSemantics(INamedElement typeElement, InstrinsicsScope commonTypeScope) {
+			super(typeElement, commonTypeScope);
 		}
 		
 	@Override
@@ -147,6 +148,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		// TODO test implicit object reference
 		return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
 	}
+	
 	}
 	
 }

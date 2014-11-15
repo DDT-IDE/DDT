@@ -15,9 +15,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
@@ -60,16 +59,22 @@ public class TemplateInstance extends DefUnit {
 		return EArcheType.Template;
 	}
 	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		boolean isSequentialLookup = search.isSequentialLookup();
-		/* FIXME: need to refactor this */
-		ReferenceResolver.findInNodeList(search, tplArguments, isSequentialLookup);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			boolean isSequentialLookup = search.isSequentialLookup();
+			/* FIXME: need to refactor this */
+			ReferenceResolver.findInNodeList(search, tplArguments, isSequentialLookup);
+		}
+		
+	};
 	
 }

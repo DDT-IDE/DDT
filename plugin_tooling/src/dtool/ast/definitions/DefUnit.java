@@ -9,9 +9,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
-import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
@@ -159,33 +156,22 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 	
 	/* -----------------  ----------------- */
 	
-	protected static final TypeSemanticsHelper typeSemantics = new TypeSemanticsHelper(); 
-	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
-		/* FIXME: remove default implementation, implement in subclasses */
-		return new NullElementSemantics();
-	}
+	public abstract INamedElementSemantics getNodeSemantics();
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement() {
 		return getNodeSemantics().resolveConcreteElement();
 	}
 	
-	/* FIXME: TODO make these final */
-	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		getNodeSemantics().resolveSearchInMembersScope(search);
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		return getNodeSemantics().resolveTypeForValueContext(mr);
-	}
-	
-	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
-		TypeSemanticsHelper.resolveSearchInReferredContainer(search, resolvable);
 	}
 	
 }

@@ -6,11 +6,11 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.Attribute;
+import dtool.ast.definitions.DefinitionFunction.FunctionElementSemantics;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
@@ -73,15 +73,20 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		return EArcheType.Alias;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		DefinitionFunction.resolveSearchInMembersScopeForFunction(search, target, null, fnParams, null);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		// TODO
-		return null;
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final FunctionElementSemantics semantics = new FunctionElementSemantics() {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			resolveSearchInMembersScopeForFunction(search, target, null, fnParams, null);
+		}
+		
+	};
 	
 }

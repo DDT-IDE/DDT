@@ -15,7 +15,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -105,27 +107,38 @@ public class DefinitionTemplate extends CommonDefinition
 		return true;
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final INamedElementSemantics semantics = new AbstractNamedElementSemantics() {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			if(wrapper) {
+				// TODO: go straight to members of wrapped definition
+			}
+			ReferenceResolver.resolveSearchInScope(search, decls);
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			if(wrapper) {
+				// TODO: 
+			}
+			return new NotAValueErrorElement(DefinitionTemplate.this);
+		};
+		
+	};
+	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {
 		boolean isSequentialLookup = search.isSequentialLookup();
 		/* FIXME: need to refactor this */
 		ReferenceResolver.findInNodeList(search, tplParams, isSequentialLookup);
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		if(wrapper) {
-			// TODO: go straight to members of wrapped definition
-		}
-		ReferenceResolver.resolveSearchInScope(search, decls);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		if(wrapper) {
-			// TODO: 
-		}
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
 	}
 	
 }

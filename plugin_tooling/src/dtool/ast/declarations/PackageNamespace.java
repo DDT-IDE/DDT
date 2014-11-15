@@ -12,8 +12,8 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -101,20 +101,26 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 			+ "{" + containedElement.getFullyQualifiedName() + "}";
 	}
 	
-	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return null; /*FIXME: BUG here TODO*/
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		ReferenceResolver.findDefUnitInScope(this, search);
+	public final INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
 	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
-	}
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public IConcreteNamedElement resolveConcreteElement() {
+			return null; /*FIXME: BUG here TODO*/
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			ReferenceResolver.findDefUnitInScope(PackageNamespace.this, search);
+		}
+		
+	};
 	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {

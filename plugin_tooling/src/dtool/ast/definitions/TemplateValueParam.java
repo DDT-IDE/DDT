@@ -15,14 +15,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.AliasElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateValueParam extends TemplateParameter {
 	
@@ -64,19 +62,25 @@ public class TemplateValueParam extends TemplateParameter {
 		return EArcheType.Variable;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return type.findTargetDefElement(mr);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final VarSemantics semantics = new VarSemantics() {
+		
+		@Override
+		protected Resolvable getTypeReference() {
+			return type;
+		}
+		
+	};
 	
 	@Override
 	public ASTNode createTemplateArgument(Resolvable argument) {
 		return new AliasElement(defname, null); // TODO: correct instantiation
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		TypeSemanticsHelper.resolveSearchInReferredContainer(search, type);
 	}
 	
 }

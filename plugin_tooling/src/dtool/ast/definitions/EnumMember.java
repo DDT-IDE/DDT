@@ -15,13 +15,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class EnumMember extends DefUnit {
 	
@@ -63,17 +62,6 @@ public class EnumMember extends DefUnit {
 		return EArcheType.EnumMember;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		Reference effectiveType = getEffectiveTypeReference();
-		resolveSearchInReferredContainer(search, effectiveType);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext(mr, getEffectiveTypeReference());
-	}
-	
 	protected Reference getEffectiveTypeReference() {
 		return type != null ? type : getEnumParentType();
 	}
@@ -91,5 +79,20 @@ public class EnumMember extends DefUnit {
 		} 
 		return null;
 	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final VarSemantics semantics = new VarSemantics() {
+		
+		@Override
+		protected Resolvable getTypeReference() {
+			return getEffectiveTypeReference();
+		}
+	};
 	
 }

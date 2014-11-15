@@ -14,21 +14,24 @@ import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
+import dtool.resolver.CommonDefUnitSearch;
 
-public class DefElementCommon {
+public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	
-	@Deprecated
-	public static INamedElement returnError_ElementIsNotAValue(INamedElement defElement) {
-		return new NotAValueErrorElement(defElement);
+	public AliasSemantics() {
 	}
 	
-	public static INamedElement resolveTypeForValueContext(IModuleResolver mr, Reference reference) {
-		if(reference == null) {
-			return null;
-		}
-		return reference.findTargetDefElement(mr);
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		TypeSemantics.resolveSearchInReferredContainer(search, getAliasTarget());
 	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return resolveTypeForValueContext_Alias(mr, getAliasTarget());
+	}
+	
+	protected abstract Resolvable getAliasTarget();
 	
 	public static INamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Resolvable alias) {
 		Resolvable aliasTarget = alias;
@@ -36,6 +39,22 @@ public class DefElementCommon {
 			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));
 		}
 		return null;
+	}
+	
+	
+	public abstract static class TypeAliasSemantics extends AliasSemantics {
+		
+		protected INamedElement aliasDef;
+		
+		public TypeAliasSemantics(INamedElement aliasDef) {
+			this.aliasDef = aliasDef;
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			return new NotAValueErrorElement(aliasDef);
+		};
+		
 	}
 	
 }

@@ -14,9 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
@@ -24,7 +21,6 @@ import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.CommonDefVarSemantics;
 import dtool.engine.analysis.IVarDefinitionLike;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	
@@ -62,16 +58,6 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, type);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext(mr, type);
-	}
-	
-	@Override
 	public Reference getDeclaredType() {
 		return type;
 	}
@@ -81,11 +67,13 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 		return defaultValue;
 	}
 	
-	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
+	/* -----------------  ----------------- */
 	
 	@Override
 	public CommonDefVarSemantics getNodeSemantics() {
 		return nodeSemantics;
 	}
+	
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 	
 }

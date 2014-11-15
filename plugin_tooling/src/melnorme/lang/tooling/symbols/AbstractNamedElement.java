@@ -11,9 +11,10 @@
 package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
+import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class AbstractNamedElement implements INamedElement {
 	
@@ -44,9 +45,21 @@ public abstract class AbstractNamedElement implements INamedElement {
 	}
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
-		/* FIXME: remove default implementation, implement in subclasses */
-		return new NullElementSemantics();
+	public abstract INamedElementSemantics getNodeSemantics();
+	
+	@Override
+	public final IConcreteNamedElement resolveConcreteElement() {
+		return getNodeSemantics().resolveConcreteElement();
+	}
+	
+	@Override
+	public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		getNodeSemantics().resolveSearchInMembersScope(search);
+	}
+	
+	@Override
+	public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return getNodeSemantics().resolveTypeForValueContext(mr);
 	}
 	
 }

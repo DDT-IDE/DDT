@@ -18,11 +18,10 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -121,22 +120,29 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		return EArcheType.Enum;
 	}
 	
-	protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
-	protected InstrinsicsScope createAggregateCommonTypeScope() {
-		return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		if(body != null) {
-			ReferenceResolver.findInNodeList(search, body.nodeList, false);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
+		
+		protected InstrinsicsScope createAggregateCommonTypeScope() {
+			return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(typeElement));
 		}
-		commonTypeScope.resolveSearchInScope(search);
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
-	}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			if(body != null) {
+				ReferenceResolver.findInNodeList(search, body.nodeList, false);
+			}
+			commonTypeScope.resolveSearchInScope(search);
+		}
+		
+	};
 	
 }

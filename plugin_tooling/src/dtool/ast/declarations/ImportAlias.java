@@ -13,10 +13,9 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -59,6 +58,8 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		return moduleRef;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
 	public void searchInSecondaryScope(CommonDefUnitSearch options) {
 		// Do nothing. Aliasing imports do not contribute secondary-space DefUnits
@@ -66,13 +67,21 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		TypeSemanticsHelper.resolveSearchInReferredContainer(search, moduleRef);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
 	
-	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
-	}
+	protected final TypeSemantics semantics = new TypeSemantics(this) {
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			resolveSearchInReferredContainer(search, moduleRef);
+		}
+		
+		@Override
+		public IConcreteNamedElement resolveConcreteElement() {
+			return null; /*FIXME: BUG here*/
+		}
+	};
 	
 }

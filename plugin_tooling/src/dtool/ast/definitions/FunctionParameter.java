@@ -5,14 +5,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter {
 	
@@ -84,14 +83,19 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		return type.toStringAsCode() + nameStr + (isVariadic ? "..." : "");
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInReferredContainer(search, type);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.resolveTypeForValueContext(mr, type);
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final VarSemantics semantics = new VarSemantics() {
+		
+		@Override
+		protected Resolvable getTypeReference() {
+			return type;
+		}
+	};
 	
 }

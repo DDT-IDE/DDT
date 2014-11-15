@@ -5,6 +5,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
@@ -36,15 +38,14 @@ public class TemplateThisParam extends TemplateParameter {
 		return EArcheType.Alias;
 	}
 	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		// TODO
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return null; // TODO
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
 	}
+	
+	protected final INamedElementSemantics semantics = new NullElementSemantics(); // Need instance
 	
 	@Override
 	public ASTNode createTemplateArgument(Resolvable resolvable) {
