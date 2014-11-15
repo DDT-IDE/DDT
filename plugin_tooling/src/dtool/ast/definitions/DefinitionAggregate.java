@@ -15,8 +15,9 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
-import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -73,20 +74,35 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		return tplParams != null;
 	}
 	
+	public IScopeNode getBodyScope() {
+		return aggrBody instanceof DeclarationEmpty ? null : ((DeclBlock) aggrBody);
+	}
+	
+	/* ----------------- ----------------- */
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		return semantics;
+	}
+	
+	protected final TypeSemantics semantics = createAggregateSemantics();
+	
+	protected AggregateSemantics createAggregateSemantics() {
+		InstrinsicsScope commonTypeScope = new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
+		return new AggregateSemantics(commonTypeScope);
+	}
+	
+	public class AggregateSemantics extends TypeSemantics {
+		
+		protected final InstrinsicsScope commonTypeScope;
+		
+		public AggregateSemantics(InstrinsicsScope commonTypeScope) {
+			this.commonTypeScope = commonTypeScope;
+		}
+		
 	@Override
 	public IConcreteNamedElement resolveConcreteElement() {
-		return this;
-	}
-	
-	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
-		ReferenceResolver.findInNodeList(search, tplParams, true);
-	}
-	
-	protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
-	
-	protected InstrinsicsScope createAggregateCommonTypeScope() {
-		return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
+		return DefinitionAggregate.this;
 	}
 	
 	@Override
@@ -97,11 +113,13 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return DefElementCommon.returnError_ElementIsNotAValue(this);
+		return resolveTypeForValueContext(mr, DefinitionAggregate.this);
+	}
 	}
 	
-	public IScopeNode getBodyScope() {
-		return aggrBody instanceof DeclarationEmpty ? null : ((DeclBlock) aggrBody);
+	@Override
+	public void resolveSearchInScope(CommonDefUnitSearch search) {
+		ReferenceResolver.findInNodeList(search, tplParams, true);
 	}
 	
 }

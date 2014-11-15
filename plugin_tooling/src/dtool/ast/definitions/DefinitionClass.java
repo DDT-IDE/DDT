@@ -85,11 +85,24 @@ public class DefinitionClass extends DefinitionAggregate {
 		acceptVisitor(visitor, aggrBody);
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	protected InstrinsicsScope createAggregateCommonTypeScope() {
-		return LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
+	public ClassSemantics getNodeSemantics() {
+		return (ClassSemantics) super.getNodeSemantics();
 	}
 	
+	@Override
+	protected AggregateSemantics createAggregateSemantics() {
+		InstrinsicsScope commonTypeScope = LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
+		return new ClassSemantics(commonTypeScope);
+	}
+	
+	public class ClassSemantics extends AggregateSemantics {
+		public ClassSemantics(InstrinsicsScope commonTypeScope) {
+			super(commonTypeScope);
+		}
+		
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		resolveSearchInHierarchyScope(search);
@@ -114,7 +127,7 @@ public class DefinitionClass extends DefinitionAggregate {
 			
 			if(baseClassElem instanceof DefinitionClass) {
 				DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-				baseClassDef.resolveSearchInHierarchyScope(search);
+				baseClassDef.getNodeSemantics().resolveSearchInHierarchyScope(search);
 			}
 		}
 	}
@@ -133,6 +146,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 		// TODO test implicit object reference
 		return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
+	}
 	}
 	
 }

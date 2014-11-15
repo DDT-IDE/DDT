@@ -21,7 +21,6 @@ public class TypeSemanticsHelper {
 	
 	@SuppressWarnings("unused")
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr, INamedElement element) {
-		//return DefElementCommon.returnError_ElementIsNotAValue(element);
 		return new NotAValueErrorElement(element);
 	}
 	

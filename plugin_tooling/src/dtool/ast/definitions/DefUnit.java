@@ -167,12 +167,12 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 		return new NullElementSemantics();
 	}
 	
-	/* FIXME: make these final */
-	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
+	public final IConcreteNamedElement resolveConcreteElement() {
 		return getNodeSemantics().resolveConcreteElement();
 	}
+	
+	/* FIXME: TODO make these final */
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {

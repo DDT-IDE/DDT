@@ -18,6 +18,7 @@ import dtool.ast.references.Reference;
 
 public class DefElementCommon {
 	
+	@Deprecated
 	public static INamedElement returnError_ElementIsNotAValue(INamedElement defElement) {
 		return new NotAValueErrorElement(defElement);
 	}

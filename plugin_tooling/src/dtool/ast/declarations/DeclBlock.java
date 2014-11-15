@@ -33,7 +33,7 @@ public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, ISco
 		// TODO: a more typesafe alternative to this check
 		if(getParent() instanceof DefinitionClass) {
 			DefinitionClass definitionClass = (DefinitionClass) getParent();
-			definitionClass.resolveSearchInSuperScopes(search);
+			definitionClass.getNodeSemantics().resolveSearchInSuperScopes(search);
 		}
 	}
 	
