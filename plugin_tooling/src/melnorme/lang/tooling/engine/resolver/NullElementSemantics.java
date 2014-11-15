@@ -8,20 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
+import dtool.resolver.CommonDefUnitSearch;
 
 /**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
+ * Does nothing.
  */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+public class NullElementSemantics extends AbstractNamedElementSemantics {
 	
-	Reference getDeclaredType();
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return null;
+	}
 	
-	IInitializer getDeclaredInitializer();
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	}
 	
 }

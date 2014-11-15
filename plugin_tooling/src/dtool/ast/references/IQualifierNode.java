@@ -8,20 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package dtool.ast.references;
 
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
+import dtool.ast.expressions.Resolvable;
 
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
-	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
-	
-}
+/** Marker interface for nodes that can appear as qualifier in {@link RefQualified}. 
+ * Must be a {@link Resolvable}. */
+public interface IQualifierNode extends IResolvable, IASTNode { }

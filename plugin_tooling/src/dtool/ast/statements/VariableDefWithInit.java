@@ -81,7 +81,7 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 		return defaultValue;
 	}
 	
-	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 	
 	@Override
 	public CommonDefVarSemantics getNodeSemantics() {

@@ -102,10 +102,10 @@ public class DefinitionVariable extends CommonDefinition
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return getNodeSemantics().resolveEffectiveType(mr);
+		return getNodeSemantics().resolveTypeForValueContext(mr);
 	}
 	
-	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this) { };
+	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 	
 	@Override
 	public CommonDefVarSemantics getNodeSemantics() {

@@ -21,13 +21,13 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement {

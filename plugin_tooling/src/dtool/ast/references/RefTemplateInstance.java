@@ -13,20 +13,15 @@ package dtool.ast.references;
 import static dtool.util.NewUtils.assertInstance;
 import static dtool.util.NewUtils.exactlyOneIsNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
+import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
-import melnorme.lang.tooling.engine.resolver.ResolutionResult;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayView;
+import melnorme.utilbox.collections.RandomAccess2;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.expressions.Resolvable.IQualifierNode;
-import dtool.ast.expressions.Resolvable.ITemplateRefNode;
+import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	
@@ -67,15 +62,21 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		}
 	}
 	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
-		// Not accurate, this will ignore the template parameters:
-		return tplRef.findTargetDefElements(moduleResolver, findOneOnly);
+	public RandomAccess2<Resolvable> getEffectiveArguments() {
+		if(isSingleArgSyntax()) {
+			return ArrayView.create(array(tplSingleArg));
+		} else {
+			return tplArgs;
+		}
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected final RefTemplateInstanceSemantics semantics = new RefTemplateInstanceSemantics(this);
+	
 	@Override
-	public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
-		return super.resolveTargetElement(sr);
-	}
+	public RefTemplateInstanceSemantics getNodeSemantics() {
+		return semantics;
+	};
 	
 }

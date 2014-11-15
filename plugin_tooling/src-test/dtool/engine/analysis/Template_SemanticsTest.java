@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.PathUtil;
@@ -33,6 +32,7 @@ import dtool.engine.AbstractBundleResolution;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.engine.DToolServer;
 import dtool.engine.ResolvedModule;
+import dtool.engine.analysis.templates.TemplateInstance;
 import dtool.resolver.PrefixDefUnitSearch;
 
 
@@ -41,9 +41,9 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	public static TestsElementSearch resolveAllMembers(ResolvedModule module, Reference tplRef) {
 		AbstractBundleResolution sr = module.getSemanticResolution();
 		TestsElementSearch search = allElementsSearch(module);
-		IScopeProvider tplInstance = 
-				assertCast(tplRef.resolveTargetElement(sr).getSingleResult(), IScopeProvider.class);
-		tplInstance.resolveSearchInScope(search);
+		INamedElement tplInstance_ = tplRef.resolveTargetElement(sr).getSingleResult();
+		TemplateInstance tplInstance = assertCast(tplInstance_, TemplateInstance.class);
+		tplInstance.resolveSearchInMembersScope(search);
 		return search;
 	}
 	
@@ -109,11 +109,11 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		TestsElementSearch search = resolveAllMembers(module, tplRef);
 		
 		INamedElement tplArg = search.findElement("TYPE1");
-//		assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
+		//assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
 	}
 	
 	protected INamedElement resolveEffectiveType(INamedElement tplArg) {
-		return tplArg; // TODO
+		return tplArg.resolveConcreteElement();
 	}
 	
 }

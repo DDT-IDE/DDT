@@ -10,6 +10,7 @@ import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;

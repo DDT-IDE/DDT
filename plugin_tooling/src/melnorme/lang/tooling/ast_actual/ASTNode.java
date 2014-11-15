@@ -11,11 +11,11 @@
 package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
-import melnorme.lang.tooling.ast.CommonASTNode;
 
 public abstract class ASTNode extends CommonASTNode {
 	

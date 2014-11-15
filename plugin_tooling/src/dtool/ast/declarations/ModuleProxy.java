@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
@@ -62,6 +63,11 @@ public class ModuleProxy extends AbstractNamedElement {
 	@Override
 	public INamedElement getParentElement() {
 		return null;
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return null; /*FIXME: BUG here TODO*/
 	}
 	
 	@Override

@@ -13,6 +13,8 @@ package melnorme.lang.tooling.engine.resolver;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
@@ -66,6 +68,19 @@ public class NotAValueErrorElement implements INamedElement {
 	@Override
 	public INamedElement getParentElement() {
 		return wrappedElement.getParentElement();
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return wrappedElement.resolveConcreteElement();
+	}
+	
+	
+	protected final INamedElementSemantics nodeSemantics = new NullElementSemantics();
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		return nodeSemantics;
 	}
 	
 	@Override

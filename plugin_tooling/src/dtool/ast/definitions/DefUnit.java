@@ -2,24 +2,24 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
-import dtool.ast.references.CommonQualifiedReference;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.ParserError;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IResolvable;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
@@ -157,18 +157,35 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 		return getDDoc();
 	}
 	
-	@Override
-	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	/* -----------------  ----------------- */
 	
+	protected static final TypeSemanticsHelper typeSemantics = new TypeSemanticsHelper(); 
+	
+	@Override
+	public INamedElementSemantics getNodeSemantics() {
+		/* FIXME: remove default implementation, implement in subclasses */
+		return new NullElementSemantics();
+	}
+	
+	/* FIXME: make these final */
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return getNodeSemantics().resolveConcreteElement();
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		getNodeSemantics().resolveSearchInMembersScope(search);
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		return getNodeSemantics().resolveTypeForValueContext(mr);
+	}
 	
 	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
-		if(resolvable == null) {
-			return;
-		}
-		
-		IModuleResolver mr = search.getModuleResolver();
-		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
-		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
+		TypeSemanticsHelper.resolveSearchInReferredContainer(search, resolvable);
 	}
 	
 }

@@ -8,20 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package dtool.engine.analysis.templates;
 
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
 
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefUnit;
+
+public abstract class InstantiatedDefUnit extends DefUnit {
 	
-	Reference getDeclaredType();
+	public InstantiatedDefUnit(DefSymbol defname) {
+		super(defname.createCopy());
+	}
 	
-	IInitializer getDeclaredInitializer();
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("【");
+		toStringAsCode_instantiatedDefUnit(cp);
+		cp.append("】");
+	}
+	
+	public abstract void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp);
 	
 }

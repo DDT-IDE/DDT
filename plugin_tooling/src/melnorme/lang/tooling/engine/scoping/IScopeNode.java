@@ -8,20 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package melnorme.lang.tooling.engine.scoping;
 
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
 
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+public interface IScopeNode extends IScopeProvider, IASTNode {
 	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
+	IScopeNode getOuterLexicalScope();
 	
 }

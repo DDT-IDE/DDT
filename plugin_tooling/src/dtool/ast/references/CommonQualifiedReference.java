@@ -17,7 +17,6 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.Resolvable.ITemplateRefNode;
 import dtool.resolver.CommonDefUnitSearch;
 
 

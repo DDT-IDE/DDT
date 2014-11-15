@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,58 +8,46 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.definitions;
+package dtool.engine.analysis.templates;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.TypeSemanticsHelper;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
-import dtool.engine.analysis.templates.TypeAliasElement;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class TemplateTypeParam extends TemplateParameter {
+public class TypeAliasElement extends InstantiatedDefUnit {
 	
-	public final Reference specializationType;
-	public final Reference defaultType;
+	public final Resolvable target;
 	
-	public TemplateTypeParam(ProtoDefSymbol defId, Reference specializationType, Reference defaultType){
-		super(defId);
-		this.specializationType = parentize(specializationType);
-		this.defaultType = parentize(defaultType);
+	public TypeAliasElement(DefSymbol defname, Resolvable target) {
+		super(defname);
+		this.target = target;
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.TEMPLATE_TYPE_PARAM;
+		return ASTNodeTypes.TEMPLATE_TYPE_PARAM__INSTANCE;
 	}
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
-		acceptVisitor(visitor, specializationType);
-		acceptVisitor(visitor, defaultType);
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
+	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
 		cp.append(defname);
-		cp.append(" : ", specializationType);
-		cp.append(" = ", defaultType);
+		cp.append(" = ", target);
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.TypeParameter;
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		TypeSemanticsHelper.resolveSearchInReferredContainer(search, specializationType);
+		return EArcheType.Alias;
 	}
 	
 	@Override
@@ -68,8 +56,8 @@ public class TemplateTypeParam extends TemplateParameter {
 	}
 	
 	@Override
-	public ASTNode createTemplateArgument(Resolvable resolvable) {
-		return new TypeAliasElement(defname, resolvable);
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		TypeSemanticsHelper.resolveSearchInReferredContainer(search, target);
 	}
 	
 }

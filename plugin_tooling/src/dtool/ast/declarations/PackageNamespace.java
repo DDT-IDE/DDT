@@ -16,6 +16,7 @@ import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -98,6 +99,11 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	public String toString() {
 		return getClass().getSimpleName() + ":" + getFullyQualifiedName() 
 			+ "{" + containedElement.getFullyQualifiedName() + "}";
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return null; /*FIXME: BUG here TODO*/
 	}
 	
 	@Override

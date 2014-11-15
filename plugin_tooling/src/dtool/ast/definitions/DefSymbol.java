@@ -35,4 +35,12 @@ public class DefSymbol extends Symbol {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(name);
 	}
+	
+	public DefSymbol createCopy() {
+		DefSymbol defname = this;
+		DefSymbol defSymbol = new DefSymbol(defname.name);
+		defSymbol.setSourceRange(defname.getSourceRangeOrNull());
+		return defSymbol;
+	}
+	
 }

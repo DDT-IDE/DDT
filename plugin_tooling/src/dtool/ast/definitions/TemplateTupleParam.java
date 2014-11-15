@@ -12,10 +12,13 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.expressions.Resolvable;
+import dtool.engine.analysis.templates.AliasElement;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTupleParam extends TemplateParameter {
@@ -49,6 +52,11 @@ public class TemplateTupleParam extends TemplateParameter {
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 		// TODO return intrinsic universal
 		return;
+	}
+	
+	@Override
+	public ASTNode createTemplateArgument(Resolvable argument) {
+		return new AliasElement(defname, null);  // TODO: correct instantiation
 	}
 	
 	@Override

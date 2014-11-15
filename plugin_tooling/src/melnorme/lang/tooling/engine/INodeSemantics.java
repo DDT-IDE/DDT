@@ -8,20 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
-
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+public interface INodeSemantics {
 	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
+	public static final INodeSemantics NULL_NODE_SEMANTICS = new INodeSemantics() {
+	};
 	
 }

@@ -10,31 +10,32 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
+import dtool.resolver.CommonDefUnitSearch;
 
-public class DefElementCommon {
+public abstract class VarSemantics extends AbstractNamedElementSemantics {
 	
-	public static INamedElement returnError_ElementIsNotAValue(INamedElement defElement) {
-		return new NotAValueErrorElement(defElement);
-	}
-	
-	public static INamedElement resolveTypeForValueContext(IModuleResolver mr, Reference reference) {
-		if(reference == null) {
-			return null;
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		INamedElement effectiveType = resolveTypeForValueContext(search.getModuleResolver());
+		if(effectiveType != null) {
+			effectiveType.resolveSearchInMembersScope(search);
 		}
-		return reference.findTargetDefElement(mr);
 	}
 	
-	public static INamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Resolvable alias) {
-		Resolvable aliasTarget = alias;
-		if(aliasTarget != null) {
-			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		Resolvable declaredType = getTypeReference();
+		if(declaredType != null) {
+			// TODO: handle finding multiple elements
+			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));
 		}
 		return null;
 	}
+	
+	protected abstract Resolvable getTypeReference();
 	
 }

@@ -13,13 +13,13 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 

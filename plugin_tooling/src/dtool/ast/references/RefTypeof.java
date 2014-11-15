@@ -18,7 +18,6 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.Resolvable.IQualifierNode;
 
 public class RefTypeof extends Reference implements IQualifierNode {
 	

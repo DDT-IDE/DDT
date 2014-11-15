@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -25,7 +26,6 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -89,6 +89,10 @@ public class DefinitionTemplate extends CommonDefinition
 		} else {
 			cp.append("if(", tplConstraint, ")");
 		}
+	}
+	
+	public ArrayView<TemplateParameter> getTemplateParameters() {
+		return nonNull(tplParams);
 	}
 	
 	@Override

@@ -100,7 +100,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 	}
 	
 	protected String getDDocHTMLViewForAutoLike(IModuleResolver mr, IVarDefinitionLike defVar) {
-		INamedElement resolvedType = defVar.getNodeSemantics().resolveEffectiveType(mr);
+		INamedElement resolvedType = defVar.getNodeSemantics().resolveTypeForValueContext(mr);
 		
 		if(resolvedType == null) {
 			return TextUI.span("semantic_error", "color:red;",

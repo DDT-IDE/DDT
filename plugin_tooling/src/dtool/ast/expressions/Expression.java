@@ -14,9 +14,9 @@ package dtool.ast.expressions;
 import java.util.Collection;
 import java.util.Collections;
 
+import dtool.ast.references.IQualifierNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.Resolvable.IQualifierNode;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	

@@ -16,8 +16,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 public class CatchClause extends ASTNode implements IScopeNode {

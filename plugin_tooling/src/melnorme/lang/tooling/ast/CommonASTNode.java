@@ -18,10 +18,11 @@ import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.INodeSemantics;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.parser.ParserError;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 public abstract class CommonASTNode implements IASTNode {
@@ -304,6 +305,10 @@ public abstract class CommonASTNode implements IASTNode {
 	
 	/* =============== Parenting utils =============== */
 	
+	public static <T> ArrayView<T> nonNull(ArrayView<T> arrayView) {
+		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
+	}
+	
 	/** Set the parent of the given collection to the receiver. @return collection */
 	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
 		return parentize(collection, false);
@@ -377,6 +382,10 @@ public abstract class CommonASTNode implements IASTNode {
 	
 	public IScopeNode getOuterLexicalScope() {
 		return ReferenceResolver.getOuterLexicalScope(asNode());
+	}
+	
+	public INodeSemantics getNodeSemantics() {
+		return INodeSemantics.NULL_NODE_SEMANTICS;
 	}
 	
 }

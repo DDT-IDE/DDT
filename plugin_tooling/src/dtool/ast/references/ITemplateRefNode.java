@@ -8,20 +8,10 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
+package dtool.ast.references;
 
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
 
-/**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
- */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
-	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
-	
-}
+/** Marker interface for nodes that can appear as template references in template instance. 
+ * Must be a {@link Reference}.*/
+public interface ITemplateRefNode extends IASTNode { }

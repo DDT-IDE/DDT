@@ -14,6 +14,7 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
 
 
@@ -62,7 +63,18 @@ public interface INamedElement extends INamedElementExtensions {
 	 * but this method allows proxy {@link INamedElement} classes to resolve to their proxied node. 
 	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
 	 */
+	// TODO: add exception
 	INamedElementNode resolveUnderlyingNode();
+	
+	/** @return the class responsible for handling semantic analysis. Non-null. */
+	INamedElementSemantics getNodeSemantics();
+	
+	/**
+	 * If this element is an alias to some other element, resolve all of them until the non-alias element
+	 * is found.
+	 * @return the non-alias element.
+	 */
+	public abstract IConcreteNamedElement resolveConcreteElement();
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.

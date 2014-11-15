@@ -8,20 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.analysis;
-
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
+package melnorme.lang.tooling.symbols;
 
 /**
- * Interface for nodes similar to a variable definition (basically defUnits that have an associated type).
+ * A concrete named element is named element that is not an alias to another element.
  */
-public interface IVarDefinitionLike extends INamedElement, IASTNode {
+public interface IConcreteNamedElement extends INamedElement {
 	
-	Reference getDeclaredType();
-	
-	IInitializer getDeclaredInitializer();
+	/** @return the receiver, since it is a {@link IConcreteNamedElement}. */
+	@Override
+	public IConcreteNamedElement resolveConcreteElement();
 	
 }

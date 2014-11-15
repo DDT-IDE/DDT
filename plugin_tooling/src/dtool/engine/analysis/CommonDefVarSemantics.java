@@ -12,13 +12,13 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.engine.resolver.IValueNode;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
-import dtool.ast.references.Reference;
-import dtool.resolver.CommonDefUnitSearch;
+import dtool.ast.expressions.Resolvable;
 
-public abstract class CommonDefVarSemantics {
+public class CommonDefVarSemantics extends VarSemantics {
 	
 	protected final IVarDefinitionLike varDef;
 	
@@ -26,18 +26,12 @@ public abstract class CommonDefVarSemantics {
 		this.varDef = varDef;
 	}
 	
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		INamedElement effectiveType = resolveEffectiveType(search.getModuleResolver());
-		if(effectiveType != null) {
-			effectiveType.resolveSearchInMembersScope(search);
+	@Override
+	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		if(getTypeReference() != null) {
+			return super.resolveTypeForValueContext(mr);
 		}
-	}
-	
-	public INamedElement resolveEffectiveType(IModuleResolver mr) {
-		Reference declaredType = varDef.getDeclaredType();
-		if(declaredType != null) {
-			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));
-		}
+		
 		IInitializer initializer = varDef.getDeclaredInitializer();
 		if(initializer instanceof IValueNode) {
 			IValueNode initializerR = (IValueNode) initializer;
@@ -45,6 +39,11 @@ public abstract class CommonDefVarSemantics {
 		}
 		
 		return null; // TODO: create error element
+	}
+	
+	@Override
+	protected Resolvable getTypeReference() {
+		return varDef.getDeclaredType();
 	}
 	
 }

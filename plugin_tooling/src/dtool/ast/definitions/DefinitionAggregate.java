@@ -17,6 +17,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.DefElementCommon;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -25,14 +27,13 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 /**
  * A definition of a aggregate. 
  */
 public abstract class DefinitionAggregate extends CommonDefinition 
-	implements IStatement, IScopeNode, ITemplatableElement 
+	implements IStatement, IScopeNode, ITemplatableElement, IConcreteNamedElement
 {
 	
 	public interface IAggregateBody extends IASTNode {
@@ -70,6 +71,11 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	@Override
 	public boolean isTemplated() {
 		return tplParams != null;
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return this;
 	}
 	
 	@Override

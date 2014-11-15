@@ -4,11 +4,11 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
 import dtool.ast.definitions.DefinitionClass;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.IScopeNode;
 import dtool.resolver.ReferenceResolver;
 
 public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeNode {

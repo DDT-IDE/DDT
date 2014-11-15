@@ -11,10 +11,12 @@
 package melnorme.lang.tooling.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Iterator;
+
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.parser.ISourceRepresentation;
-import melnorme.utilbox.collections.ArrayView;
 
 public class ASTCodePrinter {
 	
@@ -101,44 +103,47 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendTokenList(ArrayView<? extends ISourceRepresentation> list, String sep, boolean printLastSep) {
-		if(list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				ISourceRepresentation obj = list.get(i);
-				append(obj.getSourceValue());
-				if(printLastSep || i != list.size() - 1) {
-					sb.append(sep);
-				}
+	public void appendTokenList(Iterable<? extends ISourceRepresentation> list, String sep, boolean printLastSep) {
+		if(list == null) {
+			return;
+		}
+		for (Iterator<? extends ISourceRepresentation> iter = list.iterator(); iter.hasNext(); ) {
+			ISourceRepresentation obj = iter.next();
+			append(obj.getSourceValue());
+			if(iter.hasNext() || printLastSep) {
+				sb.append(sep);
 			}
 		}
 	}
 	
-	public void appendList(ArrayView<? extends IASTNode> list, String sep) {
+	public void appendList(Iterable<? extends IASTNode> list, String sep) {
 		appendList(list, sep, false);
 	}
 	
-	public void appendList(ArrayView<? extends IASTNode> list, String sep, boolean printLastSep) {
-		if(list != null) {
-			for (int i = 0; i < list.size(); i++) {
-				IASTNode node = list.get(i);
-				append(node.asNode());
-				if(printLastSep || i != list.size() - 1) {
-					sb.append(sep);
-				}
+	public void appendList(Iterable<? extends IASTNode> list, String sep, boolean printLastSep) {
+		if(list == null) {
+			return;
+		}
+		
+		for (Iterator<? extends IASTNode> iter = list.iterator(); iter.hasNext(); ) {
+			IASTNode node = iter.next();
+			append(node.asNode());
+			if(iter.hasNext() || printLastSep) {
+				sb.append(sep);
 			}
 		}
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, String close) {
+	public boolean appendList(String open, Iterable<? extends IASTNode> args, String sep, String close) {
 		return appendList(open, args, sep, close, null);
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, String close, 
+	public boolean appendList(String open, Iterable<? extends IASTNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
 		return appendList(open, args, sep, false, close, spacingIfArgsNull);
 	}
 	
-	public boolean appendList(String open, ArrayView<? extends IASTNode> args, String sep, boolean hasEndingSep,
+	public boolean appendList(String open, Iterable<? extends IASTNode> args, String sep, boolean hasEndingSep,
 		String close, String spacingIfArgsNull) {
 		if(args != null) {
 			append(open);

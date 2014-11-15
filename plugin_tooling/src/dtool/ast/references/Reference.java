@@ -10,13 +10,12 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.IResolvable;
 
 /**
  * Common class for entity references.
@@ -24,22 +23,11 @@ import dtool.resolver.IResolvable;
 public abstract class Reference extends Resolvable implements IResolvable {
 	
 	@Override
-	public abstract Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
-	
-	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-		Collection<INamedElement> resolvedElements = findTargetDefElements(mr, false);
-		
-		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
-		for (INamedElement defElement : resolvedElements) {
-			INamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
-			if(resolvedTypeForValueContext != null) {
-				resolvedTypeForValueContext.add(resolveTypeForValueContext);
-			}
-		}
-		return resolvedTypeForValueContext; 
+	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
+		return getNodeSemantics().findTargetDefElements(moduleResolver, findOneOnly);
 	}
 	
+	@Deprecated
 	protected static Collection<INamedElement> resolveToInvalidValue() {
 		return null; 
 	}
