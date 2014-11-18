@@ -14,4 +14,7 @@ public interface IResolvable {
 	 * If no results are found, return null. */
 	Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
 	
+	
+	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	
 }

@@ -22,6 +22,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
@@ -29,7 +30,7 @@ import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
-public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement {
+public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement, IConcreteNamedElement {
 	
 	public final Reference type;
 	public final EnumBody body;

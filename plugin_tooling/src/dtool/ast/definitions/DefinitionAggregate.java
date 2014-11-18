@@ -19,7 +19,6 @@ import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationEmpty;
@@ -95,14 +94,9 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		
 		protected final InstrinsicsScope commonTypeScope;
 		
-		public AggregateSemantics(INamedElement typeElement, InstrinsicsScope commonTypeScope) {
+		public AggregateSemantics(IConcreteNamedElement typeElement, InstrinsicsScope commonTypeScope) {
 			super(typeElement);
 			this.commonTypeScope = commonTypeScope;
-		}
-		
-		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
-			return DefinitionAggregate.this;
 		}
 		
 		@Override

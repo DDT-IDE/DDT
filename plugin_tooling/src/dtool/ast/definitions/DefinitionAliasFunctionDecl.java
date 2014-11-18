@@ -10,7 +10,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.Attribute;
-import dtool.ast.definitions.DefinitionFunction.FunctionElementSemantics;
+import dtool.ast.definitions.DefinitionFunction.AbstractFunctionElementSemantics;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
@@ -80,11 +80,11 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		return semantics;
 	}
 	
-	protected final FunctionElementSemantics semantics = new FunctionElementSemantics() {
+	protected final AbstractFunctionElementSemantics semantics = new AbstractFunctionElementSemantics() {
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveSearchInMembersScopeForFunction(search, target, null, fnParams, null);
+			resolveSearchInMembersScopeForFunction(search, target);
 		}
 		
 	};

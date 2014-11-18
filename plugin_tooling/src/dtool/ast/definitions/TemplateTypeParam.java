@@ -12,14 +12,12 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.TypeAliasElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTypeParam extends TemplateParameter {
 	
@@ -63,17 +61,17 @@ public class TemplateTypeParam extends TemplateParameter {
 		return semantics;
 	}
 	
-	protected final TypeSemantics semantics = new TypeSemantics(this) {
+	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveSearchInReferredContainer(search, specializationType);
+		protected Resolvable getAliasTarget() {
+			return specializationType;
 		}
 		
 	};
 	
 	@Override
-	public ASTNode createTemplateArgument(Resolvable resolvable) {
+	public TypeAliasElement createTemplateArgument(Resolvable resolvable) {
 		return new TypeAliasElement(defname, resolvable);
 	}
 	

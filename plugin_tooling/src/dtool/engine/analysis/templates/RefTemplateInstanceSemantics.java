@@ -12,7 +12,7 @@ package dtool.engine.analysis.templates;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
@@ -77,7 +77,7 @@ public class RefTemplateInstanceSemantics extends AbstractResolvableSemantics {
 			return null;
 		}
 		
-		ArrayList2<ASTNode> instantiatedArgs = new ArrayList2<>();
+		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();
 		
 		for (int ix = 0; ix < paramSize; ix++) {
 			TemplateParameter tplParameter = template.tplParams.get(ix);

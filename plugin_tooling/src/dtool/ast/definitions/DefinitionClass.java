@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -100,54 +101,54 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	public class ClassSemantics extends AggregateSemantics {
 		
-		public ClassSemantics(INamedElement typeElement, InstrinsicsScope commonTypeScope) {
-			super(typeElement, commonTypeScope);
+		public ClassSemantics(IConcreteNamedElement classElement, InstrinsicsScope commonTypeScope) {
+			super(classElement, commonTypeScope);
 		}
 		
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		resolveSearchInHierarchyScope(search);
-		commonTypeScope.resolveSearchInScope(search);
-	}
-	
-	public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
-		ReferenceResolver.resolveSearchInScope(search, getBodyScope());
-		if(getBodyScope() == null) {
-			// Even without a body scope, we can resolve in super scopes
-			resolveSearchInSuperScopes(search);
+		@Override
+		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			resolveSearchInHierarchyScope(search);
+			commonTypeScope.resolveSearchInScope(search);
 		}
-	}
-	
-	public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
-		IModuleResolver mr = search.getModuleResolver();
 		
-		for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-			INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
-			if(baseClassElem == null)
-				continue;
+		public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
+			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+			if(getBodyScope() == null) {
+				// Even without a body scope, we can resolve in super scopes
+				resolveSearchInSuperScopes(search);
+			}
+		}
+		
+		public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
+			IModuleResolver mr = search.getModuleResolver();
 			
-			if(baseClassElem instanceof DefinitionClass) {
-				DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-				baseClassDef.getNodeSemantics().resolveSearchInHierarchyScope(search);
+			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
+				INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
+				if(baseClassElem == null)
+					continue;
+				
+				if(baseClassElem instanceof DefinitionClass) {
+					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
+					baseClassDef.getNodeSemantics().resolveSearchInHierarchyScope(search);
+				}
 			}
 		}
-	}
-	
-	public INamedElement resolveSuperClass(IModuleResolver mr) {
 		
-		for (Reference baseClassRef : nonNullIterable(baseClasses)) {
-			INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+		public INamedElement resolveSuperClass(IModuleResolver mr) {
 			
-			if(baseClass.getArcheType() == EArcheType.Interface) {
-				continue;
+			for (Reference baseClassRef : nonNullIterable(baseClasses)) {
+				INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+				
+				if(baseClass.getArcheType() == EArcheType.Interface) {
+					continue;
+				}
+				if(baseClass instanceof DefinitionClass) {
+					return baseClass;
+				}
 			}
-			if(baseClass instanceof DefinitionClass) {
-				return baseClass;
-			}
+			// TODO test implicit object reference
+			return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
 		}
-		// TODO test implicit object reference
-		return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
-	}
 	
 	}
 	

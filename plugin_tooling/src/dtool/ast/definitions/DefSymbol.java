@@ -1,6 +1,7 @@
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -39,7 +40,10 @@ public class DefSymbol extends Symbol {
 	public DefSymbol createCopy() {
 		DefSymbol defname = this;
 		DefSymbol defSymbol = new DefSymbol(defname.name);
-		defSymbol.setSourceRange(defname.getSourceRangeOrNull());
+		SourceRange sourceRangeOrNull = defname.getSourceRangeOrNull();
+		if(sourceRangeOrNull != null) {
+			defSymbol.setSourceRange(sourceRangeOrNull);
+		}
 		return defSymbol;
 	}
 	

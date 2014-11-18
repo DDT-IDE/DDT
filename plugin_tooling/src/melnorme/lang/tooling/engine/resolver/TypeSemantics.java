@@ -13,16 +13,22 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class TypeSemantics extends AbstractNamedElementSemantics {
 	
-	protected INamedElement typeElement;
+	protected IConcreteNamedElement typeElement;
 	
-	public TypeSemantics(INamedElement typeElement) {
+	public TypeSemantics(IConcreteNamedElement typeElement) {
 		this.typeElement = typeElement;
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return typeElement;
 	}
 	
 	@Override

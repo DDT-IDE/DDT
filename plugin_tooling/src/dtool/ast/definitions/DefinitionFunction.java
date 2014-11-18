@@ -6,6 +6,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
@@ -19,7 +20,8 @@ import dtool.resolver.CommonDefUnitSearch;
 /**
  * A definition of a function.
  */
-public class DefinitionFunction extends AbstractFunctionDefinition implements IDeclaration, IStatement{
+public class DefinitionFunction extends AbstractFunctionDefinition implements IDeclaration, IStatement, 
+	IConcreteNamedElement {
 	
 	public final Reference retType;
 	
@@ -91,20 +93,31 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return semantics;
 	}
 	
-	protected final FunctionElementSemantics semantics = new FunctionElementSemantics() {
+	protected final FunctionElementSemantics semantics = new FunctionElementSemantics(this);
+	
+	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {
+		
+		protected DefinitionFunction function;
+		
+		public FunctionElementSemantics(DefinitionFunction defFunction) {
+			this.function = defFunction;
+		}
+		
+		@Override
+		public IConcreteNamedElement resolveConcreteElement() {
+			return function;
+		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveSearchInMembersScopeForFunction(search, retType, tplParams, fnParams, tplConstraint);
+			resolveSearchInMembersScopeForFunction(search, function.retType);
 		}
-		
-	};
+	}
 	
-	public static abstract class FunctionElementSemantics extends AbstractNamedElementSemantics {
+	public static abstract class AbstractFunctionElementSemantics extends AbstractNamedElementSemantics {
 		
 		@SuppressWarnings("unused")
-		public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType,
-			 ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, Expression tplConstraint) {
+		public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType) {
 			// Do nothing, a function has no members scope
 			// TODO: except for implicit function calls syntax, that needs to be implemented
 		}

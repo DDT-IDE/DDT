@@ -13,7 +13,6 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -79,7 +78,7 @@ public class TemplateValueParam extends TemplateParameter {
 	};
 	
 	@Override
-	public ASTNode createTemplateArgument(Resolvable argument) {
+	public AliasElement createTemplateArgument(Resolvable argument) {
 		return new AliasElement(defname, null); // TODO: correct instantiation
 	}
 	

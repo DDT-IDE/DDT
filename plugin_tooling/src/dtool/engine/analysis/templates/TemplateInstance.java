@@ -12,11 +12,12 @@ package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
@@ -24,12 +25,12 @@ import dtool.ast.definitions.EArcheType;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
-public class TemplateInstance extends DefUnit {
+public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	
-	public final ArrayList2<ASTNode> tplArguments; /* FIXME: make read only. */
+	public final ArrayList2<INamedElementNode> tplArguments; /* FIXME: make read only. */
 	protected final DefinitionTemplate template;
 	
-	public TemplateInstance(DefinitionTemplate template, ArrayList2<ASTNode> tplArguments) {
+	public TemplateInstance(DefinitionTemplate template, ArrayList2<INamedElementNode> tplArguments) {
 		super(assertNotNull(template).defname.createCopy());
 		this.template = template;
 		this.tplArguments = tplArguments;

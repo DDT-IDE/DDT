@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.resolver;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
-import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class AliasSemantics extends AbstractNamedElementSemantics {
@@ -28,19 +27,14 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-		return resolveTypeForValueContext_Alias(mr, getAliasTarget());
-	}
-	
-	protected abstract Resolvable getAliasTarget();
-	
-	public static INamedElement resolveTypeForValueContext_Alias(IModuleResolver mr, Resolvable alias) {
-		Resolvable aliasTarget = alias;
+		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget != null) {
 			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));
 		}
 		return null;
 	}
 	
+	protected abstract IResolvable getAliasTarget();
 	
 	public abstract static class TypeAliasSemantics extends AliasSemantics {
 		

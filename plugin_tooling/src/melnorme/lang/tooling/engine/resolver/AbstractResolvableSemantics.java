@@ -29,8 +29,13 @@ public abstract class AbstractResolvableSemantics implements IResolvableSemantic
 	
 	@Override
 	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-		Collection<INamedElement> resolvedElements = findTargetDefElements(mr, false);
+		Collection<INamedElement> resolvedElements = this.findTargetDefElements(mr, false);
 		
+		return resolveTypeOfUnderlyingValue(mr, resolvedElements); 
+	}
+	
+	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr, 
+		Collection<INamedElement> resolvedElements) {
 		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
 		for (INamedElement defElement : resolvedElements) {
 			INamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
@@ -38,7 +43,7 @@ public abstract class AbstractResolvableSemantics implements IResolvableSemantic
 				resolvedTypeForValueContext.add(resolveTypeForValueContext);
 			}
 		}
-		return resolvedTypeForValueContext; 
+		return resolvedTypeForValueContext;
 	}
 	
 }

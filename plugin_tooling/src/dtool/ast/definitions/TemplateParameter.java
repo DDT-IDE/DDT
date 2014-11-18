@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import dtool.ast.expressions.Resolvable;
 
 /**
@@ -22,6 +22,6 @@ public abstract class TemplateParameter extends DefUnit {
 		super(defId);
 	}
 	
-	public abstract ASTNode createTemplateArgument(Resolvable argument);
+	public abstract INamedElementNode createTemplateArgument(Resolvable argument);
 	
 }

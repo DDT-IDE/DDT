@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -31,7 +32,7 @@ import dtool.resolver.ReferenceResolver;
 
 public interface CommonLanguageIntrinsics {
 
-	public abstract class IntrinsicTypeDefUnit extends IntrinsicDefUnit {
+	public abstract class IntrinsicTypeDefUnit extends IntrinsicDefUnit implements IConcreteNamedElement {
 		
 		protected InstrinsicsScope membersScope;
 		
@@ -51,11 +52,6 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		protected final TypeSemantics semantics = new TypeSemantics(this) {
-			
-			@Override
-			public IConcreteNamedElement resolveConcreteElement() {
-				return null; /*FIXME: BUG here TODO*/
-			}
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
@@ -166,6 +162,11 @@ public interface CommonLanguageIntrinsics {
 			DefUnitSearch search = new DefUnitSearch(elementName, null, -1, findFirstOnly, mr);
 			module.resolveSearchInMembersScope(search);
 			return search.getMatchedElements();
+		}
+		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+			return AbstractResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
 		}
 		
 	}

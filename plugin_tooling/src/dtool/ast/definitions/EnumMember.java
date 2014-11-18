@@ -19,10 +19,13 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
+import dtool.engine.analysis.CommonDefVarSemantics;
+import dtool.engine.analysis.IVarDefinitionLike;
 
-public class EnumMember extends DefUnit {
+public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	
 	public final Reference type;
 	public final Expression value;
@@ -87,12 +90,22 @@ public class EnumMember extends DefUnit {
 		return semantics;
 	}
 	
-	protected final VarSemantics semantics = new VarSemantics() {
+	protected final VarSemantics semantics = new CommonDefVarSemantics(this) {
 		
 		@Override
 		protected Resolvable getTypeReference() {
 			return getEffectiveTypeReference();
 		}
 	};
+	
+	@Override
+	public Reference getDeclaredType() {
+		return type;
+	}
+	
+	@Override
+	public IInitializer getDeclaredInitializer() {
+		return value;
+	}
 	
 }

@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
@@ -24,7 +25,7 @@ import dtool.resolver.CommonDefUnitSearch;
  * Declaration of a template mixin with an associated identifier:
  * http://dlang.org/template-mixin.html#TemplateMixinDeclaration (with MixinIdentifier)
  */
-public class DefinitionMixinInstance extends CommonDefinition implements IStatement {
+public class DefinitionMixinInstance extends CommonDefinition implements IStatement, IConcreteNamedElement {
 	
 	public final Reference templateInstance;
 	

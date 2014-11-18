@@ -21,9 +21,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.IDeclaration;
@@ -32,7 +30,6 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.engine.analysis.CommonDefVarSemantics;
 import dtool.engine.analysis.IVarDefinitionLike;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A definition of an enum variable (aka manifest constant):

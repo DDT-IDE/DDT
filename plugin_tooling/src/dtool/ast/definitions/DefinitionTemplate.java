@@ -14,18 +14,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
+import dtool.engine.analysis.templates.DefTemplateSemantics;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
@@ -37,7 +35,7 @@ import dtool.resolver.ReferenceResolver;
  * (Technically not allowed as statement, but parse so anyways.)
  */
 public class DefinitionTemplate extends CommonDefinition 
-	implements IScopeNode, IDeclaration, IStatement, ITemplatableElement 
+	implements IScopeNode, IDeclaration, IStatement, ITemplatableElement, IConcreteNamedElement 
 {
 	
 	public final boolean isMixin;
@@ -48,7 +46,7 @@ public class DefinitionTemplate extends CommonDefinition
 	public final boolean wrapper;
 	
 	public DefinitionTemplate(Token[] comments, boolean isMixin, ProtoDefSymbol defId, 
-		ArrayView<TemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
+			ArrayView<TemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
 		super(comments, defId);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
@@ -114,25 +112,7 @@ public class DefinitionTemplate extends CommonDefinition
 		return semantics;
 	}
 	
-	protected final INamedElementSemantics semantics = new AbstractNamedElementSemantics() {
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			if(wrapper) {
-				// TODO: go straight to members of wrapped definition
-			}
-			ReferenceResolver.resolveSearchInScope(search, decls);
-		}
-		
-		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
-			if(wrapper) {
-				// TODO: 
-			}
-			return new NotAValueErrorElement(DefinitionTemplate.this);
-		};
-		
-	};
+	protected final INamedElementSemantics semantics = new DefTemplateSemantics(this);
 	
 	@Override
 	public void resolveSearchInScope(CommonDefUnitSearch search) {

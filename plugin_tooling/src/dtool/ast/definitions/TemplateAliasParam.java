@@ -2,7 +2,6 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
@@ -55,7 +54,7 @@ public class TemplateAliasParam extends TemplateParameter {
 	protected final INamedElementSemantics semantics = new NullElementSemantics(); // Need instance
 	
 	@Override
-	public ASTNode createTemplateArgument(Resolvable argument) {
+	public AliasElement createTemplateArgument(Resolvable argument) {
 		return new AliasElement(defname, argument);
 	}
 	

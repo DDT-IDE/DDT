@@ -19,7 +19,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.IValueNode;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.engine.analysis.IVarDefinitionLike;
@@ -59,8 +59,8 @@ public final class AutoReference extends Reference {
 	@Override
 	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
 		IInitializer initializer = getParent_().getDeclaredInitializer();
-		if(initializer instanceof IValueNode) {
-			IValueNode valueNode = (IValueNode) initializer;
+		if(initializer instanceof IResolvable) {
+			IResolvable valueNode = (IResolvable) initializer;
 			return valueNode.resolveTypeOfUnderlyingValue(mr);
 		}
 		return null;

@@ -14,11 +14,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefModule;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -71,16 +72,16 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		return semantics;
 	}
 	
-	protected final TypeSemantics semantics = new TypeSemantics(this) {
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-			resolveSearchInReferredContainer(search, moduleRef);
-		}
+	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
 		public IConcreteNamedElement resolveConcreteElement() {
 			return null; /*FIXME: BUG here*/
+		}
+		
+		@Override
+		protected Resolvable getAliasTarget() {
+			return moduleRef;
 		}
 	};
 	

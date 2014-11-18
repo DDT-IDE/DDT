@@ -12,8 +12,9 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
-import melnorme.lang.tooling.engine.resolver.IValueNode;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.Resolvable;
@@ -27,14 +28,19 @@ public class CommonDefVarSemantics extends VarSemantics {
 	}
 	
 	@Override
+	public IConcreteNamedElement resolveConcreteElement() {
+		return varDef;
+	}
+	
+	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
 		if(getTypeReference() != null) {
 			return super.resolveTypeForValueContext(mr);
 		}
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();
-		if(initializer instanceof IValueNode) {
-			IValueNode initializerR = (IValueNode) initializer;
+		if(initializer instanceof IResolvable) {
+			IResolvable initializerR = (IResolvable) initializer;
 			return getFirstElementOrNull(initializerR.resolveTypeOfUnderlyingValue(mr));
 		}
 		

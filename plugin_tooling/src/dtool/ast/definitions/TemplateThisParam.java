@@ -2,15 +2,11 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateThisParam extends TemplateParameter {
 	
@@ -48,7 +44,7 @@ public class TemplateThisParam extends TemplateParameter {
 	protected final INamedElementSemantics semantics = new NullElementSemantics(); // Need instance
 	
 	@Override
-	public ASTNode createTemplateArgument(Resolvable resolvable) {
+	public AliasElement createTemplateArgument(Resolvable resolvable) {
 		return new AliasElement(defname, null); // TODO: correct instantiation
 	}
 	

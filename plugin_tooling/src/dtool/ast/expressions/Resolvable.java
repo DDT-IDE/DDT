@@ -21,7 +21,6 @@ import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.IValueNode;
 import melnorme.lang.tooling.engine.resolver.ResolutionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
@@ -29,7 +28,7 @@ import dtool.ast.references.Reference;
 /**
  * A {@link Resolvable} is either an {@link Reference} or {@link Expression}
  */
-public abstract class Resolvable extends ASTNode implements IValueNode, IResolvable {
+public abstract class Resolvable extends ASTNode implements IResolvable {
 	
 	public Resolvable() {
 		assertTrue(this instanceof Reference || this instanceof Expression);

@@ -11,9 +11,11 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -108,12 +110,17 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 		return semantics;
 	}
 	
-	protected final TypeSemantics semantics = new TypeSemantics(this) {
+	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
 		public IConcreteNamedElement resolveConcreteElement() {
 			return null; /*FIXME: BUG here TODO*/
 		}
+		
+		@Override
+		protected IResolvable getAliasTarget() {
+			throw assertUnreachable();
+		};
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
