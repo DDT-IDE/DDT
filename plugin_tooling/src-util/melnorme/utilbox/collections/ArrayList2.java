@@ -18,7 +18,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 /**
  * Extension to {@link java.util.ArrayList}, with some helper methods.
  */
-public class ArrayList2<E> extends ArrayList<E> {
+public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 	
 	private static final long serialVersionUID = -9212035453691203439L;
 	

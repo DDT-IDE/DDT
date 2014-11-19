@@ -16,7 +16,7 @@ import java.util.RandomAccess;
 /**
  * interface for a read-only view random access collection
  */
-public interface RandomAccess2<E> extends Iterable<E>, RandomAccess {
+public interface Indexable<E> extends Iterable<E>, RandomAccess {
 	
 	@Override
 	Iterator<E> iterator();

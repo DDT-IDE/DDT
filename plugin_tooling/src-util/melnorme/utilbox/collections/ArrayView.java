@@ -21,7 +21,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 /**
  * A simple immutable array collection (RandomAccess, Iterable). 
  */
-public class ArrayView<E> implements RandomAccess2<E> {
+public class ArrayView<E> implements Indexable<E> {
 	
 	public static ArrayView<?> EMPTY_ARRAYVIEW = new ArrayView<Object>(new Object[0]);
 	
