@@ -12,11 +12,24 @@ package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class VarSemantics extends AbstractNamedElementSemantics {
+	
+	protected final IConcreteNamedElement element;
+	
+	public VarSemantics(IConcreteNamedElement element) {
+		this.element = element;
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		return element;
+	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {

@@ -15,13 +15,14 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
 
-public class ForeachVariableDef extends DefUnit {
+public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement {
 	
 	public final boolean isRef;
 	public final LexElement typeMod;
@@ -65,7 +66,7 @@ public class ForeachVariableDef extends DefUnit {
 		return semantics;
 	}
 	
-	protected final VarSemantics semantics = new VarSemantics() {
+	protected final VarSemantics semantics = new VarSemantics(this) {
 		
 		@Override
 		protected Resolvable getTypeReference() {

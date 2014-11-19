@@ -15,7 +15,6 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -73,11 +72,6 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
-		
-		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
-			return null; /*FIXME: BUG here*/
-		}
 		
 		@Override
 		protected Resolvable getAliasTarget() {

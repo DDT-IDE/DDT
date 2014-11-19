@@ -12,16 +12,11 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
-
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.PathUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 import org.junit.Test;
 
@@ -29,8 +24,6 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.AbstractBundleResolution;
-import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
-import dtool.engine.DToolServer;
 import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.TemplateInstance;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -72,14 +65,6 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	/* -----------------  ----------------- */
-
-	protected Tests_SemanticManager sm = new Tests_SemanticManager(new DToolServer());
-	
-	protected ResolvedModule parseModule(String source) throws InvalidPathExceptionX, ExecutionException {
-		Path path = PathUtil.createPath("##_test1");
-		sm.getParseCache().setWorkingCopyAndGetParsedModule(path, source);
-		return sm.getUpdatedResolvedModule(path);
-	}
 	
 	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ModuleSourceException {
 		INamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
@@ -113,7 +98,8 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected INamedElement resolveEffectiveType(INamedElement tplArg) {
-		return tplArg.resolveConcreteElement();
+		MockSemanticResolution sr = new MockSemanticResolution();
+		return tplArg.resolveConcreteElement(sr);
 	}
 	
 }

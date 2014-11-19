@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
+import melnorme.lang.tooling.bundles.ISemanticResolution;
+
 /**
  * A concrete named element is named element that is not an alias to another element.
  */
@@ -17,6 +19,6 @@ public interface IConcreteNamedElement extends INamedElement {
 	
 	/** @return the receiver, since it is a {@link IConcreteNamedElement}. */
 	@Override
-	public IConcreteNamedElement resolveConcreteElement();
+	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr);
 	
 }

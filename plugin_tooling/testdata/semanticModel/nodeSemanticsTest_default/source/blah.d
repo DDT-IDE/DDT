@@ -1,0 +1,3 @@
+module blah;
+
+int target;

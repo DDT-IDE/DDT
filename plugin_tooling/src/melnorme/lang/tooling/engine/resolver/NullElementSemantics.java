@@ -11,6 +11,8 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -18,6 +20,11 @@ import dtool.resolver.CommonDefUnitSearch;
  * Does nothing.
  */
 public class NullElementSemantics extends AbstractNamedElementSemantics {
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		return null; // /*FIXME: BUG here*/
+	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {

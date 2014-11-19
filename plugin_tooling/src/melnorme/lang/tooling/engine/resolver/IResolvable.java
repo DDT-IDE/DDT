@@ -17,4 +17,6 @@ public interface IResolvable {
 	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
 	
+	public IResolvableSemantics getNodeSemantics();
+	
 }

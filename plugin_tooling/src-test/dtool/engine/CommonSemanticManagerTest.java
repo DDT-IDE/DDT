@@ -27,41 +27,16 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import melnorme.lang.utils.MiscFileUtils;
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 import dtool.dub.BundlePath;
-import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
-import dtool.tests.CommonDToolTest;
-import dtool.tests.DToolTestResources;
 
-public class CommonSemanticManagerTest extends CommonDToolTest {
-	
-	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
-	
-	@BeforeClass
-	public static void initDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(WORKING_DIR); // workaround to cleanup abruptly-terminated tests
-		CommonDubTest.dubAddPath(SEMMODEL_TEST_BUNDLES);
-	}
-	
-	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES);
-	}
+public class CommonSemanticManagerTest extends CommonSemanticsTests {
 	
 	public Path getDubRepositoryDir() {
 		return SEMMODEL_TEST_BUNDLES;
-	}
-	
-	public static BundlePath bundlePath(Path basePath, String other) {
-		return BundlePath.create(basePath.resolve(other));
 	}
 	
 	public final BundlePath BASIC_LIB = bundlePath(getDubRepositoryDir(), "basic_lib");
@@ -70,16 +45,27 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 	public final BundlePath COMPLEX_LIB = bundlePath(getDubRepositoryDir(), "complex_lib");
 	public final BundlePath COMPLEX_BUNDLE = bundlePath(getDubRepositoryDir(), "complex_bundle");
 	
-	/* ----------------- working dir setup ----------------- */
+	/* -----------------  ----------------- */
 	
-	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDir().toPath().resolve("SemModel");
+	protected Tests_SemanticManager sm;
 	
-	public static void prepSMTestsWorkingDir() throws IOException {
-		FileUtil.deleteDirContents(WORKING_DIR);
-		MiscFileUtils.copyDirContentsIntoDirectory(SEMMODEL_TEST_BUNDLES, WORKING_DIR);
+	protected Tests_SemanticManager ___initSemanticManager() throws IOException {
+		return ___initSemanticManager(new Tests_SemanticManager());
 	}
 	
-	/* -----------------  ----------------- */
+	protected Tests_SemanticManager ___initSemanticManager(Tests_SemanticManager tests_SemanticManager) {
+		if(sm != null) {
+			sm.shutdown();
+		}
+		return sm = tests_SemanticManager;
+	}
+	
+	@After
+	public void cleanSemanticManager() {
+		if(sm != null) {
+			sm.shutdown();
+		}
+	}
 	
 	public static class Tests_DToolServer extends DToolServer {
 		
@@ -170,24 +156,6 @@ public class CommonSemanticManagerTest extends CommonDToolTest {
 			return stdLibRes;
 		}
 		
-	}
-	
-	protected Tests_SemanticManager sm;
-	
-	protected Tests_SemanticManager ___initSemanticManager() throws IOException {
-		return ___initSemanticManager(new Tests_SemanticManager());
-	}
-	
-	protected Tests_SemanticManager ___initSemanticManager(Tests_SemanticManager tests_SemanticManager) {
-		if(sm != null) {
-			sm.shutdown();
-		}
-		return sm = tests_SemanticManager;
-	}
-	
-	@After
-	public void cleanSemanticManager() {
-		sm.shutdown();
 	}
 	
 	public enum StaleState { CURRENT, MANIFEST_STALE, 

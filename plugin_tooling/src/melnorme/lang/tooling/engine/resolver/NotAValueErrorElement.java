@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -71,8 +72,8 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return wrappedElement.resolveConcreteElement();
+	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		return wrappedElement.resolveConcreteElement(sr);
 	}
 	
 	

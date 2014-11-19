@@ -16,12 +16,13 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.AliasElement;
 
-public class TemplateValueParam extends TemplateParameter {
+public class TemplateValueParam extends TemplateParameter implements IConcreteNamedElement {
 	
 	public final Reference type;
 	public final Expression specializationValue;
@@ -68,7 +69,7 @@ public class TemplateValueParam extends TemplateParameter {
 		return semantics;
 	}
 	
-	protected final VarSemantics semantics = new VarSemantics() {
+	protected final VarSemantics semantics = new VarSemantics(this) {
 		
 		@Override
 		protected Resolvable getTypeReference() {

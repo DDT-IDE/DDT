@@ -14,7 +14,6 @@ import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.expressions.Resolvable;
@@ -24,12 +23,8 @@ public class CommonDefVarSemantics extends VarSemantics {
 	protected final IVarDefinitionLike varDef;
 	
 	public CommonDefVarSemantics(IVarDefinitionLike varDef) {
+		super(varDef);
 		this.varDef = varDef;
-	}
-	
-	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return varDef;
 	}
 	
 	@Override

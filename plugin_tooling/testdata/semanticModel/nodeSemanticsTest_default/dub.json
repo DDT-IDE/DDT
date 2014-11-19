@@ -1,0 +1,6 @@
+{
+	"name": "nodeSemanticsTest_default",
+	"dependencies": {
+	},
+	"targetPath": ".dub"
+}

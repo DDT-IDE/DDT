@@ -6,7 +6,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.Attribute;
@@ -80,13 +82,19 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		return semantics;
 	}
 	
-	protected final AbstractFunctionElementSemantics semantics = new AbstractFunctionElementSemantics() {
+	protected final AbstractFunctionElementSemantics semantics = new FunctionalAliasSemantics();
+	
+	public class FunctionalAliasSemantics extends AbstractFunctionElementSemantics {
+		
+		@Override
+		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+			return null; /*FIXME: BUG here*/
+		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
 			resolveSearchInMembersScopeForFunction(search, target);
 		}
-		
-	};
+	}
 	
 }

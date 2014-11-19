@@ -12,6 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
@@ -48,8 +49,8 @@ public abstract class AbstractNamedElement implements INamedElement {
 	public abstract INamedElementSemantics getNodeSemantics();
 	
 	@Override
-	public final IConcreteNamedElement resolveConcreteElement() {
-		return getNodeSemantics().resolveConcreteElement();
+	public final IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		return getNodeSemantics().resolveConcreteElement(sr);
 	}
 	
 	@Override

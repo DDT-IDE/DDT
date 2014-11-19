@@ -13,6 +13,7 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -96,7 +97,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
 			return null; /*FIXME: BUG here TODO*/
 		}
 		

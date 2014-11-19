@@ -11,19 +11,52 @@
 package dtool.engine.analysis;
 
 
+import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
+
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
-import dtool.tests.CommonDToolTest;
+import dtool.dub.BundlePath;
+import dtool.engine.AbstractBundleResolution;
+import dtool.engine.BundleResolution;
+import dtool.engine.CommonSemanticsTests;
+import dtool.engine.ResolvedModule;
 
-public class CommonNodeSemanticsTest extends CommonDToolTest {
+public class CommonNodeSemanticsTest extends CommonSemanticsTests {
 	
-	public static final String DEFAULT_MODULE = "_tests";
+	protected static final String DEFAULT_ModuleName = "_tests";
+	
+	public static final BundlePath DEFAULT_SemanticsTest_Bundle = 
+			bundlePath(SEMMODEL_TEST_BUNDLES, "nodeSemanticsTest_default");
+	
+	protected static ResolvedModule parseModule(String source) throws ExecutionException {
+		Path filepath = DEFAULT_SemanticsTest_Bundle.resolve("source/" + DEFAULT_ModuleName + ".d");
+		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filepath, source);
+		return defaultSemMgr.getUpdatedResolvedModule(filepath);
+	}
+	
+	protected AbstractBundleResolution getSemanticResolution(INamedElement namedElement) {
+		BundleResolution bundleSR = defaultSemMgr.getStoredResolution(DEFAULT_SemanticsTest_Bundle);
+		ResolvedModule findResolvedModule;
+		try {
+			ModuleFullName moduleFullName = namedElement.getModuleFullName();
+			findResolvedModule = bundleSR.findResolvedModule(moduleFullName);
+		} catch (ModuleSourceException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+		return findResolvedModule.getSemanticResolution();
+	}
 	
 	protected static Module parseSource(String source) {
-		DeeTestsChecksParser parser = new DeeTestsChecksParser(source);
-		return parser.parseModule(DEFAULT_MODULE, null).getNode();
+		try {
+			return parseModule(source).getModuleNode();
+		} catch (ExecutionException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 	protected static ASTNode parseSourceAndPickNode(String source, int offset) {

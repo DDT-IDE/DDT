@@ -32,11 +32,6 @@ public interface IResolvableSemantics extends INodeSemantics {
 	public static class NullResolvableSemantics extends AbstractResolvableSemantics {
 		
 		@Override
-		public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
-			return new ResolutionResult(findTargetDefElement(sr));
-		}
-		
-		@Override
 		public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
 			return null;
 		}

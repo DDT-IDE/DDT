@@ -7,6 +7,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -160,8 +161,8 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 	public abstract INamedElementSemantics getNodeSemantics();
 	
 	@Override
-	public final IConcreteNamedElement resolveConcreteElement() {
-		return getNodeSemantics().resolveConcreteElement();
+	public final IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		return getNodeSemantics().resolveConcreteElement(sr);
 	}
 	
 	@Override

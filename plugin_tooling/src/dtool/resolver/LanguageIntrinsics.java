@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
+import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -82,7 +83,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 	public final DeePrimitiveType cdouble_type = new DeePrimitiveType("cdouble");
 	public final DeePrimitiveType creal_type = new DeePrimitiveType("creal");
 	
-	public final FullyQualifiedReference string_type = new FullyQualifiedReference("object", "string");
+	public final ModuleQualifiedReference string_type = new ModuleQualifiedReference("object", "string");
 	
 	
 	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit {
@@ -207,7 +208,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 		creal_type
 	);
 	
-	public static final FullyQualifiedReference OBJECT_CLASS_REF = new FullyQualifiedReference("object", "Object");
+	public static final ModuleQualifiedReference OBJECT_CLASS_REF = new ModuleQualifiedReference("object", "Object");
 	
 	/* ----------------- ----------------- */
 	
@@ -289,7 +290,7 @@ public class LanguageIntrinsics implements CommonLanguageIntrinsics {
 		return new InstrinsicsScope(CollectionUtil.addAll(
 			createCommonProperties(type), 
 			Arrays.asList(
-				new IntrinsicProperty2("classinfo", new FullyQualifiedReference("object", "TypeInfo_Class"), 
+				new IntrinsicProperty2("classinfo", new ModuleQualifiedReference("object", "TypeInfo_Class"), 
 					parseDDoc("Information about the dynamic type of the class")
 			)))
 		);

@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
@@ -18,7 +19,7 @@ import dtool.resolver.CommonDefUnitSearch;
 
 public interface INamedElementSemantics extends INodeSemantics {
 	
-	IConcreteNamedElement resolveConcreteElement();
+	IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr);
 	
 	void resolveSearchInMembersScope(CommonDefUnitSearch search);
 	

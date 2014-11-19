@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
@@ -20,10 +20,12 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
+import dtool.engine.BundleResolution;
+import dtool.engine.CommonSemanticsTests;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
-public class ElementResolution_Test extends CommonSemanticManagerTest {
+public class ElementResolution_Test extends CommonSemanticsTests {
 	
 	public final BundlePath LIB_FOO = bundlePath(SEMMODEL_TEST_BUNDLES, "lib_foo");
 	public final BundlePath LIB_TPL = bundlePath(SEMMODEL_TEST_BUNDLES, "lib_tpl");
@@ -32,9 +34,7 @@ public class ElementResolution_Test extends CommonSemanticManagerTest {
 	public void testResolveRef() throws Exception { testResolveRef$(); }
 	public void testResolveRef$() throws Exception {
 		
-		___initSemanticManager();
-		
-		BundleResolution libFooSR = sm.getUpdatedResolution(LIB_FOO);
+		BundleResolution libFooSR = defaultSemMgr.getUpdatedResolution(LIB_FOO);
 		
 		testRefResolve(libFooSR, new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0)), 
 			"int");

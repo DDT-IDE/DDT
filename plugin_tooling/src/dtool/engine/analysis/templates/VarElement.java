@@ -15,11 +15,12 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
 
-public class VarElement extends InstantiatedDefUnit {
+public class VarElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
 	public final Resolvable type;
 	
@@ -48,7 +49,8 @@ public class VarElement extends InstantiatedDefUnit {
 		return EArcheType.Variable;
 	}
 	
-	protected final VarSemantics nodeSemantics = new VarSemantics() {
+	protected final VarSemantics nodeSemantics = new VarSemantics(this) {
+		
 		@Override
 		protected Resolvable getTypeReference() {
 			return type;

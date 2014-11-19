@@ -7,13 +7,14 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
 
-public class FunctionParameter extends DefUnit implements IFunctionParameter {
+public class FunctionParameter extends DefUnit implements IFunctionParameter, IConcreteNamedElement {
 	
 	public final FnParameterAttributes paramAttribs;
 	public final Reference type;
@@ -90,8 +91,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter {
 		return semantics;
 	}
 	
-	protected final VarSemantics semantics = new VarSemantics() {
-		
+	protected final VarSemantics semantics = new VarSemantics(this) {
 		@Override
 		protected Resolvable getTypeReference() {
 			return type;

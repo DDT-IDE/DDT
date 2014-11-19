@@ -12,11 +12,8 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -27,8 +24,6 @@ import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
-import dtool.resolver.ReferenceResolver;
 
 public interface CommonLanguageIntrinsics {
 
@@ -81,10 +76,10 @@ public interface CommonLanguageIntrinsics {
 			return semantics;
 		}
 		
-		protected final VarSemantics semantics = new VarSemantics() {
+		protected final VarSemantics semantics = new VarSemantics(this) {
 			
 			@Override
-			public IConcreteNamedElement resolveConcreteElement() {
+			public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
 				return AbstractIntrinsicProperty.this;
 			}
 			
@@ -134,39 +129,6 @@ public interface CommonLanguageIntrinsics {
 		@Override
 		protected INamedElement resolveType(IModuleResolver mr) {
 			return CollectionUtil.getFirstElementOrNull(typeRef.findTargetDefElements(mr, true));
-		}
-		
-	}
-	
-	public static class FullyQualifiedReference implements IResolvable {
-		
-		public final String moduleFullName;
-		public final String elementName;
-		
-		public FullyQualifiedReference(String moduleFullName, String elementName) {
-			this.moduleFullName = moduleFullName;
-			this.elementName = elementName;
-		}
-		
-		public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
-			Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
-			return CollectionUtil.getFirstElementOrNull(namedElems);
-		}
-		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
-			INamedElement module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
-			if(module == null) 
-				return null;
-			
-			DefUnitSearch search = new DefUnitSearch(elementName, null, -1, findFirstOnly, mr);
-			module.resolveSearchInMembersScope(search);
-			return search.getMatchedElements();
-		}
-		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
-			return AbstractResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
 		}
 		
 	}

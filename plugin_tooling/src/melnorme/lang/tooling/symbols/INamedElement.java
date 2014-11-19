@@ -13,6 +13,7 @@ package melnorme.lang.tooling.symbols;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
@@ -74,7 +75,7 @@ public interface INamedElement extends INamedElementExtensions {
 	 * is found.
 	 * @return the non-alias element.
 	 */
-	public abstract IConcreteNamedElement resolveConcreteElement();
+	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr);
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.

@@ -13,6 +13,7 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -59,7 +60,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement() {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
 			return null; /*FIXME: BUG here*/
 		};
 		

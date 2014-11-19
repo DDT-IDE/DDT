@@ -12,17 +12,11 @@ package melnorme.lang.tooling.engine.resolver;
 
 
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 
 public abstract class AbstractNamedElementSemantics  implements INamedElementSemantics {
 	
 	public AbstractNamedElementSemantics() {
 		super();
-	}
-	
-	@Override
-	public IConcreteNamedElement resolveConcreteElement() {
-		return null; /*FIXME: BUG here todo subclasses implementation*/
 	}
 	
 }

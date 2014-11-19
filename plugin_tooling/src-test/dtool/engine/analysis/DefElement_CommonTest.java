@@ -14,6 +14,9 @@ import static dtool.util.NewUtils.getSingleElementOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.concurrent.ExecutionException;
+
 import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -75,12 +78,12 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 		assertEquals(isError, resolvedType instanceof NotAValueErrorElement);
 		String fullName = resolvedType.getFullyQualifiedName();
-		fullName = StringUtil.trimStart(fullName, DEFAULT_MODULE + ".");
+		fullName = StringUtil.trimStart(fullName, DEFAULT_ModuleName + ".");
 		assertEquals(fullName, expectedFullName);
 	}
 	
 	// TODO: cleanup these two methods
-	protected static void testExpressionResolution(String source, String... expectedResults) {
+	protected static void testExpressionResolution(String source, String... expectedResults) throws ExecutionException {
 		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
 		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));

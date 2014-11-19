@@ -14,9 +14,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class AbstractResolvableSemantics implements IResolvableSemantics {
+	
+	@Override
+	public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
+		return new ResolutionResult(findTargetDefElement(sr)); /*FIXME: BUG here null*/
+	}
 	
 	// TODO: deprecate this method in favor of resolveTargetElement
 	@Override

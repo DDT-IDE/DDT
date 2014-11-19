@@ -93,7 +93,7 @@ public class DeeElementLabelProvider {
 	}
 	
 	public static String getAliasSegment(Reference target) {
-		return " -> " + target.toStringAsCode();
+		return " -> " + target.toStringAsCode(); /*FIXME: BUG here*/
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
