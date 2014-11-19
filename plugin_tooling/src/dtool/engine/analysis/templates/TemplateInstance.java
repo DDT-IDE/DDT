@@ -18,7 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
@@ -27,10 +27,10 @@ import dtool.resolver.ReferenceResolver;
 
 public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	
-	public final ArrayList2<INamedElementNode> tplArguments; /* FIXME: make read only. */
+	public final Indexable<INamedElementNode> tplArguments;
 	protected final DefinitionTemplate template;
 	
-	public TemplateInstance(DefinitionTemplate template, ArrayList2<INamedElementNode> tplArguments) {
+	public TemplateInstance(DefinitionTemplate template, Indexable<INamedElementNode> tplArguments) {
 		super(assertNotNull(template).defname.createCopy());
 		this.template = template;
 		this.tplArguments = tplArguments;

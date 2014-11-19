@@ -19,7 +19,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.collections.RandomAccess2;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 
@@ -62,7 +62,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		}
 	}
 	
-	public RandomAccess2<Resolvable> getEffectiveArguments() {
+	public Indexable<Resolvable> getEffectiveArguments() {
 		if(isSingleArgSyntax()) {
 			return ArrayView.create(array(tplSingleArg));
 		} else {

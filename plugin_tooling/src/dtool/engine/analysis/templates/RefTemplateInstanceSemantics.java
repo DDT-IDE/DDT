@@ -19,7 +19,7 @@ import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolutionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.RandomAccess2;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Resolvable;
@@ -70,7 +70,7 @@ public class RefTemplateInstanceSemantics extends AbstractResolvableSemantics {
 	protected TemplateInstance createTemplateInstance(DefinitionTemplate template, 
 			RefTemplateInstance refTplInstance) {
 		
-		RandomAccess2<Resolvable> tplArgs = refTplInstance.getEffectiveArguments();
+		Indexable<Resolvable> tplArgs = refTplInstance.getEffectiveArguments();
 		
 		int paramSize = template.getTemplateParameters().size();
 		if(paramSize != tplArgs.size()) {
