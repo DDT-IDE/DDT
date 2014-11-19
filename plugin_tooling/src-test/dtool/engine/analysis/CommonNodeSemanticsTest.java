@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
@@ -23,15 +24,15 @@ import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.engine.AbstractBundleResolution;
 import dtool.engine.BundleResolution;
-import dtool.engine.CommonSemanticsTests;
+import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 
-public class CommonNodeSemanticsTest extends CommonSemanticsTests {
+public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	protected static final String DEFAULT_ModuleName = "_tests";
 	
 	public static final BundlePath DEFAULT_SemanticsTest_Bundle = 
-			bundlePath(SEMMODEL_TEST_BUNDLES, "nodeSemanticsTest_default");
+			bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
 	
 	protected static ResolvedModule parseModule(String source) throws ExecutionException {
 		Path filepath = DEFAULT_SemanticsTest_Bundle.resolve("source/" + DEFAULT_ModuleName + ".d");
@@ -64,21 +65,9 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTests {
 		return ASTNodeFinder.findElement(module, offset);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T> T getMatchingParent(ASTNode node, Class<T> klass) {
-		if(node == null) {
-			return null;
-		}
-		
-		if(klass.isInstance(node)) {
-			return (T) node;
-		}
-		return getMatchingParent(node.getParent(), klass);
-	}
-	
-	public static <T> T parseSourceAndPickNode(String source, int offset, Class<T> klass) {
+	public static <T> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
 		ASTNode node = parseSourceAndPickNode(source, offset);
-		return getMatchingParent(node, klass);
+		return NodeUtil.getMatchingParent(node, klass);
 	}
 	
 }

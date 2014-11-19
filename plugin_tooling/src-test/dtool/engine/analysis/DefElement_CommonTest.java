@@ -68,7 +68,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		int offset = source.indexOf("XXX");
 		offset = offset == -1 ? source.indexOf("xxx") : offset;
 		assertTrue(offset != -1);
-		DefUnit defElem = parseSourceAndPickNode(source, offset, DefUnit.class);
+		DefUnit defElem = parseSourceAndFindNode(source, offset, DefUnit.class);
 		
 		INamedElement resolvedType = defElem.resolveTypeForValueContext(new MockSemanticResolution());
 		if(expectedFullName == null) {
@@ -84,7 +84,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	// TODO: cleanup these two methods
 	protected static void testExpressionResolution(String source, String... expectedResults) throws ExecutionException {
-		Expression exp = parseSourceAndPickNode(source, source.indexOf("/*X*/"), Expression.class);
+		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
 		INamedElement expType = getSingleElementOrNull(exp.resolveTypeOfUnderlyingValue(new MockSemanticResolution()));
 		

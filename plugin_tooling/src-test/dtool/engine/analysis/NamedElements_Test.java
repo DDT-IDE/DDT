@@ -56,7 +56,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		
 		TemplateInstance templateInstance = new TemplateInstance((DefinitionTemplate) getDefUnit("template xxx(T){}"), 
 			new ArrayList2<INamedElementNode>(
-				new TypeAliasElement(new DefSymbol("blah"), parseSourceAndPickNode("int z;", 0, RefPrimitive.class))
+				new TypeAliasElement(new DefSymbol("blah"), parseSourceAndFindNode("int z;", 0, RefPrimitive.class))
 			)
 		);
 		

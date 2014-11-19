@@ -27,16 +27,21 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.misc.FileUtil;
 
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 import dtool.dub.BundlePath;
+import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
 
-public class CommonSemanticManagerTest extends CommonSemanticsTests {
+public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	public Path getDubRepositoryDir() {
-		return SEMMODEL_TEST_BUNDLES;
+		return BUNDLEMODEL_TEST_BUNDLES;
 	}
 	
 	public final BundlePath BASIC_LIB = bundlePath(getDubRepositoryDir(), "basic_lib");
@@ -44,6 +49,23 @@ public class CommonSemanticManagerTest extends CommonSemanticsTests {
 	public final BundlePath BASIC_LIB2 = bundlePath(getDubRepositoryDir(), "basic_lib2");
 	public final BundlePath COMPLEX_LIB = bundlePath(getDubRepositoryDir(), "complex_lib");
 	public final BundlePath COMPLEX_BUNDLE = bundlePath(getDubRepositoryDir(), "complex_bundle");
+	
+	@BeforeClass
+	public static void initDubRepositoriesPath() {
+		CommonDubTest.dubAddPath(BUNDLEMODEL_TEST_BUNDLES);
+	}
+	
+	@AfterClass
+	public static void cleanupDubRepositoriesPath() {
+		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
+	}
+	
+	/* ----------------- working dir setup ----------------- */
+	
+	public static void prepSMTestsWorkingDir() throws IOException {
+		FileUtil.deleteDirContents(BUNDLEMODEL_WORKING_DIR_BUNDLES);
+		MiscFileUtils.copyDirContentsIntoDirectory(BUNDLEMODEL_TEST_BUNDLES, BUNDLEMODEL_WORKING_DIR_BUNDLES);
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -140,7 +162,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTests {
 		}
 		
 		@Override
-		protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+		public StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
 			if(compilerPath == null) {
 				compilerPath = DEFAULT_DMD_INSTALL_EXE_PATH;
 			}

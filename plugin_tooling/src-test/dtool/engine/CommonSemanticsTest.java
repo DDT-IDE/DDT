@@ -11,11 +11,8 @@
 package dtool.engine;
 
 
-import java.io.IOException;
 import java.nio.file.Path;
 
-import melnorme.lang.utils.MiscFileUtils;
-import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.junit.AfterClass;
@@ -25,28 +22,32 @@ import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
+import dtool.tests.DToolTests;
 
-public class CommonSemanticsTests extends CommonDToolTest {
+public class CommonSemanticsTest extends CommonDToolTest {
 	
-	public static final Path SEMMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
-
-	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDir().toPath().resolve("SemModel");
+	public static final Path BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
+	public static final Path SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semantics");
 	
-
+	public static final Path BUNDLEMODEL_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDirPath("SemModel");
+	
 	/* -----------------  ----------------- */
 	
 	static {
-		// workaround to cleanup state of abruptly-terminated tests
-		CommonDubTest.dubRemovePath(WORKING_DIR); 
-		CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES);
+		if(!DToolTests.TESTS_LITE_MODE) {
+			// workaround to cleanup state of abruptly-terminated tests
+			CommonDubTest.dubRemovePath(BUNDLEMODEL_WORKING_DIR_BUNDLES); 
+			CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
+			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
+		}
 		
 		// init
-		CommonDubTest.dubAddPath(SEMMODEL_TEST_BUNDLES);
+		CommonDubTest.dubAddPath(SEMANTICS_TEST_BUNDLES);
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES);
+				CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES);
 			}
 		});
 	}
@@ -63,13 +64,6 @@ public class CommonSemanticsTests extends CommonDToolTest {
 	
 	public static BundlePath bundlePath(Path basePath, String other) {
 		return BundlePath.create(basePath.resolve(other));
-	}
-	
-	/* ----------------- working dir setup ----------------- */
-	
-	public static void prepSMTestsWorkingDir() throws IOException {
-		FileUtil.deleteDirContents(WORKING_DIR);
-		MiscFileUtils.copyDirContentsIntoDirectory(SEMMODEL_TEST_BUNDLES, WORKING_DIR);
 	}
 	
 }

@@ -145,7 +145,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		// Test when no StdLib install is found
 		___initSemanticManager(new Tests_SemanticManager() {
 			@Override
-			protected StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+			public StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
 				return assertCast(super.getUpdatedStdLibResolution(compilerPath), 
 					MissingStandardLibraryResolution.class);
 			}

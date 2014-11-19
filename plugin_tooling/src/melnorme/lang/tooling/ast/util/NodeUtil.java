@@ -1,5 +1,6 @@
 package melnorme.lang.tooling.ast.util;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -43,6 +44,20 @@ public class NodeUtil {
 			node = node.getParent();
 		}
 		return false;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T getMatchingParent(ASTNode node, Class<T> klass) {
+		assertNotNull(klass);
+		
+		if(node == null) {
+			return null;
+		}
+		
+		if(klass.isInstance(node)) {
+			return (T) node;
+		}
+		return getMatchingParent(node.getParent(), klass);
 	}
 	
 }

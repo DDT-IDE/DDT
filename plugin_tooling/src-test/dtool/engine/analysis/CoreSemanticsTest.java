@@ -21,14 +21,13 @@ import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
-import dtool.engine.CommonSemanticsTests;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
-public class ElementResolution_Test extends CommonSemanticsTests {
+public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	
-	public final BundlePath LIB_FOO = bundlePath(SEMMODEL_TEST_BUNDLES, "lib_foo");
-	public final BundlePath LIB_TPL = bundlePath(SEMMODEL_TEST_BUNDLES, "lib_tpl");
+	public final BundlePath LIB_FOO = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_foo");
+	public final BundlePath LIB_TPL = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_tpl");
 	
 	@Test
 	public void testResolveRef() throws Exception { testResolveRef$(); }
@@ -36,11 +35,24 @@ public class ElementResolution_Test extends CommonSemanticsTests {
 		
 		BundleResolution libFooSR = defaultSemMgr.getUpdatedResolution(LIB_FOO);
 		
+//		parseModule("int ref_int;");
+		
 		testRefResolve(libFooSR, new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0)), 
 			"int");
 		
 		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_int"), 
 			"int");
+		
+		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_int"), 
+				"int");
+
+//		int ref_int;
+//
+//		alias Foo Foo_Alias;
+//
+//		lib_foo.mod.Foo ref_Foo;
+//		Foo             ref_Foo_2;
+//		Foo_Alias       ref_Foo_3;
 		
 		testRefResolve(libFooSR, getSampleType(libFooSR, "test.ref_Foo"), 
 			"lib_foo.mod.Foo");

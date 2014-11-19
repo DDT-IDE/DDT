@@ -36,7 +36,7 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	}
 	
 	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
-		return parseSourceAndPickNode(source, offset, IVarDefinitionLike.class);
+		return parseSourceAndFindNode(source, offset, IVarDefinitionLike.class);
 	}
 	
 	/* -----------------  ----------------- */

@@ -39,18 +39,18 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(SEMMODEL_TEST_BUNDLES);
-		CommonDubTest.dubAddPath(WORKING_DIR);
+		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
+		CommonDubTest.dubAddPath(BUNDLEMODEL_WORKING_DIR_BUNDLES);
 	}
 	
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(WORKING_DIR);
+		CommonDubTest.dubRemovePath(BUNDLEMODEL_WORKING_DIR_BUNDLES);
 	}
 	
 	@Override
 	public Path getDubRepositoryDir() {
-		return WORKING_DIR;
+		return BUNDLEMODEL_WORKING_DIR_BUNDLES;
 	}
 
 	/* -----------------  ----------------- */
@@ -163,8 +163,10 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		manifestEntry.markStale();
 	}
 	
-	public static BundlePath NON_EXISTANT = bundlePath(SEMMODEL_TEST_BUNDLES, "__NonExistant");
-	public static BundlePath ERROR_BUNDLE__MISSING_DEP = bundlePath(SEMMODEL_TEST_BUNDLES, "ErrorBundle_MissingDep");
+	public static BundlePath NON_EXISTANT = 
+			bundlePath(BUNDLEMODEL_WORKING_DIR_BUNDLES, "__NonExistant");
+	public static BundlePath ERROR_BUNDLE__MISSING_DEP = 
+			bundlePath(BUNDLEMODEL_WORKING_DIR_BUNDLES, "ErrorBundle_MissingDep");
 	
 	@Test
 	public void testInvalidInput() throws Exception { testInvalidInput$(); }
