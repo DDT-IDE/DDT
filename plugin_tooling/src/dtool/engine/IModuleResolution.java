@@ -8,11 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine;
+package dtool.engine;
 
-public interface INodeSemantics {
+import java.nio.file.Path;
+
+import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.engine.IElementSemantics;
+
+
+public interface IModuleResolution {
 	
-	public static final INodeSemantics NULL_NODE_SEMANTICS = new INodeSemantics() {
-	};
+	Path getModulePath();
+	
+	IBundleResolution getBundleResolution();
+	
+	IElementSemantics getElementSemantics(ISemanticElement element);
+	
+	IElementSemantics putElementSemantics(ISemanticElement astNode, IElementSemantics createElementSemantics);
 	
 }

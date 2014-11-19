@@ -10,15 +10,18 @@
  *******************************************************************************/
 package dtool.engine;
 
-import java.nio.file.Path;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import melnorme.lang.tooling.bundles.ICompilationUnitData;
+import java.nio.file.Path;
+import java.util.HashMap;
+
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.engine.INodeSemantics;
+import melnorme.lang.tooling.engine.IElementSemantics;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public class ResolvedModule implements ICompilationUnitData {
+public class ResolvedModule implements IModuleResolution {
 	
 	protected final ParsedModule parsedModule;
 	protected final AbstractBundleResolution bundleRes;
@@ -32,26 +35,42 @@ public class ResolvedModule implements ICompilationUnitData {
 		return parsedModule;
 	}
 	
-	@Override
 	public Module getModuleNode() {
 		return parsedModule.module;
 	}
 	
+	@Override
 	public Path getModulePath() {
 		return parsedModule.modulePath;
 	}
 	
-	@Override
 	public AbstractBundleResolution getSemanticResolution() {
 		return bundleRes;
 	}
 	
-	public IModuleResolver getModuleResolver() {
+	@Override
+	public IBundleResolution getBundleResolution() {
 		return bundleRes;
 	}
 	
-	public INodeSemantics findNodeSemantics(Object nodeSemanticsKey) {
-		return null; /* FIXME: TODO */
+	/* FIXME: */
+	@Deprecated
+	public IModuleResolver getModuleResolver() {
+		return bundleRes; 
+	}
+	
+	protected final HashMap<ISemanticElement, IElementSemantics> semanticsMap = new HashMap<>();
+	
+	@Override
+	public IElementSemantics getElementSemantics(ISemanticElement element) {
+		return semanticsMap.get(element);
+	}
+	
+	@Override
+	public IElementSemantics putElementSemantics(ISemanticElement element, IElementSemantics elementSemantics) {
+		assertTrue(semanticsMap.containsKey(element) == false);
+		semanticsMap.put(element, elementSemantics);
+		return elementSemantics;
 	}
 	
 }

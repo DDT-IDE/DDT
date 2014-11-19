@@ -30,7 +30,7 @@ import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.DefUnit;
-import dtool.ast.util.NamedElementUtil;
+import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {

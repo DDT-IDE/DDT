@@ -10,16 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import java.nio.file.Path;
+import melnorme.lang.tooling.engine.IElementSemantics;
+import dtool.engine.IBundleResolution;
 
 public interface ISemanticElement {
 	
-	Path getModuleResolutionKey();
-	
-	INodeSemanticsKey getNodeSemanticsKey();
-	
-	public interface INodeSemanticsKey {
-		
-	}
+	public abstract IElementSemantics getSemantics(IBundleResolution br);
 	
 }

@@ -49,7 +49,8 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 			throws ModuleSourceException {
 		AbstractBundleResolution sr = moduleRes.getSemanticResolution();
 		INamedElement namedElement = moduleRes.getModuleNode();
-		assertTrue(sr.findNodeSemantics(namedElement) == sr.findNodeSemantics(namedElement));
+		assertTrue(namedElement.getSemantics(sr) == namedElement.getSemantics(sr));
+		assertTrue(namedElement.resolveConcreteElement(sr) == namedElement.resolveConcreteElement(sr));
 	}
 	
 	protected void testReferenceResolve(ResolvedModule moduleRes) throws ModuleSourceException {
@@ -58,12 +59,11 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void testReferenceResolve(ResolvedModule moduleRes, RefPrimitive ref) throws ModuleSourceException {
-		AbstractBundleResolution sr = moduleRes.getSemanticResolution();
+		AbstractBundleResolution br = moduleRes.getSemanticResolution();
 		
 		// Test caching
-		assertTrue(sr.findNodeSemantics(ref) == sr.findNodeSemantics(ref));
-		assertTrue(ref.resolveTargetElement(sr) == ref.resolveTargetElement(sr));
-		assertTrue(ref.getNodeSemantics() == ref.getNodeSemantics());
+		assertTrue(ref.getSemantics(br) == ref.getSemantics(br));
+		assertTrue(ref.resolveTargetElement(br) == ref.resolveTargetElement(br));
 	}
 	
 	@Test

@@ -78,7 +78,7 @@ public class DeeSearchEngineTestUtils {
 			ASTNode child = children[ix];
 			if(node == child) {
 				parentPath.add(ix);
-				assertTrue(getNodeFromPath(node.getModuleNode(), parentPath) == node);
+				assertTrue(getNodeFromPath(node.getModuleNode2(), parentPath) == node);
 				return parentPath;
 			}
 		}

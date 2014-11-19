@@ -11,6 +11,7 @@
 package dtool.engine;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -21,18 +22,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast.IModuleNode;
-import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.ast.ISemanticElement.INodeSemanticsKey;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import melnorme.lang.tooling.engine.INodeSemantics;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public abstract class AbstractBundleResolution implements ISemanticResolution {
+public abstract class AbstractBundleResolution implements ISemanticResolution, IBundleResolution {
 	
 	protected final SemanticManager manager;
 	protected final BundleModules bundleModules;
@@ -164,18 +163,16 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
-	public INodeSemantics findNodeSemantics(ISemanticElement semanticElement) throws ModuleSourceException {
-		Path modulePath = semanticElement.getModuleResolutionKey();
-		if(modulePath == null) 
-			return null;
-		INodeSemanticsKey nodeSemanticsKey = semanticElement.getNodeSemanticsKey();
-		if(nodeSemanticsKey == null) 
-			return null;
-		
-		ResolvedModule resolvedModule = findResolvedModule(modulePath);
-		if(resolvedModule == null) 
-			return null;
-		return resolvedModule.findNodeSemantics(nodeSemanticsKey);
+	@Override
+	public IModuleResolution findSemanticsContainer(IModuleElement moduleElement) {
+		assertNotNull(moduleElement);
+		Path modulePath = moduleElement.getCompilationUnitPath();
+		try {
+			return findResolvedModule(modulePath);
+		} catch (ModuleSourceException e) {
+			// TODO Auto-generated catch block
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 }

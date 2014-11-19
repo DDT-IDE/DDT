@@ -188,7 +188,7 @@ public class ReferenceResolver {
 	public static boolean privateNodeIsVisible(ASTNode node, Module searchOriginModule) {
 		if(searchOriginModule == null) 
 			return false;
-		Module nodeModule = node.getModuleNode();
+		Module nodeModule = node.getModuleNode2();
 		// only visible if in node in same module as search origin ref.
 		return searchOriginModule.getFullyQualifiedName().equals(nodeModule.getFullyQualifiedName());
 	}

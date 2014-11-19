@@ -20,7 +20,7 @@ import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRe
 import org.eclipse.dltk.compiler.env.IModuleSource;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.util.NamedElementUtil;
+import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.MockCompilerInstalls;
 

@@ -14,10 +14,10 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
-import melnorme.lang.tooling.engine.INodeSemantics;
+import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public interface IResolvableSemantics extends INodeSemantics {
+public interface IResolvableSemantics extends IElementSemantics {
 	
 	INamedElement findTargetDefElement(IModuleResolver moduleResolver);
 	

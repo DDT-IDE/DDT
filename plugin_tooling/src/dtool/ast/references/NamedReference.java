@@ -39,7 +39,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 			return null;
 		}
 		int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
-		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode(), startPos, 
+		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode2(), startPos, 
 			findOneOnly, moduleResolver);
 		performRefSearch(search);
 		return search.getMatchedElements();

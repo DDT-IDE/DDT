@@ -8,14 +8,11 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.bundles;
+package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.ast.IModuleNode;
-
-public interface ICompilationUnitData {
+public interface IElementSemantics {
 	
-	IModuleNode getModuleNode();
-	
-	IModuleResolver getSemanticResolution();
+	public static final IElementSemantics NULL_NODE_SEMANTICS = new IElementSemantics() {
+	};
 	
 }

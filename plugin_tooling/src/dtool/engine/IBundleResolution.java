@@ -8,12 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ast;
+package dtool.engine;
 
+import melnorme.lang.tooling.ast.IModuleElement;
+import melnorme.lang.tooling.bundles.IModuleResolver;
 
-/**
- * The node that resulting from the parsing of an entire compilation unit (a file usually).
- */
-public interface IModuleNode extends IASTNode, IModuleElement {
+public interface IBundleResolution extends IModuleResolver {
+	
+	IModuleResolution findSemanticsContainer(IModuleElement moduleElement);
 	
 }

@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.bundles;
 
 
+@Deprecated
 public interface ISemanticResolution extends IModuleResolver {
 	
 }

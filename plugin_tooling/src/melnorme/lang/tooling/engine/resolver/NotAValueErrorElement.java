@@ -10,17 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
+import dtool.engine.IBundleResolution;
 import dtool.resolver.CommonDefUnitSearch;
 
 public class NotAValueErrorElement implements INamedElement {
@@ -113,13 +113,10 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	@Override
-	public Path getModuleResolutionKey() {
-		return null; /*FIXME: BUG here*/
-	}
-	
-	@Override
-	public INodeSemanticsKey getNodeSemanticsKey() {
-		return null; /*FIXME: BUG here*/
+	public IElementSemantics getSemantics(IBundleResolution br) {
+		/*FIXME: BUG here*/
+		return new IElementSemantics() {
+		};
 	}
 	
 }

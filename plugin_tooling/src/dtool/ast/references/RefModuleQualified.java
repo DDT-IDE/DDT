@@ -19,7 +19,6 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.ast.util.NodeUtil;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"
@@ -53,7 +52,7 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	
 	@Override
 	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
-		final Module module = NodeUtil.getParentModule(this);
+		final Module module = getModuleNode2();
 		return Collections.<INamedElement>singletonList(module);
 	}
 	

@@ -11,13 +11,12 @@
 package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import dtool.engine.IBundleResolution;
 import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class AbstractNamedElement implements INamedElement {
@@ -67,13 +66,10 @@ public abstract class AbstractNamedElement implements INamedElement {
 	}
 	
 	@Override
-	public Path getModuleResolutionKey() {
-		return null; /*FIXME: BUG here*/
-	}
-	
-	@Override
-	public INodeSemanticsKey getNodeSemanticsKey() {
-		return null; /*FIXME: BUG here*/
+	public IElementSemantics getSemantics(IBundleResolution br) {
+		/*FIXME: BUG here*/
+		return new IElementSemantics() {
+		};
 	}
 	
 }

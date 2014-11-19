@@ -17,7 +17,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 
 
-public interface INamedElementSemantics extends INodeSemantics {
+public interface INamedElementSemantics extends IElementSemantics {
 	
 	IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr);
 	

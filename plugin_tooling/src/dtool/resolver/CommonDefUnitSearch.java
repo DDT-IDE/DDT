@@ -13,7 +13,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
-import dtool.ast.util.NamedElementUtil;
+import dtool.engine.util.NamedElementUtil;
 
 public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	

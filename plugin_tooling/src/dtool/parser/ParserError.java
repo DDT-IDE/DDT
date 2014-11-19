@@ -18,11 +18,10 @@ import java.util.Comparator;
 
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.ISourceRange;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 
-public class ParserError implements ISourceRange {
+public class ParserError {
 	
 	public enum ParserErrorTypes {
 		
@@ -57,12 +56,10 @@ public class ParserError implements ISourceRange {
 		this.msgData = msgData;
 	}
 	
-	@Override
 	public int getOffset() {
 		return sourceRange.getOffset();
 	}
 	
-	@Override
 	public int getLength() {
 		return sourceRange.getLength();
 	}
