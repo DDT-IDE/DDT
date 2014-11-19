@@ -17,7 +17,9 @@ import melnorme.utilbox.tree.IVisitable;
 /**
  * Interface for {@link ASTNode} objects. No other class can implement. 
  */
-public interface IASTNode extends IElement, IVisitable<IASTVisitor>	{
+public interface IASTNode 
+	extends IElement, IVisitable<IASTVisitor>, ISemanticElement, ISemanticElement.INodeSemanticsKey 
+{
 	
 	int getOffset();
 	int getLength();

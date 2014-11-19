@@ -10,18 +10,18 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
@@ -208,6 +208,10 @@ public class SemanticManager extends AbstractSemanticManager {
 		return info == null ? true : info.checkIsResolutionStale();
 	}
 	
+	public BundleModules createBundleModules(List<Path> importFolders) {
+		return new SM_BundleModulesVisitor(importFolders).toBundleModules();
+	}
+	
 	protected class SM_BundleModulesVisitor extends BundleModulesVisitor {
 		public SM_BundleModulesVisitor(List<Path> importFolders) {
 			super(importFolders);
@@ -247,7 +251,7 @@ public class SemanticManager extends AbstractSemanticManager {
 			ResolvedManifest manifest = getUpdatedManifest(bundlePath);
 			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(compilerPath);
 			
-			BundleResolution bundleRes = new BundleResolution(this, manifest, stdLibResolution);
+			BundleResolution bundleRes = new DubBundleResolution(this, manifest, stdLibResolution);
 			
 			setNewBundleResolutionEntry(bundleRes);
 			return staleInfo.getSemanticResolution();
@@ -328,6 +332,7 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	public ResolvedModule getUpdatedResolvedModule(Path filePath, Path compilerPath) throws ExecutionException {
+		/* FIXME: issue of absolute paths */
 		// Keep this enabled for now.
 //		if(!filePath.isAbsolute()) {
 //			throw new ExecutionException(new Exception("Invalid module path"));
@@ -335,39 +340,33 @@ public class SemanticManager extends AbstractSemanticManager {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		try {
-			AbstractBundleResolution bundleRes;
+			ResolvedModule resolvedModule;
+			StandardLibraryResolution stdLibResolution;
 			if(bundlePath == null) {
-				StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(compilerPath);
-				bundleRes = new SyntheticBundleResolution(this, BundleModules.createEmpty(), stdLibResolution);
+				stdLibResolution = getUpdatedStdLibResolution(compilerPath);
+				resolvedModule = stdLibResolution.getBundleResolvedModule(filePath);
 			} else {
-				bundleRes = getUpdatedResolution(bundlePath, compilerPath);
+				BundleResolution bundleRes = getUpdatedResolution(bundlePath, compilerPath);
+				stdLibResolution = bundleRes.getStdLibResolution();
+				resolvedModule = bundleRes.getBundleResolvedModule(filePath);
 			}
-			return bundleRes.getBundleResolvedModule(filePath);
+			
+			if(resolvedModule != null) {
+				return resolvedModule;
+			}
+			return createSyntheticBundle(filePath, stdLibResolution);
 		} catch (ModuleSourceException e) {
 			throw new ExecutionException(e);
 		}
 	}
 	
-	protected class SyntheticBundleResolution extends AbstractBundleResolution {
-		
-		protected final StandardLibraryResolution stdLibResolution;
-
-		public SyntheticBundleResolution(SemanticManager manager, BundleModules bundleModules, 
-				StandardLibraryResolution stdLibResolution) {
-			super(manager, bundleModules);
-			this.stdLibResolution = stdLibResolution;
-		}
-		
-		@Override
-		protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
-			stdLibResolution.findModules(fullNamePrefix, matchedModules);
-		}
-		
-		@Override
-		public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-			return stdLibResolution.findResolvedModule(moduleFullName);
-		}
-		
+	protected ResolvedModule createSyntheticBundle(Path filePath, StandardLibraryResolution stdLibResolution) 
+			throws ModuleSourceException {
+		BundleModules bundleModules = BundleModules.createSyntheticBundleModules(filePath);
+		BundleResolution syntheticBR = new BundleResolution(this, null, bundleModules, stdLibResolution,
+			new ArrayList2<BundleResolution>());
+		ResolvedModule resolvedModule = syntheticBR.getBundleResolvedModule(filePath);
+		return assertNotNull(resolvedModule);
 	}
 	
 }

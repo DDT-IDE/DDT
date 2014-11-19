@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.engine.BundleResolution_ModuleListTest.DEFAULT_DMD_INSTALL_LOCATION__Object_Path;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -21,9 +19,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -180,7 +176,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		}
 		
 		try {
-			BundleResolution bundleRes = sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
+			// TODO: cleanup these casts.
+			DubBundleResolution bundleRes = (DubBundleResolution) sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
 			assertTrue(bundleRes != null && bundleRes.dubBundle.hasErrors());
 		} catch (ExecutionException e) {
 			throw assertFail();
@@ -209,9 +206,6 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertTrue(FileUtil.deleteIfExists(file));
 		assertTrue(file.toFile().exists() == false);
 	}
-	
-	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d");
-	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	
 	@Test
 	public void testModuleUpdates() throws Exception { testModuleUpdates$(); }
@@ -328,69 +322,6 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		sm.discardWorkingCopy(filePath);
 		
 		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale(true) == null);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	protected ResolvedModule getUpdatedResolvedModule(Path filePath, String fullName) 
-			throws ExecutionException {
-		ResolvedModule resolvedModule = getUpdatedResolvedModule(filePath);
-		assertTrue(resolvedModule == getUpdatedResolvedModule(filePath)); // Check instance remains same.
-		assertEquals(resolvedModule.getModuleNode().getFullyQualifiedName(), fullName);
-		return resolvedModule;
-	}
-	
-	protected ResolvedModule getUpdatedResolvedModule(Path complexLib_module) throws ExecutionException {
-		return sm.getUpdatedResolvedModule(complexLib_module);
-	}
-	
-	public final BundlePath NOT_A_BUNDLE = bundlePath(getDubRepositoryDir(), "not_a_bundle");
-	
-	@Test
-	public void testGetResolvedModule() throws Exception { testGetResolvedModule$(); }
-	public void testGetResolvedModule$() throws Exception {
-		prepSMTestsWorkingDir();
-		sm = ___initSemanticManager();
-		sm.getUpdatedResolution(COMPLEX_LIB);
-		
-		ResolvedModule resolvedModule = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
-		assertTrue(resolvedModule.bundleRes == sm.getStoredResolution(BASIC_LIB));
-		
-		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
-		assertTrue(resolvedModule == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
-		assertTrue(complexLibSR.getCompilerPath().equals(DEFAULT_DMD_INSTALL_EXE_PATH));
-		
-		// Test getResolvedModule for missing file - must throw
-		try {
-			resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("_does_not_exist.d"));
-			assertFail();
-		} catch (ExecutionException e) {
-		}
-		
-		// Test getResolvedModule for module that is not in bundle import folders.
-		resolvedModule = getUpdatedResolvedModule(BASIC_LIB.resolve("not_source/not_source_foo.d"));
-		assertTrue(resolvedModule.bundleRes == sm.getStoredResolution(BASIC_LIB)); // Not that important
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
-			"object"
-		));
-		
-		// Test getResolvedModule for module that is not in a bundle at all.
-		resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
-			"object"
-		));
-		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
-		
-		
-		// Test getResolvedModule for a relative path.
-		Path specialPath = MiscUtil.createValidPath(("###special/relative_bundle.d"));
-		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
-		resolvedModule = getUpdatedResolvedModule(specialPath);
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
-			"object"
-		));
-		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
-		
 	}
 	
 }

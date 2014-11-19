@@ -11,17 +11,23 @@
 package dtool.engine;
 
 import static dtool.engine.StandardLibraryResolution.NULL_COMPILER_INSTALL_PATH;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.Test;
 
+import dtool.dub.BundlePath;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
@@ -44,10 +50,25 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			checkEntry(moduleFullName, relFilePath, false);
 		}
 		
-		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateEntry) {
+		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateNameEntry) {
 			Path filePath = bundleRes.getBundlePath().resolve(relFilePath);
-			checkMapContains(modules, new ModuleFullName(moduleFullName), filePath);
-			assertTrue(moduleFiles.remove(filePath) == !duplicateEntry);
+			ModuleFullName key = new ModuleFullName(moduleFullName);
+			assertAreEqual(modules.get(key), filePath);
+			
+			if(!duplicateNameEntry) {
+				assertTrue(moduleFiles.contains(findResolvedModule(filePath).getModulePath()));
+			}
+			
+			assertTrue(moduleFiles.remove(filePath) == !duplicateNameEntry);
+			modules.remove(key);
+		}
+		
+		public ResolvedModule findResolvedModule(Path filePath) {
+			try {
+				return bundleRes.findResolvedModule(filePath);
+			} catch (ModuleSourceException e) {
+				throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			}
 		}
 		
 		protected void finalCheck() {
@@ -69,7 +90,6 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		___initSemanticManager();
 		
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
-		assertEquals(sr.getBundleName(), "basic_lib");
 		new BundleFilesChecker(sr) {
 			{
 				checkEntry("basic_lib_foo", "source/basic_lib_foo.d");
@@ -81,7 +101,6 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		sm.getUpdatedResolution(COMPLEX_BUNDLE); // Tests optimization, run describe only once.
 		
 		BundleResolution smtestSR = sm.getUpdatedResolution(SMTEST);
-		assertEquals(smtestSR.getBundleName(), "smtest_foo");
 		new BundleFilesChecker(smtestSR) {
 			{
 				checkEntry("sm_test_foo", "src/sm_test_foo.d");
@@ -174,6 +193,66 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			"object"
 		));
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public final BundlePath NOT_A_BUNDLE = bundlePath(getDubRepositoryDir(), "not_a_bundle");
+	
+	@Test
+	public void testGetResolvedModule() throws Exception { testGetResolvedModule$(); }
+	public void testGetResolvedModule$() throws Exception {
+		prepSMTestsWorkingDir();
+		sm = ___initSemanticManager();
+		sm.getUpdatedResolution(COMPLEX_LIB);
+		
+		ResolvedModule resolvedModule = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
+		assertTrue(resolvedModule.bundleRes == sm.getStoredResolution(BASIC_LIB));
+		
+		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
+		assertTrue(resolvedModule == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
+		assertTrue(complexLibSR.getCompilerPath().equals(DEFAULT_DMD_INSTALL_EXE_PATH));
+		
+		
+		// Test getResolvedModule for module that is not in bundle import folders.
+		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d");
+		resolvedModule = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
+		assertTrue(resolvedModule.bundleRes != sm.getStoredResolution(BASIC_LIB));
+		assertEqualSet(resolvedModule.bundleRes.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
+		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
+		assertEqualSet(resolvedModule.bundleRes.findModules("basic_lib"), hashSet()); // Test not find basic lib files
+		assertEqualSet(resolvedModule.bundleRes.findModules("not"), hashSet("not_source_foo")); // Test find self
+		
+		
+		// Test getResolvedModule for module that is not in a bundle at all.
+		resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
+		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
+		assertEqualSet(resolvedModule.bundleRes.findModules("not"), hashSet("not_a_bundle_foo"));
+		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		
+		
+		// Test getResolvedModule for module in StandardLibrary
+		resolvedModule = getUpdatedResolvedModule(DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
+		assertTrue(resolvedModule.bundleRes instanceof StandardLibraryResolution);
+		
+		
+		// Test getResolvedModule for missing file - must throw
+		try {
+			resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("_does_not_exist.d"));
+			assertFail();
+		} catch (ExecutionException e) {
+		}
+		
+		
+		// Test getResolvedModule for a relative path.
+		Path specialPath = MiscUtil.createValidPath(("###special/relative_bundle.d"));
+		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
+		resolvedModule = getUpdatedResolvedModule(specialPath);
+		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
+			"object"
+		));
+		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 	}
 	
 }

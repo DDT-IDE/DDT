@@ -388,4 +388,8 @@ public abstract class CommonASTNode implements IASTNode {
 		return INodeSemantics.NULL_NODE_SEMANTICS;
 	}
 	
+	@Override
+	public INodeSemanticsKey getNodeSemanticsKey() {
+		return this;
+	}
 }

@@ -156,11 +156,6 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 	}
 	
 	@Override
-	public ModuleFullName getModuleFullName() {
-		return new ModuleFullName(getFullyQualifiedName());
-	}
-	
-	@Override
 	public String getModuleFullyQualifiedName() {
 		return getFullyQualifiedName();
 	}

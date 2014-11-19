@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import dtool.engine.modules.ModuleNamingRules;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 
 public class BundleModules {
@@ -66,8 +67,15 @@ public class BundleModules {
 		}
 	}
 	
-	protected static BundleModules createEmpty() {
-		return new BundleModules(new HashMap<ModuleFullName, Path>(), new HashSet<Path>(), new ArrayList<Path>());
+	public static BundleModules createSyntheticBundleModules(Path filePath) {
+		HashMap<ModuleFullName, Path> modules = new HashMap<>();
+		HashSet<Path> moduleFiles = new HashSet<>();
+		
+		moduleFiles.add(filePath);
+		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(filePath.getFileName());
+		modules.put(moduleFullName, filePath);
+		
+		return new BundleModules(modules, moduleFiles, new ArrayList<Path>(), false);
 	}
 	
 }

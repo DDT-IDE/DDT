@@ -128,7 +128,8 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			boolean manifestStale = checkIsManifestStale(bundlePath);
 			ResolvedManifest previousManifest = getStoredManifest(bundlePath);
 			
-			BundleResolution bundleResolution = super.getUpdatedResolution(bundlePath);
+			// TODO: cleanup this cast
+			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(bundlePath);
 			assertEquals(bundleResolution.bundlePath, bundlePath);
 			
 			assertEquals(bundleResolution.manifest == previousManifest, !manifestStale);
@@ -236,8 +237,28 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		assertAreEqual(modulePath, expectedPath);
 		
 		if(expectedPath != null) {
+			assertTrue(bundleRes.findResolvedModule(modulePath) == resolvedModule);
 			assertEquals(bundleRes.findModuleNode(moduleFullName), resolvedModule.getModuleNode());
 		}
 	}
+	
+	/* -----------------  ----------------- */
+	
+	protected ResolvedModule getUpdatedResolvedModule(Path filePath, String fullName) 
+			throws ExecutionException {
+		ResolvedModule resolvedModule = getUpdatedResolvedModule(filePath);
+		assertTrue(resolvedModule == getUpdatedResolvedModule(filePath)); // Check instance remains same.
+		assertEquals(resolvedModule.getModuleNode().getFullyQualifiedName(), fullName);
+		return resolvedModule;
+	}
+	
+	protected ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+		return sm.getUpdatedResolvedModule(filePath);
+	}
+	
+	/* ----------------- some common files ----------------- */
+	
+	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d");
+	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	
 }

@@ -11,6 +11,9 @@
 package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.CommonASTNode;
 import dtool.ast.definitions.Module;
 import dtool.ast.util.NodeUtil;
@@ -33,6 +36,15 @@ public abstract class ASTNode extends CommonASTNode {
 	
 	public Module getModuleNode() {
 		return NodeUtil.getParentModule(asNode());
+	}
+	
+	@Override
+	public Path getModuleResolutionKey() {
+		Module moduleNode = getModuleNode();
+		if(moduleNode == null)
+			return null;
+		
+		return moduleNode.getCompilationUnitPath();
 	}
 	
 	/* -----------------  ----------------- */

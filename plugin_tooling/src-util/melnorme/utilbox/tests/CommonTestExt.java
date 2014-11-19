@@ -140,12 +140,6 @@ public class CommonTestExt extends CommonTest {
 		
 	}
 	
-	protected static <K, V> void checkMapContains(Map<K, V> map, K key, V expectedValue) {
-		assertTrue(map.containsKey(key));
-		V value = map.remove(key);
-		assertAreEqual(value, expectedValue);
-	};
-	
 	protected static <V> void checkSetContains(Set<V> set, V expectedValue) {
 		assertTrue(set.remove(expectedValue));
 	};

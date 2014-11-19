@@ -10,60 +10,37 @@
  *******************************************************************************/
 package dtool.engine;
 
+
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.dub.BundlePath;
-import dtool.dub.DubBundle;
-import dtool.dub.ResolvedManifest;
 
 public class BundleResolution extends AbstractBundleResolution {
 	
-	protected final ResolvedManifest manifest;
-	protected final DubBundle dubBundle;
 	protected final BundlePath bundlePath;
 	protected final StandardLibraryResolution stdLibResolution;
-	protected final List<BundleResolution> depResolutions;
+	protected final Indexable<? extends BundleResolution> depResolutions;
 	
-	public BundleResolution(SemanticManager manager, ResolvedManifest manifest, 
-			StandardLibraryResolution stdLibResolution) {
-		super(manager, manifest.getBundle().getEffectiveImportFolders_AbsolutePath());
-		this.manifest = manifest;
-		this.dubBundle = manifest.getBundle();
-		this.bundlePath = assertNotNull(dubBundle.getBundlePath());
+	public BundleResolution(SemanticManager manager, BundlePath bundlePath, BundleModules bundleModules,
+			StandardLibraryResolution stdLibResolution, Indexable<? extends BundleResolution> depResolutions) {
+		super(manager, bundleModules);
+		this.bundlePath = bundlePath;
 		this.stdLibResolution = assertNotNull(stdLibResolution); 
-		this.depResolutions = Collections.unmodifiableList(createDepSRs(manager, manifest, stdLibResolution));
-	}
-	
-	protected static List<BundleResolution> createDepSRs(SemanticManager manager, ResolvedManifest manifest, 
-		StandardLibraryResolution stdLibResolution) {
-		List<BundleResolution> depSRs = new ArrayList<>();
-		for (ResolvedManifest depManifest : manifest.getBundleDeps()) {
-			depSRs.add(new BundleResolution(manager, depManifest, stdLibResolution));
-		}
-		return depSRs;
-	}
-	
-	public String getBundleName() {
-		return dubBundle.getBundleName();
+		this.depResolutions = depResolutions;
 	}
 	
 	public BundlePath getBundlePath() {
 		return bundlePath;
 	}
 	
-	public DubBundle getBundle() {
-		return dubBundle;
-	}
-	
-	public List<BundleResolution> getDirectDependencies() {
+	public Indexable<? extends BundleResolution> getDirectDependencies() {
 		return depResolutions;
 	}
 	
@@ -77,8 +54,14 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	@Override
 	public String toString() {
-		return "BundleResolution: " + getBundleName() + " - " + getBundlePath();
+		if(getBundlePath() == null) {
+			return "BundleResolution: [" + StringUtil.collToString(bundleModules.moduleFiles, ":") + "]";
+		}
+		return "BundleResolution: " + getBundlePath();
 	}
+
+	
+	/* -----------------  ----------------- */
 	
 	// As an optimization, we don't check STD_LIB staleness, as its likely to change very rarely.
 	protected static boolean CHECK_STD_LIB_STALENESS = false;
@@ -103,34 +86,99 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	/* ----------------- ----------------- */
 	
-	@Override
-	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
-		stdLibResolution.findModules(fullNamePrefix, matchedModules);
+	public abstract class BundleResolutionVisitor<E extends Exception> {
 		
-		bundleModules.findModules(fullNamePrefix, matchedModules);
-		for (BundleResolution depSR : depResolutions) {
-			depSR.findModules(fullNamePrefix, matchedModules);
+		public BundleResolutionVisitor() throws E {
+			visitBundleResolutions();
+		}
+		
+		private void visitBundleResolutions() throws E {
+			
+			visit(stdLibResolution); // TODO optimize duplicate visits of StdLib
+			if(isFinished()) {
+				return;
+			}
+			
+			visitSelf(BundleResolution.this);
+			if(isFinished()) {
+				return;
+			}
+			
+			for (BundleResolution depBundleRes : depResolutions) {
+				visit(depBundleRes);
+				if(isFinished()) {
+					return;
+				}
+			}
+		}
+		
+		protected abstract void visit(AbstractBundleResolution bundleResolution) throws E;
+		
+		protected abstract void visitSelf(BundleResolution bundleResolution) throws E;
+		
+		protected boolean isFinished() {
+			return false;
+		}
+		
+	}
+	
+	@Override
+	protected final void findModules(final String fullNamePrefix, final HashSet<String> matchedModules) {
+		new BundleResolutionVisitor<RuntimeException>() {
+			@Override
+			public void visit(AbstractBundleResolution bundleResolution) {
+				bundleResolution.findModules(fullNamePrefix, matchedModules);
+			}
+			@Override
+			protected void visitSelf(BundleResolution bundleResolution) throws RuntimeException {
+				findBundleModules(fullNamePrefix, matchedModules);
+			}
+		};
+	}
+	
+	protected abstract class ModuleResolutionVisitor extends BundleResolutionVisitor<ModuleSourceException> {
+		public ResolvedModule resolvedModule;
+		
+		protected ModuleResolutionVisitor() throws ModuleSourceException {
+			super();
+		}
+		
+		@Override
+		public abstract void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException;
+		
+		@Override
+		public boolean isFinished() {
+			return resolvedModule != null;
 		}
 	}
 	
 	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		ResolvedModule resolvedModule;
-		
-		resolvedModule = stdLibResolution.findResolvedModule(moduleFullName);
-		if(resolvedModule != null) 
-			return resolvedModule;
-		
-		resolvedModule = getBundleResolvedModule(moduleFullName);
-		if(resolvedModule != null) 
-			return resolvedModule;
-		
-		for (BundleResolution depBundleRes : depResolutions) {
-			resolvedModule = depBundleRes.findResolvedModule(moduleFullName);
-			if(resolvedModule != null) 
-				return resolvedModule;
-		}
-		return null;
+	public final ResolvedModule findResolvedModule(final ModuleFullName moduleFullName) throws ModuleSourceException {
+		return new ModuleResolutionVisitor() {
+			@Override
+			public void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
+				resolvedModule = bundleResolution.findResolvedModule(moduleFullName);
+			}
+			@Override
+			protected void visitSelf(BundleResolution bundleResolution) throws ModuleSourceException {
+				resolvedModule = bundleResolution.getBundleResolvedModule(moduleFullName);
+			}
+		}.resolvedModule;
+	}
+	
+	@Override
+	public final ResolvedModule findResolvedModule(final Path path) throws ModuleSourceException {
+		return new ModuleResolutionVisitor() {
+			@Override
+			public void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
+				resolvedModule = bundleResolution.findResolvedModule(path);
+			}
+			
+			@Override
+			protected void visitSelf(BundleResolution bundleResolution) throws ModuleSourceException {
+				resolvedModule = bundleResolution.getBundleResolvedModule(path);
+			}
+		}.resolvedModule;
 	}
 	
 }

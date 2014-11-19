@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
@@ -24,7 +25,7 @@ import dtool.resolver.CommonDefUnitSearch;
  * May exists in source or outside source, it can be implicitly or explicitly defined.
  * Implementation may be an AST node (that is the more common case), but it can be a non AST node too.
  */
-public interface INamedElement extends INamedElementExtensions {
+public interface INamedElement extends ISemanticElement, INamedElementExtensions {
 	
 	/** The name of the element that is referred to. */
 	public abstract String getName();
@@ -52,13 +53,14 @@ public interface INamedElement extends INamedElementExtensions {
 	/** @return the fully qualified name of the module this element belongs to. 
 	 * Can be null if element is not contained in a module. */
 	public abstract String getModuleFullyQualifiedName();
-	
 	public ModuleFullName getModuleFullName();
 	
 	
 	/** @return the nearest enclosing {@link INamedElement}.
 	 * For modules and packages, that is null. */
 	public abstract INamedElement getParentElement();
+	
+	/* ----------------- Semantics ----------------- */
 	
 	/** @return the node this named element represents. In most cases this is the same as the receiver, 
 	 * but this method allows proxy {@link INamedElement} classes to resolve to their proxied node. 

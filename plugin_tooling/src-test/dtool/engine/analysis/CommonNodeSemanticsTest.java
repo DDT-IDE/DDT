@@ -70,4 +70,9 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return NodeUtil.getMatchingParent(node, klass);
 	}
 	
+	protected static <T> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
+		ASTNode node = ASTNodeFinder.findElement(moduleRes.getModuleNode(), offset);
+		return NodeUtil.getMatchingParent(node, klass);
+	}
+	
 }

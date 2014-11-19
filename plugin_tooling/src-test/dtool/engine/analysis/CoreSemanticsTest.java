@@ -10,17 +10,18 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
+import dtool.engine.AbstractBundleResolution;
 import dtool.engine.BundleResolution;
+import dtool.engine.ResolvedModule;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.Token;
 
@@ -30,12 +31,46 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	public final BundlePath LIB_TPL = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_tpl");
 	
 	@Test
+	public void testSemanticsStorage() throws Exception { testSemanticsStorage$(); }
+	public void testSemanticsStorage$() throws Exception {
+		
+		ResolvedModule moduleRes = parseModule("int ref_int;");
+		testNamedElementSemantics(moduleRes);
+		
+		testReferenceResolve(moduleRes, findNode(moduleRes, 0, RefPrimitive.class));
+		
+//		StandardLibraryResolution stdLibBR = defaultSemMgr.getUpdatedStdLibResolution(DEFAULT_DMD_INSTALL_EXE_PATH);
+//		INamedElement intElement = parseSourceAndFindNode("int ref_int;", 0, RefPrimitive.class).
+//				resolveTargetElement(stdLibBR).getSingleResult();
+//		INamedElement singleResult = intElement;
+	}
+	
+	protected void testNamedElementSemantics(ResolvedModule moduleRes) 
+			throws ModuleSourceException {
+		AbstractBundleResolution sr = moduleRes.getSemanticResolution();
+		INamedElement namedElement = moduleRes.getModuleNode();
+		assertTrue(sr.findNodeSemantics(namedElement) == sr.findNodeSemantics(namedElement));
+	}
+	
+	protected void testReferenceResolve(ResolvedModule moduleRes) throws ModuleSourceException {
+		RefPrimitive Reference = findNode(moduleRes, 0, RefPrimitive.class);
+		testReferenceResolve(moduleRes, Reference);
+	}
+	
+	protected void testReferenceResolve(ResolvedModule moduleRes, RefPrimitive ref) throws ModuleSourceException {
+		AbstractBundleResolution sr = moduleRes.getSemanticResolution();
+		
+		// Test caching
+		assertTrue(sr.findNodeSemantics(ref) == sr.findNodeSemantics(ref));
+		assertTrue(ref.resolveTargetElement(sr) == ref.resolveTargetElement(sr));
+		assertTrue(ref.getNodeSemantics() == ref.getNodeSemantics());
+	}
+	
+	@Test
 	public void testResolveRef() throws Exception { testResolveRef$(); }
 	public void testResolveRef$() throws Exception {
 		
 		BundleResolution libFooSR = defaultSemMgr.getUpdatedResolution(LIB_FOO);
-		
-//		parseModule("int ref_int;");
 		
 		testRefResolve(libFooSR, new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0)), 
 			"int");
@@ -66,9 +101,10 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected Reference getSampleType(BundleResolution sr, String elementName) throws ModuleSourceException {
-		INamedElement element = sr.findContainedElement(elementName);
-		assertNotNull(element);
-		return assertCast(element, DefinitionVariable.class).type;
+//		INamedElement element = sr.findContainedElement(elementName);
+//		assertNotNull(element);
+//		return assertCast(element, DefinitionVariable.class).type;
+		return null;
 	}
 	
 	protected void testRefResolve(BundleResolution libFooSR, Reference ref, String elementName) {

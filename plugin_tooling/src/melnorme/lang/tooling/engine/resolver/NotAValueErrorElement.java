@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
@@ -108,6 +110,16 @@ public class NotAValueErrorElement implements INamedElement {
 	@Override
 	public Ddoc resolveDDoc() {
 		return wrappedElement.resolveDDoc();
+	}
+	
+	@Override
+	public Path getModuleResolutionKey() {
+		return null; /*FIXME: BUG here*/
+	}
+	
+	@Override
+	public INodeSemanticsKey getNodeSemanticsKey() {
+		return null; /*FIXME: BUG here*/
 	}
 	
 }

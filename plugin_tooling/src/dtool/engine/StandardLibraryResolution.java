@@ -11,13 +11,12 @@
 package dtool.engine;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 import melnorme.lang.tooling.bundles.IModuleResolver;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.utilbox.misc.MiscUtil;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
@@ -51,6 +50,23 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		return compilerInstall.getLibrarySourceFolders();
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
+		findBundleModules(fullNamePrefix, matchedModules);
+	}
+	
+	@Override
+	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
+		return getBundleResolvedModule(moduleFullName);
+	}
+	
+	@Override
+	public ResolvedModule findResolvedModule(Path path) throws ModuleSourceException {
+		return getBundleResolvedModule(path);
+	}
+	
 	/* ----------------- synthetic install ----------------- */
 	
 	public static final Path NULL_COMPILER_INSTALL_PATH = 
@@ -65,36 +81,14 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
 		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.resolve("object.di");
-		protected final BundleModules syntheticBundleModules;
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
-			super(manager, NULL_COMPILER_INSTALL, BundleModules.createEmpty());
-			
-			this.syntheticBundleModules = createSyntheticBundleModules();
+			super(manager, NULL_COMPILER_INSTALL, 
+				BundleModules.createSyntheticBundleModules(objectPath));
 			
 			ParsedModule parsedModule = DeeParser.parseSource("module object; ", objectPath);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
 			resolvedModules.put(objectPath, resolvedModule);
-		}
-		
-		protected static BundleModules createSyntheticBundleModules() {
-			HashMap<ModuleFullName, Path> modules = new HashMap<>();
-			HashSet<Path> moduleFiles = new HashSet<>();
-			
-			moduleFiles.add(objectPath);
-			modules.put(new ModuleFullName("object"), objectPath);
-			
-			return new BundleModules(modules, moduleFiles, new ArrayList<Path>(), false);
-		}
-		
-		@Override
-		protected Path getBundleModulePath(ModuleFullName moduleFullName) {
-			return syntheticBundleModules.getModuleAbsolutePath(moduleFullName);
-		}
-		
-		@Override
-		protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
-			syntheticBundleModules.findModules(fullNamePrefix, matchedModules);
 		}
 		
 		@Override

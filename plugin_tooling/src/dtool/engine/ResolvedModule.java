@@ -14,6 +14,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.bundles.ICompilationUnitData;
 import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.engine.INodeSemantics;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -47,6 +48,10 @@ public class ResolvedModule implements ICompilationUnitData {
 	
 	public IModuleResolver getModuleResolver() {
 		return bundleRes;
+	}
+	
+	public INodeSemantics findNodeSemantics(Object nodeSemanticsKey) {
+		return null; /* FIXME: TODO */
 	}
 	
 }

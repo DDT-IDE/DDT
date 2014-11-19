@@ -11,6 +11,8 @@
 package dtool.engine;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,13 +22,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IModuleNode;
+import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ISemanticElement.INodeSemanticsKey;
 import melnorme.lang.tooling.bundles.ISemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
-import melnorme.lang.tooling.symbols.ElementName;
-import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.StringUtil;
+import melnorme.lang.tooling.engine.INodeSemantics;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -37,7 +38,7 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 	protected final BundleModules bundleModules;
 	
 	public AbstractBundleResolution(SemanticManager manager, List<Path> importFolders) {
-		this(manager, manager.new SM_BundleModulesVisitor(importFolders).toBundleModules());
+		this(manager, manager.createBundleModules(importFolders));
 	}
 	
 	public AbstractBundleResolution(SemanticManager manager, BundleModules bundleModules) {
@@ -50,10 +51,16 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return bundleModules.moduleFiles;
 	}
 	
-	/** @return the absolute path of a module contained in this bundle resolution. */
+	public boolean bundleContainsModule(Path path) {
+		return bundleModules.moduleFiles.contains(path);
+	}
+	
+	/** @return the absolute path of a module contained in this bundle resolution, or null if not found. */
 	protected Path getBundleModulePath(ModuleFullName moduleFullName) {
 		return bundleModules.getModuleAbsolutePath(moduleFullName);
 	}
+	
+	/* ----------------- ----------------- */
 	
 	@Override
 	public HashSet<String> findModules(String fullNamePrefix) {
@@ -62,28 +69,22 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return matchedModules;
 	}
 	
-	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
+	protected abstract void findModules(String fullNamePrefix, HashSet<String> matchedModules);
+
+	protected void findBundleModules(String fullNamePrefix, HashSet<String> matchedModules) {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
 	
-	/** @return a resolved module from this bundle's full import path (including dependencies). */
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		return getBundleResolvedModule(moduleFullName);
-	}
+	/* -----------------  ----------------- */
 	
 	public boolean checkIsStale() {
 		return checkIsModuleListStale() || checkIsModuleContentsStale();
 	}
 	
 	public boolean checkIsModuleListStale() {
-		List<Path> importFolders = bundleModules.importFolders;
-		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(importFolders) {
-			@Override
-			protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
-				moduleFiles.add(fullPath);
-			}
-		};
-		return !modulesVisitor.getModuleFiles().equals(bundleModules.moduleFiles);
+		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(bundleModules.importFolders);
+		Set<Path> currentModules = modulesVisitor.getModuleFiles();
+		return !currentModules.equals(bundleModules.moduleFiles);
 	}
 	
 	/* -----------------  ----------------- */
@@ -114,13 +115,25 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return getBundleResolvedModule(new ModuleFullName(moduleFullName));
 	}
 	
-	/** @return the module contained in this bundle, denoted by moduleFullName, or null if not found. */
+	/** @return the module contained in this bundle, denoted by given moduleFullName, or null if none exists. */
 	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
 		Path modulePath = getBundleModulePath(moduleFullName);
-		return modulePath == null ? null : getBundleResolvedModule(modulePath);
+		if(modulePath == null)
+			return null;
+		
+		return getOrCreateBundleResolvedModule(modulePath);
 	}
 	
-	public synchronized ResolvedModule getBundleResolvedModule(Path filePath) throws ModuleSourceException {
+	/** @return the module contained in this bundle, denoted by given modulePath, or null if none exists. */
+	protected ResolvedModule getBundleResolvedModule(Path modulePath) throws ModuleSourceException {
+		if(!bundleContainsModule(modulePath))
+			return null;
+		
+		return getOrCreateBundleResolvedModule(modulePath);
+	}
+	
+	protected synchronized ResolvedModule getOrCreateBundleResolvedModule(Path filePath) throws ModuleSourceException {
+		assertTrue(bundleContainsModule(filePath));
 		ModuleParseCache parseCache = manager.parseCache;
 		
 		ResolvedModule resolvedModule = resolvedModules.get(filePath);
@@ -143,27 +156,26 @@ public abstract class AbstractBundleResolution implements ISemanticResolution {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
+	/** @return a resolved module from this bundle's full import path (including dependencies). */
+	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
 	
-	/* ----------------- used by tests only, at the moment ----------------- */
+	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
+
 	
-	public INamedElement findContainedElement(String elementName) throws ModuleSourceException {
-		ElementName name = new ElementName(elementName);
+	/* ----------------- NodeSemantics ----------------- */
+	
+	public INodeSemantics findNodeSemantics(ISemanticElement semanticElement) throws ModuleSourceException {
+		Path modulePath = semanticElement.getModuleResolutionKey();
+		if(modulePath == null) 
+			return null;
+		INodeSemanticsKey nodeSemanticsKey = semanticElement.getNodeSemanticsKey();
+		if(nodeSemanticsKey == null) 
+			return null;
 		
-		String possibleModuleName = null;
-		for (String segment : name.getSegments()) {
-			
-			possibleModuleName = possibleModuleName == null ? 
-					segment :
-					possibleModuleName + ElementName.NAME_SEP + segment;
-			
-			ResolvedModule mr = getBundleResolvedModule(possibleModuleName);
-			if(mr != null) {
-				String elementSubName = StringUtil.segmentAfterMatch(elementName, 
-					possibleModuleName + ElementName.NAME_SEP);
-				return ScopeSemantics.findElement(mr.getModuleNode(), elementSubName);
-			}
-		}
-		return null;
+		ResolvedModule resolvedModule = findResolvedModule(modulePath);
+		if(resolvedModule == null) 
+			return null;
+		return resolvedModule.findNodeSemantics(nodeSemanticsKey);
 	}
 	
 }

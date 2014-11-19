@@ -48,6 +48,10 @@ public class TestsWorkingDir {
 		return getWorkingDir().toPath();
 	}
 	
+	public static Path getWorkingDirPath(String relativePath) {
+		return getWorkingDirPath().resolve(relativePath);
+	}
+	
 	protected static void defaultWorkingDirInit() {
 		if(testsWorkingDir != null) 
 			return;
@@ -59,10 +63,6 @@ public class TestsWorkingDir {
 		} else {
 			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests");
 		}
-	}
-	
-	public static Path getWorkingDirPath(String relativePath) {
-		return getWorkingDirPath().resolve(relativePath);
 	}
 	
 }
