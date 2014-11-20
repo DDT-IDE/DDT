@@ -10,8 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-/* FIXME: make class, specift hascode contract */
+import java.util.Map;
+
+import melnorme.lang.tooling.ast.ISemanticElement;
+
+/**
+ * A class responsible for doing semantic analysis.
+ * Each instance is bound to a specific {@link ISemanticElement}, except for NULL_NODE_SEMANTICS.
+ * This class uses the {@link #hashCode()} and {@link #equals()} of Object, such that each instance of 
+ * this class can be seperately inserted in a {@link Map}. 
+ */
 public interface IElementSemantics {
+	
+	@Override
+	public boolean equals(Object obj);
+	
+	@Override
+	public int hashCode();
 	
 	public static final IElementSemantics NULL_NODE_SEMANTICS = new IElementSemantics() {
 	};
