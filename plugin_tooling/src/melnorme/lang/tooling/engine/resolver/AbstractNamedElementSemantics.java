@@ -11,12 +11,18 @@
 package melnorme.lang.tooling.engine.resolver;
 
 
+import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 
 public abstract class AbstractNamedElementSemantics  implements INamedElementSemantics {
 	
 	public AbstractNamedElementSemantics() {
 		super();
+	}
+	
+	public static final <T extends ISemanticElement> ElementResolution<T> result(T resultElement) {
+		return new ElementResolution<T>(resultElement);
 	}
 	
 }

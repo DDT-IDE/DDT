@@ -12,10 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -48,28 +45,21 @@ public abstract class AbstractNamedElement implements INamedElement {
 	}
 	
 	@Override
-	public abstract INamedElementSemantics getNodeSemantics();
+	public abstract INamedElementSemantics getSemantics();
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return getNodeSemantics().resolveConcreteElement(sr);
+		return getSemantics().resolveConcreteElement(sr).result;
 	}
 	
 	@Override
 	public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		getNodeSemantics().resolveSearchInMembersScope(search);
+		getSemantics().resolveSearchInMembersScope(search);
 	}
 	
 	@Override
 	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		return getNodeSemantics().resolveTypeForValueContext(mr);
-	}
-	
-	@Override
-	public IElementSemantics getSemantics(ISemanticContext br) {
-		/*FIXME: BUG here*/
-		return new IElementSemantics() {
-		};
+		return getSemantics().resolveTypeForValueContext(mr);
 	}
 	
 }

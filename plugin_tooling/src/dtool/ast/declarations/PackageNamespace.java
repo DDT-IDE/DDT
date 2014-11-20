@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -107,14 +108,14 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	/* -----------------  ----------------- */
 	
 	@Override
-	public final INamedElementSemantics getNodeSemantics() {
+	public final INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
+		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
 			return null; /*FIXME: BUG here TODO*/
 		}
 		

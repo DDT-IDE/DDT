@@ -67,7 +67,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

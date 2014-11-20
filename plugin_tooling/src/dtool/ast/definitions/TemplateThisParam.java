@@ -47,7 +47,7 @@ public class TemplateThisParam extends TemplateParameter {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

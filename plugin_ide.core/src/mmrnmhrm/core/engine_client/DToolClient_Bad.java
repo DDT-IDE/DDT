@@ -31,7 +31,7 @@ public class DToolClient_Bad {
 	@Deprecated
 	public static ISemanticContext getResolverFor(Path filePath) {
 		try {
-			return DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
+			return DToolClient.getDefault().getResolvedModule(filePath).getSemanticContext();
 		} catch (ExecutionException e) {
 			return new MockSemanticResolution();
 		}

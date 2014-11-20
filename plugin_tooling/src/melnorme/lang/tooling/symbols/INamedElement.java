@@ -14,7 +14,6 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
@@ -70,7 +69,8 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	INamedElementNode resolveUnderlyingNode();
 	
 	/** @return the class responsible for handling semantic analysis. Non-null. */
-	INamedElementSemantics getNodeSemantics();
+	@Override
+	INamedElementSemantics getSemantics();
 	
 	/**
 	 * If this element is an alias to some other element, resolve all of them until the non-alias element

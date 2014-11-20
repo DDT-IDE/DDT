@@ -13,7 +13,7 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
@@ -21,20 +21,24 @@ import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class TypeSemantics extends AbstractNamedElementSemantics {
 	
-	protected IConcreteNamedElement typeElement;
+	protected final ElementResolution<IConcreteNamedElement> typeElementRes; 
 	
 	public TypeSemantics(IConcreteNamedElement typeElement) {
-		this.typeElement = typeElement;
+		this.typeElementRes = new ElementResolution<>(typeElement);
+	}
+	
+	protected final IConcreteNamedElement getTypeElement() {
+		return typeElementRes.result;
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return typeElement;
+	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+		return typeElementRes;
 	}
 	
 	@Override
 	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		return new NotAValueErrorElement(typeElement);
+		return new NotAValueErrorElement(getTypeElement());
 	}
 	
 	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {

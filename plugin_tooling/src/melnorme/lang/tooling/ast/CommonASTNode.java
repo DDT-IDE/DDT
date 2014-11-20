@@ -391,12 +391,8 @@ public abstract class CommonASTNode implements IASTNode {
 		return ReferenceResolver.getOuterLexicalScope(asNode());
 	}
 	
-	public IElementSemantics getNodeSemantics() {
-		return IElementSemantics.NULL_NODE_SEMANTICS;
-	}
-	
 	@Override
-	public IElementSemantics getSemantics(ISemanticContext br) {
+	public IElementSemantics getSemantics() {
 		/*FIXME: BUG here todo*/
 		return IElementSemantics.NULL_NODE_SEMANTICS;
 	}

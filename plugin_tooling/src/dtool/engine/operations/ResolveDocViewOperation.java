@@ -56,7 +56,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		}
 		Module module = resolvedModule.getModuleNode();
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
-		ISemanticContext mr = resolvedModule.getModuleResolver();
+		ISemanticContext mr = resolvedModule.getSemanticContext();
 		
 		INamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
@@ -100,7 +100,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 	}
 	
 	protected String getDDocHTMLViewForAutoLike(ISemanticContext mr, IVarDefinitionLike defVar) {
-		INamedElement resolvedType = defVar.getNodeSemantics().resolveTypeForValueContext(mr);
+		INamedElement resolvedType = defVar.getSemantics().resolveTypeForValueContext(mr);
 		
 		if(resolvedType == null) {
 			return TextUI.span("semantic_error", "color:red;",

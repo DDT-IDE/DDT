@@ -10,18 +10,14 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.CommonDefUnitSearch;
+import melnorme.lang.tooling.ast.ISemanticElement;
 
-
-public interface INamedElementSemantics extends IElementSemantics {
+public class ElementResolution<E extends ISemanticElement> {
 	
-	ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr);
+	public final E result;
 	
-	void resolveSearchInMembersScope(CommonDefUnitSearch search);
-	
-	INamedElement resolveTypeForValueContext(ISemanticContext mr);
+	public ElementResolution(E result) {
+		this.result = result;
+	}
 	
 }

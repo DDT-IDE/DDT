@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
@@ -22,7 +22,7 @@ import dtool.resolver.CommonDefUnitSearch;
 public class NullElementSemantics extends AbstractNamedElementSemantics {
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
+	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
 		return null; // /*FIXME: BUG here*/
 	}
 	

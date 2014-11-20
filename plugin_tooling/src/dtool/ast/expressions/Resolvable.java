@@ -49,21 +49,21 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	};
 	
 	@Override
-	public IResolvableSemantics getNodeSemantics() {
+	public IResolvableSemantics getSemantics() {
 		return defaultResolvableSemantics;
 	}
 	
 	@Override
 	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		return getNodeSemantics().resolveTypeOfUnderlyingValue(mr);
+		return getSemantics().resolveTypeOfUnderlyingValue(mr);
 	}
 	
 	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
-		return getNodeSemantics().findTargetDefElement(moduleResolver);
+		return getSemantics().findTargetDefElement(moduleResolver);
 	}
 	
 	public final ResolutionResult resolveTargetElement(ISemanticContext sr) {
-		return getNodeSemantics().resolveTargetElement(sr);
+		return getSemantics().resolveTargetElement(sr);
 	}
 	
 	/* ----------------- ----------------- */

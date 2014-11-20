@@ -64,7 +64,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

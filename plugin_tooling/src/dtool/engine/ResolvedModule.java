@@ -17,7 +17,6 @@ import java.util.HashMap;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -45,19 +44,8 @@ public class ResolvedModule implements IModuleResolution {
 		return parsedModule.modulePath;
 	}
 	
-	public AbstractBundleResolution getSemanticResolution() {
+	public ISemanticContext getSemanticContext() {
 		return bundleRes;
-	}
-	
-	@Override
-	public ISemanticContext getBundleResolution() {
-		return bundleRes;
-	}
-	
-	/* FIXME: */
-	@Deprecated
-	public ISemanticContext getModuleResolver() {
-		return bundleRes; 
 	}
 	
 	protected final HashMap<ISemanticElement, IElementSemantics> semanticsMap = new HashMap<>();

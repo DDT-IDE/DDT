@@ -50,7 +50,7 @@ public class TemplateTupleParam extends TemplateParameter implements IConcreteNa
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

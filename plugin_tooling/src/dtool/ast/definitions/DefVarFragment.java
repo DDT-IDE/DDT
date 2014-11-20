@@ -61,7 +61,7 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics getNodeSemantics() {
+	public CommonDefVarSemantics getSemantics() {
 		return nodeSemantics;
 	}
 	

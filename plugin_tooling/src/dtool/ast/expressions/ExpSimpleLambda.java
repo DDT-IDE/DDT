@@ -78,7 +78,7 @@ public class ExpSimpleLambda extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics getNodeSemantics() {
+		public INamedElementSemantics getSemantics() {
 			return semantics;
 		}
 		

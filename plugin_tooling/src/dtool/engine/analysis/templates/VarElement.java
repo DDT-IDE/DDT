@@ -58,7 +58,7 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	};
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return nodeSemantics;
 	}
 	

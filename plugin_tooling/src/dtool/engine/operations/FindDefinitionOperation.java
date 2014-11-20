@@ -59,7 +59,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		} catch (ExecutionException e) {
 			return new FindDefinitionResult("Error awaiting operation result: " + e);
 		}
-		final ISemanticContext mr = resolvedModule.getModuleResolver();
+		final ISemanticContext mr = resolvedModule.getSemanticContext();
 		Module module = resolvedModule.getModuleNode();
 		
 		assertEquals(module.compilationUnitPath, filePath); /*FIXME: BUG here normalization */

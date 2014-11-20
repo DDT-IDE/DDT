@@ -108,7 +108,7 @@ public class DefinitionTemplate extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

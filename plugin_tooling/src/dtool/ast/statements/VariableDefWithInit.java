@@ -70,7 +70,7 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics getNodeSemantics() {
+	public CommonDefVarSemantics getSemantics() {
 		return nodeSemantics;
 	}
 	

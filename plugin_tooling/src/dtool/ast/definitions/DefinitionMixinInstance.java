@@ -61,7 +61,7 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

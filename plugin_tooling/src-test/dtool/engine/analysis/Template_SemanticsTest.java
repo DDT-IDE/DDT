@@ -23,7 +23,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
-import dtool.engine.AbstractBundleResolution;
 import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.TemplateInstance;
 import dtool.resolver.PrefixDefUnitSearch;
@@ -32,16 +31,16 @@ import dtool.resolver.PrefixDefUnitSearch;
 public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	public static TestsElementSearch resolveAllMembers(ResolvedModule module, Reference tplRef) {
-		AbstractBundleResolution sr = module.getSemanticResolution();
+		ISemanticContext context = module.getSemanticContext();
 		TestsElementSearch search = allElementsSearch(module);
-		INamedElement tplInstance_ = tplRef.resolveTargetElement(sr).getSingleResult();
+		INamedElement tplInstance_ = tplRef.resolveTargetElement(context).getSingleResult();
 		TemplateInstance tplInstance = assertCast(tplInstance_, TemplateInstance.class);
 		tplInstance.resolveSearchInMembersScope(search);
 		return search;
 	}
 	
 	protected static TestsElementSearch allElementsSearch(ResolvedModule module) {
-		return new TestsElementSearch(module.getModuleNode(), -1, module.getSemanticResolution());
+		return new TestsElementSearch(module.getModuleNode(), -1, module.getSemanticContext());
 	}
 	
 	public static class TestsElementSearch extends PrefixDefUnitSearch {

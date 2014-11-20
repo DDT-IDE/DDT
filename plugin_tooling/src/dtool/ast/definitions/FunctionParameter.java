@@ -87,7 +87,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

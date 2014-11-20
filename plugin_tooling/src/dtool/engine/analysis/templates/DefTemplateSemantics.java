@@ -11,7 +11,7 @@
 package dtool.engine.analysis.templates;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -29,8 +29,8 @@ public final class DefTemplateSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return defTemplate;
+	public ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+		return result(defTemplate);
 	}
 	
 	@Override

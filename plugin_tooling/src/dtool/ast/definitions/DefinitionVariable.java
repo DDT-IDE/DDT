@@ -105,7 +105,7 @@ public class DefinitionVariable extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics getNodeSemantics() {
+	public CommonDefVarSemantics getSemantics() {
 		return nodeSemantics;
 	}
 	

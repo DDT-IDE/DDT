@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -23,15 +23,15 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return resolveConcreteElement(sr, getAliasTarget());
+	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+		return result(resolveConcreteElement(sr, getAliasTarget()));
 	}
 	
 	public static IConcreteNamedElement resolveConcreteElement(ISemanticContext sr, IResolvable aliasTarget) {
 		if(aliasTarget == null) {
 			return null;
 		}
-		INamedElement result = aliasTarget.getNodeSemantics().resolveTargetElement(sr).getSingleResult();
+		INamedElement result = aliasTarget.getSemantics().resolveTargetElement(sr).getSingleResult();
 		if(result == null) {
 			return null;
 		}
@@ -63,8 +63,8 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 		}
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-			return resolveConcreteElement(sr, getAliasTarget());
+		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+			return result(resolveConcreteElement(sr, getAliasTarget()));
 		}
 		
 		@Override

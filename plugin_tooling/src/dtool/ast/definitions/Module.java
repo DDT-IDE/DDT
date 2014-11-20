@@ -183,7 +183,7 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

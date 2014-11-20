@@ -62,7 +62,7 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

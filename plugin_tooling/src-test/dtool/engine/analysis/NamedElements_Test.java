@@ -164,7 +164,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 	protected void testAlias(INamedElement namedElement) {
 		assertTrue(namedElement.getName().equals("xxx") || namedElement.getName().equals("target"));
 		
-		AbstractBundleResolution sr = getSemanticResolution(namedElement);
+		ISemanticContext sr = getSemanticResolution(namedElement);
 		IConcreteNamedElement concreteElement = namedElement.resolveConcreteElement(sr);
 		
 		assertTrue(concreteElement != null);

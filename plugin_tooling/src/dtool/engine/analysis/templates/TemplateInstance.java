@@ -63,7 +63,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

@@ -11,7 +11,11 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.ElementResolution;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -19,7 +23,6 @@ import org.junit.Test;
 import dtool.ast.references.RefPrimitive;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
-import dtool.engine.AbstractBundleResolution;
 import dtool.engine.BundleResolution;
 import dtool.engine.ResolvedModule;
 import dtool.parser.DeeTokens;
@@ -47,10 +50,18 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	
 	protected void testNamedElementSemantics(ResolvedModule moduleRes) 
 			throws ModuleSourceException {
-		AbstractBundleResolution sr = moduleRes.getSemanticResolution();
+		ISemanticContext context = moduleRes.getSemanticContext();
 		INamedElement namedElement = moduleRes.getModuleNode();
-		assertTrue(namedElement.getSemantics(sr) == namedElement.getSemantics(sr));
-		assertTrue(namedElement.resolveConcreteElement(sr) == namedElement.resolveConcreteElement(sr));
+		INamedElementSemantics semantics = namedElement.getSemantics();
+		assertTrue(semantics == namedElement.getSemantics());
+		
+		checkIsSameResolution(semantics.resolveConcreteElement(context), semantics.resolveConcreteElement(context));
+		
+		assertTrue(namedElement.resolveConcreteElement(context) == namedElement.resolveConcreteElement(context));
+	}
+	
+	protected void checkIsSameResolution(ElementResolution<?> resolutionA, ElementResolution<?> resolutionOther) {
+		assertTrue(resolutionA == resolutionOther);
 	}
 	
 	protected void testReferenceResolve(ResolvedModule moduleRes) throws ModuleSourceException {
@@ -59,11 +70,13 @@ public class CoreSemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void testReferenceResolve(ResolvedModule moduleRes, RefPrimitive ref) throws ModuleSourceException {
-		AbstractBundleResolution br = moduleRes.getSemanticResolution();
+		ISemanticContext context = moduleRes.getSemanticContext();
 		
 		// Test caching
-		assertTrue(ref.getSemantics(br) == ref.getSemantics(br));
-		assertTrue(ref.resolveTargetElement(br) == ref.resolveTargetElement(br));
+		IResolvableSemantics semantics = ref.getSemantics();
+		assertTrue(semantics == ref.getSemantics());
+		assertTrue(semantics.resolveTargetElement(context) == semantics.resolveTargetElement(context));
+//		assertTrue(ref.resolveTargetElement(br) == ref.resolveTargetElement(br));
 	}
 	
 	@Test

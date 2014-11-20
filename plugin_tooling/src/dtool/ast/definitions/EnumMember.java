@@ -85,7 +85,7 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

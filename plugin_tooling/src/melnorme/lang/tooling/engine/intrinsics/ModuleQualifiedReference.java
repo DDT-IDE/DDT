@@ -52,7 +52,7 @@ public class ModuleQualifiedReference implements IResolvable {
 	};
 	
 	@Override
-	public IResolvableSemantics getNodeSemantics() {
+	public IResolvableSemantics getSemantics() {
 		return semantics;
 	}
 	
@@ -63,7 +63,7 @@ public class ModuleQualifiedReference implements IResolvable {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return getNodeSemantics().findTargetDefElements(mr, true);
+		return getSemantics().findTargetDefElements(mr, true);
 	}
 	
 	@Override

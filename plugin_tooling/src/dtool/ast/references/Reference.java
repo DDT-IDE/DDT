@@ -24,7 +24,7 @@ public abstract class Reference extends Resolvable implements IResolvable {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
-		return getNodeSemantics().findTargetDefElements(moduleResolver, findOneOnly);
+		return getSemantics().findTargetDefElements(moduleResolver, findOneOnly);
 	}
 	
 	@Deprecated

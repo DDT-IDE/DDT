@@ -10,11 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 
 public interface ISemanticElement {
 	
-	public abstract IElementSemantics getSemantics(ISemanticContext br);
+	public abstract IElementSemantics getSemantics();
 	
 }

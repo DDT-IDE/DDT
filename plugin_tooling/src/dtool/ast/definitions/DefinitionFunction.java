@@ -4,7 +4,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -90,7 +90,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	
@@ -105,8 +105,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-			return function;
+		public ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+			return result(function);
 		}
 		
 		@Override

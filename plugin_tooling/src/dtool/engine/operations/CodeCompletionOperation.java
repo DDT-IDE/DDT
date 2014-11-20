@@ -52,7 +52,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 	}
 	
 	public static CompletionSearchResult doCodeCompletion(ResolvedModule resolvedModule, int offset) {
-		return completionSearch(resolvedModule.getParsedModule(), offset, resolvedModule.getModuleResolver());
+		return completionSearch(resolvedModule.getParsedModule(), offset, resolvedModule.getSemanticContext());
 	}
 	
 	public static boolean canCompleteInsideToken(IToken token) {

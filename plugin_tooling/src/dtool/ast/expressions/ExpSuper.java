@@ -36,7 +36,7 @@ public class ExpSuper extends Expression {
 			return null;
 		}
 		
-		INamedElement superClass = definitionClass.getNodeSemantics().resolveSuperClass(moduleResolver);
+		INamedElement superClass = definitionClass.getSemantics().resolveSuperClass(moduleResolver);
 		if(superClass == null) {
 			return null;
 		}

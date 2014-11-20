@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -42,7 +41,7 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicDefUnit... members);
 		
 		@Override
-		public TypeSemantics getNodeSemantics() {
+		public TypeSemantics getSemantics() {
 			return semantics;
 		}
 		
@@ -72,16 +71,11 @@ public interface CommonLanguageIntrinsics {
 		protected abstract INamedElement resolveType(ISemanticContext mr);
 		
 		@Override
-		public VarSemantics getNodeSemantics() {
+		public VarSemantics getSemantics() {
 			return semantics;
 		}
 		
 		protected final VarSemantics semantics = new VarSemantics(this) {
-			
-			@Override
-			public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-				return AbstractIntrinsicProperty.this;
-			}
 			
 			@Override
 			public INamedElement resolveTypeForValueContext(ISemanticContext mr) {

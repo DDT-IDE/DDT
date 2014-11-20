@@ -84,7 +84,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	}
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	
@@ -137,7 +137,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics getNodeSemantics() {
+		public INamedElementSemantics getSemantics() {
 			return semantics;
 		}
 		

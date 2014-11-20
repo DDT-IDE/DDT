@@ -113,7 +113,7 @@ public class StaticIfExpIs extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics getNodeSemantics() {
+		public INamedElementSemantics getSemantics() {
 			return semantics;
 		}
 		

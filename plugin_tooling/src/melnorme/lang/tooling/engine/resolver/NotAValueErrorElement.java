@@ -12,10 +12,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -82,7 +79,7 @@ public class NotAValueErrorElement implements INamedElement {
 	protected final INamedElementSemantics nodeSemantics = new NullElementSemantics();
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return nodeSemantics;
 	}
 	
@@ -110,13 +107,6 @@ public class NotAValueErrorElement implements INamedElement {
 	@Override
 	public Ddoc resolveDDoc() {
 		return wrappedElement.resolveDDoc();
-	}
-	
-	@Override
-	public IElementSemantics getSemantics(ISemanticContext br) {
-		/*FIXME: BUG here*/
-		return new IElementSemantics() {
-		};
 	}
 	
 }

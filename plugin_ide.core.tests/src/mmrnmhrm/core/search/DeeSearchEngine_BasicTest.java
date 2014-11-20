@@ -163,7 +163,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		ISemanticContext mr = DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
+		ISemanticContext mr = DToolClient.getDefault().getResolvedModule(filePath).getSemanticContext();
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
 		assertTrue(defVar.type.findTargetDefElement(mr) == null);
 	}

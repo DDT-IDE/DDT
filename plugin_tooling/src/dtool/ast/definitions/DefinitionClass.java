@@ -89,12 +89,12 @@ public class DefinitionClass extends DefinitionAggregate {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ClassSemantics getNodeSemantics() {
-		return (ClassSemantics) super.getNodeSemantics();
+	public ClassSemantics getSemantics() {
+		return (ClassSemantics) super.getSemantics();
 	}
 	
 	@Override
-	protected AggregateSemantics createAggregateSemantics() {
+	protected ClassSemantics createAggregateSemantics() {
 		InstrinsicsScope commonTypeScope = LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
 		return new ClassSemantics(this, commonTypeScope);
 	}
@@ -129,7 +129,7 @@ public class DefinitionClass extends DefinitionAggregate {
 				
 				if(baseClassElem instanceof DefinitionClass) {
 					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-					baseClassDef.getNodeSemantics().resolveSearchInHierarchyScope(search);
+					baseClassDef.getSemantics().resolveSearchInHierarchyScope(search);
 				}
 			}
 		}

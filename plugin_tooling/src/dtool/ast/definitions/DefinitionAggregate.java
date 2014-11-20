@@ -79,7 +79,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	/* ----------------- ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	

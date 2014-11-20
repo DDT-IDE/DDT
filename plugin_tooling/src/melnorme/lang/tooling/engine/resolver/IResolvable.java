@@ -17,6 +17,6 @@ public interface IResolvable {
 	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	
-	public IResolvableSemantics getNodeSemantics();
+	public IResolvableSemantics getSemantics();
 	
 }

@@ -124,7 +124,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getNodeSemantics() {
+	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
 	
@@ -133,7 +133,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
 		
 		protected InstrinsicsScope createAggregateCommonTypeScope() {
-			return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(typeElement));
+			return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(getTypeElement()));
 		}
 		
 		@Override
