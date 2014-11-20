@@ -12,8 +12,8 @@ package melnorme.lang.tooling.bundles;
 
 import java.util.Set;
 
-import dtool.engine.IModuleResolution;
-import melnorme.lang.tooling.ast.IModuleElement;
+import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
@@ -34,6 +34,11 @@ public interface ISemanticContext {
 	INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
 	
 	
-	IModuleResolution findSemanticsContainer(IModuleElement moduleElement);
+	/**
+	 * Retrieve the {@link ResolutionEntry} for the semantics of the corresponding element.
+	 * The given semantics must be contained directly in ths semantic context!
+	 * TODO try to check that statically
+	 */
+	ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics);
 	
 }

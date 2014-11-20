@@ -17,11 +17,10 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolutionResult;
+import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
@@ -35,11 +34,6 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	protected final IResolvableSemantics defaultResolvableSemantics = new AbstractResolvableSemantics() {
-		
-		@Override
-		public ResolutionResult resolveTargetElement(ISemanticContext sr) {
-			return new ResolutionResult(findTargetDefElement(sr));
-		}
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
@@ -62,7 +56,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return getSemantics().findTargetDefElement(moduleResolver);
 	}
 	
-	public final ResolutionResult resolveTargetElement(ISemanticContext sr) {
+	public final ResolvableResult resolveTargetElement(ISemanticContext sr) {
 		return getSemantics().resolveTargetElement(sr);
 	}
 	

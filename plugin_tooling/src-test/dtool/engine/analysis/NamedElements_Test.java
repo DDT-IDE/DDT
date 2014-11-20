@@ -14,7 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.AbstractIntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
@@ -30,7 +31,7 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefPrimitive;
-import dtool.engine.AbstractBundleResolution;
+import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.AliasElement;
 import dtool.engine.analysis.templates.TemplateInstance;
 import dtool.engine.analysis.templates.TypeAliasElement;
@@ -169,6 +170,17 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		
 		assertTrue(concreteElement != null);
 		assertTrue(concreteElement.getName().equals("target"));
+	}
+	
+	/* ----------------- test caching ----------------- */
+	
+	protected void testNamedElementSemantics(ResolvedModule moduleRes) throws ModuleSourceException {
+		ISemanticContext context = moduleRes.getSemanticContext();
+		INamedElement namedElement = moduleRes.getModuleNode();
+		INamedElementSemantics semantics = namedElement.getSemantics();
+		assertTrue(semantics == namedElement.getSemantics());
+		
+		checkIsSameResolution(semantics.resolveConcreteElement(context), semantics.resolveConcreteElement(context));
 	}
 	
 }

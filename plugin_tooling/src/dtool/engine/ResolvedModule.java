@@ -10,18 +10,13 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
 import java.nio.file.Path;
-import java.util.HashMap;
 
-import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.IElementSemantics;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public class ResolvedModule implements IModuleResolution {
+public class ResolvedModule {
 	
 	protected final ParsedModule parsedModule;
 	protected final AbstractBundleResolution bundleRes;
@@ -39,27 +34,12 @@ public class ResolvedModule implements IModuleResolution {
 		return parsedModule.module;
 	}
 	
-	@Override
 	public Path getModulePath() {
 		return parsedModule.modulePath;
 	}
 	
 	public ISemanticContext getSemanticContext() {
 		return bundleRes;
-	}
-	
-	protected final HashMap<ISemanticElement, IElementSemantics> semanticsMap = new HashMap<>();
-	
-	@Override
-	public IElementSemantics getElementSemantics(ISemanticElement element) {
-		return semanticsMap.get(element);
-	}
-	
-	@Override
-	public IElementSemantics putElementSemantics(ISemanticElement element, IElementSemantics elementSemantics) {
-		assertTrue(semanticsMap.containsKey(element) == false);
-		semanticsMap.put(element, elementSemantics);
-		return elementSemantics;
 	}
 	
 }

@@ -14,9 +14,8 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolutionResult;
+import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -40,12 +39,12 @@ public class RefTemplateInstanceSemantics extends AbstractResolvableSemantics {
 	}
 	
 	@Override
-	public ResolutionResult resolveTargetElement(ISemanticContext sr) {
-		Collection<INamedElement> templates = this.refTemplateInstance.tplRef.findTargetDefElements(sr, false);
+	protected ResolvableResult createResolution(ISemanticContext context) {
+		Collection<INamedElement> templates = this.refTemplateInstance.tplRef.findTargetDefElements(context, false);
 		return createTemplateInstance(templates);
 	}
 	
-	protected ResolutionResult createTemplateInstance(Collection<INamedElement> templates) {
+	protected ResolvableResult createTemplateInstance(Collection<INamedElement> templates) {
 		RefTemplateInstance refTplInstance = this.refTemplateInstance;
 		
 		// TODO: find best match for template overload
@@ -59,12 +58,12 @@ public class RefTemplateInstanceSemantics extends AbstractResolvableSemantics {
 				templateInstance = createTemplateInstance(template, refTplInstance);
 				
 				if(templateInstance != null) {
-					return new ResolutionResult(templateInstance);
+					return new ResolvableResult(templateInstance);
 				}
 			}
 		}
 		
-		return new ResolutionResult();
+		return new ResolvableResult(null);
 	}
 	
 	protected TemplateInstance createTemplateInstance(DefinitionTemplate template, 

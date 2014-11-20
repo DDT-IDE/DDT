@@ -11,6 +11,8 @@
 package dtool.engine.analysis;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
@@ -20,6 +22,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
@@ -73,6 +76,12 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static <T> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
 		ASTNode node = ASTNodeFinder.findElement(moduleRes.getModuleNode(), offset);
 		return NodeUtil.getMatchingParent(node, klass);
+	}
+	
+	/* ----------------- Helper to test caching ----------------- */
+	
+	protected void checkIsSameResolution(ElementResolution<?> resolutionA, ElementResolution<?> resolutionOther) {
+		assertTrue(resolutionA == resolutionOther);
 	}
 	
 }

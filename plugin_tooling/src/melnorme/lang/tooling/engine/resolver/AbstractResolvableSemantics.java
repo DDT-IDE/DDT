@@ -14,14 +14,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class AbstractResolvableSemantics implements IResolvableSemantics {
+public abstract class AbstractResolvableSemantics extends ElementSemantics<ResolvableResult> 
+	implements IResolvableSemantics 
+{
 	
 	@Override
-	public ResolutionResult resolveTargetElement(ISemanticContext sr) {
-		return new ResolutionResult(findTargetDefElement(sr)); /*FIXME: BUG here null*/
+	protected ResolvableResult createResolution(ISemanticContext context) {
+		 /*FIXME: BUG here null*/
+		return new ResolvableResult(findTargetDefElement(context));
+	}
+	
+	@Override
+	public final ResolvableResult resolveTargetElement(ISemanticContext context) {
+		return getElementResolution(context);
 	}
 	
 	// TODO: deprecate this method in favor of resolveTargetElement

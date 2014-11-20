@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -23,7 +22,7 @@ public interface IResolvableSemantics extends IElementSemantics {
 	
 	Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly);
 	
-	ResolutionResult resolveTargetElement(ISemanticContext sr);
+	ResolvableResult resolveTargetElement(ISemanticContext sr);
 	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	

@@ -11,7 +11,6 @@
 package dtool.engine;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -22,11 +21,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.ResolutionEntry;
+import melnorme.lang.tooling.util.EntryMap;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -163,16 +164,21 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
-	@Override
-	public IModuleResolution findSemanticsContainer(IModuleElement moduleElement) {
-		assertNotNull(moduleElement);
-		Path modulePath = moduleElement.getCompilationUnitPath();
-		try {
-			return findResolvedModule(modulePath);
-		} catch (ModuleSourceException e) {
-			// TODO Auto-generated catch block
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+	protected final ResolutionsMap resolutionsMap = new ResolutionsMap();
+	
+	public static class ResolutionsMap extends EntryMap<IElementSemantics, ResolutionEntry<?>> {
+		
+		@Override
+		protected ResolutionEntry<?> createEntry(IElementSemantics key) {
+			return new ResolutionEntry<>();
 		}
+		
+	}
+	
+	@Override
+	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
+		/* FIXME: ensure elementSemantics belongs to this context */
+		return resolutionsMap.getEntry(elementSemantics);
 	}
 	
 }

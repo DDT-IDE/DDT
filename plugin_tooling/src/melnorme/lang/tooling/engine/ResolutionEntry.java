@@ -8,21 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine;
-
-import java.nio.file.Path;
-
-import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.engine.IElementSemantics;
+package melnorme.lang.tooling.engine;
 
 
-public interface IModuleResolution {
+
+public class ResolutionEntry<E extends ElementResolution<?>> {
 	
-	Path getModulePath();
+	protected E result;
 	
-	IElementSemantics getElementSemantics(ISemanticElement element);
+	public E getResult() {
+		return result;
+	}
 	
-	/* FIXME: needs review */
-	IElementSemantics putElementSemantics(ISemanticElement astNode, IElementSemantics createElementSemantics);
+	public void putResult(E newResult) {
+		this.result = newResult;
+	}
 	
 }

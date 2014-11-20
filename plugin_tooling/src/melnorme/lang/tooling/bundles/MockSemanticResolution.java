@@ -16,10 +16,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.IModuleElement;
+import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
-import dtool.engine.IModuleResolution;
 
 /**
  * A mock semantic resolution. This implementation finds no modules.
@@ -56,7 +56,7 @@ public class MockSemanticResolution implements ISemanticContext {
 	}
 	
 	@Override
-	public IModuleResolution findSemanticsContainer(IModuleElement moduleElement) {
+	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
 		return null;
 	}
 	
