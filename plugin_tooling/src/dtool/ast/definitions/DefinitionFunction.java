@@ -4,9 +4,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -98,15 +98,16 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	
 	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {
 		
-		protected DefinitionFunction function;
+		protected final DefinitionFunction function;
 		
 		public FunctionElementSemantics(DefinitionFunction defFunction) {
+			super(defFunction);
 			this.function = defFunction;
 		}
 		
 		@Override
-		public ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-			return result(function);
+		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
+			return new ConcreteElementResult(function);
 		}
 		
 		@Override
@@ -115,7 +116,18 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 	}
 	
-	public static abstract class AbstractFunctionElementSemantics extends AbstractNamedElementSemantics {
+	public static abstract class AbstractFunctionElementSemantics 
+		extends NamedElementSemantics<ConcreteElementResult> 
+	{
+		
+		public AbstractFunctionElementSemantics(INamedElement element) {
+			super(element);
+		}
+		
+		@Override
+		protected ConcreteElementResult createResolution(ISemanticContext context) {
+			return null; /*FIXME: BUG here*/
+		}
 		
 		@SuppressWarnings("unused")
 		public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType) {

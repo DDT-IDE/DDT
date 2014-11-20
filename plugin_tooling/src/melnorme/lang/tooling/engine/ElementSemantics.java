@@ -24,7 +24,11 @@ public abstract class ElementSemantics<ER extends ElementResolution<?>> implemen
 		return (ResolutionEntry<ER>) context.findResolutionEntryForContainedElement(this);
 	}
 	
-	protected ER getElementResolution(ISemanticContext context) {
+	protected final ER getElementResolution(ISemanticContext context) {
+		return getOrCreateElementResolution(context);
+	}
+	
+	protected ER getOrCreateElementResolution(ISemanticContext context) {
 		ResolutionEntry<ER> resolutionContainer = findSemanticContainer(context);
 		
 		ER resolution = resolutionContainer.getResult();

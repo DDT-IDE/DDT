@@ -14,8 +14,8 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -24,7 +24,7 @@ import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
 
-public class RefTemplateInstanceSemantics extends AbstractResolvableSemantics {
+public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	
 	protected final RefTemplateInstance refTemplateInstance;
 	

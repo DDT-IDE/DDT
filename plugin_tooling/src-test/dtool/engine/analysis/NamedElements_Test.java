@@ -211,7 +211,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		INamedElement namedElement = pickedElement.element;
 		
 		// non-alias elements relsolve to themselves
-		assertTrue(namedElement.getSemantics().resolveConcreteElement(context) == namedElement);
+		assertTrue(namedElement.resolveConcreteElement(context) == namedElement);
 	}
 	
 	protected void restResolveElementConcrete_Alias(PickedElement<INamedElement> pickedElement) {

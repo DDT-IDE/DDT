@@ -76,7 +76,7 @@ public class NotAValueErrorElement implements INamedElement {
 	}
 	
 	
-	protected final INamedElementSemantics nodeSemantics = new NullElementSemantics();
+	protected final INamedElementSemantics nodeSemantics = new NullNamedElementSemantics();
 	
 	@Override
 	public INamedElementSemantics getSemantics() {

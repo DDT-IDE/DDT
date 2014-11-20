@@ -13,7 +13,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -36,7 +36,7 @@ public class ModuleQualifiedReference implements IResolvable {
 	
 	/* -----------------  ----------------- */
 	
-	protected final IResolvableSemantics semantics = new AbstractResolvableSemantics() {
+	protected final IResolvableSemantics semantics = new ResolvableSemantics() {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
@@ -68,7 +68,7 @@ public class ModuleQualifiedReference implements IResolvable {
 	
 	@Override
 	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		return AbstractResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
+		return ResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
 	}
 	
 }

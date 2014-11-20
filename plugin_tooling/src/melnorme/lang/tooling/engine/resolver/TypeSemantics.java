@@ -13,27 +13,19 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.resolver.CommonDefUnitSearch;
 
-public abstract class TypeSemantics extends AbstractNamedElementSemantics {
-	
-	protected final ElementResolution<IConcreteNamedElement> typeElementRes; 
+public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	public TypeSemantics(IConcreteNamedElement typeElement) {
-		this.typeElementRes = new ElementResolution<>(typeElement);
+		super(typeElement);
 	}
 	
 	protected final IConcreteNamedElement getTypeElement() {
-		return typeElementRes.result;
-	}
-	
-	@Override
-	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-		return typeElementRes;
+		return elementRes.result;
 	}
 	
 	@Override

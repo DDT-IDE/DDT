@@ -8,12 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine;
+package melnorme.lang.tooling.engine.resolver;
 
-/* FIXME: make class, specift hascode contract */
-public interface IElementSemantics {
+
+import melnorme.lang.tooling.engine.ElementResolution;
+import melnorme.lang.tooling.engine.ElementSemantics;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.symbols.INamedElement;
+
+public abstract class NamedElementSemantics<ER extends ElementResolution<?>> extends ElementSemantics<ER> 
+	implements INamedElementSemantics 
+{
 	
-	public static final IElementSemantics NULL_NODE_SEMANTICS = new IElementSemantics() {
-	};
+	protected final INamedElement element; 
+	
+	public NamedElementSemantics(INamedElement element) {
+		this.element = element;
+	}
 	
 }

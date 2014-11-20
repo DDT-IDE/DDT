@@ -10,6 +10,7 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.Attribute;
@@ -83,9 +84,13 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		return semantics;
 	}
 	
-	protected final AbstractFunctionElementSemantics semantics = new FunctionalAliasSemantics();
+	protected final AbstractFunctionElementSemantics semantics = new FunctionalAliasSemantics(this);
 	
 	public class FunctionalAliasSemantics extends AbstractFunctionElementSemantics {
+		
+		public FunctionalAliasSemantics(INamedElement element) {
+			super(element);
+		}
 		
 		@Override
 		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {

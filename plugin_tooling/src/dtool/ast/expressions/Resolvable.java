@@ -17,10 +17,10 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
@@ -33,7 +33,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		assertTrue(this instanceof Reference || this instanceof Expression);
 	}
 	
-	protected final IResolvableSemantics defaultResolvableSemantics = new AbstractResolvableSemantics() {
+	protected final IResolvableSemantics defaultResolvableSemantics = new ResolvableSemantics() {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {

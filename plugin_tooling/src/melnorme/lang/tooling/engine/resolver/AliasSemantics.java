@@ -11,20 +11,26 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.resolver.CommonDefUnitSearch;
 
-public abstract class AliasSemantics extends AbstractNamedElementSemantics {
+public abstract class AliasSemantics extends NamedElementSemantics<ConcreteElementResult> {
 	
-	public AliasSemantics() {
+	public AliasSemantics(INamedElement element) {
+		super(element);
+	}
+	
+	/* FIXME: make final */
+	@Override
+	public ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
+		return getElementResolution(context);
 	}
 	
 	@Override
-	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-		return result(resolveConcreteElement(sr, getAliasTarget()));
+	protected ConcreteElementResult createResolution(ISemanticContext context) {
+		return new ConcreteElementResult(resolveConcreteElement(context, getAliasTarget()));
 	}
 	
 	public static IConcreteNamedElement resolveConcreteElement(ISemanticContext sr, IResolvable aliasTarget) {
@@ -56,20 +62,18 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	
 	public abstract static class TypeAliasSemantics extends AliasSemantics {
 		
-		protected INamedElement aliasDef;
-		
 		public TypeAliasSemantics(INamedElement aliasDef) {
-			this.aliasDef = aliasDef;
+			super(aliasDef);
 		}
 		
 		@Override
-		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-			return result(resolveConcreteElement(sr, getAliasTarget()));
+		public ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
+			return getElementResolution(context);
 		}
 		
 		@Override
 		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-			return new NotAValueErrorElement(aliasDef);
+			return new NotAValueErrorElement(element);
 		};
 		
 	}

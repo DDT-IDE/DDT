@@ -10,37 +10,30 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.ElementResolution;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.Resolvable;
 import dtool.resolver.CommonDefUnitSearch;
 
-public abstract class VarSemantics extends ConcreteElementSemantics {
-	
-	public VarSemantics(IConcreteNamedElement element) {
-		super(element);
-	}
+/**
+ * Does nothing.
+ */
+public class NullNamedElementSemantics extends NullElementSemantics implements INamedElementSemantics {
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		INamedElement effectiveType = resolveTypeForValueContext(search.getModuleResolver());
-		if(effectiveType != null) {
-			effectiveType.resolveSearchInMembersScope(search);
-		}
+	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+		return null; // /*FIXME: BUG here*/
 	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		Resolvable declaredType = getTypeReference();
-		if(declaredType != null) {
-			// TODO: handle finding multiple elements
-			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));
-		}
 		return null;
 	}
 	
-	protected abstract Resolvable getTypeReference();
+	@Override
+	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	}
 	
 }

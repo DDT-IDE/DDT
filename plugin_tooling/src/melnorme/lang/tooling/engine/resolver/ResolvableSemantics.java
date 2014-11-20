@@ -17,7 +17,7 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class AbstractResolvableSemantics extends ElementSemantics<ResolvableResult> 
+public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> 
 	implements IResolvableSemantics 
 {
 	

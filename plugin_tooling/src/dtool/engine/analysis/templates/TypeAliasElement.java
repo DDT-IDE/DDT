@@ -14,10 +14,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
@@ -61,7 +60,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
 			return null; /*FIXME: BUG here*/
 		};
 		

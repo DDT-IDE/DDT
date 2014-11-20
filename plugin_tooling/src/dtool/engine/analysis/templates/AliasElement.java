@@ -55,7 +55,7 @@ public class AliasElement extends InstantiatedDefUnit {
 		return semantics;
 	}
 	
-	protected final INamedElementSemantics semantics = new AliasSemantics() {
+	protected final INamedElementSemantics semantics = new AliasSemantics(this) {
 		
 		@Override
 		protected Resolvable getAliasTarget() {

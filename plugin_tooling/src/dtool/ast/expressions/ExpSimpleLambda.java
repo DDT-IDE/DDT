@@ -14,7 +14,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
@@ -82,7 +82,7 @@ public class ExpSimpleLambda extends Expression {
 			return semantics;
 		}
 		
-		protected final INamedElementSemantics semantics = new NullElementSemantics(); // TODO
+		protected final INamedElementSemantics semantics = new NullNamedElementSemantics(); // TODO
 		
 	}
 	

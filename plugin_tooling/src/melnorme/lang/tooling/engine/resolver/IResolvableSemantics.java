@@ -28,7 +28,7 @@ public interface IResolvableSemantics extends IElementSemantics {
 	
 	/* ----------------- ----------------- */
 	
-	public static class NullResolvableSemantics extends AbstractResolvableSemantics {
+	public static class NullResolvableSemantics extends ResolvableSemantics {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {

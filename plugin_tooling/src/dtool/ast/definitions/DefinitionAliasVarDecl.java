@@ -88,7 +88,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		return semantics;
 	}
 	
-	protected final INamedElementSemantics semantics = new AliasSemantics() {
+	protected final INamedElementSemantics semantics = new AliasSemantics(this) {
 		
 		@Override
 		protected Reference getAliasTarget() {
@@ -141,7 +141,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 			return semantics;
 		}
 		
-		protected final INamedElementSemantics semantics = new AliasSemantics() {
+		protected final INamedElementSemantics semantics = new AliasSemantics(this) {
 			
 			@Override
 			protected Reference getAliasTarget() {

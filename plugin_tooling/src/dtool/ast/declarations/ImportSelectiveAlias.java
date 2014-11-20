@@ -3,11 +3,8 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -53,12 +50,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 		return semantics;
 	}
 	
-	protected final INamedElementSemantics semantics = new AliasSemantics() {
-		
-		@Override
-		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-			return result(resolveConcreteElement(sr, getAliasTarget()));
-		}
+	protected final INamedElementSemantics semantics = new AliasSemantics(this) {
 		
 		@Override
 		protected Reference getAliasTarget() {

@@ -117,7 +117,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 			return semantics;
 		}
 		
-		protected final INamedElementSemantics semantics = new AliasSemantics() {
+		protected final INamedElementSemantics semantics = new AliasSemantics(this) {
 			
 			@Override
 			protected Reference getAliasTarget() {

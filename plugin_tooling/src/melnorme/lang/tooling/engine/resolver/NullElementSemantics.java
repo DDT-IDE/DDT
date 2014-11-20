@@ -10,29 +10,11 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.CommonDefUnitSearch;
+import melnorme.lang.tooling.engine.IElementSemantics;
 
 /**
  * Does nothing.
  */
-public class NullElementSemantics extends AbstractNamedElementSemantics {
-	
-	@Override
-	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-		return null; // /*FIXME: BUG here*/
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		return null;
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-	}
+public class NullElementSemantics implements IElementSemantics {
 	
 }
