@@ -6,7 +6,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -87,7 +87,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	public class FunctionalAliasSemantics extends AbstractFunctionElementSemantics {
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 			return null; /*FIXME: BUG here*/
 		}
 		

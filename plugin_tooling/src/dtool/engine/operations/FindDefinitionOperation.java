@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
@@ -59,14 +59,14 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		} catch (ExecutionException e) {
 			return new FindDefinitionResult("Error awaiting operation result: " + e);
 		}
-		final IModuleResolver mr = resolvedModule.getModuleResolver();
+		final ISemanticContext mr = resolvedModule.getModuleResolver();
 		Module module = resolvedModule.getModuleNode();
 		
 		assertEquals(module.compilationUnitPath, filePath); /*FIXME: BUG here normalization */
 		return findDefinition(module, offset, mr);
 	}
 	
-	public static FindDefinitionResult findDefinition(Module module, final int offset, final IModuleResolver mr) {
+	public static FindDefinitionResult findDefinition(Module module, final int offset, final ISemanticContext mr) {
 		
 		ASTNodeFinder nodeFinder = new ASTNodeFinder(module, offset, true);
 		
@@ -83,7 +83,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		return new FindDefinitionResult(FIND_DEF_NoReferenceFoundAtCursor);
 	}
 	
-	public static FindDefinitionResult doFindDefinition(Reference reference, final IModuleResolver mr) {
+	public static FindDefinitionResult doFindDefinition(Reference reference, final ISemanticContext mr) {
 		if(reference instanceof NamedReference) {
 			NamedReference namedReference = (NamedReference) reference;
 			if(namedReference.isMissingCoreReference()) {
@@ -99,7 +99,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		}
 	}
 	
-	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, IModuleResolver moduleResolver) {
+	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISemanticContext moduleResolver) {
 		
 		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
 		

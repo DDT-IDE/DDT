@@ -16,7 +16,8 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -49,13 +50,13 @@ public class ResolvedModule implements IModuleResolution {
 	}
 	
 	@Override
-	public IBundleResolution getBundleResolution() {
+	public ISemanticContext getBundleResolution() {
 		return bundleRes;
 	}
 	
 	/* FIXME: */
 	@Deprecated
-	public IModuleResolver getModuleResolver() {
+	public ISemanticContext getModuleResolver() {
 		return bundleRes; 
 	}
 	

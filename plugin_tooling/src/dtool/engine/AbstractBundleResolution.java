@@ -24,14 +24,14 @@ import java.util.Set;
 
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast.IModuleNode;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public abstract class AbstractBundleResolution implements ISemanticResolution, IBundleResolution {
+public abstract class AbstractBundleResolution implements ISemanticContext {
 	
 	protected final SemanticManager manager;
 	protected final BundleModules bundleModules;

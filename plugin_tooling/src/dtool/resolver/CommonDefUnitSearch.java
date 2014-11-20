@@ -6,7 +6,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ArrayList;
 import java.util.Set;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.engine.scoping.NamedElementsVisitor;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -23,7 +23,7 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	 * Used to check availability in statement scopes. */
 	protected final int refOffset;
 	/** Module Resolver */
-	protected final IModuleResolver modResolver;
+	protected final ISemanticContext modResolver;
 	/** The module where the search started. */
 	protected final Module refOriginModule;
 	
@@ -31,12 +31,12 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 	protected ArrayList<IScopeProvider> searchedScopes;
 	
 	
-	public CommonDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
+	public CommonDefUnitSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 		this(refOriginModule, refOffset, false, moduleResolver);
 	}
 	
 	public CommonDefUnitSearch(Module refOriginModule, int refOffset, boolean findOneOnly, 
-		IModuleResolver moduleResolver) { 
+		ISemanticContext moduleResolver) { 
 		this.searchedScopes = new ArrayList<>(4);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
@@ -44,7 +44,7 @@ public abstract class CommonDefUnitSearch extends NamedElementsVisitor {
 		this.refOriginModule = refOriginModule;
 	}
 	
-	public IModuleResolver getModuleResolver() {
+	public ISemanticContext getModuleResolver() {
 		return modResolver;
 	}
 	

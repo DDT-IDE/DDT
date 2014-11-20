@@ -12,27 +12,27 @@ package melnorme.lang.tooling.engine.resolver;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface IResolvableSemantics extends IElementSemantics {
 	
-	INamedElement findTargetDefElement(IModuleResolver moduleResolver);
+	INamedElement findTargetDefElement(ISemanticContext moduleResolver);
 	
-	Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly);
+	Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly);
 	
-	ResolutionResult resolveTargetElement(ISemanticResolution sr);
+	ResolutionResult resolveTargetElement(ISemanticContext sr);
 	
-	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	
 	/* ----------------- ----------------- */
 	
 	public static class NullResolvableSemantics extends AbstractResolvableSemantics {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
 			return null;
 		}
 		

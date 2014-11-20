@@ -12,8 +12,8 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -69,7 +69,7 @@ public interface CommonLanguageIntrinsics {
 			return EArcheType.Variable;
 		}
 		
-		protected abstract INamedElement resolveType(IModuleResolver mr);
+		protected abstract INamedElement resolveType(ISemanticContext mr);
 		
 		@Override
 		public VarSemantics getNodeSemantics() {
@@ -79,12 +79,12 @@ public interface CommonLanguageIntrinsics {
 		protected final VarSemantics semantics = new VarSemantics(this) {
 			
 			@Override
-			public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+			public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 				return AbstractIntrinsicProperty.this;
 			}
 			
 			@Override
-			public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+			public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 				return resolveType(mr);
 			};
 			
@@ -107,7 +107,7 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected INamedElement resolveType(IModuleResolver mr) {
+		protected INamedElement resolveType(ISemanticContext mr) {
 			return type;
 		}
 		
@@ -127,7 +127,7 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected INamedElement resolveType(IModuleResolver mr) {
+		protected INamedElement resolveType(ISemanticContext mr) {
 			return CollectionUtil.getFirstElementOrNull(typeRef.findTargetDefElements(mr, true));
 		}
 		

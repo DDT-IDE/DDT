@@ -10,8 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -23,11 +23,11 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 		return resolveConcreteElement(sr, getAliasTarget());
 	}
 	
-	public static IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr, IResolvable aliasTarget) {
+	public static IConcreteNamedElement resolveConcreteElement(ISemanticContext sr, IResolvable aliasTarget) {
 		if(aliasTarget == null) {
 			return null;
 		}
@@ -44,7 +44,7 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget != null) {
 			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));
@@ -63,12 +63,12 @@ public abstract class AliasSemantics extends AbstractNamedElementSemantics {
 		}
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 			return resolveConcreteElement(sr, getAliasTarget());
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 			return new NotAValueErrorElement(aliasDef);
 		};
 		

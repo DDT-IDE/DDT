@@ -5,7 +5,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefModule;
@@ -73,7 +73,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.packages.getInternalArray();
 	}
 	
-	public INamedElement getPartialDefUnit(IModuleResolver mr) {
+	public INamedElement getPartialDefUnit(ISemanticContext mr) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
 			return moduleRef.findTargetDefElement(mr);
 		}

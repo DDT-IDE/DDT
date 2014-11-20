@@ -11,7 +11,7 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -28,7 +28,7 @@ public class CommonDefVarSemantics extends VarSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		if(getTypeReference() != null) {
 			return super.resolveTypeForValueContext(mr);
 		}

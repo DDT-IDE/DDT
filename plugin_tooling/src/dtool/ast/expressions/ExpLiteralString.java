@@ -5,7 +5,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.parser.common.IToken;
 import dtool.resolver.LanguageIntrinsics;
@@ -39,7 +39,7 @@ public class ExpLiteralString extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		return LanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
 	}
 	

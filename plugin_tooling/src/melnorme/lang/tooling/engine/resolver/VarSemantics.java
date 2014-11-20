@@ -11,8 +11,8 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
@@ -27,7 +27,7 @@ public abstract class VarSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 		return element;
 	}
 	
@@ -40,7 +40,7 @@ public abstract class VarSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		Resolvable declaredType = getTypeReference();
 		if(declaredType != null) {
 			// TODO: handle finding multiple elements

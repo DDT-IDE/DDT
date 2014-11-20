@@ -16,13 +16,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.Module;
+import dtool.engine.IModuleResolution;
 
 /**
  * A mock semantic resolution. This implementation finds no modules.
  */
-public class MockSemanticResolution implements ISemanticResolution {
+public class MockSemanticResolution implements ISemanticContext {
 	
 	@Override
 	public Set<String> findModules(String fqNamePrefix) {
@@ -50,6 +52,11 @@ public class MockSemanticResolution implements ISemanticResolution {
 	
 	@SuppressWarnings("unused")
 	protected Module findModule_do(String[] packages, String module) throws ModuleSourceException {
+		return null;
+	}
+	
+	@Override
+	public IModuleResolution findSemanticsContainer(IModuleElement moduleElement) {
 		return null;
 	}
 	

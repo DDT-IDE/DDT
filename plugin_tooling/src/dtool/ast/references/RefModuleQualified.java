@@ -16,7 +16,7 @@ import java.util.Collections;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
 
@@ -51,7 +51,7 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver) {
+	public Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver) {
 		final Module module = getModuleNode2();
 		return Collections.<INamedElement>singletonList(module);
 	}

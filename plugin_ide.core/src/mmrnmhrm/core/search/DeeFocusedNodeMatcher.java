@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
@@ -53,7 +53,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 		if(!ref.canMatch(modelElement.getElementName()))
 			return;
 		
-		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
+		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
 		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
 		if(defUnits == null)
 			return;

@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
@@ -60,7 +60,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 	}
 	
 	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
-			IModuleResolver mr) {
+			ISemanticContext mr) {
 		
 		assertTrue(isInRange(0, offset, parseResult.source.length()));
 		
@@ -175,7 +175,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return searchOptions;
 	}
 	
-	public static CompletionSearchResult performCompletionSearch(int offset, IModuleResolver mr, Module module,
+	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, Module module,
 			ASTNode node, PrefixSearchOptions searchOptions) {
 		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr, searchOptions);
 		node.performRefSearch(search);

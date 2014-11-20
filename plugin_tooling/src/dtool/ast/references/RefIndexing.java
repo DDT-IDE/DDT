@@ -15,7 +15,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.LanguageIntrinsics;
@@ -55,7 +55,7 @@ public class RefIndexing extends Reference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
 		//TODO infer if its a static array, map array, or tupe
 		// Assume it's a static array. 
 		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.staticArrayType);

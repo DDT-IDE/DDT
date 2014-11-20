@@ -6,7 +6,7 @@ import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -117,7 +117,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 				defunit = defSymbol.getDefUnit();
 			} else if(elem instanceof Reference) {
 				Reference ref = (Reference) elem;
-				IModuleResolver mr = DToolClient_Bad.getResolverFor(inputPath);
+				ISemanticContext mr = DToolClient_Bad.getResolverFor(inputPath);
 				defunit = ref.findTargetDefElement(mr);
 				if(defunit == null) {
 					errorMessage = "No DefUnit found when resolving reference.";

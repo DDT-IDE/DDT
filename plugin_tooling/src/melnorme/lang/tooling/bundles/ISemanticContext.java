@@ -12,13 +12,15 @@ package melnorme.lang.tooling.bundles;
 
 import java.util.Set;
 
+import dtool.engine.IModuleResolution;
+import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
  * An interface for a service that given module names knows how to find parsed Module's in an 
  * underlying context (for example the modules in the buildpath of a project). 
  */
-public interface IModuleResolver {
+public interface ISemanticContext {
 	
 	/** Searches for the names of modules whose fully qualified names start with the given fqNamePrefix.
 	 * @return a set with the results. */
@@ -30,5 +32,8 @@ public interface IModuleResolver {
 	 * @return the respective module or null if not found
 	 */
 	INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
+	
+	
+	IModuleResolution findSemanticsContainer(IModuleElement moduleElement);
 	
 }

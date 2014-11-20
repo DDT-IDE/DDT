@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.common.BaseLexElement;
@@ -86,7 +86,7 @@ public class RefModule extends NamedReference {
 		} else {
 			assertTrue(isMissingCoreReference() == false);
 			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
-			IModuleResolver mr = search.getModuleResolver();
+			ISemanticContext mr = search.getModuleResolver();
 			ModuleProxy moduleProxy = getModuleProxy(mr);
 			if(moduleProxy.resolveUnderlyingNode() != null) {
 				defUnitSearch.addMatch(moduleProxy);
@@ -94,7 +94,7 @@ public class RefModule extends NamedReference {
 		}
 	}
 	
-	public ModuleProxy getModuleProxy(IModuleResolver mr) {
+	public ModuleProxy getModuleProxy(ISemanticContext mr) {
 		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
 	}
 	

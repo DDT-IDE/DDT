@@ -19,11 +19,11 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.engine.IBundleResolution;
 import dtool.engine.IModuleResolution;
 import dtool.parser.ParserError;
 import dtool.resolver.ReferenceResolver;
@@ -396,12 +396,12 @@ public abstract class CommonASTNode implements IASTNode {
 	}
 	
 	@Override
-	public IElementSemantics getSemantics(IBundleResolution br) {
+	public IElementSemantics getSemantics(ISemanticContext br) {
 		/*FIXME: BUG here todo*/
 		return IElementSemantics.NULL_NODE_SEMANTICS;
 	}
 	
-	protected IElementSemantics doGetSemantics(IBundleResolution br) {
+	protected IElementSemantics doGetSemantics(ISemanticContext br) {
 		IModuleNode moduleNode = getModuleNode();
 		if(moduleNode == null) {
 			return null;

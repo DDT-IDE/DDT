@@ -2,7 +2,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
@@ -12,10 +12,10 @@ public interface IResolvable {
 	
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
-	Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly);
+	Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly);
 	
 	
-	Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr);
+	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	
 	public IResolvableSemantics getNodeSemantics();
 	

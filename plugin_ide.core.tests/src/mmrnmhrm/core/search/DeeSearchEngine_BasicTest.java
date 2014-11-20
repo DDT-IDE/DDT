@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -163,7 +163,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
-		IModuleResolver mr = DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
+		ISemanticContext mr = DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
 		assertTrue(defVar.type.findTargetDefElement(mr) == null);
 	}

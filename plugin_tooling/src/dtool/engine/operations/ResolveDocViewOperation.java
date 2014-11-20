@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
@@ -56,7 +56,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		}
 		Module module = resolvedModule.getModuleNode();
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
-		IModuleResolver mr = resolvedModule.getModuleResolver();
+		ISemanticContext mr = resolvedModule.getModuleResolver();
 		
 		INamedElement relevantElementForDoc = null;
 		if(pickedNode instanceof DefSymbol) {
@@ -87,7 +87,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		return relevantElementForDoc == null ? null : TextUI.getDDocHTMLRender(relevantElementForDoc);
 	}
 	
-	protected String getDDocHTMLViewForAuto(IModuleResolver mr, DeclarationAttrib declAttrib) {
+	protected String getDDocHTMLViewForAuto(ISemanticContext mr, DeclarationAttrib declAttrib) {
 		
 		IDeclaration singleDecl = declAttrib.getSingleDeclaration();
 		if(singleDecl instanceof DefinitionAutoVariable) {
@@ -99,7 +99,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		return null;
 	}
 	
-	protected String getDDocHTMLViewForAutoLike(IModuleResolver mr, IVarDefinitionLike defVar) {
+	protected String getDDocHTMLViewForAutoLike(ISemanticContext mr, IVarDefinitionLike defVar) {
 		INamedElement resolvedType = defVar.getNodeSemantics().resolveTypeForValueContext(mr);
 		
 		if(resolvedType == null) {

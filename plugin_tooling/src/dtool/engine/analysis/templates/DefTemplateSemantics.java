@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -29,7 +29,7 @@ public final class DefTemplateSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 		return defTemplate;
 	}
 	
@@ -42,7 +42,7 @@ public final class DefTemplateSemantics extends AbstractNamedElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		if(defTemplate.wrapper) {
 			// TODO: 
 		}

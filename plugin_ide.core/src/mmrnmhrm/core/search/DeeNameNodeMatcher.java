@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
@@ -65,7 +65,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
-			IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
+			ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
 			Collection<INamedElement> defUnits = node.findTargetDefElements(mr, false);
 			
 			int matched = 0;

@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.utilbox.misc.MiscUtil;
@@ -23,7 +23,7 @@ import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public class StandardLibraryResolution extends AbstractBundleResolution implements IModuleResolver {
+public class StandardLibraryResolution extends AbstractBundleResolution implements ISemanticContext {
 	
 	protected final CompilerInstall compilerInstall;
 	

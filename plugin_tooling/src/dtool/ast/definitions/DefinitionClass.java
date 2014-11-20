@@ -14,7 +14,7 @@ import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -120,7 +120,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 		
 		public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
-			IModuleResolver mr = search.getModuleResolver();
+			ISemanticContext mr = search.getModuleResolver();
 			
 			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
 				INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
@@ -134,7 +134,7 @@ public class DefinitionClass extends DefinitionAggregate {
 			}
 		}
 		
-		public INamedElement resolveSuperClass(IModuleResolver mr) {
+		public INamedElement resolveSuperClass(ISemanticContext mr) {
 			
 			for (Reference baseClassRef : nonNullIterable(baseClasses)) {
 				INamedElement baseClass = baseClassRef.findTargetDefElement(mr);

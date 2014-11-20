@@ -6,7 +6,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
@@ -56,7 +56,7 @@ public class ExpNew extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		// This is not entirely correct for struct-like types, 
 		// in that case a pointer to the the type is actually the type of the new exp.
 		// But current behavior is acceptable for now.

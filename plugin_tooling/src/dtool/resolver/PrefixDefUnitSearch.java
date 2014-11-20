@@ -3,7 +3,7 @@ package dtool.resolver;
 import java.util.HashSet;
 import java.util.Set;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
@@ -18,11 +18,11 @@ public class PrefixDefUnitSearch extends CommonDefUnitSearch {
 	public final PrefixSearchOptions searchOptions;
 	protected final Set<String> addedDefElements = new HashSet<>();
 	
-	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
+	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
 	}
 	
-	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver, 
+	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver, 
 			PrefixSearchOptions searchOptions) {
 		super(refOriginModule, refOffset, moduleResolver);
 		this.searchOptions = searchOptions;

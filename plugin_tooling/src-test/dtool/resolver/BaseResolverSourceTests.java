@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -95,7 +95,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	protected String testsModuleName;
 	protected String testsProjectDirName;
 	
-	protected IModuleResolver mr;
+	protected ISemanticContext mr;
 	
 	protected Map<String, MetadataEntry> markers;
 	

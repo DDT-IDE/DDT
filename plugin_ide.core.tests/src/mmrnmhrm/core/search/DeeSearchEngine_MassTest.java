@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.Pair;
@@ -80,7 +80,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 						return;
 					}
 					
-					IModuleResolver mr = DToolClient_Bad.getResolverFor(filePath);
+					ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
 					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
 					if(targetDefElements == null || targetDefElements.isEmpty()) {
 						return;

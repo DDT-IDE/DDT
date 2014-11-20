@@ -15,18 +15,18 @@ import java.util.Collection;
 import java.util.Collections;
 
 import dtool.ast.references.IQualifierNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 		return findTargetDefElements(mr, true); // TODO
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		return Collections.emptySet();
 	}
 	

@@ -9,7 +9,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
@@ -43,7 +43,7 @@ public class ExpCall extends Expression {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
 		INamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
 		if(calleeElem == null)
 			return null;		

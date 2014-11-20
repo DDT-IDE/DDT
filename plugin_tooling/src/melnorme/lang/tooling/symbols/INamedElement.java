@@ -13,8 +13,8 @@ package melnorme.lang.tooling.symbols;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
@@ -77,7 +77,7 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * is found.
 	 * @return the non-alias element.
 	 */
-	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr);
+	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticContext sr);
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.
@@ -90,6 +90,6 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
 	 * and have an associated type, but are not types themselves.
 	 */
-	public abstract INamedElement resolveTypeForValueContext(IModuleResolver mr);
+	public abstract INamedElement resolveTypeForValueContext(ISemanticContext mr);
 	
 }

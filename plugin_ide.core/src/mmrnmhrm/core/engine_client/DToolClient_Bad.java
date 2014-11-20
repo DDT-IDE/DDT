@@ -13,7 +13,7 @@ package mmrnmhrm.core.engine_client;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
@@ -29,7 +29,7 @@ import org.eclipse.dltk.core.ISourceModule;
 public class DToolClient_Bad {
 	
 	@Deprecated
-	public static IModuleResolver getResolverFor(Path filePath) {
+	public static ISemanticContext getResolverFor(Path filePath) {
 		try {
 			return DToolClient.getDefault().getResolvedModule(filePath).getModuleResolver();
 		} catch (ExecutionException e) {

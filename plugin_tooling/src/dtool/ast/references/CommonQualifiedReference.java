@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.CommonDefUnitSearch;
 
@@ -44,7 +44,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	
 	public abstract int getDotOffset();
 	
-	public abstract Collection<INamedElement> findRootDefUnits(IModuleResolver moduleResolver);
+	public abstract Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver);
 	
 	@Override
 	public void performRefSearch(CommonDefUnitSearch search) {

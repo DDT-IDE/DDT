@@ -12,14 +12,14 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 // TODO: review this hierarchy
 public abstract class CommonNativeTypeReference extends Reference {
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 		return resolveToInvalidValue(); // This ref refers to a type, not a value
 	}
 	

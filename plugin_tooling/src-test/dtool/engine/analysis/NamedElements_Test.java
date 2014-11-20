@@ -13,8 +13,8 @@ package dtool.engine.analysis;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.AbstractIntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
@@ -42,7 +42,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		AbstractIntrinsicProperty intrinsicProperty = new AbstractIntrinsicProperty("blah", null) {
 			
 			@Override
-			protected INamedElement resolveType(IModuleResolver mr) {
+			protected INamedElement resolveType(ISemanticContext mr) {
 				return null;
 			}
 		};
@@ -157,7 +157,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 	}
 	
 	protected void restResolveElementConcrete(INamedElement namedElement) {
-		ISemanticResolution sr = getSemanticResolution(namedElement);
+		ISemanticContext sr = getSemanticResolution(namedElement);
 		assertTrue(namedElement.resolveConcreteElement(sr) == namedElement);
 	}
 	

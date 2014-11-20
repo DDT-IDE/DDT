@@ -13,6 +13,7 @@ package dtool.engine;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 
 
@@ -20,7 +21,7 @@ public interface IModuleResolution {
 	
 	Path getModulePath();
 	
-	IBundleResolution getBundleResolution();
+	ISemanticContext getBundleResolution();
 	
 	IElementSemantics getElementSemantics(ISemanticElement element);
 	

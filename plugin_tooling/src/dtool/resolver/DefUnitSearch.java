@@ -2,7 +2,7 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import dtool.ast.definitions.Module;
 
 /**
@@ -14,12 +14,12 @@ public class DefUnitSearch extends CommonDefUnitSearch {
 	protected final String searchName;
 	
 	public DefUnitSearch(String searchName, Module refOriginModule, boolean findOneOnly, 
-			IModuleResolver moduleResolver) {
+			ISemanticContext moduleResolver) {
 		this(searchName, refOriginModule, -1, findOneOnly, moduleResolver);
 	}
 	
 	public DefUnitSearch(String searchName, Module refOriginModule, int refOffset, boolean findOneOnly,
-		IModuleResolver moduleResolver) {
+		ISemanticContext moduleResolver) {
 		super(refOriginModule, refOffset, findOneOnly, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);

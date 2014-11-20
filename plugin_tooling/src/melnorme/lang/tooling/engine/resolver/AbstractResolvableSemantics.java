@@ -13,20 +13,20 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class AbstractResolvableSemantics implements IResolvableSemantics {
 	
 	@Override
-	public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
+	public ResolutionResult resolveTargetElement(ISemanticContext sr) {
 		return new ResolutionResult(findTargetDefElement(sr)); /*FIXME: BUG here null*/
 	}
 	
 	// TODO: deprecate this method in favor of resolveTargetElement
 	@Override
-	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		if(namedElems == null || namedElems.isEmpty())
 			return null;
@@ -34,13 +34,13 @@ public abstract class AbstractResolvableSemantics implements IResolvableSemantic
 	}
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 		Collection<INamedElement> resolvedElements = this.findTargetDefElements(mr, false);
 		
 		return resolveTypeOfUnderlyingValue(mr, resolvedElements); 
 	}
 	
-	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr, 
+	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr, 
 		Collection<INamedElement> resolvedElements) {
 		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
 		for (INamedElement defElement : resolvedElements) {

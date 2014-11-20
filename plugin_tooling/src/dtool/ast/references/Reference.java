@@ -12,7 +12,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
@@ -23,7 +23,7 @@ import dtool.ast.expressions.Resolvable;
 public abstract class Reference extends Resolvable implements IResolvable {
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
 		return getNodeSemantics().findTargetDefElements(moduleResolver, findOneOnly);
 	}
 	

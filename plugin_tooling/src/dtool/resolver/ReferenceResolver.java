@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
@@ -31,11 +31,11 @@ import dtool.ast.references.RefImportSelection;
  */
 public class ReferenceResolver {
 	
-	public static INamedElement findModuleUnchecked(IModuleResolver mr, String moduleFullName) {
+	public static INamedElement findModuleUnchecked(ISemanticContext mr, String moduleFullName) {
 		return findModuleUnchecked(mr, new ModuleFullName(moduleFullName));
 	}
 	
-	public static INamedElement findModuleUnchecked(IModuleResolver mr, ModuleFullName moduleName) {
+	public static INamedElement findModuleUnchecked(ISemanticContext mr, ModuleFullName moduleName) {
 		try {
 			return mr.findModule(moduleName);
 		} catch (ModuleSourceException pse) {
@@ -236,7 +236,7 @@ public class ReferenceResolver {
 		}
 	}
 	
-	private static INamedElement findImportTargetModule(IModuleResolver modResolver, IImportFragment impSelective) {
+	private static INamedElement findImportTargetModule(ISemanticContext modResolver, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
 		String moduleName = impSelective.getModuleRef().module;
 		

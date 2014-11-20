@@ -3,8 +3,8 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AbstractNamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -60,7 +60,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return EArcheType.Function;
 	}
 	
-	public INamedElement findReturnTypeTargetDefUnit(IModuleResolver moduleResolver) {
+	public INamedElement findReturnTypeTargetDefUnit(ISemanticContext moduleResolver) {
 		if(retType == null) 
 			return null;
 		return retType.findTargetDefElement(moduleResolver);
@@ -105,7 +105,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 			return function;
 		}
 		
@@ -124,7 +124,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+		public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 			// TODO implicit function call
 			return null;
 		}

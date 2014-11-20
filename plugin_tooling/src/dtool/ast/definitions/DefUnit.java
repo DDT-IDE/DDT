@@ -6,8 +6,8 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -161,7 +161,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 	public abstract INamedElementSemantics getNodeSemantics();
 	
 	@Override
-	public final IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 		return getNodeSemantics().resolveConcreteElement(sr);
 	}
 	
@@ -171,7 +171,7 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 	}
 	
 	@Override
-	public final INamedElement resolveTypeForValueContext(IModuleResolver mr) {
+	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		return getNodeSemantics().resolveTypeForValueContext(mr);
 	}
 	

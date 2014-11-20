@@ -12,7 +12,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
@@ -39,7 +39,7 @@ public class ModuleQualifiedReference implements IResolvable {
 	protected final IResolvableSemantics semantics = new AbstractResolvableSemantics() {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
 			INamedElement module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
 			if(module == null) 
 				return null;
@@ -56,18 +56,18 @@ public class ModuleQualifiedReference implements IResolvable {
 		return semantics;
 	}
 	
-	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
 		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
 		return CollectionUtil.getFirstElementOrNull(namedElems);
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findFirstOnly) {
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		return getNodeSemantics().findTargetDefElements(mr, true);
 	}
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 		return AbstractResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
 	}
 	

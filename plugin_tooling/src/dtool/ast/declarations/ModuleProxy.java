@@ -12,8 +12,8 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -29,10 +29,10 @@ import dtool.resolver.ReferenceResolver;
 
 public class ModuleProxy extends AbstractNamedElement {
 	
-	protected final IModuleResolver moduleResolver;
+	protected final ISemanticContext moduleResolver;
 	protected final String fqModuleName;
 	
-	public ModuleProxy(String fqModuleName, IModuleResolver moduleResolver) {
+	public ModuleProxy(String fqModuleName, ISemanticContext moduleResolver) {
 		super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fqModuleName = fqModuleName;
@@ -97,7 +97,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public IConcreteNamedElement resolveConcreteElement(ISemanticResolution sr) {
+		public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
 			return null; /*FIXME: BUG here TODO*/
 		}
 		

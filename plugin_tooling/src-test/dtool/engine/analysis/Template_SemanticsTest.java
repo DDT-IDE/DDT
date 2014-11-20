@@ -12,7 +12,7 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.MockSemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
@@ -46,7 +46,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	public static class TestsElementSearch extends PrefixDefUnitSearch {
 		
-		public TestsElementSearch(Module refOriginModule, int refOffset, IModuleResolver moduleResolver) {
+		public TestsElementSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 			super(refOriginModule, refOffset, moduleResolver);
 		}
 		

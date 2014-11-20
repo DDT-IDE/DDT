@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
-import melnorme.lang.tooling.bundles.ISemanticResolution;
+import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.AbstractResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
@@ -37,12 +37,12 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	protected final IResolvableSemantics defaultResolvableSemantics = new AbstractResolvableSemantics() {
 		
 		@Override
-		public ResolutionResult resolveTargetElement(ISemanticResolution sr) {
+		public ResolutionResult resolveTargetElement(ISemanticContext sr) {
 			return new ResolutionResult(findTargetDefElement(sr));
 		}
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(IModuleResolver mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
 			return Resolvable.this.findTargetDefElements(mr, findOneOnly);
 		}
 		
@@ -54,15 +54,15 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(IModuleResolver mr) {
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 		return getNodeSemantics().resolveTypeOfUnderlyingValue(mr);
 	}
 	
-	public final INamedElement findTargetDefElement(IModuleResolver moduleResolver) {
+	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
 		return getNodeSemantics().findTargetDefElement(moduleResolver);
 	}
 	
-	public final ResolutionResult resolveTargetElement(ISemanticResolution sr) {
+	public final ResolutionResult resolveTargetElement(ISemanticContext sr) {
 		return getNodeSemantics().resolveTargetElement(sr);
 	}
 	
@@ -75,7 +75,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return Collections.singletonList(elem);
 	}
 	
-	public static Collection<INamedElement> findTargetElementsForReference(IModuleResolver mr, Resolvable resolvable,
+	public static Collection<INamedElement> findTargetElementsForReference(ISemanticContext mr, Resolvable resolvable,
 		boolean findFirstOnly) {
 		if(resolvable == null) {
 			return null;

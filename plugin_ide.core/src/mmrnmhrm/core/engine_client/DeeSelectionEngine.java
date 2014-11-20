@@ -17,7 +17,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.IModuleResolver;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -76,7 +76,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		}
 		Reference ref = (Reference) node;
 		
-		IModuleResolver moduleResolver = DToolClient_Bad.getResolverFor(filePath);
+		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
 		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
