@@ -106,7 +106,8 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	@Test
 	public void testOpenRef_OnADefUnit() throws CoreException {
 		int offset = getOffsetForString("Foo {");
-		doTest(offset, null, file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
+		doTest(offset, FindDefinitionOperation.FIND_DEF_PickedElementAlreadyADefinition, 
+			file.getProject(), IOutsideBuildpathTestResources.TEST_SRCFILE); 
 	}
 	
 	@Test
@@ -129,7 +130,16 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		IProject project = SampleMainProject.scriptProject.getProject();
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
-		doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
+		
+		// This flag controls what behavior to expected when trying a semantic operation
+		// on a file outside the buildpath.
+		boolean fileOutsideBuildpathSeeImportOfContainedBundle = false;
+		if(fileOutsideBuildpathSeeImportOfContainedBundle) {
+			doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_SRC_TARGETFILE);
+		} else {
+			doTest(offset, FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed, 
+				project, IOutsideBuildpathTestResources.TEST_OUTFILE);
+		}
 	}
 	
 	
@@ -156,17 +166,20 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
 		FindDefinitionResult opResult = new DeeOpenDefinitionHandler().createOperation(srcEditor, 
 			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeWithResult();
-		assertTrue(errorMessageContains == null || opResult.errorMessage.contains(errorMessageContains));
+		
+		if(errorMessageContains != null) {
+			assertTrue(opResult.errorMessage.contains(errorMessageContains));
+		} else {
+			assertTrue(opResult.errorMessage == null);
+		}
 		
 		assertCurrentEditorIsEditing(project.getFullPath(), editorFile);
 	}
 	
 	protected void assertCurrentEditorIsEditing(IPath prjpath, String targetpath) {
-		DeeEditor deeEditor;
-		deeEditor = (DeeEditor) WorkbenchUtils.getActivePage().getActiveEditor();
-		IFile editorFile = ((FileEditorInput) deeEditor.getEditorInput()).getFile();
-		IPath path = editorFile.getFullPath();
-		assertEquals(path, prjpath.append(targetpath));
+		DeeEditor activeEditor = (DeeEditor) WorkbenchUtils.getActivePage().getActiveEditor();
+		IFile activeEditorFile = ((FileEditorInput) activeEditor.getEditorInput()).getFile();
+		assertEquals(activeEditorFile.getFullPath(), prjpath.append(targetpath));
 	}
 	
 }
