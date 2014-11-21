@@ -17,8 +17,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclBlock;
@@ -90,7 +92,6 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.DeeParser_Parameters.DeeParser_RuleParameters;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
-import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;

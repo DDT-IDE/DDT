@@ -17,16 +17,16 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.DeeTokens;
-import dtool.parser.ParserError;
-import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.LexElement.MissingLexElement;
 
 /**

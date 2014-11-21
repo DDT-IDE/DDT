@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,100 +8,39 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.util.Comparator;
-
-import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
+import dtool.parser.DeeTokens;
 
-public class ParserError {
+public enum ParserErrorTypes {
 	
-	public enum ParserErrorTypes {
+	INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
+	MALFORMED_TOKEN, // Lexer: recovered token has errors
+	
+	EXPECTED_TOKEN, // expected specific token
+	EXPECTED_RULE, // expected valid token for rule
+	SYNTAX_ERROR, // unexpected rule in rule start
+	
+	EXP_MUST_HAVE_PARENTHESES, 
+	TYPE_USED_AS_EXP_VALUE,
+	INIT_USED_IN_EXP,
+	NO_CHAINED_TPL_SINGLE_ARG,
+	
+	INVALID_EXTERN_ID,
+	INVALID_SCOPE_ID,
+	INVALID_TRAITS_ID,
+	LAST_CATCH,;
+	
+	public String getUserMessage(ParserError parserError) {
+		String msgErrorSource = parserError.msgErrorSource;
+		Object msgData = parserError.msgData;
 		
-		INVALID_TOKEN_CHARACTERS, // Lexer: invalid characters, cannot form token
-		MALFORMED_TOKEN, // Lexer: recovered token has errors
-		
-		EXPECTED_TOKEN, // expected specific token
-		EXPECTED_RULE, // expected valid token for rule
-		SYNTAX_ERROR, // unexpected rule in rule start
-		
-		EXP_MUST_HAVE_PARENTHESES, 
-		TYPE_USED_AS_EXP_VALUE,
-		INIT_USED_IN_EXP,
-		NO_CHAINED_TPL_SINGLE_ARG,
-		
-		INVALID_EXTERN_ID,
-		INVALID_SCOPE_ID,
-		INVALID_TRAITS_ID,
-		LAST_CATCH,
-		
-	}
-	
-	protected final ParserErrorTypes errorType;
-	protected final SourceRange sourceRange;
-	protected final String msgErrorSource;
-	protected final Object msgData;
-	
-	public ParserError(ParserErrorTypes errorType, SourceRange sourceRange, String msgErrorSource, Object msgData) {
-		this.errorType = assertNotNull(errorType);
-		this.sourceRange = assertNotNull(sourceRange);
-		this.msgErrorSource = msgErrorSource;
-		this.msgData = msgData;
-	}
-	
-	public int getOffset() {
-		return sourceRange.getOffset();
-	}
-	
-	public int getLength() {
-		return sourceRange.getLength();
-	}
-	
-	public int getStartPos() {
-		return getOffset();
-	}
-	
-	public int getEndPos() {
-		return getOffset() + getLength();
-	}
-	
-	public int getLineNumber() {
-		return 0; //TODO
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(!(obj instanceof ParserError))
-			return false;
-		
-		ParserError other = (ParserError) obj;
-		return errorType == other.errorType && areEqual(sourceRange, other.sourceRange) 
-			&& areEqual(msgErrorSource, other.msgErrorSource) && areEqual(msgData, other.msgData);
-	}
-	
-	public static final class ErrorSourceRangeComparator implements Comparator<ParserError> {
-		@Override
-		public int compare(ParserError o1, ParserError o2) {
-			int compareResult = o1.sourceRange.compareTo(o2.sourceRange);
-			return compareResult;
-		}
-	}
-	
-	@Override
-	public String toString() {
-		return "ERROR:" + errorType + sourceRange.toString() +
-			(msgErrorSource == null ? "" : ("【"+msgErrorSource+"】")) + "("+msgData+")";
-	}
-	
-	public String getUserMessage() {
-		switch(errorType) {
+		switch(this) {
 		case INVALID_TOKEN_CHARACTERS:
 			return "Invalid token characters \"" + msgErrorSource + "\", delete these characters.";
 		case MALFORMED_TOKEN:

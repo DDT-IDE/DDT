@@ -18,6 +18,7 @@ import java.util.AbstractList;
 import java.util.Collections;
 import java.util.List;
 
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.Module;
 import dtool.parser.common.LexElement;

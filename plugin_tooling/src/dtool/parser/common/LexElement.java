@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.parser.common;
 
+import melnorme.lang.tooling.ast.ParserError;
 import dtool.parser.DeeTokens;
-import dtool.parser.ParserError;
 
 
 public class LexElement extends BaseLexElement {

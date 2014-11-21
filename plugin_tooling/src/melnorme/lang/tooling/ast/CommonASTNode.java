@@ -26,7 +26,6 @@ import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.parser.ParserError;
 import dtool.resolver.ReferenceResolver;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {

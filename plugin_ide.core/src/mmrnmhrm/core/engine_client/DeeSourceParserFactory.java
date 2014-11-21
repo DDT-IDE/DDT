@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
+import melnorme.lang.tooling.ast.ParserError;
+
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
@@ -20,7 +22,6 @@ import org.eclipse.dltk.compiler.problem.DefaultProblemIdentifier;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.compiler.problem.ProblemSeverities;
 
-import dtool.parser.ParserError;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public class DeeSourceParserFactory implements ISourceParserFactory {

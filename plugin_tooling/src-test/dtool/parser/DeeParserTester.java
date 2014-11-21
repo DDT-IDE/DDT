@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
@@ -51,7 +53,6 @@ import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
-import dtool.parser.ParserError.ParserErrorTypes;
 import dtool.parser.common.Token;
 import dtool.parser.common.AbstractParser.ParseRuleDescription;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
