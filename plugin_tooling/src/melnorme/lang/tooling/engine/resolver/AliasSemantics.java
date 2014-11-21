@@ -23,9 +23,8 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 		super(element);
 	}
 	
-	/* FIXME: make final */
 	@Override
-	public ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
+	public final ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
 		return getElementResolution(context);
 	}
 	
@@ -65,11 +64,6 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 		
 		public TypeAliasSemantics(INamedElement aliasDef) {
 			super(aliasDef);
-		}
-		
-		@Override
-		public ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
-			return getElementResolution(context);
 		}
 		
 		@Override

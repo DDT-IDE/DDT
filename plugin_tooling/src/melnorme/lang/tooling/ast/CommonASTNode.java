@@ -21,7 +21,6 @@ import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -295,12 +294,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 			return null;
 		}
 		return moduleNode.getCompilationUnitPath();
-	}
-	
-	@Override
-	public IElementSemantics getSemantics() {
-		/*FIXME: BUG here todo*/
-		return IElementSemantics.NULL_NODE_SEMANTICS;
 	}
 	
 }

@@ -11,7 +11,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
  */
 public interface IResolvable extends ISemanticElement {
 	
-	@Override
 	public IResolvableSemantics getSemantics();
 	
 	/** Finds the named element matching this {@link IResolvable}. 

@@ -49,8 +49,8 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	public abstract INamedElementSemantics getSemantics();
 	
 	@Override
-	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return getSemantics().resolveConcreteElement(sr).result;
+	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {
+		return getSemantics().resolveConcreteElement(context).result;
 	}
 	
 	@Override

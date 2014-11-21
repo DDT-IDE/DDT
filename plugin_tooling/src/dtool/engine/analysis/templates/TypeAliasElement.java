@@ -60,8 +60,9 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
-			return null; /*FIXME: BUG here*/
+		protected ConcreteElementResult createResolution(ISemanticContext context) {
+			// TODO write test case
+			return super.createResolution(context); 
 		};
 		
 		@Override

@@ -64,7 +64,6 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	INamedElementNode resolveUnderlyingNode();
 	
 	/** @return the class responsible for handling semantic analysis. Non-null. */
-	@Override
 	INamedElementSemantics getSemantics();
 	
 	/**
@@ -72,7 +71,7 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * is found.
 	 * @return the non-alias element.
 	 */
-	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticContext sr);
+	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticContext context);
 	
 	/**
 	 * Resolve given search in the members scope of this defunit.

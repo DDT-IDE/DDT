@@ -16,8 +16,8 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -109,8 +109,8 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
-			return null; /*FIXME: BUG here TODO*/
+		protected ConcreteElementResult createResolution(ISemanticContext context) {
+			return new ConcreteElementResult(null);
 		}
 		
 		@Override

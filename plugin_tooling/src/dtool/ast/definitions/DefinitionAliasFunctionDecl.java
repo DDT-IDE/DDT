@@ -94,7 +94,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		
 		@Override
 		public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
-			return null; /*FIXME: BUG here*/
+			return null; /*FIXME: todo */
 		}
 		
 		@Override

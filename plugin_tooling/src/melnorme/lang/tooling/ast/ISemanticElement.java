@@ -12,8 +12,6 @@ package melnorme.lang.tooling.ast;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.engine.IElementSemantics;
-
 public interface ISemanticElement {
 	
 	/** 
@@ -24,7 +22,5 @@ public interface ISemanticElement {
 	public abstract boolean isLanguageIntrinsic();
 	
 	public abstract Path getModulePath();
-	
-	public abstract IElementSemantics getSemantics();
 	
 }

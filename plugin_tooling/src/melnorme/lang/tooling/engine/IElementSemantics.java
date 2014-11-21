@@ -28,7 +28,4 @@ public interface IElementSemantics {
 	@Override
 	public int hashCode();
 	
-	public static final IElementSemantics NULL_NODE_SEMANTICS = new IElementSemantics() {
-	};
-	
 }
