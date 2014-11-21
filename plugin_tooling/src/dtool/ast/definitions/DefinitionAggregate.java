@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import static dtool.resolver.LanguageIntrinsics.D2_063_intrinsics;
+import static dtool.resolver.DeeLanguageIntrinsics.D2_063_intrinsics;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;

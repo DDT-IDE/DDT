@@ -69,11 +69,6 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return false;
-	}
-	
-	@Override
 	public String getFullyQualifiedName() {
 		return fqName;
 	}

@@ -98,11 +98,6 @@ public abstract class DefUnit extends ASTNode implements INamedElement, INamedEl
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return false;
-	}
-	
-	@Override
 	public abstract EArcheType getArcheType() ;
 	
 	@Override

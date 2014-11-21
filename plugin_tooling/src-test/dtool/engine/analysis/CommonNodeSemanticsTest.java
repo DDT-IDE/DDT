@@ -19,14 +19,9 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.ElementResolution;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
-import dtool.engine.BundleResolution;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 
@@ -41,18 +36,6 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		Path filepath = DEFAULT_SemanticsTest_Bundle.resolve("source/" + DEFAULT_ModuleName + ".d");
 		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filepath, source);
 		return defaultSemMgr.getUpdatedResolvedModule(filepath);
-	}
-	
-	protected ISemanticContext getSemanticResolution(INamedElement namedElement) {
-		BundleResolution bundleSR = defaultSemMgr.getStoredResolution(DEFAULT_SemanticsTest_Bundle);
-		ResolvedModule findResolvedModule;
-		try {
-			ModuleFullName moduleFullName = namedElement.getModuleFullName();
-			findResolvedModule = bundleSR.findResolvedModule(moduleFullName);
-		} catch (ModuleSourceException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		return findResolvedModule.getSemanticContext();
 	}
 	
 	protected static Module parseSource(String source) {

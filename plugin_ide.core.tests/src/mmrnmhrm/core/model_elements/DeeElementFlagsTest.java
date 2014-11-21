@@ -6,14 +6,14 @@ import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import org.junit.Test;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 
 public class DeeElementFlagsTest {
 	
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		for (IntrinsicDefUnit nativeDefUnit : LanguageIntrinsics.D2_063_intrinsics.primitivesScope.members) {
+		for (IntrinsicDefUnit nativeDefUnit : DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope.members) {
 			assertTrue(new DefElementDescriptor(nativeDefUnit).isNative());
 		}
 		

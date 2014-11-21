@@ -83,7 +83,7 @@ public class ReferenceResolver {
 	}
 	
 	public static void findDefUnitInPrimitivesScope(CommonDefUnitSearch search) {
-		LanguageIntrinsics.D2_063_intrinsics.primitivesScope.resolveSearchInScope(search);
+		DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope.resolveSearchInScope(search);
 	}
 	
 	public static void resolveSearchInScope(CommonDefUnitSearch search, IScopeNode scope) {

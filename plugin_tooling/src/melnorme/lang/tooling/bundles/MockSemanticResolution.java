@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -58,6 +59,11 @@ public class MockSemanticResolution implements ISemanticContext {
 	@Override
 	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
 		return null;
+	}
+	
+	@Override
+	public ISemanticContext findSemanticContext(ISemanticElement Element) {
+		return this;
 	}
 	
 }

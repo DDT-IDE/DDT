@@ -13,6 +13,7 @@ package melnorme.lang.tooling.engine.resolver;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -20,7 +21,7 @@ import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.CommonDefUnitSearch;
 
-public class NotAValueErrorElement implements INamedElement {
+public class NotAValueErrorElement extends AbstractElement implements INamedElement {
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
@@ -43,11 +44,6 @@ public class NotAValueErrorElement implements INamedElement {
 	@Override
 	public String getNameInRegularNamespace() {
 		return wrappedElement.getNameInRegularNamespace();
-	}
-	
-	@Override
-	public boolean isLanguageIntrinsic() {
-		return wrappedElement.isLanguageIntrinsic();
 	}
 	
 	@Override

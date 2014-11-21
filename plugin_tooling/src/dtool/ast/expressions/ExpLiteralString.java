@@ -8,7 +8,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.parser.common.IToken;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 
 public class ExpLiteralString extends Expression {
 	
@@ -40,7 +40,7 @@ public class ExpLiteralString extends Expression {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return LanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
+		return DeeLanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
 	}
 	
 }

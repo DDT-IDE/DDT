@@ -8,23 +8,25 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.ast;
+package melnorme.lang.tooling.engine;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.ast.ISemanticElement;
 
-public interface ISemanticElement {
+public abstract class AbstractElement implements ISemanticElement {
 	
-	/** 
-	 * @return true if this is a pre-defined/native language element. 
-	 * (example: primitives such as int, void, or native types like arrays, pointer types).
-	 * This is a special case for which the elements do not have a well defined containing module path. 
-	 */
-	public abstract boolean isLanguageIntrinsic();
+	public AbstractElement() {
+	}
 	
-	public abstract Path getModulePath();
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return false; /*FIXME: BUG here*/
+	}
 	
-	public abstract IElementSemantics getSemantics();
+	@Override
+	public Path getModulePath() {
+		return null; /*FIXME: BUG here*/
+	}
 	
 }

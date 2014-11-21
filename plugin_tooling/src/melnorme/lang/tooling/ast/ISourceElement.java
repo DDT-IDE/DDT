@@ -10,21 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import java.nio.file.Path;
 
-import melnorme.lang.tooling.engine.IElementSemantics;
-
-public interface ISemanticElement {
+public interface ISourceElement {
 	
-	/** 
-	 * @return true if this is a pre-defined/native language element. 
-	 * (example: primitives such as int, void, or native types like arrays, pointer types).
-	 * This is a special case for which the elements do not have a well defined containing module path. 
-	 */
-	public abstract boolean isLanguageIntrinsic();
+	int getOffset();
+	int getLength();
 	
-	public abstract Path getModulePath();
-	
-	public abstract IElementSemantics getSemantics();
+	int getStartPos();
+	int getEndPos();
 	
 }

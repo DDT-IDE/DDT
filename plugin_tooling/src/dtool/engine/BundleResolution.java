@@ -44,6 +44,7 @@ public class BundleResolution extends AbstractBundleResolution {
 		return depResolutions;
 	}
 	
+	@Override
 	public StandardLibraryResolution getStdLibResolution() {
 		return stdLibResolution;
 	}

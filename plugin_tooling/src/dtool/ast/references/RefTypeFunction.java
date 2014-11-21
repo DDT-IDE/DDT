@@ -23,8 +23,8 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.LanguageIntrinsics;
-import dtool.resolver.LanguageIntrinsics.DeeIntrinsicType;
+import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics.DeeIntrinsicType;
 
 /**
  * A function pointer type
@@ -76,7 +76,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	
 	public static class IntrinsicFunctionType extends DeeIntrinsicType {
 		public IntrinsicFunctionType() {
-			LanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
+			DeeLanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
 		}
 	}
 }

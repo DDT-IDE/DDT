@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IModuleNode;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
@@ -60,6 +61,8 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 		return bundleModules.getModuleAbsolutePath(moduleFullName);
 	}
 	
+	public abstract StandardLibraryResolution getStdLibResolution();
+	
 	/* ----------------- ----------------- */
 	
 	@Override
@@ -70,7 +73,7 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 	}
 	
 	protected abstract void findModules(String fullNamePrefix, HashSet<String> matchedModules);
-
+	
 	protected void findBundleModules(String fullNamePrefix, HashSet<String> matchedModules) {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
@@ -160,7 +163,7 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
 	
 	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
-
+	
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
@@ -179,6 +182,22 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
 		/* FIXME: ensure elementSemantics belongs to this context */
 		return resolutionsMap.getEntry(elementSemantics);
+	}
+	
+	// /* FIXME: TODO test this method */
+	@Override
+	public ISemanticContext findSemanticContext(ISemanticElement element) {
+		if(element.isLanguageIntrinsic()) {
+			return getStdLibResolution();
+		}
+		
+		try {
+			Path modulePath = element.getModulePath();
+			ResolvedModule findResolvedModule = findResolvedModule(modulePath);
+			return findResolvedModule.getSemanticContext();
+		} catch (ModuleSourceException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
 	}
 	
 }

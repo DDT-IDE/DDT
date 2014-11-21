@@ -41,11 +41,6 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * meaning that the element cannot be referred by name (for example constructors elements). */
 	public String getNameInRegularNamespace();
 	
-	/** @return true if this is a pre-defined/native language element. 
-	 * (example: primitives such as int, void, or native types like arrays, pointer types) 
-	 */
-	public abstract boolean isLanguageIntrinsic();
-	
 	/** @return The fully qualified name of this element. Not null. */
 	public abstract String getFullyQualifiedName();
 	

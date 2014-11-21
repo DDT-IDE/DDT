@@ -50,6 +50,11 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		return compilerInstall.getLibrarySourceFolders();
 	}
 	
+	@Override
+	public StandardLibraryResolution getStdLibResolution() {
+		return this;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

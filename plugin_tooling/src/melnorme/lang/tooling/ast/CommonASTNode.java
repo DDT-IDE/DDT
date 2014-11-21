@@ -12,6 +12,9 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
@@ -26,14 +29,9 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.parser.ParserError;
 import dtool.resolver.ReferenceResolver;
 
-public abstract class CommonASTNode implements IASTNode {
+public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	public static final ASTNode[] NO_ELEMENTS = new ASTNode[0]; 
-	
-	/** Source range start position */
-	protected int sourceStart = -1;
-	/** Source range end position */
-	protected int sourceEnd = -1;
 	
 	/** AST node parent, null if the node is the tree root. */
 	protected ASTNode parent = null;
@@ -47,73 +45,6 @@ public abstract class CommonASTNode implements IASTNode {
 	@Override
 	public final ASTNode asNode() {
 		return (ASTNode) this;
-	}
-	
-	/* ------------------------  Source range ------------------------ */
-	
-	
-	/** Gets the source range start position. */
-	@Override
-	public final int getStartPos() {
-		assertTrue(hasSourceRangeInfo());
-		return sourceStart;
-	}
-	
-	/** Gets the source range end position. */
-	@Override
-	public final int getEndPos() {
-		assertTrue(hasSourceRangeInfo());
-		return sourceEnd;
-	}
-	
-	/** Gets the source range start position, aka offset. */
-	@Override
-	public final int getOffset() {
-		assertTrue(hasSourceRangeInfo());
-		return sourceStart;
-	}
-	
-	/** Gets the source range length. */
-	@Override
-	public final int getLength() {
-		assertTrue(hasSourceRangeInfo());
-		return sourceEnd - sourceStart;
-	}
-	
-	public final SourceRange getSourceRange() {
-		assertTrue(hasSourceRangeInfo());
-		return new SourceRange(getStartPos(), getLength());
-	}
-	
-	public final SourceRange getSourceRangeOrNull() {
-		if(hasSourceRangeInfo()) {
-			return getSourceRange();
-		}
-		return null;
-	}
-	
-	/** Checks if the node has source range info. */
-	public final boolean hasSourceRangeInfo() {
-		return this.sourceStart != -1;
-	}
-	
-	/** Sets the source positions, which must be valid. */
-	public final void setSourcePosition(int startPos, int endPos) {
-		assertTrue(!hasSourceRangeInfo()); // Can only be set once
-		assertTrue(startPos >= 0);
-		assertTrue(endPos >= startPos);
-		this.sourceStart = startPos;
-		this.sourceEnd = endPos;
-	}
-	
-	/** Sets the source range of the receiver to given startPositon and given length */
-	public final void setSourceRange(int startPosition, int length) {
-		setSourcePosition(startPosition, startPosition + length);
-	}
-	
-	/** Sets the source range according to given sourceRange. */
-	public final void setSourceRange(SourceRange sourceRange) {
-		setSourcePosition(sourceRange.getOffset(), sourceRange.getOffset() + sourceRange.getLength());
 	}
 	
 	/* ------------------------  Parent and children visitor ------------------------ */
@@ -387,6 +318,20 @@ public abstract class CommonASTNode implements IASTNode {
 	
 	public IScopeNode getOuterLexicalScope() {
 		return ReferenceResolver.getOuterLexicalScope(asNode());
+	}
+	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return false;
+	}
+	
+	@Override
+	public Path getModulePath() {
+		IModuleNode moduleNode = getModuleNode();
+		if(moduleNode == null) {
+			return null;
+		}
+		return moduleNode.getCompilationUnitPath();
 	}
 	
 	@Override

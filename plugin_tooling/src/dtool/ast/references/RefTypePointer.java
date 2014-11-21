@@ -18,7 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 
 public class RefTypePointer extends CommonNativeTypeReference {
 	
@@ -40,7 +40,7 @@ public class RefTypePointer extends CommonNativeTypeReference {
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.pointerType);
+		return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.pointerType);
 	}
 	
 	@Override

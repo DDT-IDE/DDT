@@ -1,8 +1,6 @@
 package mmrnmhrm.core.model_elements;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.eclipse.dltk.ast.Modifiers;
@@ -78,11 +76,8 @@ public class DefElementFlagsUtil {
 			modifiers |= getCommonDefinitionModifiersInfo(commonDefinition);
 		}
 		
-		if(defElement instanceof IntrinsicDefUnit) {
-			assertTrue(defElement.isLanguageIntrinsic());
+		if(defElement.isLanguageIntrinsic()) {
 			modifiers |= DefElementFlagConstants.FLAG_NATIVE;
-		} else {
-			assertTrue(!defElement.isLanguageIntrinsic());
 		}
 		
 		return modifiers;

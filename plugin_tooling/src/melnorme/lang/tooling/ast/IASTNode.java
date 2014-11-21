@@ -17,13 +17,7 @@ import melnorme.utilbox.tree.IVisitable;
 /**
  * Interface for {@link ASTNode} objects. No other class can implement. 
  */
-public interface IASTNode extends IElement, IVisitable<IASTVisitor>, ISemanticElement {
-	
-	int getOffset();
-	int getLength();
-	
-	int getStartPos();
-	int getEndPos();
+public interface IASTNode extends ISourceElement, IElement, IVisitable<IASTVisitor>, ISemanticElement {
 	
 	String toStringAsNode(boolean printRangeInfo);
 	

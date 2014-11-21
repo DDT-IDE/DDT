@@ -13,6 +13,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
@@ -24,7 +25,7 @@ import dtool.resolver.ReferenceResolver;
 /**
  * Helper reference class.
  */
-public class ModuleQualifiedReference implements IResolvable {
+public class ModuleQualifiedReference extends AbstractElement implements IResolvable {
 	
 	public final String moduleFullName;
 	public final String elementName;

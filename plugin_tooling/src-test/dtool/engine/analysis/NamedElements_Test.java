@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static dtool.resolver.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -20,7 +21,8 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.AbstractIntrinsicProperty;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -32,6 +34,7 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
 import dtool.engine.ResolvedModule;
+import dtool.engine.StandardLibraryResolution;
 import dtool.engine.analysis.templates.AliasElement;
 import dtool.engine.analysis.templates.VarElement;
 
@@ -43,11 +46,11 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		return "void func() { " + string + " }";
 	}
 	
-	protected static PickedElement<INamedElement> element(String source) {
-		return getDefUnit(source, "xxx");
+	protected static PickedElement<INamedElement> parseDefUnit(String source) {
+		return parseDefUnit(source, "xxx");
 	}
 	
-	public static PickedElement<INamedElement> getDefUnit(String source, String markerString) {
+	public static PickedElement<INamedElement> parseDefUnit(String source, String markerString) {
 		int offset = source.indexOf(markerString);
 		ResolvedModule semanticModule;
 		try {
@@ -58,7 +61,11 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		Module module = semanticModule.getModuleNode();
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		DefSymbol name = assertCast(node, DefSymbol.class);
-		return new PickedElement<INamedElement>(name.getDefUnit(), semanticModule.getSemanticContext());
+		return pickedElement(name.getDefUnit(), semanticModule.getSemanticContext());
+	}
+	
+	public static PickedElement<INamedElement> pickedElement(INamedElement namedElement, ISemanticContext context) {
+		return new PickedElement<>(namedElement, context);
 	}
 	
 	/* ----------------- Sample elements ----------------- */
@@ -81,51 +88,58 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		
 		public void visitElements() {
 			
-			visitConcrete(element("int xxx;"));
-			visitConcrete(element("int z, xxx;"));
-			visitConcrete(element("auto xxx = 2;"));
-			visitConcrete(element("enum Enum { xxx = 1 }"));
-			visitConcrete(element("enum xxx = 1;"));
+			StandardLibraryResolution stdLib = defaultSemMgr.getUpdatedStdLibResolution(null);
 			
-			visitConcrete(element("struct xxx { }"));
-			visitConcrete(element("union xxx { }"));
-			visitConcrete(element("class xxx { }"));
-			visitConcrete(element("interface xxx { }"));
+			visitConcrete(parseDefUnit("int xxx;"));
+			visitConcrete(parseDefUnit("int z, xxx;"));
+			visitConcrete(parseDefUnit("auto xxx = 2;"));
+			visitConcrete(parseDefUnit("enum Enum { xxx = 1 }"));
+			visitConcrete(parseDefUnit("enum xxx = 1;"));
 			
-			visitConcrete(element("void func() {  if(int xxx) { }  }"));
-			visitConcrete(element("void func(int xxx) {   }"));
+			visitConcrete(parseDefUnit("struct xxx { }"));
+			visitConcrete(parseDefUnit("union xxx { }"));
+			visitConcrete(parseDefUnit("class xxx { }"));
+			visitConcrete(parseDefUnit("interface xxx { }"));
 			
-			
-			visitConcrete(element("Enum xxx { }"));
-			visitConcrete(element("module xxx;")); /*FIXME: BUG here, module name mismatch. */
-			
-			visitConcrete(getDefUnit("static this() { }", "this"));
+			visitConcrete(parseDefUnit("void func() {  if(int xxx) { }  }"));
+			visitConcrete(parseDefUnit("void func(int xxx) {   }"));
 			
 			
-			visitConcrete(element(func(" try {} catch(Exception xxx) {} ")));
-			visitConcrete(element(func(" foreach(a , xxx ;  [1, 2 3]);")));
+			visitConcrete(parseDefUnit("Enum xxx { }"));
+			visitConcrete(parseDefUnit("module xxx;")); /*FIXME: BUG here, module name mismatch. */
+			
+			visitConcrete(parseDefUnit("static this() { }", "this"));
+			
+			
+			visitConcrete(parseDefUnit(func(" try {} catch(Exception xxx) {} ")));
+			visitConcrete(parseDefUnit(func(" foreach(a , xxx ;  [1, 2 3]);")));
 
 			/*FIXME: BUG here TODO */
 //			intrinsicProperty, intrinsicTypeDefUnit,
 			
-			AbstractIntrinsicProperty intrinsicProperty = new AbstractIntrinsicProperty("blah", null) {
-				
-				@Override
-				protected INamedElement resolveType(ISemanticContext mr) {
-					return null;
-				}
-			};
+			visitConcrete(pickedElement(D2_063_intrinsics.bool_type, stdLib));
+			visitConcrete(pickedElement(D2_063_intrinsics.object_type, stdLib));
+			
+			visitConcrete(pickedElement(new IntrinsicProperty("max", D2_063_intrinsics.int_type, null), stdLib));
+			visitConcrete(pickedElement(new IntrinsicProperty2("max", new RefIdentifier("blah"), null), stdLib));
+			
+//			visitConcrete(pickedElement(new AbstractIntrinsicProperty("blah", null) {
+//				
+//				@Override
+//				protected INamedElement resolveType(ISemanticContext mr) {
+//					throw assertUnreachable();
+//				}
+//			}, ));
 			
 			IntrinsicTypeDefUnit intrinsicTypeDefUnit = new IntrinsicTypeDefUnit("blah", null) {
-				
 				@Override
 				public void createMembers(IntrinsicDefUnit... members) {
 				}
 			};
 			
 			
-			visitConcrete(element("template xxx() { }"));
-			visitConcrete(element("template blah(int xxx) { }"));
+			visitConcrete(parseDefUnit("template xxx() { }"));
+			visitConcrete(parseDefUnit("template blah(int xxx) { }"));
 			/*FIXME: BUG here TODO */
 //			templateInstance,
 			
@@ -139,27 +153,27 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			
 //			varInstance,
 			
-			visitConcrete(element("mixin blah xxx;"));
-			visitConcrete(element("template blah(xxx...) { }"));
+			visitConcrete(parseDefUnit("mixin blah xxx;"));
+			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
 				
 			
 			/* ----------------- aliases ----------------- */
 			
-			visitAliasElement(element("int target;  alias xxx = target;"));
-			visitAliasElement(element("int target;  alias foo = blah, xxx = target;"));
+			visitAliasElement(parseDefUnit("int target;  alias xxx = target;"));
+			visitAliasElement(parseDefUnit("int target;  alias foo = blah, xxx = target;"));
 			
-			visitAliasElement(element("int target;  alias target xxx;"));
-			visitAliasElement(element("int target;  alias target blah, xxx;"));
+			visitAliasElement(parseDefUnit("int target;  alias target xxx;"));
+			visitAliasElement(parseDefUnit("int target;  alias target blah, xxx;"));
 			
 			/*FIXME: BUG here TODO*/
 //				getDefUnit("import xxx = target;"),
-			visitAliasElement(element("import blah : xxx = target;"));
+			visitAliasElement(parseDefUnit("import blah : xxx = target;"));
 			
 			/*FIXME: BUG here TODO*/
 			AliasElement aliasElement = sampleModule(new AliasElement(new DefSymbol("xxx"), new RefIdentifier("target")));
 //				aliasElement,
 			
-			visitAliasElement(element("int target;  static if(is(target xxx)) { }"));
+			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"));
 			
 		}
 		
@@ -198,7 +212,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 	protected void testResolveElementConcrete(PickedElement<INamedElement> pickedElement) {
 		ISemanticContext context = pickedElement.context;
 		INamedElement namedElement = pickedElement.element;
-		assertTrue(context == getSemanticResolution(namedElement));
+		assertTrue(context == context.findSemanticContext(namedElement));
 		
 		checkIsSameResolution(
 			namedElement.getSemantics().resolveConcreteElement(context),

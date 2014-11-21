@@ -28,16 +28,16 @@ import dtool.ddoc.TextUI;
 /** 
  * Aggregator for all language intrinsics 
  */
-public class LanguageIntrinsics implements CommonLanguageIntrinsics {
+public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	// helper method
 	protected static Ddoc parseDDoc(String ddocSource) {
 		return new DdocParser("/**" + ddocSource + "*/").parse();
 	}
 	
-	public static LanguageIntrinsics D2_063_intrinsics = new LanguageIntrinsics();
+	public static DeeLanguageIntrinsics D2_063_intrinsics = new DeeLanguageIntrinsics();
 	
-	public LanguageIntrinsics() {
+	public DeeLanguageIntrinsics() {
 		
 	}
 	

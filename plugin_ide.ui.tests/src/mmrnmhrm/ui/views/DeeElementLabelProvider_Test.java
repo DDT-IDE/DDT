@@ -10,7 +10,7 @@ import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ddoc.TextUI;
 import dtool.resolver.DefUnitSearch;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 
 public class DeeElementLabelProvider_Test extends CommonDeeUITest {
@@ -43,7 +43,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		
 		
 		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new MockSemanticResolution());
-		ReferenceResolver.findDefUnitInScope(LanguageIntrinsics.D2_063_intrinsics.primitivesScope, search);
+		ReferenceResolver.findDefUnitInScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope, search);
 		defElement = search.getMatchedElements().iterator().next();
 		
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "int");

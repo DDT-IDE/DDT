@@ -44,11 +44,6 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return false;
-	}
-	
-	@Override
 	public String getModuleFullyQualifiedName() {
 		return fqModuleName;
 	}

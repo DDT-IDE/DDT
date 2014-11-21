@@ -13,10 +13,11 @@ package melnorme.lang.tooling.symbols;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.resolver.CommonDefUnitSearch;
 
-public abstract class AbstractNamedElement implements INamedElement {
+public abstract class AbstractNamedElement extends AbstractElement implements INamedElement {
 	
 	protected final String name;
 	

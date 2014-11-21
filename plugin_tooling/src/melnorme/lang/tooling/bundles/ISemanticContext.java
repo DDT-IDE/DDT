@@ -12,6 +12,7 @@ package melnorme.lang.tooling.bundles;
 
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -40,5 +41,8 @@ public interface ISemanticContext {
 	 * TODO try to check that statically
 	 */
 	ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics);
+	
+	/** @return the {@link ISemanticContext} appropriate for the given element. */
+	ISemanticContext findSemanticContext(ISemanticElement Element);
 	
 }

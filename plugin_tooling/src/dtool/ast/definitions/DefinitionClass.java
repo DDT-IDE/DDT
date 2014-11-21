@@ -24,7 +24,7 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.common.Token;
 import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -95,7 +95,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	protected ClassSemantics createAggregateSemantics() {
-		InstrinsicsScope commonTypeScope = LanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
+		InstrinsicsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
 		return new ClassSemantics(this, commonTypeScope);
 	}
 	
@@ -147,7 +147,7 @@ public class DefinitionClass extends DefinitionAggregate {
 				}
 			}
 			// TODO test implicit object reference
-			return LanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
+			return DeeLanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
 		}
 	
 	}

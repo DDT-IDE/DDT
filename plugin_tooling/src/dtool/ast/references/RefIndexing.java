@@ -18,7 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.LanguageIntrinsics;
+import dtool.resolver.DeeLanguageIntrinsics;
 
 /**
  * An reference consisting of an element reference and an indexing paramater .
@@ -58,7 +58,7 @@ public class RefIndexing extends Reference {
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
 		//TODO infer if its a static array, map array, or tupe
 		// Assume it's a static array. 
-		return Resolvable.wrapResult(LanguageIntrinsics.D2_063_intrinsics.staticArrayType);
+		return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType);
 	}
 	
 }
