@@ -53,6 +53,14 @@ public class BundleModules {
 		}
 	}
 	
+	public Set<Path> getModuleFiles() {
+		return moduleFiles;
+	}
+	
+	public Map<ModuleFullName, Path> getModules() {
+		return modules;
+	}
+	
 	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {
 		return modules.get(moduleFullName);
 	}

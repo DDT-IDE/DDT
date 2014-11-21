@@ -1,18 +1,24 @@
 package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
-import dtool.engine.modules.ModuleNamingRules;
+import dtool.engine.BundleModules;
+import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.tests.CommonDToolTest;
@@ -20,14 +26,27 @@ import dtool.tests.CommonDToolTest;
 public final class TestsSimpleModuleResolver extends EmptySemanticResolution {
 	
 	protected File projectFolder;
-	protected Map<String, DeeParserResult> modules = new HashMap<>();
+	protected Map<ModuleFullName, DeeParserResult> modules = new HashMap<>();
 	protected String extraModuleName;
 	protected DeeParserResult extraModuleResult;
 	
 	public TestsSimpleModuleResolver(File projectFolder) {
 		this.projectFolder = projectFolder;
 		
-		initModules(projectFolder, "");
+		BundleModules bundleModules = new BundleModulesVisitor(new ArrayList2<>(projectFolder.toPath())) {
+			@Override
+			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
+				throw assertFail();
+			}
+		}.toBundleModules();
+		
+		for (Entry<ModuleFullName, Path> entry : bundleModules.getModules().entrySet()) {
+			ModuleFullName moduleName = entry.getKey();
+			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());
+			DeeParserResult parseResult = DeeParser.parseSource(source, moduleName.getFullNameAsString());
+			
+			modules.put(moduleName, parseResult);
+		}
 	}
 	
 	public void setExtraModule(String extraModuleName, DeeParserResult extraModuleResult) {
@@ -35,46 +54,18 @@ public final class TestsSimpleModuleResolver extends EmptySemanticResolution {
 		this.extraModuleResult = extraModuleResult;
 	}
 	
-	public void initModules(File projectFolder, String packagePath) {
-		File[] children = projectFolder.listFiles();
-		assertNotNull(children);
-		for (File child : children) {
-			String resourceName = child.getName();
-			
-			if(child.isDirectory()) {
-				String packageName = resourceName;
-				if(!ModuleNamingRules.isValidPackageNameSegment(packageName)) {
-					continue;
-				}
-				initModules(child, packagePath + packageName + "/");
-			} else if(resourceName.endsWith(".d")) {
-				
-				String moduleFQName = ModuleNamingRules.getModuleFQNameFromFilePath(packagePath, resourceName);
-				if(moduleFQName == null) 
-					continue;
-				
-				String moduleName = StringUtil.substringAfterLastMatch(moduleFQName, ".");
-				
-				String source = CommonDToolTest.readStringFromFile_PreserveBOM(child);
-				DeeParserResult parseResult = DeeParser.parseSource(source, moduleName);
-				modules.put(moduleFQName, parseResult);
-			} else {
-				assertFail();
-			}
-		}
-	}
-	
 	@Override
 	public Set<String> findModules_do(String fqNamePrefix) {
 		HashSet<String> matchedModules = new HashSet<>();
-		Set<String> nameEntries = new HashSet<>(modules.keySet());
+		Set<ModuleFullName> nameEntries = new HashSet<>(modules.keySet());
 		if(extraModuleName != null) {
-			nameEntries.add(extraModuleName);
+			nameEntries.add(ModuleFullName.fromString(extraModuleName));
 		}
 		
-		for (String moduleName : nameEntries) {
-			if(moduleName.startsWith(fqNamePrefix)) {
-				matchedModules.add(moduleName);
+		for (ModuleFullName moduleName : nameEntries) {
+			String moduleNameString = moduleName.getFullNameAsString();
+			if(moduleNameString.startsWith(fqNamePrefix)) {
+				matchedModules.add(moduleNameString);
 			}
 		}
 		return matchedModules;
@@ -94,7 +85,7 @@ public final class TestsSimpleModuleResolver extends EmptySemanticResolution {
 		if(extraModuleName != null && fullName.equals(extraModuleName)) {
 			return extraModuleResult.module;
 		}
-		DeeParserResult moduleEntry = modules.get(fullName);
+		DeeParserResult moduleEntry = modules.get(ModuleFullName.fromString(fullName));
 		return moduleEntry == null ? null : moduleEntry.module;
 	}
 	
