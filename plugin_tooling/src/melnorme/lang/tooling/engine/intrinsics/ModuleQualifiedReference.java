@@ -12,11 +12,12 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.AbstractElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.resolver.DefUnitSearch;
@@ -35,9 +36,14 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 		this.elementName = elementName;
 	}
 	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.appendStrings(moduleFullName, ".", elementName);
+	}
+	
 	/* -----------------  ----------------- */
 	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics() {
+	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {

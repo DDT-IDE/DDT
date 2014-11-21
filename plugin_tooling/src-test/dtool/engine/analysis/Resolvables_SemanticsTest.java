@@ -38,10 +38,14 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	protected static ResolvableResult testResolveElement(PickedElement<? extends NamedReference> refElement) {
 		String expectedName = refElement.element.getCoreReferenceName();
+		if(areEqual(expectedName, "not_found")) {
+			expectedName = "<not_found>";
+		}
 		return testResolveElement(refElement, expectedName);
 	}
 	
-	protected static ResolvableResult testResolveElement(PickedElement<? extends IResolvable> refElement, String expectedName) {
+	protected static ResolvableResult testResolveElement(PickedElement<? extends IResolvable> refElement, 
+			String expectedName) {
 		IResolvable ref = refElement.element;
 		ISemanticContext context = refElement.context;
 		
@@ -65,7 +69,9 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		testResolveElement(parseTestElement("class target { }; target bar;", "target bar", RefIdentifier.class));
 		
-//		testResolveElement(parseTestElement("not_found foo;", "not_found", RefIdentifier.class));
+		testResolveElement(parseTestElement("not_found foo;", "not_found", RefIdentifier.class));
+		
+		
 		
 		testResolveElement(parseTestElement("import target;", "target", RefModule.class));
 		

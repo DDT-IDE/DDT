@@ -33,7 +33,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		assertTrue(this instanceof Reference || this instanceof Expression);
 	}
 	
-	protected final IResolvableSemantics defaultResolvableSemantics = new ResolvableSemantics() {
+	protected final IResolvableSemantics defaultResolvableSemantics = new ResolvableSemantics(this) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
@@ -52,8 +52,8 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return getSemantics().resolveTypeOfUnderlyingValue(mr);
 	}
 	
-	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
-		return getSemantics().findTargetDefElement(moduleResolver);
+	public final INamedElement findTargetDefElement(ISemanticContext context) {
+		return getSemantics().resolveTargetElement(context).result;
 	}
 	
 	public final ResolvableResult resolveTargetElement(ISemanticContext sr) {

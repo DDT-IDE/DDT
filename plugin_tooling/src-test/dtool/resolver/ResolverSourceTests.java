@@ -16,7 +16,7 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 
-import melnorme.lang.tooling.bundles.MockSemanticResolution;
+import melnorme.lang.tooling.bundles.EmptySemanticResolution;
 import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.CompletionSearchResult;
@@ -41,7 +41,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		parseResult = DeeParser.parseSource(testCase.source, moduleName);
 		
 		if(projectFolderName == null || projectFolderName.isEmpty()) {
-			mr = new MockSemanticResolution();
+			mr = new EmptySemanticResolution();
 			return;
 		}
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);

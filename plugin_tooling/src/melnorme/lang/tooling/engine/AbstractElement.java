@@ -12,9 +12,12 @@ package melnorme.lang.tooling.engine;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.AbstractElement2;
 import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 
-public abstract class AbstractElement implements ISemanticElement {
+//TODO merge this and AbstractElement2
+public abstract class AbstractElement extends AbstractElement2 implements ISemanticElement {
 	
 	public AbstractElement() {
 	}
@@ -27,6 +30,11 @@ public abstract class AbstractElement implements ISemanticElement {
 	@Override
 	public Path getModulePath() {
 		return null; /*FIXME: BUG here*/
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		/* FIXME: TODO*/
 	}
 	
 }

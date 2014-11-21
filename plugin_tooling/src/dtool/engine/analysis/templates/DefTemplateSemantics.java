@@ -11,8 +11,8 @@
 package dtool.engine.analysis.templates;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.resolver.CommonDefUnitSearch;

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import melnorme.lang.tooling.bundles.MockSemanticResolution;
+import melnorme.lang.tooling.bundles.EmptySemanticResolution;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
@@ -17,7 +17,7 @@ import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.tests.CommonDToolTest;
 
-public final class TestsSimpleModuleResolver extends MockSemanticResolution {
+public final class TestsSimpleModuleResolver extends EmptySemanticResolution {
 	
 	protected File projectFolder;
 	protected Map<String, DeeParserResult> modules = new HashMap<>();

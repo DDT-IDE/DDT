@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -165,7 +167,8 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
 		ISemanticContext mr = DToolClient.getDefault().getResolvedModule(filePath).getSemanticContext();
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
-		assertTrue(defVar.type.findTargetDefElement(mr) == null);
+		INamedElement target = defVar.type.findTargetDefElement(mr);
+		assertTrue(target == null || target instanceof NotFoundErrorElement);
 	}
 	
 }

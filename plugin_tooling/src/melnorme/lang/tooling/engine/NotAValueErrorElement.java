@@ -8,13 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine.resolver;
+package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.engine.AbstractElement;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;

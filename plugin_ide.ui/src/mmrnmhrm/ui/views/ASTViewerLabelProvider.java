@@ -38,7 +38,11 @@ public class ASTViewerLabelProvider extends LabelProvider implements IColorProvi
 
 	@Override
 	public String getText(Object elem) {
-		return ((IASTNode) elem).toStringAsNode(true);
+		ASTNode astNode = (ASTNode) elem;
+		
+		String str = astNode.toStringClassName();
+		str += " ["+ astNode.getStartPos() +"+"+ astNode.getLength() +"]";
+		return str;
 	}
 	
 	@Override

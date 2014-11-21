@@ -13,7 +13,7 @@ package melnorme.lang.tooling.ast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
-public class SourceElement implements ISourceElement {
+public abstract class SourceElement extends AbstractElement2 implements ISourceElement {
 	
 	public SourceElement() {
 		super();

@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
-import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -188,51 +187,16 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/* =============== STRING FUNCTIONS =============== */
 	
-	/** Gets the node's classname striped of package qualifier,  plus optional range info. */
-	@Override
-	public final String toStringAsNode(boolean printRangeInfo) {
-		String str = toStringClassName();
-		
-		if(printRangeInfo) {
-			str += " ["+ getStartPos() +"+"+ getLength() +"]";
-		}
-		return str;
-	}
-	
-	/** Gets the node's classname striped of package qualifier. */
-	public final String toStringClassName() {
-		String str = this.getClass().getName();
-		int lastIx = str.lastIndexOf('.');
-		return str.substring(lastIx+1);
-	}
-	
 	@Override
 	public final String toString() {
-		StringBuilder string = new StringBuilder();
-		string.append(toStringClassName());
-		string.append(isParsedStatus() ? "#" : ":" + getData());
+		StringBuilder sb = new StringBuilder();
+		sb.append(toStringClassName());
+		sb.append(isParsedStatus() ? "#" : ":" + getData());
 		
-		string.append(toStringAsCode());
-		string.append("\n");
-		return string.toString(); 
+		sb.append(toStringAsCode());
+		sb.append("\n");
+		return sb.toString(); 
 	}
-	
-	/** Returns a source representation of this node. 
-	 * If node parsed without errors then this representation should be equal 
-	 * to the original parsed source (disregarding sub-channel tokens).
-	 * Otherwise, if there were errors, this method should still try to print something as close as possible
-	 * to the original parsed source: 
-	 * All tokens that were consumed should be printed.
-	 * Expected tokens that were *not* consumed should preferably be printed as well, but it is not strictly required. 
-	 */
-	public final String toStringAsCode() {
-		ASTCodePrinter cp = new ASTCodePrinter();
-		toStringAsCode(cp);
-		return cp.toString();
-	}
-	
-	/** @see #toStringAsCode() */
-	public abstract void toStringAsCode(ASTCodePrinter cp);
 	
 	/* =============== Parenting utils =============== */
 	

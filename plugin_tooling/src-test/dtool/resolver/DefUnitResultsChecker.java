@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
@@ -65,6 +66,8 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			} else if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
 				iterator.remove();
 			} else if(ignoreIntrinsics && defElement.isLanguageIntrinsic()) {
+				iterator.remove();
+			} else if(defElement instanceof NotFoundErrorElement) {
 				iterator.remove();
 			}
 		}

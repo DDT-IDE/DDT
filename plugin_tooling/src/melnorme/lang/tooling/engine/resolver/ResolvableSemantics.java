@@ -15,30 +15,37 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> 
 	implements IResolvableSemantics 
 {
 	
+	protected final IResolvable resolvable;
+	
+	public ResolvableSemantics(IResolvable resolvable) {
+		this.resolvable = resolvable;
+	}
+	
 	@Override
 	protected ResolvableResult createResolution(ISemanticContext context) {
-		 /*FIXME: BUG here null*/
-		return new ResolvableResult(findTargetDefElement(context));
+		INamedElement result = null;
+		Collection<INamedElement> namedElems = findTargetDefElements(context, true);
+		if(namedElems != null && !namedElems.isEmpty()) {
+			result = namedElems.iterator().next();
+		}
+		
+		if(result == null) {
+			result = new NotFoundErrorElement(resolvable);
+		}
+		
+		return new ResolvableResult(result);
 	}
 	
 	@Override
 	public final ResolvableResult resolveTargetElement(ISemanticContext context) {
 		return getElementResolution(context);
-	}
-	
-	// TODO: deprecate this method in favor of resolveTargetElement
-	@Override
-	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
-		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
-		if(namedElems == null || namedElems.isEmpty())
-			return null;
-		return namedElems.iterator().next();
 	}
 	
 	@Override

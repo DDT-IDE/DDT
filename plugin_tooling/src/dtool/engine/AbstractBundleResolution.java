@@ -26,14 +26,11 @@ import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import melnorme.lang.tooling.engine.IElementSemantics;
-import melnorme.lang.tooling.engine.ResolutionEntry;
-import melnorme.lang.tooling.util.EntryMap;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-public abstract class AbstractBundleResolution implements ISemanticContext {
+public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	protected final SemanticManager manager;
 	protected final BundleModules bundleModules;
@@ -169,23 +166,6 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 	
 	
 	/* ----------------- NodeSemantics ----------------- */
-	
-	protected final ResolutionsMap resolutionsMap = new ResolutionsMap();
-	
-	public static class ResolutionsMap extends EntryMap<IElementSemantics, ResolutionEntry<?>> {
-		
-		@Override
-		protected ResolutionEntry<?> createEntry(IElementSemantics key) {
-			return new ResolutionEntry<>();
-		}
-		
-	}
-	
-	@Override
-	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
-		/* FIXME: ensure elementSemantics belongs to this context */
-		return resolutionsMap.getEntry(elementSemantics);
-	}
 	
 	// /* FIXME: TODO test this method */
 	@Override

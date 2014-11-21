@@ -31,7 +31,7 @@ import dtool.ddoc.TextUI;
 public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	// helper method
-	protected static Ddoc parseDDoc(String ddocSource) {
+	public static Ddoc parseDDoc(String ddocSource) {
 		return new DdocParser("/**" + ddocSource + "*/").parse();
 	}
 	

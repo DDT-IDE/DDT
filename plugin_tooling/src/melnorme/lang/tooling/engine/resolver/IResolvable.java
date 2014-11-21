@@ -20,4 +20,6 @@ public interface IResolvable extends ISemanticElement {
 	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	
+	String toStringAsCode();
+	
 }

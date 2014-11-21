@@ -29,6 +29,7 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	protected final RefTemplateInstance refTemplateInstance;
 	
 	public RefTemplateInstanceSemantics(RefTemplateInstance refTemplateInstance) {
+		super(refTemplateInstance);
 		this.refTemplateInstance = refTemplateInstance;
 	}
 	

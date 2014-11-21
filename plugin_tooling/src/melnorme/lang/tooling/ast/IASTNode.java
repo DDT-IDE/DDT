@@ -19,8 +19,6 @@ import melnorme.utilbox.tree.IVisitable;
  */
 public interface IASTNode extends ISourceElement, IElement, IVisitable<IASTVisitor>, ISemanticElement {
 	
-	String toStringAsNode(boolean printRangeInfo);
-	
 	@Override
 	public IASTNode[] getChildren(); // Redefined to refine the type of children
 	

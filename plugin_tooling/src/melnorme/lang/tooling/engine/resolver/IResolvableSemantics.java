@@ -18,25 +18,11 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface IResolvableSemantics extends IElementSemantics {
 	
-	INamedElement findTargetDefElement(ISemanticContext moduleResolver);
-	
+	@Deprecated
 	Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly);
 	
 	ResolvableResult resolveTargetElement(ISemanticContext sr);
 	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	
-	/* ----------------- ----------------- */
-	
-	public static class NullResolvableSemantics extends ResolvableSemantics {
-		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
-			return null;
-		}
-		
-	}
-	
-	public static final NullResolvableSemantics NULL_RESOLVABLE_SEMANTICS = new NullResolvableSemantics();
-
 }
