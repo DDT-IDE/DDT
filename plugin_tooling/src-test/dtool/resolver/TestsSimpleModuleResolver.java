@@ -10,83 +10,76 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.Module;
+import dtool.engine.AbstractSemanticContext;
 import dtool.engine.BundleModules;
+import dtool.engine.ResolvedModule;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParser;
-import dtool.parser.DeeParserResult;
+import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;
 
-public final class TestsSimpleModuleResolver extends EmptySemanticResolution {
+public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	
-	protected File projectFolder;
-	protected Map<ModuleFullName, DeeParserResult> modules = new HashMap<>();
-	protected String extraModuleName;
-	protected DeeParserResult extraModuleResult;
+	protected Map<ModuleFullName, ResolvedModule> parsedModules = new HashMap<>();
+	
+	protected ModuleFullName extraModuleName;
+	protected ParsedModule extraModuleResult;
 	
 	public TestsSimpleModuleResolver(File projectFolder) {
-		this.projectFolder = projectFolder;
+		super(createBundles(projectFolder.toPath()));
 		
-		BundleModules bundleModules = new BundleModulesVisitor(new ArrayList2<>(projectFolder.toPath())) {
+		
+		for (Entry<ModuleFullName, Path> entry : bundleModules.getModules().entrySet()) {
+			ModuleFullName moduleFullName = entry.getKey();
+			
+			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());
+			ParsedModule parsedModule = DeeParser.parseSource(source, moduleFullName.getFullNameAsString());
+			
+			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
+			parsedModules.put(entry.getKey(), resolvedModule);
+		}
+	}
+	
+	protected static BundleModules createBundles(Path sourceFolder) {
+		BundleModules bundleModules = new BundleModulesVisitor(new ArrayList2<>(sourceFolder)) {
 			@Override
 			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
 				throw assertFail();
 			}
 		}.toBundleModules();
-		
-		for (Entry<ModuleFullName, Path> entry : bundleModules.getModules().entrySet()) {
-			ModuleFullName moduleName = entry.getKey();
-			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());
-			DeeParserResult parseResult = DeeParser.parseSource(source, moduleName.getFullNameAsString());
-			
-			modules.put(moduleName, parseResult);
-		}
+		return bundleModules;
 	}
 	
-	public void setExtraModule(String extraModuleName, DeeParserResult extraModuleResult) {
-		this.extraModuleName = extraModuleName;
+	public void setExtraModule(String extraModuleName, ParsedModule extraModuleResult) {
+		this.extraModuleName = ModuleFullName.fromString(extraModuleName);
 		this.extraModuleResult = extraModuleResult;
 	}
 	
 	@Override
-	public Set<String> findModules_do(String fqNamePrefix) {
-		HashSet<String> matchedModules = new HashSet<>();
-		Set<ModuleFullName> nameEntries = new HashSet<>(modules.keySet());
-		if(extraModuleName != null) {
-			nameEntries.add(ModuleFullName.fromString(extraModuleName));
+	protected void findBundleModules(String fullNamePrefix, HashSet<String> matchedModules) {
+		if(extraModuleName != null && extraModuleName.getFullNameAsString().startsWith(fullNamePrefix)) {
+			matchedModules.add(extraModuleName.getFullNameAsString());
 		}
 		
-		for (ModuleFullName moduleName : nameEntries) {
-			String moduleNameString = moduleName.getFullNameAsString();
-			if(moduleNameString.startsWith(fqNamePrefix)) {
-				matchedModules.add(moduleNameString);
-			}
-		}
-		return matchedModules;
+		super.findBundleModules(fullNamePrefix, matchedModules);
 	}
 	
 	@Override
-	public Module findModule_do(String[] packages, String module) {
-		String fullName = StringUtil.collToString(packages, ".");
-		if(packages.length > 0) {
-			fullName += ".";
+	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
+		if(extraModuleName != null && extraModuleName.equals(moduleFullName)) {
+			return new ResolvedModule(extraModuleResult, this);
 		}
-		fullName += module;
-		return findModule(fullName);
+		
+		return parsedModules.get(moduleFullName);
 	}
 	
-	public Module findModule(String fullName) {
-		if(extraModuleName != null && fullName.equals(extraModuleName)) {
-			return extraModuleResult.module;
-		}
-		DeeParserResult moduleEntry = modules.get(ModuleFullName.fromString(fullName));
-		return moduleEntry == null ? null : moduleEntry.module;
+	@Override
+	public ResolvedModule findResolvedModule(Path path) throws ModuleSourceException {
+		throw assertFail(); // Not used.
 	}
 	
 }

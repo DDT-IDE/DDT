@@ -11,7 +11,6 @@
 package dtool.engine;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 import java.util.List;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
@@ -56,11 +55,6 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	protected void findModules(String fullNamePrefix, HashSet<String> matchedModules) {
-		findBundleModules(fullNamePrefix, matchedModules);
-	}
 	
 	@Override
 	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {

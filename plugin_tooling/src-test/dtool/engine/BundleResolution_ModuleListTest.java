@@ -206,40 +206,40 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		sm = ___initSemanticManager();
 		sm.getUpdatedResolution(COMPLEX_LIB);
 		
-		ResolvedModule resolvedModule = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
-		assertTrue(resolvedModule.bundleRes == sm.getStoredResolution(BASIC_LIB));
+		ResolvedModule rm = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
+		assertTrue(rm.semanticContext == sm.getStoredResolution(BASIC_LIB));
 		
 		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
-		assertTrue(resolvedModule == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
+		assertTrue(rm == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
 		assertTrue(complexLibSR.getCompilerPath().equals(DEFAULT_DMD_INSTALL_EXE_PATH));
 		
 		
 		// Test getResolvedModule for module that is not in bundle import folders.
 		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d");
-		resolvedModule = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
-		assertTrue(resolvedModule.bundleRes != sm.getStoredResolution(BASIC_LIB));
-		assertEqualSet(resolvedModule.bundleRes.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
-		assertEqualSet(resolvedModule.bundleRes.findModules("basic_lib"), hashSet()); // Test not find basic lib files
-		assertEqualSet(resolvedModule.bundleRes.findModules("not"), hashSet("not_source_foo")); // Test find self
+		rm = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
+		assertTrue(rm.semanticContext != sm.getStoredResolution(BASIC_LIB));
+		assertEqualSet(rm.semanticContext.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
+		assertEqualSet(rm.semanticContext.findModules("o"), hashSet("object"));
+		assertEqualSet(rm.semanticContext.findModules("basic_lib"), hashSet()); // Test not find basic lib files
+		assertEqualSet(rm.semanticContext.findModules("not"), hashSet("not_source_foo")); // Test find self
 		
 		
 		// Test getResolvedModule for module that is not in a bundle at all.
-		resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
-		assertEqualSet(resolvedModule.bundleRes.findModules("not"), hashSet("not_a_bundle_foo"));
-		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		rm = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
+		assertEqualSet(rm.semanticContext.findModules("o"), hashSet("object"));
+		assertEqualSet(rm.semanticContext.findModules("not"), hashSet("not_a_bundle_foo"));
+		testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 		
 		
 		// Test getResolvedModule for module in StandardLibrary
-		resolvedModule = getUpdatedResolvedModule(DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet("object"));
-		assertTrue(resolvedModule.bundleRes instanceof StandardLibraryResolution);
+		rm = getUpdatedResolvedModule(DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		assertEqualSet(rm.semanticContext.findModules("o"), hashSet("object"));
+		assertTrue(rm.semanticContext instanceof StandardLibraryResolution);
 		
 		
 		// Test getResolvedModule for missing file - must throw
 		try {
-			resolvedModule = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("_does_not_exist.d"));
+			rm = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("_does_not_exist.d"));
 			assertFail();
 		} catch (ExecutionException e) {
 		}
@@ -248,11 +248,11 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		// Test getResolvedModule for a relative path.
 		Path specialPath = MiscUtil.createValidPath(("###special/relative_bundle.d"));
 		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
-		resolvedModule = getUpdatedResolvedModule(specialPath);
-		assertEqualSet(resolvedModule.bundleRes.findModules("o"), hashSet(
+		rm = getUpdatedResolvedModule(specialPath);
+		assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
 			"object"
 		));
-		testFindResolvedModule(resolvedModule.bundleRes, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 	}
 	
 }

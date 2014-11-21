@@ -15,65 +15,33 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
-import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	protected final SemanticManager manager;
-	protected final BundleModules bundleModules;
 	
 	public AbstractBundleResolution(SemanticManager manager, List<Path> importFolders) {
 		this(manager, manager.createBundleModules(importFolders));
 	}
 	
 	public AbstractBundleResolution(SemanticManager manager, BundleModules bundleModules) {
+		super(bundleModules);
 		this.manager = manager;
-		this.bundleModules = bundleModules;
 	}
 	
-	
-	public Set<Path> getBundleModuleFiles() {
-		return bundleModules.moduleFiles;
-	}
-	
-	public boolean bundleContainsModule(Path path) {
-		return bundleModules.moduleFiles.contains(path);
-	}
-	
-	/** @return the absolute path of a module contained in this bundle resolution, or null if not found. */
-	protected Path getBundleModulePath(ModuleFullName moduleFullName) {
-		return bundleModules.getModuleAbsolutePath(moduleFullName);
-	}
 	
 	public abstract StandardLibraryResolution getStdLibResolution();
-	
-	/* ----------------- ----------------- */
-	
-	@Override
-	public HashSet<String> findModules(String fullNamePrefix) {
-		HashSet<String> matchedModules = new HashSet<String>();
-		findModules(fullNamePrefix, matchedModules);
-		return matchedModules;
-	}
-	
-	protected abstract void findModules(String fullNamePrefix, HashSet<String> matchedModules);
-	
-	protected void findBundleModules(String fullNamePrefix, HashSet<String> matchedModules) {
-		bundleModules.findModules(fullNamePrefix, matchedModules);
-	}
 	
 	/* -----------------  ----------------- */
 	
@@ -144,26 +112,6 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		}
 		return resolvedModule;
 	}
-	
-	@Override
-	public Module findModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
-		return resolvedModule == null ? null : resolvedModule.getModuleNode();
-	}
-	
-	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ModuleSourceException {
-		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
-		return resolvedModule == null ? null : resolvedModule.getModuleNode();
-	}
-	
-	/** @return a resolved module from for the module with the given name, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
-	
-	/** @return a resolved module from for the module with the given path, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
-	
 	
 	/* ----------------- NodeSemantics ----------------- */
 	

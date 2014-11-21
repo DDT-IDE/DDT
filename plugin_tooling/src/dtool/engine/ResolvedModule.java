@@ -19,11 +19,11 @@ import dtool.parser.DeeParserResult.ParsedModule;
 public class ResolvedModule {
 	
 	protected final ParsedModule parsedModule;
-	protected final AbstractBundleResolution bundleRes;
+	protected final AbstractSemanticContext semanticContext;
 	
-	public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution bundleRes) {
+	public ResolvedModule(ParsedModule parsedModule, AbstractSemanticContext semanticContext) {
 		this.parsedModule = parsedModule;
-		this.bundleRes = bundleRes;
+		this.semanticContext = semanticContext;
 	}
 	
 	public ParsedModule getParsedModule() {
@@ -39,7 +39,7 @@ public class ResolvedModule {
 	}
 	
 	public ISemanticContext getSemanticContext() {
-		return bundleRes;
+		return semanticContext;
 	}
 	
 }
