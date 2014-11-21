@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 
 
@@ -33,6 +34,7 @@ public abstract class ElementSemantics<ER extends ElementResolution<?>> implemen
 	
 	@SuppressWarnings("unchecked")
 	protected ResolutionEntry<ER> findSemanticContainer(ISemanticContext context) {
+		assertNotNull(context);
 		return (ResolutionEntry<ER>) context.findResolutionEntryForContainedElement(this);
 	}
 	

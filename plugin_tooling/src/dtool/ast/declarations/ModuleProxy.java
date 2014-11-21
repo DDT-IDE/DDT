@@ -14,28 +14,35 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.Module;
 import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
+/**
+ * This class is an alias to an actual module element.
+ * Used for performance reasons, to be able to use the proxy in some situations (Content Assist for example)
+ * without forcing the referred module to be parsed.
+ */
 public class ModuleProxy extends AbstractNamedElement {
 	
-	protected final ISemanticContext moduleResolver;
+	protected final ISemanticContext context;
 	protected final String fqModuleName;
 	
 	public ModuleProxy(String fqModuleName, ISemanticContext moduleResolver) {
 		super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fqModuleName = fqModuleName;
-		this.moduleResolver = moduleResolver;
+		this.context = moduleResolver;
 	}
 	
 	@Override
@@ -64,10 +71,10 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public DefUnit resolveUnderlyingNode() {
-		INamedElement module = ReferenceResolver.findModuleUnchecked(moduleResolver, getModuleFullyQualifiedName());
-		if(module instanceof DefUnit) {
-			return (DefUnit) module;
+	public Module resolveUnderlyingNode() {
+		INamedElement module = ReferenceResolver.findModuleUnchecked(context, getModuleFullyQualifiedName());
+		if(module instanceof Module) {
+			return (Module) module;
 		}
 		return null; 
 	}
@@ -91,14 +98,20 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
 		
 		@Override
-		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
-			return null; /*FIXME: BUG here TODO*/
+		protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {
+			assertTrue(context == ModuleProxy.this.context);
+			return super.findSemanticContainer(context);
+		}
+		
+		@Override
+		protected ConcreteElementResult createResolution(ISemanticContext context) {
+			return new ConcreteElementResult(resolveUnderlyingNode());
 		}
 		
 		@Override
 		protected IResolvable getAliasTarget() {
 			throw assertUnreachable();
-		};
+		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {

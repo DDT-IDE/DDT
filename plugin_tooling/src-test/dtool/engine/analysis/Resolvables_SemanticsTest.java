@@ -11,18 +11,21 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
+import dtool.ast.references.NamedReference;
+import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefModule;
 import dtool.ast.references.RefPrimitive;
 import dtool.dub.BundlePath;
-import dtool.engine.ResolvedModule;
-import dtool.parser.DeeTokens;
-import dtool.parser.common.Token;
 
 public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	
@@ -33,26 +36,38 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		return PickedElement.create(ref, context);
 	}
 	
-	protected void testResolveElement(PickedElement<IResolvable> refElement) {
+	protected static ResolvableResult testResolveElement(PickedElement<? extends NamedReference> refElement) {
+		String expectedName = refElement.element.getCoreReferenceName();
+		return testResolveElement(refElement, expectedName);
+	}
+	
+	protected static ResolvableResult testResolveElement(PickedElement<? extends IResolvable> refElement, String expectedName) {
 		IResolvable ref = refElement.element;
 		ISemanticContext context = refElement.context;
 		
 		// Test caching
 		IResolvableSemantics semantics = ref.getSemantics();
+		ResolvableResult resolveTargetElement = semantics.resolveTargetElement(context);
 		assertTrue(semantics == ref.getSemantics());
-		assertTrue(semantics.resolveTargetElement(context) == semantics.resolveTargetElement(context));
-//		assertTrue(ref.resolveTargetElement(br) == ref.resolveTargetElement(br));
+		assertTrue(resolveTargetElement == semantics.resolveTargetElement(context));
+		
+		INamedElement result = resolveTargetElement.result;
+		assertTrue(result != null && areEqual(result.getName(), expectedName));
+		
+		return resolveTargetElement;
 	}
 	
 	@Test
 	public void testResolveRef() throws Exception { testResolveRef$(); }
 	public void testResolveRef$() throws Exception {
 		
-		ResolvedModule moduleRes = parseModule("int ref_int;");
+		testResolveElement(parseTestElement("int ref_int;", "int", RefPrimitive.class));
 		
-		testResolveElement(pickRef(findNode(moduleRes, 0, RefPrimitive.class), moduleRes.getSemanticContext()));
-		ISemanticContext moduleContext = moduleRes.getSemanticContext();
-		testResolveElement(pickRef(new RefPrimitive(new Token(DeeTokens.KW_INT, "int", 0)), moduleContext));
+		testResolveElement(parseTestElement("class target { }; target bar;", "target bar", RefIdentifier.class));
+		
+//		testResolveElement(parseTestElement("not_found foo;", "not_found", RefIdentifier.class));
+		
+		testResolveElement(parseTestElement("import target;", "target", RefModule.class));
 		
 		/* FIXME: test rest*/
 		

@@ -11,14 +11,13 @@ import melnorme.lang.tooling.symbols.INamedElement;
  */
 public interface IResolvable extends ISemanticElement {
 	
+	@Override
+	public IResolvableSemantics getSemantics();
+	
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
 	Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly);
 	
-	
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
-	
-	@Override
-	public IResolvableSemantics getSemantics();
 	
 }

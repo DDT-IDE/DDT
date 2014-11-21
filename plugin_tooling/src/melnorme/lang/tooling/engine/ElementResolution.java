@@ -17,7 +17,7 @@ public class ElementResolution<E extends ISemanticElement> {
 	public final E result;
 	
 	public ElementResolution(E result) {
-		this.result = result;
+		this.result = result; // TODO make not null?
 	}
 	
 }

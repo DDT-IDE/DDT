@@ -23,8 +23,6 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
-import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
-import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -36,6 +34,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.analysis.templates.AliasElement;
+import dtool.engine.analysis.templates.InstantiatedDefUnit;
 import dtool.engine.analysis.templates.VarElement;
 
 public class NamedElements_Test extends CommonNodeSemanticsTest {
@@ -68,6 +67,14 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		return new PickedElement<>(namedElement, context);
 	}
 	
+	public static PickedElement<INamedElement> syntheticElement(InstantiatedDefUnit namedElement, 
+		ResolvedModule module) {
+		namedElement.setParent(module.getModuleNode());
+		namedElement.setParsedStatus();
+		assertTrue(namedElement.isParsedStatus());
+		return new PickedElement<>((INamedElement) namedElement, module.getSemanticContext());
+	}
+	
 	/* ----------------- Sample elements ----------------- */
 	
 	/** Helper to visit a sample of test elements. */
@@ -86,7 +93,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		}
 
 		
-		public void visitElements() {
+		public void visitElements() throws Exception {
 			
 			StandardLibraryResolution stdLib = defaultSemMgr.getUpdatedStdLibResolution(null);
 			
@@ -114,32 +121,25 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitConcrete(parseDefUnit(func(" try {} catch(Exception xxx) {} ")));
 			visitConcrete(parseDefUnit(func(" foreach(a , xxx ;  [1, 2 3]);")));
 
-			/*FIXME: BUG here TODO */
-//			intrinsicProperty, intrinsicTypeDefUnit,
-			
 			visitConcrete(pickedElement(D2_063_intrinsics.bool_type, stdLib));
 			visitConcrete(pickedElement(D2_063_intrinsics.object_type, stdLib));
 			
 			visitConcrete(pickedElement(new IntrinsicProperty("max", D2_063_intrinsics.int_type, null), stdLib));
 			visitConcrete(pickedElement(new IntrinsicProperty2("max", new RefIdentifier("blah"), null), stdLib));
 			
-//			visitConcrete(pickedElement(new AbstractIntrinsicProperty("blah", null) {
-//				
-//				@Override
-//				protected INamedElement resolveType(ISemanticContext mr) {
-//					throw assertUnreachable();
-//				}
-//			}, ));
-			
-			IntrinsicTypeDefUnit intrinsicTypeDefUnit = new IntrinsicTypeDefUnit("blah", null) {
-				@Override
-				public void createMembers(IntrinsicDefUnit... members) {
-				}
-			};
-			
 			
 			visitConcrete(parseDefUnit("template xxx() { }"));
 			visitConcrete(parseDefUnit("template blah(int xxx) { }"));
+			
+			visitConcrete(parseDefUnit("mixin blah xxx;"));
+			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
+			
+			// test synthetic elements:
+			
+			VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
+//			visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
+			
+//			varInstance,
 			/*FIXME: BUG here TODO */
 //			templateInstance,
 			
@@ -149,12 +149,6 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 //			)
 //		);
 			
-			VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
-			
-//			varInstance,
-			
-			visitConcrete(parseDefUnit("mixin blah xxx;"));
-			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
 				
 			
 			/* ----------------- aliases ----------------- */
@@ -165,8 +159,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitAliasElement(parseDefUnit("int target;  alias target xxx;"));
 			visitAliasElement(parseDefUnit("int target;  alias target blah, xxx;"));
 			
-			/*FIXME: BUG here TODO*/
-//				getDefUnit("import xxx = target;"),
+			visitAliasElement(parseDefUnit("import xxx = target;"));
 			visitAliasElement(parseDefUnit("import blah : xxx = target;"));
 			
 			/*FIXME: BUG here TODO*/

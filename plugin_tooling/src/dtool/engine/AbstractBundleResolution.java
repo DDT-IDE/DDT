@@ -159,9 +159,12 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
 	
-	/** @return a resolved module from this bundle's full import path (including dependencies). */
+	/** @return a resolved module from for the module with the given name, from the modules
+	 * available in this context (including dependencies). Can be null. */
 	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
 	
+	/** @return a resolved module from for the module with the given path, from the modules
+	 * available in this context (including dependencies). Can be null. */
 	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
 	
 	
@@ -193,8 +196,14 @@ public abstract class AbstractBundleResolution implements ISemanticContext {
 		
 		try {
 			Path modulePath = element.getModulePath();
-			ResolvedModule findResolvedModule = findResolvedModule(modulePath);
-			return findResolvedModule.getSemanticContext();
+			if(modulePath == null) {
+				return null; // Cannot determine context
+			}
+			ResolvedModule resolvedModule = findResolvedModule(modulePath);
+			if(resolvedModule == null) {
+				return null; // Cannot determine context
+			}
+			return resolvedModule.getSemanticContext();
 		} catch (ModuleSourceException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

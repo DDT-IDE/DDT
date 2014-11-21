@@ -17,9 +17,12 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
+import melnorme.lang.tooling.engine.PickedElement;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
@@ -29,13 +32,21 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	protected static final String DEFAULT_ModuleName = "_tests";
 	
-	public static final BundlePath DEFAULT_SemanticsTest_Bundle = 
-			bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	public static final Path DEFAULT_TestsModule = 
+			DEFAULT_TestsBundle.resolve("source/" + DEFAULT_ModuleName + ".d");
 	
 	protected static ResolvedModule parseModule(String source) throws ExecutionException {
-		Path filepath = DEFAULT_SemanticsTest_Bundle.resolve("source/" + DEFAULT_ModuleName + ".d");
-		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filepath, source);
-		return defaultSemMgr.getUpdatedResolvedModule(filepath);
+		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule, source);
+		return getDefaultTestsModule();
+	}
+	
+	protected static ResolvedModule getDefaultTestsModule() throws ExecutionException {
+		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule);
+	}
+	
+	protected static ISemanticContext getDefaultTestsModuleContext() throws ExecutionException {
+		return getDefaultTestsModule().getSemanticContext();
 	}
 	
 	protected static Module parseSource(String source) {
@@ -59,6 +70,13 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static <T> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
 		ASTNode node = ASTNodeFinder.findElement(moduleRes.getModuleNode(), offset);
 		return NodeUtil.getMatchingParent(node, klass);
+	}
+	
+	protected static <E extends ISemanticElement> PickedElement<E> parseTestElement(String source, 
+		String offsetSource, Class<E> klass) throws ExecutionException {
+		ResolvedModule resolvedModule = parseModule(source);
+		ISemanticContext context = resolvedModule.getSemanticContext();
+		return PickedElement.create(findNode(resolvedModule, source.indexOf(offsetSource), klass), context);
 	}
 	
 	/* ----------------- Helper to test caching ----------------- */

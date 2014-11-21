@@ -21,7 +21,7 @@ import dtool.resolver.CommonDefUnitSearch;
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
-public abstract class DefUnit extends ASTNode implements INamedElement, INamedElementNode {
+public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	public static class ProtoDefSymbol {
 		public final String name;

@@ -26,7 +26,7 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	
 	public VarElement(DefSymbol defname, Resolvable type) {
 		super(defname);
-		this.type = type;
+		this.type = type; /*FIXME: BUG here NPE/parenting*/
 	}
 	
 	@Override
