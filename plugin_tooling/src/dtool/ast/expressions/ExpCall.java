@@ -10,6 +10,8 @@ import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
@@ -42,38 +44,55 @@ public class ExpCall extends Expression {
 		cp.appendNodeList("(", args, ", " , ")"); 
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		INamedElement calleeElem = callee.findTargetDefElement(moduleResolver);
-		if(calleeElem == null)
-			return null;		
-		if (calleeElem instanceof DefinitionFunction) {
-			DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-			INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
-			return Collections.singleton(calleeResult);
-		}
+	public IResolvableSemantics getSemantics() {
+		return semantics;
+	}
+	
+	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
 		
-		Module moduleNode = null;
-		if(calleeElem instanceof ASTNode) {
-			ASTNode astNode = (ASTNode) calleeElem;
-			moduleNode = astNode.getModuleNode2();
-		}
-		if(moduleNode == null) {
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			INamedElement calleeElem = callee.findTargetDefElement(mr);
+			if(calleeElem == null)
+				return null;
+			
+			if (calleeElem instanceof DefinitionFunction) {
+				DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
+				INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(mr);
+				return Collections.singleton(calleeResult);
+			}
+			
+			Module moduleNode = null;
+			if(calleeElem instanceof ASTNode) {
+				ASTNode astNode = (ASTNode) calleeElem;
+				moduleNode = astNode.getModuleNode2();
+			}
+			if(moduleNode == null) {
+				return null;
+			}
+			
+			DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, mr);
+			calleeElem.resolveSearchInMembersScope(search);
+			
+			for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
+				INamedElement defOpCall = iter.next();
+				if (defOpCall instanceof DefinitionFunction) {
+					DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
+					INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(mr);
+					return Collections.singleton(targetDefUnit);
+				}
+			}
 			return null;
 		}
 		
-		DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, moduleResolver);
-		calleeElem.resolveSearchInMembersScope(search);
-		
-		for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
-			INamedElement defOpCall = iter.next();
-			if (defOpCall instanceof DefinitionFunction) {
-				DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-				INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(moduleResolver);
-				return Collections.singleton(targetDefUnit);
-			}
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return findTargetDefElements(mr, true); // TODO
 		}
-		return null;
-	}
+		
+	};
 	
 }

@@ -7,6 +7,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.DeeLanguageIntrinsics;
 
@@ -32,9 +34,20 @@ public class ExpLiteralBool extends Expression {
 		cp.append(value ? "true" : "false");
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.bool_type);
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.bool_type);
+		}
+		
+	};
 	
 }

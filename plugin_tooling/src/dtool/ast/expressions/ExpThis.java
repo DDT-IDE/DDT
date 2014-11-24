@@ -8,6 +8,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionClass;
 
@@ -30,15 +32,6 @@ public class ExpThis extends Expression {
 		cp.append("this");
 	}
 	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		DefinitionClass definitionClass = getClassNodeParent(this);
-		if(definitionClass == null) {
-			return null;
-		}
-		return Collections.<INamedElement>singleton(definitionClass);
-	}
-	
 	public static DefinitionClass getClassNodeParent(ASTNode node) {
 		do {
 			node = node.getParent();
@@ -49,5 +42,25 @@ public class ExpThis extends Expression {
 		} while(node != null);
 		return null;
 	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public IResolvableSemantics getSemantics() {
+		return semantics;
+	}
+	
+	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
+			if(definitionClass == null) {
+				return null;
+			}
+			return Collections.<INamedElement>singleton(definitionClass);
+		}
+		
+	};
 	
 }

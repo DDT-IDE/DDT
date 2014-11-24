@@ -6,6 +6,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.parser.common.IToken;
 import dtool.resolver.DeeLanguageIntrinsics;
@@ -38,9 +40,20 @@ public class ExpLiteralString extends Expression {
 		}
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return DeeLanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findFirstOnly);
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return DeeLanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findOneOnly);
+		}
+		
+	};
 	
 }

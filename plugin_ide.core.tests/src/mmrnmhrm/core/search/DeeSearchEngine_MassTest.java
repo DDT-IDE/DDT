@@ -74,24 +74,24 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 			@Override
 			protected void visitNode(ASTNode node, ISourceModule sourceModule) {
 				if(node instanceof Reference) {
-					Reference reference = (Reference) node;
+					Reference ref = (Reference) node;
 					Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
 					if(filePath == null) {
 						return;
 					}
 					
 					ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<INamedElement> targetDefElements = reference.findTargetDefElements(mr, false);
-					if(targetDefElements == null || targetDefElements.isEmpty()) {
+					Collection<INamedElement> resolvedElements = ref.getSemantics().findTargetDefElements(mr, false);
+					if(resolvedElements == null || resolvedElements.isEmpty()) {
 						return;
 					}
 					
-					for (INamedElement defElement : targetDefElements) {
-						INamedElementNode defUnit = defElement.resolveUnderlyingNode();
+					for (INamedElement resolvedElement : resolvedElements) {
+						INamedElementNode defUnit = resolvedElement.resolveUnderlyingNode();
 						if(defUnit == null) {
 							continue;
 						}
-						ModuleFullName moduleFullName = defElement.getModuleFullName();
+						ModuleFullName moduleFullName = resolvedElement.getModuleFullName();
 						if(moduleFullName == null) {
 							continue; // consider this case more
 						}
@@ -104,7 +104,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 							defUnitToReferencesMap.put(key, new HashSet<Reference>());
 						}
 						
-						defUnitToReferencesMap.get(key).add(reference);
+						defUnitToReferencesMap.get(key).add(ref);
 					}
 				}
 			}

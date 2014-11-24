@@ -22,7 +22,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	implements IResolvableSemantics 
 {
 	
-	protected final IResolvable resolvable;
+	private final IResolvable resolvable;
 	
 	public ResolvableSemantics(IResolvable resolvable) {
 		this.resolvable = resolvable;
@@ -81,6 +81,22 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		@Override
 		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
 			return resolveToInvalidValue();
+		}
+		
+	}
+	
+	public abstract static class ExpSemantics extends ResolvableSemantics {
+		
+		public ExpSemantics(IResolvable resolvable) {
+			super(resolvable);
+		}
+		
+		@Override
+		public abstract Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly);
+		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return findTargetDefElements(mr, true); // TODO need to review this
 		}
 		
 	}

@@ -7,6 +7,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.RefIndexing;
 import dtool.ast.references.Reference;
@@ -55,15 +57,26 @@ public class ExpNew extends Expression {
 		cp.appendNodeList("(", args, ", ", ")", " ");
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		// This is not entirely correct for struct-like types, 
-		// in that case a pointer to the the type is actually the type of the new exp.
-		// But current behavior is acceptable for now.
-		
-		// Also, if the type ref is a static array, the return type is supposed to be a dynamic array,
-		// but we don't implement that
-		return findTargetElementsForReference(mr, newtype, findFirstOnly);
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			// This is not entirely correct for struct-like types, 
+			// in that case a pointer to the the type is actually the type of the new exp.
+			// But current behavior is acceptable for now.
+			
+			// Also, if the type ref is a static array, the return type is supposed to be a dynamic array,
+			// but we don't implement that
+			return findTargetElementsForReference(mr, newtype, findOneOnly);
+		}
+		
+	};
 	
 }

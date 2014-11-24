@@ -20,7 +20,6 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
@@ -49,9 +48,8 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return getSemantics().resolveTargetElement(sr);
 	}
 	
-	@Deprecated
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		return getSemantics().findTargetDefElements(mr, findFirstOnly);
 	}
 	

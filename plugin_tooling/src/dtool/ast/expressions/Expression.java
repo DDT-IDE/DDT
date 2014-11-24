@@ -16,7 +16,7 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.IQualifierNode;
 
@@ -29,23 +29,14 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 		return semantics;
 	}
 	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	// TODO: remove this field.
+	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return Expression.this.findTargetDefElements(mr, true); // TODO
-		}
-		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return findTargetDefElements(mr, true); // TODO
+			return Collections.emptySet(); // TODO
 		}
 		
 	};
-	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return Collections.emptySet();
-	}
 	
 }
