@@ -16,6 +16,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.resolver.DeeLanguageIntrinsics;
@@ -39,13 +41,24 @@ public class RefTypePointer extends CommonNativeTypeReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.pointerType);
-	}
-	
-	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(elemType, "*");
 	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public IResolvableSemantics getSemantics() {
+		return semantics;
+	}
+	
+	protected final IResolvableSemantics semantics = new TypeReferenceSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.pointerType);
+		}
+		
+	};
 	
 }

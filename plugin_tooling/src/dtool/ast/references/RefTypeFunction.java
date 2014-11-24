@@ -17,6 +17,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -67,10 +69,21 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		cp.appendTokenList(fnAttributes, " ", true);
 	}
 	
+	/* -----------------  ----------------- */
+
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new TypeReferenceSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
+		}
+		
+	};
 	
 	public static final IntrinsicFunctionType intrinsicFunctionTypeInstance = new IntrinsicFunctionType();
 	
@@ -79,4 +92,5 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 			DeeLanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
 		}
 	}
+	
 }

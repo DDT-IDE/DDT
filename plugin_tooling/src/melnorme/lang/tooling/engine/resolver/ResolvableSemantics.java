@@ -67,4 +67,22 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		return resolvedTypeForValueContext;
 	}
 	
+	
+	protected Collection<INamedElement> resolveToInvalidValue() {
+		return null; // TODO
+	}
+	
+	public abstract static class TypeReferenceSemantics extends ResolvableSemantics {
+		
+		public TypeReferenceSemantics(IResolvable resolvable) {
+			super(resolvable);
+		}
+		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return resolveToInvalidValue();
+		}
+		
+	}
+	
 }

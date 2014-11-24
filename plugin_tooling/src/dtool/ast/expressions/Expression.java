@@ -14,16 +14,34 @@ package dtool.ast.expressions;
 import java.util.Collection;
 import java.util.Collections;
 
-import dtool.ast.references.IQualifierNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.references.IQualifierNode;
 
 public abstract class Expression extends Resolvable implements IQualifierNode, IInitializer {
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		return findTargetDefElements(mr, true); // TODO
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return Expression.this.findTargetDefElements(mr, true); // TODO
+		}
+		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return findTargetDefElements(mr, true); // TODO
+		}
+		
+	};
 	
 	@Override
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {

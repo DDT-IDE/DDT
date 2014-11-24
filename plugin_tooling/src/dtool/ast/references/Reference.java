@@ -10,26 +10,12 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
-import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 
 /**
- * Common class for entity references.
+ * Common class for entity references. (might not be necessary anymore)
  */
 public abstract class Reference extends Resolvable implements IResolvable {
-	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
-		return getSemantics().findTargetDefElements(moduleResolver, findOneOnly);
-	}
-	
-	@Deprecated
-	protected static Collection<INamedElement> resolveToInvalidValue() {
-		return null; 
-	}
 	
 }

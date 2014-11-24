@@ -16,6 +16,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Expression;
 
@@ -49,6 +51,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append("return");
 		}
+		
 	}
 	
 	@Override
@@ -62,14 +65,25 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		cp.append("(", expression, ")");
 	}
 	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findFirstOnly) {
-		return expression.resolveTypeOfUnderlyingValue(moduleResolver);
-	}
+	/* -----------------  ----------------- */
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		return super.resolveToInvalidValue();
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			return expression.resolveTypeOfUnderlyingValue(mr);
+		}
+		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return resolveToInvalidValue();
+		};
+		
+	};
 	
 }

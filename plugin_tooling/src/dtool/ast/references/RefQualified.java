@@ -69,7 +69,7 @@ public class RefQualified extends CommonQualifiedReference {
 	
 	@Override
 	public Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver) {
-		return qualifier.findTargetDefElements(moduleResolver, false);
+		return qualifier.getSemantics().findTargetDefElements(moduleResolver, false);
 	}
 	
 }

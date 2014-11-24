@@ -13,6 +13,8 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.resolver.DefUnitSearch;
 
@@ -33,24 +35,35 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	}
 	
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
-		if(isMissingCoreReference()) {
-			return null;
-		}
-		int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
-		DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode2(), startPos, 
-			findOneOnly, moduleResolver);
-		performRefSearch(search);
-		return search.getMatchedElements();
+	public IResolvableSemantics getSemantics() {
+		return semantics;
 	}
+	
+	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+			if(isMissingCoreReference()) {
+				return null;
+			}
+			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
+			DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode2(), startPos, 
+				findOneOnly, mr);
+			performRefSearch(search);
+			return search.getMatchedElements();
+		}
+		
+	};
 	
 	/** Return wheter this reference can match the given defunit.
 	 * This is a very lightweight method that only compares the defunit's name 
 	 * with the core identifier of this reference.
 	 */
-	public final boolean canMatch(String qualifiedName) {
-		return getCoreReferenceName().equals(qualifiedName);
+	public final boolean canMatch(String simpleName) {
+		return getCoreReferenceName().equals(simpleName);
 	}
 	
 }
