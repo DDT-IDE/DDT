@@ -76,7 +76,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return expression.resolveTypeOfUnderlyingValue(mr);
+			return expression.getSemantics().resolveTypeOfUnderlyingValue(mr);
 		}
 		
 		@Override

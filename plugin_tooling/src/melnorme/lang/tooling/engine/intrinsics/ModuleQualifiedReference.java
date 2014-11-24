@@ -19,7 +19,6 @@ import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.resolver.DefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
@@ -43,6 +42,11 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 	
 	/* -----------------  ----------------- */
 	
+	@Override
+	public IResolvableSemantics getSemantics() {
+		return semantics;
+	}
+	
 	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
 		
 		@Override
@@ -56,26 +60,16 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 			return search.getMatchedElements();
 		}
 		
+		@Override
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+			return ResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
+		}
+		
 	};
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	public final INamedElement findTargetDefElement(ISemanticContext moduleResolver) {
-		Collection<INamedElement> namedElems = findTargetDefElements(moduleResolver, true);
-		return CollectionUtil.getFirstElementOrNull(namedElems);
-	}
-	
-	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
 		return getSemantics().findTargetDefElements(mr, true);
-	}
-	
-	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		return ResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
 	}
 	
 }

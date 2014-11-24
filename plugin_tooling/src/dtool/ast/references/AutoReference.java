@@ -72,7 +72,7 @@ public final class AutoReference extends Reference {
 			IInitializer initializer = getParent_().getDeclaredInitializer();
 			if(initializer instanceof IResolvable) {
 				IResolvable valueNode = (IResolvable) initializer;
-				return valueNode.resolveTypeOfUnderlyingValue(mr);
+				return valueNode.getSemantics().resolveTypeOfUnderlyingValue(mr);
 			}
 			return null;
 		}

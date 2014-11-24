@@ -53,7 +53,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
 		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget != null) {
-			return CollectionUtil.getFirstElementOrNull(aliasTarget.resolveTypeOfUnderlyingValue(mr));
+			return CollectionUtil.getFirstElementOrNull(aliasTarget.getSemantics().resolveTypeOfUnderlyingValue(mr));
 		}
 		return null;
 	}

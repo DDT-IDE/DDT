@@ -29,6 +29,11 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	@Override
+	public final ResolvableResult resolveTargetElement(ISemanticContext context) {
+		return getElementResolution(context);
+	}
+	
+	@Override
 	protected ResolvableResult createResolution(ISemanticContext context) {
 		INamedElement result = null;
 		Collection<INamedElement> namedElems = findTargetDefElements(context, true);
@@ -41,11 +46,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		}
 		
 		return new ResolvableResult(result);
-	}
-	
-	@Override
-	public final ResolvableResult resolveTargetElement(ISemanticContext context) {
-		return getElementResolution(context);
 	}
 	
 	@Override

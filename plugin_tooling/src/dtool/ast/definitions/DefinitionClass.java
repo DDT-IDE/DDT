@@ -147,7 +147,7 @@ public class DefinitionClass extends DefinitionAggregate {
 				}
 			}
 			// TODO test implicit object reference
-			return DeeLanguageIntrinsics.OBJECT_CLASS_REF.findTargetDefElement(mr);
+			return DeeLanguageIntrinsics.OBJECT_CLASS_REF.getSemantics().resolveTargetElement(mr).result;
 		}
 	
 	}

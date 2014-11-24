@@ -17,8 +17,6 @@ public interface IResolvable extends ISemanticElement {
 	 * If no results are found, return null. */
 	Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly);
 	
-	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
-	
 	String toStringAsCode();
 	
 }

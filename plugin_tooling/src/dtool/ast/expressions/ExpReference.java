@@ -56,7 +56,7 @@ public class ExpReference extends Expression {
 		
 		@Override
 		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return ref.resolveTypeOfUnderlyingValue(mr);
+			return ref.getSemantics().resolveTypeOfUnderlyingValue(mr);
 		}
 		
 	};

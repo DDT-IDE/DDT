@@ -36,7 +36,7 @@ public class CommonDefVarSemantics extends VarSemantics {
 		IInitializer initializer = varDef.getDeclaredInitializer();
 		if(initializer instanceof IResolvable) {
 			IResolvable initializerR = (IResolvable) initializer;
-			return getFirstElementOrNull(initializerR.resolveTypeOfUnderlyingValue(mr));
+			return getFirstElementOrNull(initializerR.getSemantics().resolveTypeOfUnderlyingValue(mr));
 		}
 		
 		return null; // TODO: create error element
