@@ -21,13 +21,13 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement, IConcreteNamedElement {
@@ -91,7 +91,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		}
 		
 		@Override
-		public void resolveSearchInScope(CommonDefUnitSearch search) {
+		public void resolveSearchInScope(CommonScopeLookup search) {
 			ReferenceResolver.findInNodeList(search, nodeList, false);
 		}
 		
@@ -137,7 +137,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			if(body != null) {
 				ReferenceResolver.findInNodeList(search, body.nodeList, false);
 			}

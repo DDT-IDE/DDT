@@ -12,9 +12,9 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.utilbox.misc.CollectionUtil;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class InstrinsicsScope implements IScopeProvider {
@@ -30,7 +30,7 @@ public class InstrinsicsScope implements IScopeProvider {
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		ReferenceResolver.findInNamedElementList(search, members);
 	}
 	

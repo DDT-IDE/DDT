@@ -15,10 +15,10 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class TemplateTupleParam extends TemplateParameter implements IConcreteNamedElement {
 	
@@ -57,7 +57,7 @@ public class TemplateTupleParam extends TemplateParameter implements IConcreteNa
 	protected final TypeSemantics semantics = new TypeSemantics(this) {
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			// TODO return intrinsic universal
 			return;
 		}

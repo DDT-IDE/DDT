@@ -13,10 +13,10 @@ package dtool.ast.statements;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class StatementForeach extends Statement implements IScopeNode {
@@ -57,7 +57,7 @@ public class StatementForeach extends Statement implements IScopeNode {
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		ReferenceResolver.findInNodeList(search, varParams, true);
 	}
 	

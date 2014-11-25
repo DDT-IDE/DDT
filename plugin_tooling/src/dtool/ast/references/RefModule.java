@@ -16,12 +16,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
-import dtool.resolver.CommonDefUnitSearch;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.PrefixDefUnitSearch;
 
 /** 
@@ -78,15 +78,15 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public void performRefSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonScopeLookup search) {
 		//TODO review this code
 		if(search instanceof PrefixDefUnitSearch) {
 			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);
 		} else {
 			assertTrue(isMissingCoreReference() == false);
-			DefUnitSearch defUnitSearch = (DefUnitSearch) search;
-			ISemanticContext mr = search.getModuleResolver();
+			ResolutionLookup defUnitSearch = (ResolutionLookup) search;
+			ISemanticContext mr = search.modResolver;
 			ModuleProxy moduleProxy = getModuleProxy(mr);
 			if(moduleProxy.resolveUnderlyingNode() != null) {
 				defUnitSearch.addMatch(moduleProxy);
@@ -102,7 +102,7 @@ public class RefModule extends NamedReference {
 		String prefix = search.searchOptions.searchPrefix;
 		
 		for (String fqName : search.findModulesWithPrefix(prefix)) {
-			search.addMatchDirectly(new ModuleProxy(fqName, search.getModuleResolver()));
+			search.addMatchDirectly(new ModuleProxy(fqName, search.modResolver));
 		}
 		
 	}

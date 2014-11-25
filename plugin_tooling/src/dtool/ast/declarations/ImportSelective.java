@@ -10,13 +10,13 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class ImportSelective extends ASTNode implements INonScopedContainer, IImportFragment {
@@ -80,7 +80,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	}
 	
 	@Override
-	public void searchInSecondaryScope(CommonDefUnitSearch search) {
+	public void searchInSecondaryScope(CommonScopeLookup search) {
 		ReferenceResolver.findDefUnitInSelectiveImport(this, search);
 	}
 	

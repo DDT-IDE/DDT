@@ -13,9 +13,9 @@ package melnorme.lang.tooling.engine.resolver;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * Does nothing.
@@ -33,7 +33,7 @@ public class NullNamedElementSemantics extends NullElementSemantics implements I
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
 	}
 	
 }

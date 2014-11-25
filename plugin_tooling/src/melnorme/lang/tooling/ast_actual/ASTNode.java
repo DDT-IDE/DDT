@@ -12,8 +12,8 @@ package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import dtool.ast.definitions.Module;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public abstract class ASTNode extends CommonASTNode {
@@ -38,7 +38,7 @@ public abstract class ASTNode extends CommonASTNode {
 	
 	/** Run a reference search using the lookup rules of this node.
 	 * Default is run the search on the full lexical scope */
-	public void performRefSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonScopeLookup search) {
 		ReferenceResolver.resolveSearchInFullLexicalScope(asNode(), search);
 	}
 	

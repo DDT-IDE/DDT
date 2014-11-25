@@ -12,10 +12,10 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
-import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class AliasSemantics extends NamedElementSemantics<ConcreteElementResult> {
 	
@@ -45,7 +45,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
 		TypeSemantics.resolveSearchInReferredContainer(search, getAliasTarget());
 	}
 	

@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -23,7 +24,6 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DeeLanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 
@@ -106,12 +106,12 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			resolveSearchInHierarchyScope(search);
 			commonTypeScope.resolveSearchInScope(search);
 		}
 		
-		public void resolveSearchInHierarchyScope(CommonDefUnitSearch search) {
+		public void resolveSearchInHierarchyScope(CommonScopeLookup search) {
 			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
 			if(getBodyScope() == null) {
 				// Even without a body scope, we can resolve in super scopes
@@ -119,8 +119,8 @@ public class DefinitionClass extends DefinitionAggregate {
 			}
 		}
 		
-		public void resolveSearchInSuperScopes(CommonDefUnitSearch search) {
-			ISemanticContext mr = search.getModuleResolver();
+		public void resolveSearchInSuperScopes(CommonScopeLookup search) {
+			ISemanticContext mr = search.modResolver;
 			
 			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
 				INamedElement baseClassElem = baseclass.findTargetDefElement(mr);

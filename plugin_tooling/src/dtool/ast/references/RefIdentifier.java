@@ -11,7 +11,7 @@
 package dtool.ast.references;
 
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import dtool.resolver.CommonDefUnitSearch;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNode {
 	
@@ -25,7 +25,7 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	}
 	
 	@Override
-	public void performRefSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonScopeLookup search) {
 		// Check if we are rooted in the lexical scope, or in a qualification reference
 		CommonQualifiedReference qualificationRef = getQualificationReference();
 		if(qualificationRef != null) {

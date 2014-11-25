@@ -9,6 +9,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -18,7 +19,6 @@ import dtool.ast.definitions.DefinitionFunction.AbstractFunctionElementSemantics
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A definition of an alias, in the old syntax:
@@ -98,7 +98,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			resolveSearchInMembersScopeForFunction(search, target);
 		}
 	}

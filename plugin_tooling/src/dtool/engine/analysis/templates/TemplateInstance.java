@@ -17,12 +17,12 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
@@ -70,7 +70,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	protected final TypeSemantics semantics = new TypeSemantics(this) {
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			boolean isSequentialLookup = search.isSequentialLookup();
 			/* FIXME: need to refactor this */
 			ReferenceResolver.findInNodeList(search, tplArguments, isSequentialLookup);

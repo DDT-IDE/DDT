@@ -15,11 +15,11 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.DeeLanguageIntrinsics;
 
 public class NotFoundErrorElement extends AbstractElement implements IConcreteNamedElement {
@@ -80,7 +80,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
 		// Do nothing.
 	}
 	

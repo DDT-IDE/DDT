@@ -10,13 +10,13 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
@@ -160,7 +160,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	}
 	
 	@Override
-	public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
 		getSemantics().resolveSearchInMembersScope(search);
 	}
 	

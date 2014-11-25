@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import dtool.resolver.CommonDefUnitSearch;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 
 /**
@@ -77,7 +77,7 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * Resolve given search in the members scope of this defunit.
 	 * Note that the members can be different from the lexical scope that a defunit may provide.
 	 */
-	public abstract void resolveSearchInMembersScope(CommonDefUnitSearch search);
+	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	
 	/** 
 	 * Return the type of this defElement, when it is referenced as a value/expression.

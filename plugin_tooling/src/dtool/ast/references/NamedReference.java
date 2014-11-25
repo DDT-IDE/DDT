@@ -15,8 +15,8 @@ import java.util.Collection;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.DefUnitSearch;
 
 /** 
  * A reference based on an identifier. These references also 
@@ -50,7 +50,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 				return null;
 			}
 			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
-			DefUnitSearch search = new DefUnitSearch(getCoreReferenceName(), getModuleNode2(), startPos, 
+			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode2(), startPos, 
 				findOneOnly, mr);
 			performRefSearch(search);
 			return search.getMatchedElements();

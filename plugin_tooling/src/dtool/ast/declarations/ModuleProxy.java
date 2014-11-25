@@ -18,6 +18,7 @@ import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
@@ -25,7 +26,6 @@ import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -114,7 +114,7 @@ public class ModuleProxy extends AbstractNamedElement {
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			DefUnit resolvedModule = resolveUnderlyingNode();
 			if(resolvedModule != null) {
 				resolvedModule.resolveSearchInMembersScope(search);

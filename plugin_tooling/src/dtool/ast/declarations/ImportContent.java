@@ -6,10 +6,10 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefModule;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public class ImportContent extends ASTNode implements IImportFragment {
@@ -62,7 +62,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	@Override
-	public void searchInSecondaryScope(CommonDefUnitSearch search) {
+	public void searchInSecondaryScope(CommonScopeLookup search) {
 		ReferenceResolver.findDefUnitInStaticImport(this, search);
 		if(!getDeclarationImport().isStatic) {
 			ReferenceResolver.findDefUnitInContentImport(this, search);

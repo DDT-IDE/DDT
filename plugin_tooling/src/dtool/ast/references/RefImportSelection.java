@@ -13,10 +13,10 @@ package dtool.ast.references;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
-import dtool.resolver.CommonDefUnitSearch;
 
 // TODO: retire this element in favor of RefIdentifier?
 public class RefImportSelection extends CommonRefIdentifier implements IImportSelectiveSelection {
@@ -37,9 +37,9 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	}
 	
 	@Override
-	public void performRefSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonScopeLookup search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.getModuleResolver(), false);
+		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.modResolver, false);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(targetModules, search);
 	}
 	

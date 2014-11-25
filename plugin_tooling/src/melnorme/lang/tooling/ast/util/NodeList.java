@@ -13,9 +13,9 @@ package melnorme.lang.tooling.ast.util;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {
@@ -37,7 +37,7 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode implements ISc
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		ReferenceResolver.findInNodeList(search, nodes, false);
 	}
 	

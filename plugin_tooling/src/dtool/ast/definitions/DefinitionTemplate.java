@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -25,7 +26,6 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.analysis.templates.DefTemplateSemantics;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -115,7 +115,7 @@ public class DefinitionTemplate extends CommonDefinition
 	protected final INamedElementSemantics semantics = new DefTemplateSemantics(this);
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		boolean isSequentialLookup = search.isSequentialLookup();
 		/* FIXME: need to refactor this */
 		ReferenceResolver.findInNodeList(search, tplParams, isSequentialLookup);

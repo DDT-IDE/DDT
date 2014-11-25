@@ -18,8 +18,8 @@ import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -55,7 +55,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 			if(module == null) 
 				return null;
 			
-			DefUnitSearch search = new DefUnitSearch(elementName, null, -1, findOneOnly, mr);
+			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, findOneOnly, mr);
 			module.resolveSearchInMembersScope(search);
 			return search.getMatchedElements();
 		}
@@ -66,6 +66,11 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 		}
 		
 	};
+	
+	@Override
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr) {
+		return getSemantics().findTargetDefElements(mr, true);
+	}
 	
 	@Override
 	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {

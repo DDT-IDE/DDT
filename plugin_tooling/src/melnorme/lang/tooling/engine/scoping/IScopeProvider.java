@@ -1,6 +1,5 @@
 package melnorme.lang.tooling.engine.scoping;
 
-import dtool.resolver.CommonDefUnitSearch;
 
 
 /**
@@ -11,6 +10,6 @@ import dtool.resolver.CommonDefUnitSearch;
 public interface IScopeProvider {
 	
 	/** Resolve given reference search in this scope. */
-	void resolveSearchInScope(CommonDefUnitSearch search);
+	void resolveSearchInScope(CommonScopeLookup search);
 	
 }

@@ -17,6 +17,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -25,7 +26,6 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -100,7 +100,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
 			commonTypeScope.resolveSearchInScope(search);
 		}
@@ -108,7 +108,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		ReferenceResolver.findInNodeList(search, tplParams, true);
 	}
 	

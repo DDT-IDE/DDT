@@ -16,8 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.CommonDefUnitSearch;
 
 
 /**
@@ -47,17 +47,17 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	public abstract Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver);
 	
 	@Override
-	public void performRefSearch(CommonDefUnitSearch search) {
+	public void performRefSearch(CommonScopeLookup search) {
 		performQualifiedRefSearch(search);
 	}
 	
-	public void performQualifiedRefSearch(CommonDefUnitSearch search) {
-		Collection<INamedElement> defunits = findRootDefUnits(search.getModuleResolver());
+	public void performQualifiedRefSearch(CommonScopeLookup search) {
+		Collection<INamedElement> defunits = findRootDefUnits(search.modResolver);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(defunits, search);
 	}
 	
 	public static void resolveSearchInMultipleContainers(Collection<INamedElement> containers, 
-			CommonDefUnitSearch search) {
+			CommonScopeLookup search) {
 		if(containers == null)
 			return;
 		

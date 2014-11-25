@@ -7,13 +7,13 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.references.RefModule;
 import dtool.ast.statements.IStatement;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * An import Declaration.
@@ -50,7 +50,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */
-		public void searchInSecondaryScope(CommonDefUnitSearch options);
+		public void searchInSecondaryScope(CommonScopeLookup options);
 
 		public RefModule getModuleRef();
 	}

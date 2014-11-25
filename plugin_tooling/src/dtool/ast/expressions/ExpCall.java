@@ -12,10 +12,10 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
-import dtool.resolver.DefUnitSearch;
 
 public class ExpCall extends Expression {
 	
@@ -74,7 +74,7 @@ public class ExpCall extends Expression {
 				return null;
 			}
 			
-			DefUnitSearch search = new DefUnitSearch("opCall", moduleNode, false, mr);
+			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, false, mr);
 			calleeElem.resolveSearchInMembersScope(search);
 			
 			for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {

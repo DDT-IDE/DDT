@@ -16,13 +16,13 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.CommonDefUnitSearch;
 
 public interface CommonLanguageIntrinsics {
 
@@ -48,7 +48,7 @@ public interface CommonLanguageIntrinsics {
 		protected final TypeSemantics semantics = new TypeSemantics(this) {
 			
 			@Override
-			public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
 				assertNotNull(membersScope);
 				membersScope.resolveSearchInScope(search);
 			}

@@ -13,9 +13,9 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 public final class DefTemplateSemantics extends ConcreteElementSemantics {
@@ -28,7 +28,7 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
 		if(defTemplate.wrapper) {
 			// TODO: go straight to members of wrapped definition
 		}

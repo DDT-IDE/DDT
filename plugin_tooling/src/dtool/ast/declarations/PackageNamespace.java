@@ -18,6 +18,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -26,7 +27,6 @@ import melnorme.utilbox.misc.StringUtil;
 import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.CommonDefUnitSearch;
 import dtool.resolver.ReferenceResolver;
 
 /**
@@ -119,14 +119,14 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 		};
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			ReferenceResolver.findDefUnitInScope(PackageNamespace.this, search);
 		}
 		
 	};
 	
 	@Override
-	public void resolveSearchInScope(CommonDefUnitSearch search) {
+	public void resolveSearchInScope(CommonScopeLookup search) {
 		if(containedElement.getArcheType() == EArcheType.Module) {
 			INamedElementNode resolvedDefUnit = containedElement.resolveUnderlyingNode();
 			if(resolvedDefUnit == null) {

@@ -15,13 +15,13 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration, IConcreteNamedElement {
 	
@@ -71,7 +71,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	protected final TypeSemantics semantics = new TypeSemantics(this) {
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			// Not applicable to constructor as it cannot be referred directly
 		}
 		

@@ -13,6 +13,12 @@ public interface IResolvable extends ISemanticElement {
 	
 	public IResolvableSemantics getSemantics();
 	
+	
+	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr); 
+//	{
+//		return getSemantics().findTargetDefElements(mr, true);
+//	}
+	
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
 	Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly);

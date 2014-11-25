@@ -15,7 +15,7 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import dtool.resolver.CommonDefUnitSearch;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public abstract class AbstractNamedElement extends AbstractElement implements INamedElement {
 	
@@ -54,7 +54,7 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	}
 	
 	@Override
-	public final void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
 		getSemantics().resolveSearchInMembersScope(search);
 	}
 	

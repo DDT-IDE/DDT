@@ -12,10 +12,10 @@ package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class VarSemantics extends ConcreteElementSemantics {
 	
@@ -24,8 +24,8 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
-		INamedElement effectiveType = resolveTypeForValueContext(search.getModuleResolver());
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
+		INamedElement effectiveType = resolveTypeForValueContext(search.modResolver);
 		if(effectiveType != null) {
 			effectiveType.resolveSearchInMembersScope(search);
 		}
@@ -36,7 +36,7 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 		Resolvable declaredType = getTypeReference();
 		if(declaredType != null) {
 			// TODO: handle finding multiple elements
-			return getFirstElementOrNull(declaredType.findTargetDefElements(mr, true));
+			return getFirstElementOrNull(declaredType.findTargetDefElements(mr));
 		}
 		return null;
 	}

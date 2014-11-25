@@ -14,10 +14,10 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
-import dtool.resolver.CommonDefUnitSearch;
 
 public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
@@ -34,13 +34,13 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 		return new NotAValueErrorElement(getTypeElement());
 	}
 	
-	public static void resolveSearchInReferredContainer(CommonDefUnitSearch search, IResolvable resolvable) {
+	public static void resolveSearchInReferredContainer(CommonScopeLookup search, IResolvable resolvable) {
 		if(resolvable == null) {
 			return;
 		}
 		
-		ISemanticContext mr = search.getModuleResolver();
-		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr, true);
+		ISemanticContext mr = search.modResolver;
+		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr);
 		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	

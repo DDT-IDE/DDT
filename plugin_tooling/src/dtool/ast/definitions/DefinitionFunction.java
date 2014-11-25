@@ -7,6 +7,7 @@ import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -16,7 +17,6 @@ import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.CommonDefUnitSearch;
 
 /**
  * A definition of a function.
@@ -111,7 +111,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public void resolveSearchInMembersScope(CommonDefUnitSearch search) {
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			resolveSearchInMembersScopeForFunction(search, function.retType);
 		}
 	}
@@ -130,7 +130,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@SuppressWarnings("unused")
-		public static void resolveSearchInMembersScopeForFunction(CommonDefUnitSearch search, Reference retType) {
+		public static void resolveSearchInMembersScopeForFunction(CommonScopeLookup search, Reference retType) {
 			// Do nothing, a function has no members scope
 			// TODO: except for implicit function calls syntax, that needs to be implemented
 		}

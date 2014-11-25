@@ -1,6 +1,7 @@
 package mmrnmhrm.ui.views;
 
 import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.ui.CommonDeeUITest;
 
@@ -9,7 +10,6 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ddoc.TextUI;
-import dtool.resolver.DefUnitSearch;
 import dtool.resolver.DeeLanguageIntrinsics;
 import dtool.resolver.ReferenceResolver;
 
@@ -42,7 +42,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		
 		
-		DefUnitSearch search = new DefUnitSearch("int", null, -1, true, new EmptySemanticResolution());
+		ResolutionLookup search = new ResolutionLookup("int", null, -1, true, new EmptySemanticResolution());
 		ReferenceResolver.findDefUnitInScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope, search);
 		defElement = search.getMatchedElements().iterator().next();
 		
