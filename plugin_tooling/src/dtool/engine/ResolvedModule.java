@@ -12,16 +12,16 @@ package dtool.engine;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public class ResolvedModule {
 	
 	protected final ParsedModule parsedModule;
-	protected final AbstractSemanticContext semanticContext;
+	protected final AbstractBundleResolution semanticContext;
 	
-	public ResolvedModule(ParsedModule parsedModule, AbstractSemanticContext semanticContext) {
+	public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution semanticContext) {
 		this.parsedModule = parsedModule;
 		this.semanticContext = semanticContext;
 	}

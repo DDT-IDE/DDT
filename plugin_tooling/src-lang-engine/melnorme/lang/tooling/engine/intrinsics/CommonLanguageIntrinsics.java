@@ -13,7 +13,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;

@@ -13,8 +13,8 @@ package mmrnmhrm.core.engine_client;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;

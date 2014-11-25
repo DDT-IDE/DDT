@@ -12,8 +12,8 @@ import java.util.HashSet;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;

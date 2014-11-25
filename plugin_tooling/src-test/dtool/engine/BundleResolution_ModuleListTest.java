@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		protected final HashSet<Path> moduleFiles;
 		
 		public BundleFilesChecker(BundleResolution bundleRes) {
-			modules = new HashMap<>(bundleRes.bundleModules.modules);
+			modules = new HashMap<>(bundleRes.getBundleModulesMap());
 			moduleFiles = new HashSet<>(bundleRes.getBundleModuleFiles());
 			this.bundleRes = bundleRes;
 		}

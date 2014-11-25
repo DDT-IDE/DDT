@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;

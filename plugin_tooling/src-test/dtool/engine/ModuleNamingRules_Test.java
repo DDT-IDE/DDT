@@ -8,7 +8,7 @@ import static melnorme.utilbox.misc.MiscUtil.createValidPath;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;

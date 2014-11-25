@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;

@@ -20,7 +20,7 @@ import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;

@@ -16,8 +16,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.HashSet;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.dub.BundlePath;
@@ -128,7 +129,7 @@ public class BundleResolution extends AbstractBundleResolution {
 		new BundleResolutionVisitor<RuntimeException>() {
 			@Override
 			public void visit(AbstractBundleResolution bundleResolution) {
-				bundleResolution.findModules(fullNamePrefix, matchedModules);
+				matchedModules.addAll(bundleResolution.findModules(fullNamePrefix));
 			}
 			@Override
 			protected void visitSelf(BundleResolution bundleResolution) throws RuntimeException {

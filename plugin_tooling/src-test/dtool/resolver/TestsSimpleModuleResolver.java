@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.AbstractSemanticContext;
+import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
-import dtool.engine.AbstractSemanticContext;
-import dtool.engine.BundleModules;
-import dtool.engine.ResolvedModule;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -24,7 +24,7 @@ import dtool.tests.CommonDToolTest;
 
 public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	
-	protected Map<ModuleFullName, ResolvedModule> parsedModules = new HashMap<>();
+	protected Map<ModuleFullName, ParsedModule> parsedModules = new HashMap<>();
 	
 	protected ModuleFullName extraModuleName;
 	protected ParsedModule extraModuleResult;
@@ -39,8 +39,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());
 			ParsedModule parsedModule = DeeParser.parseSource(source, moduleFullName.getFullNameAsString());
 			
-			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
-			parsedModules.put(entry.getKey(), resolvedModule);
+			parsedModules.put(entry.getKey(), parsedModule);
 		}
 	}
 	
@@ -69,17 +68,13 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	}
 	
 	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		if(extraModuleName != null && extraModuleName.equals(moduleFullName)) {
-			return new ResolvedModule(extraModuleResult, this);
+	public INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException {
+		if(extraModuleName != null && extraModuleName.equals(moduleName)) {
+			return extraModuleResult.module;
 		}
 		
-		return parsedModules.get(moduleFullName);
-	}
-	
-	@Override
-	public ResolvedModule findResolvedModule(Path path) throws ModuleSourceException {
-		throw assertFail(); // Not used.
+		ParsedModule parsedModule = parsedModules.get(moduleName);
+		return parsedModule == null ? null : parsedModule.module;
 	}
 	
 }

@@ -8,21 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine;
+package melnorme.lang.tooling.context;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import dtool.ast.definitions.Module;
-import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.utils.EntryMap;
@@ -33,6 +29,10 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	public AbstractSemanticContext(BundleModules bundleModules) {
 		this.bundleModules = assertNotNull(bundleModules);
+	}
+	
+	public Map<ModuleFullName, Path> getBundleModulesMap() {
+		return bundleModules.modules;
 	}
 	
 	public Set<Path> getBundleModuleFiles() {
@@ -62,28 +62,6 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	protected void findBundleModules(String fullNamePrefix, HashSet<String> matchedModules) {
 		bundleModules.findModules(fullNamePrefix, matchedModules);
 	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public Module findModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
-		return resolvedModule == null ? null : resolvedModule.getModuleNode();
-	}
-	
-	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ModuleSourceException {
-		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
-		return resolvedModule == null ? null : resolvedModule.getModuleNode();
-	}
-	
-	/** @return a resolved module from for the module with the given name, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
-	
-	/** @return a resolved module from for the module with the given path, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
-	
 	
 	/* ----------------- NodeSemantics ----------------- */
 	

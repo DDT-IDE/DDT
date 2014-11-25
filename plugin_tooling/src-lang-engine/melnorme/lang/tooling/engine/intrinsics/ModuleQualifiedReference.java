@@ -13,7 +13,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;

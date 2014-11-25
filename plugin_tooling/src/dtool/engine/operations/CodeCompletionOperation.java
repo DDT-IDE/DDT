@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;

@@ -13,7 +13,7 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;

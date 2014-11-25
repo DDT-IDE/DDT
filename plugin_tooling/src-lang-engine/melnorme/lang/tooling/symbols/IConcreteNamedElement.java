@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 
 /**
  * A concrete named element is named element that is not an alias to another element.

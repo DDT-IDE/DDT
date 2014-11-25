@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;

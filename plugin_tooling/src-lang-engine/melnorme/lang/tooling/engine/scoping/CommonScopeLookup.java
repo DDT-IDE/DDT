@@ -20,7 +20,7 @@ import java.util.Set;
 import dtool.ast.definitions.DefUnit;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IModuleElement;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;

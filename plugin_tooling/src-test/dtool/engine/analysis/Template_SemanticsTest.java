@@ -12,9 +12,9 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;

@@ -13,7 +13,7 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;

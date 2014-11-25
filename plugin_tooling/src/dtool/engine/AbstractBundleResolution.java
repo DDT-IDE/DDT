@@ -20,10 +20,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.AbstractSemanticContext;
+import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
+import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -54,6 +58,28 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		Set<Path> currentModules = modulesVisitor.getModuleFiles();
 		return !currentModules.equals(bundleModules.moduleFiles);
 	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public Module findModule(ModuleFullName moduleFullName) throws ModuleSourceException {
+		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
+		return resolvedModule == null ? null : resolvedModule.getModuleNode();
+	}
+	
+	public IModuleNode findModuleNode(ModuleFullName moduleFullName) throws ModuleSourceException {
+		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
+		return resolvedModule == null ? null : resolvedModule.getModuleNode();
+	}
+	
+	/** @return a resolved module from for the module with the given name, from the modules
+	 * available in this context (including dependencies). Can be null. */
+	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
+	
+	/** @return a resolved module from for the module with the given path, from the modules
+	 * available in this context (including dependencies). Can be null. */
+	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
+	
 	
 	/* -----------------  ----------------- */
 	

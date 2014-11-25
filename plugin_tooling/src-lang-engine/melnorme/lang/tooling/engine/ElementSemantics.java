@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 
 
 public abstract class ElementSemantics<ER extends ElementResolution<?>> implements IElementSemantics {

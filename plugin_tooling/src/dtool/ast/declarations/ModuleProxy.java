@@ -13,7 +13,7 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;

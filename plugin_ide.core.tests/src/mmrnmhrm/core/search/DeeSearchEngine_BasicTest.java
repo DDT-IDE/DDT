@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DLTKUtils;

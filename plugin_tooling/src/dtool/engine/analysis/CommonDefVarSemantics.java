@@ -11,7 +11,7 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;

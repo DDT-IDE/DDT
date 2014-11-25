@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 
@@ -229,7 +229,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
 	}
 	
-	protected void testFindResolvedModule(AbstractSemanticContext bundleContext, String moduleNameStr, 
+	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
 			Path expectedPath) throws ModuleSourceException {
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
 		ResolvedModule resolvedModule = bundleContext.findResolvedModule(moduleFullName);

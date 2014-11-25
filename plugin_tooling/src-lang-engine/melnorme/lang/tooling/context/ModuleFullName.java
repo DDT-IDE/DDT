@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.bundles;
+package melnorme.lang.tooling.context;
 
 import melnorme.lang.tooling.symbols.ElementName;
 import melnorme.utilbox.misc.ArrayUtil;

@@ -17,7 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;

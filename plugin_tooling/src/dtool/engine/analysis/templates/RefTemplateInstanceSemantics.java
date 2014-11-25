@@ -13,7 +13,7 @@ package dtool.engine.analysis.templates;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;

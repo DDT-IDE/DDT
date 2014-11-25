@@ -1,6 +1,6 @@
 package mmrnmhrm.core.search;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.DLTKModelUtils;
 

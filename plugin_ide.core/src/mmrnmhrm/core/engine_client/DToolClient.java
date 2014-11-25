@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;

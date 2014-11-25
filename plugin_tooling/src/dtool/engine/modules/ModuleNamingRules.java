@@ -4,7 +4,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.parser.DeeLexingUtil;

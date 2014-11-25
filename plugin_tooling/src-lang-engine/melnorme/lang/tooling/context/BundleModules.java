@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine;
+package melnorme.lang.tooling.context;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -22,13 +22,12 @@ import java.util.Map;
 import java.util.Set;
 
 import dtool.engine.modules.ModuleNamingRules;
-import melnorme.lang.tooling.bundles.ModuleFullName;
 
 public class BundleModules {
 	
-	protected final Map<ModuleFullName, Path> modules;
-	protected final Set<Path> moduleFiles;
-	protected final List<Path> importFolders;
+	public final Map<ModuleFullName, Path> modules;
+	public final Set<Path> moduleFiles;
+	public final List<Path> importFolders;
 	
 	/**
 	 * Optimized constructor 
@@ -39,6 +38,7 @@ public class BundleModules {
 	
 	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, List<Path> importFolders, 
 			boolean requireAbsolute) {
+		// TODO use compile-time unmodifiable interfaces
 		this.modules = Collections.unmodifiableMap(modules);
 		this.moduleFiles = Collections.unmodifiableSet(moduleFiles);
 		this.importFolders = Collections.unmodifiableList(new ArrayList<>(importFolders));

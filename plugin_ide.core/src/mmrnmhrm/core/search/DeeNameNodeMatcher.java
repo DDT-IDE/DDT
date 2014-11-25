@@ -4,7 +4,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;

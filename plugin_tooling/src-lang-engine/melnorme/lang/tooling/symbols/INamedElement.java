@@ -14,8 +14,8 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 

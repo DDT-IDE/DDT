@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 
 /**
  * A {@link ISemanticElement} with an attached semantic context.

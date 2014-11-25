@@ -8,16 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.bundles;
+package melnorme.lang.tooling.context;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import dtool.engine.AbstractSemanticContext;
-import dtool.engine.BundleModules;
-import dtool.engine.ResolvedModule;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 /**
  * A mock semantic resolution. This implementation finds no modules.
@@ -29,12 +27,7 @@ public class EmptySemanticResolution extends AbstractSemanticContext {
 	}
 	
 	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		return null;
-	}
-	
-	@Override
-	public ResolvedModule findResolvedModule(Path path) throws ModuleSourceException {
+	public INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException {
 		return null;
 	}
 	

@@ -16,7 +16,7 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;

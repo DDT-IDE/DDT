@@ -13,9 +13,10 @@ package dtool.engine;
 import java.nio.file.Path;
 import java.util.List;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
-import melnorme.lang.tooling.bundles.ModuleFullName;
-import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.misc.MiscUtil;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;

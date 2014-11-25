@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;

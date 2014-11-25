@@ -3,7 +3,7 @@ package melnorme.lang.tooling.engine.resolver;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 

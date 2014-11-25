@@ -12,7 +12,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;

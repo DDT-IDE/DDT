@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;

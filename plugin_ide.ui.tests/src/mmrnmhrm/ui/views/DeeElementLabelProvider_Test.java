@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import melnorme.lang.tooling.bundles.EmptySemanticResolution;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
