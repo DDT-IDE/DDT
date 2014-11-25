@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.util;
+package melnorme.lang.utils;
 
 import java.util.HashMap;
 

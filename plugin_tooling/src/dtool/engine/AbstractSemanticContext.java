@@ -25,7 +25,7 @@ import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
-import melnorme.lang.tooling.util.EntryMap;
+import melnorme.lang.utils.EntryMap;
 
 public abstract class AbstractSemanticContext implements ISemanticContext {
 	
