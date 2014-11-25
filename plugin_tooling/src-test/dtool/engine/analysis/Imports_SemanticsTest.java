@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -89,6 +90,26 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		IConcreteNamedElement concreteTarget = result.resolveConcreteElement(refToPackage.context);
 		assertTrue(concreteTarget == null); // TODO: define this behavior better
 //		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
+	}
+	
+	
+	@Test
+	public void testShadowing() throws Exception { testShadowing$(); }
+	public void testShadowing$() throws Exception {
+		PickedElement<Module> modulePick = parseTestElement("import foo; class foo_member; ", "", Module.class);
+		
+		CompletionScopeLookup lookup = new CompletionScopeLookup(modulePick.element, -1, modulePick.context);
+		modulePick.element.performRefSearch(lookup);
+		
+		resultsChecker(lookup, true, true, true).checkResults(array(
+			"_tests/", "foo/", "everywhere/",
+			
+			"_tests/foo_member",
+			"foo/foo_member2",
+			
+			"everywhere/everywhere_member"
+		));
+		
 	}
 	
 }

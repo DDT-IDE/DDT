@@ -23,10 +23,12 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
+import dtool.resolver.DefUnitResultsChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
@@ -83,6 +85,22 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	protected void checkIsSameResolution(ElementResolution<?> resolutionA, ElementResolution<?> resolutionOther) {
 		assertTrue(resolutionA == resolutionOther);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static DefUnitResultsChecker resultsChecker(CompletionScopeLookup lookup) {
+		return resultsChecker(lookup, true, true, true);
+	}
+	
+	public static DefUnitResultsChecker resultsChecker(CompletionScopeLookup lookup, boolean ignoreDummy,
+			boolean ignorePrimitives, boolean ignoreObjectModule) {
+		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements());
+		checker.removeIgnoredDefUnits(ignoreDummy, ignorePrimitives);
+		if(ignoreObjectModule) {
+			checker.removeStdLibObjectDefUnits();
+		}
+		return checker;
 	}
 	
 }

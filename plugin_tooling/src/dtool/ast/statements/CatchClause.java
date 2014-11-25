@@ -18,7 +18,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
-import dtool.resolver.ReferenceResolver;
 
 public class CatchClause extends ASTNode implements IScopeNode {
 	
@@ -51,7 +50,7 @@ public class CatchClause extends ASTNode implements IScopeNode {
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
 		if(catchParam != null) {
-			ReferenceResolver.findInNodeList(search, Collections.singletonList(catchParam), false);
+			search.findInNodeList(Collections.singletonList(catchParam), false);
 		}
 	}
 	

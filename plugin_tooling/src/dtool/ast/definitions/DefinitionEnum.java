@@ -28,7 +28,6 @@ import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.ReferenceResolver;
 
 public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement, IConcreteNamedElement {
 	
@@ -92,7 +91,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		
 		@Override
 		public void resolveSearchInScope(CommonScopeLookup search) {
-			ReferenceResolver.findInNodeList(search, nodeList, false);
+			search.findInNodeList(nodeList, false);
 		}
 		
 	}
@@ -139,7 +138,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			if(body != null) {
-				ReferenceResolver.findInNodeList(search, body.nodeList, false);
+				search.findInNodeList(body.nodeList, false);
 			}
 			commonTypeScope.resolveSearchInScope(search);
 		}

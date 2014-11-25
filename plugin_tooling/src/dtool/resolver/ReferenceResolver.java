@@ -1,28 +1,18 @@
 package dtool.resolver;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Iterator;
-
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
-import melnorme.lang.tooling.engine.scoping.IScopeProvider;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.declarations.DeclarationImport;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.declarations.ImportContent;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.PackageNamespace;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.references.RefImportSelection;
@@ -57,7 +47,7 @@ public class ReferenceResolver {
 		IScopeNode scope = getNearestLexicalScope(node);
 		
 		while(scope != null) {
-			findDefUnitInScope(scope, search);
+			CommonScopeLookup.findDefUnitInScope(scope, search);
 			if(search.isFinished())
 				return;
 			if(scope instanceof Module) {
@@ -91,110 +81,10 @@ public class ReferenceResolver {
 	
 	public static void resolveSearchInScope(CommonScopeLookup search, IScopeNode scope) {
 		if(scope != null) {
-			findDefUnitInScope(scope, search);
+			CommonScopeLookup.findDefUnitInScope(scope, search);
 		}
 	}
 	
-	/** Searches for the given CommonDefUnitSearch search, in the scope's 
-	 * immediate namespace, secondary namespace (imports), and super scopes.
-	 *  
-	 * Does not search, if the scope has alread been searched in this search.
-	 * The set of matched {@link DefUnit}s must all be visible in the same
-	 * non-extended scope, (altough due to imports, they may originate from 
-	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
-	 */
-	public static void findDefUnitInScope(IScopeProvider scope, CommonScopeLookup search) {
-		assertNotNull(scope);
-		if(search.hasSearched(scope))
-			return;
-		
-		search.enterNewScope(scope);
-		scope.resolveSearchInScope(search);
-	}
-	
-	public static void findInNodeList(CommonScopeLookup search, Iterable<? extends IASTNode> nodeIterable, 
-		boolean isSequentialLookup) {
-		if(nodeIterable != null) {
-			if(search.isFinished())
-				return;
-			findDefUnits(search, nodeIterable.iterator(), isSequentialLookup, false);
-			if(search.isFinished())
-				return;
-			findDefUnits(search, nodeIterable.iterator(), isSequentialLookup, true);
-		}
-	}
-	
-	public static void findDefUnits(CommonScopeLookup search, Iterator<? extends IASTNode> iter,
-			boolean isSequentialLookup, boolean importsOnly) {
-		
-		while(iter.hasNext()) {
-			IASTNode node = iter.next();
-			
-			int refOffset = search.refOffset;
-			// Check if we have passed the reference offset
-			if(isSequentialLookup && refOffset < node.getStartPos()) {
-				return;
-			}
-			
-			evaluateNodeForSearch(search, isSequentialLookup, importsOnly, node);
-			if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
-				return;
-		}
-	}
-	
-	public static void evaluateNodeForSearch(CommonScopeLookup search, boolean isSequentialLookup, 
-		boolean importsOnly, IASTNode node) {
-		
-		if(node instanceof INonScopedContainer) {
-			INonScopedContainer container = ((INonScopedContainer) node);
-			findDefUnits(search, container.getMembersIterator(), isSequentialLookup, importsOnly);
-		}
-		if(!importsOnly && node instanceof DefUnit) {
-			DefUnit defunit = (DefUnit) node;
-			search.visitElement(defunit);
-		}
-		else if(importsOnly && node instanceof DeclarationImport) {
-			DeclarationImport declImport = (DeclarationImport) node;
-			
-			if(!declImport.isTransitive && !privateImportIsVisible(search, declImport))
-				return; // Don't consider private imports
-			
-			for (IImportFragment impFrag : declImport.imports) {
-				impFrag.searchInSecondaryScope(search);
-				// continue regardless of search.findOnlyOne because of partial packages
-			}
-		}
-	}
-	
-	protected static boolean privateImportIsVisible(CommonScopeLookup search, DeclarationImport declImport) {
-		IModuleElement searchOriginModule = search.getSearchOriginModule();
-		if(searchOriginModule == null) 
-			return false;
-		// only visible if in search lexical origin in same module as the private import.
-		return searchOriginModule == declImport.getModuleNode2();
-	}
-	
-	public static void findInNamedElementList(CommonScopeLookup search, 
-			Iterable<? extends INamedElement> elementIterable) {
-		if(elementIterable == null) {
-			return;
-		}
-		
-		if(search.isFinished())
-			return;
-		
-		for (INamedElement namedElement : elementIterable) {
-			evaluateNamedElementForSearch(search, namedElement);
-			if(search.isFinished() && search.findOnlyOne) // TODO make BUG HERE 
-				return;
-		}
-	}
-	
-	public static void evaluateNamedElementForSearch(CommonScopeLookup search, INamedElement namedElement) {
-		if(namedElement != null) {
-			search.visitElement(namedElement);
-		}
-	}
 	
 	/* ====================  ==================== */
 	
@@ -219,14 +109,14 @@ public class ReferenceResolver {
 		} else {
 			moduleElement = module;
 		}
-		evaluateNamedElementForSearch(search, moduleElement);
+		search.evaluateNamedElementForSearch(moduleElement);
 	}
 	
 	/* ====================  import lookup  ==================== */
 
 	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonScopeLookup search) {
 		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
-		evaluateNamedElementForSearch(search, namedElement);
+		search.evaluateNamedElementForSearch(namedElement);
 	}
 	
 	public static void findDefUnitInContentImport(ImportContent impContent, CommonScopeLookup search) {

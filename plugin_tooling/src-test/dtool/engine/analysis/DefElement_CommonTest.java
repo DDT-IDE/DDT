@@ -28,7 +28,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
-import dtool.resolver.DefUnitResultsChecker;
 
 
 public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
@@ -47,9 +46,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, new EmptySemanticResolution());
 		namedElement.resolveSearchInMembersScope(search);
 		
-		DefUnitResultsChecker resultsChecker = new DefUnitResultsChecker(search.getMatchedElements());
-		resultsChecker.removeIgnoredDefUnits(true, true);
-		resultsChecker.checkResults(expectedResults);
+		resultsChecker(search).checkResults(expectedResults);
 	}
 	
 	/* -----------------  ----------------- */

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
+import dtool.ast.definitions.DefUnit;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 
 
 public abstract class AbstractElement2 implements ISemanticElement {
@@ -50,6 +53,22 @@ public abstract class AbstractElement2 implements ISemanticElement {
 	
 	public final String toStringClassName() {
 		return this.getClass().getSimpleName();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
+		if(this instanceof INonScopedContainer) {
+			INonScopedContainer container = ((INonScopedContainer) this);
+			// FIXME: remove need for isSequentialLookup?
+			lookup.findDefUnits(container.getMembersIterator(), isSequentialLookup, importsOnly);
+		}
+		
+		if(!importsOnly && this instanceof DefUnit) {
+			DefUnit defunit = (DefUnit) this;
+			lookup.visitElement(defunit);
+		}
 	}
 	
 }

@@ -197,7 +197,7 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		ReferenceResolver.findInNodeList(search, members, false);
+		search.findInNodeList(members, false);
 	}
 	
 }

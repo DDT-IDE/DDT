@@ -42,8 +42,9 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		this.resultDefUnits = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	
-	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
+	public DefUnitResultsChecker removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
 		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
+		return this;
 	}
 	
 	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
@@ -73,7 +74,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		}
 	}
 	
-	public void removeStdLibObjectDefUnits() {
+	public DefUnitResultsChecker removeStdLibObjectDefUnits() {
 		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
@@ -82,6 +83,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				iterator.remove();
 			}
 		}
+		return this;
 	}
 	
 	public void simpleCheckResults(String... expectedResults) {

@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -67,6 +68,34 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 		cp.append("import ");
 		cp.appendList(imports_asNodes(), ", ");
 		cp.append(";");
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
+		super.evaluateForScopeLookup(lookup, importsOnly, isSequentialLookup);
+		
+		if(!importsOnly) {
+			return;
+		}
+		
+		if(!isTransitive && !searchOriginInSameModule(lookup, this))
+			return; // Don't consider private imports
+		
+		for (IImportFragment impFrag : imports) {
+			impFrag.searchInSecondaryScope(lookup);
+			// continue regardless of search.findOnlyOne because of partial packages
+		}
+		
+	}
+	
+	protected static boolean searchOriginInSameModule(CommonScopeLookup search, DeclarationImport declImport) {
+		IModuleElement searchOriginModule = search.getSearchOriginModule();
+		if(searchOriginModule == null) 
+			return false;
+		// only visible if search lexical origin in same module as the private import.
+		return searchOriginModule == declImport.getModuleNode2();
 	}
 	
 }

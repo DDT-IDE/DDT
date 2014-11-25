@@ -12,6 +12,8 @@ package melnorme.lang.tooling.ast;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+
 public interface ISemanticElement {
 	
 	/** 
@@ -19,8 +21,10 @@ public interface ISemanticElement {
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).
 	 * This is a special case for which the elements do not have a well defined containing module path. 
 	 */
-	public abstract boolean isLanguageIntrinsic();
+	public boolean isLanguageIntrinsic();
 	
-	public abstract Path getModulePath();
+	public Path getModulePath();
+	
+	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup);
 	
 }

@@ -23,7 +23,6 @@ import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.ReferenceResolver;
 
 public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	
@@ -73,7 +72,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			boolean isSequentialLookup = search.isSequentialLookup();
 			/* FIXME: need to refactor this */
-			ReferenceResolver.findInNodeList(search, tplArguments, isSequentialLookup);
+			search.findInNodeList(tplArguments, isSequentialLookup);
 		}
 		
 	};

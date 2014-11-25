@@ -26,7 +26,6 @@ import dtool.ast.expressions.MissingParenthesesExpression;
 import dtool.ast.statements.IStatement;
 import dtool.engine.analysis.templates.DefTemplateSemantics;
 import dtool.parser.common.Token;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * Definition of a template.
@@ -118,7 +117,7 @@ public class DefinitionTemplate extends CommonDefinition
 	public void resolveSearchInScope(CommonScopeLookup search) {
 		boolean isSequentialLookup = search.isSequentialLookup();
 		/* FIXME: need to refactor this */
-		ReferenceResolver.findInNodeList(search, tplParams, isSequentialLookup);
+		search.findInNodeList(tplParams, isSequentialLookup);
 	}
 	
 }

@@ -20,7 +20,6 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
-import dtool.resolver.ReferenceResolver;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
 	implements ICallableElement, IScopeNode, ITemplatableElement
@@ -71,8 +70,8 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		ReferenceResolver.findInNodeList(search, tplParams, true);
-		ReferenceResolver.findInNodeList(search, fnParams, true);
+		search.findInNodeList(tplParams, true);
+		search.findInNodeList(fnParams, true);
 	}
 	
 	/* ------------------------------------------------------------------------ */

@@ -17,7 +17,6 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
-import dtool.resolver.ReferenceResolver;
 
 public class StatementForeach extends Statement implements IScopeNode {
 	
@@ -58,7 +57,7 @@ public class StatementForeach extends Statement implements IScopeNode {
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		ReferenceResolver.findInNodeList(search, varParams, true);
+		search.findInNodeList(varParams, true);
 	}
 	
 }

@@ -27,7 +27,6 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * A named element corresponding to a partial package namespace.
@@ -120,7 +119,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			ReferenceResolver.findDefUnitInScope(PackageNamespace.this, search);
+			CommonScopeLookup.findDefUnitInScope(PackageNamespace.this, search);
 		}
 		
 	};
@@ -136,7 +135,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 				return;
 			}
 		}
-		ReferenceResolver.evaluateNamedElementForSearch(search, containedElement);
+		search.evaluateNamedElementForSearch(containedElement);
 	}
 	
 }
