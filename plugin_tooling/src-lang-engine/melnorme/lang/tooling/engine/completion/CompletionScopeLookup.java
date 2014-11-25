@@ -13,11 +13,11 @@ package melnorme.lang.tooling.engine.completion;
 import java.util.HashSet;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.definitions.Module;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -29,11 +29,11 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	public final PrefixSearchOptions searchOptions;
 	protected final Set<String> addedDefElements = new HashSet<>();
 	
-	public CompletionScopeLookup(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
+	public CompletionScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
 	}
 	
-	public CompletionScopeLookup(Module refOriginModule, int refOffset, ISemanticContext moduleResolver, 
+	public CompletionScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver, 
 			PrefixSearchOptions searchOptions) {
 		super(refOriginModule, refOffset, moduleResolver);
 		this.searchOptions = searchOptions;

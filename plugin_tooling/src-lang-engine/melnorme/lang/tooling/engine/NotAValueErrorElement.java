@@ -11,13 +11,13 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 
 public class NotAValueErrorElement extends AbstractElement implements INamedElement {
@@ -100,7 +100,7 @@ public class NotAValueErrorElement extends AbstractElement implements INamedElem
 	}
 	
 	@Override
-	public Ddoc resolveDDoc() {
+	public ElementDoc resolveDDoc() {
 		return wrappedElement.resolveDDoc();
 	}
 	

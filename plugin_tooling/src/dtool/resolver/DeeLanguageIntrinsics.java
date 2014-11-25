@@ -15,13 +15,13 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
-import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
+import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
-import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DdocParser;
 import dtool.ddoc.TextUI;
 
@@ -31,7 +31,7 @@ import dtool.ddoc.TextUI;
 public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	// helper method
-	public static Ddoc parseDDoc(String ddocSource) {
+	public static ElementDoc parseDDoc(String ddocSource) {
 		return new DdocParser("/**" + ddocSource + "*/").parse();
 	}
 	
@@ -48,7 +48,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 			super(name, null);
 		}
 		
-		public DeePrimitiveType(String name, Ddoc doc) {
+		public DeePrimitiveType(String name, ElementDoc doc) {
 			super(name, doc);
 		}
 		
@@ -88,7 +88,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit {
 		
-		public DeeIntrinsicType(String name, Ddoc doc) {
+		public DeeIntrinsicType(String name, ElementDoc doc) {
 			super(name, doc);
 		}
 		

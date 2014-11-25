@@ -12,6 +12,7 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
@@ -22,7 +23,6 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
@@ -80,7 +80,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public Ddoc resolveDDoc() {
+	public ElementDoc resolveDDoc() {
 		DefUnit resolvedModule = resolveUnderlyingNode();
 		if(resolvedModule != null) {
 			return resolveUnderlyingNode().getDDoc();

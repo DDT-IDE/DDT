@@ -12,6 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
@@ -62,6 +63,10 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 */
 	// TODO: add exception
 	INamedElementNode resolveUnderlyingNode();
+	
+	/** Resolve the underlying element and return its DDoc. See {@link #resolveUnderlyingNode()}.
+	 * Can be null. */
+	ElementDoc resolveDDoc();
 	
 	/** @return the class responsible for handling semantic analysis. Non-null. */
 	INamedElementSemantics getSemantics();

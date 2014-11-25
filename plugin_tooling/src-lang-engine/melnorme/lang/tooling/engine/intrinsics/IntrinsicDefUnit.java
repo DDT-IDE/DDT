@@ -2,9 +2,9 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
@@ -13,9 +13,9 @@ import dtool.ast.definitions.EArcheType;
  */
 public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	
-	protected final Ddoc doc;
+	protected final ElementDoc doc;
 	
-	public IntrinsicDefUnit(String name, Ddoc doc) {
+	public IntrinsicDefUnit(String name, ElementDoc doc) {
 		super(name);
 		this.doc = doc;
 	}
@@ -61,7 +61,7 @@ public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	}
 	
 	@Override
-	public final Ddoc resolveDDoc() {
+	public final ElementDoc resolveDDoc() {
 		return doc;
 	}
 	

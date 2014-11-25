@@ -13,6 +13,7 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
@@ -24,7 +25,6 @@ import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.ReferenceResolver;
@@ -89,7 +89,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeProv
 	}
 	
 	@Override
-	public Ddoc resolveDDoc() {
+	public ElementDoc resolveDDoc() {
 		return null;
 	}
 	

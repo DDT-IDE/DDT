@@ -10,11 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast_actual;
 
-import dtool.ast.definitions.EArcheType;
+import descent.core.ddoc.Ddoc;
 
-public interface INamedElementExtensions {
-	
-	/** Gets the archetype (the kind) of this DefElement. */
-	EArcheType getArcheType();
+public class ElementDoc extends Ddoc {
 	
 }

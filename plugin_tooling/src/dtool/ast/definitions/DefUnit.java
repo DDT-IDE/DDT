@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -7,13 +17,13 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import descent.core.ddoc.Ddoc;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.parser.DeeTokenSemantics;
 import dtool.parser.common.Token;
@@ -140,12 +150,12 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 		}
 	}
 	
-	public Ddoc getDDoc() {
+	public ElementDoc getDDoc() {
 		return DeeDocAccessor.getDdocFromDocComments(getDocComments());
 	}
 	
 	@Override
-	public final Ddoc resolveDDoc() {
+	public final ElementDoc resolveDDoc() {
 		return getDDoc();
 	}
 	

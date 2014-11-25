@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import descent.core.ddoc.DdocSection.Parameter;
 import dtool.parser.DeeLexingUtil;
 
@@ -38,7 +39,7 @@ public class DdocParser {
 	
 	private String startOfCodeLine;
 	
-	private Ddoc ddoc;
+	private ElementDoc ddoc;
 	private List<Parameter> parameters;
 	
 	/**
@@ -53,16 +54,16 @@ public class DdocParser {
 	 * Parses the text and returns the Ddoc information.
 	 * @return the ddoc information
 	 */
-	public Ddoc parse() {
+	public ElementDoc parse() {
 		try {
 			return internalParse();
 		} catch (IOException e) {
-			return new Ddoc();
+			return new ElementDoc();
 		}
 	}
 	
-	private Ddoc internalParse() throws IOException {
-		ddoc = new Ddoc();
+	private ElementDoc internalParse() throws IOException {
+		ddoc = new ElementDoc();
 		
 		StringReader stringReader = new StringReader(text);
 		BufferedReader reader = new BufferedReader(stringReader);

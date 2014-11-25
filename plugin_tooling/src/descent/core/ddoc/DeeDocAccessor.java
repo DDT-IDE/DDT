@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import descent.core.ddoc.DdocSection.Parameter;
 import dtool.ddoc.DdocMacros;
 import dtool.ddoc.IDeeDocColorConstants;
@@ -32,13 +33,13 @@ public class DeeDocAccessor {
 		redSections.add("Deprecated"); //$NON-NLS-1$
 	}
 	
-	public static Ddoc getDdocFromDocComments(Token[] docComments) {
-		Ddoc ddoc = null;
+	public static ElementDoc getDdocFromDocComments(Token[] docComments) {
+		ElementDoc ddoc = null;
 		Token[] preComments = docComments;
 		if (preComments != null && preComments.length > 0) {
 			for(Token comment : preComments) {
 				DdocParser parser = new DdocParser(comment.getSourceValue());
-				Ddoc newddoc = parser.parse();
+				ElementDoc newddoc = parser.parse();
 				if (ddoc == null) {
 					ddoc = newddoc;
 				} else {

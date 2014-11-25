@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -18,7 +19,6 @@ import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import descent.core.ddoc.Ddoc;
 import dtool.ast.definitions.EArcheType;
 import dtool.resolver.DeeLanguageIntrinsics;
 
@@ -26,7 +26,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	
 	public static final String NOT_FOUND__NAME = "<not_found>";
 	
-	protected final Ddoc parseDDoc;
+	protected final ElementDoc parseDDoc;
 	
 	public NotFoundErrorElement(IResolvable resolvable) {
 		parseDDoc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
@@ -101,7 +101,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	}
 	
 	@Override
-	public Ddoc resolveDDoc() {
+	public ElementDoc resolveDDoc() {
 		return parseDDoc;
 	}
 	
