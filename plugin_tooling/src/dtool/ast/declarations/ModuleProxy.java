@@ -19,6 +19,7 @@ import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -26,7 +27,6 @@ import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.Module;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * This class is an alias to an actual module element.
@@ -72,7 +72,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	public Module resolveUnderlyingNode() {
-		INamedElement module = ReferenceResolver.findModuleUnchecked(context, getModuleFullyQualifiedName());
+		INamedElement module = ResolvableSemantics.findModuleUnchecked(context, getModuleFullyQualifiedName());
 		if(module instanceof Module) {
 			return (Module) module;
 		}

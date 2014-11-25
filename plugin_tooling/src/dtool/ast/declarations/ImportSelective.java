@@ -12,12 +12,12 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
-import dtool.resolver.ReferenceResolver;
 
 public class ImportSelective extends ASTNode implements INonScopedContainer, IImportFragment {
 	
@@ -80,14 +80,39 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	}
 	
 	@Override
-	public void searchInSecondaryScope(CommonScopeLookup search) {
-		ReferenceResolver.findDefUnitInSelectiveImport(this, search);
-	}
-	
-	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(fragment, " : ");
 		cp.appendList(impSelFrags, ", ");
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void searchInSecondaryScope(CommonScopeLookup search) {
+		findDefUnitInSelectiveImport(this, search);
+	}
+	
+	public static void findDefUnitInSelectiveImport(ImportSelective impSelective, CommonScopeLookup search) {
+		
+		INamedElement targetModule = ImportContent.findImportTargetModule(search.modResolver, impSelective);
+		if (targetModule == null)
+			return;
+			
+		for(ASTNode impSelFrag: impSelective.impSelFrags) {
+			if(impSelFrag instanceof RefImportSelection) {
+				RefImportSelection refImportSelection = (RefImportSelection) impSelFrag;
+				String name = refImportSelection.getDenulledIdentifier();
+				// Do pre-emptive matching
+				if(!search.matchesName(name)) {
+					continue;
+				}
+				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				/*FIXME: BUG here if element not found*/
+				if(namedElement != null) { 
+					search.addMatch(namedElement);
+				}
+			}
+		}
 	}
 	
 }

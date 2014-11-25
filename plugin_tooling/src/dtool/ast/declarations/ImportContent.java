@@ -6,11 +6,13 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefModule;
-import dtool.resolver.ReferenceResolver;
 
 public class ImportContent extends ASTNode implements IImportFragment {
 	
@@ -61,16 +63,23 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef;
 	}
 	
+	private String[] getPackageNames() {
+		return moduleRef.packages.getInternalArray();
+	}
+	
+	/* ----------------- ----------------- */
+	
 	@Override
 	public void searchInSecondaryScope(CommonScopeLookup search) {
-		ReferenceResolver.findDefUnitInStaticImport(this, search);
+		findDefUnitInStaticImport(this, search);
 		if(!getDeclarationImport().isStatic) {
-			ReferenceResolver.findDefUnitInContentImport(this, search);
+			findDefUnitInContentImport(this, search);
 		}
 	}
 	
-	private String[] getPackageNames() {
-		return moduleRef.packages.getInternalArray();
+	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonScopeLookup search) {
+		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
+		search.evaluateNamedElementForSearch(namedElement);
 	}
 	
 	public INamedElement getPartialDefUnit(ISemanticContext mr) {
@@ -88,6 +97,23 @@ public class ImportContent extends ASTNode implements IImportFragment {
 			}
 		}
 		return defunit;
+	}
+	
+	public static void findDefUnitInContentImport(ImportContent impContent, CommonScopeLookup search) {
+		findDefUnitInStaticImport(impContent, search);
+		//if(search.isScopeFinished()) return;
+		
+		INamedElement targetModule = findImportTargetModule(search.modResolver, impContent);
+		if(targetModule != null) {
+			targetModule.resolveSearchInMembersScope(search);
+		}
+	}
+	
+	public static INamedElement findImportTargetModule(ISemanticContext modResolver, IImportFragment impSelective) {
+		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
+		String moduleName = impSelective.getModuleRef().module;
+		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, moduleName));
+		return ResolvableSemantics.findModuleUnchecked(modResolver, moduleFullName);
 	}
 	
 }

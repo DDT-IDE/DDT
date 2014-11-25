@@ -20,7 +20,6 @@ import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * Helper reference class.
@@ -51,7 +50,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			INamedElement module = ReferenceResolver.findModuleUnchecked(mr, moduleFullName);
+			INamedElement module = ResolvableSemantics.findModuleUnchecked(mr, moduleFullName);
 			if(module == null) 
 				return null;
 			
