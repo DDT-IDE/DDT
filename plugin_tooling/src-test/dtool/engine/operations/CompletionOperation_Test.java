@@ -17,9 +17,11 @@ import static melnorme.utilbox.misc.ArrayUtil.concat;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
+
 import org.junit.Test;
 
-import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.resolver.DefUnitResultsChecker;
 
 public class CompletionOperation_Test extends CommonDToolOperation_Test {

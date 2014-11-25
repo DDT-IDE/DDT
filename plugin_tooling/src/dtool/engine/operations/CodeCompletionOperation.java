@@ -20,20 +20,21 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
-import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
-import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexerResult.TokenAtOffsetResult;
-import dtool.resolver.PrefixDefUnitSearch;
 
 public class CodeCompletionOperation extends AbstractDToolOperation {
 	
@@ -177,7 +178,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 	
 	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, Module module,
 			ASTNode node, PrefixSearchOptions searchOptions) {
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(module, offset, mr, searchOptions);
+		CompletionScopeLookup search = new CompletionScopeLookup(module, offset, mr, searchOptions);
 		node.performRefSearch(search);
 		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements());
 	}

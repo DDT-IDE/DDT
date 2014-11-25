@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.bundles.ISemanticContext;
 import melnorme.lang.tooling.bundles.EmptySemanticResolution;
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -25,7 +26,6 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.TemplateInstance;
-import dtool.resolver.PrefixDefUnitSearch;
 
 
 public class Template_SemanticsTest extends CommonNodeSemanticsTest {
@@ -43,7 +43,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		return new TestsElementSearch(module.getModuleNode(), -1, module.getSemanticContext());
 	}
 	
-	public static class TestsElementSearch extends PrefixDefUnitSearch {
+	public static class TestsElementSearch extends CompletionScopeLookup {
 		
 		public TestsElementSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 			super(refOriginModule, refOffset, moduleResolver);

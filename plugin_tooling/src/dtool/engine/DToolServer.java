@@ -13,11 +13,11 @@ package dtool.engine;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
-import dtool.engine.operations.CompletionSearchResult;
 import dtool.engine.operations.ResolveDocViewOperation;
 
 public class DToolServer {

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -24,7 +25,6 @@ import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
-import dtool.engine.operations.CompletionSearchResult.ECompletionResultStatus;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
 import dtool.sourcegen.AnnotatedSource;

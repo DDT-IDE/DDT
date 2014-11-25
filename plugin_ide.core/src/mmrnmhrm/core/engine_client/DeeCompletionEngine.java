@@ -5,6 +5,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -17,9 +19,6 @@ import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.core.CompletionContext;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
-
-import dtool.engine.operations.CompletionSearchResult;
-import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
 	

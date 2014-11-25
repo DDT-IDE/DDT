@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -38,7 +39,6 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
-import dtool.engine.operations.CompletionSearchResult;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.tests.DToolTestResources;
 import dtool.tests.MockCompilerInstalls;

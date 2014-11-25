@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -28,7 +29,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.resolver.DefUnitResultsChecker;
-import dtool.resolver.PrefixDefUnitSearch;
 
 
 public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
@@ -44,7 +44,7 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
-		PrefixDefUnitSearch search = new PrefixDefUnitSearch(null, 0, new EmptySemanticResolution());
+		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, new EmptySemanticResolution());
 		namedElement.resolveSearchInMembersScope(search);
 		
 		DefUnitResultsChecker resultsChecker = new DefUnitResultsChecker(search.getMatchedElements());

@@ -1,29 +1,39 @@
-package dtool.resolver;
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.lang.tooling.engine.completion;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
-import dtool.engine.operations.CompletionSearchResult.PrefixSearchOptions;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
  * TODO: The matches with the same name as matches in a scope with higher 
  * priority are not added.
  */
-public class PrefixDefUnitSearch extends CommonScopeLookup {
+public class CompletionScopeLookup extends CommonScopeLookup {
 	
 	public final PrefixSearchOptions searchOptions;
 	protected final Set<String> addedDefElements = new HashSet<>();
 	
-	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
+	public CompletionScopeLookup(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
 	}
 	
-	public PrefixDefUnitSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver, 
+	public CompletionScopeLookup(Module refOriginModule, int refOffset, ISemanticContext moduleResolver, 
 			PrefixSearchOptions searchOptions) {
 		super(refOriginModule, refOffset, moduleResolver);
 		this.searchOptions = searchOptions;

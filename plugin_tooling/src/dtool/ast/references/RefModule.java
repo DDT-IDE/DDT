@@ -16,13 +16,13 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.bundles.ISemanticContext;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
-import dtool.resolver.PrefixDefUnitSearch;
 
 /** 
  * A module reference (in import declarations only).
@@ -80,8 +80,8 @@ public class RefModule extends NamedReference {
 	@Override
 	public void performRefSearch(CommonScopeLookup search) {
 		//TODO review this code
-		if(search instanceof PrefixDefUnitSearch) {
-			PrefixDefUnitSearch prefixDefUnitSearch = (PrefixDefUnitSearch) search;
+		if(search instanceof CompletionScopeLookup) {
+			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;
 			doSearch_forPrefixSearch(prefixDefUnitSearch);
 		} else {
 			assertTrue(isMissingCoreReference() == false);
@@ -98,7 +98,7 @@ public class RefModule extends NamedReference {
 		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
 	}
 	
-	public void doSearch_forPrefixSearch(PrefixDefUnitSearch search) {
+	public void doSearch_forPrefixSearch(CompletionScopeLookup search) {
 		String prefix = search.searchOptions.searchPrefix;
 		
 		for (String fqName : search.findModulesWithPrefix(prefix)) {

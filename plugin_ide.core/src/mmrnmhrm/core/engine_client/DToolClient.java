@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.bundles.ModuleSourceException;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
@@ -35,7 +36,6 @@ import dtool.engine.ModuleParseCache;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.FindDefinitionResult;
-import dtool.engine.operations.CompletionSearchResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 /**
