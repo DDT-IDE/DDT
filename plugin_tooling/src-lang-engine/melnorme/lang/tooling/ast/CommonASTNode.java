@@ -25,7 +25,6 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.resolver.DeeLanguageIntrinsics;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
@@ -301,7 +300,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	 * but the most common (and default) scenario is to perform a lexical lookup.
 	 * */
 	public void performNameLookup(CommonScopeLookup search) {
-		CommonASTNode.findDefUnitInPrimitivesScope(search);
+		ASTNode.getPrimitivesScope().resolveSearchInScope(search);
 		if(search.isFinished())
 			return;
 		
@@ -325,10 +324,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 			IScopeNode scope = (IScopeNode) this;
 			CommonScopeLookup.findDefUnitInScope(scope, search);
 		}
-	}
-	
-	public static void findDefUnitInPrimitivesScope(CommonScopeLookup search) {
-		DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope.resolveSearchInScope(search);
 	}
 	
 }

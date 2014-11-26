@@ -11,7 +11,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class ExpLiteralArray extends Expression {
 	

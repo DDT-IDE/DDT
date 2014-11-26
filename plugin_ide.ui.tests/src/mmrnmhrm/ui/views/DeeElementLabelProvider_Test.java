@@ -11,7 +11,7 @@ import org.junit.Test;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ddoc.TextUI;
-import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	

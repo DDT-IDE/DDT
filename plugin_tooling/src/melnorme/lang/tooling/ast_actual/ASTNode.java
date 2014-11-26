@@ -12,7 +12,9 @@ package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
+import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import dtool.ast.definitions.Module;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public abstract class ASTNode extends CommonASTNode {
 	
@@ -24,12 +26,16 @@ public abstract class ASTNode extends CommonASTNode {
 	
 	public String getModuleFullyQualifiedName() {
 		/* This must be overriden by synthetic defUnits */
-		Module moduleNode = assertNotNull(getModuleNode2());
+		Module moduleNode = assertNotNull(getModuleNode_());
 		return moduleNode.getFullyQualifiedName();
 	}
 	
-	public final Module getModuleNode2() {
+	public final Module getModuleNode_() {
 		return (Module) getModuleNode();
+	}
+	
+	public static InstrinsicsScope getPrimitivesScope() {
+		return DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope;
 	}
 	
 }

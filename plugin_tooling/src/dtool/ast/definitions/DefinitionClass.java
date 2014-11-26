@@ -23,8 +23,8 @@ import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.parser.common.Token;
-import dtool.resolver.DeeLanguageIntrinsics;
 
 /**
  * A definition of a class aggregate.

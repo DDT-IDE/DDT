@@ -25,8 +25,8 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.DeeLanguageIntrinsics;
-import dtool.resolver.DeeLanguageIntrinsics.DeeIntrinsicType;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics.DeeIntrinsicType;
 
 /**
  * A function pointer type

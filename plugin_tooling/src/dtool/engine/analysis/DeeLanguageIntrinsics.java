@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.resolver;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 

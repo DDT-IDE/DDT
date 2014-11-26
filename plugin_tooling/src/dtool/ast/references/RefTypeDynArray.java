@@ -20,7 +20,7 @@ import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
-import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class RefTypeDynArray extends CommonNativeTypeReference {
 	

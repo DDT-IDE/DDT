@@ -6,7 +6,7 @@ import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
 import org.junit.Test;
 
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class DeeElementFlagsTest {
 	

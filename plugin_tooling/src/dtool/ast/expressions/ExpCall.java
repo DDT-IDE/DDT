@@ -68,7 +68,7 @@ public class ExpCall extends Expression {
 			Module moduleNode = null;
 			if(calleeElem instanceof ASTNode) {
 				ASTNode astNode = (ASTNode) calleeElem;
-				moduleNode = astNode.getModuleNode2();
+				moduleNode = astNode.getModuleNode_();
 			}
 			if(moduleNode == null) {
 				return null;

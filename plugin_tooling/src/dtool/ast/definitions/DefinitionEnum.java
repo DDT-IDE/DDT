@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import static dtool.resolver.DeeLanguageIntrinsics.D2_063_intrinsics;
+import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;

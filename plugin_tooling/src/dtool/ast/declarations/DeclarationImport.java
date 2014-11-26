@@ -95,7 +95,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 		if(searchOriginModule == null) 
 			return false;
 		// only visible if search lexical origin in same module as the private import.
-		return searchOriginModule == declImport.getModuleNode2();
+		return searchOriginModule == declImport.getModuleNode_();
 	}
 	
 }

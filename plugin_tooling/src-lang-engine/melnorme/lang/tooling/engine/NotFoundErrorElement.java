@@ -20,7 +20,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
-import dtool.resolver.DeeLanguageIntrinsics;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class NotFoundErrorElement extends AbstractElement implements IConcreteNamedElement {
 	

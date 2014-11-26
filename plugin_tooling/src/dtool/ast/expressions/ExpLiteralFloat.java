@@ -12,8 +12,8 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.parser.common.IToken;
-import dtool.resolver.DeeLanguageIntrinsics;
 
 public class ExpLiteralFloat extends Expression {
 	
