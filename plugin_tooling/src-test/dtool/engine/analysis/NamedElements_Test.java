@@ -23,6 +23,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
+import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -30,6 +31,7 @@ import org.junit.Test;
 
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
@@ -241,6 +243,30 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		assertTrue(semantics == namedElement.getSemantics());
 		
 		checkIsSameResolution(semantics.resolveConcreteElement(context), semantics.resolveConcreteElement(context));
+	}
+	
+	@Test
+	public void testModuleSyntheticUnits() throws Exception { testModuleSyntheticUnits$(); }
+	public void testModuleSyntheticUnits$() throws Exception {
+		
+		testModuleSyntheticUnit____("module foo;", "foo");
+		testModuleSyntheticUnit____("", "_tests");
+		
+		testModuleSyntheticUnit____("module pack.foo;", "pack.foo");
+		testModuleSyntheticUnit____("module pack.subpack.foo;", "pack.subpack.foo");
+	}
+	
+	protected void testModuleSyntheticUnit____(String preSource, String elemName) throws ExecutionException {
+		ResolvedModule resolvedModule = parseModule(
+			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
+		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
+		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
+		
+		ResolvableResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
+		ResolvableResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
+		
+		assertTrue(pickA.element != pickB.element);
+		assertTrue(resultA.result == resultB.result);
 	}
 	
 }

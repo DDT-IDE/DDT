@@ -25,11 +25,11 @@ public class Scope_SemanticsTest extends CommonNodeSemanticsTest {
 	@Test
 	public void testShadowing() throws Exception { testShadowing$(); }
 	public void testShadowing$() throws Exception {
-		PickedElement<ASTNode> modulePick = 
+		PickedElement<ASTNode> pick = 
 				parseTestElement("void foo; class Blah { int foo = 8; } ", "8", ASTNode.class);
 		
-		ASTNode node = modulePick.element;
-		CommonScopeLookup lookup =new ResolutionLookup("foo", node.getModuleNode(), true, modulePick.context);
+		ASTNode node = pick.element;
+		CommonScopeLookup lookup = new ResolutionLookup("foo", node.getModuleNode(), true, pick.context);
 		node.performNameLookup(lookup);
 		
 		resultsChecker(lookup, true, true, true).checkResults(array(

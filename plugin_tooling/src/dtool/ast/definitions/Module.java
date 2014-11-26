@@ -122,6 +122,8 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 		this.members = parentize(members);
 		assertNotNull(members);
 		this.compilationUnitPath = compilationUnitPath;
+		
+		this.topLevelElement = createTopLevelElement();
 	}
 	
 	@Override
@@ -183,11 +185,23 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 	
 	/* -----------------  ----------------- */
 	
+	protected final INamedElement topLevelElement;
+	
+	protected INamedElement createTopLevelElement() {
+		if(md == null || md.packages.length == 0 || md.packages[0] == "") {
+			return this;
+		} else {
+			String[] packNames = md.packages;
+			return PackageNamespace.createPartialDefUnits(packNames, this);
+		}
+	}
+	
 	@Override
 	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
 		CommonScopeLookup.findDefUnitInScope(this, search);
 		
-		findDefUnitInModuleDec(this, search);
+		search.evaluateNamedElementForSearch(topLevelElement);
+		
 		findDefUnitInObjectIntrinsic(search);
 	}
 	
@@ -196,23 +210,6 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 		if (targetModule != null) {
 			targetModule.resolveSearchInMembersScope(search);
 		}
-	}
-	
-	public static void findDefUnitInModuleDec(Module module, CommonScopeLookup search) {
-		DeclarationModule decMod = module.md;
-		INamedElement moduleElement;
-		if(decMod != null) {
-			
-			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
-				moduleElement = module;
-			} else {
-				String[] packNames = decMod.packages;
-				moduleElement = PackageNamespace.createPartialDefUnits(packNames, module);
-			}
-		} else {
-			moduleElement = module;
-		}
-		search.evaluateNamedElementForSearch(moduleElement);
 	}
 	
 	@Override

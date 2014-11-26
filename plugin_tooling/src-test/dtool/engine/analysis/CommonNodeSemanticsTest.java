@@ -77,8 +77,15 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static <E extends ISemanticElement> PickedElement<E> parseTestElement(String source, 
 		String offsetSource, Class<E> klass) throws ExecutionException {
 		ResolvedModule resolvedModule = parseModule(source);
-		ISemanticContext context = resolvedModule.getSemanticContext();
-		return PickedElement.create(findNode(resolvedModule, source.indexOf(offsetSource), klass), context);
+		return pickElement(resolvedModule, offsetSource, klass);
+	}
+	
+	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
+			String offsetSource, Class<E> klass) {
+		String source = resolvedModule.getParsedModule().source;
+		int indexOf = source.indexOf(offsetSource);
+		assertTrue(indexOf >= 0);
+		return PickedElement.create(findNode(resolvedModule, indexOf, klass), resolvedModule.getSemanticContext());
 	}
 	
 	/* ----------------- Helper to test caching ----------------- */
