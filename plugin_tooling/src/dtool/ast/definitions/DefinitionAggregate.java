@@ -26,7 +26,6 @@ import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * A definition of a aggregate. 
@@ -101,7 +100,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+			resolveSearchInScope(search, getBodyScope());
 			commonTypeScope.resolveSearchInScope(search);
 		}
 	

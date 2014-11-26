@@ -99,7 +99,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		PickedElement<Module> modulePick = parseTestElement("import foo; class foo_member; ", "", Module.class);
 		
 		CompletionScopeLookup lookup = new CompletionScopeLookup(modulePick.element, -1, modulePick.context);
-		modulePick.element.performRefSearch(lookup);
+		modulePick.element.performNameLookup(lookup);
 		
 		resultsChecker(lookup, true, true, true).checkResults(array(
 			"_tests/", "foo/", "everywhere/",

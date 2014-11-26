@@ -179,7 +179,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, Module module,
 			ASTNode node, PrefixSearchOptions searchOptions) {
 		CompletionScopeLookup search = new CompletionScopeLookup(module, offset, mr, searchOptions);
-		node.performRefSearch(search);
+		node.performNameLookup(search);
 		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements());
 	}
 	

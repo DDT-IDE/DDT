@@ -58,8 +58,8 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		return refOffset >= 0;
 	}
 	
-	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
-		return modResolver.findModules(fqNamePrefix);
+	public ArrayList<IScopeProvider> getSearchedScopes() {
+		return searchedScopes;
 	}
 	
 	/** @return the {@link IModuleElement} of the node or position where this search originates. */
@@ -76,9 +76,15 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		return StringUtil.iterToString(matches, "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
-				return obj.getModuleFullyQualifiedName();
+				return obj.getFullyQualifiedName();
 			}
 		});
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
+		return modResolver.findModules(fqNamePrefix);
 	}
 	
 	/* -----------------  ----------------- */

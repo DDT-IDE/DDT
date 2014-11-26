@@ -23,7 +23,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
@@ -89,11 +89,11 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* -----------------  ----------------- */
 	
-	public static DefUnitResultsChecker resultsChecker(CompletionScopeLookup lookup) {
+	public static DefUnitResultsChecker resultsChecker(CommonScopeLookup lookup) {
 		return resultsChecker(lookup, true, true, true);
 	}
 	
-	public static DefUnitResultsChecker resultsChecker(CompletionScopeLookup lookup, boolean ignoreDummy,
+	public static DefUnitResultsChecker resultsChecker(CommonScopeLookup lookup, boolean ignoreDummy,
 			boolean ignorePrimitives, boolean ignoreObjectModule) {
 		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements());
 		checker.removeIgnoredDefUnits(ignoreDummy, ignorePrimitives);

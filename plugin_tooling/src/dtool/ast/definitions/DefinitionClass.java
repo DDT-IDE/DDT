@@ -25,7 +25,6 @@ import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.common.Token;
 import dtool.resolver.DeeLanguageIntrinsics;
-import dtool.resolver.ReferenceResolver;
 
 /**
  * A definition of a class aggregate.
@@ -112,7 +111,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 		
 		public void resolveSearchInHierarchyScope(CommonScopeLookup search) {
-			ReferenceResolver.resolveSearchInScope(search, getBodyScope());
+			resolveSearchInScope(search, getBodyScope());
 			if(getBodyScope() == null) {
 				// Even without a body scope, we can resolve in super scopes
 				resolveSearchInSuperScopes(search);

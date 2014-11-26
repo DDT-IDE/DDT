@@ -47,7 +47,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	public abstract Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver);
 	
 	@Override
-	public void performRefSearch(CommonScopeLookup search) {
+	public void performNameLookup(CommonScopeLookup search) {
 		performQualifiedRefSearch(search);
 	}
 	

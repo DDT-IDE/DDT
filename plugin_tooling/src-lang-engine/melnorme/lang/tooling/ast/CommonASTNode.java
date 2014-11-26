@@ -21,10 +21,11 @@ import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.resolver.ReferenceResolver;
+import dtool.resolver.DeeLanguageIntrinsics;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
@@ -278,10 +279,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return NodeUtil.getMatchingParent(this, IModuleNode.class);
 	}
 	
-	public IScopeNode getOuterLexicalScope() {
-		return ReferenceResolver.getOuterLexicalScope(asNode());
-	}
-	
 	@Override
 	public boolean isLanguageIntrinsic() {
 		return false;
@@ -294,6 +291,44 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 			return null;
 		}
 		return moduleNode.getCompilationUnitPath();
+	}
+	
+	/* ----------------- Lexical lookup ----------------- */
+	
+	/** 
+	 * Perform a name lookup starting in this node.
+	 * The exact mechanism in which the name lookup will be performed will depend on the node, 
+	 * but the most common (and default) scenario is to perform a lexical lookup.
+	 * */
+	public void performNameLookup(CommonScopeLookup search) {
+		CommonASTNode.findDefUnitInPrimitivesScope(search);
+		if(search.isFinished())
+			return;
+		
+		doPerformNameLookupInFullLexicalScope(search);
+	}
+	
+	protected void doPerformNameLookupInFullLexicalScope(CommonScopeLookup search) {
+		doPerformNameLookupInThisLexicalScope(search);
+		
+		if(search.isFinished())
+			return;
+		
+		ASTNode parent = getParent();
+		if(parent != null) {
+			parent.doPerformNameLookupInFullLexicalScope(search);
+		}
+	}
+	
+	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
+		if(this instanceof IScopeNode) {
+			IScopeNode scope = (IScopeNode) this;
+			CommonScopeLookup.findDefUnitInScope(scope, search);
+		}
+	}
+	
+	public static void findDefUnitInPrimitivesScope(CommonScopeLookup search) {
+		DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope.resolveSearchInScope(search);
 	}
 	
 }

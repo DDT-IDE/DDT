@@ -78,7 +78,7 @@ public class RefModule extends NamedReference {
 	}
 	
 	@Override
-	public void performRefSearch(CommonScopeLookup search) {
+	public void performNameLookup(CommonScopeLookup search) {
 		//TODO review this code
 		if(search instanceof CompletionScopeLookup) {
 			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;

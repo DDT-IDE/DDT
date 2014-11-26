@@ -22,16 +22,18 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeNode;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.references.RefModule;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.Token;
-import dtool.resolver.ReferenceResolver;
 import dtool.util.NewUtils;
 
 /**
@@ -182,6 +184,38 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 	/* -----------------  ----------------- */
 	
 	@Override
+	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
+		CommonScopeLookup.findDefUnitInScope(this, search);
+		
+		findDefUnitInModuleDec(this, search);
+		findDefUnitInObjectIntrinsic(search);
+	}
+	
+	public static void findDefUnitInObjectIntrinsic(CommonScopeLookup search) {
+		INamedElement targetModule = ResolvableSemantics.findModuleUnchecked(search.modResolver, "object");
+		if (targetModule != null) {
+			targetModule.resolveSearchInMembersScope(search);
+		}
+	}
+	
+	public static void findDefUnitInModuleDec(Module module, CommonScopeLookup search) {
+		DeclarationModule decMod = module.md;
+		INamedElement moduleElement;
+		if(decMod != null) {
+			
+			if(decMod.packages.length == 0 || decMod.packages[0] == "") {
+				moduleElement = module;
+			} else {
+				String[] packNames = decMod.packages;
+				moduleElement = PackageNamespace.createPartialDefUnits(packNames, module);
+			}
+		} else {
+			moduleElement = module;
+		}
+		search.evaluateNamedElementForSearch(moduleElement);
+	}
+	
+	@Override
 	public INamedElementSemantics getSemantics() {
 		return semantics;
 	}
@@ -190,7 +224,7 @@ public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcret
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			ReferenceResolver.resolveSearchInScope(search, Module.this);
+			resolveSearchInScope(search, Module.this);
 		}
 		
 	};
