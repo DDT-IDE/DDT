@@ -10,12 +10,12 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import java.util.Iterator;
-
-import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
+import melnorme.utilbox.misc.IteratorUtil;
 
 public class BlockStatementUnscoped extends CommonStatementList implements INonScopedContainer {
 	
@@ -33,8 +33,8 @@ public class BlockStatementUnscoped extends CommonStatementList implements INonS
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return super.getMembersIterator();
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return IteratorUtil.nonNullIterable(statements_asNodes());
 	}
 	
 }

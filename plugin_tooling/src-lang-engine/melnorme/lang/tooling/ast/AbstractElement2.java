@@ -62,7 +62,7 @@ public abstract class AbstractElement2 implements ISemanticElement {
 		if(this instanceof INonScopedContainer) {
 			INonScopedContainer container = ((INonScopedContainer) this);
 			// FIXME: remove need for isSequentialLookup?
-			lookup.findDefUnits(container.getMembersIterator(), isSequentialLookup, importsOnly);
+			lookup.evaluateNodeList(container.getMembersIterable(), isSequentialLookup, importsOnly);
 		}
 		
 		if(!importsOnly && this instanceof DefUnit) {

@@ -117,7 +117,7 @@ public class DefinitionTemplate extends CommonDefinition
 	public void resolveSearchInScope(CommonScopeLookup search) {
 		boolean isSequentialLookup = search.isSequentialLookup();
 		/* FIXME: need to refactor this */
-		search.findInNodeList(tplParams, isSequentialLookup);
+		search.evaluateNodeList(tplParams, isSequentialLookup);
 	}
 	
 }

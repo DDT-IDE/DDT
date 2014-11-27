@@ -3,12 +3,9 @@ package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Iterator;
-
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
@@ -79,8 +76,8 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return IteratorUtil.nonNullIterator(fragments);
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return IteratorUtil.nonNullIterable(fragments);
 	}
 	
 	@Override

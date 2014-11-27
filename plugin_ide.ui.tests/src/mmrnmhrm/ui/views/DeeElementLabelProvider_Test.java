@@ -43,7 +43,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		
 		
 		ResolutionLookup search = new ResolutionLookup("int", null, -1, true, new EmptySemanticResolution());
-		search.findDefUnitInScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope);
+		search.evaluateScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope);
 		defElement = search.getMatchedElements().iterator().next();
 		
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "int");

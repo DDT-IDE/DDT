@@ -12,12 +12,8 @@ package dtool.ast.statements;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Iterator;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -53,10 +49,6 @@ public abstract class CommonStatementList extends Statement {
 		cp.append("{");
 		cp.appendList("\n", statements_asNodes(), "\n", "\n");
 		cp.append("}");
-	}
-	
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return NodeListView.getIteratorSafe(statements_asNodes());
 	}
 	
 }

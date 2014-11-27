@@ -11,6 +11,7 @@ import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.AttribProtection.EProtection;
@@ -58,18 +59,19 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return getBodyIterator(body);
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return getBodyIterable(body);
 	}
 	
-	public static Iterator<? extends ASTNode> getBodyIterator(ASTNode body) {
+	public static Iterable<ASTNode> getBodyIterable(ASTNode body) {
 		if(body == null) {
-			return IteratorUtil.emptyIterator();
+			return IteratorUtil.<ASTNode>emptyIterable();
 		}
 		if(body instanceof NodeList<?>) {
-			return ((NodeList<?>) body).nodes.iterator();
+			return ((NodeList<?>) body).nodes.upcastTypeParameter();
 		}
-		return IteratorUtil.singletonIterator(body);
+		// TODO save body node collection
+		return new ArrayList2<>(body);
 	}
 	
 	/** 
@@ -105,9 +107,8 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	// TODO have CommonDefinition fetch attributes upwards,
 	// instead of the other way around
 	protected void applyBasicAttributes(AttribBasic attribute, INonScopedContainer block) {
-		Iterator<? extends IASTNode> iter = block.getMembersIterator();
-		while(iter.hasNext()) {
-			IASTNode node = iter.next();
+		
+		for (IASTNode node : block.getMembersIterable()) {
 			
 			if(node instanceof CommonDefinition) {
 				CommonDefinition def = (CommonDefinition) node;
@@ -119,9 +120,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	}
 	
 	protected void applyProtectionAttributes(EProtection protection, INonScopedContainer block) {
-		Iterator<? extends IASTNode> iter = block.getMembersIterator();
-		while(iter.hasNext()) {
-			IASTNode descendantNode = iter.next();
+		for (IASTNode descendantNode : block.getMembersIterable()) {
 			
 			if(anotherProtectionAttribPresent(descendantNode)) {
 				continue; // Do not descend, other attrib takes precedence

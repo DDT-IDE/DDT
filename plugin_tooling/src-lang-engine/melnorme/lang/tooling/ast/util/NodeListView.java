@@ -10,11 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast.util;
 
-import java.util.Iterator;
-
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.misc.IteratorUtil;
 
 /**
  * Utility class for lists of nodes.
@@ -27,10 +24,6 @@ public class NodeListView<T extends IASTNode> extends ArrayView<T> {
 	public NodeListView(T[] array, boolean hasEndingSeparator) {
 		super(array);
 		this.hasEndingSeparator = hasEndingSeparator;
-	}
-	
-	public static <T> Iterator<T> getIteratorSafe(Iterable<T> nodeList) {
-		return nodeList == null ? IteratorUtil.<T>emptyIterator() : nodeList.iterator();
 	}
 	
 }

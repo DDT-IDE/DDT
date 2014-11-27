@@ -75,8 +75,8 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return impSelFrags.iterator();
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return impSelFrags;
 	}
 	
 	@Override

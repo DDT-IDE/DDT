@@ -50,7 +50,7 @@ public class CatchClause extends ASTNode implements IScopeElement {
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
 		if(catchParam != null) {
-			search.findInNodeList(Collections.singletonList(catchParam), false);
+			search.evaluateNodeList(Collections.singletonList(catchParam), false);
 		}
 	}
 	

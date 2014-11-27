@@ -5,6 +5,7 @@ import static dtool.util.NewUtils.assertCast;
 
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -55,8 +56,8 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return IteratorUtil.nonNullIterator(aliasFragments);
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return IteratorUtil.nonNullIterable(aliasFragments);
 	}
 	
 	public Token[] getDefinitionContainerDocComments() {

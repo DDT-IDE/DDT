@@ -1,7 +1,6 @@
 package dtool.ast.declarations;
 
-import java.util.Iterator;
-
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -34,9 +33,9 @@ public class DeclarationMixinString extends ASTNode implements INonScopedContain
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
+	public Iterable<? extends IASTNode> getMembersIterable() {
 		// TODO: parse the exp string
-		return IteratorUtil.emptyIterator();
+		return IteratorUtil.emptyIterable();
 	}
 	
 	@Override

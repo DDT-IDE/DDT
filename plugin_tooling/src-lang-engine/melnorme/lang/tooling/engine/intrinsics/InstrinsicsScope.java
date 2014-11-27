@@ -30,7 +30,11 @@ public class InstrinsicsScope implements IScopeElement {
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		CommonScopeLookup.findInNamedElementList(search, members);
+		// TODO: make nonnull?
+		if(members == null) {
+			return;
+		}
+		search.evaluateNamedElementList(members);
 	}
 	
 }

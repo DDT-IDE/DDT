@@ -57,7 +57,7 @@ public class StatementForeach extends Statement implements IScopeElement {
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.findInNodeList(varParams, true);
+		search.evaluateNodeList(varParams, true);
 	}
 	
 }

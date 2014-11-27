@@ -37,7 +37,7 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode implements ISc
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.findInNodeList(nodes, false);
+		search.evaluateNodeList(nodes, false);
 	}
 	
 }

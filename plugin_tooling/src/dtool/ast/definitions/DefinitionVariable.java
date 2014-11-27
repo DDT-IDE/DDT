@@ -11,12 +11,9 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Iterator;
-
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
@@ -88,8 +85,8 @@ public class DefinitionVariable extends CommonDefinition
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return getFragments().iterator();
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return getFragments();
 	}
 	
 	@Override

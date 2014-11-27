@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.Assert;
-import melnorme.utilbox.collections.ChainedIterator;
+import melnorme.utilbox.collections.SimpleChainedIterator;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Pair;
@@ -78,7 +78,7 @@ public class NewUtils {
 		if(iter2 == null)
 			return iter1.iterator();
 		
-		return new ChainedIterator<T>(iter1.iterator(), iter2.iterator());
+		return new SimpleChainedIterator<T>(iter1.iterator(), iter2.iterator());
 	}
 	
 	@SafeVarargs

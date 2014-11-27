@@ -1,7 +1,5 @@
 package dtool.ast.declarations;
 
-import java.util.Iterator;
-
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.IModuleElement;
@@ -57,8 +55,8 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
-		return imports_asNodes().iterator();
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return imports_asNodes();
 	}
 	
 	@Override

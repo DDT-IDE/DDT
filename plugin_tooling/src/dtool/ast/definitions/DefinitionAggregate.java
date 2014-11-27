@@ -108,7 +108,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.findInNodeList(tplParams, true);
+		search.evaluateNodeList(tplParams, true);
 	}
 	
 }

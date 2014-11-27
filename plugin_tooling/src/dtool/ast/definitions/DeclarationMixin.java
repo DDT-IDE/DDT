@@ -2,6 +2,7 @@ package dtool.ast.definitions;
 
 import java.util.Iterator;
 
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -43,8 +44,8 @@ public class DeclarationMixin extends ASTNode implements INonScopedContainer, ID
 	}
 	
 	@Override
-	public Iterator<ASTNode> getMembersIterator() {
-		return IteratorUtil.emptyIterator();
+	public Iterable<? extends IASTNode> getMembersIterable() {
+		return IteratorUtil.emptyIterable();
 		// TODO: mixin container
 		/*
 		DefUnit defunit = type.findTargetDefUnit();

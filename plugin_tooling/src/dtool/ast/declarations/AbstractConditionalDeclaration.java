@@ -1,13 +1,11 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Iterator;
-
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ChainedIterator;
+import melnorme.utilbox.collections.ChainedIterable;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
@@ -51,16 +49,16 @@ public abstract class AbstractConditionalDeclaration extends ASTNode
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
+	public Iterable<? extends IASTNode> getMembersIterable() {
 		if(body == null && elseBody == null)
-			return IteratorUtil.emptyIterator();
+			return IteratorUtil.<ASTNode>emptyIterable();
 		if(elseBody == null)
-			return DeclarationAttrib.getBodyIterator(body);
+			return DeclarationAttrib.getBodyIterable(body);
 		if(body == null)
-			return DeclarationAttrib.getBodyIterator(elseBody);
+			return DeclarationAttrib.getBodyIterable(elseBody);
 		
-		return new ChainedIterator<ASTNode>(DeclarationAttrib.getBodyIterator(body), 
-			DeclarationAttrib.getBodyIterator(elseBody)); 
+		return ChainedIterable.create(DeclarationAttrib.getBodyIterable(body), 
+			DeclarationAttrib.getBodyIterable(elseBody)); 
 	}
 	
 	public void toStringAsCodeBodyAndElseBody(ASTCodePrinter cp) {

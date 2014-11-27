@@ -28,7 +28,7 @@ public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, ISco
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.findInNodeList(nodes, false);
+		search.evaluateNodeList(nodes, false);
 		// TODO: a more typesafe alternative to this check
 		if(getParent() instanceof DefinitionClass) {
 			DefinitionClass definitionClass = (DefinitionClass) getParent();

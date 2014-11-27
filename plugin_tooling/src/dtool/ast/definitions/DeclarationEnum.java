@@ -1,10 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.definitions;
 
-import java.util.Iterator;
-
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
@@ -43,10 +51,10 @@ public class DeclarationEnum extends ASTNode implements INonScopedContainer, IDe
 	}
 	
 	@Override
-	public Iterator<? extends ASTNode> getMembersIterator() {
+	public Iterable<? extends IASTNode> getMembersIterable() {
 		if(body == null)
-			return IteratorUtil.emptyIterator();
-		return NodeListView.getIteratorSafe(body.nodeList);
+			return IteratorUtil.emptyIterable();
+		return IteratorUtil.nonNullIterable(body.nodeList);
 	}
 	
 }

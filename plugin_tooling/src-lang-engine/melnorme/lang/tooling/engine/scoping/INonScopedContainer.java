@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.scoping;
 
-import java.util.Iterator;
-
 import melnorme.lang.tooling.ast.IASTNode;
 
 /**
@@ -22,6 +20,6 @@ public interface INonScopedContainer {
 	
 	/** @return an iterator for the members of this {@link INonScopedContainer}. Non-null. 
 	 * Used mainly for resolving. */
-	Iterator<? extends IASTNode> getMembersIterator();
+	Iterable<? extends IASTNode> getMembersIterable();
 	
 }
