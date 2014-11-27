@@ -69,16 +69,11 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			CompletionSearchResult completionResult) {
 		PrefixSearchOptions searchOptions = completionResult.searchOptions;
 		
-		String rplName;
-		if(searchOptions.isImportModuleSearch) {
-			rplName = namedElem.getFullyQualifiedName();
-		} else {
-			rplName = namedElem.getName();
-		}
+		String rplName = namedElem.getName();
 		
 		String rplStr = rplName.substring(searchOptions.namePrefixLen);
 		
-		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset, searchOptions.isImportModuleSearch);
+		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset);
 		proposal.setName(namedElem.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + completionResult.getReplaceLength());
@@ -89,11 +84,8 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	public static class RefSearchCompletionProposal extends CompletionProposal {
 		
-		public final boolean isModuleImportCompletion;
-		
-		protected RefSearchCompletionProposal(int completionLocation, boolean isModuleImportCompletion) {
+		protected RefSearchCompletionProposal(int completionLocation) {
 			super(CompletionProposal.TYPE_REF, completionLocation);
-			this.isModuleImportCompletion = isModuleImportCompletion;
 		}
 		
 		@Override
@@ -105,10 +97,6 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 		@Override
 		public INamedElement getExtraInfo() {
 			return (INamedElement) super.getExtraInfo();
-		}
-		
-		public boolean isModuleImportCompletion() {
-			return isModuleImportCompletion;
 		}
 		
 	}

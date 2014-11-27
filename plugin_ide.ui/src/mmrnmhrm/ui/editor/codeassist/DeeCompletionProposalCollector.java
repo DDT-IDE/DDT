@@ -53,9 +53,7 @@ public class DeeCompletionProposalCollector extends ScriptCompletionProposalColl
 			int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
 			Image image = createImage(proposal);
 			
-			String displayString = refSearchProposal.isModuleImportCompletion() ?
-				namedElement.getModuleFullyQualifiedName() :
-				DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
+			String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
 			
 			DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
 					image, displayString, namedElement, null);

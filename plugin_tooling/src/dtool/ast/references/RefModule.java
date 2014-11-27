@@ -72,7 +72,12 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public String getCoreReferenceName() {
-		return module;
+		return getRefModuleFullyQualifiedName();
+	}
+	
+	@Override
+	public boolean isMissingCoreReference() {
+		return module == null || module.isEmpty();
 	}
 	
 	public String getRefModuleFullyQualifiedName() {

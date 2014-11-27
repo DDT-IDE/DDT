@@ -172,7 +172,9 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		
 		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 		searchOptions.setPrefixSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
-		searchOptions.isImportModuleSearch = true;
+		// Maybe the above code can now be simplified, now that the line below was removed:
+		//searchOptions.isImportModuleSearch = true;
+		
 		return searchOptions;
 	}
 	
