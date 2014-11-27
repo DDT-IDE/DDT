@@ -61,10 +61,6 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 			return;
 		}
 		addedDefElements.add(extendedName);
-		addMatchDirectly(namedElem);
-	}
-	
-	public void addMatchDirectly(INamedElement namedElem) {
 		super.addMatch(namedElem);
 	}
 	

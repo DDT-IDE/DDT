@@ -12,13 +12,15 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Set;
+
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.ModuleProxy;
 import dtool.parser.common.BaseLexElement;
@@ -77,34 +79,29 @@ public class RefModule extends NamedReference {
 		return toStringAsCode();
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
-		//TODO review this code
 		if(search instanceof CompletionScopeLookup) {
 			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;
-			doSearch_forPrefixSearch(prefixDefUnitSearch);
+			String prefix = prefixDefUnitSearch.searchOptions.searchPrefix;
+			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
+			
+			for (String fqName : matchedModule) {
+				search.addMatch(new ModuleProxy(fqName, prefixDefUnitSearch.modResolver, true));
+			}
 		} else {
 			assertTrue(isMissingCoreReference() == false);
-			ResolutionLookup defUnitSearch = (ResolutionLookup) search;
-			ISemanticContext mr = search.modResolver;
-			ModuleProxy moduleProxy = getModuleProxy(mr);
+			ModuleProxy moduleProxy = new ModuleProxy(getRefModuleFullyQualifiedName(), search.modResolver, true);
 			if(moduleProxy.resolveUnderlyingNode() != null) {
-				defUnitSearch.addMatch(moduleProxy);
+				search.addMatch(moduleProxy);
 			}
 		}
 	}
 	
 	public ModuleProxy getModuleProxy(ISemanticContext mr) {
-		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr);
-	}
-	
-	public void doSearch_forPrefixSearch(CompletionScopeLookup search) {
-		String prefix = search.searchOptions.searchPrefix;
-		
-		for (String fqName : search.findModulesWithPrefix(prefix)) {
-			search.addMatchDirectly(new ModuleProxy(fqName, search.modResolver));
-		}
-		
+		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr, false);
 	}
 	
 }

@@ -36,13 +36,21 @@ import dtool.ast.definitions.Module;
 public class ModuleProxy extends AbstractNamedElement {
 	
 	protected final ISemanticContext context;
-	protected final String fqModuleName;
+	protected final String fullModuleName;
 	
-	public ModuleProxy(String fqModuleName, ISemanticContext moduleResolver) {
-		super(StringUtil.substringAfterLastMatch(fqModuleName, "."));
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver) {
+		this(fullModuleName, moduleResolver, false);
+	}
+	
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName) {
+		super(getEffectiveModuleName(fullModuleName, useFullName));
 		assertTrue(getName().trim().isEmpty() == false);
-		this.fqModuleName = fqModuleName;
+		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;
+	}
+	
+	protected static String getEffectiveModuleName(String fullModuleName, boolean usefullName) {
+		return usefullName ? fullModuleName : StringUtil.substringAfterLastMatch(fullModuleName, ".");
 	}
 	
 	@Override
@@ -52,7 +60,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	public String getModuleFullyQualifiedName() {
-		return fqModuleName;
+		return fullModuleName;
 	}
 	
 	@Override
@@ -62,7 +70,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		return fqModuleName;
+		return fullModuleName;
 	}
 	
 	@Override
@@ -115,7 +123,7 @@ public class ModuleProxy extends AbstractNamedElement {
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			DefUnit resolvedModule = resolveUnderlyingNode();
+			INamedElement resolvedModule = resolveUnderlyingNode();
 			if(resolvedModule != null) {
 				resolvedModule.resolveSearchInMembersScope(search);
 			}

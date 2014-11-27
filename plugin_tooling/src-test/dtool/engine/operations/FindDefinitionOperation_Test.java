@@ -41,7 +41,7 @@ public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 		// Test implicit source module
 		testFindDefinition(BASIC_FOO_FilePath, indexOf(BASIC_FOO_Contents, "implicit_name/*MARKER*/"), 
 			new FindDefinitionResultEntry(
-				"implicit_name", false, BUNDLE_FOO__SRC_FOLDER.resolve("basic_pack/implicit_name.d"), 
+				"basic_pack.implicit_name", false, BUNDLE_FOO__SRC_FOLDER.resolve("basic_pack/implicit_name.d"), 
 				new SourceRange(0, 0))
 		);
 		

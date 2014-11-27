@@ -37,10 +37,16 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected static ResolvableResult testResolveElement(PickedElement<? extends NamedReference> refElement) {
-		String expectedName = refElement.element.getCoreReferenceName();
+		NamedReference namedRef = refElement.element;
+		
+		String expectedName = namedRef.getCoreReferenceName();
 		if(areEqual(expectedName, "not_found")) {
 			expectedName = "<not_found>";
+		} else if(namedRef instanceof RefModule) {
+			RefModule refModule = (RefModule) refElement.element;
+			expectedName = refModule.getRefModuleFullyQualifiedName();
 		}
+		
 		return testResolveElement(refElement, expectedName);
 	}
 	
