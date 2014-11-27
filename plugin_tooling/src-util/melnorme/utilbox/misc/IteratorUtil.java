@@ -26,6 +26,11 @@ public class IteratorUtil {
 		return (Iterator<E>) EMPTY_ITERATOR;
 	}
 	
+	/** @return an iterable with no elements. */
+	public static <E> Iterable<E> emptyIterable() {
+		return Collections.EMPTY_LIST;
+	}
+	
 	/** Recasts the type parameter of given iterator to a more specific type.
 	 * Safe to do if the returned iterator is used in a read only way with regards to the underlying collection.
 	 * @return the recasted iterator. */

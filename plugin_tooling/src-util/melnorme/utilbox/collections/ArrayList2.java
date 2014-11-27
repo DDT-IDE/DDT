@@ -61,9 +61,9 @@ public class ArrayList2<E> extends ArrayList<E> implements Indexable<E> {
 		return ArrayUtil.createFrom(this, componentType);
 	}
 	
-	@SuppressWarnings("unchecked")
 	/** Cast the type parameter to something. This operation is only safe if the underlying collection 
 	 * is used only for reading (for a type parameter upcast) or writing (for a type parameter upcast).*/
+	@SuppressWarnings("unchecked")
 	public <T> ArrayList2<T> castTypeParam() {
 		return (ArrayList2<T>) this;
 	}
