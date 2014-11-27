@@ -12,13 +12,13 @@ package dtool.ast.statements;
 
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.
  */
-public class BlockStatement extends CommonStatementList implements IScopeNode, IFunctionBody {
+public class BlockStatement extends CommonStatementList implements IScopeElement, IFunctionBody {
 	
 	public BlockStatement(ArrayView<IStatement> statements) {
 		super(statements);

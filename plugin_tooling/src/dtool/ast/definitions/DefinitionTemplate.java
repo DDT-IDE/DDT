@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -34,7 +34,7 @@ import dtool.parser.common.Token;
  * (Technically not allowed as statement, but parse so anyways.)
  */
 public class DefinitionTemplate extends CommonDefinition 
-	implements IScopeNode, IDeclaration, IStatement, ITemplatableElement, IConcreteNamedElement 
+	implements IScopeElement, IDeclaration, IStatement, ITemplatableElement, IConcreteNamedElement 
 {
 	
 	public final boolean isMixin;

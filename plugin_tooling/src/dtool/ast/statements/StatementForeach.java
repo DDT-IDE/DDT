@@ -14,11 +14,11 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 
-public class StatementForeach extends Statement implements IScopeNode {
+public class StatementForeach extends Statement implements IScopeElement {
 	
 	public final boolean isForeachReverse;
 	public final ArrayView<ForeachVariableDef> varParams;

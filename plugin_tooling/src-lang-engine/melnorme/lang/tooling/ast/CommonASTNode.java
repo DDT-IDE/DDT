@@ -22,7 +22,7 @@ import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 
@@ -320,8 +320,8 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
-		if(this instanceof IScopeNode) {
-			IScopeNode scope = (IScopeNode) this;
+		if(this instanceof IScopeElement) {
+			IScopeElement scope = (IScopeElement) this;
 			CommonScopeLookup.findDefUnitInScope(scope, search);
 		}
 	}

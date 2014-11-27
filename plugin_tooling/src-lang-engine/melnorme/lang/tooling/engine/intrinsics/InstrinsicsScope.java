@@ -13,10 +13,10 @@ package melnorme.lang.tooling.engine.intrinsics;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.misc.CollectionUtil;
 
-public class InstrinsicsScope implements IScopeProvider {
+public class InstrinsicsScope implements IScopeElement {
 	
 	public final ArrayList<IntrinsicDefUnit> members;
 	

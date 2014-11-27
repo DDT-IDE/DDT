@@ -14,10 +14,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
-public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeNode {
+public abstract class NodeList<E extends ASTNode> extends ASTNode implements IScopeElement {
 	
 	public final ArrayView<E> nodes;
 	

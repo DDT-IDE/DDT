@@ -14,13 +14,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
 /**
  * A scoped statement list. Used by case/default statements
  */
-public class ScopedStatementList extends CommonStatementList implements IScopeNode {
+public class ScopedStatementList extends CommonStatementList implements IScopeElement {
 	
 	public ScopedStatementList(ArrayView<IStatement> statements) {
 		super(assertNotNull(statements));

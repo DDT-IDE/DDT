@@ -22,7 +22,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
@@ -60,7 +60,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		cp.append(body);
 	}
 	
-	public static class EnumBody extends ASTNode implements IScopeNode {
+	public static class EnumBody extends ASTNode implements IScopeElement {
 		
 		public final NodeListView<EnumMember> nodeList;
 		

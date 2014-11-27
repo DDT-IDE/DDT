@@ -5,12 +5,12 @@ import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
 import dtool.ast.definitions.DefinitionClass;
 
-public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeNode {
+public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeElement {
 	
 	public DeclBlock(ArrayView<ASTNode> nodes) {
 		super(nodes);

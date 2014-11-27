@@ -15,7 +15,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.CommonQualifiedReference;
@@ -35,7 +35,7 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 		return new NotAValueErrorElement(getTypeElement());
 	}
 	
-	public static void resolveSearchInScope(CommonScopeLookup search, IScopeNode scope) {
+	public static void resolveSearchInScope(CommonScopeLookup search, IScopeElement scope) {
 		if(scope != null) {
 			CommonScopeLookup.findDefUnitInScope(scope, search);
 		}

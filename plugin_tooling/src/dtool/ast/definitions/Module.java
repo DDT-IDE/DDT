@@ -25,7 +25,7 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -40,7 +40,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IScopeNode, IModuleNode, IConcreteNamedElement {
+public class Module extends DefUnit implements IModuleNode, IConcreteNamedElement, IScopeElement {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		

@@ -38,7 +38,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
 	
 	/** The scopes that have already been searched */
-	protected ArrayList<IScopeProvider> searchedScopes;
+	protected ArrayList<IScopeElement> searchedScopes;
 	
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
@@ -58,7 +58,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		return refOffset >= 0;
 	}
 	
-	public ArrayList<IScopeProvider> getSearchedScopes() {
+	public ArrayList<IScopeElement> getSearchedScopes() {
 		return searchedScopes;
 	}
 	
@@ -100,7 +100,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInScope(IScopeProvider scope, CommonScopeLookup search) {
+	public static void findDefUnitInScope(IScopeElement scope, CommonScopeLookup search) {
 		assertNotNull(scope);
 		if(search.hasSearched(scope))
 			return;
@@ -110,7 +110,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	}
 	
 	/** Return whether we have already search the given scope or not. */
-	public boolean hasSearched(IScopeProvider scope) {
+	public boolean hasSearched(IScopeElement scope) {
 		// FIXME todo: shit performance here, make it a hash, or sorted search
 		if(searchedScopes.contains(scope))
 			return true;
@@ -118,7 +118,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	}
 	
 	/** Indicate we are now searching the given new scope. */
-	public void enterNewScope(IScopeProvider scope) {
+	public void enterNewScope(IScopeElement scope) {
 		// TODO: keep only the named scopes?
 		// how about partial scopes?
 		searchedScopes.add(scope);

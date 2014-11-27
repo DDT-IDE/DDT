@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class Scope_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected boolean containsModuleScope(CommonScopeLookup lookup, ASTNode node) {
-		IScopeProvider moduleNode = (IScopeProvider) node.getModuleNode();
+		IScopeElement moduleNode = (IScopeElement) node.getModuleNode();
 		return lookup.getSearchedScopes().contains(moduleNode);
 	}
 	

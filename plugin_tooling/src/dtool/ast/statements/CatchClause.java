@@ -17,9 +17,9 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 
-public class CatchClause extends ASTNode implements IScopeNode {
+public class CatchClause extends ASTNode implements IScopeElement {
 	
 	public final SimpleVariableDef catchParam;
 	public final IStatement body;

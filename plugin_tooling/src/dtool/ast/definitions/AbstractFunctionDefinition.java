@@ -14,7 +14,7 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeNode;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
@@ -22,7 +22,7 @@ import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
-	implements ICallableElement, IScopeNode, ITemplatableElement
+	implements ICallableElement, IScopeElement, ITemplatableElement
 {
 	
 	public final ArrayView<TemplateParameter> tplParams;

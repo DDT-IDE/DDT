@@ -20,7 +20,7 @@ import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeProvider;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -33,7 +33,7 @@ import dtool.ast.definitions.EArcheType;
  * It does not represent the full package namespace, but just one of the elements containted in the namespace.
  * (the containted element must be a sub-package, or a module) 
  */
-public class PackageNamespace extends AbstractNamedElement implements IScopeProvider {
+public class PackageNamespace extends AbstractNamedElement implements IScopeElement {
 	
 	protected final String fqName;
 	protected final INamedElement containedElement;
