@@ -70,9 +70,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			boolean isSequentialLookup = search.isSequentialLookup();
-			/* FIXME: need to refactor this */
-			search.evaluateNodeList(tplArguments, isSequentialLookup);
+			search.evaluateNodeList(tplArguments);
 		}
 		
 	};

@@ -53,6 +53,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	
 	public void performQualifiedRefSearch(CommonScopeLookup search) {
 		Collection<INamedElement> defunits = findRootDefUnits(search.modResolver);
+		// TODO: create new search object here.
 		CommonQualifiedReference.resolveSearchInMultipleContainers(defunits, search);
 	}
 	

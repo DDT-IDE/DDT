@@ -70,8 +70,8 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateNodeList(tplParams, true);
-		search.evaluateNodeList(fnParams, true);
+		search.evaluateNodeList(tplParams);
+		search.evaluateNodeList(fnParams);
 	}
 	
 	/* ------------------------------------------------------------------------ */

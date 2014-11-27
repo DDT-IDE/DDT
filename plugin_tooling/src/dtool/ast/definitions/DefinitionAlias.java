@@ -2,9 +2,6 @@ package dtool.ast.definitions;
 
 
 import static dtool.util.NewUtils.assertCast;
-
-import java.util.Iterator;
-
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;

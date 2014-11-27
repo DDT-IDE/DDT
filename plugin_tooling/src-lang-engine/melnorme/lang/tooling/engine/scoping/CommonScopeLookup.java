@@ -105,9 +105,11 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	/* -----------------  ----------------- */
 	
+	public void evaluateNodeList(Iterable<? extends IASTNode> nodeIterable) {
+		evaluateNodeList(nodeIterable, isSequentialLookup());
+	}
 	
-	/* FIXME: need to review this code, possibly remove isSequential and importsOnly. */
-	
+	/* FIXME: need to review this code, possibly remove importsOnly. */
 	public void evaluateNodeList(Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
 		if(nodeIterable != null) {
 			evaluateNodeList(nodeIterable, isSequentialLookup, false);
