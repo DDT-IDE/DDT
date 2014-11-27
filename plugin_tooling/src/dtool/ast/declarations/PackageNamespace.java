@@ -119,7 +119,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			CommonScopeLookup.findDefUnitInScope(PackageNamespace.this, search);
+			search.findDefUnitInScope(PackageNamespace.this);
 		}
 		
 	};

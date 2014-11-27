@@ -37,7 +37,7 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	public static void resolveSearchInScope(CommonScopeLookup search, IScopeElement scope) {
 		if(scope != null) {
-			CommonScopeLookup.findDefUnitInScope(scope, search);
+			search.findDefUnitInScope(scope);
 		}
 	}
 	

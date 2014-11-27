@@ -13,17 +13,17 @@ package melnorme.lang.tooling.engine.scoping;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import dtool.ast.definitions.DefUnit;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.definitions.DefUnit;
 
 public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
@@ -38,7 +38,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
 	
 	/** The scopes that have already been searched */
-	protected ArrayList<IScopeElement> searchedScopes;
+	protected HashSet<IScopeElement> searchedScopes;
 	
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
@@ -47,7 +47,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, boolean findOneOnly, 
 		ISemanticContext moduleResolver) { 
-		this.searchedScopes = new ArrayList<>(4);
+		this.searchedScopes = new HashSet<>(4);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
@@ -58,7 +58,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		return refOffset >= 0;
 	}
 	
-	public ArrayList<IScopeElement> getSearchedScopes() {
+	public Set<IScopeElement> getSearchedScopes() {
 		return searchedScopes;
 	}
 	
@@ -100,28 +100,14 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	 * non-extended scope, (altough due to imports, they may originate from 
 	 * different scopes XXX: fix this behavior? This is an ambiguity error in D).
 	 */
-	public static void findDefUnitInScope(IScopeElement scope, CommonScopeLookup search) {
+	public void findDefUnitInScope(IScopeElement scope) {
 		assertNotNull(scope);
-		if(search.hasSearched(scope))
+		
+		if(searchedScopes.contains(scope))
 			return;
 		
-		search.enterNewScope(scope);
-		scope.resolveSearchInScope(search);
-	}
-	
-	/** Return whether we have already search the given scope or not. */
-	public boolean hasSearched(IScopeElement scope) {
-		// FIXME todo: shit performance here, make it a hash, or sorted search
-		if(searchedScopes.contains(scope))
-			return true;
-		return false;
-	}
-	
-	/** Indicate we are now searching the given new scope. */
-	public void enterNewScope(IScopeElement scope) {
-		// TODO: keep only the named scopes?
-		// how about partial scopes?
 		searchedScopes.add(scope);
+		scope.resolveSearchInScope(this);
 	}
 	
 	/* -----------------  ----------------- */
@@ -131,6 +117,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			visitElement(namedElement);
 		}
 	}
+	
 	
 	// FIXME todo: deprecate: need to get into a Scope class, not a nodeIterable
 	public void findInNodeList(Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {

@@ -198,7 +198,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	
 	@Override
 	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
-		CommonScopeLookup.findDefUnitInScope(this, search);
+		search.findDefUnitInScope(this);
 		
 		search.evaluateNamedElementForSearch(topLevelElement);
 		

@@ -322,7 +322,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
 		if(this instanceof IScopeElement) {
 			IScopeElement scope = (IScopeElement) this;
-			CommonScopeLookup.findDefUnitInScope(scope, search);
+			search.findDefUnitInScope(scope);
 		}
 	}
 	
