@@ -568,13 +568,32 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 			if(changedProject != null && changedProject.getName().equals(projectName))
 				continue; // changedProject is supposed to be up to date, so no need to update that one.
 			
-			IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-			ProjectInfo projectInfo = getModel().getProjectInfo(project);
+			final IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+			final ProjectInfo projectInfo = getModel().getProjectInfo(project);
+			
 			// Check if project info exists, the project, might have been removed in the meanwhile.
-			if(projectInfo != null) {
-				/*BUG here project exists. */
-				updateBuildpath(project, projectInfo.getBundleDesc());
+			if(projectInfo == null) {
+				continue;
 			}
+			
+			try {
+				// TODO: review this code for concurrency problems: 
+				// EclipseUtils.getWorkspace().run was added!
+				EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
+					
+					@Override
+					public void run(IProgressMonitor monitor) throws CoreException {
+						if(project.exists() == false) {
+							return;
+						}
+						updateBuildpath(project, projectInfo.getBundleDesc());
+						
+					}
+				}, null);
+			} catch (CoreException ce) {
+				DeeCore.logStatus(ce);
+			}
+			
 		}
 	}
 	

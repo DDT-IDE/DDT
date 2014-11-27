@@ -190,7 +190,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		writeDubJson(libProject, dubLibJson);
 		
 		// DUB_LIB project buildpath entry not on DUB_TEST yet
-		_awaitModelUpdates_();
+		_awaitModelUpdates_(); /*FIXME: BUG here, sometimes, not resolved*/
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
