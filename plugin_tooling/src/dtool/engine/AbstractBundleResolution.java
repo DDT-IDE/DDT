@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,6 +48,88 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	public abstract StandardLibraryResolution getStdLibResolution();
 	
+	
+	public <E extends Exception > void visitBundleResolutions(BundleResolutionVisitor<?, E> visitor) throws E {
+		
+	 	getStdLibResolution().visitBundleResolutions(visitor);
+		if(visitor.isFinished()) {
+			return;
+		}
+		
+		visitBundleResolutionsAfterStdLib(visitor);
+	}
+	
+	public <E extends Exception> void visitBundleResolutionsAfterStdLib(BundleResolutionVisitor<?, E> visitor) 
+			throws E {
+		visitor.visit(this);
+	}
+	
+	public abstract class BundleResolutionVisitor<ELEM, EXC extends Exception> {
+		
+		public ELEM result;
+		
+		public ELEM findResult(AbstractBundleResolution bundleRes) throws EXC {
+			bundleRes.visitBundleResolutions(this);
+			return result;
+		}
+		
+		protected boolean isFinished() {
+			return result != null;
+		}
+		
+		protected abstract void visit(AbstractBundleResolution bundleResolution) throws EXC;
+		
+	}
+	
+	@Override
+	protected final void findModules(final String fullNamePrefix, final HashSet<String> matchedModules) {
+		visitBundleResolutions(new BundleResolutionVisitor<Object, RuntimeException>() {
+			@Override
+			protected void visit(AbstractBundleResolution bundleResolution) {
+				bundleResolution.findBundleModules(fullNamePrefix, matchedModules);
+			}
+			
+			@Override
+			protected boolean isFinished() {
+				return false; // redudant, but here for clarity
+			}
+		});
+	}
+	
+	/** @return a resolved module from for the module with the given name, from the modules
+	 * available in this context (including dependencies). Can be null. */
+	public ResolvedModule findResolvedModule(final ModuleFullName moduleFullName) throws ModuleSourceException {
+		return new BundleResolutionVisitor<ResolvedModule, ModuleSourceException>() {
+			@Override
+			protected void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
+				result = bundleResolution.getBundleResolvedModule(moduleFullName);
+			}
+		}.findResult(this);
+	}
+	
+	/** @return a resolved module from for the module with the given path, from the modules
+	 * available in this context (including dependencies). Can be null. */
+	public ResolvedModule findResolvedModule(final Path path) throws ModuleSourceException {
+		return new BundleResolutionVisitor<ResolvedModule, ModuleSourceException>() {
+			@Override
+			protected void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
+				result = bundleResolution.getBundleResolvedModule(path);
+			}
+		}.findResult(this);
+	}
+	
+	/** @return the bundle resolution that directly contains given modulePath, or null if none does. */
+	public AbstractBundleResolution getContainingBundleResolution(final Path modulePath) {
+		return new BundleResolutionVisitor<AbstractBundleResolution, RuntimeException>() {
+			@Override
+			protected void visit(AbstractBundleResolution bundleResolution) {
+				if(bundleResolution.bundleContainsModule(modulePath)) {
+					result = bundleResolution;
+				}
+			}
+		}.findResult(this);
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public boolean checkIsStale() {
@@ -71,14 +154,6 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		ResolvedModule resolvedModule = findResolvedModule(moduleFullName);
 		return resolvedModule == null ? null : resolvedModule.getModuleNode();
 	}
-	
-	/** @return a resolved module from for the module with the given name, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException;
-	
-	/** @return a resolved module from for the module with the given path, from the modules
-	 * available in this context (including dependencies). Can be null. */
-	public abstract ResolvedModule findResolvedModule(Path path) throws ModuleSourceException;
 	
 	
 	/* -----------------  ----------------- */
@@ -141,26 +216,17 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
-	// /* FIXME: TODO test this method */
 	@Override
 	public ISemanticContext findSemanticContext(ISemanticElement element) {
 		if(element.isLanguageIntrinsic()) {
 			return getStdLibResolution();
 		}
 		
-		try {
-			Path modulePath = element.getModulePath();
-			if(modulePath == null) {
-				return null; // Cannot determine context
-			}
-			ResolvedModule resolvedModule = findResolvedModule(modulePath);
-			if(resolvedModule == null) {
-				return null; // Cannot determine context
-			}
-			return resolvedModule.getSemanticContext();
-		} catch (ModuleSourceException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		if(element.getModulePath() == null) {
+			return null;
 		}
+		
+		return getContainingBundleResolution(element.getModulePath());
 	}
 	
 }

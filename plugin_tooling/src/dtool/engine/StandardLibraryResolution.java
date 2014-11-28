@@ -15,8 +15,6 @@ import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleFullName;
-import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.misc.MiscUtil;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
@@ -58,13 +56,13 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ResolvedModule findResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		return getBundleResolvedModule(moduleFullName);
+	public <E extends Exception> void visitBundleResolutions(BundleResolutionVisitor<?, E> visitor) throws E {
+		visitor.visit(this);
 	}
 	
 	@Override
-	public ResolvedModule findResolvedModule(Path path) throws ModuleSourceException {
-		return getBundleResolvedModule(path);
+	public <E extends Exception> void visitBundleResolutionsAfterStdLib(BundleResolutionVisitor<?, E> visitor) {
+		// Do nothing, already has been visited
 	}
 	
 	/* ----------------- synthetic install ----------------- */

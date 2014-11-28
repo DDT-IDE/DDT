@@ -14,14 +14,11 @@ package dtool.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
-import java.util.HashSet;
 
-import dtool.dub.BundlePath;
 import melnorme.lang.tooling.context.BundleModules;
-import melnorme.lang.tooling.context.ModuleFullName;
-import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.StringUtil;
+import dtool.dub.BundlePath;
 
 public class BundleResolution extends AbstractBundleResolution {
 	
@@ -92,99 +89,20 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	/* ----------------- ----------------- */
 	
-	public abstract class BundleResolutionVisitor<E extends Exception> {
-		
-		public BundleResolutionVisitor() throws E {
-			visitBundleResolutions();
+	@Override
+	public <E extends Exception> void visitBundleResolutionsAfterStdLib(BundleResolutionVisitor<?, E> visitor) 
+			throws E {
+		visitor.visit(this);
+		if(visitor.isFinished()) {
+			return;
 		}
 		
-		private void visitBundleResolutions() throws E {
-			
-			visit(stdLibResolution); // TODO optimize duplicate visits of StdLib
-			if(isFinished()) {
+		for (BundleResolution depBundleRes : depResolutions) {
+			depBundleRes.visitBundleResolutionsAfterStdLib(visitor);
+			if(visitor.isFinished()) {
 				return;
 			}
-			
-			visitSelf(BundleResolution.this);
-			if(isFinished()) {
-				return;
-			}
-			
-			for (BundleResolution depBundleRes : depResolutions) {
-				visit(depBundleRes);
-				if(isFinished()) {
-					return;
-				}
-			}
 		}
-		
-		protected abstract void visit(AbstractBundleResolution bundleResolution) throws E;
-		
-		protected abstract void visitSelf(BundleResolution bundleResolution) throws E;
-		
-		protected boolean isFinished() {
-			return false;
-		}
-		
-	}
-	
-	@Override
-	protected final void findModules(final String fullNamePrefix, final HashSet<String> matchedModules) {
-		new BundleResolutionVisitor<RuntimeException>() {
-			@Override
-			public void visit(AbstractBundleResolution bundleResolution) {
-				matchedModules.addAll(bundleResolution.findModules(fullNamePrefix));
-			}
-			@Override
-			protected void visitSelf(BundleResolution bundleResolution) throws RuntimeException {
-				findBundleModules(fullNamePrefix, matchedModules);
-			}
-		};
-	}
-	
-	protected abstract class ModuleResolutionVisitor extends BundleResolutionVisitor<ModuleSourceException> {
-		public ResolvedModule resolvedModule;
-		
-		protected ModuleResolutionVisitor() throws ModuleSourceException {
-			super();
-		}
-		
-		@Override
-		public abstract void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException;
-		
-		@Override
-		public boolean isFinished() {
-			return resolvedModule != null;
-		}
-	}
-	
-	@Override
-	public final ResolvedModule findResolvedModule(final ModuleFullName moduleFullName) throws ModuleSourceException {
-		return new ModuleResolutionVisitor() {
-			@Override
-			public void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
-				resolvedModule = bundleResolution.findResolvedModule(moduleFullName);
-			}
-			@Override
-			protected void visitSelf(BundleResolution bundleResolution) throws ModuleSourceException {
-				resolvedModule = bundleResolution.getBundleResolvedModule(moduleFullName);
-			}
-		}.resolvedModule;
-	}
-	
-	@Override
-	public final ResolvedModule findResolvedModule(final Path path) throws ModuleSourceException {
-		return new ModuleResolutionVisitor() {
-			@Override
-			public void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
-				resolvedModule = bundleResolution.findResolvedModule(path);
-			}
-			
-			@Override
-			protected void visitSelf(BundleResolution bundleResolution) throws ModuleSourceException {
-				resolvedModule = bundleResolution.getBundleResolvedModule(path);
-			}
-		}.resolvedModule;
 	}
 	
 }

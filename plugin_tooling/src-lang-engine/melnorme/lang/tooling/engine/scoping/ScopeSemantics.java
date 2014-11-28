@@ -17,11 +17,12 @@ import melnorme.utilbox.misc.StringUtil;
 
 public class ScopeSemantics {
 
+	@Deprecated
 	public static INamedElement findElement(ASTNode moduleNode, String elementNameLocator) {
 		String segmentName = StringUtil.substringUntilMatch(elementNameLocator, ElementName.NAME_SEP); 
 		String restOfName = StringUtil.segmentAfterMatch(elementNameLocator, ElementName.NAME_SEP);
 		
-		// FIXME: should iterate over visible INamedElements, use search mechanism
+		// TODO: should iterate over visible INamedElements, use search mechanism
 		for (ASTNode childNode : moduleNode.getChildren()) {
 			if(childNode instanceof INamedElement) {
 				INamedElement namedElement = (INamedElement) childNode;

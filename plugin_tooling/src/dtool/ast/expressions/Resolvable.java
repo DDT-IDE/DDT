@@ -19,7 +19,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
@@ -37,10 +36,6 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	
 	public final INamedElement findTargetDefElement(ISemanticContext context) {
 		return getSemantics().resolveTargetElement(context).result;
-	}
-	
-	public final ResolvableResult resolveTargetElement(ISemanticContext sr) {
-		return getSemantics().resolveTargetElement(sr);
 	}
 	
 	@Override
