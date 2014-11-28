@@ -14,9 +14,6 @@ package dtool.engine;
 import java.nio.file.Path;
 
 import melnorme.utilbox.tests.TestsWorkingDir;
-
-import org.junit.AfterClass;
-
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
@@ -56,14 +53,12 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	
 	protected static Tests_SemanticManager defaultSemMgr = new Tests_SemanticManager();
 	
-	@AfterClass
-	public static void cleanDefaultSemanticManager() {
-//		defaultSemMgr.shutdown();
-//		defaultSemMgr = null;
-	}
-	
 	public static BundlePath bundlePath(Path basePath, String other) {
 		return BundlePath.create(basePath.resolve(other));
+	}
+	
+	public static BundleKey bundleKey(Path basePath, String subpackageName) {
+		return new BundleKey(BundlePath.create(basePath), subpackageName);
 	}
 	
 }

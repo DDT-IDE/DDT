@@ -16,29 +16,33 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 import java.util.HashSet;
 
+import dtool.dub.BundlePath;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.dub.BundlePath;
 
 public class BundleResolution extends AbstractBundleResolution {
 	
-	protected final BundlePath bundlePath;
+	protected final BundleKey bundleKey;
 	protected final StandardLibraryResolution stdLibResolution;
 	protected final Indexable<? extends BundleResolution> depResolutions;
 	
-	public BundleResolution(SemanticManager manager, BundlePath bundlePath, BundleModules bundleModules,
+	public BundleResolution(SemanticManager manager, BundleKey bundleKey, BundleModules bundleModules,
 			StandardLibraryResolution stdLibResolution, Indexable<? extends BundleResolution> depResolutions) {
 		super(manager, bundleModules);
-		this.bundlePath = bundlePath;
+		this.bundleKey = bundleKey;
 		this.stdLibResolution = assertNotNull(stdLibResolution); 
 		this.depResolutions = depResolutions;
 	}
 	
+	public BundleKey getBundleKey() {
+		return bundleKey;
+	}
+	
 	public BundlePath getBundlePath() {
-		return bundlePath;
+		return bundleKey != null ? bundleKey.bundlePath : null;
 	}
 	
 	public Indexable<? extends BundleResolution> getDirectDependencies() {
@@ -56,10 +60,10 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	@Override
 	public String toString() {
-		if(getBundlePath() == null) {
+		if(getBundleKey() == null) {
 			return "BundleResolution: [" + StringUtil.collToString(bundleModules.moduleFiles, ":") + "]";
 		}
-		return "BundleResolution: " + getBundlePath();
+		return "BundleResolution: " + getBundleKey();
 	}
 
 	

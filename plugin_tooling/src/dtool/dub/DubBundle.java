@@ -22,6 +22,7 @@ import java.util.List;
 
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 public class DubBundle {
 	
@@ -75,8 +76,14 @@ public class DubBundle {
 		this(bundlePath, name, error, null, null, null, null, null, null, null);
 	}
 	
+	/** @return the bundle name, not null. */
 	public String getBundleName() {
 		return name;
+	}
+	
+	/** @return the simple name of this child bundle, if it is a child bundle. null otherwise. */
+	public String getSubpackageSuffix() {
+		return StringUtil.segmentAfterMatch(getBundleName(), ":");
 	}
 	
 	/** @return the bundlePath. Can be null. */

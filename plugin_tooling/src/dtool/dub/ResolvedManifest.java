@@ -15,6 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collections;
 import java.util.List;
 
+import dtool.engine.BundleKey;
+
 /**
  * A {@link ResolvedManifest} has manifest info for a bundle, 
  * plus the same info for all dependencies, organized into a tree.
@@ -23,16 +25,23 @@ public class ResolvedManifest {
 	
 	public final DubBundle bundle;
 	public final BundlePath bundlePath;
+	public final BundleKey bundleKey;
+	
 	protected final List<ResolvedManifest> bundleDependencies;
 	
 	public ResolvedManifest(DubBundle bundle, List<ResolvedManifest> bundleDependencies) {
 		this.bundle = assertNotNull(bundle);
 		this.bundlePath = assertNotNull(bundle.getBundlePath());
+		this.bundleKey = new BundleKey(bundlePath, bundle.getSubpackageSuffix());
 		this.bundleDependencies = Collections.unmodifiableList(bundleDependencies);
 	}
 	
 	public DubBundle getBundle() {
 		return bundle;
+	}
+	
+	public BundleKey getBundleKey() {
+		return bundleKey;
 	}
 	
 	public String getBundleName() {

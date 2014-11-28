@@ -23,7 +23,7 @@ public class DubBundleResolution extends BundleResolution {
 	public DubBundleResolution(SemanticManager manager, ResolvedManifest manifest, 
 			StandardLibraryResolution stdLibResolution) {
 		super(manager, 
-			manifest.getBundle().getBundlePath(),
+			manifest.getBundleKey(),
 			manager.createBundleModules(manifest.getBundle().getEffectiveImportFolders_AbsolutePath()),
 			stdLibResolution,
 			createDepSRs(manager, manifest, stdLibResolution)

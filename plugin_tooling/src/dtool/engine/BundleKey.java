@@ -21,11 +21,15 @@ import dtool.dub.BundlePath;
 public final class BundleKey {
 	
 	protected final BundlePath bundlePath;
-	protected final String bundleName;
+	protected final String subPackageSuffix;
 	
-	public BundleKey(BundlePath bundlePath, String bundleName) {
+	public BundleKey(BundlePath bundlePath) {
+		this(bundlePath, null);
+	}
+	
+	public BundleKey(BundlePath bundlePath, String subPackageSuffix) {
 		this.bundlePath = assertNotNull(bundlePath);
-		this.bundleName = assertNotNull(bundleName);
+		this.subPackageSuffix = subPackageSuffix;
 	}
 	
 	public Path getPath() {
@@ -39,12 +43,17 @@ public final class BundleKey {
 		
 		BundleKey other = (BundleKey) obj;
 		
-		return areEqual(bundlePath, other.bundlePath) && areEqual(bundleName, other.bundleName) ;
+		return areEqual(bundlePath, other.bundlePath) && areEqual(subPackageSuffix, other.subPackageSuffix) ;
 	}
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combineHashCodes(bundlePath, bundleName);
+		return HashcodeUtil.combineHashCodes(bundlePath, subPackageSuffix);
+	}
+	
+	@Override
+	public String toString() {
+		return "@" + bundlePath + (subPackageSuffix == null ? "" : (" [:" + subPackageSuffix + "]"));
 	}
 
 }

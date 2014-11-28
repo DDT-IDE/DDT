@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static melnorme.lang.utils.MiscFileUtils.copyDirContentsIntoDirectory;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -69,11 +68,13 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected void checkChanged(BundlePath bundlePath, boolean expectedChanged) throws ExecutionException {
+		BundleKey bundleKey = new BundleKey(bundlePath);
+		
 		BundleResolution previousManifest = previousSRs.get(bundlePath);
 		if(previousManifest != null) {
-			assertTrue(previousManifest.bundlePath.equals(bundlePath));
+			assertTrue(previousManifest.bundleKey.equals(bundleKey));
 		}
-		boolean changed = previousManifest != sm.getStoredResolution(bundlePath);
+		boolean changed = previousManifest != sm.getStoredResolution(bundleKey);
 		assertTrue(changed == expectedChanged);
 		if(expectedChanged) {
 			checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
@@ -94,7 +95,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public void testManifestUpdates() throws Exception { testManifestUpdates$(); }
 	public void testManifestUpdates$() throws Exception {
 		prepSMTestsWorkingDir();
-		sm = ___initSemanticManager();
+		___initSemanticManager();
 		
 		// Test manifest only updates
 		sm.getUpdatedManifest(BASIC_LIB);
@@ -164,7 +165,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected void invalidateBundleManifest(BundlePath bundlePath) {
-		FileCachingEntry<ResolvedManifest> manifestEntry = sm.getInfo(bundlePath).manifestEntry;
+		FileCachingEntry<ResolvedManifest> manifestEntry = sm.getInfo(new BundleKey(bundlePath)).manifestEntry;
 		manifestEntry.markStale();
 	}
 	
@@ -176,6 +177,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testInvalidInput() throws Exception { testInvalidInput$(); }
 	public void testInvalidInput$() throws Exception {
+		prepSMTestsWorkingDir();
 		___initSemanticManager();
 		
 		try {
@@ -196,7 +198,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testSubpackages() throws Exception { testSubpackages$(); }
 	public void testSubpackages$() throws Exception {
-		copyDirContentsIntoDirectory(DubDescribeParserTest.DUB_TEST_BUNDLES, SMTEST_WORKING_DIR_BUNDLES);
+		prepSMTestsWorkingDir(DubDescribeParserTest.DUB_TEST_BUNDLES);
 		___initSemanticManager();
 		
 		BundlePath SP_TEST = bundlePath(getDubRepositoryDir(), "SubPackagesTest");
@@ -205,6 +207,10 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		sm.getUpdatedResolution(SP_TEST);
+		checkStaleStatus(bundleKey(SP_TEST.path, "sub_x"), StaleState.CURRENT);
+		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(bundleKey(SP_TEST.path, "sub_b"), StaleState.CURRENT);
+		checkStaleStatus(bundleKey(SP_TEST.path, "doesn't exists"), StaleState.MANIFEST_STALE);
 		
 		sm.getUpdatedResolution(SP_FOO);
 		sm.getUpdatedResolution(SP_FOO2);
