@@ -149,6 +149,11 @@ public class DubBundle {
 		return path.resolve(getEffectiveTargetName());
 	}
 	
+	@Override
+	public String toString() {
+		return name + " ("+version+") @" + (bundlePath == null ? "<null>" : bundlePath);
+	}
+	
 	public static class DubDependecyRef {
 		
 		public final String bundleName;

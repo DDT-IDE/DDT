@@ -11,6 +11,7 @@
 package dtool.engine;
 
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
@@ -21,6 +22,8 @@ import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.ResolveDocViewOperation;
 
 public class DToolServer {
+	
+	public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 	
 	protected final SemanticManager semanticManager = createSemanticManager();
 	

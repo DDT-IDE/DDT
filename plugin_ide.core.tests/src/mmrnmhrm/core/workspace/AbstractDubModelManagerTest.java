@@ -235,7 +235,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		expMainBundle.checkBundleDescription(dubBundle, true);
 		testDubContainer(project, expMainBundle);
 
-		DubBundleChecker[] deps = expMainBundle.deps;
+		DubBundleChecker[] deps = expMainBundle.expectedDeps;
 		IScriptProject dubProject = DLTKCore.create(project);
 		checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 		
@@ -281,7 +281,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		
 		IDubElement[] children = dubContainer.getChildren();
 		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(children);
-		for (DubBundleChecker dep : expMainBundle.deps) {
+		for (DubBundleChecker dep : expMainBundle.expectedDeps) {
 			checkAndRemoveChildDep(depChildren, dep);
 		}
 		removeErrorElement(expMainBundle, depChildren);

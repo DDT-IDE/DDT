@@ -31,6 +31,11 @@ import dtool.tests.DToolTestResources;
 
 public class DubDescribeParserTest extends CommonDubTest {
 	
+	protected static final DubBundleChecker BAR_LIB_CHECKER = 
+			bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"));
+	protected static final DubBundleChecker FOO_LIB_CHECKER = 
+			bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2"));
+	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
 		dubAddPath(DUB_TEST_BUNDLES);
@@ -50,8 +55,8 @@ public class DubDescribeParserTest extends CommonDubTest {
 		checkResolvedBundle(description, null, 
 			main(XPTO_BUNDLE_PATH.path, null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
 				rawDeps("foo_lib"),
-				bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), null, "foo_lib", "~master", paths("src", "src2")), 
-				bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), null, "bar_lib", "~master", paths("source"))));
+				FOO_LIB_CHECKER, 
+				BAR_LIB_CHECKER));
 		
 		checkBundleFiles(description.mainDubBundle.bundleFiles, list(
 			"src/app.d", 
@@ -96,6 +101,34 @@ public class DubDescribeParserTest extends CommonDubTest {
 					rawDeps("foo_lib"),
  					IGNORE_DEPS));
 		}
+	}
+	
+	
+	public static final BundlePath SUB_PACKAGES_TEST = BundlePath.create(DUB_TEST_BUNDLES.resolve("SubPackagesTest"));
+	
+	@Test
+	public void testSubPackages() throws Exception { testSubPackages$(); }
+	public void testSubPackages$() throws Exception {
+		 
+		DubBundleDescription description = DubDescribeParser.parseDescription(
+			SUB_PACKAGES_TEST, runDubDescribe(SUB_PACKAGES_TEST));
+		
+		checkResolvedBundle(description, null, 
+			main(SUB_PACKAGES_TEST.path, null, "sub_packages_test", "0.1.0", paths("src"),
+				rawDeps(
+					"bar_lib", 
+					"sub_packages_test:sub_x",
+					"sub_packages_test:sub_a",
+					"sub_packages_test:sub_b"
+				),
+				FOO_LIB_CHECKER, 
+				BAR_LIB_CHECKER,
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_x", "0.1.0", paths("src")),
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_a", "0.1.0", paths("src-A")),
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_b", "0.1.0", paths("src-B"))
+			)
+		);
+		
 	}
 	
 }

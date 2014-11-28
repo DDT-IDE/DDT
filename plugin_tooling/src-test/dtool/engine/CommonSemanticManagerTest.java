@@ -63,8 +63,8 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	/* ----------------- working dir setup ----------------- */
 	
 	public static void prepSMTestsWorkingDir() throws IOException {
-		FileUtil.deleteDirContents(BUNDLEMODEL_WORKING_DIR_BUNDLES);
-		MiscFileUtils.copyDirContentsIntoDirectory(BUNDLEMODEL_TEST_BUNDLES, BUNDLEMODEL_WORKING_DIR_BUNDLES);
+		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES);
+		MiscFileUtils.copyDirContentsIntoDirectory(BUNDLEMODEL_TEST_BUNDLES, SMTEST_WORKING_DIR_BUNDLES);
 	}
 	
 	/* -----------------  ----------------- */

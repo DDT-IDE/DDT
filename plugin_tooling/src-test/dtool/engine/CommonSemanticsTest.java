@@ -29,14 +29,14 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	public static final Path BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
 	public static final Path SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semantics");
 	
-	public static final Path BUNDLEMODEL_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDirPath("SemModel");
+	public static final Path SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDirPath("SemModel");
 	
 	/* -----------------  ----------------- */
 	
 	static {
 		if(!DToolTests.TESTS_LITE_MODE) {
 			// workaround to cleanup state of abruptly-terminated tests
-			CommonDubTest.dubRemovePath(BUNDLEMODEL_WORKING_DIR_BUNDLES); 
+			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); 
 			CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
 			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
 		}

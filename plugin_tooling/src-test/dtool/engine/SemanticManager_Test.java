@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.lang.utils.MiscFileUtils.copyDirContentsIntoDirectory;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -22,11 +23,13 @@ import java.util.concurrent.ExecutionException;
 import melnorme.utilbox.misc.FileUtil;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -36,17 +39,22 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
-		CommonDubTest.dubAddPath(BUNDLEMODEL_WORKING_DIR_BUNDLES);
+		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES);
 	}
 	
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(BUNDLEMODEL_WORKING_DIR_BUNDLES);
+		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES);
+	}
+	
+	@Before
+	public void prepWorkingDir() throws IOException {
+		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES); // Make sure state is reset
 	}
 	
 	@Override
 	public Path getDubRepositoryDir() {
-		return BUNDLEMODEL_WORKING_DIR_BUNDLES;
+		return SMTEST_WORKING_DIR_BUNDLES;
 	}
 
 	/* -----------------  ----------------- */
@@ -85,6 +93,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testManifestUpdates() throws Exception { testManifestUpdates$(); }
 	public void testManifestUpdates$() throws Exception {
+		prepSMTestsWorkingDir();
 		sm = ___initSemanticManager();
 		
 		// Test manifest only updates
@@ -160,9 +169,9 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	public static BundlePath NON_EXISTANT = 
-			bundlePath(BUNDLEMODEL_WORKING_DIR_BUNDLES, "__NonExistant");
+			bundlePath(SMTEST_WORKING_DIR_BUNDLES, "__NonExistant");
 	public static BundlePath ERROR_BUNDLE__MISSING_DEP = 
-			bundlePath(BUNDLEMODEL_WORKING_DIR_BUNDLES, "ErrorBundle_MissingDep");
+			bundlePath(SMTEST_WORKING_DIR_BUNDLES, "ErrorBundle_MissingDep");
 	
 	@Test
 	public void testInvalidInput() throws Exception { testInvalidInput$(); }
@@ -182,6 +191,23 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		} catch (ExecutionException e) {
 			throw assertFail();
 		}
+	}
+	
+	@Test
+	public void testSubpackages() throws Exception { testSubpackages$(); }
+	public void testSubpackages$() throws Exception {
+		copyDirContentsIntoDirectory(DubDescribeParserTest.DUB_TEST_BUNDLES, SMTEST_WORKING_DIR_BUNDLES);
+		___initSemanticManager();
+		
+		BundlePath SP_TEST = bundlePath(getDubRepositoryDir(), "SubPackagesTest");
+		BundlePath SP_FOO = bundlePath(getDubRepositoryDir(), "subpackages_foo");
+		BundlePath SP_FOO2 = bundlePath(getDubRepositoryDir(), "subpackages_foo2");
+		
+		
+		sm.getUpdatedResolution(SP_TEST);
+		
+		sm.getUpdatedResolution(SP_FOO);
+		sm.getUpdatedResolution(SP_FOO2);
 	}
 	
 	/* ----------------- module updates ----------------- */

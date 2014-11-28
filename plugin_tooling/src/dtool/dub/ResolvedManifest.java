@@ -47,4 +47,9 @@ public class ResolvedManifest {
 		return bundleDependencies;
 	}
 	
+	@Override
+	public String toString() {
+		return bundle.getBundleName() + " @" + bundlePath;
+	}
+	
 }
