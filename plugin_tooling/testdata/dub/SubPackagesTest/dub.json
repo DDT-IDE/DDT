@@ -1,0 +1,39 @@
+{
+	"name": "sub_packages_test",
+	"description": "A test for DUB subpackages",
+	
+	"version": "0.1.0",
+	
+	"dependencies": {
+		"foo_lib": "~master",
+		
+		"sub_packages_test:sub_x": ">=0.1.0",
+		"sub_packages_test:sub_a": ">=0.1.0",
+		"sub_packages_test:sub_b": ">=0.1.0"
+	},
+	"sourcePaths": [ "src" ],
+	"importPaths": [ "src" ],
+	
+	
+	"subPackages": [
+		{
+			"name": "sub_x",
+			"targetType": "library",
+			"importPaths": [ "src" ],
+			"sourcePaths": [ "src" ]
+		},
+		{
+			"name": "sub_a",
+			"targetType": "library",
+			"importPaths": [ "src-A" ],
+			"sourcePaths": [ "src-A" ]
+		},
+		{
+			"name": "sub_b",
+			"targetType": "library",
+			"importPaths": [ "src-B" ],
+			"sourcePaths": [ "src-B" ]
+		}
+	]
+	
+}

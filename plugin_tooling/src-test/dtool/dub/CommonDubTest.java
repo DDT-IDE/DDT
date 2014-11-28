@@ -63,7 +63,7 @@ public class CommonDubTest extends CommonDToolTest {
 		public final String version;
 		public final Path[] sourceFolders;
 		public final String[] rawDeps;
-		public final DubBundleChecker[] deps;
+		public final DubBundleChecker[] expectedDeps;
 		
 		public DubBundleChecker(Path location, String bundleName) {
 			this(location, bundleName, null, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
@@ -77,7 +77,7 @@ public class CommonDubTest extends CommonDToolTest {
 			this.version = version;
 			this.sourceFolders = sourceFolders;
 			this.rawDeps = rawDeps;
-			this.deps = deps;
+			this.expectedDeps = deps;
 		}
 		
 		@Override
@@ -130,13 +130,14 @@ public class CommonDubTest extends CommonDToolTest {
 				checkAllExceptDepRefs(bundleDescription.getMainBundle(), isResolved);
 			}
 			
-			if(deps == IGNORE_DEPS) 
+			if(expectedDeps == IGNORE_DEPS) 
 				return;
 			
-			assertTrue(deps.length == bundleDescription.getBundleDependencies().length);
-			for (int ix = 0; ix < deps.length; ix++) {
-				DubBundleChecker dubDepChecker = deps[ix];
-				dubDepChecker.check(bundleDescription.getBundleDependencies()[ix], true);
+			DubBundle[] deps = bundleDescription.getBundleDependencies();
+			assertTrue(expectedDeps.length == deps.length);
+			for (int ix = 0; ix < expectedDeps.length; ix++) {
+				DubBundleChecker dubDepChecker = expectedDeps[ix];
+				dubDepChecker.check(deps[ix], true);
 			}
 		}
 		
