@@ -213,7 +213,14 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkStaleStatus(bundleKey(SP_TEST.path, "doesn't exists"), StaleState.MANIFEST_STALE);
 		
 		sm.getUpdatedResolution(SP_FOO);
-		sm.getUpdatedResolution(SP_FOO2);
+		
+		___initSemanticManager();
+		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.MANIFEST_STALE);
+		BundleResolution bundleRes;
+		bundleRes = sm.getUpdatedResolution(SP_FOO2);
+		assertTrue(bundleRes.getDirectDependencies().size() == 1);
+		
+		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
 	}
 	
 	/* ----------------- module updates ----------------- */

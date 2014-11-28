@@ -1,7 +1,7 @@
 {
 	"name": "subpackages_foo2",
 	"dependencies": {
-		"subpackages_foo:sub_a": "0.1.0"
+		"sub_packages_test:sub_a": "0.1.0"
 	},
 	"sourcePaths": [ "src" ],
 	"importPaths": [ "src" ]
