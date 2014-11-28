@@ -104,16 +104,17 @@ public class DubDescribeParserTest extends CommonDubTest {
 	}
 	
 	
+	public static final BundlePath SUB_PACKAGES_TEST = BundlePath.create(DUB_TEST_BUNDLES.resolve("SubPackagesTest"));
+	
 	@Test
 	public void testSubPackages() throws Exception { testSubPackages$(); }
 	public void testSubPackages$() throws Exception {
 		 
-		final BundlePath bundlePath = BundlePath.create(DUB_TEST_BUNDLES.resolve("SubPackagesTest"));
 		DubBundleDescription description = DubDescribeParser.parseDescription(
-			bundlePath, runDubDescribe(bundlePath));
+			SUB_PACKAGES_TEST, runDubDescribe(SUB_PACKAGES_TEST));
 		
 		checkResolvedBundle(description, null, 
-			main(bundlePath.path, null, "sub_packages_test", "0.1.0", paths("src"),
+			main(SUB_PACKAGES_TEST.path, null, "sub_packages_test", "0.1.0", paths("src"),
 				rawDeps(
 					"bar_lib", 
 					"sub_packages_test:sub_x",
@@ -122,9 +123,9 @@ public class DubDescribeParserTest extends CommonDubTest {
 				),
 				FOO_LIB_CHECKER, 
 				BAR_LIB_CHECKER,
-				bundle(bundlePath.path, null, "sub_packages_test:sub_x", "0.1.0", paths("src")),
-				bundle(bundlePath.path, null, "sub_packages_test:sub_a", "0.1.0", paths("src-A")),
-				bundle(bundlePath.path, null, "sub_packages_test:sub_b", "0.1.0", paths("src-B"))
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_x", "0.1.0", paths("src")),
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_a", "0.1.0", paths("src-A")),
+				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_b", "0.1.0", paths("src-B"))
 			)
 		);
 		

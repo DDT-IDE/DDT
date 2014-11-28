@@ -21,15 +21,18 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.AbstractBundleResolution.ResolvedModule;
 import dtool.engine.modules.ModuleFullName;
@@ -47,6 +50,11 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(WORKING_DIR);
+	}
+	
+	@Before
+	public void prepWorkingDir() throws IOException {
+		FileUtil.deleteDirContents(WORKING_DIR); // Make sure state is reset
 	}
 	
 	@Override
@@ -90,6 +98,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@Test
 	public void testManifestUpdates() throws Exception { testManifestUpdates$(); }
 	public void testManifestUpdates$() throws Exception {
+		prepSMTestsWorkingDir();
 		sm = ___initSemanticManager();
 		
 		// Test manifest only updates
@@ -184,6 +193,23 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		} catch (ExecutionException e) {
 			throw assertFail();
 		}
+	}
+	
+	@Test
+	public void testSubpackages() throws Exception { testSubpackages$(); }
+	public void testSubpackages$() throws Exception {
+		MiscFileUtils.copyDirContentsIntoDirectory(DubDescribeParserTest.DUB_TEST_BUNDLES, WORKING_DIR);
+		___initSemanticManager();
+		
+		BundlePath SP_TEST = bundlePath(getDubRepositoryDir(), "SubPackagesTest");
+		BundlePath SP_FOO = bundlePath(getDubRepositoryDir(), "subpackages_foo");
+		BundlePath SP_FOO2 = bundlePath(getDubRepositoryDir(), "subpackages_foo2");
+		
+		
+		sm.getUpdatedResolution(SP_TEST);
+		
+		sm.getUpdatedResolution(SP_FOO);
+		sm.getUpdatedResolution(SP_FOO2);
 	}
 	
 	/* ----------------- module updates ----------------- */
