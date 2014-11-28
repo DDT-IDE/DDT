@@ -34,7 +34,7 @@ public class InstrinsicsScope implements IScopeElement {
 		if(members == null) {
 			return;
 		}
-		search.evaluateNamedElementList(members);
+		search.evaluateScopeElements(members);
 	}
 	
 }

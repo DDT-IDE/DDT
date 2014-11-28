@@ -35,7 +35,7 @@ public class BlockStatement extends CommonStatementList implements IScopeElement
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateNodeList(statements_asNodes(), true);
+		search.evaluateScopeNodeList(statements_asNodes(), true);
 	}
 	
 }

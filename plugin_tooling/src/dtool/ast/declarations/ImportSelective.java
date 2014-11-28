@@ -104,9 +104,10 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 					continue;
 				}
 				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				
 				/*FIXME: BUG here if element not found*/
 				if(namedElement != null) { 
-					search.addMatch(namedElement);
+					search.visitElement(namedElement);
 				}
 			}
 		}

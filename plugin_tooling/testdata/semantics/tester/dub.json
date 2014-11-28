@@ -1,0 +1,6 @@
+{
+	"name": "tester",
+	"dependencies": {
+	},
+	"targetPath": ".dub"
+}

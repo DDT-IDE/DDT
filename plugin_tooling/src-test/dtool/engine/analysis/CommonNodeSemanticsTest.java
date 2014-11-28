@@ -35,13 +35,10 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static final String DEFAULT_ModuleName = "_tests";
 	
 	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	public static final BundlePath TESTER_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "tester");
+	
 	public static final Path DEFAULT_TestsModule = 
 			DEFAULT_TestsBundle.resolve("source/" + DEFAULT_ModuleName + ".d");
-	
-	protected static ResolvedModule parseModule(String source) throws ExecutionException {
-		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule, source);
-		return getDefaultTestsModule();
-	}
 	
 	protected static ResolvedModule getDefaultTestsModule() throws ExecutionException {
 		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule);
@@ -49,6 +46,22 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	protected static ISemanticContext getDefaultTestsModuleContext() throws ExecutionException {
 		return getDefaultTestsModule().getSemanticContext();
+	}
+	
+	protected static ResolvedModule getTesterModule(String sourcePath) {
+		try {
+			return defaultSemMgr.getUpdatedResolvedModule(
+				TESTER_TestsBundle.path.resolve("source").resolve(sourcePath));
+		} catch (ExecutionException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected static ResolvedModule parseModule(String source) throws ExecutionException {
+		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule, source);
+		return getDefaultTestsModule();
 	}
 	
 	protected static Module parseSource(String source) {

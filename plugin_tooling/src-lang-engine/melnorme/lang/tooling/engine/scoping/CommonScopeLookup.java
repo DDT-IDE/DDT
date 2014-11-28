@@ -96,6 +96,9 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public void evaluateScope(IScopeElement scope) {
 		assertNotNull(scope);
 		
+		if(isFinished())
+			return;
+		
 		if(searchedScopes.contains(scope))
 			return;
 		
@@ -105,23 +108,22 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	/* -----------------  ----------------- */
 	
-	public void evaluateNodeList(Iterable<? extends IASTNode> nodeIterable) {
-		evaluateNodeList(nodeIterable, isSequentialLookup());
+	public void evaluateScopeNodeList(Iterable<? extends IASTNode> nodeIterable) {
+		evaluateScopeNodeList(nodeIterable, isSequentialLookup());
 	}
 	
 	/* FIXME: need to review this code, possibly remove importsOnly. */
-	public void evaluateNodeList(Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
+	public void evaluateScopeNodeList(Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
 		if(nodeIterable != null) {
-			evaluateNodeList(nodeIterable, isSequentialLookup, false);
-			evaluateNodeList(nodeIterable, isSequentialLookup, true);
+			evaluateScopeElements(nodeIterable, isSequentialLookup, false);
+			evaluateScopeElements(nodeIterable, isSequentialLookup, true);
 		}
 	}
 	
-	public void evaluateNodeList(Iterable<? extends IASTNode> nodeIter, boolean isSequential, boolean importsOnly) {
+	public void evaluateScopeElements(Iterable<? extends IASTNode> nodeIter, boolean isSequential, 
+			boolean importsOnly) {
 		
-		if(isFinished())
-			return;
-		
+		// Note: don't check for isFinished() during the loop
 		for (IASTNode node : nodeIter) {
 			
 			// Check if we have passed the reference offset
@@ -130,22 +132,12 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			}
 			
 			node.evaluateForScopeLookup(this, importsOnly, isSequential);
-			
-			if(isFinished() && findOnlyOne) // TODO make BUG HERE 
-				return;
 		}
 	}
 	
-	public void evaluateNamedElementList(Iterable<? extends INamedElement> elementIterable) {
-		
-		if(isFinished())
-			return;
-		
+	public void evaluateScopeElements(Iterable<? extends INamedElement> elementIterable) {
 		for (INamedElement namedElement : elementIterable) {
-			
 			evaluateNamedElementForSearch(namedElement);
-			if(isFinished() && findOnlyOne) // TODO make BUG HERE 
-				return;
 		}
 	}
 	

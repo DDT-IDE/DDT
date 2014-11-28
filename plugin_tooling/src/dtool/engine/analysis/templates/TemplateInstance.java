@@ -70,7 +70,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			search.evaluateNodeList(tplArguments);
+			search.evaluateScopeNodeList(tplArguments);
 		}
 		
 	};

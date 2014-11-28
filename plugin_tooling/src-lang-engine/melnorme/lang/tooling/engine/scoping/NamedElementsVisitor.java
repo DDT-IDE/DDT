@@ -10,15 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.scoping;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.declarations.PackageNamespace;
 
 public abstract class NamedElementsVisitor {
 	
-	protected ArrayList<INamedElement> matches = new ArrayList<>(2);
+	protected ArrayList2<INamedElement> matches = new ArrayList2<>(2);
+	
+	protected HashMap<String, ArrayList2<INamedElement>> matches2 = new HashMap<>(2);
 	
 	protected boolean matchesArePartialDefUnits = false;
 	
@@ -27,30 +30,52 @@ public abstract class NamedElementsVisitor {
 	}
 	
 	public void visitElement(INamedElement namedElement) {
-		if(matches(namedElement)) {
-			addMatch(namedElement);
-		}
-	}
-	
-	public boolean matches(INamedElement namedElement) {
-		String name = namedElement.getNameInRegularNamespace();
+		String name = getNameToMatch(namedElement);
 		if(name == null || name.isEmpty()) {
 			// Never match an element with missing name;
-			return false;
+			return;
+		}
+		if(!matchesName(name)) {
+			return;
 		}
 		
-		return matchesName(name);
+		addMatch(namedElement);
+	}
+	
+	protected String getNameToMatch(INamedElement namedElement) {
+		return namedElement.getNameInRegularNamespace();
 	}
 	
 	/** Returns whether this search matches the given name or not. */
 	public abstract boolean matchesName(String name);
 	
-	/** Adds the matched named element. */
-	public void addMatch(INamedElement namedElem) {
-		matches.add(namedElem);
-		if(namedElem instanceof PackageNamespace) {
+	public void addMatch(INamedElement namedElement) {
+		String name = getNameToMatch(namedElement);
+		matches.add(namedElement);
+		
+		addScopedMatch(name, namedElement);
+		
+		if(namedElement instanceof PackageNamespace) {
 			matchesArePartialDefUnits = true;
 		}
+	}
+	
+	private void addScopedMatch(String name, INamedElement newMatch) {
+		ArrayList2<INamedElement> currentEntry = matches2.get(name);
+		if(currentEntry == null) {
+			currentEntry = new ArrayList2<>(1);
+			matches2.put(name, currentEntry);
+		}
+		
+		if(currentEntry.size() > 0) {
+			
+		}
+		
+		currentEntry.add(newMatch);
+	}
+	
+	public HashMap<String, ArrayList2<INamedElement>> getMatches2() {
+		return matches2;
 	}
 	
 }

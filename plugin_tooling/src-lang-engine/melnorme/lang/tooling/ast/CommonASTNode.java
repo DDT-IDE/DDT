@@ -300,6 +300,9 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	 * but the most common (and default) scenario is to perform a lexical lookup.
 	 * */
 	public void performNameLookup(CommonScopeLookup search) {
+		assertTrue(search.isSequentialLookup());
+		assertTrue(search.refOffset >= 0);
+		
 		ASTNode.getPrimitivesScope().resolveSearchInScope(search);
 		if(search.isFinished())
 			return;

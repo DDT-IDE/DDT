@@ -11,7 +11,6 @@
 package dtool.ast.statements;
 
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;

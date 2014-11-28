@@ -38,7 +38,7 @@ public class ScopedStatementList extends CommonStatementList implements IScopeEl
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateNodeList(statements, true);
+		search.evaluateScopeNodeList(statements, true);
 	}
 	
 }

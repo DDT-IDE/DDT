@@ -91,7 +91,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		
 		@Override
 		public void resolveSearchInScope(CommonScopeLookup search) {
-			search.evaluateNodeList(nodeList, false);
+			search.evaluateScopeNodeList(nodeList, false);
 		}
 		
 	}

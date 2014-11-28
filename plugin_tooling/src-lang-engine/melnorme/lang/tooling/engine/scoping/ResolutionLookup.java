@@ -4,6 +4,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 
 /**
  * Normal DefUnit search, 
@@ -39,5 +41,8 @@ public class ResolutionLookup extends CommonScopeLookup {
 		return searchName.equals(defName);
 	}
 	
+	public ArrayList2<INamedElement> getMatchingElementEntry() {
+		return matches2.get(searchName);
+	}
 	
 }
