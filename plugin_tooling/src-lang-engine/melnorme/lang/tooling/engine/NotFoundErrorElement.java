@@ -92,7 +92,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Alias; // TODO: add error archetype /* FIXME: */
+		return EArcheType.Alias; // TODO: add error archetype
 	}
 	
 	@Override

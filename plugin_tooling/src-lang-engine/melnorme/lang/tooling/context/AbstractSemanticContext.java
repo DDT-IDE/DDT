@@ -83,8 +83,8 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	}
 	
 	@Override
-	public ISemanticContext findSemanticContext(ISemanticElement Element) {
-		return this; // Subclasses must reimplement, if appropriate
+	public ISemanticContext findSemanticContext(ISemanticElement element) {
+		return this; // subclasses must reimplement, if appropriate
 	}
 	
 }

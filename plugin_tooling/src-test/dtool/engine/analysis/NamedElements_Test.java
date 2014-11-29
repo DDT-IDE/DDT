@@ -136,13 +136,12 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitConcrete(parseDefUnit("mixin blah xxx;"));
 			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
 			
-			// test synthetic elements:
+			// TODO test synthetic elements:
 			
 			VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
 //			visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
 			
 //			varInstance,
-			/*FIXME: BUG here TODO */
 //			templateInstance,
 			
 //			TemplateInstance templateInstance = new TemplateInstance((DefinitionTemplate) getDefUnit("template xxx(T){}"), 
@@ -164,7 +163,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitAliasElement(parseDefUnit("import xxx = target;"));
 			visitAliasElement(parseDefUnit("import blah : xxx = target;"));
 			
-			/*FIXME: BUG here TODO*/
+			/* TODO test this*/
 			AliasElement aliasElement = sampleModule(new AliasElement(new DefSymbol("xxx"), new RefIdentifier("target")));
 //				aliasElement,
 			

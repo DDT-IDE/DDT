@@ -33,7 +33,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	public final BundlePath LIB_TPL = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_tpl");
 	
 	protected static PickedElement<IResolvable> pickRef(IResolvable ref, ISemanticContext context) {
-		return PickedElement.create(ref, context);
+		return new PickedElement<>(ref, context);
 	}
 	
 	protected static ResolvableResult testResolveElement(PickedElement<? extends NamedReference> refElement) {

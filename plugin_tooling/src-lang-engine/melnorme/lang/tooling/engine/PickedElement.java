@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 
@@ -20,14 +21,11 @@ import melnorme.lang.tooling.context.ISemanticContext;
  */
 public class PickedElement<E extends ISemanticElement> {
 	
-	public static <E extends ISemanticElement> PickedElement<E> create(E element, ISemanticContext context) {
-		return new PickedElement<E>(element, context);
-	}
-	
 	public final E element;
 	public final ISemanticContext context;
 	
 	public PickedElement(E element, ISemanticContext context) {
+		assertTrue(context.findSemanticContext(element) == context);
 		this.element = element;
 		this.context = context;
 	}

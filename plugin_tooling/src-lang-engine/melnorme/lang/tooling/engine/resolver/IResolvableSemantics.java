@@ -20,7 +20,7 @@ public interface IResolvableSemantics extends IElementSemantics {
 	
 	ResolvableResult resolveTargetElement(ISemanticContext sr);
 	
-	/* FIXME: TODO: deprecate these: */
+	/* TODO: deprecate these: */
 	Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly);
 	Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr);
 	

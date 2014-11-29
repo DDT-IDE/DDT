@@ -98,7 +98,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		String source = resolvedModule.getParsedModule().source;
 		int indexOf = source.indexOf(offsetSource);
 		assertTrue(indexOf >= 0);
-		return PickedElement.create(findNode(resolvedModule, indexOf, klass), resolvedModule.getSemanticContext());
+		return new PickedElement<>(findNode(resolvedModule, indexOf, klass), resolvedModule.getSemanticContext());
 	}
 	
 	/* ----------------- Helper to test caching ----------------- */

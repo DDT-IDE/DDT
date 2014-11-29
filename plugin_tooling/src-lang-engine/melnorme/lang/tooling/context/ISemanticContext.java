@@ -43,6 +43,6 @@ public interface ISemanticContext {
 	ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics);
 	
 	/** @return the {@link ISemanticContext} appropriate for the given element. */
-	ISemanticContext findSemanticContext(ISemanticElement Element);
+	ISemanticContext findSemanticContext(ISemanticElement element);
 	
 }

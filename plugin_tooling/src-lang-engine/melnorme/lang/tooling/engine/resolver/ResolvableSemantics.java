@@ -109,7 +109,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		try {
 			return mr.findModule(moduleName);
 		} catch (ModuleSourceException pse) {
-			/* FIXME: TODO: add error to SemanticResolution / semantic operation. */
+			/* TODO: add error to SemanticResolution / semantic operation. */
 			return null;
 		}
 	}
