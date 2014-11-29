@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 
 import org.junit.Test;
 
@@ -246,13 +246,20 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test getResolvedModule for a relative path.
-		Path specialPath = MiscUtil.createValidPath(("###special/relative_bundle.d"));
+		Path specialPath = PathUtil.createValidPath(("###special/relative_bundle.d"));
 		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
 		rm = getUpdatedResolvedModule(specialPath);
 		assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
 			"object"
 		));
 		testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+		// Test same, when no parse source exists for that relative path
+		try {
+			rm = getUpdatedResolvedModule(PathUtil.createValidPath(("###special/non_existent.d")));
+			assertFail();
+		} catch (ExecutionException ee) {
+			assertTrue(ee.getCause() instanceof ModuleSourceException);
+		}
 	}
 	
 }

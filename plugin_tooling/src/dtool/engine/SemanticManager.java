@@ -366,11 +366,9 @@ public class SemanticManager extends AbstractSemanticManager {
 	}
 	
 	public ResolvedModule getUpdatedResolvedModule(Path filePath, Path compilerPath) throws ExecutionException {
-		/* FIXME: issue of absolute paths */
-		// Keep this enabled for now.
-//		if(!filePath.isAbsolute()) {
-//			throw new ExecutionException(new Exception("Invalid module path"));
-//		}
+		if(!filePath.isAbsolute()) {
+			dtoolServer.logMessage("> getUpdatedResolvedModule for non-absolute path: " + filePath);
+		}
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		try {
