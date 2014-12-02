@@ -24,8 +24,8 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	protected final NotAValueErrorElement notAValueError;
 	
-	public TypeSemantics(IConcreteNamedElement typeElement) {
-		super(typeElement);
+	public TypeSemantics(IConcreteNamedElement typeElement, ISemanticContext context) {
+		super(typeElement, context);
 		notAValueError = new NotAValueErrorElement(typeElement, typeElement);
 	}
 	

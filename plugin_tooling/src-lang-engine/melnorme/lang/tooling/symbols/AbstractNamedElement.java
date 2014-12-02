@@ -47,21 +47,21 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	}
 	
 	@Override
-	public abstract INamedElementSemantics getSemantics();
+	public abstract INamedElementSemantics getSemantics(ISemanticContext parentContext);
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {
-		return getSemantics().resolveConcreteElement(context).result;
+		return getSemantics(context).resolveConcreteElement(context).result;
 	}
 	
 	@Override
 	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
-		getSemantics().resolveSearchInMembersScope(search);
+		getSemantics(search.modResolver).resolveSearchInMembersScope(search);
 	}
 	
 	@Override
-	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		return getSemantics().resolveTypeForValueContext(mr);
+	public final INamedElement resolveTypeForValueContext(ISemanticContext context) {
+		return getSemantics(context).resolveTypeForValueContext(context);
 	}
 	
 }

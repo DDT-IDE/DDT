@@ -88,20 +88,16 @@ public class DefinitionClass extends DefinitionAggregate {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ClassSemantics getSemantics() {
-		return (ClassSemantics) super.getSemantics();
-	}
-	
-	@Override
-	protected ClassSemantics createAggregateSemantics() {
+	public ClassSemantics getSemantics(ISemanticContext parentContext) {
 		InstrinsicsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
-		return new ClassSemantics(this, commonTypeScope);
+		return new ClassSemantics(this, commonTypeScope, parentContext);
 	}
 	
 	public class ClassSemantics extends AggregateSemantics {
 		
-		public ClassSemantics(IConcreteNamedElement classElement, InstrinsicsScope commonTypeScope) {
-			super(classElement, commonTypeScope);
+		public ClassSemantics(IConcreteNamedElement classElement, InstrinsicsScope commonTypeScope,
+				ISemanticContext context) {
+			super(classElement, commonTypeScope, context);
 		}
 		
 		@Override
@@ -119,16 +115,16 @@ public class DefinitionClass extends DefinitionAggregate {
 		}
 		
 		public void resolveSearchInSuperScopes(CommonScopeLookup search) {
-			ISemanticContext mr = search.modResolver;
+			ISemanticContext context = search.modResolver;
 			
 			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-				INamedElement baseClassElem = baseclass.findTargetDefElement(mr);
+				INamedElement baseClassElem = baseclass.resolveTargetElement(context);
 				if(baseClassElem == null)
 					continue;
 				
 				if(baseClassElem instanceof DefinitionClass) {
 					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-					baseClassDef.getSemantics().resolveSearchInHierarchyScope(search);
+					baseClassDef.getSemantics(context).resolveSearchInHierarchyScope(search);
 				}
 			}
 		}
@@ -136,7 +132,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		public INamedElement resolveSuperClass(ISemanticContext mr) {
 			
 			for (Reference baseClassRef : nonNullIterable(baseClasses)) {
-				INamedElement baseClass = baseClassRef.findTargetDefElement(mr);
+				INamedElement baseClass = baseClassRef.resolveTargetElement(mr);
 				
 				if(baseClass.getArcheType() == EArcheType.Interface) {
 					continue;

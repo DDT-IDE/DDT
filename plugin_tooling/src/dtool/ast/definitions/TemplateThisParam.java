@@ -13,6 +13,7 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import dtool.ast.expressions.Resolvable;
@@ -47,7 +48,7 @@ public class TemplateThisParam extends TemplateParameter {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
 		return semantics;
 	}
 	

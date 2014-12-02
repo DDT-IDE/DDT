@@ -104,9 +104,9 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	}
 	
 	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
-		EmptySemanticResolution mr = new EmptySemanticResolution();
-		INamedElementSemantics nodeSemantics = parseDefinitionVar(source, offset).getSemantics();
-		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext(mr);
+		EmptySemanticResolution context = new EmptySemanticResolution();
+		INamedElementSemantics nodeSemantics = parseDefinitionVar(source, offset).getSemantics(context);
+		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext(context);
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);
 			return;

@@ -77,7 +77,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	protected final INamedElementSemantics nodeSemantics = new NullNamedElementSemantics();
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
 		return nodeSemantics;
 	}
 	

@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.utilbox.collections.ArrayView;
@@ -113,11 +114,8 @@ public class StaticIfExpIs extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics getSemantics() {
-			return semantics;
-		}
-		
-		protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
+		public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+			return new TypeAliasSemantics(this, parentContext) {
 			
 			@Override
 			protected Resolvable getAliasTarget() {
@@ -125,6 +123,7 @@ public class StaticIfExpIs extends Expression {
 			}
 			
 		};
+		}
 		
 	}
 	

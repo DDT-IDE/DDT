@@ -41,13 +41,13 @@ public class ExpSuper extends Expression {
 	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(ISemanticContext context, boolean findOneOnly) {
 			DefinitionClass definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
 			if(definitionClass == null) {
 				return null;
 			}
 			
-			INamedElement superClass = definitionClass.getSemantics().resolveSuperClass(mr);
+			INamedElement superClass = definitionClass.getSemantics(context).resolveSuperClass(context);
 			if(superClass == null) {
 				return null;
 			}

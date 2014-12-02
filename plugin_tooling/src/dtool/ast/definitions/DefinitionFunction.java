@@ -60,10 +60,10 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return EArcheType.Function;
 	}
 	
-	public INamedElement findReturnTypeTargetDefUnit(ISemanticContext moduleResolver) {
+	public INamedElement findReturnTypeTargetDefUnit(ISemanticContext context) {
 		if(retType == null) 
 			return null;
-		return retType.findTargetDefElement(moduleResolver);
+		return retType.resolveTargetElement(context);
 	}
 	
 	@Override
@@ -90,18 +90,16 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new FunctionElementSemantics(this, parentContext);
 	}
-	
-	protected final FunctionElementSemantics semantics = new FunctionElementSemantics(this);
 	
 	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {
 		
 		protected final DefinitionFunction function;
 		
-		public FunctionElementSemantics(DefinitionFunction defFunction) {
-			super(defFunction);
+		public FunctionElementSemantics(DefinitionFunction defFunction, ISemanticContext context) {
+			super(defFunction, context);
 			this.function = defFunction;
 		}
 		
@@ -120,8 +118,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		extends NamedElementSemantics<ConcreteElementResult> 
 	{
 		
-		public AbstractFunctionElementSemantics(INamedElement element) {
-			super(element);
+		public AbstractFunctionElementSemantics(INamedElement element, ISemanticContext context) {
+			super(element, context);
 		}
 		
 		@Override

@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -22,9 +23,12 @@ public abstract class NamedElementSemantics<ER extends ElementResolution<?>> ext
 {
 	
 	protected final INamedElement element; 
+	protected final ISemanticContext context;
 	
-	public NamedElementSemantics(INamedElement element) {
+	public NamedElementSemantics(INamedElement element, ISemanticContext context) {
 		this.element = assertNotNull(element);
+		 /* FIXME: optimize away this call when not necessary. */
+		this.context = context.findSemanticContext(element);
 	}
 	
 }

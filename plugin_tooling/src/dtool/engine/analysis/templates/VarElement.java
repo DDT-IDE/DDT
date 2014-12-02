@@ -13,6 +13,7 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -49,17 +50,15 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 		return EArcheType.Variable;
 	}
 	
-	protected final VarSemantics nodeSemantics = new VarSemantics(this) {
-		
-		@Override
-		protected Resolvable getTypeReference() {
-			return type;
-		};
-	};
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return nodeSemantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new VarSemantics(this, parentContext) {
+			@Override
+			protected Resolvable getTypeReference() {
+				return type;
+			};
+		};
 	}
 	
 }

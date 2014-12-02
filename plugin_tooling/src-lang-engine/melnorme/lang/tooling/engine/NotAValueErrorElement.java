@@ -47,7 +47,7 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	protected final INamedElementSemantics nodeSemantics = new NullNamedElementSemantics();
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
 		return nodeSemantics;
 	}
 	

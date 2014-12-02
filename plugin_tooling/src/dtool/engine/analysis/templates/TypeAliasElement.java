@@ -53,11 +53,8 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final INamedElementSemantics semantics = new TypeAliasSemantics(this) {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeAliasSemantics(this, parentContext) {
 		
 		@Override
 		protected ConcreteElementResult createResolution(ISemanticContext context) {
@@ -71,5 +68,6 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 		}
 		
 	};
+	}
 	
 }

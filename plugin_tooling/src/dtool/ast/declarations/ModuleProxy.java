@@ -109,11 +109,8 @@ public class ModuleProxy extends AbstractNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public final INamedElementSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
+	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeAliasSemantics(this, parentContext) {
 		
 		@Override
 		protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {
@@ -140,5 +137,6 @@ public class ModuleProxy extends AbstractNamedElement {
 		}
 		
 	};
+	}
 	
 }

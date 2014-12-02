@@ -116,11 +116,8 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	/* -----------------  ----------------- */
 	
 	@Override
-	public final INamedElementSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final AliasSemantics semantics = new AliasSemantics(this) {
+	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new AliasSemantics(this, parentContext) {
 		
 		@Override
 		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
@@ -144,6 +141,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		}
 		
 	};
+	}
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {

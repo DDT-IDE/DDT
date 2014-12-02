@@ -22,8 +22,8 @@ public class CommonDefVarSemantics extends VarSemantics {
 	
 	protected final IVarDefinitionLike varDef;
 	
-	public CommonDefVarSemantics(IVarDefinitionLike varDef) {
-		super(varDef);
+	public CommonDefVarSemantics(IVarDefinitionLike varDef, ISemanticContext context) {
+		super(varDef, context);
 		this.varDef = varDef;
 	}
 	

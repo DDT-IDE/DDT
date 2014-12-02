@@ -19,8 +19,8 @@ import melnorme.utilbox.misc.CollectionUtil;
 
 public abstract class AliasSemantics extends NamedElementSemantics<ConcreteElementResult> {
 	
-	public AliasSemantics(INamedElement element) {
-		super(element);
+	public AliasSemantics(INamedElement element, ISemanticContext context) {
+		super(element, context);
 	}
 	
 	@Override
@@ -62,8 +62,8 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	
 	public abstract static class TypeAliasSemantics extends AliasSemantics {
 		
-		public TypeAliasSemantics(INamedElement aliasDef) {
-			super(aliasDef);
+		public TypeAliasSemantics(INamedElement aliasDef, ISemanticContext context) {
+			super(aliasDef, context);
 		}
 		
 		@Override

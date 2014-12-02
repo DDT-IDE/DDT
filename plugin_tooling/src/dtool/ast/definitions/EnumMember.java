@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
@@ -85,17 +86,15 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new CommonDefVarSemantics(this, parentContext) {
+			
+			@Override
+			protected Resolvable getTypeReference() {
+				return getEffectiveTypeReference();
+			}
+		};
 	}
-	
-	protected final CommonDefVarSemantics semantics = new CommonDefVarSemantics(this) {
-		
-		@Override
-		protected Resolvable getTypeReference() {
-			return getEffectiveTypeReference();
-		}
-	};
 	
 	@Override
 	public Reference getDeclaredType() {

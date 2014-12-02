@@ -3,6 +3,7 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
@@ -46,11 +47,8 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final INamedElementSemantics semantics = new AliasSemantics(this) {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new AliasSemantics(this, parentContext) {
 		
 		@Override
 		protected Reference getAliasTarget() {
@@ -58,5 +56,6 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 		}
 		
 	};
+	}
 	
 }

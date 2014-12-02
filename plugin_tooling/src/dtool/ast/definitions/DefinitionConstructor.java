@@ -13,6 +13,7 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -64,17 +65,15 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeSemantics(this, parentContext) {
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
+				// Not applicable to constructor as it cannot be referred directly
+			}
+			
+		};
 	}
-	
-	protected final TypeSemantics semantics = new TypeSemantics(this) {
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			// Not applicable to constructor as it cannot be referred directly
-		}
-		
-	};
 	
 }

@@ -23,8 +23,8 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	protected final DefinitionTemplate defTemplate;
 	protected final NotAValueErrorElement notAValueErrorElement;
 	
-	public DefTemplateSemantics(DefinitionTemplate defTemplate) {
-		super(defTemplate);
+	public DefTemplateSemantics(DefinitionTemplate defTemplate, ISemanticContext context) {
+		super(defTemplate, context);
 		this.defTemplate = defTemplate;
 		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate, defTemplate);
 	}

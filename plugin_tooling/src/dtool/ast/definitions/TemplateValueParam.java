@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -65,18 +66,16 @@ public class TemplateValueParam extends TemplateParameter implements IConcreteNa
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new VarSemantics(this, parentContext) {
+			
+			@Override
+			protected Resolvable getTypeReference() {
+				return type;
+			}
+			
+		};
 	}
-	
-	protected final VarSemantics semantics = new VarSemantics(this) {
-		
-		@Override
-		protected Resolvable getTypeReference() {
-			return type;
-		}
-		
-	};
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable argument) {

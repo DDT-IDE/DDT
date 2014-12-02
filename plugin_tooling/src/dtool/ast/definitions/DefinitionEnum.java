@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
@@ -123,26 +124,24 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final TypeSemantics semantics = new TypeSemantics(this) {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeSemantics(this, parentContext) {
 		
-		protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
-		
-		protected InstrinsicsScope createAggregateCommonTypeScope() {
-			return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(getTypeElement()));
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			if(body != null) {
-				body.resolveSearchInScope(search);
+			protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
+			
+			protected InstrinsicsScope createAggregateCommonTypeScope() {
+				return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(getTypeElement()));
 			}
-			commonTypeScope.resolveSearchInScope(search);
-		}
-		
-	};
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
+				if(body != null) {
+					body.resolveSearchInScope(search);
+				}
+				commonTypeScope.resolveSearchInScope(search);
+			}
+			
+		};
+	}
 	
 }

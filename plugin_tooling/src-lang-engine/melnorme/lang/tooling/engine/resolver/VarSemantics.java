@@ -19,8 +19,8 @@ import dtool.ast.expressions.Resolvable;
 
 public abstract class VarSemantics extends ConcreteElementSemantics {
 	
-	public VarSemantics(IConcreteNamedElement element) {
-		super(element);
+	public VarSemantics(IConcreteNamedElement element, ISemanticContext context) {
+		super(element, context);
 	}
 	
 	@Override

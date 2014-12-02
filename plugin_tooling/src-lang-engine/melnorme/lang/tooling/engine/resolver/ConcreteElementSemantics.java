@@ -30,10 +30,10 @@ class ConcreteElementResolution extends ElementResolution<IConcreteNamedElement>
 
 public abstract class ConcreteElementSemantics extends NamedElementSemantics<ConcreteElementResolution> {
 	
-	protected final ConcreteElementResolution elementRes; 
+	protected final ConcreteElementResolution elementRes;
 	
-	public ConcreteElementSemantics(IConcreteNamedElement concreteElement) {
-		super(concreteElement);
+	public ConcreteElementSemantics(IConcreteNamedElement concreteElement, ISemanticContext context) {
+		super(concreteElement, context);
 		this.elementRes = new ConcreteElementResolution(concreteElement);
 	}
 	

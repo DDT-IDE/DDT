@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
@@ -102,11 +103,9 @@ public class DefinitionVariable extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics getSemantics() {
-		return nodeSemantics;
+	public CommonDefVarSemantics getSemantics(ISemanticContext parentContext) {
+		return new CommonDefVarSemantics(this, parentContext);
 	}
-	
-	protected final CommonDefVarSemantics nodeSemantics = new CommonDefVarSemantics(this);
 	
 	/* -----------------  ----------------- */
 	

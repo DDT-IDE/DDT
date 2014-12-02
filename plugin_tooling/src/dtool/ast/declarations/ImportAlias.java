@@ -13,6 +13,7 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -67,16 +68,14 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	public INamedElementSemantics getSemantics() {
-		return semantics;
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeAliasSemantics(this, parentContext) {
+			
+			@Override
+			protected Resolvable getAliasTarget() {
+				return moduleRef;
+			}
+		};
 	}
-	
-	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
-		
-		@Override
-		protected Resolvable getAliasTarget() {
-			return moduleRef;
-		}
-	};
 	
 }

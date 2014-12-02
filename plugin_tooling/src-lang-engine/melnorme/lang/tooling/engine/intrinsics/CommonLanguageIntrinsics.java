@@ -41,19 +41,17 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicNamedElement... members);
 		
 		@Override
-		public TypeSemantics getSemantics() {
-			return semantics;
+		public TypeSemantics getSemantics(ISemanticContext parentContext) {
+			return new TypeSemantics(this, parentContext) {
+			
+				@Override
+				public void resolveSearchInMembersScope(CommonScopeLookup search) {
+					assertNotNull(membersScope);
+					membersScope.resolveSearchInScope(search);
+				}
+				
+			};
 		}
-		
-		protected final TypeSemantics semantics = new TypeSemantics(this) {
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				assertNotNull(membersScope);
-				membersScope.resolveSearchInScope(search);
-			}
-			
-		};
 		
 	}
 	
@@ -71,23 +69,21 @@ public interface CommonLanguageIntrinsics {
 		protected abstract INamedElement resolveType(ISemanticContext mr);
 		
 		@Override
-		public VarSemantics getSemantics() {
-			return semantics;
+		public VarSemantics getSemantics(ISemanticContext parentContext) {
+			return new VarSemantics(this, parentContext) {
+				
+				@Override
+				public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+					return resolveType(mr);
+				};
+				
+				@Override
+				protected Resolvable getTypeReference() {
+					throw assertFail();
+				};
+				
+			};
 		}
-		
-		protected final VarSemantics semantics = new VarSemantics(this) {
-			
-			@Override
-			public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-				return resolveType(mr);
-			};
-			
-			@Override
-			protected Resolvable getTypeReference() {
-				throw assertFail();
-			};
-			
-		};
 		
 	}
 	
