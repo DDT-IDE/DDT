@@ -12,11 +12,16 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -35,31 +40,41 @@ import dtool.ast.definitions.EArcheType;
  */
 public class PackageNamespace extends AbstractNamedElement implements IScopeElement {
 	
-	protected final String fqName;
-	protected final INamedElement containedElement;
-	
-	public PackageNamespace(String fqName, INamedElement module) {
-		super(StringUtil.substringAfterLastMatch(fqName, "."));
-		this.fqName = fqName;
-		this.containedElement = assertNotNull(module);
-	}
-	
-	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module, 
+			ISemanticElement container) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-		return createPartialDefUnits(defName, packages, module);
+		return createPartialDefUnits(defName, packages, module, container);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module) {
+	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module, 
+			ISemanticElement container) {
 		if(packages.length == 0) {
-			return new PackageNamespace(fqName, module);
+			return new PackageNamespace(fqName, module, container);
 		} else {
 			String childDefName = packages[0];
 			String childFqName = fqName + "." + childDefName;
 			packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PackageNamespace partialDefUnits = createPartialDefUnits(childFqName, packages, module);
-			return new PackageNamespace(fqName, partialDefUnits);
+			PackageNamespace partialDefUnits = createPartialDefUnits(childFqName, packages, module, container);
+			return new PackageNamespace(fqName, partialDefUnits, container);
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected final String fqName;
+	protected final INamedElement containedElement;
+	
+	public PackageNamespace(String fqName, INamedElement module, ISemanticElement container) {
+		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
+		this.fqName = fqName;
+		this.containedElement = assertNotNull(module);
+	}
+	
+	@Override
+	public Path getModulePath() {
+		return null; // This element is fully resolved already, so we don't need a module path. 
+		// We could have provided one if we wanted though.
 	}
 	
 	@Override
@@ -73,7 +88,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public INamedElement getParentNamedElement() {
 		return null;
 	}
 	
@@ -105,7 +120,13 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		return semantics;
 	}
 	
-	protected final TypeAliasSemantics semantics = new TypeAliasSemantics(this) {
+	protected final AliasSemantics semantics = new AliasSemantics(this) {
+		
+		@Override
+		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+			// TODO: need to rewrite this, ensure just one instance per semantics instance.
+			return new NotAValueErrorElement(element, null /*FIXME: BUG here*/);
+		};
 		
 		@Override
 		protected ConcreteElementResult createResolution(ISemanticContext context) {

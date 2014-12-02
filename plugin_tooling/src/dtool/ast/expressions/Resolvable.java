@@ -34,8 +34,14 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	@Override
 	public abstract IResolvableSemantics getSemantics();
 	
-	public final INamedElement findTargetDefElement(ISemanticContext context) {
+	
+	public final INamedElement resolveTargetElement(ISemanticContext context) {
 		return getSemantics().resolveTargetElement(context).result;
+	}
+	
+	@Deprecated
+	public final INamedElement findTargetDefElement(ISemanticContext context) {
+		return resolveTargetElement(context);
 	}
 	
 	@Override

@@ -21,10 +21,12 @@ import dtool.ast.definitions.DefinitionTemplate;
 public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	
 	protected final DefinitionTemplate defTemplate;
+	protected final NotAValueErrorElement notAValueErrorElement;
 	
 	public DefTemplateSemantics(DefinitionTemplate defTemplate) {
 		super(defTemplate);
 		this.defTemplate = defTemplate;
+		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate, defTemplate);
 	}
 	
 	@Override
@@ -40,6 +42,6 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 		if(defTemplate.wrapper) {
 			// TODO: 
 		}
-		return new NotAValueErrorElement(defTemplate);
+		return notAValueErrorElement;
 	}
 }

@@ -11,58 +11,31 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
 
-public class NotAValueErrorElement extends AbstractElement implements INamedElement {
+public class NotAValueErrorElement extends WrappedNamedElement implements INamedElement {
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
-	protected final INamedElement wrappedElement;
-
-	public NotAValueErrorElement(INamedElement wrappedElement) {
-		this.wrappedElement = wrappedElement;
+	public NotAValueErrorElement(INamedElement wrappedElement, ISemanticElement parent) {
+		super(wrappedElement, parent);
 	}
 	
 	@Override
-	public String getName() {
-		return wrappedElement.getName();
+	public boolean isLanguageIntrinsic() {
+		return wrappedElement.isLanguageIntrinsic();
 	}
 	
 	@Override
 	public String getExtendedName() {
 		return wrappedElement.getExtendedName() + ERROR_IS_NOT_A_VALUE;
-	}
-	
-	@Override
-	public String getNameInRegularNamespace() {
-		return wrappedElement.getNameInRegularNamespace();
-	}
-	
-	@Override
-	public String getFullyQualifiedName() {
-		return wrappedElement.getFullyQualifiedName();
-	}
-	
-	@Override
-	public String getModuleFullyQualifiedName() {
-		return wrappedElement.getModuleFullyQualifiedName();
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
-		return wrappedElement.getModuleFullName();
-	}
-	
-	@Override
-	public INamedElement getParentElement() {
-		return wrappedElement.getParentElement();
 	}
 	
 	@Override

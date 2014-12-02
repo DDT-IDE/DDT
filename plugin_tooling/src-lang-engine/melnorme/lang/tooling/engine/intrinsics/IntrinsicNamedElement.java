@@ -1,7 +1,5 @@
 package melnorme.lang.tooling.engine.intrinsics;
 
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -11,33 +9,23 @@ import dtool.ast.definitions.EArcheType;
 /**
  * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
  */
-public abstract class IntrinsicDefUnit extends AbstractNamedElement {
+public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	
 	protected final ElementDoc doc;
 	
-	public IntrinsicDefUnit(String name, ElementDoc doc) {
-		super(name);
+	public IntrinsicNamedElement(String name, ElementDoc doc) {
+		super(name, null);
 		this.doc = doc;
+	}
+	
+	@Override
+	public INamedElement getParentNamedElement() {
+		return null;
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Struct;
-	}
-	
-	// ATM #isLanguageIntrinsic is always true, but in the future we may refactor this class 
-	// so that it can be used in non-intrinsic contexts (element instantiation for example).
-	@Override
-	public boolean isLanguageIntrinsic() {
-		if(getParentElement() == null) {
-			return true;
-		}
-		return getParentElement().isLanguageIntrinsic();
-	}
-	
-	@Override
-	public Path getModulePath() {
-		return null;
 	}
 	
 	@Override
@@ -48,11 +36,6 @@ public abstract class IntrinsicDefUnit extends AbstractNamedElement {
 	@Override
 	public String getModuleFullyQualifiedName() {
 		return ""; // Special module value for intrinsic elements.
-	}
-	
-	@Override
-	public INamedElement getParentElement() {
-		return null;
 	}
 	
 	@Override

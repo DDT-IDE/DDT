@@ -11,9 +11,10 @@
 package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 
 
-public abstract class SourceElement extends AbstractElement2 implements ISourceElement {
+public abstract class SourceElement extends CommonElement implements ISourceElement {
 	
 	public SourceElement() {
 		super();
@@ -90,6 +91,39 @@ public abstract class SourceElement extends AbstractElement2 implements ISourceE
 	/** Sets the source range according to given sourceRange. */
 	public final void setSourceRange(SourceRange sourceRange) {
 		setSourcePosition(sourceRange.getOffset(), sourceRange.getOffset() + sourceRange.getLength());
+	}
+	
+	/* -----------------  ----------------- */
+	
+	/** 
+	 * Returns a source representation of this element
+	 * 
+	 * For nodes: if node parsed without errors then this representation should be equal 
+	 * to the original parsed source (disregarding sub-channel tokens). Otherwise, if there were errors, 
+	 * this method should still try to print something as close as possible to the original parsed source. 
+	 * 
+	 * All tokens that were consumed should be printed.
+	 * 
+	 * Expected tokens that were *not* consumed should preferably be printed as well, but it is not strictly required.
+	 * 
+	 * This method may be used by for UI display (or tests), but it is not precise enough to be 
+	 * used for any semantic purposes.
+	 * 
+	 */
+	public final String toStringAsCode() {
+		ASTCodePrinter cp = new ASTCodePrinter();
+		toStringAsCode(cp);
+		return cp.toString();
+	}
+	
+	/** @see #toStringAsCode() */
+	public abstract void toStringAsCode(ASTCodePrinter cp);
+	
+	
+	// String printer helper
+	
+	public final String toStringClassName() {
+		return this.getClass().getSimpleName();
 	}
 	
 }

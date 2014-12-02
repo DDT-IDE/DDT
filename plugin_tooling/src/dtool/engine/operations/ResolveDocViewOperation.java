@@ -62,7 +62,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		if(pickedNode instanceof DefSymbol) {
 			relevantElementForDoc = ((DefSymbol) pickedNode).getDefUnit();
 		} else if(pickedNode instanceof NamedReference) {
-			relevantElementForDoc = ((NamedReference) pickedNode).findTargetDefElement(mr);
+			relevantElementForDoc = ((NamedReference) pickedNode).resolveTargetElement(mr);
 		} else if(pickedNode instanceof AutoReference) {
 			AutoReference autoReference = (AutoReference) pickedNode;
 			return getDDocHTMLViewForAutoLike(mr, autoReference.getParent_());

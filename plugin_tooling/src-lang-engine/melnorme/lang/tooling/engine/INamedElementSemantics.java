@@ -22,6 +22,7 @@ public interface INamedElementSemantics extends IElementSemantics {
 	
 	void resolveSearchInMembersScope(CommonScopeLookup search);
 	
+	/* FIXME: review this API */
 	INamedElement resolveTypeForValueContext(ISemanticContext mr);
 	
 }

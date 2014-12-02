@@ -94,11 +94,12 @@ public class RefModule extends NamedReference {
 			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
 			
 			for (String fqName : matchedModule) {
-				search.addMatch(new ModuleProxy(fqName, prefixDefUnitSearch.modResolver, true));
+				search.addMatch(new ModuleProxy(fqName, prefixDefUnitSearch.modResolver, true, RefModule.this));
 			}
 		} else {
 			assertTrue(isMissingCoreReference() == false);
-			ModuleProxy moduleProxy = new ModuleProxy(getRefModuleFullyQualifiedName(), search.modResolver, true);
+			String moduleFQName = getRefModuleFullyQualifiedName();
+			ModuleProxy moduleProxy = new ModuleProxy(moduleFQName, search.modResolver, true, RefModule.this);
 			if(moduleProxy.resolveUnderlyingNode() != null) {
 				search.addMatch(moduleProxy);
 			}
@@ -106,7 +107,7 @@ public class RefModule extends NamedReference {
 	}
 	
 	public ModuleProxy getModuleProxy(ISemanticContext mr) {
-		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr, false);
+		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr, false, RefModule.this);
 	}
 	
 }

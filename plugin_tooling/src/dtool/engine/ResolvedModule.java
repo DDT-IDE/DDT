@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -22,12 +24,16 @@ public class ResolvedModule {
 	protected final AbstractBundleResolution semanticContext;
 	
 	public ResolvedModule(ParsedModule parsedModule, AbstractBundleResolution semanticContext) {
-		this.parsedModule = parsedModule;
+		this.parsedModule = assertNotNull(parsedModule);
 		this.semanticContext = semanticContext;
 	}
 	
 	public ParsedModule getParsedModule() {
 		return parsedModule;
+	}
+	
+	public String getSource() {
+		return parsedModule.source;
 	}
 	
 	public Module getModuleNode() {

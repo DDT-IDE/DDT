@@ -68,7 +68,8 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 		
 		@Override
 		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-			return new NotAValueErrorElement(element);
+			// TODO fix leak here, this element should be created only once per resolution.
+			return new NotAValueErrorElement(element, getAliasTarget());
 		};
 		
 	}

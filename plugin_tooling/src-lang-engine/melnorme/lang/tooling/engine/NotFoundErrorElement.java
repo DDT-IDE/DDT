@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
+import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -29,7 +30,8 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	protected final ElementDoc parseDDoc;
 	
 	public NotFoundErrorElement(IResolvable resolvable) {
-		parseDDoc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
+		super(resolvable);
+		this.parseDDoc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
 	}
 	
 	@Override
@@ -63,7 +65,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public INamedElement getParentNamedElement() {
 		return null;
 	}
 	

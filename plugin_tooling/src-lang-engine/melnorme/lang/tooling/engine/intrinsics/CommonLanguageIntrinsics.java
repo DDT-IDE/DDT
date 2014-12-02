@@ -26,7 +26,7 @@ import dtool.ast.expressions.Resolvable;
 
 public interface CommonLanguageIntrinsics {
 
-	public abstract class IntrinsicTypeDefUnit extends IntrinsicDefUnit implements IConcreteNamedElement {
+	public abstract class IntrinsicTypeDefUnit extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
 		protected InstrinsicsScope membersScope;
 		
@@ -38,7 +38,7 @@ public interface CommonLanguageIntrinsics {
 			return membersScope;
 		}
 		
-		public abstract void createMembers(IntrinsicDefUnit... members);
+		public abstract void createMembers(IntrinsicNamedElement... members);
 		
 		@Override
 		public TypeSemantics getSemantics() {
@@ -57,7 +57,7 @@ public interface CommonLanguageIntrinsics {
 		
 	}
 	
-	public abstract class AbstractIntrinsicProperty extends IntrinsicDefUnit implements IConcreteNamedElement {
+	public abstract class AbstractIntrinsicProperty extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
 		public AbstractIntrinsicProperty(String name, ElementDoc doc) {
 			super(name, doc);

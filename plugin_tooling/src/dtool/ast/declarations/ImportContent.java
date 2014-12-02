@@ -84,7 +84,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	
 	public INamedElement getPartialDefUnit(ISemanticContext mr) {
 		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
-			return moduleRef.findTargetDefElement(mr);
+			return moduleRef.resolveTargetElement(mr);
 		}
 		
 		// Do lazy PartialDefUnit creation
@@ -93,7 +93,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 				defunit = null;
 			} else {
 				INamedElement moduleElem = moduleRef.getModuleProxy(mr);
-				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem); 
+				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem, ImportContent.this); 
 			}
 		}
 		return defunit;

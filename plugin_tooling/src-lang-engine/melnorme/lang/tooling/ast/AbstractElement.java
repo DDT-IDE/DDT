@@ -8,33 +8,27 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine;
+package melnorme.lang.tooling.ast;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.ast.AbstractElement2;
-import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 
-//TODO merge this and AbstractElement2
-public abstract class AbstractElement extends AbstractElement2 implements ISemanticElement {
+public abstract class AbstractElement extends CommonElement {
 	
-	public AbstractElement() {
+	protected final ISemanticElement parent;
+	
+	public AbstractElement(ISemanticElement parent) {
+		this.parent = parent;
 	}
 	
 	@Override
 	public boolean isLanguageIntrinsic() {
-		return false; /*FIXME: BUG here*/
+		return parent == null ? true : parent.isLanguageIntrinsic();
 	}
 	
 	@Override
 	public Path getModulePath() {
-		return null; /*FIXME: BUG here*/
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		/* FIXME: TODO*/
+		return parent == null ? null : parent.getModulePath();
 	}
 	
 }

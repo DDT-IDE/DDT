@@ -12,9 +12,8 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.AbstractElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
@@ -30,13 +29,14 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 	public final String elementName;
 	
 	public ModuleQualifiedReference(String moduleFullName, String elementName) {
+		super(null);
 		this.moduleFullName = moduleFullName;
 		this.elementName = elementName;
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.appendStrings(moduleFullName, ".", elementName);
+	public String toStringAsCode() {
+		return moduleFullName + "." + elementName;
 	}
 	
 	/* -----------------  ----------------- */

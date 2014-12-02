@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
@@ -77,7 +78,9 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		testResolveElement(parseTestElement("not_found foo;", "not_found", RefIdentifier.class));
 		
-		
+		testResolveElement(new PickedElement<IResolvable>(
+				new ModuleQualifiedReference("object", "TypeInfo_Class"), 
+				defaultSemMgr.getUpdatedStdLibResolution(null)), "TypeInfo_Class");
 		
 		testResolveElement(parseTestElement("import target;", "target", RefModule.class));
 		

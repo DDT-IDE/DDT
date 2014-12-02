@@ -18,13 +18,13 @@ import melnorme.utilbox.misc.CollectionUtil;
 
 public class InstrinsicsScope implements IScopeElement {
 	
-	public final ArrayList<IntrinsicDefUnit> members;
+	public final ArrayList<IntrinsicNamedElement> members;
 	
-	public InstrinsicsScope(IntrinsicDefUnit... members) {
+	public InstrinsicsScope(IntrinsicNamedElement... members) {
 		this.members = CollectionUtil.createArrayList(members); 
 	}
 	
-	public InstrinsicsScope(ArrayList<IntrinsicDefUnit> members) {
+	public InstrinsicsScope(ArrayList<IntrinsicNamedElement> members) {
 		this.members = members; 
 	}
 	

@@ -18,7 +18,7 @@ import java.util.Arrays;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
-import melnorme.lang.tooling.engine.intrinsics.IntrinsicDefUnit;
+import melnorme.lang.tooling.engine.intrinsics.IntrinsicNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -93,7 +93,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		public void createMembers(IntrinsicDefUnit... members) {
+		public void createMembers(IntrinsicNamedElement... members) {
 			this.membersScope = new InstrinsicsScope(members);
 			
 			membersScope.members.addAll(createCommonProperties(this));
@@ -102,8 +102,8 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 	}
 	
-	public ArrayList<IntrinsicDefUnit> createCommonProperties(INamedElement type) {
-		return CollectionUtil.<IntrinsicDefUnit>createArrayList( 
+	public ArrayList<IntrinsicNamedElement> createCommonProperties(INamedElement type) {
+		return CollectionUtil.<IntrinsicNamedElement>createArrayList( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
 				parseDDoc("size in bytes (equivalent to C's $(D sizeof(type)))")),

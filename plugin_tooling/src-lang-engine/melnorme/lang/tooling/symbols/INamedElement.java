@@ -53,7 +53,7 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	
 	/** @return the nearest enclosing {@link INamedElement}.
 	 * For modules and packages, that is null. */
-	public abstract INamedElement getParentElement();
+	public abstract INamedElement getParentNamedElement();
 	
 	/* ----------------- Semantics ----------------- */
 	

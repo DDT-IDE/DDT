@@ -117,7 +117,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		INamedElement parentNamespace = getParentElement();
+		INamedElement parentNamespace = getParentNamedElement();
 		if(parentNamespace == null) {
 			return getName();
 		} else {
@@ -131,7 +131,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public INamedElement getParentNamedElement() {
 		return NodeUtil.getParentDefUnit(this);
 	}
 	

@@ -192,7 +192,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			return this;
 		} else {
 			String[] packNames = md.packages;
-			return PackageNamespace.createPartialDefUnits(packNames, this);
+			return PackageNamespace.createPartialDefUnits(packNames, this, this);
 		}
 	}
 	

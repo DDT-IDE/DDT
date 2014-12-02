@@ -22,8 +22,11 @@ import dtool.ast.references.CommonQualifiedReference;
 
 public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
+	protected final NotAValueErrorElement notAValueError;
+	
 	public TypeSemantics(IConcreteNamedElement typeElement) {
 		super(typeElement);
+		notAValueError = new NotAValueErrorElement(typeElement, typeElement);
 	}
 	
 	protected final IConcreteNamedElement getTypeElement() {
@@ -32,7 +35,7 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	@Override
 	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		return new NotAValueErrorElement(getTypeElement());
+		return notAValueError;
 	}
 	
 	public static void resolveSearchInScope(CommonScopeLookup search, IScopeElement scope) {

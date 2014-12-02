@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.ast.AbstractElement2;
 import melnorme.lang.tooling.ast.IModuleNode;
+import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -100,7 +100,7 @@ public class Scope_SemanticsTest extends CommonNodeSemanticsTest {
 		Object[] results = ArrayUtil.map(matchingElementEntry, new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
-				return ((AbstractElement2) obj).toStringAsCode();
+				return ((SourceElement) obj).toStringAsCode();
 			}
 		});
 		

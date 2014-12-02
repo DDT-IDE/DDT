@@ -12,6 +12,10 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
+import java.nio.file.Path;
+
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -38,12 +42,13 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final ISemanticContext context;
 	protected final String fullModuleName;
 	
-	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver) {
-		this(fullModuleName, moduleResolver, false);
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ISemanticElement parent) {
+		this(fullModuleName, moduleResolver, false, parent);
 	}
 	
-	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName) {
-		super(getEffectiveModuleName(fullModuleName, useFullName));
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
+			ISemanticElement parent) {
+		super(getEffectiveModuleName(fullModuleName, useFullName), parent);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;
@@ -56,6 +61,11 @@ public class ModuleProxy extends AbstractNamedElement {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
+	}
+	
+	@Override
+	public Path getModulePath() {
+		return null; /*FIXME: BUG here*/
 	}
 	
 	@Override
@@ -74,7 +84,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentElement() {
+	public INamedElement getParentNamedElement() {
 		return null;
 	}
 	

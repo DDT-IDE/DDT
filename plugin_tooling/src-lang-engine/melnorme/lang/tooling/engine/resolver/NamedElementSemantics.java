@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -23,7 +24,7 @@ public abstract class NamedElementSemantics<ER extends ElementResolution<?>> ext
 	protected final INamedElement element; 
 	
 	public NamedElementSemantics(INamedElement element) {
-		this.element = element;
+		this.element = assertNotNull(element);
 	}
 	
 }

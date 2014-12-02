@@ -29,10 +29,13 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
+import dtool.ast.declarations.ModuleProxy;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.Reference;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.analysis.templates.AliasElement;
@@ -82,18 +85,23 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 	/** Helper to visit a sample of test elements. */
 	protected static class NamedElementVisitor {
 		
-		@SuppressWarnings("unused")
-		protected void visit(PickedElement<INamedElement> pickedElement) {
+		protected final void visit(PickedElement<INamedElement> pickedElement, boolean isConcrete) {
+			assertTrue((pickedElement.element instanceof IConcreteNamedElement) == isConcrete);
+			doVisit(pickedElement, isConcrete);
 		}
 		
 		protected void visitConcrete(PickedElement<INamedElement> pickedElement) {
-			visit(pickedElement);
+			visit(pickedElement, true);
 		}
 		
 		protected void visitAliasElement(PickedElement<INamedElement> pickedElement) {
-			visit(pickedElement);
+			visit(pickedElement, false);
 		}
-
+		
+		
+		@SuppressWarnings("unused")
+		protected void doVisit(PickedElement<INamedElement> pickedElement, boolean isConcrete) {
+		}
 		
 		public void visitElements() throws Exception {
 			
@@ -136,7 +144,13 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitConcrete(parseDefUnit("mixin blah xxx;"));
 			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
 			
-			// TODO test synthetic elements:
+			// A few derived elements.
+			
+			/* FIXME: BUG here add these tests: */
+			//visitModuleProxy();
+			//visitPackageNamespace();
+			
+			// TODO test template synthetic elements:
 			
 			VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
 //			visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
@@ -150,8 +164,28 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 //			)
 //		);
 			
-				
+			visitAliases();
+		}
+		
+		protected void visitModuleProxy() throws ExecutionException {
+			ResolvedModule resolvedModule = parseModule("import xxx; auto _ = xxx;");
+			Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf("xxx"), Reference.class);
+			INamedElement moduleProxy = ref.resolveTargetElement(resolvedModule.getSemanticContext());
+			assertTrue(moduleProxy instanceof ModuleProxy);
 			
+			visitConcrete(new PickedElement<>(moduleProxy, resolvedModule.getSemanticContext()));
+		}
+		
+		protected void visitPackageNamespace() throws ExecutionException {
+			ResolvedModule resolvedModule = parseModule("import xxx.foo; auto _ = xxx;");
+			Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf("xxx"), Reference.class);
+			INamedElement derivedElement = ref.resolveTargetElement(resolvedModule.getSemanticContext());
+			assertTrue(derivedElement instanceof PackageNamespace);
+			
+			visitConcrete(new PickedElement<>(derivedElement, resolvedModule.getSemanticContext()));
+		}
+		
+		protected void visitAliases() {
 			/* ----------------- aliases ----------------- */
 			
 			visitAliasElement(parseDefUnit("int target;  alias xxx = target;"));
@@ -168,9 +202,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 //				aliasElement,
 			
 			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"));
-			
 		}
-		
 	}
 	
 	protected static AliasElement sampleModule(AliasElement aliasElement) {

@@ -23,7 +23,13 @@ public interface ISemanticElement {
 	 */
 	public boolean isLanguageIntrinsic();
 	
+	/**
+	 * @returnt the path of the module file from where this element was parsed or created.
+	 * This is important because it is used to find which semantic context to use for the semantic element.
+	 * Non-null in most cases, but it can be null.
+	 */
 	public Path getModulePath();
+	
 	
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup);
 	
