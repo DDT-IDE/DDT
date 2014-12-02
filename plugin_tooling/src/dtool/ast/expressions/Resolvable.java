@@ -32,11 +32,11 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	@Override
-	public abstract IResolvableSemantics getSemantics();
+	public abstract IResolvableSemantics getSemantics(ISemanticContext parentContext);
 	
 	
 	public final INamedElement resolveTargetElement(ISemanticContext context) {
-		return getSemantics().resolveTargetElement(context).result;
+		return getSemantics(context).resolveTargetElement(context).result;
 	}
 	
 	@Deprecated
@@ -45,14 +45,14 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr) {
-		return getSemantics().findTargetDefElements(mr, true);
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
+		return getSemantics(context).findTargetDefElements(true);
 	}
 	
 	@Deprecated
 	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return getSemantics().findTargetDefElements(mr, findFirstOnly);
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context, boolean findFirstOnly) {
+		return getSemantics(context).findTargetDefElements(findFirstOnly);
 	}
 	
 	/* ----------------- ----------------- */
@@ -64,12 +64,13 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return Collections.singletonList(elem);
 	}
 	
-	public static Collection<INamedElement> findTargetElementsForReference(ISemanticContext mr, Resolvable resolvable,
+	public static Collection<INamedElement> findTargetElementsForReference(ISemanticContext context, 
+		Resolvable resolvable,
 		boolean findFirstOnly) {
 		if(resolvable == null) {
 			return null;
 		}
-		return resolvable.getSemantics().findTargetDefElements(mr, findFirstOnly);
+		return resolvable.getSemantics(context).findTargetDefElements(findFirstOnly);
 	}
 	
 }

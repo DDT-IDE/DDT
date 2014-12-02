@@ -42,38 +42,36 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			INamedElement module = ResolvableSemantics.findModuleUnchecked(mr, moduleFullName);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			INamedElement module = ResolvableSemantics.findModuleUnchecked(context, moduleFullName);
 			if(module == null) 
 				return null;
 			
-			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, findOneOnly, mr);
+			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, findOneOnly, context);
 			module.resolveSearchInMembersScope(search);
 			return search.getMatchedElements();
 		}
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return ResolvableSemantics.resolveTypeOfUnderlyingValue(mr, findTargetDefElements(mr, true));
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+			return ResolvableSemantics.resolveTypeOfUnderlyingValue(context, findTargetDefElements(true));
 		}
 		
 	};
-	
-	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr) {
-		return getSemantics().findTargetDefElements(mr, true);
 	}
 	
 	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findFirstOnly) {
-		return getSemantics().findTargetDefElements(mr, true);
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
+		return getSemantics(context).findTargetDefElements(true);
+	}
+	
+	@Override
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context, boolean findFirstOnly) {
+		return getSemantics(context).findTargetDefElements(true);
 	}
 	
 }

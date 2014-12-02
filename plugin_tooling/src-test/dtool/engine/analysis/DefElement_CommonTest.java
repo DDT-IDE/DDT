@@ -83,13 +83,15 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	protected static void testExpressionResolution(String source, String... expectedResults) throws ExecutionException {
 		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
-		INamedElement expType = getSingleElementOrNull(exp.getSemantics().resolveTypeOfUnderlyingValue(new EmptySemanticResolution()));
+		EmptySemanticResolution context = new EmptySemanticResolution();
+		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}
 	protected static void testExpressionResolution2(String source, String... expectedResults) {
 		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
-		INamedElement expType = getSingleElementOrNull(exp.getSemantics().resolveTypeOfUnderlyingValue(new EmptySemanticResolution()));
+		EmptySemanticResolution context = new EmptySemanticResolution();
+		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}

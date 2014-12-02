@@ -42,17 +42,15 @@ public class ExpCast extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ExpSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return findTargetElementsForReference(mr, type, findOneOnly);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return findTargetElementsForReference(context, type, findOneOnly);
 		}
 		
 	};
+	}
 	
 }

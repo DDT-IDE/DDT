@@ -26,7 +26,8 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	private final IResolvable resolvable;
 	
-	public ResolvableSemantics(IResolvable resolvable) {
+	public ResolvableSemantics(IResolvable resolvable, ISemanticContext context) {
+		super(resolvable, context);
 		this.resolvable = resolvable;
 	}
 	
@@ -38,7 +39,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	@Override
 	protected ResolvableResult createResolution(ISemanticContext context) {
 		INamedElement result = null;
-		Collection<INamedElement> namedElems = findTargetDefElements(context, true);
+		Collection<INamedElement> namedElems = findTargetDefElements(true);
 		if(namedElems != null && !namedElems.isEmpty()) {
 			result = namedElems.iterator().next();
 		}
@@ -51,10 +52,10 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	@Override
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-		Collection<INamedElement> resolvedElements = this.findTargetDefElements(mr, false);
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+		Collection<INamedElement> resolvedElements = this.findTargetDefElements(false);
 		
-		return resolveTypeOfUnderlyingValue(mr, resolvedElements); 
+		return resolveTypeOfUnderlyingValue(context, resolvedElements); 
 	}
 	
 	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr, 
@@ -76,12 +77,12 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	public abstract static class TypeReferenceSemantics extends ResolvableSemantics {
 		
-		public TypeReferenceSemantics(IResolvable resolvable) {
-			super(resolvable);
+		public TypeReferenceSemantics(IResolvable resolvable, ISemanticContext context) {
+			super(resolvable, context);
 		}
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
 			return resolveToInvalidValue();
 		}
 		
@@ -89,16 +90,16 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	public abstract static class ExpSemantics extends ResolvableSemantics {
 		
-		public ExpSemantics(IResolvable resolvable) {
-			super(resolvable);
+		public ExpSemantics(IResolvable resolvable, ISemanticContext context) {
+			super(resolvable, context);
 		}
 		
 		@Override
-		public abstract Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly);
+		public abstract Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return findTargetDefElements(mr, true); // TODO need to review this
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+			return findTargetDefElements(true); // TODO need to review this
 		}
 		
 	}

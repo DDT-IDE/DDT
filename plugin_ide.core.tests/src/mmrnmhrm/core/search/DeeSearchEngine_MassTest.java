@@ -81,7 +81,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<INamedElement> resolvedElements = ref.getSemantics().findTargetDefElements(mr, false);
+					Collection<INamedElement> resolvedElements = ref.getSemantics(mr).findTargetDefElements(false);
 					if(resolvedElements == null || resolvedElements.isEmpty()) {
 						return;
 					}

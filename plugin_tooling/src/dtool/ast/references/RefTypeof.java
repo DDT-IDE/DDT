@@ -68,22 +68,20 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return expression.getSemantics().resolveTypeOfUnderlyingValue(mr);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return expression.getSemantics(context).resolveTypeOfUnderlyingValue();
 		}
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
 			return resolveToInvalidValue();
 		};
 		
 	};
+	}
 	
 }

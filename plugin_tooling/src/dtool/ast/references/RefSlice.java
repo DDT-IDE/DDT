@@ -60,17 +60,15 @@ public class RefSlice extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+			return new ResolvableSemantics(this, parentContext) {
+			
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				return null; // TODO:
+			}
+			
+		};
 	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
-		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return null; // TODO:
-		}
-		
-	};
 	
 }

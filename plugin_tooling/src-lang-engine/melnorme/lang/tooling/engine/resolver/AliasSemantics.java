@@ -37,7 +37,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 		if(aliasTarget == null) {
 			return null;
 		}
-		INamedElement result = aliasTarget.getSemantics().resolveTargetElement(sr).getSingleResult();
+		INamedElement result = aliasTarget.getSemantics(sr).resolveTargetElement(sr).getSingleResult();
 		if(result == null) {
 			return null;
 		}
@@ -53,7 +53,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	public INamedElement resolveTypeForValueContext() {
 		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget != null) {
-			return getFirstElementOrNull(aliasTarget.getSemantics().resolveTypeOfUnderlyingValue(context));
+			return getFirstElementOrNull(aliasTarget.getSemantics(context).resolveTypeOfUnderlyingValue());
 		}
 		return null;
 	}

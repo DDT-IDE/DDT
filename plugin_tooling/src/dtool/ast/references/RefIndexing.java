@@ -59,19 +59,17 @@ public class RefIndexing extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			//TODO infer if its a static array, map array, or tupe
 			// Assume it's a static array. 
 			return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType);
 		}
 		
 	};
+	}
 	
 }

@@ -43,22 +43,20 @@ public class ExpReference extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return ref.getSemantics().findTargetDefElements(mr, findOneOnly);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return ref.getSemantics(context).findTargetDefElements(findOneOnly);
 		}
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return ref.getSemantics().resolveTypeOfUnderlyingValue(mr);
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+			return ref.getSemantics(context).resolveTypeOfUnderlyingValue();
 		}
 		
 	};
+	}
 	
 }

@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Resolvable;
@@ -72,11 +73,9 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	
 	/* -----------------  ----------------- */
 	
-	protected final RefTemplateInstanceSemantics semantics = new RefTemplateInstanceSemantics(this);
-	
 	@Override
-	public RefTemplateInstanceSemantics getSemantics() {
-		return semantics;
+	public RefTemplateInstanceSemantics getSemantics(ISemanticContext parentContext) {
+		return new RefTemplateInstanceSemantics(this, parentContext);
 	};
 	
 }

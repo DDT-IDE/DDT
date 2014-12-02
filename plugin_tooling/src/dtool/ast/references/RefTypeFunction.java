@@ -72,18 +72,16 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	/* -----------------  ----------------- */
 
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new TypeReferenceSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new TypeReferenceSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
 		}
 		
 	};
+	}
 	
 	public static final IntrinsicFunctionType intrinsicFunctionTypeInstance = new IntrinsicFunctionType();
 	

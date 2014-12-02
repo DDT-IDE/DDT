@@ -38,25 +38,23 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			if(isMissingCoreReference()) {
 				return null;
 			}
 			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
 			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode_(), startPos, 
-				findOneOnly, mr);
+				findOneOnly, context);
 			performNameLookup(search);
 			return search.getMatchedElements();
 		}
 		
 	};
+	}
 	
 	/** Return wheter this reference can match the given defunit.
 	 * This is a very lightweight method that only compares the defunit's name 

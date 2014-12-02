@@ -43,17 +43,15 @@ public class ExpLiteralString extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ExpSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return DeeLanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(mr, findOneOnly);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return DeeLanguageIntrinsics.D2_063_intrinsics.string_type.findTargetDefElements(context, findOneOnly);
 		}
 		
 	};
+	}
 	
 }

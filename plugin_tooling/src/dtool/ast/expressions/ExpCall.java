@@ -47,21 +47,18 @@ public class ExpCall extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			INamedElement calleeElem = callee.findTargetDefElement(mr);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			INamedElement calleeElem = callee.resolveTargetElement(context);
 			if(calleeElem == null)
 				return null;
 			
 			if (calleeElem instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-				INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(mr);
+				INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(context);
 				return Collections.singleton(calleeResult);
 			}
 			
@@ -74,14 +71,14 @@ public class ExpCall extends Expression {
 				return null;
 			}
 			
-			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, false, mr);
+			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, false, context);
 			calleeElem.resolveSearchInMembersScope(search);
 			
 			for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
 				INamedElement defOpCall = iter.next();
 				if (defOpCall instanceof DefinitionFunction) {
 					DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-					INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(mr);
+					INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(context);
 					return Collections.singleton(targetDefUnit);
 				}
 			}
@@ -89,10 +86,11 @@ public class ExpCall extends Expression {
 		}
 		
 		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr) {
-			return findTargetDefElements(mr, true); // TODO
+		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+			return findTargetDefElements(true); // TODO
 		}
 		
 	};
+	}
 	
 }

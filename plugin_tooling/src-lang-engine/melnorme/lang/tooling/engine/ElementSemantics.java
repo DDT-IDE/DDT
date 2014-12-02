@@ -11,13 +11,17 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 
 
 public abstract class ElementSemantics<ER extends ElementResolution<?>> implements IElementSemantics {
 	
-	public ElementSemantics() {
-		super();
+	protected final ISemanticContext context;
+	
+	public ElementSemantics(ISemanticElement element, ISemanticContext parentContext) {
+		 /* FIXME: optimize away this call when not necessary. */
+		this.context = parentContext.findSemanticContext(element);
 	}
 	
 	@Override

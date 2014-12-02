@@ -73,17 +73,15 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return findTargetElementsForReference(mr, ref, findOneOnly);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return findTargetElementsForReference(context, ref, findOneOnly);
 		}
 		
 	};
+	}
 	
 }

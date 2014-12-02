@@ -57,9 +57,9 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		ISemanticContext context = refElement.context;
 		
 		// Test caching
-		IResolvableSemantics semantics = ref.getSemantics();
+		IResolvableSemantics semantics = ref.getSemantics(context);
 		ResolvableResult resolveTargetElement = semantics.resolveTargetElement(context);
-		assertTrue(semantics == ref.getSemantics());
+		assertTrue(semantics == ref.getSemantics(context));
 		assertTrue(resolveTargetElement == semantics.resolveTargetElement(context));
 		
 		INamedElement result = resolveTargetElement.result;

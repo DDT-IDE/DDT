@@ -23,12 +23,10 @@ public abstract class NamedElementSemantics<ER extends ElementResolution<?>> ext
 {
 	
 	protected final INamedElement element; 
-	protected final ISemanticContext context;
 	
 	public NamedElementSemantics(INamedElement element, ISemanticContext context) {
+		super(element, context);
 		this.element = assertNotNull(element);
-		 /* FIXME: optimize away this call when not necessary. */
-		this.context = context.findSemanticContext(element);
 	}
 	
 }

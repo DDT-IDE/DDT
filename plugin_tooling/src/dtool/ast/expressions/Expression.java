@@ -25,18 +25,15 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	// TODO: remove this field.
-	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ExpSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			return Collections.emptySet(); // TODO
 		}
 		
 	};
+	}
 	
 }

@@ -28,15 +28,15 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	
 	protected final RefTemplateInstance refTemplateInstance;
 	
-	public RefTemplateInstanceSemantics(RefTemplateInstance refTemplateInstance) {
-		super(refTemplateInstance);
+	public RefTemplateInstanceSemantics(RefTemplateInstance refTemplateInstance, ISemanticContext parentContext) {
+		super(refTemplateInstance, parentContext);
 		this.refTemplateInstance = refTemplateInstance;
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(ISemanticContext moduleResolver, boolean findOneOnly) {
+	public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 		// Not accurate, this will ignore the template parameters:
-		return this.refTemplateInstance.tplRef.findTargetDefElements(moduleResolver, findOneOnly);
+		return this.refTemplateInstance.tplRef.findTargetDefElements(context, findOneOnly);
 	}
 	
 	@Override

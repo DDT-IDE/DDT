@@ -60,23 +60,21 @@ public class ExpNew extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ExpSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			// This is not entirely correct for struct-like types, 
 			// in that case a pointer to the the type is actually the type of the new exp.
 			// But current behavior is acceptable for now.
 			
 			// Also, if the type ref is a static array, the return type is supposed to be a dynamic array,
 			// but we don't implement that
-			return findTargetElementsForReference(mr, newtype, findOneOnly);
+			return findTargetElementsForReference(context, newtype, findOneOnly);
 		}
 		
 	};
+	}
 	
 }

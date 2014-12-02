@@ -11,7 +11,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
  */
 public interface IResolvable extends ISemanticElement {
 	
-	public IResolvableSemantics getSemantics();
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext);
 	
 	
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr); 

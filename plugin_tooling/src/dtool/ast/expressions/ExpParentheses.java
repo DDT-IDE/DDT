@@ -40,17 +40,15 @@ public class ExpParentheses extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ExpSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ExpSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
-			return resolvable.getSemantics().findTargetDefElements(mr, findOneOnly);
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			return resolvable.getSemantics(context).findTargetDefElements(findOneOnly);
 		}
 		
 	};
+	}
 	
 }

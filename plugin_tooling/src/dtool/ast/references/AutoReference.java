@@ -61,22 +61,20 @@ public final class AutoReference extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics() {
-		return semantics;
-	}
-	
-	protected final IResolvableSemantics semantics = new ResolvableSemantics(this) {
+	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return new ResolvableSemantics(this, parentContext) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(ISemanticContext mr, boolean findOneOnly) {
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
 			IInitializer initializer = getParent_().getDeclaredInitializer();
 			if(initializer instanceof IResolvable) {
 				IResolvable valueNode = (IResolvable) initializer;
-				return valueNode.getSemantics().resolveTypeOfUnderlyingValue(mr);
+				return valueNode.getSemantics(context).resolveTypeOfUnderlyingValue();
 			}
 			return null;
 		}
 		
 	};
+	}
 	
 }
