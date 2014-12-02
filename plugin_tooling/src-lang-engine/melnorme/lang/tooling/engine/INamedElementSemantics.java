@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -18,11 +17,11 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface INamedElementSemantics extends IElementSemantics {
 	
-	ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr);
+	ElementResolution<? extends IConcreteNamedElement> resolveConcreteElement();
 	
 	void resolveSearchInMembersScope(CommonScopeLookup search);
 	
 	/* FIXME: review this API */
-	INamedElement resolveTypeForValueContext(ISemanticContext mr);
+	INamedElement resolveTypeForValueContext();
 	
 }

@@ -28,15 +28,15 @@ public class CommonDefVarSemantics extends VarSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public INamedElement resolveTypeForValueContext() {
 		if(getTypeReference() != null) {
-			return super.resolveTypeForValueContext(mr);
+			return super.resolveTypeForValueContext();
 		}
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();
 		if(initializer instanceof IResolvable) {
 			IResolvable initializerR = (IResolvable) initializer;
-			return getFirstElementOrNull(initializerR.getSemantics().resolveTypeOfUnderlyingValue(mr));
+			return getFirstElementOrNull(initializerR.getSemantics().resolveTypeOfUnderlyingValue(context));
 		}
 		
 		return null; // TODO: create error element

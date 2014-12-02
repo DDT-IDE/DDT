@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -23,12 +22,12 @@ import melnorme.lang.tooling.symbols.INamedElement;
 public class NullNamedElementSemantics extends NullElementSemantics implements INamedElementSemantics {
 	
 	@Override
-	public ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+	public ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
 		return null; // /*FIXME: BUG here*/
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public INamedElement resolveTypeForValueContext() {
 		return null;
 	}
 	

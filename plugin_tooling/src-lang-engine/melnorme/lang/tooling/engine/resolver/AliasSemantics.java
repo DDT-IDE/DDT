@@ -10,12 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 
 public abstract class AliasSemantics extends NamedElementSemantics<ConcreteElementResult> {
 	
@@ -24,7 +24,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	}
 	
 	@Override
-	public final ConcreteElementResult resolveConcreteElement(ISemanticContext context) {
+	public final ConcreteElementResult resolveConcreteElement() {
 		return getElementResolution(context);
 	}
 	
@@ -50,10 +50,10 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public INamedElement resolveTypeForValueContext() {
 		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget != null) {
-			return CollectionUtil.getFirstElementOrNull(aliasTarget.getSemantics().resolveTypeOfUnderlyingValue(mr));
+			return getFirstElementOrNull(aliasTarget.getSemantics().resolveTypeOfUnderlyingValue(context));
 		}
 		return null;
 	}
@@ -67,7 +67,7 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+		public INamedElement resolveTypeForValueContext() {
 			// TODO fix leak here, this element should be created only once per resolution.
 			return new NotAValueErrorElement(element, getAliasTarget());
 		};

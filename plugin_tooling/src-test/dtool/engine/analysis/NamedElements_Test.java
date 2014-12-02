@@ -241,8 +241,8 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		assertTrue(context == context.findSemanticContext(namedElement));
 		
 		checkIsSameResolution(
-			namedElement.getSemantics(context).resolveConcreteElement(context),
-			namedElement.getSemantics(context).resolveConcreteElement(context)
+			namedElement.getSemantics(context).resolveConcreteElement(),
+			namedElement.getSemantics(context).resolveConcreteElement()
 		);
 	}
 	
@@ -273,7 +273,7 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		INamedElementSemantics semantics = namedElement.getSemantics(context);
 		assertTrue(semantics == namedElement.getSemantics(context));
 		
-		checkIsSameResolution(semantics.resolveConcreteElement(context), semantics.resolveConcreteElement(context));
+		checkIsSameResolution(semantics.resolveConcreteElement(), semantics.resolveConcreteElement());
 	}
 	
 	@Test

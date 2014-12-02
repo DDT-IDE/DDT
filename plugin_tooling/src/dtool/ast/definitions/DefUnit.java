@@ -166,7 +166,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {
-		return getSemantics(context).resolveConcreteElement(context).result;
+		return getSemantics(context).resolveConcreteElement().result;
 	}
 	
 	@Override
@@ -176,7 +176,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	@Override
 	public final INamedElement resolveTypeForValueContext(ISemanticContext context) {
-		return getSemantics(context).resolveTypeForValueContext(context);
+		return getSemantics(context).resolveTypeForValueContext();
 	}
 	
 }

@@ -119,28 +119,30 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
 		return new AliasSemantics(this, parentContext) {
 		
-		@Override
-		public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-			// TODO: need to rewrite this, ensure just one instance per semantics instance.
-			return new NotAValueErrorElement(element, null /*FIXME: BUG here*/);
+			protected final NotAValueErrorElement errorElement = new NotAValueErrorElement(element, 
+				null /*FIXME: BUG here*/);
+			
+			@Override
+			public INamedElement resolveTypeForValueContext() {
+				return errorElement;
+			};
+			
+			@Override
+			protected ConcreteElementResult createResolution(ISemanticContext context) {
+				return new ConcreteElementResult(null);
+			}
+			
+			@Override
+			protected IResolvable getAliasTarget() {
+				throw assertUnreachable();
+			};
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
+				search.evaluateScope(PackageNamespace.this);
+			}
+			
 		};
-		
-		@Override
-		protected ConcreteElementResult createResolution(ISemanticContext context) {
-			return new ConcreteElementResult(null);
-		}
-		
-		@Override
-		protected IResolvable getAliasTarget() {
-			throw assertUnreachable();
-		};
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			search.evaluateScope(PackageNamespace.this);
-		}
-		
-	};
 	}
 	
 	@Override

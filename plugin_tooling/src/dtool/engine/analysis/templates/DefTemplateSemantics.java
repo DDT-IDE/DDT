@@ -38,7 +38,7 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public INamedElement resolveTypeForValueContext() {
 		if(defTemplate.wrapper) {
 			// TODO: 
 		}

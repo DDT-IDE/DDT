@@ -25,18 +25,18 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		INamedElement effectiveType = resolveTypeForValueContext(search.modResolver);
+		INamedElement effectiveType = resolveTypeForValueContext();
 		if(effectiveType != null) {
 			effectiveType.resolveSearchInMembersScope(search);
 		}
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public INamedElement resolveTypeForValueContext() {
 		Resolvable declaredType = getTypeReference();
 		if(declaredType != null) {
 			// TODO: handle finding multiple elements
-			return getFirstElementOrNull(declaredType.findTargetDefElements(mr));
+			return getFirstElementOrNull(declaredType.findTargetDefElements(context));
 		}
 		return null;
 	}

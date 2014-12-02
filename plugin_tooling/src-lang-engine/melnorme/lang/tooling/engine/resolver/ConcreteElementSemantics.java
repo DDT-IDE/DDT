@@ -38,7 +38,7 @@ public abstract class ConcreteElementSemantics extends NamedElementSemantics<Con
 	}
 	
 	@Override
-	public final ElementResolution<IConcreteNamedElement> resolveConcreteElement(ISemanticContext sr) {
+	public final ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
 		return elementRes;
 	}
 	

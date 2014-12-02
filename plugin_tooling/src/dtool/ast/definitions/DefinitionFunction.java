@@ -104,7 +104,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public ConcreteElementResult resolveConcreteElement(ISemanticContext sr) {
+		public ConcreteElementResult resolveConcreteElement() {
 			return new ConcreteElementResult(function);
 		}
 		
@@ -134,7 +134,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+		public final INamedElement resolveTypeForValueContext() {
 			// TODO implicit function call
 			return null;
 		}

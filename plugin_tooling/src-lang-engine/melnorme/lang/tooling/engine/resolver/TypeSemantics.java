@@ -34,7 +34,7 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public final INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+	public final INamedElement resolveTypeForValueContext() {
 		return notAValueError;
 	}
 	

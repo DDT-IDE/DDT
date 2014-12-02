@@ -73,8 +73,8 @@ public interface CommonLanguageIntrinsics {
 			return new VarSemantics(this, parentContext) {
 				
 				@Override
-				public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-					return resolveType(mr);
+				public INamedElement resolveTypeForValueContext() {
+					return resolveType(context);
 				};
 				
 				@Override
