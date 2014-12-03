@@ -15,7 +15,6 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.CommonSemanticElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
-import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
@@ -36,16 +35,13 @@ public interface ISemanticContext {
 	INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
 	
 	
-	/**
-	 * Retrieve the {@link ResolutionEntry} for the semantics of the corresponding element.
-	 * The given semantics must be contained directly in ths semantic context!
-	 * TODO try to check that statically
-	 */
-	ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics);
-	
 	/** @return the {@link ISemanticContext} appropriate for the given element. */
 	ISemanticContext findSemanticContext(ISemanticElement element);
 	
+	/**
+	 * @return The element semantics for the given element.
+	 * Note that: <code>assertTrue(findSemanticContext(element) == this);</code> 
+	 */
 	IElementSemantics getSemanticsEntry(CommonSemanticElement element);
 	
 }

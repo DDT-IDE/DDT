@@ -22,7 +22,6 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.CommonSemanticElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
-import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.utils.EntryMap;
 
 public abstract class AbstractSemanticContext implements ISemanticContext {
@@ -67,24 +66,6 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
-	/* FIXME: BUG here remove this */
-	protected final ResolutionsMap resolutionsMap = new ResolutionsMap();
-	
-	public static class ResolutionsMap extends EntryMap<IElementSemantics, ResolutionEntry<?>> {
-		
-		@Override
-		protected ResolutionEntry<?> createEntry(IElementSemantics key) {
-			return new ResolutionEntry<>();
-		}
-		
-	}
-	
-	@Override
-	public ResolutionEntry<?> findResolutionEntryForContainedElement(IElementSemantics elementSemantics) {
-		/* FIXME: ensure elementSemantics belongs to this context */
-		return resolutionsMap.getEntry(elementSemantics);
-	}
-	
 	@Override
 	public ISemanticContext findSemanticContext(ISemanticElement element) {
 		return this; // subclasses must reimplement, if appropriate
@@ -96,6 +77,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 		
 		@Override
 		protected IElementSemantics createEntry(CommonSemanticElement key) {
+			/* FIXME: statically check that the context is where the entry belongs to. */
 			return key.createSemantics(AbstractSemanticContext.this);
 		}
 		
@@ -104,7 +86,6 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	@Override
 	public IElementSemantics getSemanticsEntry(CommonSemanticElement element) {
 		assertTrue(findSemanticContext(element) == this);
-		
 		return semanticsMap.getEntry(element);
 	}
 	

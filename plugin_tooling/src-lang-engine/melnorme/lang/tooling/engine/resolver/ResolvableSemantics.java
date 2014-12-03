@@ -27,7 +27,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	private final IResolvable resolvable;
 	
 	public ResolvableSemantics(IResolvable resolvable, ISemanticContext context) {
-		super(resolvable, context);
+		super(context);
 		this.resolvable = resolvable;
 	}
 	

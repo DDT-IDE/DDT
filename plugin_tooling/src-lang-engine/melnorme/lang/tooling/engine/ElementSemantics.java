@@ -11,17 +11,17 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 
 
-public abstract class ElementSemantics<ER extends ElementResolution<?>> implements IElementSemantics {
+public abstract class ElementSemantics<ER> implements IElementSemantics {
 	
 	protected final ISemanticContext context;
 	
-	public ElementSemantics(ISemanticElement element, ISemanticContext parentContext) {
-		 /* FIXME: optimize away this call when not necessary. */
-		this.context = parentContext.findSemanticContext(element);
+	private ER resolution;
+	
+	public ElementSemantics(ISemanticContext context) {
+		this.context = context;
 	}
 	
 	@Override
@@ -36,29 +36,21 @@ public abstract class ElementSemantics<ER extends ElementResolution<?>> implemen
 	
 	/* ----------------- ----------------- */
 	
-	@SuppressWarnings("unchecked")
-	protected ResolutionEntry<ER> findSemanticContainer(ISemanticContext context) {
-		assertNotNull(context);
-		return (ResolutionEntry<ER>) context.findResolutionEntryForContainedElement(this);
-	}
-	
 	protected final ER getElementResolution() {
 		return getOrCreateElementResolution(context);
 	}
 	
 	protected ER getOrCreateElementResolution(ISemanticContext context) {
-		ResolutionEntry<ER> resolutionContainer = findSemanticContainer(context);
-		
-		ER resolution = resolutionContainer.getResult();
-		
 		if(resolution == null) {
 			// TODO: put temporary result
-			resolution = createResolution(context);
-			resolutionContainer.putResult(resolution);
+			resolution = assertNotNull(createResolution(context));
 		}
 		return resolution;
 	}
 	
+	/** 
+	 * Create and return the main resolution object for this semantics object. Non-null.
+	 */
 	protected abstract ER createResolution(ISemanticContext context);
 	
 }

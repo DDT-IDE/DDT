@@ -16,9 +16,7 @@ import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
-import melnorme.lang.tooling.engine.ResolutionEntry;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -109,11 +107,9 @@ public class ModuleProxy extends AbstractNamedElement {
 	@Override
 	public final INamedElementSemantics createSemantics(ISemanticContext context) {
 		return new TypeAliasSemantics(this, context) {
-		
-			@Override
-			protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {
+			
+			{
 				assertTrue(context == ModuleProxy.this.context);
-				return super.findSemanticContainer(context);
 			}
 			
 			@Override

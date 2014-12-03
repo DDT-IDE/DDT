@@ -25,7 +25,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	protected final INamedElement element; 
 	
 	public NamedElementSemantics(INamedElement element, ISemanticContext context) {
-		super(element, context);
+		super(context);
 		this.element = assertNotNull(element);
 	}
 	
