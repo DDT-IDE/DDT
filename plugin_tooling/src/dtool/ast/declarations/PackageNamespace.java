@@ -116,8 +116,8 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	/* -----------------  ----------------- */
 	
 	@Override
-	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new AliasSemantics(this, parentContext) {
+	public final INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new AliasSemantics(this, context) {
 		
 			protected final NotAValueErrorElement errorElement = new NotAValueErrorElement(element, 
 				null /*FIXME: BUG here*/);

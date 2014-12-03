@@ -79,11 +79,9 @@ public class ExpSimpleLambda extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-			return semantics;
+		public INamedElementSemantics createSemantics(ISemanticContext context) {
+			return new NullNamedElementSemantics(); // TODO
 		}
-		
-		protected final INamedElementSemantics semantics = new NullNamedElementSemantics(); // TODO
 		
 	}
 	

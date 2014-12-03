@@ -47,7 +47,12 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	}
 	
 	@Override
-	public abstract INamedElementSemantics getSemantics(ISemanticContext parentContext);
+	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return (INamedElementSemantics) super.getSemantics(parentContext);
+	}
+	
+	@Override
+	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {

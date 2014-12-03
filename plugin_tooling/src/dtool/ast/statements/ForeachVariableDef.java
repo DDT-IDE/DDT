@@ -63,8 +63,8 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new VarSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new VarSemantics(this, context) {
 			
 			@Override
 			protected Resolvable getTypeReference() {

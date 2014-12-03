@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.CommonSemanticElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
@@ -65,6 +66,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
+	/* FIXME: BUG here remove this */
 	protected final ResolutionsMap resolutionsMap = new ResolutionsMap();
 	
 	public static class ResolutionsMap extends EntryMap<IElementSemantics, ResolutionEntry<?>> {
@@ -85,6 +87,27 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	@Override
 	public ISemanticContext findSemanticContext(ISemanticElement element) {
 		return this; // subclasses must reimplement, if appropriate
+	}
+	
+	protected final SemanticsMap semanticsMap = new SemanticsMap();
+	
+	public class SemanticsMap extends EntryMap<CommonSemanticElement, IElementSemantics> {
+		
+		@Override
+		protected IElementSemantics createEntry(CommonSemanticElement key) {
+			return key.createSemantics(AbstractSemanticContext.this);
+		}
+		
+	}
+	
+	@Override
+	public IElementSemantics getSemanticsEntry(CommonSemanticElement element) {
+		ISemanticContext context = findSemanticContext(element);
+		if(context != this) {
+			return context.getSemanticsEntry(element);
+		}
+		
+		return semanticsMap.getEntry(element);
 	}
 	
 }

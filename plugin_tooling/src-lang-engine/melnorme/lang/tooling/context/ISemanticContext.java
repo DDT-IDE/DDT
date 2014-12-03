@@ -12,6 +12,7 @@ package melnorme.lang.tooling.context;
 
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.CommonSemanticElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.ResolutionEntry;
@@ -44,5 +45,7 @@ public interface ISemanticContext {
 	
 	/** @return the {@link ISemanticContext} appropriate for the given element. */
 	ISemanticContext findSemanticContext(ISemanticElement element);
+	
+	IElementSemantics getSemanticsEntry(CommonSemanticElement element);
 	
 }

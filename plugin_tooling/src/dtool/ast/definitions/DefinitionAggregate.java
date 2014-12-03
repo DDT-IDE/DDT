@@ -79,9 +79,9 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	/* ----------------- ----------------- */
 	
 	@Override
-	public AggregateSemantics getSemantics(ISemanticContext parentContext) {
+	public AggregateSemantics createSemantics(ISemanticContext context) {
 		InstrinsicsScope commonTypeScope = new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
-		return new AggregateSemantics(this, commonTypeScope, parentContext);
+		return new AggregateSemantics(this, commonTypeScope, context);
 	}
 	
 	public class AggregateSemantics extends TypeSemantics {

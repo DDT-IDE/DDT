@@ -63,8 +63,8 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new TypeSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new TypeSemantics(this, context) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {

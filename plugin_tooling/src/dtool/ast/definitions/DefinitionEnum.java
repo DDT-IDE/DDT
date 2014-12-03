@@ -124,8 +124,8 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new TypeSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new TypeSemantics(this, context) {
 		
 			protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
 			

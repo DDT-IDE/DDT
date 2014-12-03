@@ -109,8 +109,8 @@ public class ModuleProxy extends AbstractNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new TypeAliasSemantics(this, parentContext) {
+	public final INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new TypeAliasSemantics(this, context) {
 		
 		@Override
 		protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {

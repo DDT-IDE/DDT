@@ -43,25 +43,6 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 		return wrappedElement.resolveConcreteElement(sr);
 	}
 	
-	
-	protected final INamedElementSemantics nodeSemantics = new NullNamedElementSemantics();
-	
-	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return nodeSemantics;
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		// Do nothing.
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		// Do nothing.
-		return null;
-	}
-	
 	@Override
 	public EArcheType getArcheType() {
 		return wrappedElement.getArcheType();
@@ -75,6 +56,24 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	@Override
 	public ElementDoc resolveDDoc() {
 		return wrappedElement.resolveDDoc();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new NullNamedElementSemantics();
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
+		// Do nothing.
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+		// Do nothing.
+		return null;
 	}
 	
 }

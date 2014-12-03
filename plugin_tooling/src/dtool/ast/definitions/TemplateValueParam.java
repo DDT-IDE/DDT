@@ -66,8 +66,8 @@ public class TemplateValueParam extends TemplateParameter implements IConcreteNa
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new VarSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new VarSemantics(this, context) {
 			
 			@Override
 			protected Resolvable getTypeReference() {

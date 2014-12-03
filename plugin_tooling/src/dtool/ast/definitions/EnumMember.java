@@ -86,8 +86,8 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new CommonDefVarSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new CommonDefVarSemantics(this, context) {
 			
 			@Override
 			protected Resolvable getTypeReference() {

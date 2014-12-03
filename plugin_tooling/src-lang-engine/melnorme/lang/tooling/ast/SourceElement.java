@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 
 
-public abstract class SourceElement extends CommonElement implements ISourceElement {
+public abstract class SourceElement extends CommonSemanticElement implements ISourceElement {
 	
 	public SourceElement() {
 		super();

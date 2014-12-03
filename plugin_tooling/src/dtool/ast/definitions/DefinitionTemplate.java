@@ -108,8 +108,8 @@ public class DefinitionTemplate extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new DefTemplateSemantics(this, parentContext);
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new DefTemplateSemantics(this, context);
 	}
 	
 	@Override

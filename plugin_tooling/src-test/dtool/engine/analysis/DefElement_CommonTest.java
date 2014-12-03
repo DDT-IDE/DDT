@@ -29,7 +29,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
-
+/* FIXME: merge with NamedElements test*/
 public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	public static final String[] COMMON_PROPERTIES = array(
@@ -80,7 +80,8 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	// TODO: cleanup these two methods
-	protected static void testExpressionResolution(String source, String... expectedResults) throws ExecutionException {
+	protected static void testExpressionResolution(String source, String... expectedResults) 
+			throws ExecutionException {
 		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
 		EmptySemanticResolution context = new EmptySemanticResolution();

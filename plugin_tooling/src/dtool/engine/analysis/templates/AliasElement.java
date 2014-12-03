@@ -52,8 +52,8 @@ public class AliasElement extends InstantiatedDefUnit {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new AliasSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new AliasSemantics(this, context) {
 		
 		@Override
 		protected Resolvable getAliasTarget() {

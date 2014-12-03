@@ -162,7 +162,11 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public abstract INamedElementSemantics getSemantics(ISemanticContext parentContext);
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return (INamedElementSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {

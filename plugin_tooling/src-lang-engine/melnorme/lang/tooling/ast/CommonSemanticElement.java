@@ -10,17 +10,31 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import dtool.ast.definitions.DefUnit;
 
 
-public abstract class CommonElement implements ISemanticElement {
+public abstract class CommonSemanticElement implements ISemanticElement {
 	
-	public CommonElement() {
+	public CommonSemanticElement() {
 	}
 	
 	/* -----------------  ----------------- */
+	
+	@Override
+	public IElementSemantics getSemantics(ISemanticContext parentContext) {
+		return parentContext.getSemanticsEntry(this);
+	}
+	@Override
+	public IElementSemantics createSemantics(ISemanticContext context) {
+		assertTrue(context.findSemanticContext(this) == context); // Note this precondition!
+		return new NullElementSemantics();
+	}
 	
 	@Override
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {

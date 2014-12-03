@@ -124,8 +124,8 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		/* -----------------  ----------------- */
 		
 		@Override
-		public CommonDefVarSemantics getSemantics(ISemanticContext parentContext) {
-			return new CommonDefVarSemantics(this, parentContext);
+		public CommonDefVarSemantics createSemantics(ISemanticContext context) {
+			return new CommonDefVarSemantics(this, context);
 		}
 		
 	}

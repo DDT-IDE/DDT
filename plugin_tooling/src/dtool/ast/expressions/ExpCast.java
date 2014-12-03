@@ -42,8 +42,8 @@ public class ExpCast extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return new ExpSemantics(this, parentContext) {
+	public IResolvableSemantics createSemantics(ISemanticContext context) {
+		return new ExpSemantics(this, context) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

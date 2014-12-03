@@ -68,8 +68,8 @@ public class RefTypeof extends Reference implements IQualifierNode {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return new ResolvableSemantics(this, parentContext) {
+	public IResolvableSemantics createSemantics(ISemanticContext context) {
+		return new ResolvableSemantics(this, context) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

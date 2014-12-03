@@ -48,11 +48,9 @@ public class TemplateAliasParam extends TemplateParameter {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return semantics;
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new NullNamedElementSemantics(); // Need template instance
 	}
-	
-	protected final INamedElementSemantics semantics = new NullNamedElementSemantics(); // Need template instance
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable argument) {

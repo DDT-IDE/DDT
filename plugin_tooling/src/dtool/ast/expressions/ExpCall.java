@@ -47,8 +47,8 @@ public class ExpCall extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return new ResolvableSemantics(this, parentContext) {
+	public IResolvableSemantics createSemantics(ISemanticContext context) {
+		return new ResolvableSemantics(this, context) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

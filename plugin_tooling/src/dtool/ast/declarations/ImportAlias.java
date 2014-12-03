@@ -68,8 +68,8 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new TypeAliasSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new TypeAliasSemantics(this, context) {
 			
 			@Override
 			protected Resolvable getAliasTarget() {

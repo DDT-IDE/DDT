@@ -62,8 +62,8 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics getSemantics(ISemanticContext parentContext) {
-		return new CommonDefVarSemantics(this, parentContext);
+	public CommonDefVarSemantics createSemantics(ISemanticContext context) {
+		return new CommonDefVarSemantics(this, context);
 	}
 	
 }

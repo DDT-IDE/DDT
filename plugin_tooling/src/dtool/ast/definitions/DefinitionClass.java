@@ -88,9 +88,13 @@ public class DefinitionClass extends DefinitionAggregate {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ClassSemantics getSemantics(ISemanticContext parentContext) {
+	public final ClassSemantics getSemantics(ISemanticContext parentContext) {
+		return (ClassSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	public ClassSemantics createSemantics(ISemanticContext context) {
 		InstrinsicsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
-		return new ClassSemantics(this, commonTypeScope, parentContext);
+		return new ClassSemantics(this, commonTypeScope, context);
 	}
 	
 	public class ClassSemantics extends AggregateSemantics {

@@ -43,7 +43,11 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 	
 	@Override
 	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return new ResolvableSemantics(this, parentContext) {
+		return (IResolvableSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	public IResolvableSemantics createSemantics(ISemanticContext context) {
+		return new ResolvableSemantics(this, context) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

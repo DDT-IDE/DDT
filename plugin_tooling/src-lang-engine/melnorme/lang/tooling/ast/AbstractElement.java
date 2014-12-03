@@ -13,7 +13,7 @@ package melnorme.lang.tooling.ast;
 import java.nio.file.Path;
 
 
-public abstract class AbstractElement extends CommonElement {
+public abstract class AbstractElement extends CommonSemanticElement {
 	
 	protected final ISemanticElement parent;
 	

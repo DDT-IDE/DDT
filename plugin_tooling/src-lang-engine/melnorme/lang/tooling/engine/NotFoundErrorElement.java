@@ -70,29 +70,6 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	}
 	
 	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return this;
-	}
-	
-	protected final INamedElementSemantics nodeSemantics = new NullNamedElementSemantics();
-	
-	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return nodeSemantics;
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		// Do nothing.
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		// Do nothing.
-		return null;
-	}
-	
-	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Alias; // TODO: add error archetype
 	}
@@ -105,6 +82,33 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 	@Override
 	public ElementDoc resolveDDoc() {
 		return parseDDoc;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return (INamedElementSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new NullNamedElementSemantics();
+	}
+	
+	@Override
+	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
+		return this; /*FIXME: BUG here should use semantics class. */
+	}
+	
+	@Override
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
+		// Do nothing.
+	}
+	
+	@Override
+	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
+		// Do nothing.
+		return null;
 	}
 	
 }

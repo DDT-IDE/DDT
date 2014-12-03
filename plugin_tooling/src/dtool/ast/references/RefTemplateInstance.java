@@ -74,8 +74,8 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	/* -----------------  ----------------- */
 	
 	@Override
-	public RefTemplateInstanceSemantics getSemantics(ISemanticContext parentContext) {
-		return new RefTemplateInstanceSemantics(this, parentContext);
+	public RefTemplateInstanceSemantics createSemantics(ISemanticContext context) {
+		return new RefTemplateInstanceSemantics(this, context);
 	};
 	
 }

@@ -90,8 +90,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new FunctionElementSemantics(this, parentContext);
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new FunctionElementSemantics(this, context);
 	}
 	
 	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {

@@ -68,10 +68,7 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	 * Can be null. */
 	ElementDoc resolveDDoc();
 	
-	/** 
-	 * @return the class responsible for handling semantic analysis. Non-null.
-	 * The instance of the semantics class will be bound to a specific {@link ISemanticContext}. 
-	 */
+	@Override
 	INamedElementSemantics getSemantics(ISemanticContext parentContext);
 	
 	/**

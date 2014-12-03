@@ -88,8 +88,8 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new VarSemantics(this, parentContext) {
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new VarSemantics(this, context) {
 			@Override
 			protected Resolvable getTypeReference() {
 				return type;

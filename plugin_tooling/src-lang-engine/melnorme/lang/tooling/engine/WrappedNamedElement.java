@@ -15,6 +15,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -61,5 +62,14 @@ public abstract class WrappedNamedElement extends AbstractElement implements INa
 	public INamedElement getParentNamedElement() {
 		return wrappedElement.getParentNamedElement();
 	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+		return (INamedElementSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
 	
 }

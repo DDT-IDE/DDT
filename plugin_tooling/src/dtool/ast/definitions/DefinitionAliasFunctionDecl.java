@@ -80,8 +80,8 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return new FunctionalAliasSemantics(this, parentContext);
+	public INamedElementSemantics createSemantics(ISemanticContext context) {
+		return new FunctionalAliasSemantics(this, context);
 	}
 	
 	public class FunctionalAliasSemantics extends AbstractFunctionElementSemantics {

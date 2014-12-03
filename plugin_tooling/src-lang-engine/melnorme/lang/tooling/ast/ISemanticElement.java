@@ -12,9 +12,25 @@ package melnorme.lang.tooling.ast;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public interface ISemanticElement {
+	
+	/**
+	 * Create the semantics object for this element. 
+	 * The semantics object will be bound to the given {@link ISemanticContext} context.
+	 * Subclasses should reimplement when applicable.
+	 * Note that only the semantic context should be calling this class.
+	 */
+	public IElementSemantics createSemantics(ISemanticContext context);
+	
+	/**
+	 * Should perform exactly this: <code>parentContext.getSemanticsEntry(this)</code>
+	 * @return the semantics object. Should be the same on every call. Non-null.
+	 */
+	public IElementSemantics getSemantics(ISemanticContext parentContext);
 	
 	/** 
 	 * @return true if this is a pre-defined/native language element. 
@@ -29,7 +45,6 @@ public interface ISemanticElement {
 	 * Non-null in most cases, but it can be null.
 	 */
 	public Path getModulePath();
-	
 	
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup);
 	

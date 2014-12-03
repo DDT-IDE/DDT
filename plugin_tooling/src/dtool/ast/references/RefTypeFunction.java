@@ -72,8 +72,8 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	/* -----------------  ----------------- */
 
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return new TypeReferenceSemantics(this, parentContext) {
+	public IResolvableSemantics createSemantics(ISemanticContext context) {
+		return new TypeReferenceSemantics(this, context) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

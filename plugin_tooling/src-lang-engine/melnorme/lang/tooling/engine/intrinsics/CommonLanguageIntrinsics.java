@@ -41,8 +41,8 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicNamedElement... members);
 		
 		@Override
-		public TypeSemantics getSemantics(ISemanticContext parentContext) {
-			return new TypeSemantics(this, parentContext) {
+		public TypeSemantics createSemantics(ISemanticContext context) {
+			return new TypeSemantics(this, context) {
 			
 				@Override
 				public void resolveSearchInMembersScope(CommonScopeLookup search) {
@@ -69,8 +69,8 @@ public interface CommonLanguageIntrinsics {
 		protected abstract INamedElement resolveType(ISemanticContext mr);
 		
 		@Override
-		public VarSemantics getSemantics(ISemanticContext parentContext) {
-			return new VarSemantics(this, parentContext) {
+		public VarSemantics createSemantics(ISemanticContext context) {
+			return new VarSemantics(this, context) {
 				
 				@Override
 				public INamedElement resolveTypeForValueContext() {
