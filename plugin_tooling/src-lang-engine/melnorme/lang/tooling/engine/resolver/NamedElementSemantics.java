@@ -31,7 +31,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	@Override
 	public ConcreteElementResult resolveConcreteElement() {
-		return getElementResolution(context);
+		return getElementResolution();
 	}
 	
 	@Override

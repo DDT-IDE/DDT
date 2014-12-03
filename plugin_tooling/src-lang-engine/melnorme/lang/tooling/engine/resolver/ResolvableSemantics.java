@@ -32,8 +32,8 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	@Override
-	public final ResolvableResult resolveTargetElement(ISemanticContext context) {
-		return getElementResolution(context);
+	public final ResolvableResult resolveTargetElement() {
+		return getElementResolution();
 	}
 	
 	@Override

@@ -29,7 +29,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		if(aliasTarget == null) {
 			return null;
 		}
-		INamedElement result = aliasTarget.getSemantics(context).resolveTargetElement(context).getSingleResult();
+		INamedElement result = aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
 		if(result == null) {
 			return null;
 		}

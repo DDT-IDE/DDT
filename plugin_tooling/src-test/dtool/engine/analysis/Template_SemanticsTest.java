@@ -33,7 +33,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	public static TestsElementSearch resolveAllMembers(ResolvedModule module, Reference tplRef) {
 		ISemanticContext context = module.getSemanticContext();
 		TestsElementSearch search = allElementsSearch(module);
-		INamedElement tplInstance_ = tplRef.getSemantics(context).resolveTargetElement(context).getSingleResult();
+		INamedElement tplInstance_ = tplRef.getSemantics(context).resolveTargetElement().getSingleResult();
 		TemplateInstance tplInstance = assertCast(tplInstance_, TemplateInstance.class);
 		tplInstance.resolveSearchInMembersScope(search);
 		return search;

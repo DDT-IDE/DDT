@@ -12,13 +12,12 @@ package melnorme.lang.tooling.engine.resolver;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface IResolvableSemantics extends IElementSemantics {
 	
-	ResolvableResult resolveTargetElement(ISemanticContext sr);
+	ResolvableResult resolveTargetElement();
 	
 	/* TODO: deprecate these: */
 	Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
