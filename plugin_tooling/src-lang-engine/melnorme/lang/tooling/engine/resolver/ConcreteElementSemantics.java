@@ -10,46 +10,32 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
 
 
-class ConcreteElementResolution extends ElementResolution<IConcreteNamedElement> {
+public abstract class ConcreteElementSemantics extends NamedElementSemantics {
 	
-	public ConcreteElementResolution(IConcreteNamedElement concreTarget) {
-		super(concreTarget);
-	}
-	
-	public INamedElement getConcreteTarget() {
-		return result;
-	}
-}
-
-public abstract class ConcreteElementSemantics extends NamedElementSemantics<ConcreteElementResolution> {
-	
-	protected final ConcreteElementResolution elementRes;
+	protected final ConcreteElementResult elementRes;
 	
 	public ConcreteElementSemantics(IConcreteNamedElement concreteElement, ISemanticContext context) {
 		super(concreteElement, context);
-		this.elementRes = new ConcreteElementResolution(concreteElement);
+		this.elementRes = new ConcreteElementResult(concreteElement);
 	}
 	
 	@Override
-	public final ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
+	public final ConcreteElementResult resolveConcreteElement() {
 		return elementRes;
 	}
 	
 	@Override
-	protected ConcreteElementResolution getOrCreateElementResolution(ISemanticContext context) {
-		return elementRes;
+	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+		return elementRes.result;
 	}
 	
 	@Override
-	protected final ConcreteElementResolution createResolution(ISemanticContext context) {
-		throw assertFail();
+	protected ConcreteElementResult getOrCreateElementResolution(ISemanticContext context) {
+		return elementRes;
 	}
 	
 }

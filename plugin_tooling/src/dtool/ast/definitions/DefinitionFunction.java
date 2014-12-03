@@ -6,7 +6,6 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -94,37 +93,10 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		return new FunctionElementSemantics(this, context);
 	}
 	
-	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {
-		
-		protected final DefinitionFunction function;
-		
-		public FunctionElementSemantics(DefinitionFunction defFunction, ISemanticContext context) {
-			super(defFunction, context);
-			this.function = defFunction;
-		}
-		
-		@Override
-		public ConcreteElementResult resolveConcreteElement() {
-			return new ConcreteElementResult(function);
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			resolveSearchInMembersScopeForFunction(search, function.retType);
-		}
-	}
-	
-	public static abstract class AbstractFunctionElementSemantics 
-		extends NamedElementSemantics<ConcreteElementResult> 
-	{
+	public static abstract class AbstractFunctionElementSemantics extends NamedElementSemantics {
 		
 		public AbstractFunctionElementSemantics(INamedElement element, ISemanticContext context) {
 			super(element, context);
-		}
-		
-		@Override
-		protected ConcreteElementResult createResolution(ISemanticContext context) {
-			return null; /*FIXME: BUG here*/
 		}
 		
 		@SuppressWarnings("unused")
@@ -139,6 +111,26 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 			return null;
 		}
 		
+	}
+	
+	public static class FunctionElementSemantics extends AbstractFunctionElementSemantics {
+		
+		protected final DefinitionFunction function;
+		
+		public FunctionElementSemantics(DefinitionFunction defFunction, ISemanticContext context) {
+			super(defFunction, context);
+			this.function = defFunction;
+		}
+		
+		@Override
+		protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			return function;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
+			resolveSearchInMembersScopeForFunction(search, function.retType);
+		}
 	}
 	
 }

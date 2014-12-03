@@ -7,7 +7,6 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -91,8 +90,8 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		}
 		
 		@Override
-		public ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
-			return null; /*FIXME: todo */
+		protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			return null; // TODO: test and implement
 		}
 		
 		@Override

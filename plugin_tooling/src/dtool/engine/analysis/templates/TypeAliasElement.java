@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
@@ -56,18 +56,17 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	public INamedElementSemantics createSemantics(ISemanticContext context) {
 		return new TypeAliasSemantics(this, context) {
 		
-		@Override
-		protected ConcreteElementResult createResolution(ISemanticContext context) {
-			// TODO write test case
-			return super.createResolution(context); 
+			@Override
+			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+				return super.doResolveConcreteElement(context); // TODO write test case
+			}
+			
+			@Override
+			protected Resolvable getAliasTarget() {
+				return target;
+			}
+			
 		};
-		
-		@Override
-		protected Resolvable getAliasTarget() {
-			return target;
-		}
-		
-	};
 	}
 	
 }

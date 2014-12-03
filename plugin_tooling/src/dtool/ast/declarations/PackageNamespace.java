@@ -20,11 +20,11 @@ import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -122,8 +122,8 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 			};
 			
 			@Override
-			protected ConcreteElementResult createResolution(ISemanticContext context) {
-				return new ConcreteElementResult(errorElement);
+			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+				return errorElement;
 			}
 			
 			@Override

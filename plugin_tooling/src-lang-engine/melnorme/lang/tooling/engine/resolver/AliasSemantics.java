@@ -17,22 +17,13 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class AliasSemantics extends NamedElementSemantics<ConcreteElementResult> {
+public abstract class AliasSemantics extends NamedElementSemantics {
 	
 	public AliasSemantics(INamedElement element, ISemanticContext context) {
 		super(element, context);
 	}
 	
 	@Override
-	public final ConcreteElementResult resolveConcreteElement() {
-		return getElementResolution(context);
-	}
-	
-	@Override
-	protected ConcreteElementResult createResolution(ISemanticContext context) {
-		return new ConcreteElementResult(doResolveConcreteElement(context));
-	}
-	
 	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
 		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget == null) {

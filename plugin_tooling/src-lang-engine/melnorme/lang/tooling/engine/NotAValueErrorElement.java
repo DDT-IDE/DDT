@@ -12,7 +12,6 @@ package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -40,15 +39,11 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	
 	@Override
 	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new NamedElementSemantics<ConcreteElementResult>(this, context) {
-			@Override
-			public ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
-				return getElementResolution(context);
-			}
+		return new NamedElementSemantics(this, context) {
 			
 			@Override
-			protected ConcreteElementResult createResolution(ISemanticContext context) {
-				return new ConcreteElementResult(wrappedElement.resolveConcreteElement(context));
+			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+				return wrappedElement.resolveConcreteElement(context);
 			}
 			
 			@Override

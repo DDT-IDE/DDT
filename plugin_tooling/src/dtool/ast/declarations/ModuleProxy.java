@@ -23,6 +23,7 @@ import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -109,31 +110,31 @@ public class ModuleProxy extends AbstractNamedElement {
 	public final INamedElementSemantics createSemantics(ISemanticContext context) {
 		return new TypeAliasSemantics(this, context) {
 		
-		@Override
-		protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {
-			assertTrue(context == ModuleProxy.this.context);
-			return super.findSemanticContainer(context);
-		}
-		
-		@Override
-		protected ConcreteElementResult createResolution(ISemanticContext context) {
-			return new ConcreteElementResult(resolveUnderlyingNode());
-		}
-		
-		@Override
-		protected IResolvable getAliasTarget() {
-			throw assertUnreachable();
-		}
-		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			INamedElement resolvedModule = resolveUnderlyingNode();
-			if(resolvedModule != null) {
-				resolvedModule.resolveSearchInMembersScope(search);
+			@Override
+			protected ResolutionEntry<ConcreteElementResult> findSemanticContainer(ISemanticContext context) {
+				assertTrue(context == ModuleProxy.this.context);
+				return super.findSemanticContainer(context);
 			}
-		}
-		
-	};
+			
+			@Override
+			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+				return resolveUnderlyingNode();
+			}
+			
+			@Override
+			protected IResolvable getAliasTarget() {
+				throw assertUnreachable();
+			}
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
+				INamedElement resolvedModule = resolveUnderlyingNode();
+				if(resolvedModule != null) {
+					resolvedModule.resolveSearchInMembersScope(search);
+				}
+			}
+			
+		};
 	}
 	
 }

@@ -13,13 +13,12 @@ package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-/* FIXME: BUG here refactor this*/
-public abstract class NamedElementSemantics<ER extends ElementResolution<?>> extends ElementSemantics<ER> 
+public abstract class NamedElementSemantics extends ElementSemantics<ConcreteElementResult> 
 	implements INamedElementSemantics 
 {
 	
@@ -29,5 +28,17 @@ public abstract class NamedElementSemantics<ER extends ElementResolution<?>> ext
 		super(element, context);
 		this.element = assertNotNull(element);
 	}
+	
+	@Override
+	public ConcreteElementResult resolveConcreteElement() {
+		return getElementResolution(context);
+	}
+	
+	@Override
+	protected final ConcreteElementResult createResolution(ISemanticContext context) {
+		return new ConcreteElementResult(doResolveConcreteElement(context));
+	}
+	
+	protected abstract IConcreteNamedElement doResolveConcreteElement(ISemanticContext context);
 	
 }
