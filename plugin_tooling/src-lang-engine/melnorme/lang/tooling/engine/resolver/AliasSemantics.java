@@ -30,18 +30,19 @@ public abstract class AliasSemantics extends NamedElementSemantics<ConcreteEleme
 	
 	@Override
 	protected ConcreteElementResult createResolution(ISemanticContext context) {
-		return new ConcreteElementResult(resolveConcreteElement(context, getAliasTarget()));
+		return new ConcreteElementResult(doResolveConcreteElement(context));
 	}
 	
-	public static IConcreteNamedElement resolveConcreteElement(ISemanticContext sr, IResolvable aliasTarget) {
+	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+		IResolvable aliasTarget = getAliasTarget();
 		if(aliasTarget == null) {
 			return null;
 		}
-		INamedElement result = aliasTarget.getSemantics(sr).resolveTargetElement(sr).getSingleResult();
+		INamedElement result = aliasTarget.getSemantics(context).resolveTargetElement(context).getSingleResult();
 		if(result == null) {
 			return null;
 		}
-		return result.resolveConcreteElement(sr);
+		return result.resolveConcreteElement(context);
 	}
 	
 	@Override

@@ -28,11 +28,17 @@ public abstract class CommonSemanticElement implements ISemanticElement {
 	
 	@Override
 	public IElementSemantics getSemantics(ISemanticContext parentContext) {
-		return parentContext.getSemanticsEntry(this);
+		return getContextForThisElement(parentContext).getSemanticsEntry(this);
 	}
+	
+	@Override
+	public ISemanticContext getContextForThisElement(ISemanticContext parentContext) {
+		return parentContext.findSemanticContext(this);
+	}
+	
 	@Override
 	public IElementSemantics createSemantics(ISemanticContext context) {
-		assertTrue(context.findSemanticContext(this) == context); // Note this precondition!
+		assertTrue(getContextForThisElement(context) == context); // Note this precondition!
 		return new NullElementSemantics();
 	}
 	

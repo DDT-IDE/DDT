@@ -20,6 +20,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
@@ -35,7 +36,6 @@ import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
-import dtool.ast.references.Reference;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.analysis.templates.AliasElement;
@@ -85,22 +85,26 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 	/** Helper to visit a sample of test elements. */
 	protected static class NamedElementVisitor {
 		
-		protected final void visit(PickedElement<INamedElement> pickedElement, boolean isConcrete) {
+		protected final void visit(PickedElement<INamedElement> pickedElement, boolean isConcrete, String aliasTarget) {
 			assertTrue((pickedElement.element instanceof IConcreteNamedElement) == isConcrete);
-			doVisit(pickedElement, isConcrete);
+			doVisit(pickedElement, isConcrete, aliasTarget);
 		}
 		
 		protected void visitConcrete(PickedElement<INamedElement> pickedElement) {
-			visit(pickedElement, true);
+			visit(pickedElement, true, null);
 		}
 		
-		protected void visitAliasElement(PickedElement<INamedElement> pickedElement) {
-			visit(pickedElement, false);
+		protected final void visitAliasElement(PickedElement<INamedElement> pickedElement) {
+			visitAliasElement(pickedElement, "target");
+		}
+		
+		protected void visitAliasElement(PickedElement<INamedElement> pickedElement, String aliasTarget) {
+			visit(pickedElement, false, aliasTarget);
 		}
 		
 		
 		@SuppressWarnings("unused")
-		protected void doVisit(PickedElement<INamedElement> pickedElement, boolean isConcrete) {
+		protected void doVisit(PickedElement<INamedElement> pickedElement, boolean isConcrete, String aliasTarget) {
 		}
 		
 		public void visitElements() throws Exception {
@@ -146,9 +150,11 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			
 			// A few derived elements.
 			
-			/* FIXME: BUG here add these tests: */
-			//visitModuleProxy();
-			//visitPackageNamespace();
+			visitModuleProxy();
+			visitPackageNamespace();
+			
+			visitAliases();
+
 			
 			// TODO test template synthetic elements:
 			
@@ -164,25 +170,20 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 //			)
 //		);
 			
-			visitAliases();
 		}
 		
 		protected void visitModuleProxy() throws ExecutionException {
-			ResolvedModule resolvedModule = parseModule("import xxx; auto _ = xxx;");
-			Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf("xxx"), Reference.class);
-			INamedElement moduleProxy = ref.resolveTargetElement(resolvedModule.getSemanticContext());
-			assertTrue(moduleProxy instanceof ModuleProxy);
-			
-			visitConcrete(new PickedElement<>(moduleProxy, resolvedModule.getSemanticContext()));
+			PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
+				"import target; auto _ = target;", "target;");
+			assertTrue(pickedElement.element instanceof ModuleProxy);
+			visitAliasElement(pickedElement);
 		}
 		
 		protected void visitPackageNamespace() throws ExecutionException {
-			ResolvedModule resolvedModule = parseModule("import xxx.foo; auto _ = xxx;");
-			Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf("xxx"), Reference.class);
-			INamedElement derivedElement = ref.resolveTargetElement(resolvedModule.getSemanticContext());
-			assertTrue(derivedElement instanceof PackageNamespace);
-			
-			visitConcrete(new PickedElement<>(derivedElement, resolvedModule.getSemanticContext()));
+			PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
+				"import xxx.foo; auto _ = xxx;", "xxx;");
+			assertTrue(pickedElement.element instanceof PackageNamespace);
+			visitAliasElement(pickedElement, NotFoundErrorElement.NOT_FOUND__NAME);
 		}
 		
 		protected void visitAliases() {
@@ -225,9 +226,9 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			}
 			
 			@Override
-			protected void visitAliasElement(PickedElement<INamedElement> pickedElement) {
+			protected void visitAliasElement(PickedElement<INamedElement> pickedElement, String aliasTargetName) {
 				testResolveElementConcrete(pickedElement);
-				restResolveElementConcrete_Alias(pickedElement);
+				restResolveElementConcrete_Alias(pickedElement, aliasTargetName);
 			}
 			
 		};
@@ -244,6 +245,22 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			namedElement.getSemantics(context).resolveConcreteElement(),
 			namedElement.getSemantics(context).resolveConcreteElement()
 		);
+		
+		INamedElementSemantics semantics = namedElement.getSemantics(context);
+		IConcreteNamedElement concreteElement = semantics.resolveConcreteElement().result;
+		
+		if(concreteElement instanceof NotFoundErrorElement) {
+			NotFoundErrorElement notFoundError = (NotFoundErrorElement) concreteElement;
+			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
+			assertTrue(notFoundError.getParentNamedElement() == namedElement.getParentNamedElement());
+		}
+		
+		// FIXME: re-enable this test
+//		INamedElement typeForValueContext = semantics.resolveTypeForValueContext();
+//		if(concreteElement instanceof NotAValueErrorElement) {
+//			assertTrue(typeForValueContext.getModulePath() == namedElement.getModulePath());
+//			assertTrue(typeForValueContext.getParentNamedElement() == namedElement.getParentNamedElement());
+//		}
 	}
 	
 	protected void restResolveElementConcrete_ForConcrete(PickedElement<INamedElement> pickedElement) {
@@ -254,15 +271,15 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		assertTrue(namedElement.resolveConcreteElement(context) == namedElement);
 	}
 	
-	protected void restResolveElementConcrete_Alias(PickedElement<INamedElement> pickedElement) {
+	protected void restResolveElementConcrete_Alias(PickedElement<INamedElement> pickedElement, String aliasTargetName) {
 		ISemanticContext context = pickedElement.context;
 		INamedElement namedElement = pickedElement.element;
-		assertTrue(namedElement.getName().equals("xxx") || namedElement.getName().equals("target"));
+		assertTrue(namedElement.getName().equals("xxx") || namedElement.getName().equals(aliasTargetName));
 		
 		IConcreteNamedElement concreteElement = namedElement.resolveConcreteElement(context);
 		
 		assertTrue(concreteElement != null);
-		assertTrue(concreteElement.getName().equals("target"));
+		assertTrue(concreteElement.getName().equals(aliasTargetName));
 	}
 	
 	/* ----------------- test caching ----------------- */

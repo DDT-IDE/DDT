@@ -12,6 +12,7 @@ package melnorme.lang.tooling.context;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -102,10 +103,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	@Override
 	public IElementSemantics getSemanticsEntry(CommonSemanticElement element) {
-		ISemanticContext context = findSemanticContext(element);
-		if(context != this) {
-			return context.getSemanticsEntry(element);
-		}
+		assertTrue(findSemanticContext(element) == this);
 		
 		return semanticsMap.getEntry(element);
 	}

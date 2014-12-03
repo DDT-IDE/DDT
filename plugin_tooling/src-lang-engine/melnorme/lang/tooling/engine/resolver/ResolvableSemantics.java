@@ -45,7 +45,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		}
 		
 		if(result == null) {
-			result = new NotFoundErrorElement(resolvable);
+			result = NotFoundErrorElement.newFromResolvable(resolvable);
 		}
 		
 		return new ResolvableResult(result);

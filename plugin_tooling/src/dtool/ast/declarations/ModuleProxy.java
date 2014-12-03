@@ -12,9 +12,6 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -64,11 +61,6 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public Path getModulePath() {
-		return null; /*FIXME: BUG here*/
-	}
-	
-	@Override
 	public String getModuleFullyQualifiedName() {
 		return fullModuleName;
 	}
@@ -107,6 +99,11 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	/* -----------------  ----------------- */
+	
+	@Override
+	public ISemanticContext getContextForThisElement(ISemanticContext parentContext) {
+		return context;
+	}
 	
 	@Override
 	public final INamedElementSemantics createSemantics(ISemanticContext context) {

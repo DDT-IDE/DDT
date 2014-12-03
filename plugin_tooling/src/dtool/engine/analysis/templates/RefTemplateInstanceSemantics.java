@@ -19,6 +19,7 @@ import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.TemplateParameter;
 import dtool.ast.expressions.Resolvable;
@@ -42,7 +43,13 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	@Override
 	protected ResolvableResult createResolution(ISemanticContext context) {
 		Collection<INamedElement> templates = this.refTemplateInstance.tplRef.findTargetDefElements(context, false);
-		return createTemplateInstance(templates);
+		if(false) {
+			// TODO
+			return createTemplateInstance(templates);
+		} else {
+			return new ResolvableResult(CollectionUtil.getFirstElementOrNull(templates));
+		}
+		
 	}
 	
 	protected ResolvableResult createTemplateInstance(Collection<INamedElement> templates) {

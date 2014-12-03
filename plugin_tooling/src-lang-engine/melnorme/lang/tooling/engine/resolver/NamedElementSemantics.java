@@ -18,6 +18,7 @@ import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
+/* FIXME: BUG here refactor this*/
 public abstract class NamedElementSemantics<ER extends ElementResolution<?>> extends ElementSemantics<ER> 
 	implements INamedElementSemantics 
 {

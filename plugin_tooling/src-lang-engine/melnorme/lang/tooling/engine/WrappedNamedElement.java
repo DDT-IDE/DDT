@@ -13,29 +13,26 @@ package melnorme.lang.tooling.engine;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.ast.AbstractElement;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.definitions.EArcheType;
 
-public abstract class WrappedNamedElement extends AbstractElement implements INamedElement {
+public abstract class WrappedNamedElement extends AbstractNamedElement {
 	
 	protected final INamedElement wrappedElement;
 	
 	public WrappedNamedElement(INamedElement wrappedElement, ISemanticElement parent) {
-		super(parent);
+		super(wrappedElement.getName(), parent);
 		this.wrappedElement = wrappedElement;
 	}
 	
 	@Override
 	public Path getModulePath() {
 		return wrappedElement.getModulePath();
-	}
-	
-	@Override
-	public String getName() {
-		return wrappedElement.getName();
 	}
 	
 	@Override
@@ -63,13 +60,19 @@ public abstract class WrappedNamedElement extends AbstractElement implements INa
 		return wrappedElement.getParentNamedElement();
 	}
 	
-	/* -----------------  ----------------- */
+	@Override
+	public EArcheType getArcheType() {
+		return wrappedElement.getArcheType();
+	}
 	
 	@Override
-	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
-		return (INamedElementSemantics) super.getSemantics(parentContext);
+	public INamedElementNode resolveUnderlyingNode() {
+		return wrappedElement.resolveUnderlyingNode();
 	}
+	
 	@Override
-	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
+	public ElementDoc resolveDDoc() {
+		return wrappedElement.resolveDDoc();
+	}
 	
 }

@@ -32,6 +32,11 @@ public interface ISemanticElement {
 	 */
 	public IElementSemantics getSemantics(ISemanticContext parentContext);
 	
+	/**
+	 * @return the context where this element is directly contained in.
+	 */
+	public ISemanticContext getContextForThisElement(ISemanticContext parentContext);
+	
 	/** 
 	 * @return true if this is a pre-defined/native language element. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).
@@ -45,6 +50,7 @@ public interface ISemanticElement {
 	 * Non-null in most cases, but it can be null.
 	 */
 	public Path getModulePath();
+	
 	
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup);
 	

@@ -12,15 +12,13 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -72,12 +70,6 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	}
 	
 	@Override
-	public Path getModulePath() {
-		return null; // This element is fully resolved already, so we don't need a module path. 
-		// We could have provided one if we wanted though.
-	}
-	
-	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Package;
 	}
@@ -118,18 +110,20 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	@Override
 	public final INamedElementSemantics createSemantics(ISemanticContext context) {
 		return new AliasSemantics(this, context) {
-		
-			protected final NotAValueErrorElement errorElement = new NotAValueErrorElement(element, 
+
+			protected final NotFoundErrorElement errorElement = new NotFoundErrorElement(PackageNamespace.this, null);
+			
+			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element, 
 				null /*FIXME: BUG here*/);
 			
 			@Override
 			public INamedElement resolveTypeForValueContext() {
-				return errorElement;
+				return notAValueErrorElement;
 			};
 			
 			@Override
 			protected ConcreteElementResult createResolution(ISemanticContext context) {
-				return new ConcreteElementResult(null);
+				return new ConcreteElementResult(errorElement);
 			}
 			
 			@Override

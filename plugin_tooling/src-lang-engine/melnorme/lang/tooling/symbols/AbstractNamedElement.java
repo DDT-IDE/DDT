@@ -46,11 +46,12 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 		return ModuleFullName.fromString(getModuleFullyQualifiedName());
 	}
 	
+	/* ----------------- ----------------- */
+	
 	@Override
-	public final INamedElementSemantics getSemantics(ISemanticContext parentContext) {
+	public INamedElementSemantics getSemantics(ISemanticContext parentContext) {
 		return (INamedElementSemantics) super.getSemantics(parentContext);
 	}
-	
 	@Override
 	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
 	

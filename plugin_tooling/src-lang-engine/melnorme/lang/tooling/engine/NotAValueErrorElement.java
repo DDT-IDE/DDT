@@ -10,15 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.definitions.EArcheType;
 
 public class NotAValueErrorElement extends WrappedNamedElement implements INamedElement {
 	
@@ -38,42 +36,32 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 		return wrappedElement.getExtendedName() + ERROR_IS_NOT_A_VALUE;
 	}
 	
-	@Override
-	public IConcreteNamedElement resolveConcreteElement(ISemanticContext sr) {
-		return wrappedElement.resolveConcreteElement(sr);
-	}
-	
-	@Override
-	public EArcheType getArcheType() {
-		return wrappedElement.getArcheType();
-	}
-	
-	@Override
-	public INamedElementNode resolveUnderlyingNode() {
-		return wrappedElement.resolveUnderlyingNode();
-	}
-	
-	@Override
-	public ElementDoc resolveDDoc() {
-		return wrappedElement.resolveDDoc();
-	}
-	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new NullNamedElementSemantics();
-	}
-	
-	@Override
-	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		// Do nothing.
-	}
-	
-	@Override
-	public INamedElement resolveTypeForValueContext(ISemanticContext mr) {
-		// Do nothing.
-		return null;
+		return new NamedElementSemantics<ConcreteElementResult>(this, context) {
+			@Override
+			public ElementResolution<IConcreteNamedElement> resolveConcreteElement() {
+				return getElementResolution(context);
+			}
+			
+			@Override
+			protected ConcreteElementResult createResolution(ISemanticContext context) {
+				return new ConcreteElementResult(wrappedElement.resolveConcreteElement(context));
+			}
+			
+			@Override
+			public void resolveSearchInMembersScope(CommonScopeLookup search) {
+				// Do nothing.
+			}
+			
+			@Override
+			public INamedElement resolveTypeForValueContext() {
+				// Do nothing.
+				return null;
+			}
+		};
 	}
 	
 }

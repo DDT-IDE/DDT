@@ -90,9 +90,11 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	public void testTemplateInstantiation$() throws Exception {
 		ResolvedModule module = parseModule(TPL_DEF_A + "Tpl!(int) ref1;");
 		Reference tplRef = getSampleType(module, "ref1");
-		TestsElementSearch search = resolveAllMembers(module, tplRef);
 		
-		INamedElement tplArg = search.findElement("TYPE1");
+		// TODO:
+//		TestsElementSearch search = resolveAllMembers(module, tplRef);
+//		
+//		INamedElement tplArg = search.findElement("TYPE1");
 		//assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
 	}
 	

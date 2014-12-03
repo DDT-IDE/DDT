@@ -24,7 +24,9 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
@@ -99,6 +101,18 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		int indexOf = source.indexOf(offsetSource);
 		assertTrue(indexOf >= 0);
 		return new PickedElement<>(findNode(resolvedModule, indexOf, klass), resolvedModule.getSemanticContext());
+	}
+	
+	/* ----------------- more complex pickers ----------------- */
+	
+	protected static PickedElement<INamedElement> parseSourceAndPickFromRefResolving(String source, String refMarker) 
+			throws ExecutionException {
+		ResolvedModule resolvedModule = parseModule(source);
+		Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf(refMarker), Reference.class);
+		
+		ISemanticContext context = resolvedModule.getSemanticContext();
+		INamedElement derivedElement = ref.resolveTargetElement(context);
+		return new PickedElement<>(derivedElement, context);
 	}
 	
 	/* ----------------- Helper to test caching ----------------- */
