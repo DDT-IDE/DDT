@@ -20,7 +20,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-public class DefVariable_SemanticsTest extends DefElement_CommonTest {
+public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
@@ -31,12 +31,7 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	}
 	
 	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
-		IVarDefinitionLike defVar = parseDefinitionVar(source, source.indexOf("xxx"));
-		testResolveSearchInMembersScope(defVar, expectedResults);
-	}
-	
-	protected IVarDefinitionLike parseDefinitionVar(String source, int offset) {
-		return parseSourceAndFindNode(source, offset, IVarDefinitionLike.class);
+		testResolveSearchInMembersScope(parseNamedElement(source), expectedResults);
 	}
 	
 	/* -----------------  ----------------- */
@@ -99,13 +94,13 @@ public class DefVariable_SemanticsTest extends DefElement_CommonTest {
 	
 	protected void testMultiple_ResolveEffectiveType(String[] sources, String expectedTypeFQN, String errorSuffix) {
 		for (String source : sources) {
-			testResolveEffectiveType(source, source.indexOf("xxx"), expectedTypeFQN, errorSuffix);
+			testResolveEffectiveType(source, expectedTypeFQN, errorSuffix);
 		}
 	}
 	
-	protected void testResolveEffectiveType(String source, int offset, String expectedTypeFQN, String errorSuffix) {
+	protected void testResolveEffectiveType(String source, String expectedTypeFQN, String errorSuffix) {
 		EmptySemanticResolution context = new EmptySemanticResolution();
-		INamedElementSemantics nodeSemantics = parseDefinitionVar(source, offset).getSemantics(context);
+		INamedElementSemantics nodeSemantics = parseNamedElement(source).getSemantics(context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);

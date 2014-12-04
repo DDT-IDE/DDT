@@ -11,8 +11,7 @@
 package dtool.engine.analysis;
 
 
-
-public class DefAlias_SemanticsTest extends DefElement_CommonTest {
+public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	
 	protected static final String CLASS_DEF = "struct Xpto { int x; };";
 	
@@ -28,6 +27,19 @@ public class DefAlias_SemanticsTest extends DefElement_CommonTest {
 		// Test alias to type
 		test_resolveTypeForValueContext("alias int XXX; ", "int", true);
 		test_resolveTypeForValueContext("alias XXX = int; ", "int", true);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		
+		testResolveSearchInMembersScope(parseNamedElement("int intVar; alias intVar XXX; "), 
+			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+		
+		// TODO: more tests for this functionality
+		testResolveSearchInMembersScope(parseNamedElement("int intVar; alias XXX = intVar; "), 
+			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
 	}
 	
 }

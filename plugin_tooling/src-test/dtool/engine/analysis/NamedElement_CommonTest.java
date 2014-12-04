@@ -11,7 +11,6 @@
 package dtool.engine.analysis;
 
 import static dtool.util.NewUtils.getSingleElementOrNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -21,41 +20,44 @@ import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
 /* FIXME: merge with NamedElements test*/
-public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
+/**
+ * A base test for a {@link INamedElement}s. 
+ * Each subclass should reimplement each test method as appropriate (even if there is nothing to test).
+ */
+public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
-	public static final String[] COMMON_PROPERTIES = array(
-		"init", "sizeof", "alignof", "mangleof", "stringof"
-	);
-	
-	@Test
-	public void test_resolveSearchInMembersScope() throws Exception { test_resolveSearchInMembersScope________(); }
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		 
-	}
-	
-	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
-		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, new EmptySemanticResolution());
-		namedElement.resolveSearchInMembersScope(search);
-		
-		resultsChecker(search).checkResults(expectedResults);
+	protected INamedElement parseNamedElement(String source) {
+		int index = source.indexOf("xxx");
+		if(index == -1) {
+			index = source.indexOf("XXX");
+		}
+		if(index == -1) {
+			index = source.indexOf("Foo");
+		}
+		assertTrue(index != -1);
+		return parseSourceAndFindNode(source, index, INamedElement.class);
 	}
 	
 	/* -----------------  ----------------- */
 	
 	@Test
+	public void test_resolveConcreteElement() throws Exception { test_resolveConcreteElement________(); }
+	public void test_resolveConcreteElement________() throws Exception { } /* FIXME: make abstract */
+	
+	/* -----------------  ----------------- */
+	
+	@Test
 	public void test_resolveTypeForValueContext() throws Exception { test_resolveTypeForValueContext________(); }
-	public void test_resolveTypeForValueContext________() throws Exception {
-		 assertFail();
-	}
+	public abstract void test_resolveTypeForValueContext________() throws Exception;
 	
 	protected void test_resolveTypeForValueContext(String source, String fullName) {
 		test_resolveTypeForValueContext(source, fullName, false);
@@ -79,22 +81,42 @@ public abstract class DefElement_CommonTest extends CommonNodeSemanticsTest {
 		assertEquals(fullName, expectedFullName);
 	}
 	
-	// TODO: cleanup these two methods
 	protected static void testExpressionResolution(String source, String... expectedResults) 
 			throws ExecutionException {
 		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
+		testExpressionResolution_(exp, expectedResults);
+	}
+	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
 		assertNotNull(exp);
 		EmptySemanticResolution context = new EmptySemanticResolution();
 		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
 		
 		testResolveSearchInMembersScope(expType, expectedResults);
 	}
-	protected static void testExpressionResolution2(String source, String... expectedResults) {
-		Expression exp = new DeeTestsChecksParser(source).parseExpression().getNode();
-		EmptySemanticResolution context = new EmptySemanticResolution();
-		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void test_resolveSearchInMembersScope() throws Exception { test_resolveSearchInMembersScope________(); }
+	public abstract void test_resolveSearchInMembersScope________() throws Exception;
+	
+	public static final String[] COMMON_PROPERTIES = array(
+		"init", "sizeof", "alignof", "mangleof", "stringof"
+	);
+	
+	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
+		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, new EmptySemanticResolution());
+		namedElement.resolveSearchInMembersScope(search);
 		
-		testResolveSearchInMembersScope(expType, expectedResults);
+		resultsChecker(search).checkResults(expectedResults);
+	}
+	
+	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String[] properties, 
+			String... expectedResults) {
+		if(properties != null) {
+			expectedResults = ArrayUtil.concat(expectedResults, properties);
+		}
+		testResolveSearchInMembersScope(namedElement, expectedResults);
 	}
 	
 }

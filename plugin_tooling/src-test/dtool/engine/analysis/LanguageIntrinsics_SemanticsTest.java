@@ -14,11 +14,13 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 
 import java.util.ArrayList;
 
+import dtool.ast.expressions.Expression;
+import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
+public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	public static final String[] PRIMITIVE_TYPES = array(
 		"/bool", 
@@ -53,21 +55,26 @@ public class LanguageIntrinsics_SemanticsTest extends DefElement_CommonTest {
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
 		testResolveSearchInMembersScope(D2_063_intrinsics.bool_type, COMMON_PROPERTIES);
-		testExpressionResolution2("true", COMMON_PROPERTIES);
+		testExpressionResolution_expSource("true", COMMON_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.int_type, INT_PROPERTIES);
-		testExpressionResolution2("123", INT_PROPERTIES);
+		testExpressionResolution_expSource("123", INT_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.char_type, INT_PROPERTIES);
-		testExpressionResolution2("'c'", INT_PROPERTIES);
+		testExpressionResolution_expSource("'c'", INT_PROPERTIES);
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.float_type, FLOAT_PROPERTIES);
-		testExpressionResolution2("123.123", FLOAT_PROPERTIES);
-		testExpressionResolution2("123.123f", FLOAT_PROPERTIES);
+		testExpressionResolution_expSource("123.123", FLOAT_PROPERTIES);
+		testExpressionResolution_expSource("123.123f", FLOAT_PROPERTIES);
 		
 		
 		testResolveSearchInMembersScope(D2_063_intrinsics.dynArrayType, DYN_ARRAY_PROPERTIES);
 		testResolveSearchInMembersScope(D2_063_intrinsics.staticArrayType, STATIC_ARRAY_PROPERTIES);
+	}
+	
+	protected static void testExpressionResolution_expSource(String expSource, String... expectedResults) {
+		Expression exp = new DeeTestsChecksParser(expSource).parseExpression().getNode();
+		testExpressionResolution_(exp, expectedResults);
 	}
 	
 	/* ----------------- ----------------- */

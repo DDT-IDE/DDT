@@ -14,7 +14,38 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-public class DefAggregate_SemanticsTest extends DefElement_CommonTest {
+public class DefAggregate_SemanticsTest extends NamedElement_CommonTest {
+	
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
+		test_resolveTypeForValueContext("class XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("interface XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("struct XXX {} ", "XXX", true);
+		test_resolveTypeForValueContext("union XXX {} ", "XXX", true);
+		
+		test_resolveTypeForValueContext("enum XXX {} ", "XXX", true);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		
+		testResolveSearchInMembersScope(parseNamedElement("struct Foo { int x, y; }"),
+			COMMON_PROPERTIES,
+			"x", "y");
+		
+		testResolveSearchInMembersScope(parseNamedElement("class Foo { int x; }"), 
+			OBJECT_PROPERTIES,
+			"x");
+		
+		// TODO: test hierarchy scopes more:
+		testResolveSearchInMembersScope(
+			parseNamedElement("class Bar { int a; } class Foo : Bar { int x; }"),
+			OBJECT_PROPERTIES,
+			"x",
+			"a");
+	}
 	
 	protected static final String[] OBJECT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"classinfo"
@@ -29,16 +60,6 @@ public class DefAggregate_SemanticsTest extends DefElement_CommonTest {
 		testExpressionResolution("union Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
 		
 		testExpressionResolution("enum Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
-	}
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		test_resolveTypeForValueContext("class XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("interface XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("struct XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("union XXX {} ", "XXX", true);
-		
-		test_resolveTypeForValueContext("enum XXX {} ", "XXX", true);
 	}
 	
 }
