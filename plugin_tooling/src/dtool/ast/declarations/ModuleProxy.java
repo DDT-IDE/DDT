@@ -11,18 +11,14 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -107,28 +103,15 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	protected final INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeAliasSemantics(this, pickedElement) {
+		return new AliasSemantics(this, pickedElement) {
 			
 			{
 				assertTrue(context == ModuleProxy.this.context);
 			}
 			
 			@Override
-			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			protected INamedElement resolveAliasTarget(ISemanticContext context) {
 				return resolveUnderlyingNode();
-			}
-			
-			@Override
-			protected IResolvable getAliasTarget() {
-				throw assertUnreachable();
-			}
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				INamedElement resolvedModule = resolveUnderlyingNode();
-				if(resolvedModule != null) {
-					resolvedModule.resolveSearchInMembersScope(search);
-				}
 			}
 			
 		};

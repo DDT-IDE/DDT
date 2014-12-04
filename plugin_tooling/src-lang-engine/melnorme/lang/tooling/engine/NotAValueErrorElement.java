@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -21,8 +20,8 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	
 	public static final String ERROR_IS_NOT_A_VALUE = " (is not a value)";
 	
-	public NotAValueErrorElement(INamedElement wrappedElement, ISemanticElement parent) {
-		super(wrappedElement, parent);
+	public NotAValueErrorElement(INamedElement wrappedElement) {
+		super(wrappedElement, wrappedElement);
 	}
 	
 	@Override

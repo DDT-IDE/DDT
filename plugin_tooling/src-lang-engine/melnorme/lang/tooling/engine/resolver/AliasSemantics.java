@@ -10,9 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -24,36 +24,56 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		super(element, pickedElement);
 	}
 	
+	protected INamedElement resolveAliasTarget_nonNull(ISemanticContext context) {
+		INamedElement result = resolveAliasTarget(context);
+		if(result == null) {
+			return new NotFoundErrorElement(element, null);
+		}
+		return result;
+	}
+	
+	protected abstract INamedElement resolveAliasTarget(ISemanticContext context);
+	
 	@Override
 	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
-		IResolvable aliasTarget = getAliasTarget();
-		if(aliasTarget == null) {
-			return null;
-		}
-		INamedElement result = aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
-		if(result == null) {
-			return null;
-		}
-		return result.resolveConcreteElement(context);
+		return resolveAliasTarget_nonNull(context).resolveConcreteElement(context);
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		TypeSemantics.resolveSearchInReferredContainer(search, getAliasTarget());
+		resolveAliasTarget_nonNull(context).resolveSearchInMembersScope(search);
 	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext() {
-		IResolvable aliasTarget = getAliasTarget();
-		if(aliasTarget != null) {
-			return getFirstElementOrNull(aliasTarget.getSemantics(context).resolveTypeOfUnderlyingValue());
-		}
-		return null;
+		return resolveAliasTarget_nonNull(context).resolveTypeForValueContext(context);
 	}
 	
-	protected abstract IResolvable getAliasTarget();
+	/* -----------------  ----------------- */
 	
-	public abstract static class TypeAliasSemantics extends AliasSemantics {
+	public abstract static class RefAliasSemantics extends AliasSemantics {
+
+		public RefAliasSemantics(INamedElement element, PickedElement<?> pickedElement) {
+			super(element, pickedElement);
+		}
+		
+		@Override
+		protected INamedElement resolveAliasTarget(ISemanticContext context) {
+			return resolveAliasTarget(context, getAliasTarget());
+		}
+		
+		protected abstract IResolvable getAliasTarget();
+		
+		protected static INamedElement resolveAliasTarget(ISemanticContext context, IResolvable aliasTarget) {
+			if(aliasTarget == null) {
+				return null;
+			}
+			return aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
+		}
+		
+	}
+	
+	public abstract static class TypeAliasSemantics extends RefAliasSemantics {
 		
 		public TypeAliasSemantics(INamedElement aliasDef, PickedElement<?> pickedElement) {
 			super(aliasDef, pickedElement);
@@ -62,7 +82,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		@Override
 		public INamedElement resolveTypeForValueContext() {
 			// TODO fix leak here, this element should be created only once per resolution.
-			return new NotAValueErrorElement(element, getAliasTarget());
+			return new NotAValueErrorElement(element);
 		};
 		
 	}

@@ -11,7 +11,6 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
@@ -21,11 +20,9 @@ import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -113,23 +110,16 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		return new AliasSemantics(this, pickedElement) {
 
 			protected final NotFoundErrorElement errorElement = new NotFoundErrorElement(PackageNamespace.this, null);
-			
-			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element, 
-				null /*FIXME: BUG here*/);
+			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);
 			
 			@Override
-			public INamedElement resolveTypeForValueContext() {
-				return notAValueErrorElement;
-			};
-			
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			protected INamedElement resolveAliasTarget(ISemanticContext context) {
 				return errorElement;
 			}
 			
 			@Override
-			protected IResolvable getAliasTarget() {
-				throw assertUnreachable();
+			public INamedElement resolveTypeForValueContext() {
+				return notAValueErrorElement;
 			};
 			
 			@Override

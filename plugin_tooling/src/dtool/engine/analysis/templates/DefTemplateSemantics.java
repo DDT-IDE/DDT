@@ -26,7 +26,7 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	public DefTemplateSemantics(DefinitionTemplate defTemplate, PickedElement<?> pickedElement) {
 		super(defTemplate, pickedElement);
 		this.defTemplate = defTemplate;
-		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate, defTemplate);
+		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate);
 	}
 	
 	@Override
@@ -40,7 +40,7 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	@Override
 	public INamedElement resolveTypeForValueContext() {
 		if(defTemplate.wrapper) {
-			// TODO: 
+			// TODO: go straight to members of wrapped definition
 		}
 		return notAValueErrorElement;
 	}

@@ -13,10 +13,11 @@ package dtool.engine.analysis;
 import static dtool.util.NewUtils.getSingleElementOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.ast.util.NodeUtil;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -66,15 +67,30 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	public abstract void test_resolveElement________() throws Exception;
 	
 	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, 
-			String aliasTarget, String expectedTypeName, boolean isError) {
+			String aliasTarget, String expectedTypeName, boolean isValidValue) {
 		
 		final INamedElement namedElement = pickedElement.element;
 		
 		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
-		assertTrue(namedElement.getParentNamespace() != null);
+		
+		if(emptyAsNull(namedElement.getModuleFullyQualifiedName()) == null) {
+			assertTrue(namedElement.getParentNamespace() == null);
+			assertTrue(namedElement.getModuleFullName() == null
+					|| emptyAsNull(namedElement.getModuleFullName().getFullNameAsString()) == null);
+		} else {
+			if(namedElement.getModuleFullyQualifiedName().equals(namedElement.getFullyQualifiedName())) {
+				assertTrue(namedElement.getParentNamespace() == null);
+			} else {
+				assertTrue(namedElement.getParentNamespace() != null);
+			}
+			
+			/* FIXME: refactor getModuleFullName */
+			assertAreEqual(namedElement.getModuleFullName().getFullNameAsString(), 
+				namedElement.getModuleFullyQualifiedName());
+		}
 		
 		test_resolveConcreteElement(pickedElement, aliasTarget);
-		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
+		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isValidValue);
 	}
 	
 	protected final void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
@@ -102,7 +118,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			NotFoundErrorElement notFoundError = (NotFoundErrorElement) concreteElement;
 			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
 			assertTrue(notFoundError.getParent() != null);
-			assertTrue(NodeUtil.isContainedIn(notFoundError.getParent(), namedElement));
+			assertTrue(NodeElementUtil.isContainedIn(notFoundError.getParent(), namedElement));
 			assertTrue(notFoundError.getParentNamespace() == null);
 		}
 		
@@ -116,20 +132,20 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
-			String expectedTypeName, boolean isError) {
-		INamedElement defElem = pickedElement.element;
+			String expectedTypeName, boolean isValidValue) {
+		INamedElement namedElement = pickedElement.element;
 		
-		INamedElement resolvedType = defElem.resolveTypeForValueContext(pickedElement.context);
+		INamedElement resolvedType = namedElement.resolveTypeForValueContext(pickedElement.context);
 		
 		// Test caching
-		assertTrue(resolvedType == defElem.resolveTypeForValueContext(pickedElement.context)); 
+		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
 		if(expectedTypeName == null) {
 			assertTrue(resolvedType == null);
-			assertTrue(isError);
+			assertTrue(isValidValue);
 			return;
 		}
-		assertEquals(isError, resolvedType instanceof NotAValueErrorElement);
+		assertEquals(isValidValue, resolvedType instanceof NotAValueErrorElement);
 		String type_modulefullName = resolvedType.getFullyQualifiedName();
 		type_modulefullName = StringUtil.trimStart(type_modulefullName, DEFAULT_ModuleName + ".");
 		assertEquals(type_modulefullName, expectedTypeName);

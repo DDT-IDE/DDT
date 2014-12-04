@@ -11,12 +11,14 @@
 package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefUnit;
 
 
@@ -27,6 +29,10 @@ public abstract class CommonSemanticElement implements ISemanticElement {
 	
 	@Override
 	public abstract ISemanticElement getParent();
+	
+	public INamedElement getParentNamespace() {
+		return NodeElementUtil.getOuterNamedElement(this);
+	}
 	
 	/* -----------------  ----------------- */
 	

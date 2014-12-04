@@ -9,7 +9,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
@@ -113,14 +113,12 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		@Override
 		protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new AliasSemantics(this, pickedElement) {
-			
-			@Override
-			protected Reference getAliasTarget() {
-				return target;
-			}
-			
-		};
+			return new RefAliasSemantics(this, pickedElement) {
+				@Override
+				protected Reference getAliasTarget() {
+					return target;
+				}
+			};
 		}
 		
 	}

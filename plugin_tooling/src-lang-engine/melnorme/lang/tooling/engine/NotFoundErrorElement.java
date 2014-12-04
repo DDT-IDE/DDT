@@ -35,9 +35,9 @@ public class NotFoundErrorElement extends AbstractNamedElement implements IConcr
 		return new NotFoundErrorElement(resolvable, doc);
 	}
 	
-	public NotFoundErrorElement(ISemanticElement parent, ElementDoc parseDDoc) {
+	public NotFoundErrorElement(ISemanticElement parent, ElementDoc doc) {
 		super(NOT_FOUND__NAME, parent);
-		this.doc = parseDDoc;
+		this.doc = doc;
 	}
 	
 	@Override

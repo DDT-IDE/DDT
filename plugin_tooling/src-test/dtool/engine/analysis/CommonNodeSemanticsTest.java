@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ISemanticElement;
-import melnorme.lang.tooling.ast.util.NodeUtil;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
@@ -88,14 +88,14 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return ASTNodeFinder.findElement(module, offset);
 	}
 	
-	public static <T> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
+	public static <T extends ISemanticElement> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
 		ASTNode node = parseSourceAndPickNode(source, offset);
-		return NodeUtil.getMatchingParent(node, klass);
+		return NodeElementUtil.getMatchingParent(node, klass);
 	}
 	
-	protected static <T> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
+	protected static <T extends ISemanticElement> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
 		ASTNode node = ASTNodeFinder.findElement(moduleRes.getModuleNode(), offset);
-		return NodeUtil.getMatchingParent(node, klass);
+		return NodeElementUtil.getMatchingParent(node, klass);
 	}
 	
 	/* -----------------  ----------------- */

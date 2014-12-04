@@ -10,16 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import java.util.Collection;
-
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.references.CommonQualifiedReference;
 
 public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
@@ -27,7 +23,7 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	public TypeSemantics(IConcreteNamedElement typeElement, PickedElement<?> pickedElement) {
 		super(typeElement, pickedElement);
-		notAValueError = new NotAValueErrorElement(typeElement, typeElement);
+		this.notAValueError = new NotAValueErrorElement(typeElement);
 	}
 	
 	protected final IConcreteNamedElement getTypeElement() {
@@ -43,16 +39,6 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 		if(scope != null) {
 			search.evaluateScope(scope);
 		}
-	}
-	
-	public static void resolveSearchInReferredContainer(CommonScopeLookup search, IResolvable resolvable) {
-		if(resolvable == null) {
-			return;
-		}
-		
-		ISemanticContext mr = search.modResolver;
-		Collection<INamedElement> containers = resolvable.findTargetDefElements(mr);
-		CommonQualifiedReference.resolveSearchInMultipleContainers(containers, search);
 	}
 	
 }

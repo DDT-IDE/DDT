@@ -84,7 +84,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		testResolveElement(parseElement("import target;", "target", RefModule.class));
 		
-		/* FIXME: test rest*/
+		/* TODO: test rest of reference classes */
 		
 //		StandardLibraryResolution stdLibBR = defaultSemMgr.getUpdatedStdLibResolution(DEFAULT_DMD_INSTALL_EXE_PATH);
 //		INamedElement intElement = parseSourceAndFindNode("int ref_int;", 0, RefPrimitive.class).

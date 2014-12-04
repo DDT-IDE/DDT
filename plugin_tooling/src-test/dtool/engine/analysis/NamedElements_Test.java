@@ -18,14 +18,11 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.declarations.ModuleProxy;
-import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
@@ -104,11 +101,6 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 			visitConcrete(parseDefUnit("enum Enum { xxx = 1 }"));
 			visitConcrete(parseDefUnit("enum xxx = 1;"));
 			
-			visitConcrete(parseDefUnit("struct xxx { }"));
-			visitConcrete(parseDefUnit("union xxx { }"));
-			visitConcrete(parseDefUnit("class xxx { }"));
-			visitConcrete(parseDefUnit("interface xxx { }"));
-			
 			visitConcrete(parseDefUnit("void func() {  if(int xxx) { }  }"));
 			visitConcrete(parseDefUnit("void func(int xxx) {   }"));
 			
@@ -139,35 +131,13 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 			
 			// A few derived elements.
 			
-			visitModuleProxy();
-			visitPackageNamespace();
-			
 			visitAliases();
 			
-		}
-		
-		protected void visitModuleProxy() throws ExecutionException {
-			PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
-				"import target; auto _ = target;", "target;");
-			assertTrue(pickedElement.element instanceof ModuleProxy);
-			visitAliasElement(pickedElement);
-		}
-		
-		protected void visitPackageNamespace() throws ExecutionException {
-			PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
-				"import xxx.foo; auto _ = xxx;", "xxx;");
-			assertTrue(pickedElement.element instanceof PackageNamespace);
-			visitAliasElement(pickedElement, NotFoundErrorElement.NOT_FOUND__NAME);
 		}
 		
 		protected void visitAliases() {
 			/* ----------------- aliases ----------------- */
 			
-			visitAliasElement(parseDefUnit("int target;  alias xxx = target;"));
-			visitAliasElement(parseDefUnit("int target;  alias foo = blah, xxx = target;"));
-			
-			visitAliasElement(parseDefUnit("int target;  alias target xxx;"));
-			visitAliasElement(parseDefUnit("int target;  alias target blah, xxx;"));
 			
 			visitAliasElement(parseDefUnit("import xxx = target;"));
 			visitAliasElement(parseDefUnit("import blah : xxx = target;"));

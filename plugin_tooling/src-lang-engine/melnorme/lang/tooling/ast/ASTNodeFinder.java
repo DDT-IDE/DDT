@@ -12,7 +12,7 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.util.NodeUtil;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 
 
@@ -89,7 +89,7 @@ public class ASTNodeFinder extends ASTVisitor {
 	
 	public boolean isAdjacent(ASTNode node, ASTNode nextNode) {
 		return node.getEndPos() == nextNode.getStartPos() &&
-			!NodeUtil.isContainedIn(nextNode, node); // This check is necessary because of zero-length nodes
+			!NodeElementUtil.isContainedIn(nextNode, node); // This check is necessary because of zero-length nodes
 	}
 	
 	protected boolean matchesNodeStart(ASTNode node) {

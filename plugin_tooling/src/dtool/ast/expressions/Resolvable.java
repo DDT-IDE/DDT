@@ -20,6 +20,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 
@@ -33,8 +34,8 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 	}
 	
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return (IResolvableSemantics) super.getSemantics(parentContext);
+	public ResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return (ResolvableSemantics) super.getSemantics(parentContext);
 	}
 	@Override
 	protected abstract IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement);

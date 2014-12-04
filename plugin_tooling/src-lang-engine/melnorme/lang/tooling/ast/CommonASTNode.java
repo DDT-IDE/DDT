@@ -19,7 +19,7 @@ import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
-import melnorme.lang.tooling.ast.util.NodeUtil;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -275,7 +275,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	/* ------------------------------------------------------------ */
 	
 	public final IModuleNode getModuleNode() {
-		return NodeUtil.getMatchingParent(this, IModuleNode.class);
+		return NodeElementUtil.getMatchingParent(this, IModuleNode.class);
 	}
 	
 	@Override

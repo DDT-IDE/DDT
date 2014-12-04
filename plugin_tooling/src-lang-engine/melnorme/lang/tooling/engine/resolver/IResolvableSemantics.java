@@ -19,8 +19,6 @@ public interface IResolvableSemantics extends IElementSemantics {
 	
 	ResolvableResult resolveTargetElement();
 	
-	/* TODO: deprecate these: */
-	Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
 	Collection<INamedElement> resolveTypeOfUnderlyingValue();
 	
 }

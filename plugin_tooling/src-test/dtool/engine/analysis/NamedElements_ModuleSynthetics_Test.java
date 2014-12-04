@@ -10,20 +10,47 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.lang.tooling.engine.NotFoundErrorElement.NOT_FOUND__NAME;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
+import dtool.ast.declarations.ModuleProxy;
+import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
-/* FIXME: use NamedElement_CommonTest */
-public class NamedElements_ModuleSynthetics_Test extends CommonNodeSemanticsTest {
+public class NamedElements_ModuleSynthetics_Test extends NamedElement_CommonTest {
+	
+	@Override
+	public void test_resolveElement________() throws Exception {
+		testModuleProxy();
+		testPackageNamespace();
+	}
+	
+	protected void testModuleProxy() throws ExecutionException {
+		PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
+			"import target; auto _ = target;", "target;");
+		assertTrue(pickedElement.element instanceof ModuleProxy);
+		
+		test_resolveElement(pickedElement, "target", "target", true);
+	}
+	
+	protected void testPackageNamespace() throws ExecutionException {
+		PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
+			"import xxx.foo; auto _ = xxx;", "xxx;");
+		assertTrue(pickedElement.element instanceof PackageNamespace);
+		
+		test_resolveElement(pickedElement, NOT_FOUND__NAME, "xxx", true);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Test
 	public void testModuleSyntheticUnits() throws Exception { testModuleSyntheticUnits$(); }
@@ -47,6 +74,11 @@ public class NamedElements_ModuleSynthetics_Test extends CommonNodeSemanticsTest
 		
 		assertTrue(pickA.element != pickB.element);
 		assertTrue(resultA.result == resultB.result);
+	}
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		// TODO Auto-generated method stub
 	}
 	
 }

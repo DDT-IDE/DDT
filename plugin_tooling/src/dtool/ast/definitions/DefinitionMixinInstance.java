@@ -18,6 +18,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
@@ -67,7 +68,14 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 		
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				resolveSearchInReferredContainer(search, templateInstance);
+				if(templateInstance != null) {
+					// TODO: add fake element for missing syntax
+					
+					INamedElement result = templateInstance.getSemantics(context).resolveTargetElement().result;
+					if(result != null) {
+						result.resolveSearchInMembersScope(search);
+					}
+				}
 			}
 			
 		};

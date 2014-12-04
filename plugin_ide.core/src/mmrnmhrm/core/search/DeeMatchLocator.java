@@ -1,6 +1,6 @@
 package mmrnmhrm.core.search;
 
-import static melnorme.lang.tooling.ast.util.NodeUtil.getOuterNamedElement;
+import static melnorme.lang.tooling.ast.util.NodeElementUtil.getOuterNamedElement;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;

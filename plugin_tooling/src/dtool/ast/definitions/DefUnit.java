@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -129,11 +128,6 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	@Override
 	public ModuleFullName getModuleFullName() {
 		return ModuleFullName.fromString(getModuleFullyQualifiedName());
-	}
-	
-	@Override
-	public INamedElement getParentNamespace() {
-		return NodeUtil.getParentDefUnit(this);
 	}
 	
 	@Override

@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,10 +63,15 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		return resolveTypeOfUnderlyingValue(context, resolvedElements); 
 	}
 	
+	/* TODO: deprecate this: */
+	/** Finds the named element matching this {@link IResolvable}. 
+	 * If no results are found, return null. */
+	public abstract Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
+	
 	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr, 
 		Collection<INamedElement> resolvedElements) {
 		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
-		for (INamedElement defElement : resolvedElements) {
+		for (INamedElement defElement : nullToEmpty(resolvedElements)) {
 			INamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
 			if(resolvedTypeForValueContext != null) {
 				resolvedTypeForValueContext.add(resolveTypeForValueContext);
