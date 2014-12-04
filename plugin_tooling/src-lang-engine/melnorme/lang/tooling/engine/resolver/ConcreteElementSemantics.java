@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 
@@ -30,12 +29,12 @@ public abstract class ConcreteElementSemantics extends NamedElementSemantics {
 	}
 	
 	@Override
-	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+	protected IConcreteNamedElement doResolveConcreteElement() {
 		return elementRes.result;
 	}
 	
 	@Override
-	protected ConcreteElementResult getOrCreateElementResolution(ISemanticContext context) {
+	protected ConcreteElementResult getOrCreateElementResolution() {
 		return elementRes;
 	}
 	

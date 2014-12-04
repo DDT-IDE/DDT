@@ -42,7 +42,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	@Override
-	protected ResolvableResult createResolution(ISemanticContext context) {
+	protected ResolvableResult createResolution() {
 		INamedElement result = null;
 		Collection<INamedElement> namedElems = findTargetDefElements(true);
 		if(namedElems != null && !namedElems.isEmpty()) {

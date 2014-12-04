@@ -6,7 +6,6 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -91,7 +90,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		}
 		
 		@Override
-		protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+		protected IConcreteNamedElement doResolveConcreteElement() {
 			return null; // TODO: test and implement
 		}
 		

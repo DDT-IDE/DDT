@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -38,10 +37,10 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	}
 	
 	@Override
-	protected final ConcreteElementResult createResolution(ISemanticContext context) {
-		return new ConcreteElementResult(doResolveConcreteElement(context));
+	protected final ConcreteElementResult createResolution() {
+		return new ConcreteElementResult(doResolveConcreteElement());
 	}
 	
-	protected abstract IConcreteNamedElement doResolveConcreteElement(ISemanticContext context);
+	protected abstract IConcreteNamedElement doResolveConcreteElement();
 	
 }

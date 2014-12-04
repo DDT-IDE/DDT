@@ -124,7 +124,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+		protected IConcreteNamedElement doResolveConcreteElement() {
 			return function;
 		}
 		

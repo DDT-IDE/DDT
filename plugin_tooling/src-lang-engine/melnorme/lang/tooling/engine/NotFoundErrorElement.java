@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -87,7 +86,7 @@ public class NotFoundErrorElement extends AbstractNamedElement implements IConcr
 		return new NamedElementSemantics(this, pickedElement) {
 			
 			@Override
-			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			protected IConcreteNamedElement doResolveConcreteElement() {
 				return NotFoundErrorElement.this;
 			}
 			

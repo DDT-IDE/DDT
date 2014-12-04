@@ -24,7 +24,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		super(element, pickedElement);
 	}
 	
-	protected INamedElement resolveAliasTarget_nonNull(ISemanticContext context) {
+	protected INamedElement resolveAliasTarget_nonNull() {
 		INamedElement result = resolveAliasTarget(context);
 		if(result == null) {
 			return new NotFoundErrorElement(element, null);
@@ -35,18 +35,18 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	protected abstract INamedElement resolveAliasTarget(ISemanticContext context);
 	
 	@Override
-	protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
-		return resolveAliasTarget_nonNull(context).resolveConcreteElement(context);
+	protected IConcreteNamedElement doResolveConcreteElement() {
+		return resolveAliasTarget_nonNull().resolveConcreteElement(context);
 	}
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		resolveAliasTarget_nonNull(context).resolveSearchInMembersScope(search);
+		resolveAliasTarget_nonNull().resolveSearchInMembersScope(search);
 	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext() {
-		return resolveAliasTarget_nonNull(context).resolveTypeForValueContext(context);
+		return resolveAliasTarget_nonNull().resolveTypeForValueContext(context);
 	}
 	
 	/* -----------------  ----------------- */
@@ -81,7 +81,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		
 		@Override
 		public INamedElement resolveTypeForValueContext() {
-			// TODO fix leak here, this element should be created only once per resolution.
+			// FIXME: fix leak here, this element should be created only once per resolution.
 			return new NotAValueErrorElement(element);
 		};
 		

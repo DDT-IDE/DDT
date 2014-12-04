@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -41,7 +40,7 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 		return new NamedElementSemantics(this, pickedElement) {
 			
 			@Override
-			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
+			protected IConcreteNamedElement doResolveConcreteElement() {
 				return wrappedElement.resolveConcreteElement(context);
 			}
 			

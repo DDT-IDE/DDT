@@ -13,7 +13,6 @@ package dtool.engine.analysis.templates;
 import java.util.Collection;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
@@ -42,7 +41,7 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	}
 	
 	@Override
-	protected ResolvableResult createResolution(ISemanticContext context) {
+	protected ResolvableResult createResolution() {
 		Collection<INamedElement> templates = this.refTemplateInstance.tplRef.findTargetDefElements(context, false);
 		if(false) {
 			// TODO

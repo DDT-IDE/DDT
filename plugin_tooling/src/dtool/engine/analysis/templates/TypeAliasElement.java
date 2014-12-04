@@ -13,7 +13,6 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
@@ -58,8 +57,8 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 		return new TypeAliasSemantics(this, pickedElement) {
 		
 			@Override
-			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {
-				return super.doResolveConcreteElement(context); // TODO write test case
+			protected IConcreteNamedElement doResolveConcreteElement() {
+				return super.doResolveConcreteElement(); // TODO write test case
 			}
 			
 			@Override

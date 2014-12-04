@@ -37,13 +37,13 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	/* ----------------- ----------------- */
 	
 	protected final ER getElementResolution() {
-		return getOrCreateElementResolution(context);
+		return getOrCreateElementResolution();
 	}
 	
-	protected ER getOrCreateElementResolution(ISemanticContext context) {
+	protected ER getOrCreateElementResolution() {
 		if(resolution == null) {
 			// TODO: Optimization: put temporary result that can be resolved without a context
-			resolution = assertNotNull(createResolution(context));
+			resolution = assertNotNull(createResolution());
 		}
 		return resolution;
 	}
@@ -51,6 +51,6 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	/** 
 	 * Create and return the main resolution object for this semantics object. Non-null.
 	 */
-	protected abstract ER createResolution(ISemanticContext context);
+	protected abstract ER createResolution();
 	
 }
