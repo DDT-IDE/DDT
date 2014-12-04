@@ -37,10 +37,10 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 	public void testImports() throws Exception { testImports$(); }
 	public void testImports$() throws Exception {
 		
-		testRefModule(parseTestElement("import target;", "target", RefModule.class), "target");
-		testRefModule(parseTestElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
+		testRefModule(parseElement("import target;", "target", RefModule.class), "target");
+		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
 		
-		testRefModule(parseTestElement("import not_found;", "not_found", RefModule.class), 
+		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
 			NotFoundErrorElement.NOT_FOUND__NAME);
 		
 		// Test package refs.
@@ -53,7 +53,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected PickedElement<NamedReference> parseRef(String source, String marker) throws ExecutionException {
-		return parseTestElement(source, marker, NamedReference.class);
+		return parseElement(source, marker, NamedReference.class);
 	}
 	
 	protected void testRefModule(PickedElement<RefModule> refModuleElement, String fqn) {
@@ -96,7 +96,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 	@Test
 	public void testShadowing() throws Exception { testShadowing$(); }
 	public void testShadowing$() throws Exception {
-		PickedElement<Module> modulePick = parseTestElement("import foo; class foo_member; ", "", Module.class);
+		PickedElement<Module> modulePick = parseElement("import foo; class foo_member; ", "", Module.class);
 		
 		Module node = modulePick.element;
 		CompletionScopeLookup lookup = new CompletionScopeLookup(node, node.getEndPos(), modulePick.context);

@@ -21,11 +21,14 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.TemplateInstance;
+import dtool.engine.analysis.templates.VarElement;
 
 
 public class Template_SemanticsTest extends CommonNodeSemanticsTest {
@@ -96,6 +99,27 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 //		
 //		INamedElement tplArg = search.findElement("TYPE1");
 		//assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
+		
+		
+		// TODO test template instantiated elements using NamedElements_Test
+		
+		VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
+//		visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
+		
+//		varInstance,
+//		templateInstance,
+		
+//		TemplateInstance templateInstance = new TemplateInstance((DefinitionTemplate) getDefUnit("template xxx(T){}"), 
+//		new ArrayList2<INamedElementNode>(
+//			new TypeAliasElement(new DefSymbol("blah"), parseSourceAndFindNode("int z;", 0, RefPrimitive.class))
+//		)
+//	);
+
+//		AliasElement aliasElement = sampleModule(
+//			new AliasElement(new DefSymbol("xxx"), new RefIdentifier("target")));
+//			aliasElement,
+		
+
 	}
 	
 	protected INamedElement resolveEffectiveType(INamedElement tplArg) {

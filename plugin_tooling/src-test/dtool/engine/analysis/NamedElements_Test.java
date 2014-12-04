@@ -18,31 +18,21 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicProperty2;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-
-import org.junit.Test;
-
 import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
-import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
-import dtool.engine.analysis.templates.AliasElement;
-import dtool.engine.analysis.templates.InstantiatedDefUnit;
-import dtool.engine.analysis.templates.VarElement;
 
-public class NamedElements_Test extends CommonNodeSemanticsTest {
+public class NamedElements_Test extends NamedElement_CommonTest {
 	
 	/* ----------------- helpers to create elements ----------------- */
 	
@@ -72,44 +62,41 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 		return new PickedElement<>(namedElement, context);
 	}
 	
-	public static PickedElement<INamedElement> syntheticElement(InstantiatedDefUnit namedElement, 
-		ResolvedModule module) {
-		namedElement.setParent(module.getModuleNode());
-		namedElement.setParsedStatus();
-		assertTrue(namedElement.isParsedStatus());
-		return new PickedElement<>((INamedElement) namedElement, module.getSemanticContext());
-	}
-	
 	/* ----------------- Sample elements ----------------- */
 	
-	/** Helper to visit a sample of test elements. */
+	/** Helper to visit a sample of named elements. */
 	protected static class NamedElementVisitor {
 		
-		protected final void visit(PickedElement<INamedElement> pickedElement, boolean isConcrete, String aliasTarget) {
-			assertTrue((pickedElement.element instanceof IConcreteNamedElement) == isConcrete);
-			doVisit(pickedElement, isConcrete, aliasTarget);
+		protected final void visit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
+			INamedElement namedElement = pickedElement.element;
+			boolean isConcrete = aliasTarget == null;
+			
+			assertTrue((namedElement instanceof IConcreteNamedElement) == isConcrete);
+			assertTrue(isConcrete || 
+				namedElement.getName().equals("xxx") || namedElement.getName().equals(aliasTarget));
+			
+			doVisit(pickedElement, aliasTarget);
 		}
 		
-		protected void visitConcrete(PickedElement<INamedElement> pickedElement) {
-			visit(pickedElement, true, null);
+		@SuppressWarnings("unused")
+		protected void doVisit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
+		}
+		
+		
+		protected final void visitConcrete(PickedElement<INamedElement> pickedElement) {
+			visit(pickedElement, null);
 		}
 		
 		protected final void visitAliasElement(PickedElement<INamedElement> pickedElement) {
 			visitAliasElement(pickedElement, "target");
 		}
 		
-		protected void visitAliasElement(PickedElement<INamedElement> pickedElement, String aliasTarget) {
-			visit(pickedElement, false, aliasTarget);
+		protected final void visitAliasElement(PickedElement<INamedElement> pickedElement, String aliasTarget) {
+			visit(pickedElement, aliasTarget);
 		}
 		
-		
-		@SuppressWarnings("unused")
-		protected void doVisit(PickedElement<INamedElement> pickedElement, boolean isConcrete, String aliasTarget) {
-		}
 		
 		public void visitElements() throws Exception {
-			
-			StandardLibraryResolution stdLib = defaultSemMgr.getUpdatedStdLibResolution(null);
 			
 			visitConcrete(parseDefUnit("int xxx;"));
 			visitConcrete(parseDefUnit("int z, xxx;"));
@@ -134,7 +121,9 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			
 			visitConcrete(parseDefUnit(func(" try {} catch(Exception xxx) {} ")));
 			visitConcrete(parseDefUnit(func(" foreach(a , xxx ;  [1, 2 3]);")));
-
+			
+			StandardLibraryResolution stdLib = getDefaultStdLibContext();
+			
 			visitConcrete(pickedElement(D2_063_intrinsics.bool_type, stdLib));
 			visitConcrete(pickedElement(D2_063_intrinsics.object_type, stdLib));
 			
@@ -154,21 +143,6 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitPackageNamespace();
 			
 			visitAliases();
-
-			
-			// TODO test template synthetic elements:
-			
-			VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
-//			visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
-			
-//			varInstance,
-//			templateInstance,
-			
-//			TemplateInstance templateInstance = new TemplateInstance((DefinitionTemplate) getDefUnit("template xxx(T){}"), 
-//			new ArrayList2<INamedElementNode>(
-//				new TypeAliasElement(new DefSymbol("blah"), parseSourceAndFindNode("int z;", 0, RefPrimitive.class))
-//			)
-//		);
 			
 		}
 		
@@ -198,63 +172,24 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 			visitAliasElement(parseDefUnit("import xxx = target;"));
 			visitAliasElement(parseDefUnit("import blah : xxx = target;"));
 			
-			/* TODO test this*/
-			AliasElement aliasElement = sampleModule(new AliasElement(new DefSymbol("xxx"), new RefIdentifier("target")));
-//				aliasElement,
-			
 			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"));
 		}
 	}
 	
-	protected static AliasElement sampleModule(AliasElement aliasElement) {
-		Module module = parseSource("int target;");
-		aliasElement.setParent(module);
-		return aliasElement;
-	}
-	
 	/* -----------------  ----------------- */
 	
-	@Test
-	public void testSemantics() throws Exception { testSemantics$(); }
-	public void testSemantics$() throws Exception {
-		
-		NamedElementVisitor namedElementVisitor = new NamedElementVisitor() {
+	@Override
+	public void test_resolveConcreteElement________() throws Exception {
+		new NamedElementVisitor() {
 			@Override
-			protected void visitConcrete(PickedElement<INamedElement> pickedElement) {
-				testResolveElementConcrete(pickedElement);
-				restResolveElementConcrete_ForConcrete(pickedElement);
+			protected void doVisit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
+				testResolveElementConcrete(pickedElement, aliasTarget);
 			}
-			
-			@Override
-			protected void visitAliasElement(PickedElement<INamedElement> pickedElement, String aliasTargetName) {
-				testResolveElementConcrete(pickedElement);
-				restResolveElementConcrete_Alias(pickedElement, aliasTargetName);
-			}
-			
-		};
-		namedElementVisitor.visitElements();
-		
+		}.visitElements();
 	}
 	
-	protected void testResolveElementConcrete(PickedElement<INamedElement> pickedElement) {
-		ISemanticContext context = pickedElement.context;
-		INamedElement namedElement = pickedElement.element;
-		assertTrue(context == context.findSemanticContext(namedElement));
-		
-		checkIsSameResolution(
-			namedElement.getSemantics(context).resolveConcreteElement(),
-			namedElement.getSemantics(context).resolveConcreteElement()
-		);
-		
-		INamedElementSemantics semantics = namedElement.getSemantics(context);
-		IConcreteNamedElement concreteElement = semantics.resolveConcreteElement().result;
-		
-		if(concreteElement instanceof NotFoundErrorElement) {
-			NotFoundErrorElement notFoundError = (NotFoundErrorElement) concreteElement;
-			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
-			assertTrue(notFoundError.getParentNamedElement() == namedElement.getParentNamedElement());
-		}
-		
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
 		// FIXME: re-enable this test
 //		INamedElement typeForValueContext = semantics.resolveTypeForValueContext();
 //		if(concreteElement instanceof NotAValueErrorElement) {
@@ -263,58 +198,9 @@ public class NamedElements_Test extends CommonNodeSemanticsTest {
 //		}
 	}
 	
-	protected void restResolveElementConcrete_ForConcrete(PickedElement<INamedElement> pickedElement) {
-		ISemanticContext context = pickedElement.context;
-		INamedElement namedElement = pickedElement.element;
-		
-		// non-alias elements relsolve to themselves
-		assertTrue(namedElement.resolveConcreteElement(context) == namedElement);
-	}
-	
-	protected void restResolveElementConcrete_Alias(PickedElement<INamedElement> pickedElement, String aliasTargetName) {
-		ISemanticContext context = pickedElement.context;
-		INamedElement namedElement = pickedElement.element;
-		assertTrue(namedElement.getName().equals("xxx") || namedElement.getName().equals(aliasTargetName));
-		
-		IConcreteNamedElement concreteElement = namedElement.resolveConcreteElement(context);
-		
-		assertTrue(concreteElement != null);
-		assertTrue(concreteElement.getName().equals(aliasTargetName));
-	}
-	
-	/* ----------------- test caching ----------------- */
-	
-	protected void testNamedElementSemantics(ResolvedModule moduleRes) throws ModuleSourceException {
-		ISemanticContext context = moduleRes.getSemanticContext();
-		INamedElement namedElement = moduleRes.getModuleNode();
-		INamedElementSemantics semantics = namedElement.getSemantics(context);
-		assertTrue(semantics == namedElement.getSemantics(context));
-		
-		checkIsSameResolution(semantics.resolveConcreteElement(), semantics.resolveConcreteElement());
-	}
-	
-	@Test
-	public void testModuleSyntheticUnits() throws Exception { testModuleSyntheticUnits$(); }
-	public void testModuleSyntheticUnits$() throws Exception {
-		
-		testModuleSyntheticUnit____("module foo;", "foo");
-		testModuleSyntheticUnit____("", "_tests");
-		
-		testModuleSyntheticUnit____("module pack.foo;", "pack.foo");
-		testModuleSyntheticUnit____("module pack.subpack.foo;", "pack.subpack.foo");
-	}
-	
-	protected void testModuleSyntheticUnit____(String preSource, String elemName) throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule(
-			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
-		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
-		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
-		
-		ResolvableResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
-		ResolvableResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
-		
-		assertTrue(pickA.element != pickB.element);
-		assertTrue(resultA.result == resultB.result);
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		// TODO can't be done in a generic way, so individual test classes will need to be created.
 	}
 	
 }

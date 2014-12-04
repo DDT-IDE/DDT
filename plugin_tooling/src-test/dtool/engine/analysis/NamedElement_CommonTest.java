@@ -17,8 +17,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.EmptySemanticResolution;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -28,7 +33,6 @@ import org.junit.Test;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 
-/* FIXME: merge with NamedElements test*/
 /**
  * A base test for a {@link INamedElement}s. 
  * Each subclass should reimplement each test method as appropriate (even if there is nothing to test).
@@ -36,6 +40,14 @@ import dtool.ast.expressions.Expression;
 public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	protected INamedElement parseNamedElement(String source) {
+		return parseSourceAndFindNode(source, getMarkerIndex(source), INamedElement.class);
+	}
+	
+	protected PickedElement<INamedElement> parseNamedElement2(String source) throws ExecutionException {
+		return parseElement(source, getMarkerIndex(source), INamedElement.class);
+	}
+	
+	protected int getMarkerIndex(String source) {
 		int index = source.indexOf("xxx");
 		if(index == -1) {
 			index = source.indexOf("XXX");
@@ -44,14 +56,44 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			index = source.indexOf("Foo");
 		}
 		assertTrue(index != -1);
-		return parseSourceAndFindNode(source, index, INamedElement.class);
+		return index;
 	}
 	
 	/* -----------------  ----------------- */
 	
 	@Test
 	public void test_resolveConcreteElement() throws Exception { test_resolveConcreteElement________(); }
-	public void test_resolveConcreteElement________() throws Exception { } /* FIXME: make abstract */
+	public abstract void test_resolveConcreteElement________() throws Exception;
+	
+	protected void testResolveElementConcrete(PickedElement<? extends INamedElement> pickedElement, 
+			String aliasTarget) {
+		final ISemanticContext context = pickedElement.context;
+		final INamedElement namedElement = pickedElement.element;
+		
+		assertTrue(context == context.findSemanticContext(namedElement));
+		
+		checkIsSameResolution(
+			namedElement.getSemantics(context).resolveConcreteElement(),
+			namedElement.getSemantics(context).resolveConcreteElement()
+		);
+		
+		INamedElementSemantics semantics = namedElement.getSemantics(context);
+		IConcreteNamedElement concreteElement = semantics.resolveConcreteElement().result;
+		
+		if(concreteElement instanceof NotFoundErrorElement) {
+			NotFoundErrorElement notFoundError = (NotFoundErrorElement) concreteElement;
+			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
+			assertTrue(notFoundError.getParentNamedElement() == namedElement.getParentNamedElement());
+		}
+		
+		if(aliasTarget == null) {
+			// non-alias elements relsolve to themselves
+			assertTrue(concreteElement == namedElement);
+		} else {
+			assertTrue(concreteElement != null);
+			assertTrue(concreteElement.getName().equals(aliasTarget));
+		}
+	}
 	
 	/* -----------------  ----------------- */
 	

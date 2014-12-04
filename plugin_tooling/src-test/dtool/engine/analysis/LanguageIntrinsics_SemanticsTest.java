@@ -22,6 +22,20 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
+	@Override
+	public void test_resolveConcreteElement________() throws Exception {
+		testResolveElementConcrete(pickedNative(D2_063_intrinsics.float_type), null);
+		testResolveElementConcrete(pickedNative(D2_063_intrinsics.dynArrayType), null);
+		testResolveElementConcrete(pickedNative(D2_063_intrinsics.staticArrayType), null);
+	}
+	
+	@Override
+	public void test_resolveTypeForValueContext________() throws Exception {
+		/* FIXME: todo */
+	}
+	
+	/* ----------------- ----------------- */
+	
 	public static final String[] PRIMITIVE_TYPES = array(
 		"/bool", 
 		"/byte", "/ubyte", "/short", "/ushort", "/int", "/uint", "/long", "/ulong", 
@@ -75,14 +89,6 @@ public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	protected static void testExpressionResolution_expSource(String expSource, String... expectedResults) {
 		Expression exp = new DeeTestsChecksParser(expSource).parseExpression().getNode();
 		testExpressionResolution_(exp, expectedResults);
-	}
-	
-	/* ----------------- ----------------- */
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		// TODO
-		//super.test_resolveTypeForValueContext________();
 	}
 	
 }

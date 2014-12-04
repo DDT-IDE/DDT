@@ -11,7 +11,14 @@
 package dtool.engine.analysis;
 
 
+
 public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
+	
+	@Override
+	public void test_resolveConcreteElement________() throws Exception {
+//		testResolveElementConcrete(pickedNative(D2_063_intrinsics.float_type), null);
+		/* FIXME: merge this test with test_resolveTypeForValueContext */
+	}
 	
 	protected static final String CLASS_DEF = "struct Xpto { int x; };";
 	

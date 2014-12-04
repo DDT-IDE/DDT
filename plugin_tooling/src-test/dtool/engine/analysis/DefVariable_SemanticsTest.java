@@ -23,15 +23,9 @@ import org.junit.Test;
 public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
-		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
-		defVar_testResolveSearchInMembers("auto xxx = ; ");
-		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
-	}
-	
-	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
-		testResolveSearchInMembersScope(parseNamedElement(source), expectedResults);
+	public void test_resolveConcreteElement________() throws Exception {
+		testResolveElementConcrete(parseNamedElement2("auto xxx = true; "), null);
+		/* FIXME: join with test_resolveTypeForValueContext*/
 	}
 	
 	/* -----------------  ----------------- */
@@ -49,6 +43,7 @@ public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveTypeForValueContext("auto z, xxx = 123;", "int");
 		test_resolveTypeForValueContext("enum xxx = 123;", "int");
 	}
+	
 	
 	@Test
 	public void testResolveEffectiveType() throws Exception { testResolveEffectiveType$(); }
@@ -110,6 +105,20 @@ public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		if(errorSuffix != null) {
 			assertTrue(effectiveType.getExtendedName().endsWith(errorSuffix));
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
+		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
+		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
+		defVar_testResolveSearchInMembers("auto xxx = ; ");
+		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
+	}
+	
+	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
+		testResolveSearchInMembersScope(parseNamedElement(source), expectedResults);
 	}
 	
 }

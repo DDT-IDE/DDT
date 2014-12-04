@@ -33,7 +33,7 @@ public class Scope_SemanticsTest extends CommonNodeSemanticsTest {
 	protected ASTNode pickedNode;
 	
 	protected ResolutionLookup doResolutionLookup(String source, String offsetSource) throws ExecutionException {
-		PickedElement<ASTNode> pick = parseTestElement(source, offsetSource, ASTNode.class);
+		PickedElement<ASTNode> pick = parseElement(source, offsetSource, ASTNode.class);
 		return doResolutionLookup(pick, "xxx");
 	}
 	

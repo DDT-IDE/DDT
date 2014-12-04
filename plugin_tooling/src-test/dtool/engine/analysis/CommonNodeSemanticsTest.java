@@ -30,6 +30,7 @@ import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
+import dtool.engine.StandardLibraryResolution;
 import dtool.resolver.DefUnitResultsChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
@@ -89,18 +90,45 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return NodeUtil.getMatchingParent(node, klass);
 	}
 	
-	protected static <E extends ISemanticElement> PickedElement<E> parseTestElement(String source, 
+	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
 		String offsetSource, Class<E> klass) throws ExecutionException {
 		ResolvedModule resolvedModule = parseModule(source);
 		return pickElement(resolvedModule, offsetSource, klass);
 	}
+	
+	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
+		int offset, Class<E> klass) throws ExecutionException {
+		ResolvedModule resolvedModule = parseModule(source);
+		return pickElement(resolvedModule, offset, klass);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			String offsetSource, Class<E> klass) {
 		String source = resolvedModule.getParsedModule().source;
 		int indexOf = source.indexOf(offsetSource);
 		assertTrue(indexOf >= 0);
-		return new PickedElement<>(findNode(resolvedModule, indexOf, klass), resolvedModule.getSemanticContext());
+		return pickElement(resolvedModule, indexOf, klass);
+	}
+	
+	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
+			int index, Class<E> klass) {
+		E node = findNode(resolvedModule, index, klass);
+		ISemanticContext context = resolvedModule.getSemanticContext();
+		return picked(node, context);
+	}
+	
+	public static <E extends ISemanticElement> PickedElement<E> picked(E node, ISemanticContext context) {
+		return new PickedElement<>(node, context);
+	}
+	
+	public static <E extends ISemanticElement> PickedElement<E> pickedNative(E node) {
+		return new PickedElement<>(node, getDefaultStdLibContext());
+	}
+	
+	protected static StandardLibraryResolution getDefaultStdLibContext() {
+		return defaultSemMgr.getUpdatedStdLibResolution(null);
 	}
 	
 	/* ----------------- more complex pickers ----------------- */

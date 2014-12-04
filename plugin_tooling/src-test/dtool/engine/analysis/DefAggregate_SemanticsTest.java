@@ -17,6 +17,15 @@ import org.junit.Test;
 public class DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
+	public void test_resolveConcreteElement________() throws Exception {
+		testResolveElementConcrete(parseNamedElement2("class XXX {} "), null);
+		testResolveElementConcrete(parseNamedElement2("interface XXX {} "), null);
+		testResolveElementConcrete(parseNamedElement2("struct XXX {} "), null);
+		testResolveElementConcrete(parseNamedElement2("union XXX {} "), null);
+		testResolveElementConcrete(parseNamedElement2("enum XXX {} "), null);
+	}
+	
+	@Override
 	public void test_resolveTypeForValueContext________() throws Exception {
 		test_resolveTypeForValueContext("class XXX {} ", "XXX", true);
 		test_resolveTypeForValueContext("interface XXX {} ", "XXX", true);

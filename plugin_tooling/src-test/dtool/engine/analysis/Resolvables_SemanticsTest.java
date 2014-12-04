@@ -72,17 +72,17 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	public void testResolveRef() throws Exception { testResolveRef$(); }
 	public void testResolveRef$() throws Exception {
 		
-		testResolveElement(parseTestElement("int ref_int;", "int", RefPrimitive.class));
+		testResolveElement(parseElement("int ref_int;", "int", RefPrimitive.class));
 		
-		testResolveElement(parseTestElement("class target { }; target bar;", "target bar", RefIdentifier.class));
+		testResolveElement(parseElement("class target { }; target bar;", "target bar", RefIdentifier.class));
 		
-		testResolveElement(parseTestElement("not_found foo;", "not_found", RefIdentifier.class));
+		testResolveElement(parseElement("not_found foo;", "not_found", RefIdentifier.class));
 		
 		testResolveElement(new PickedElement<IResolvable>(
 				new ModuleQualifiedReference("object", "TypeInfo_Class"), 
 				defaultSemMgr.getUpdatedStdLibResolution(null)), "TypeInfo_Class");
 		
-		testResolveElement(parseTestElement("import target;", "target", RefModule.class));
+		testResolveElement(parseElement("import target;", "target", RefModule.class));
 		
 		/* FIXME: test rest*/
 		
