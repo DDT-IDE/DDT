@@ -56,8 +56,8 @@ public abstract class WrappedNamedElement extends AbstractNamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentNamedElement() {
-		return wrappedElement.getParentNamedElement();
+	public INamedElement getParentNamespace() {
+		return wrappedElement.getParentNamespace();
 	}
 	
 	@Override

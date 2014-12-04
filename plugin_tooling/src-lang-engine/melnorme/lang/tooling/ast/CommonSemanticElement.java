@@ -25,6 +25,9 @@ public abstract class CommonSemanticElement implements ISemanticElement {
 	public CommonSemanticElement() {
 	}
 	
+	@Override
+	public abstract ISemanticElement getParent();
+	
 	/* -----------------  ----------------- */
 	
 	@Override

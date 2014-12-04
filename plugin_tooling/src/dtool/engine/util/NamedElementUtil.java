@@ -30,7 +30,7 @@ public class NamedElementUtil {
 			return NATIVES_ROOT + namedElement.getName();
 		}
 		
-		INamedElement parentNamespace = namedElement.getParentNamedElement();
+		INamedElement parentNamespace = namedElement.getParentNamespace();
 		assertNotNull(parentNamespace);
 		String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
 		String parentQualifedName = getElementTypeQualificationBase(parentNamespace);

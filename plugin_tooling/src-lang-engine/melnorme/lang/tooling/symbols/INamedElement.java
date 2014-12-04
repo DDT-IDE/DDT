@@ -51,9 +51,9 @@ public interface INamedElement extends ISemanticElement, INamedElementExtensions
 	public ModuleFullName getModuleFullName();
 	
 	
-	/** @return the nearest enclosing {@link INamedElement}.
-	 * For modules and packages, that is null. */
-	public abstract INamedElement getParentNamedElement();
+	/** @return the {@link INamedElement} of the nearest enclosing namespace.
+	 * For modules and packages, and certain other special elements, that is null. */
+	public abstract INamedElement getParentNamespace();
 	
 	/* ----------------- Semantics ----------------- */
 	

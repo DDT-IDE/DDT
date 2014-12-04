@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.ast.util.NodeUtil;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -67,6 +68,11 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, 
 			String aliasTarget, String expectedTypeName, boolean isError) {
 		
+		final INamedElement namedElement = pickedElement.element;
+		
+		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
+		assertTrue(namedElement.getParentNamespace() != null);
+		
 		test_resolveConcreteElement(pickedElement, aliasTarget);
 		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
 	}
@@ -95,7 +101,9 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		if(concreteElement instanceof NotFoundErrorElement) {
 			NotFoundErrorElement notFoundError = (NotFoundErrorElement) concreteElement;
 			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
-			assertTrue(notFoundError.getParentNamedElement() == namedElement.getParentNamedElement());
+			assertTrue(notFoundError.getParent() != null);
+			assertTrue(NodeUtil.isContainedIn(notFoundError.getParent(), namedElement));
+			assertTrue(notFoundError.getParentNamespace() == null);
 		}
 		
 		if(aliasTarget == null) {

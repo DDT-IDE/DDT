@@ -1,5 +1,6 @@
 package mmrnmhrm.ui.views;
 
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.util.swt.jface.ElementContentProvider;
 import melnorme.utilbox.tree.IElement;
 import dtool.parser.DeeParserResult;
@@ -18,7 +19,7 @@ public class ASTViewerContentProvider extends ElementContentProvider {
 		if(deeModuleDecl == null) {
 			return IElement.NO_ELEMENTS;
 		}
-		IElement input = deeModuleDecl.getModuleNode(); 
+		IASTNode input = deeModuleDecl.getModuleNode(); 
 		return input.getChildren();
 	}
 	

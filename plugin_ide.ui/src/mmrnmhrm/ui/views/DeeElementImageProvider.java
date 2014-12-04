@@ -4,13 +4,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.tree.IElement;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementFlagsUtil;
-import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeeImages;
+import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.DeeUIPreferenceConstants;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
@@ -28,7 +28,7 @@ public class DeeElementImageProvider {
 	public static final Point SMALL_SIZE= new Point(16, 16);
 	public static final Point BIG_SIZE= new Point(22, 16);
 	
-	public static Image getElementImage(IElement element) {
+	public static Image getElementImage(IASTNode element) {
 		if (element instanceof ASTNode) {
 			return getNodeImage((ASTNode) element);
 		}

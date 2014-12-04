@@ -219,16 +219,20 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public class IntrinsicTypePointer extends DeeIntrinsicType {
 		
+		public static final String POINTER_NAME = "<pointer>";
+		
 		public IntrinsicTypePointer() {
-			super("<pointer>", null);
+			super(POINTER_NAME, null);
 		}
 		
 	}
 	
 	public class IntrinsicDynArray extends DeeIntrinsicType {
 		
+		public static final String DYNAMIC_ARRAY_NAME = "<dynamic_array>";
+		
 		public IntrinsicDynArray() {
-			super("<dynamic_array>", 
+			super(DYNAMIC_ARRAY_NAME, 
 				parseDDoc("See "+ TextUI.href("http://dlang.org/arrays.html#dynamic-arrays")));
 			
 			this.createMembers(
@@ -255,8 +259,10 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public class IntrinsicStaticArray extends DeeIntrinsicType {
 		
+		public static final String STATIC_ARRAY_NAME = "<static_array>";
+		
 		public IntrinsicStaticArray() {
-			super("<static_array>",
+			super(STATIC_ARRAY_NAME,
 				parseDDoc("See " + TextUI.href("http://dlang.org/arrays.html#static-arrays")));
 			
 			this.createMembers(

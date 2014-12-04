@@ -19,6 +19,8 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public interface ISemanticElement {
 	
+	ISemanticElement getParent();
+	
 	/**
 	 * Create the semantics object for this element. 
 	 * The semantics object will be bound to the given {@link ISemanticContext} context.

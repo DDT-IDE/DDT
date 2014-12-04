@@ -11,22 +11,29 @@
 package melnorme.lang.tooling.ast;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.IVisitable;
 
 /**
  * Interface for {@link ASTNode} objects. No other class can implement. 
  */
-public interface IASTNode extends ISourceElement, IElement, IVisitable<IASTVisitor>, ISemanticElement {
-	
-	@Override
-	public IASTNode[] getChildren(); // Redefined to refine the type of children
+public interface IASTNode extends ISourceElement, IVisitable<IASTVisitor>, ISemanticElement {
 	
 	public ASTNode asNode();
 	
+	/** Returns the parent of this node, or <code>null</code> if none. */
 	@Override
 	public ASTNode getParent();
 	
 	public void setParent(ASTNode newParent);
+	
+	/**
+	 * Returns whether this element has one or more immediate children. This is
+	 * a convenience method, and may be more efficient than testing whether
+	 * <code>getChildren</code> is an empty array.
+	 */
+	boolean hasChildren();
+	
+	/** Returns the node's children. */
+	public IASTNode[] getChildren(); // Redefined to refine the type of children
 	
 }

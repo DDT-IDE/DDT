@@ -56,7 +56,7 @@ public class DeeModelEngine {
 			throws ModelException {
 		assertNotNull(sourceModule);
 		
-		INamedElement parentDefUnit = defUnit.getParentNamedElement();
+		INamedElement parentDefUnit = defUnit.getParentNamespace();
 		
 		if(parentDefUnit == null) {
 			return sourceModule.getType(defUnit.getName());

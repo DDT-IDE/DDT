@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.util.swt.jface.ElementContentProvider;
-import melnorme.utilbox.tree.IElement;
 
 import org.eclipse.jface.viewers.Viewer;
 
@@ -61,9 +60,9 @@ public class DeeOutlineContentProvider extends ElementContentProvider {
 			element instanceof AbstractConditionalDeclaration; 
 	}
 	
-	public static Object[] filterElements(IElement[] elements) {
-		ArrayList<IElement> deeElems = new ArrayList<IElement>();
-		for(IElement element : elements) {
+	public static Object[] filterElements(IASTNode[] elements) {
+		ArrayList<IASTNode> deeElems = new ArrayList<IASTNode>();
+		for(IASTNode element : elements) {
 			if(element instanceof DefUnit || 
 				element instanceof DeclarationImport ||  
 				element instanceof DeclarationModule || 

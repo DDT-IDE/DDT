@@ -81,7 +81,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	}
 	
 	@Override
-	public INamedElement getParentNamedElement() {
+	public INamedElement getParentNamespace() {
 		return null;
 	}
 	

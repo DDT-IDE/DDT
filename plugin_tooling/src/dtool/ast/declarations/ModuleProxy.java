@@ -76,7 +76,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public INamedElement getParentNamedElement() {
+	public INamedElement getParentNamespace() {
 		return null;
 	}
 	

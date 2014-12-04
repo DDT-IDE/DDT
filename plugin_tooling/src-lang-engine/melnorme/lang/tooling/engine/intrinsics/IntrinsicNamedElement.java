@@ -2,7 +2,6 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
@@ -16,11 +15,6 @@ public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	public IntrinsicNamedElement(String name, ElementDoc doc) {
 		super(name, null);
 		this.doc = doc;
-	}
-	
-	@Override
-	public INamedElement getParentNamedElement() {
-		return null;
 	}
 	
 	@Override

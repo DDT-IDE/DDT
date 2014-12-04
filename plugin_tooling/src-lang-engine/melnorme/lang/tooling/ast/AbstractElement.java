@@ -22,6 +22,11 @@ public abstract class AbstractElement extends CommonSemanticElement {
 	}
 	
 	@Override
+	public ISemanticElement getParent() {
+		return parent;
+	}
+	
+	@Override
 	public boolean isLanguageIntrinsic() {
 		return parent == null ? true : parent.isLanguageIntrinsic();
 	}
