@@ -13,9 +13,9 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -23,27 +23,18 @@ import org.junit.Test;
 public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveConcreteElement________() throws Exception {
-		testResolveElementConcrete(parseNamedElement2("auto xxx = true; "), null);
-		/* FIXME: join with test_resolveTypeForValueContext*/
+	public void test_resolveElement________() throws Exception {
+		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "char", false);
+		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "char", false);
+		
+		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), null, true);
+		
+		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "int", false);
+		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "int", false);
+		test_resolveElement_Concrete(parseNamedElement("enum xxx = 123;"), "int", false);
 	}
-	
-	/* -----------------  ----------------- */
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		test_resolveTypeForValueContext("char xxx;", "char");
-		test_resolveTypeForValueContext("char z, xxx;", "char");
-		
-		test_resolveTypeForValueContext("NotFound xxx;", null, true);
-		
-		test_resolveTypeForValueContext("auto xxx = 123;", "int");
-		test_resolveTypeForValueContext("auto z, xxx = 123;", "int");
-		test_resolveTypeForValueContext("enum xxx = 123;", "int");
-	}
-	
 	
 	@Test
 	public void testResolveEffectiveType() throws Exception { testResolveEffectiveType$(); }
@@ -94,8 +85,8 @@ public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	}
 	
 	protected void testResolveEffectiveType(String source, String expectedTypeFQN, String errorSuffix) {
-		EmptySemanticResolution context = new EmptySemanticResolution();
-		INamedElementSemantics nodeSemantics = parseNamedElement(source).getSemantics(context);
+		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
+		INamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);
@@ -118,7 +109,7 @@ public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	}
 	
 	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
-		testResolveSearchInMembersScope(parseNamedElement(source), expectedResults);
+		test_resolveSearchInMembersScope(parseNamedElement(source), expectedResults);
 	}
 	
 }

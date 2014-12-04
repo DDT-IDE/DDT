@@ -42,7 +42,7 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	
 	protected ER getOrCreateElementResolution(ISemanticContext context) {
 		if(resolution == null) {
-			// TODO: put temporary result
+			// TODO: Optimization: put temporary result that can be resolved without a context
 			resolution = assertNotNull(createResolution(context));
 		}
 		return resolution;

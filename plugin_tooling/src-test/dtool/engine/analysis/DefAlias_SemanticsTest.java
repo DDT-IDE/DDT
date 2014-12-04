@@ -15,25 +15,17 @@ package dtool.engine.analysis;
 public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveConcreteElement________() throws Exception {
-//		testResolveElementConcrete(pickedNative(D2_063_intrinsics.float_type), null);
-		/* FIXME: merge this test with test_resolveTypeForValueContext */
-	}
-	
-	protected static final String CLASS_DEF = "struct Xpto { int x; };";
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
+	public void test_resolveElement________() throws Exception {
 		// Test alias to var
-		test_resolveTypeForValueContext("int intVar; alias intVar XXX; ", "int");
-		test_resolveTypeForValueContext("int intVar; alias XXX = intVar; ", "int");
+		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "intVar", "int", false);
+		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "intVar", "int", false);
 		// broken variant
-		test_resolveTypeForValueContext("alias intVar XXX; ", null, true);
-		test_resolveTypeForValueContext("alias XXX = intVar; ", null, true);
+		test_resolveElement(parseNamedElement("alias intVar XXX; "), "intVar", null, true);
+		test_resolveElement(parseNamedElement("alias XXX = intVar; "), "intVar", null, true);
 		
 		// Test alias to type
-		test_resolveTypeForValueContext("alias int XXX; ", "int", true);
-		test_resolveTypeForValueContext("alias XXX = int; ", "int", true);
+		test_resolveElement(parseNamedElement("alias int XXX; "), "int", "int", true);
+		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", "int", true);
 	}
 	
 	/* -----------------  ----------------- */
@@ -41,11 +33,11 @@ public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
 		
-		testResolveSearchInMembersScope(parseNamedElement("int intVar; alias intVar XXX; "), 
+		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias intVar XXX; "), 
 			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
 		
 		// TODO: more tests for this functionality
-		testResolveSearchInMembersScope(parseNamedElement("int intVar; alias XXX = intVar; "), 
+		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias XXX = intVar; "), 
 			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
 	}
 	

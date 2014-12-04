@@ -23,15 +23,12 @@ import melnorme.utilbox.misc.ArrayUtil;
 public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveConcreteElement________() throws Exception {
-		testResolveElementConcrete(pickedNative(D2_063_intrinsics.float_type), null);
-		testResolveElementConcrete(pickedNative(D2_063_intrinsics.dynArrayType), null);
-		testResolveElementConcrete(pickedNative(D2_063_intrinsics.staticArrayType), null);
-	}
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		/* FIXME: todo */
+	public void test_resolveElement________() throws Exception {
+		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.float_type), null, true);
+		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.dynArrayType), null, true);
+		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.staticArrayType), null, true);
+		
+		// TODO: test the intrinsic properties as well
 	}
 	
 	/* ----------------- ----------------- */
@@ -68,22 +65,22 @@ public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
-		testResolveSearchInMembersScope(D2_063_intrinsics.bool_type, COMMON_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.bool_type), COMMON_PROPERTIES);
 		testExpressionResolution_expSource("true", COMMON_PROPERTIES);
 		
-		testResolveSearchInMembersScope(D2_063_intrinsics.int_type, INT_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.int_type), INT_PROPERTIES);
 		testExpressionResolution_expSource("123", INT_PROPERTIES);
 		
-		testResolveSearchInMembersScope(D2_063_intrinsics.char_type, INT_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.char_type), INT_PROPERTIES);
 		testExpressionResolution_expSource("'c'", INT_PROPERTIES);
 		
-		testResolveSearchInMembersScope(D2_063_intrinsics.float_type, FLOAT_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.float_type), FLOAT_PROPERTIES);
 		testExpressionResolution_expSource("123.123", FLOAT_PROPERTIES);
 		testExpressionResolution_expSource("123.123f", FLOAT_PROPERTIES);
 		
 		
-		testResolveSearchInMembersScope(D2_063_intrinsics.dynArrayType, DYN_ARRAY_PROPERTIES);
-		testResolveSearchInMembersScope(D2_063_intrinsics.staticArrayType, STATIC_ARRAY_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.dynArrayType), DYN_ARRAY_PROPERTIES);
+		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.staticArrayType), STATIC_ARRAY_PROPERTIES);
 	}
 	
 	protected static void testExpressionResolution_expSource(String expSource, String... expectedResults) {

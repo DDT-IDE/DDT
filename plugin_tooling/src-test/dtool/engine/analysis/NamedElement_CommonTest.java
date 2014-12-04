@@ -30,7 +30,6 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.expressions.Expression;
 
 /**
@@ -39,11 +38,11 @@ import dtool.ast.expressions.Expression;
  */
 public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
-	protected INamedElement parseNamedElement(String source) {
+	protected INamedElement parseNamedElement_(String source) {
 		return parseSourceAndFindNode(source, getMarkerIndex(source), INamedElement.class);
 	}
 	
-	protected PickedElement<INamedElement> parseNamedElement2(String source) throws ExecutionException {
+	protected PickedElement<INamedElement> parseNamedElement(String source) {
 		return parseElement(source, getMarkerIndex(source), INamedElement.class);
 	}
 	
@@ -62,10 +61,23 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	/* -----------------  ----------------- */
 	
 	@Test
-	public void test_resolveConcreteElement() throws Exception { test_resolveConcreteElement________(); }
-	public abstract void test_resolveConcreteElement________() throws Exception;
+	public void test_resolveElement() throws Exception { test_resolveElement________(); }
+	public abstract void test_resolveElement________() throws Exception;
 	
-	protected void testResolveElementConcrete(PickedElement<? extends INamedElement> pickedElement, 
+	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, 
+			String aliasTarget, String expectedTypeName, boolean isError) {
+		
+		test_resolveConcreteElement(pickedElement, aliasTarget);
+		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
+	}
+	
+	protected final void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
+			String expectedTypeName, boolean isError) {
+		test_resolveElement(pickedElement, null, expectedTypeName, isError);
+	}
+	
+	
+	protected void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
 			String aliasTarget) {
 		final ISemanticContext context = pickedElement.context;
 		final INamedElement namedElement = pickedElement.element;
@@ -95,45 +107,24 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 	}
 	
-	/* -----------------  ----------------- */
-	
-	@Test
-	public void test_resolveTypeForValueContext() throws Exception { test_resolveTypeForValueContext________(); }
-	public abstract void test_resolveTypeForValueContext________() throws Exception;
-	
-	protected void test_resolveTypeForValueContext(String source, String fullName) {
-		test_resolveTypeForValueContext(source, fullName, false);
-	}
-	
-	protected void test_resolveTypeForValueContext(String source, String expectedFullName, boolean isError) {
-		int offset = source.indexOf("XXX");
-		offset = offset == -1 ? source.indexOf("xxx") : offset;
-		assertTrue(offset != -1);
-		DefUnit defElem = parseSourceAndFindNode(source, offset, DefUnit.class);
+	protected void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
+			String expectedTypeName, boolean isError) {
+		INamedElement defElem = pickedElement.element;
 		
-		INamedElement resolvedType = defElem.resolveTypeForValueContext(new EmptySemanticResolution());
-		if(expectedFullName == null) {
+		INamedElement resolvedType = defElem.resolveTypeForValueContext(pickedElement.context);
+		
+		// Test caching
+		assertTrue(resolvedType == defElem.resolveTypeForValueContext(pickedElement.context)); 
+		
+		if(expectedTypeName == null) {
 			assertTrue(resolvedType == null);
 			assertTrue(isError);
 			return;
 		}
 		assertEquals(isError, resolvedType instanceof NotAValueErrorElement);
-		String fullName = resolvedType.getFullyQualifiedName();
-		fullName = StringUtil.trimStart(fullName, DEFAULT_ModuleName + ".");
-		assertEquals(fullName, expectedFullName);
-	}
-	
-	protected static void testExpressionResolution(String source, String... expectedResults) 
-			throws ExecutionException {
-		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
-		testExpressionResolution_(exp, expectedResults);
-	}
-	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
-		assertNotNull(exp);
-		EmptySemanticResolution context = new EmptySemanticResolution();
-		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
-		
-		testResolveSearchInMembersScope(expType, expectedResults);
+		String type_modulefullName = resolvedType.getFullyQualifiedName();
+		type_modulefullName = StringUtil.trimStart(type_modulefullName, DEFAULT_ModuleName + ".");
+		assertEquals(type_modulefullName, expectedTypeName);
 	}
 	
 	/* -----------------  ----------------- */
@@ -146,19 +137,33 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		"init", "sizeof", "alignof", "mangleof", "stringof"
 	);
 	
-	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String... expectedResults) {
-		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, new EmptySemanticResolution());
-		namedElement.resolveSearchInMembersScope(search);
+	protected static void test_resolveSearchInMembersScope(PickedElement<? extends INamedElement> pickedElement, 
+			String... expectedResults) {
+		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, pickedElement.context);
+		pickedElement.element.resolveSearchInMembersScope(search);
 		
 		resultsChecker(search).checkResults(expectedResults);
 	}
 	
-	protected static void testResolveSearchInMembersScope(INamedElement namedElement, String[] properties, 
-			String... expectedResults) {
+	protected static void test_resolveSearchInMembersScope(PickedElement<? extends INamedElement> pickedElement, 
+			String[] properties, String... expectedResults) {
 		if(properties != null) {
 			expectedResults = ArrayUtil.concat(expectedResults, properties);
 		}
-		testResolveSearchInMembersScope(namedElement, expectedResults);
+		test_resolveSearchInMembersScope(pickedElement, expectedResults);
+	}
+	
+	protected static void testExpressionResolution(String source, String... expectedResults) 
+			throws ExecutionException {
+		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
+		assertNotNull(exp);
+		testExpressionResolution_(exp, expectedResults);
+	}
+	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
+		EmptySemanticResolution context = new EmptySemanticResolution();
+		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
+		
+		test_resolveSearchInMembersScope(picked(expType, context), expectedResults);
 	}
 	
 }

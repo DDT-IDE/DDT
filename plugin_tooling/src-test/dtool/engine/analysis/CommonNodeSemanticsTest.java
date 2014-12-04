@@ -67,6 +67,14 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return getDefaultTestsModule();
 	}
 	
+	protected static ResolvedModule parseModule_(String source) {
+		try {
+			return parseModule(source);
+		} catch (ExecutionException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
 	protected static Module parseSource(String source) {
 		try {
 			return parseModule(source).getModuleNode();
@@ -90,19 +98,20 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return NodeUtil.getMatchingParent(node, klass);
 	}
 	
+	/* -----------------  ----------------- */
+	
 	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
-		String offsetSource, Class<E> klass) throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule(source);
+		String offsetSource, Class<E> klass) {
+		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offsetSource, klass);
 	}
 	
 	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
-		int offset, Class<E> klass) throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule(source);
+		int offset, Class<E> klass) {
+		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offset, klass);
 	}
 	
-	/* -----------------  ----------------- */
 	
 	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			String offsetSource, Class<E> klass) {
@@ -118,6 +127,8 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		ISemanticContext context = resolvedModule.getSemanticContext();
 		return picked(node, context);
 	}
+	
+	/* ----------------- ----------------- */
 	
 	public static <E extends ISemanticElement> PickedElement<E> picked(E node, ISemanticContext context) {
 		return new PickedElement<>(node, context);

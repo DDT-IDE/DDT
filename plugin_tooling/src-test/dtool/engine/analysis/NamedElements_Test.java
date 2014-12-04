@@ -179,23 +179,15 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void test_resolveConcreteElement________() throws Exception {
+	public void test_resolveElement________() throws Exception {
 		new NamedElementVisitor() {
 			@Override
 			protected void doVisit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
-				testResolveElementConcrete(pickedElement, aliasTarget);
+				/* FIXME: test resolved type as well*/
+				test_resolveConcreteElement(pickedElement, aliasTarget);
 			}
 		}.visitElements();
-	}
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		// FIXME: re-enable this test
-//		INamedElement typeForValueContext = semantics.resolveTypeForValueContext();
-//		if(concreteElement instanceof NotAValueErrorElement) {
-//			assertTrue(typeForValueContext.getModulePath() == namedElement.getModulePath());
-//			assertTrue(typeForValueContext.getParentNamedElement() == namedElement.getParentNamedElement());
-//		}
+		
 	}
 	
 	@Override

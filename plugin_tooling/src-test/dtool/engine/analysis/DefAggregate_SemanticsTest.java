@@ -17,22 +17,14 @@ import org.junit.Test;
 public class DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveConcreteElement________() throws Exception {
-		testResolveElementConcrete(parseNamedElement2("class XXX {} "), null);
-		testResolveElementConcrete(parseNamedElement2("interface XXX {} "), null);
-		testResolveElementConcrete(parseNamedElement2("struct XXX {} "), null);
-		testResolveElementConcrete(parseNamedElement2("union XXX {} "), null);
-		testResolveElementConcrete(parseNamedElement2("enum XXX {} "), null);
-	}
-	
-	@Override
-	public void test_resolveTypeForValueContext________() throws Exception {
-		test_resolveTypeForValueContext("class XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("interface XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("struct XXX {} ", "XXX", true);
-		test_resolveTypeForValueContext("union XXX {} ", "XXX", true);
+	public void test_resolveElement________() throws Exception {
 		
-		test_resolveTypeForValueContext("enum XXX {} ", "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("class XXX {} "), "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("interface XXX {} "), "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("struct XXX {} "), "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("union XXX {} "), "XXX", true);
+		
+		test_resolveElement_Concrete(parseNamedElement("enum XXX {} "), "XXX", true);
 	}
 	
 	/* -----------------  ----------------- */
@@ -40,16 +32,16 @@ public class DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
 		
-		testResolveSearchInMembersScope(parseNamedElement("struct Foo { int x, y; }"),
+		test_resolveSearchInMembersScope(parseNamedElement("struct Foo { int x, y; }"),
 			COMMON_PROPERTIES,
 			"x", "y");
 		
-		testResolveSearchInMembersScope(parseNamedElement("class Foo { int x; }"), 
+		test_resolveSearchInMembersScope(parseNamedElement("class Foo { int x; }"), 
 			OBJECT_PROPERTIES,
 			"x");
 		
 		// TODO: test hierarchy scopes more:
-		testResolveSearchInMembersScope(
+		test_resolveSearchInMembersScope(
 			parseNamedElement("class Bar { int a; } class Foo : Bar { int x; }"),
 			OBJECT_PROPERTIES,
 			"x",
