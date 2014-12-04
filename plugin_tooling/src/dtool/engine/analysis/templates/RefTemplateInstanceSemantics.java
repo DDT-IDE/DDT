@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -29,8 +30,8 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	
 	protected final RefTemplateInstance refTemplateInstance;
 	
-	public RefTemplateInstanceSemantics(RefTemplateInstance refTemplateInstance, ISemanticContext parentContext) {
-		super(refTemplateInstance, parentContext);
+	public RefTemplateInstanceSemantics(RefTemplateInstance refTemplateInstance, PickedElement<?> pickedElement) {
+		super(refTemplateInstance, pickedElement);
 		this.refTemplateInstance = refTemplateInstance;
 	}
 	

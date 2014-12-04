@@ -21,6 +21,7 @@ import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -166,7 +167,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 		return (INamedElementSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
+	protected abstract INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement);
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {

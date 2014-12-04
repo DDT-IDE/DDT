@@ -7,8 +7,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
@@ -112,8 +112,8 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		
 		@Override
-		public INamedElementSemantics createSemantics(ISemanticContext context) {
-			return new AliasSemantics(this, context) {
+		protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			return new AliasSemantics(this, pickedElement) {
 			
 			@Override
 			protected Reference getAliasTarget() {

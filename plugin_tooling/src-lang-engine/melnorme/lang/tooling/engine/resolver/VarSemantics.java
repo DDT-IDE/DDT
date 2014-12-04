@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -19,8 +19,8 @@ import dtool.ast.expressions.Resolvable;
 
 public abstract class VarSemantics extends ConcreteElementSemantics {
 	
-	public VarSemantics(IConcreteNamedElement element, ISemanticContext context) {
-		super(element, context);
+	public VarSemantics(IConcreteNamedElement element, PickedElement<?> pickedElement) {
+		super(element, pickedElement);
 	}
 	
 	@Override

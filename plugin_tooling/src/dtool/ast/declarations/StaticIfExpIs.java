@@ -16,8 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefUnit;
@@ -114,8 +114,8 @@ public class StaticIfExpIs extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics createSemantics(ISemanticContext context) {
-			return new TypeAliasSemantics(this, context) {
+		protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			return new TypeAliasSemantics(this, pickedElement) {
 			
 			@Override
 			protected Resolvable getAliasTarget() {

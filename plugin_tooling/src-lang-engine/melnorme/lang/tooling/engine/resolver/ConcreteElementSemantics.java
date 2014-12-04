@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 
 
@@ -18,8 +19,8 @@ public abstract class ConcreteElementSemantics extends NamedElementSemantics {
 	
 	protected final ConcreteElementResult elementRes;
 	
-	public ConcreteElementSemantics(IConcreteNamedElement concreteElement, ISemanticContext context) {
-		super(concreteElement, context);
+	public ConcreteElementSemantics(IConcreteNamedElement concreteElement, PickedElement<?> pickedElement) {
+		super(concreteElement, pickedElement);
 		this.elementRes = new ConcreteElementResult(concreteElement);
 	}
 	

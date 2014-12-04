@@ -4,7 +4,7 @@ import static dtool.util.NewUtils.assertCast;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import dtool.ast.expressions.IInitializer;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.CommonDefVarSemantics;
@@ -62,8 +62,8 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics createSemantics(ISemanticContext context) {
-		return new CommonDefVarSemantics(this, context);
+	protected CommonDefVarSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new CommonDefVarSemantics(this, pickedElement);
 	}
 	
 }

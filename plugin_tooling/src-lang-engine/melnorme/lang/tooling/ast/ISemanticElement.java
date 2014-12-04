@@ -14,6 +14,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public interface ISemanticElement {
@@ -23,8 +24,9 @@ public interface ISemanticElement {
 	 * The semantics object will be bound to the given {@link ISemanticContext} context.
 	 * Subclasses should reimplement when applicable.
 	 * Note that only the semantic context should be calling this class.
+	 * @param pickedElement TODO
 	 */
-	public IElementSemantics createSemantics(ISemanticContext context);
+	public IElementSemantics createSemantics(PickedElement<?> pickedElement);
 	
 	/**
 	 * Should perform exactly this: <code>parentContext.getSemanticsEntry(this)</code>

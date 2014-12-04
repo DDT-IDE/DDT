@@ -5,6 +5,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -89,14 +90,14 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new FunctionElementSemantics(this, context);
+	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new FunctionElementSemantics(this, pickedElement);
 	}
 	
 	public static abstract class AbstractFunctionElementSemantics extends NamedElementSemantics {
 		
-		public AbstractFunctionElementSemantics(INamedElement element, ISemanticContext context) {
-			super(element, context);
+		public AbstractFunctionElementSemantics(INamedElement element, PickedElement<?> pickedElement) {
+			super(element, pickedElement);
 		}
 		
 		@SuppressWarnings("unused")
@@ -117,8 +118,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		
 		protected final DefinitionFunction function;
 		
-		public FunctionElementSemantics(DefinitionFunction defFunction, ISemanticContext context) {
-			super(defFunction, context);
+		public FunctionElementSemantics(DefinitionFunction defFunction, PickedElement<?> pickedElement) {
+			super(defFunction, pickedElement);
 			this.function = defFunction;
 		}
 		

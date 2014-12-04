@@ -7,7 +7,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -46,8 +46,8 @@ public class ExpThis extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics createSemantics(ISemanticContext context) {
-		return new ExpSemantics(this, context) {
+	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

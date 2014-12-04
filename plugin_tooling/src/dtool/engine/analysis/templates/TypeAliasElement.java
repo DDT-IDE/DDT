@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
@@ -53,8 +54,8 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new TypeAliasSemantics(this, context) {
+	public INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new TypeAliasSemantics(this, pickedElement) {
 		
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {

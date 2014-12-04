@@ -17,6 +17,7 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -36,7 +37,7 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return (IResolvableSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public abstract IResolvableSemantics createSemantics(ISemanticContext context);
+	protected abstract IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement);
 	
 	public final INamedElement resolveTargetElement(ISemanticContext context) {
 		return getSemantics(context).resolveTargetElement().result;

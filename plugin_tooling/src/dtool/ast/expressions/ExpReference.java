@@ -7,7 +7,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -43,8 +43,8 @@ public class ExpReference extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics createSemantics(ISemanticContext context) {
-		return new ResolvableSemantics(this, context) {
+	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

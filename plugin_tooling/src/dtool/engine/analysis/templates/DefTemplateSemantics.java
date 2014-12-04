@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -23,8 +23,8 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	protected final DefinitionTemplate defTemplate;
 	protected final NotAValueErrorElement notAValueErrorElement;
 	
-	public DefTemplateSemantics(DefinitionTemplate defTemplate, ISemanticContext context) {
-		super(defTemplate, context);
+	public DefTemplateSemantics(DefinitionTemplate defTemplate, PickedElement<?> pickedElement) {
+		super(defTemplate, pickedElement);
 		this.defTemplate = defTemplate;
 		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate, defTemplate);
 	}

@@ -13,14 +13,15 @@ package melnorme.lang.tooling.engine.resolver;
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class AliasSemantics extends NamedElementSemantics {
 	
-	public AliasSemantics(INamedElement element, ISemanticContext context) {
-		super(element, context);
+	public AliasSemantics(INamedElement element, PickedElement<?> pickedElement) {
+		super(element, pickedElement);
 	}
 	
 	@Override
@@ -54,8 +55,8 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	
 	public abstract static class TypeAliasSemantics extends AliasSemantics {
 		
-		public TypeAliasSemantics(INamedElement aliasDef, ISemanticContext context) {
-			super(aliasDef, context);
+		public TypeAliasSemantics(INamedElement aliasDef, PickedElement<?> pickedElement) {
+			super(aliasDef, pickedElement);
 		}
 		
 		@Override

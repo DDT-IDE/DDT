@@ -12,9 +12,11 @@ package melnorme.lang.tooling.engine.resolver;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -24,8 +26,9 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	protected final INamedElement element; 
 	
-	public NamedElementSemantics(INamedElement element, ISemanticContext context) {
-		super(context);
+	public NamedElementSemantics(INamedElement element, PickedElement<?> pickedElement) {
+		super(pickedElement);
+		assertTrue(pickedElement.element == element);		
 		this.element = assertNotNull(element);
 	}
 	

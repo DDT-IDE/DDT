@@ -11,7 +11,7 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -22,8 +22,8 @@ public class CommonDefVarSemantics extends VarSemantics {
 	
 	protected final IVarDefinitionLike varDef;
 	
-	public CommonDefVarSemantics(IVarDefinitionLike varDef, ISemanticContext context) {
-		super(varDef, context);
+	public CommonDefVarSemantics(IVarDefinitionLike varDef, PickedElement<?> pickedElement) {
+		super(varDef, pickedElement);
 		this.varDef = varDef;
 	}
 	

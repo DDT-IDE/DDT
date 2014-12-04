@@ -38,8 +38,8 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new NamedElementSemantics(this, context) {
+	public INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new NamedElementSemantics(this, pickedElement) {
 			
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement(ISemanticContext context) {

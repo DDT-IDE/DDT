@@ -97,7 +97,7 @@ public class NotFoundErrorElement extends AbstractElement implements IConcreteNa
 		return (INamedElementSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
+	public INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new NullNamedElementSemantics();
 	}
 	

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,6 +20,7 @@ import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> 
@@ -26,8 +29,9 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	private final IResolvable resolvable;
 	
-	public ResolvableSemantics(IResolvable resolvable, ISemanticContext context) {
-		super(context);
+	public ResolvableSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
+		super(pickedElement);
+		assertTrue(pickedElement.element == resolvable);
 		this.resolvable = resolvable;
 	}
 	
@@ -77,8 +81,8 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	public abstract static class TypeReferenceSemantics extends ResolvableSemantics {
 		
-		public TypeReferenceSemantics(IResolvable resolvable, ISemanticContext context) {
-			super(resolvable, context);
+		public TypeReferenceSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
+			super(resolvable, pickedElement);
 		}
 		
 		@Override
@@ -90,8 +94,8 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	public abstract static class ExpSemantics extends ResolvableSemantics {
 		
-		public ExpSemantics(IResolvable resolvable, ISemanticContext context) {
-			super(resolvable, context);
+		public ExpSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
+			super(resolvable, pickedElement);
 		}
 		
 		@Override

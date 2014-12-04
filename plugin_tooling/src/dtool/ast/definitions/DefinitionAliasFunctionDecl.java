@@ -8,6 +8,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -79,14 +80,14 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new FunctionalAliasSemantics(this, context);
+	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new FunctionalAliasSemantics(this, pickedElement);
 	}
 	
 	public class FunctionalAliasSemantics extends AbstractFunctionElementSemantics {
 		
-		public FunctionalAliasSemantics(INamedElement element, ISemanticContext context) {
-			super(element, context);
+		public FunctionalAliasSemantics(INamedElement element, PickedElement<?> pickedElement) {
+			super(element, pickedElement);
 		}
 		
 		@Override

@@ -13,8 +13,8 @@ package dtool.ast.expressions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -79,7 +79,7 @@ public class ExpSimpleLambda extends Expression {
 		/* -----------------  ----------------- */
 		
 		@Override
-		public INamedElementSemantics createSemantics(ISemanticContext context) {
+		protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 			return new NullNamedElementSemantics(); // TODO
 		}
 		

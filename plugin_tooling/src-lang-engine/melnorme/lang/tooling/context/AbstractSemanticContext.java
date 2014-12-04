@@ -22,6 +22,7 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.CommonSemanticElement;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.utils.EntryMap;
 
 public abstract class AbstractSemanticContext implements ISemanticContext {
@@ -77,8 +78,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 		
 		@Override
 		protected IElementSemantics createEntry(CommonSemanticElement key) {
-			/* FIXME: statically check that the context is where the entry belongs to. */
-			return key.createSemantics(AbstractSemanticContext.this);
+			return key.createSemantics(new PickedElement<>(key, AbstractSemanticContext.this));
 		}
 		
 	}

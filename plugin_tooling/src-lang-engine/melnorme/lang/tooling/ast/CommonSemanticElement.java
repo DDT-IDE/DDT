@@ -13,6 +13,7 @@ package melnorme.lang.tooling.ast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
@@ -37,8 +38,13 @@ public abstract class CommonSemanticElement implements ISemanticElement {
 	}
 	
 	@Override
-	public IElementSemantics createSemantics(ISemanticContext context) {
-		assertTrue(getContextForThisElement(context) == context); // Note this precondition!
+	public IElementSemantics createSemantics(PickedElement<?> pickedElement) {
+		assertTrue(pickedElement.element == this); // Note this precondition!
+		return doCreateSemantics(pickedElement);
+	}
+	
+	@SuppressWarnings("unused")
+	protected IElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new NullElementSemantics();
 	}
 	

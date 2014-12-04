@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -24,8 +25,8 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	
 	protected final NotAValueErrorElement notAValueError;
 	
-	public TypeSemantics(IConcreteNamedElement typeElement, ISemanticContext context) {
-		super(typeElement, context);
+	public TypeSemantics(IConcreteNamedElement typeElement, PickedElement<?> pickedElement) {
+		super(typeElement, pickedElement);
 		notAValueError = new NotAValueErrorElement(typeElement, typeElement);
 	}
 	

@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 public abstract class AbstractNamedElement extends AbstractElement implements INamedElement {
@@ -53,7 +54,7 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 		return (INamedElementSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public abstract INamedElementSemantics createSemantics(ISemanticContext context);
+	protected abstract INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement);
 	
 	@Override
 	public final IConcreteNamedElement resolveConcreteElement(ISemanticContext context) {

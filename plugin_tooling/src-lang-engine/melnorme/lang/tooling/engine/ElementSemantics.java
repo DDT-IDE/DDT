@@ -20,8 +20,8 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	
 	private ER resolution;
 	
-	public ElementSemantics(ISemanticContext context) {
-		this.context = context;
+	public ElementSemantics(PickedElement<?> pickedElement) {
+		this.context = pickedElement.context;
 	}
 	
 	@Override

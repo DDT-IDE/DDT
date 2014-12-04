@@ -5,8 +5,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -88,8 +88,8 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new VarSemantics(this, context) {
+	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new VarSemantics(this, pickedElement) {
 			@Override
 			protected Resolvable getTypeReference() {
 				return type;

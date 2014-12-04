@@ -12,7 +12,7 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
@@ -38,8 +38,8 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics createSemantics(ISemanticContext context) {
-		return new ResolvableSemantics(this, context) {
+	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

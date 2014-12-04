@@ -14,6 +14,7 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
@@ -46,8 +47,8 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 		return (IResolvableSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public IResolvableSemantics createSemantics(ISemanticContext context) {
-		return new ResolvableSemantics(this, context) {
+	public IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {

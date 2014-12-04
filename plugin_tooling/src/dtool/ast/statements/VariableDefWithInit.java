@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
@@ -71,8 +71,8 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public CommonDefVarSemantics createSemantics(ISemanticContext context) {
-		return new CommonDefVarSemantics(this, context);
+	protected CommonDefVarSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new CommonDefVarSemantics(this, pickedElement);
 	}
 	
 }

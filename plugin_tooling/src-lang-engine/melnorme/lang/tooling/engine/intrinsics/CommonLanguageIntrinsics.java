@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -41,8 +42,8 @@ public interface CommonLanguageIntrinsics {
 		public abstract void createMembers(IntrinsicNamedElement... members);
 		
 		@Override
-		public TypeSemantics createSemantics(ISemanticContext context) {
-			return new TypeSemantics(this, context) {
+		public TypeSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			return new TypeSemantics(this, pickedElement) {
 			
 				@Override
 				public void resolveSearchInMembersScope(CommonScopeLookup search) {
@@ -69,8 +70,8 @@ public interface CommonLanguageIntrinsics {
 		protected abstract INamedElement resolveType(ISemanticContext mr);
 		
 		@Override
-		public VarSemantics createSemantics(ISemanticContext context) {
-			return new VarSemantics(this, context) {
+		public VarSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			return new VarSemantics(this, pickedElement) {
 				
 				@Override
 				public INamedElement resolveTypeForValueContext() {

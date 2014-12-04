@@ -14,8 +14,7 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -79,9 +78,9 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	/* ----------------- ----------------- */
 	
 	@Override
-	public AggregateSemantics createSemantics(ISemanticContext context) {
+	protected AggregateSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		InstrinsicsScope commonTypeScope = new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
-		return new AggregateSemantics(this, commonTypeScope, context);
+		return new AggregateSemantics(this, commonTypeScope, pickedElement);
 	}
 	
 	public class AggregateSemantics extends TypeSemantics {
@@ -89,8 +88,8 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		protected final InstrinsicsScope commonTypeScope;
 		
 		public AggregateSemantics(IConcreteNamedElement typeElement, InstrinsicsScope commonTypeScope, 
-				ISemanticContext context) {
-			super(typeElement, context);
+				PickedElement<?> pickedElement) {
+			super(typeElement, pickedElement);
 			this.commonTypeScope = commonTypeScope;
 		}
 		

@@ -21,8 +21,8 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -214,8 +214,8 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
-	public INamedElementSemantics createSemantics(ISemanticContext context) {
-		return new TypeSemantics(this, context) {
+	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new TypeSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {

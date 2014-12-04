@@ -15,7 +15,7 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -48,8 +48,8 @@ public class RefTypePointer extends CommonNativeTypeReference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IResolvableSemantics createSemantics(ISemanticContext context) {
-		return new TypeReferenceSemantics(this, context) {
+	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new TypeReferenceSemantics(this, pickedElement) {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
