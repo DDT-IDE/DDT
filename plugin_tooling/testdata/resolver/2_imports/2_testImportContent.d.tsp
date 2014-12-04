@@ -2,7 +2,7 @@
 #@STATIC_IMPORT_TEST【
 	modA.#REFSEARCH¤【#@MODA_MBRS】;
 	
-	pack.#REFSEARCH¤【mod2▪mod1▪sample▪subpack】;
+	pack.#REFSEARCH¤【mod2▪mod1▪sample▪subpack▪modNonExistant▪modSyntaxErrors】;
 	
 	pack.sample#FIND¤【pack.sample/】;
 	pack.sample.#REFSEARCH¤【#@PACK_SAMPLE_MBRS】;
@@ -29,6 +29,8 @@ static import /* syntax error */;
 static import pack.mod2, pack.sample, pack.subpack.mod3;
 static import pack.subpack;
 
+import pack.modNonExistant, pack.modSyntaxErrors;
+
 #@__CONTEXT_START__
 	#REFSEARCH¤【importTest▪pack▪modA】
 	#@STATIC_IMPORT_TEST
@@ -42,7 +44,7 @@ import pack.subpack_NonExistant#FIND¤【】#REFSEARCH¤【►4】.mod#FIND¤【
 // Non-existant module:
 import pack.NonExistant#FIND¤【】#REFSEARCH¤【】;
 
-pack.#REFSEARCH¤【subpack_NonExistant】; // Finding no-results would also be acceptable behavior
+pack.#REFSEARCH¤【subpack_NonExistant▪NonExistant】; // Finding no-results would also be acceptable behavior
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Name mismatch
 module importTest; #PROJECT(importsProject)
@@ -68,7 +70,7 @@ import pack.subpack;
 
 
 #@__CONTEXT_START__
-	pack.#REFSEARCH¤【mod1▪mod2▪sample▪subpack】;
+	pack.#REFSEARCH¤【mod1▪mod2▪sample▪subpack▪modNonExistant▪modSyntaxErrors】;
 	#REFSEARCH¤【importTest▪modA▪#@MODA_MBRS▪pack▪#@PACK_MOD1_MBRS▪
 		#@PACK_MOD2_MBRS▪#@PACK_SAMPLE_MBRS▪#@SUBPACK_MOD3_MBRS▪PackSubpackPackage】;
 	

@@ -9,7 +9,7 @@ import pack.mod2, sampleAlias = pack.sample;
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【importTest▪mod1alias▪mod2alias▪#@PACK_MOD2_MBRS▪pack▪sampleAlias】
-	pack.#REFSEARCH¤【mod2】;
+	pack.#REFSEARCH¤【mod2▪modSyntaxErrors】;
 	pack.sample#FIND¤【】;
 	
 	sampleAlias#FIND¤【importTest/sampleAlias】;

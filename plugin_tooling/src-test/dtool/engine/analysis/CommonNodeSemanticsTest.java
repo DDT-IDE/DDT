@@ -144,9 +144,12 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* ----------------- more complex pickers ----------------- */
 	
-	protected static PickedElement<INamedElement> parseSourceAndPickFromRefResolving(String source, String refMarker) 
-			throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule(source);
+	public static PickedElement<INamedElement> parseSourceAndPickFromRefResolving(String source) {
+		return parseSourceAndPickFromRefResolving(source, "/*M*/");
+	}
+	
+	public static PickedElement<INamedElement> parseSourceAndPickFromRefResolving(String source, String refMarker) {
+		ResolvedModule resolvedModule = parseModule_(source);
 		Reference ref = findNode(resolvedModule, resolvedModule.getSource().indexOf(refMarker), Reference.class);
 		
 		ISemanticContext context = resolvedModule.getSemanticContext();

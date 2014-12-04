@@ -11,7 +11,6 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -132,15 +131,15 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	@Override
 	public void resolveSearchInScope(CommonScopeLookup search) {
-		if(containedElement.getArcheType() == EArcheType.Module) {
-			INamedElementNode resolvedDefUnit = containedElement.resolveUnderlyingNode();
-			if(resolvedDefUnit == null) {
-				// Note that we dont use resolvedDefUnit for evaluateNodeForSearch,
-				// this means modules with mismatched names will match again the import name (file name),
-				// instead of the module declaration name
-				return;
-			}
-		}
+//		if(containedElement.getArcheType() == EArcheType.Module) {
+//			INamedElementNode resolvedDefUnit = containedElement.resolveUnderlyingNode();
+//			if(resolvedDefUnit == null) {
+//				// Note that we dont use resolvedDefUnit for evaluateNodeForSearch,
+//				// this means modules with mismatched names will match again the import name (file name),
+//				// instead of the module declaration name
+//				return;
+//			}
+//		}
 		search.evaluateNamedElementForSearch(containedElement);
 	}
 	

@@ -68,17 +68,39 @@ public class NamedElements_ModuleSynthetics_Test extends NamedElement_CommonTest
 			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
 		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
 		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
+		assertTrue(pickA.element != pickB.element);
 		
 		ResolvableResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
 		ResolvableResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
 		
-		assertTrue(pickA.element != pickB.element);
 		assertTrue(resultA.result == resultB.result);
 	}
 	
 	@Override
 	public void test_resolveSearchInMembersScope________() throws Exception {
-		// TODO Auto-generated method stub
+		
+		test_resolveSearchInMembersScope(parseNamedElement("module xxx;") );
+		test_resolveSearchInMembersScope(parseNamedElement("module xxx.foo;") );
+		
+		
+		test_resolveSearchInMembersScope(
+			parseSourceAndPickFromRefResolving("module xxx; auto _dummy = xxx/*M*/;") 
+		);
+		
+		test_resolveSearchInMembersScope(
+			parseSourceAndPickFromRefResolving("module xxx.foo; auto _dummy = xxx/*M*/;"),
+			"foo"
+		);
+		
+		test_resolveSearchInMembersScope(
+			parseSourceAndPickFromRefResolving("import xxx; auto _dummy = xxx/*M*/;")
+		);
+		
+		test_resolveSearchInMembersScope(
+			parseSourceAndPickFromRefResolving("import xxx.foo; auto _dummy = xxx/*M*/;"),
+			"foo"
+		);
+		
 	}
 	
 }
