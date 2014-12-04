@@ -39,6 +39,11 @@ public interface CommonLanguageIntrinsics {
 			return membersScope;
 		}
 		
+		@Override
+		public String toString() {
+			return "intrinsic_type#" + getName();
+		}
+		
 		public abstract void createMembers(IntrinsicNamedElement... members);
 		
 		@Override
@@ -65,6 +70,11 @@ public interface CommonLanguageIntrinsics {
 		@Override
 		public EArcheType getArcheType() {
 			return EArcheType.Variable;
+		}
+		
+		@Override
+		public String toString() {
+			return "intrinsic_property#" + getName();
 		}
 		
 		protected abstract INamedElement resolveType(ISemanticContext mr);

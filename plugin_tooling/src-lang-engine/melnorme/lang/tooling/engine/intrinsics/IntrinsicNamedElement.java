@@ -42,9 +42,4 @@ public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 		return doc;
 	}
 	
-	@Override
-	public String toString() {
-		return "intrinsic_type#" + getName();
-	}
-	
 }
