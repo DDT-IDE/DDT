@@ -11,12 +11,15 @@
 package dtool.engine;
 
 
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
+
 import java.nio.file.Path;
 
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
+import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
@@ -58,7 +61,12 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	}
 	
 	public static BundleKey bundleKey(Path basePath, String subpackageName) {
+//		CompilerInstall compilerInstall = defaultSemMgr.getCompilerInstallForPath(DEFAULT_DMD_INSTALL_EXE_PATH);
 		return new BundleKey(BundlePath.create(basePath), subpackageName);
+	}
+	
+	protected BundleKey bundleKey(BundlePath bundlePath) {
+		return bundleKey(bundlePath.path, null);
 	}
 	
 }

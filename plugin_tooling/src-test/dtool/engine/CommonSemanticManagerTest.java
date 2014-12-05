@@ -37,6 +37,7 @@ import org.junit.BeforeClass;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
+import dtool.engine.compiler_installs.CompilerInstall;
 
 public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
@@ -149,7 +150,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		
 		public void checkStaleStatus(BundleKey bundleKey, StaleState staleState) {
 			
-			assertEquals(getInfo(bundleKey).manifestEntry.isStale(), 
+			assertEquals(manifestManager.getEntry(bundleKey).isStale(), 
 				staleState == MANIFEST_STALE);
 			
 			BundleResolution storedResolution = getStoredResolution(bundleKey);
@@ -167,15 +168,20 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		@Override
-		public StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
+		protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
 			if(compilerPath == null) {
 				compilerPath = DEFAULT_DMD_INSTALL_EXE_PATH;
 			}
-			StandardLibraryResolution stdLibRes = super.getUpdatedStdLibResolution(compilerPath);
+			return super.getCompilerInstallForPath(compilerPath);
+		}
+		
+		@Override
+		public StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
+			StandardLibraryResolution stdLibRes = super.getUpdatedStdLibResolution(foundInstall);
 			
 			// Test caching of resolution
-			assertAreEqual(stdLibRes.compilerInstall, super.getUpdatedStdLibResolution(compilerPath).compilerInstall);
-			assertTrue(stdLibRes == super.getUpdatedStdLibResolution(compilerPath));
+			assertAreEqual(stdLibRes.compilerInstall, super.getUpdatedStdLibResolution(foundInstall).compilerInstall);
+			assertTrue(stdLibRes == super.getUpdatedStdLibResolution(foundInstall));
 			
 			assertTrue(stdLibRes.checkIsModuleListStale() == false);
 			assertTrue(stdLibRes.checkIsModuleContentsStale() == false);
@@ -190,7 +196,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		DEP_STALE }
 	
 	protected void checkStaleStatus(BundlePath bundlePath, StaleState staleState) {
-		checkStaleStatus(new BundleKey(bundlePath), staleState);
+		checkStaleStatus(bundleKey(bundlePath), staleState);
 	}
 	
 	protected void checkStaleStatus(BundleKey bundleKey, StaleState staleState) {
@@ -200,6 +206,13 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
 		assertTrue(sm.checkIsResolutionStale(bundlePath));
 		return sm.getUpdatedResolution(bundlePath);
+	}
+	
+	protected BundleResolution getUpdatedResolution(BundlePath bundlePath, Path compilerPath) 
+			throws ExecutionException {
+		assertTrue(sm.checkIsResolutionStale(bundlePath));
+//		CompilerInstall compilerInstall = sm.getCompilerInstallForPath(compilerPath);
+		return sm.getUpdatedResolution(new BundleKey(bundlePath), compilerPath);
 	}
 	
 	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ModuleSourceException {

@@ -32,6 +32,7 @@ import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
+import dtool.tests.MockCompilerInstalls;
 
 public class SemanticManager_Test extends CommonSemanticManagerTest {
 	
@@ -68,7 +69,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected void checkChanged(BundlePath bundlePath, boolean expectedChanged) throws ExecutionException {
-		BundleKey bundleKey = new BundleKey(bundlePath);
+		BundleKey bundleKey = bundleKey(bundlePath);
 		
 		BundleResolution previousManifest = previousSRs.get(bundlePath);
 		if(previousManifest != null) {
@@ -98,10 +99,10 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		___initSemanticManager();
 		
 		// Test manifest only updates
-		sm.getUpdatedManifest(BASIC_LIB);
+		sm.getUpdatedManifest(bundleKey(BASIC_LIB));
 		checkStaleStatus(BASIC_LIB, StaleState.NO_BUNDLE_RESOLUTION);
 		checkStaleStatus(SMTEST, StaleState.MANIFEST_STALE);
-		sm.getUpdatedManifest(SMTEST);
+		sm.getUpdatedManifest(bundleKey(SMTEST));
 		checkStaleStatus(SMTEST, StaleState.NO_BUNDLE_RESOLUTION);
 		
 		// Test update resolution over current manifests
@@ -111,7 +112,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		// Test update resolution over partially current manifests
 		sm = ___initSemanticManager();
-		sm.getUpdatedManifest(BASIC_LIB);
+		sm.getUpdatedManifest(bundleKey(BASIC_LIB));
 		getUpdatedResolution(SMTEST);
 		checkStaleStatus(SMTEST, StaleState.CURRENT);
 		
@@ -165,7 +166,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected void invalidateBundleManifest(BundlePath bundlePath) {
-		FileCachingEntry<ResolvedManifest> manifestEntry = sm.getInfo(new BundleKey(bundlePath)).manifestEntry;
+		FileCachingEntry<ResolvedManifest> manifestEntry = sm.manifestManager.getEntry(bundleKey(bundlePath));
 		manifestEntry.markStale();
 	}
 	
@@ -303,6 +304,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		testWorkingCopyModifications();
 	}
 	
+	
 	protected static final String SOURCE1 = "module change1;";
 	protected static final String SOURCE2 = "module change2; /* */";
 	protected static final String SOURCE3 = "/* */ module  change3;";
@@ -363,4 +365,23 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale(true) == null);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void testStdLibInteractions() throws Exception { testStdLibInteractions$(); }
+	public void testStdLibInteractions$() throws Exception {
+		prepSMTestsWorkingDir();
+		___initSemanticManager();
+		
+		getUpdatedResolution(COMPLEX_LIB);
+		BundleResolution complexLib = sm.getStoredResolution(COMPLEX_LIB);
+		assertAreEqual(complexLib.getCompilerPath(), MockCompilerInstalls.DMD_CompilerLocation);
+		
+		BundleResolution complexLib2;
+		complexLib2 = getUpdatedResolution(COMPLEX_LIB, MockCompilerInstalls.GDC_CompilerLocation);
+		assertTrue(complexLib != complexLib2);
+		
+		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+	}
+
 }

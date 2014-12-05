@@ -12,7 +12,7 @@ package dtool.engine;
 
 import static dtool.engine.StandardLibraryResolution.NULL_COMPILER_INSTALL_PATH;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_LOCATION;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_BaseLocation;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -79,9 +79,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	}
 	
 	public static final Path DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path = 
-			DEFAULT_DMD_INSTALL_LOCATION.resolve("src/phobos/std/stdio.d");
+			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/phobos/std/stdio.d");
 	public static final Path DEFAULT_DMD_INSTALL_LOCATION__Object_Path = 
-			DEFAULT_DMD_INSTALL_LOCATION.resolve("src/druntime/import/object.di");
+			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/druntime/import/object.di");
 	
 	@Test
 	public void testModuleResolving() throws Exception { testModuleResolving$(); }
@@ -155,7 +155,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		___initSemanticManager();
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertTrue(sr.stdLibResolution.getCompilerType() == ECompilerType.DMD);
-		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_LOCATION));
+		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_BaseLocation));
 		
 		testFindResolvedModule(BASIC_LIB, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 		testFindResolvedModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path);
@@ -163,14 +163,15 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		// Test when no StdLib install is found
 		___initSemanticManager(new Tests_SemanticManager() {
+			
 			@Override
-			public StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
-				return assertCast(super.getUpdatedStdLibResolution(compilerPath), 
+			public StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
+				return assertCast(super.getUpdatedStdLibResolution(foundInstall), 
 					MissingStandardLibraryResolution.class);
 			}
 			
 			@Override
-			protected CompilerInstall getCompilerInstallForNewResolution(Path compilerPath) {
+			protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
 				return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 			}
 		});

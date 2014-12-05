@@ -81,8 +81,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.resolve("object.di");
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
-			super(manager, NULL_COMPILER_INSTALL, 
-				BundleModules.createSyntheticBundleModules(objectPath));
+			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(objectPath));
 			
 			ParsedModule parsedModule = DeeParser.parseSource("module object; ", objectPath);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
