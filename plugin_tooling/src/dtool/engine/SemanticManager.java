@@ -11,9 +11,7 @@
 package dtool.engine;
 
 import static dtool.engine.DToolServer.TIMESTAMP_FORMAT;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -43,11 +41,11 @@ import dtool.parser.DeeParserResult.ParsedModule;
 
 class BundleInfo {
 	
-	protected final BundleKey bundleKey;
+	protected final ResolutionKey resKey;
 	protected volatile BundleResolution bundleResolution;
 	
-	public BundleInfo(BundleKey bundleKey) {
-		this.bundleKey = bundleKey;
+	public BundleInfo(ResolutionKey resKey) {
+		this.resKey = resKey;
 	}
 	
 	public BundleResolution getSemanticResolution() {
@@ -65,7 +63,7 @@ public class SemanticManager {
 	protected final ITaskAgent dubProcessAgent;
 	protected final ModuleParseCache parseCache;
 	
-	protected final AbstractManifestManager manifestManager = new AbstractManifestManager();
+	protected final ManifestsManager manifestManager = new ManifestsManager();
 	protected final ResolutionsManager resolutionsManager = new ResolutionsManager();
 
 	
@@ -93,8 +91,7 @@ public class SemanticManager {
 		return manifestManager.getUpdatedManifest(bundleKey);
 	}
 	
-	public class AbstractManifestManager 
-		extends AbstractCachingManager<BundleKey, FileCachingEntry<ResolvedManifest>> {
+	public class ManifestsManager extends AbstractCachingManager<BundleKey, FileCachingEntry<ResolvedManifest>> {
 		
 		@Override
 		protected FileCachingEntry<ResolvedManifest> doCreateEntry(BundleKey bundleKey) {
@@ -138,22 +135,9 @@ public class SemanticManager {
 		}
 		
 		@Override
-		protected FileCachingEntry<ResolvedManifest> updateManifestEntry(BundleKey key) 
+		protected void doUpdateEntry(BundleKey key, FileCachingEntry<ResolvedManifest> staleInfo)
 				throws ExecutionException {
-			synchronized(updateOperationLock) {
-				// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
-				// Otherwise unnecessary updates might occur after one other.
-				FileCachingEntry<ResolvedManifest> info = getEntry(key);
-				if(doCheckIsEntryStale(info) == false)
-					return info;
-				
-				doUpdateManifestEntry(key);
-				return info;
-			}
-		}
-		
-		protected void doUpdateManifestEntry(BundleKey bundleKey) throws ExecutionException {
-			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(bundleKey.bundlePath, false);
+			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, false);
 			DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 			
 			FileTime dubStartTimeStamp = dubDescribeTask.getStartTimeStamp();
@@ -189,9 +173,9 @@ public class SemanticManager {
 	
 	/* ----------------- Semantic Resolution and module list ----------------- */
 	
-	protected BundleKey bundleKey(BundlePath bundlePath) {
-//		CompilerInstall compilerInstall = getCompilerInstallForPath(null);
-		return new BundleKey(bundlePath);
+	protected ResolutionKey bundleKey(BundlePath bundlePath) {
+		CompilerInstall compilerInstall = getCompilerInstallForPath(null);
+		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 	
 	public BundleResolution getStoredResolution(BundlePath bundlePath) {
@@ -204,20 +188,20 @@ public class SemanticManager {
 		return getUpdatedResolution(bundleKey(bundlePath));
 	}	
 	
-	public BundleResolution getStoredResolution(BundleKey bundleKey) {
-		BundleInfo info = resolutionsManager.getEntry(bundleKey);
+	public BundleResolution getStoredResolution(ResolutionKey resKey) {
+		BundleInfo info = resolutionsManager.getEntry(resKey);
 		return info != null ? info.getSemanticResolution() : null;
 	}
-	public boolean checkIsResolutionStale(BundleKey bundleKey) {
-		return resolutionsManager.checkIsEntryStale(bundleKey);
+	public boolean checkIsResolutionStale(ResolutionKey resKey) {
+		return resolutionsManager.checkIsEntryStale(resKey);
 	}
-	public BundleResolution getUpdatedResolution(BundleKey bundleKey) throws ExecutionException {
-		return getUpdatedResolution(bundleKey, null);
+	public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+		return resolutionsManager.getUpdatedEntry(resKey).getSemanticResolution();
 	}
 	
-	public class ResolutionsManager extends AbstractCachingManager<BundleKey, BundleInfo> {
+	public class ResolutionsManager extends AbstractCachingManager<ResolutionKey, BundleInfo> {
 		@Override
-		protected BundleInfo doCreateEntry(BundleKey key) {
+		protected BundleInfo doCreateEntry(ResolutionKey key) {
 			return new BundleInfo(key);
 		}
 		
@@ -225,57 +209,31 @@ public class SemanticManager {
 		public boolean doCheckIsEntryStale(BundleInfo bundleInfo) {
 			return
 					bundleInfo.getSemanticResolution() == null ||
-					checkIsManifestStale(bundleInfo.bundleKey) ||
+					checkIsManifestStale(bundleInfo.resKey.bundleKey) ||
 					bundleInfo.getSemanticResolution().checkIsStale();
 		};
 		
 		@Override
-		protected BundleInfo updateManifestEntry(BundleKey key) throws ExecutionException {
-			throw assertFail(); // TODO
-		}
-		
-	}
-	
-	public BundleResolution getUpdatedResolution(BundleKey bundleKey, Path compilerPath) throws ExecutionException {
-		BundleInfo info = resolutionsManager.getEntry(bundleKey);
-		BundleResolution semanticResolution = info.getSemanticResolution();
-		if(resolutionsManager.doCheckIsEntryStale(info) || 
-			(compilerPath != null && !areEqual(semanticResolution.getCompilerPath(), compilerPath))) {
-			/*FIXME: BUG here*/
-			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(compilerPath);
-			return updateSemanticResolutionEntry(info, stdLibResolution);
-		}
-		return semanticResolution;
-	}
-	
-	protected BundleResolution updateSemanticResolutionEntry(BundleInfo staleInfo, 
-			StandardLibraryResolution stdLibResolution) 
-			throws ExecutionException {
-		synchronized(resolutionsManager.updateOperationLock) {
-			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
-			// Otherwise unnecessary update operations might occur if two threads tried to update at the same time.
-			if(resolutionsManager.doCheckIsEntryStale(staleInfo) == false)
-				return staleInfo.getSemanticResolution();
+		protected void doUpdateEntry(ResolutionKey resKey, BundleInfo staleInfo) throws ExecutionException {
+			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey);
+			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(resKey.compilerInstall);
 			
-			BundleKey bundleKey = staleInfo.bundleKey;
-			ResolvedManifest manifest = manifestManager.getUpdatedManifest(bundleKey);
-			
-			BundleResolution bundleRes = new DubBundleResolution(this, manifest, stdLibResolution);
+			BundleResolution bundleRes = new DubBundleResolution(SemanticManager.this, manifest, stdLibResolution);
 			
 			setNewBundleResolutionEntry(bundleRes);
-			return staleInfo.getSemanticResolution();
 		}
-	}
-	
-	protected BundleInfo setNewBundleResolutionEntry(BundleResolution bundleRes) {
-		synchronized(resolutionsManager.entriesLock) {
-			for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
-				setNewBundleResolutionEntry(newDepBundleRes);
+		
+		protected BundleInfo setNewBundleResolutionEntry(BundleResolution bundleRes) {
+			synchronized(entriesLock) {
+				for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
+					setNewBundleResolutionEntry(newDepBundleRes);
+				}
+				BundleInfo newInfo = getEntry(bundleRes.getResKey());
+				newInfo.bundleResolution = bundleRes;
+				return newInfo;
 			}
-			BundleInfo newInfo = resolutionsManager.getEntry(bundleRes.getBundleKey());
-			newInfo.bundleResolution = bundleRes;
-			return newInfo;
 		}
+	
 	}
 	
 	/* ----------------- helper ----------------- */
@@ -377,7 +335,8 @@ public class SemanticManager {
 				stdLibResolution = getUpdatedStdLibResolution(compilerInstall);
 				resolvedModule = stdLibResolution.getBundleResolvedModule(filePath);
 			} else {
-				BundleResolution bundleRes = getUpdatedResolution(new BundleKey(bundlePath), compilerPath);
+				ResolutionKey resKey = new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
+				BundleResolution bundleRes = getUpdatedResolution(resKey);
 				stdLibResolution = bundleRes.getStdLibResolution();
 				resolvedModule = bundleRes.getBundleResolvedModule(filePath);
 			}

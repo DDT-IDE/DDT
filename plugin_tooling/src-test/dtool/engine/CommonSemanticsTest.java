@@ -11,7 +11,7 @@
 package dtool.engine;
 
 
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
@@ -61,12 +61,33 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	}
 	
 	public static BundleKey bundleKey(Path basePath, String subpackageName) {
-//		CompilerInstall compilerInstall = defaultSemMgr.getCompilerInstallForPath(DEFAULT_DMD_INSTALL_EXE_PATH);
 		return new BundleKey(BundlePath.create(basePath), subpackageName);
 	}
 	
 	protected BundleKey bundleKey(BundlePath bundlePath) {
 		return bundleKey(bundlePath.path, null);
+	}
+	
+	public ResolutionKey resKey(Path basePath) {
+		return resKey(BundlePath.create(basePath));
+	}
+	
+	public ResolutionKey resKey(BundlePath bundlePath) {
+		return resKey(new BundleKey(bundlePath));
+	}
+	
+	public ResolutionKey resKey(BundlePath bundlePath, Path compilerPath) {
+		return resKey(new BundleKey(bundlePath), compilerPath);
+	}
+	
+	public ResolutionKey resKey(BundleKey bundleKey) {
+		return resKey(bundleKey, (Path) null);
+	}
+	
+	public ResolutionKey resKey(BundleKey bundleKey, Path compilerPath) {
+		CompilerInstall compilerInstall = defaultSemMgr.getCompilerInstallForPath(compilerPath);
+		assertNotNull(compilerInstall);
+		return new ResolutionKey(bundleKey, compilerInstall);
 	}
 	
 }

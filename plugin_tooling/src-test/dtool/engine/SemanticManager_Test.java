@@ -69,13 +69,13 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	protected void checkChanged(BundlePath bundlePath, boolean expectedChanged) throws ExecutionException {
-		BundleKey bundleKey = bundleKey(bundlePath);
+		ResolutionKey resKey = resKey(bundlePath);
 		
-		BundleResolution previousManifest = previousSRs.get(bundlePath);
-		if(previousManifest != null) {
-			assertTrue(previousManifest.bundleKey.equals(bundleKey));
+		BundleResolution previousResolution = previousSRs.get(bundlePath);
+		if(previousResolution != null) {
+			assertTrue(previousResolution.resKey.equals(resKey));
 		}
-		boolean changed = previousManifest != sm.getStoredResolution(bundleKey);
+		boolean changed = previousResolution != sm.getStoredResolution(resKey);
 		assertTrue(changed == expectedChanged);
 		if(expectedChanged) {
 			checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
@@ -378,10 +378,12 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertAreEqual(complexLib.getCompilerPath(), MockCompilerInstalls.DMD_CompilerLocation);
 		
 		BundleResolution complexLib2;
-		complexLib2 = getUpdatedResolution(COMPLEX_LIB, MockCompilerInstalls.GDC_CompilerLocation);
+		complexLib2 = getUpdatedResolution(resKey(COMPLEX_LIB, MockCompilerInstalls.GDC_CompilerLocation));
 		assertTrue(complexLib != complexLib2);
 		
 		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		
+		/* FIXME: add more tests here */
 	}
 
 }

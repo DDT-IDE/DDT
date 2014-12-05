@@ -129,28 +129,28 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		@Override
-		public BundleResolution getUpdatedResolution(BundleKey bundleKey) throws ExecutionException {
-			boolean manifestStale = checkIsManifestStale(bundleKey);
-			ResolvedManifest previousManifest = getStoredManifest(bundleKey);
+		public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+			boolean manifestStale = checkIsManifestStale(resKey.bundleKey);
+			ResolvedManifest previousManifest = getStoredManifest(resKey.bundleKey);
 			
 			// TODO: cleanup this cast
-			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(bundleKey);
-			assertEquals(bundleResolution.bundleKey, bundleKey);
+			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey);
+			assertEquals(bundleResolution.resKey, resKey);
 			
 			assertEquals(bundleResolution.manifest == previousManifest, !manifestStale);
 			
-			assertTrue(checkIsManifestStale(bundleKey) == false);
-			assertTrue(checkIsResolutionStale(bundleKey) == false);
+			assertTrue(checkIsManifestStale(resKey.bundleKey) == false);
+			assertTrue(checkIsResolutionStale(resKey) == false);
 			
 			// test caching
-			assertTrue(bundleResolution == super.getUpdatedResolution(bundleKey));
+			assertTrue(bundleResolution == super.getUpdatedResolution(resKey));
 			
 			return bundleResolution;
 		}
 		
-		public void checkStaleStatus(BundleKey bundleKey, StaleState staleState) {
+		public void checkStaleStatus(ResolutionKey bundleKey, StaleState staleState) {
 			
-			assertEquals(manifestManager.getEntry(bundleKey).isStale(), 
+			assertEquals(manifestManager.getEntry(bundleKey.bundleKey).isStale(), 
 				staleState == MANIFEST_STALE);
 			
 			BundleResolution storedResolution = getStoredResolution(bundleKey);
@@ -200,7 +200,11 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	protected void checkStaleStatus(BundleKey bundleKey, StaleState staleState) {
-		sm.checkStaleStatus(bundleKey, staleState);
+		sm.checkStaleStatus(resKey(bundleKey), staleState);
+	}
+	
+	protected void checkStaleStatus(ResolutionKey resKey, StaleState staleState) {
+		sm.checkStaleStatus(resKey, staleState);
 	}
 	
 	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
@@ -208,11 +212,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return sm.getUpdatedResolution(bundlePath);
 	}
 	
-	protected BundleResolution getUpdatedResolution(BundlePath bundlePath, Path compilerPath) 
-			throws ExecutionException {
-		assertTrue(sm.checkIsResolutionStale(bundlePath));
-//		CompilerInstall compilerInstall = sm.getCompilerInstallForPath(compilerPath);
-		return sm.getUpdatedResolution(new BundleKey(bundlePath), compilerPath);
+	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+		assertTrue(sm.checkIsResolutionStale(resKey));
+		return sm.getUpdatedResolution(resKey);
 	}
 	
 	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ModuleSourceException {
@@ -230,7 +232,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		if(expectedModuleName != null) {
 			assertNotNull(resolvedModule);
 			assertTrue(resolvedModule.getModuleNode().getFullyQualifiedName().equals(expectedModuleName));
-			if(!sm.checkIsResolutionStale(bundleRes.bundleKey)) {
+			if(!sm.checkIsResolutionStale(bundleRes.resKey)) {
 				try {
 					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(resolvedModule.getModulePath()) );
 				} catch (ExecutionException e) {

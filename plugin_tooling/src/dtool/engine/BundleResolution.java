@@ -22,24 +22,31 @@ import dtool.dub.BundlePath;
 
 public class BundleResolution extends AbstractBundleResolution {
 	
-	protected final BundleKey bundleKey;
+	protected final ResolutionKey resKey;
 	protected final StandardLibraryResolution stdLibResolution;
+	
 	protected final Indexable<? extends BundleResolution> depResolutions;
 	
 	public BundleResolution(SemanticManager manager, BundleKey bundleKey, BundleModules bundleModules,
 			StandardLibraryResolution stdLibResolution, Indexable<? extends BundleResolution> depResolutions) {
 		super(manager, bundleModules);
-		this.bundleKey = bundleKey;
-		this.stdLibResolution = assertNotNull(stdLibResolution); 
+		this.stdLibResolution = assertNotNull(stdLibResolution);
+		this.resKey = bundleKey == null ? null :  
+				new ResolutionKey(bundleKey, getStdLibResolution().getCompilerInstall());
+		
 		this.depResolutions = depResolutions;
 	}
 	
 	public BundleKey getBundleKey() {
-		return bundleKey;
+		return resKey == null ? null : resKey.bundleKey;
+	}
+	
+	public ResolutionKey getResKey() {
+		return resKey;
 	}
 	
 	public BundlePath getBundlePath() {
-		return bundleKey != null ? bundleKey.bundlePath : null;
+		return getBundleKey() != null ? getBundleKey().bundlePath : null;
 	}
 	
 	public Indexable<? extends BundleResolution> getDirectDependencies() {
@@ -57,10 +64,10 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	@Override
 	public String toString() {
-		if(getBundleKey() == null) {
+		if(resKey == null) {
 			return "BundleResolution: [" + StringUtil.collToString(bundleModules.moduleFiles, ":") + "]";
 		}
-		return "BundleResolution: " + getBundleKey();
+		return "BundleResolution: " + resKey;
 	}
 
 	

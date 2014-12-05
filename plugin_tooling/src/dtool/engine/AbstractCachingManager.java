@@ -39,21 +39,35 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 		return entry == null ? true : doCheckIsEntryStale(entry);
 	}
 	
+	/** Lock for reading/modifying the whole registry. */
+	protected final Object entriesLock = new Object();
+	
 	public abstract boolean doCheckIsEntryStale(VALUE entry);
 	
 	public VALUE getUpdatedEntry(KEY key) throws ExecutionException {
 		VALUE entry = getEntry(key);
 		if(doCheckIsEntryStale(entry)) {
-			return updateManifestEntry(key);
+			return updateEntry(key);
 		}
 		return entry;
 	}
 	
-	protected abstract VALUE updateManifestEntry(KEY key) throws ExecutionException;
-	
-	/* -----------------  TODO: Need to review the usage of these locks ----------------- */
-	
-	protected final Object entriesLock = new Object();
+	/** Lock for performing the computation of update operations. */
 	protected final Object updateOperationLock = new Object();
+	
+	protected VALUE updateEntry(KEY key) throws ExecutionException {
+		synchronized(updateOperationLock) {
+			VALUE staleInfo = getEntry(key);
+			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
+			// Otherwise unnecessary update operations might occur if two threads tried to update at the same time.
+			if(doCheckIsEntryStale(staleInfo) == false)
+				return staleInfo; // No longer stale.
+			
+			doUpdateEntry(key, staleInfo);
+			return staleInfo;
+		}
+	}
+	
+	protected abstract void doUpdateEntry(KEY key, VALUE staleInfo) throws ExecutionException;
 	
 }
