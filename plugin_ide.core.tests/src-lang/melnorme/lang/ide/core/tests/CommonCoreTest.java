@@ -91,9 +91,18 @@ public abstract class CommonCoreTest extends CommonTest {
 		logErrorListener.checkErrors();
 	}
 	
-	@After
+	// the @Before and @After are not applied to the same method, so that better stack information can
+	// be obtained the if the method fails its check.
 	@Before
-	public void checkLogErrors() throws Throwable {
+	public void checkLogErrors_before() throws Throwable {
+		doCheckLogErrors();
+	}
+	@After
+	public void checkLogErrors_after() throws Throwable {
+		doCheckLogErrors();
+	}
+	
+	protected void doCheckLogErrors() throws Throwable {
 		checkLogErrors_();
 	}
 	
