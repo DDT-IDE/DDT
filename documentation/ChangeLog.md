@@ -1,7 +1,7 @@
 ## DDT release ChangeLog
 
 ### DDT 0.10.4
- * Fixed bug: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur an unnecessary but significant slowdown.
+ * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant unnecessary slowdown.
 
 ### DDT 0.10.3
  * Added build console preference page. 

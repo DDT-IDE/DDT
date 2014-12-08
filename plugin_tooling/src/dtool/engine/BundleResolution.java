@@ -73,8 +73,7 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	/* -----------------  ----------------- */
 	
-	// As an optimization, we don't check STD_LIB staleness, as its likely to change very rarely.
-	protected static boolean CHECK_STD_LIB_STALENESS = false;
+	protected static boolean CHECK_STD_LIB_STALENESS = true;
 	
 	@Override
 	public boolean checkIsStale() {

@@ -25,7 +25,7 @@ public final class ResolutionKey {
 	
 	public ResolutionKey(BundleKey bundleKey, CompilerInstall compilerInstall) {
 		this.bundleKey = assertNotNull(bundleKey);
-		this.compilerInstall = compilerInstall;
+		this.compilerInstall = assertNotNull(compilerInstall);
 	}
 	
 	public Path getPath() {
@@ -49,7 +49,7 @@ public final class ResolutionKey {
 	
 	@Override
 	public String toString() {
-		return bundleKey.toString() + " {" + compilerInstall + "}";
+		return bundleKey.toString() + " {" + compilerInstall.getCompilerPath() + "}";
 	}
 	
 }

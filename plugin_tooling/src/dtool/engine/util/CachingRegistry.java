@@ -17,11 +17,16 @@ public abstract class CachingRegistry<KEY, ENTRY> {
 	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	
 	public synchronized ENTRY getEntry(KEY key) {
-		ENTRY entry = map.get(key);
-		if(entry == null) {
+		
+		ENTRY entry;
+		
+		if(map.containsKey(key)) {
+			entry = map.get(key);
+		} else {
 			entry = createEntry(key);
 			map.put(key, entry);
 		}
+		
 		return entry;
 	}
 	

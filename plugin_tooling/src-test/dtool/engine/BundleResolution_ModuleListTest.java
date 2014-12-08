@@ -11,8 +11,8 @@
 package dtool.engine;
 
 import static dtool.engine.StandardLibraryResolution.NULL_COMPILER_INSTALL_PATH;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_BaseLocation;
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
-import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 
 public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
@@ -162,26 +161,18 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test when no StdLib install is found
-		___initSemanticManager(new Tests_SemanticManager() {
-			
-			@Override
-			public StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
-				return assertCast(super.getUpdatedStdLibResolution(foundInstall), 
-					MissingStandardLibraryResolution.class);
-			}
-			
-			@Override
-			protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
-				return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
-			}
-		});
-		sr = sm.getUpdatedResolution(BASIC_LIB);
+		___initSemanticManager(new Tests_SemanticManager());
+		ResolutionKey BASIC_LIB_NullCompilerInstall = resKey(BASIC_LIB, 
+			MissingStandardLibraryResolution.NULL_COMPILER_INSTALL_PATH);
+		
+		sr = sm.getUpdatedResolution(BASIC_LIB_NullCompilerInstall);
 		StandardLibraryResolution fallBackStdLibResolution = sr.stdLibResolution;
 		assertTrue(fallBackStdLibResolution.getLibrarySourceFolders().size() == 0);
 		assertTrue(fallBackStdLibResolution.checkIsModuleContentsStale() == false);
 		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
-		testFindResolvedModule(BASIC_LIB, "object", NULL_COMPILER_INSTALL_PATH.resolve("object.di"));
+		BundleResolution bundleRes = sm.getStoredResolution(BASIC_LIB_NullCompilerInstall);
+		testFindResolvedModule(bundleRes, "object", NULL_COMPILER_INSTALL_PATH.resolve("object.di"));
 		
 		assertEqualSet(sr.findModules(""), hashSet(
 			"basic_lib_pack.foo",
@@ -189,8 +180,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			"object"
 		));
 		
-		StandardLibraryResolution fallbackStdLibResolution = sr.stdLibResolution;
-		assertEqualSet(fallbackStdLibResolution.findModules(""), hashSet(
+		assertEqualSet(fallBackStdLibResolution.findModules(""), hashSet(
 			"object"
 		));
 		
@@ -205,10 +195,10 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	public void testGetResolvedModule$() throws Exception {
 		prepSMTestsWorkingDir();
 		sm = ___initSemanticManager();
-		sm.getUpdatedResolution(COMPLEX_LIB);
+		sm.getUpdatedResolution(sm.resolutionKey(COMPLEX_LIB, DEFAULT_DMD_INSTALL_EXE_PATH));
 		
 		ResolvedModule rm = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
-		assertTrue(rm.semanticContext == sm.getStoredResolution(BASIC_LIB));
+		assertTrue(rm.semanticContext == sm.getStoredResolution(resKey(BASIC_LIB)));
 		
 		BundleResolution complexLibSR = sm.getUpdatedResolution(COMPLEX_LIB);
 		assertTrue(rm == complexLibSR.findResolvedModule(new ModuleFullName(BASIC_LIB_FOO_MODULE_Name)));
@@ -218,7 +208,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		// Test getResolvedModule for module that is not in bundle import folders.
 		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d");
 		rm = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
-		assertTrue(rm.semanticContext != sm.getStoredResolution(BASIC_LIB));
+		assertTrue(rm.semanticContext != sm.getStoredResolution(resKey(BASIC_LIB)));
 		assertEqualSet(rm.semanticContext.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
 		assertEqualSet(rm.semanticContext.findModules("o"), hashSet("object"));
 		assertEqualSet(rm.semanticContext.findModules("basic_lib"), hashSet()); // Test not find basic lib files

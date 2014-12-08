@@ -34,23 +34,23 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 		return infos.getEntry(key);
 	}
 	
-	public boolean checkIsEntryStale(KEY bundleKey) {
-		VALUE entry = infos.getEntryOrNull(bundleKey);
-		return entry == null ? true : doCheckIsEntryStale(entry);
+	public boolean checkIsEntryStale(KEY key) {
+		VALUE entry = infos.getEntryOrNull(key);
+		return entry == null ? true : doCheckIsEntryStale(key, entry);
 	}
 	
 	/** Lock for reading/modifying the whole registry. */
 	protected final Object entriesLock = new Object();
 	
-	public abstract boolean doCheckIsEntryStale(VALUE entry);
-	
 	public VALUE getUpdatedEntry(KEY key) throws ExecutionException {
 		VALUE entry = getEntry(key);
-		if(doCheckIsEntryStale(entry)) {
+		if(doCheckIsEntryStale(key, entry)) {
 			return updateEntry(key);
 		}
 		return entry;
 	}
+	
+	public abstract boolean doCheckIsEntryStale(KEY key, VALUE entry);
 	
 	/** Lock for performing the computation of update operations. */
 	protected final Object updateOperationLock = new Object();
@@ -60,7 +60,7 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 			VALUE staleInfo = getEntry(key);
 			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
 			// Otherwise unnecessary update operations might occur if two threads tried to update at the same time.
-			if(doCheckIsEntryStale(staleInfo) == false)
+			if(doCheckIsEntryStale(key, staleInfo) == false)
 				return staleInfo; // No longer stale.
 			
 			doUpdateEntry(key, staleInfo);

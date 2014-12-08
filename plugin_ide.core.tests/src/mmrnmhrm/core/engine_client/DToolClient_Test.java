@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -39,6 +40,7 @@ import org.junit.Test;
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
+import dtool.engine.SemanticManager;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.tests.DToolTestResources;
 import dtool.tests.MockCompilerInstalls;
@@ -174,7 +176,8 @@ public class DToolClient_Test extends CommonCoreTest {
 		BundlePath bundlePath = BundlePath.create(file.getProject().getLocation().toFile().toPath());
 		BundleResolution sr;
 		try {
-			sr = client.getServerSemanticManager().getUpdatedResolution(bundlePath);
+			SemanticManager sm = client.getServerSemanticManager();
+			sr = sm.getUpdatedResolution(sm.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
 		} catch (ExecutionException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

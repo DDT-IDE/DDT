@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_BaseLocation;
+import static dtool.tests.MockCompilerInstalls.GDC_CompilerLocation;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 
 import org.junit.AfterClass;
@@ -30,9 +33,9 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
-import dtool.tests.MockCompilerInstalls;
 
 public class SemanticManager_Test extends CommonSemanticManagerTest {
 	
@@ -208,20 +211,20 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		sm.getUpdatedResolution(SP_TEST);
-		checkStaleStatus(bundleKey(SP_TEST.path, "sub_x"), StaleState.CURRENT);
-		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
-		checkStaleStatus(bundleKey(SP_TEST.path, "sub_b"), StaleState.CURRENT);
-		checkStaleStatus(bundleKey(SP_TEST.path, "doesn't exists"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST.path, "sub_x"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.path, "sub_b"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.path, "doesn't exists"), StaleState.MANIFEST_STALE);
 		
 		sm.getUpdatedResolution(SP_FOO);
 		
 		___initSemanticManager();
-		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.MANIFEST_STALE);
 		BundleResolution bundleRes;
 		bundleRes = sm.getUpdatedResolution(SP_FOO2);
 		assertTrue(bundleRes.getDirectDependencies().size() == 1);
 		
-		checkStaleStatus(bundleKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
 	}
 	
 	/* ----------------- module updates ----------------- */
@@ -373,17 +376,48 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		prepSMTestsWorkingDir();
 		___initSemanticManager();
 		
-		getUpdatedResolution(COMPLEX_LIB);
-		BundleResolution complexLib = sm.getStoredResolution(COMPLEX_LIB);
-		assertAreEqual(complexLib.getCompilerPath(), MockCompilerInstalls.DMD_CompilerLocation);
+		
+		assertTrue(sm.getCompilerInstallForPath(workingDirPath("")) == 
+				MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
+		
+		
+		Path DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolve("DMD_Install_WC");
+		Path DMD_Install_WC = DMD_Install_WC_Base.resolve("windows/bin/dmd.exe");
+		MiscFileUtils.copyDirContentsIntoDirectory(DEFAULT_DMD_INSTALL_BaseLocation, DMD_Install_WC_Base);
+		
+		getUpdatedResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
+		BundleResolution complexLib = sm.getStoredResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
+		assertAreEqual(complexLib.getCompilerPath(), DMD_Install_WC);
 		
 		BundleResolution complexLib2;
-		complexLib2 = getUpdatedResolution(resKey(COMPLEX_LIB, MockCompilerInstalls.GDC_CompilerLocation));
+		complexLib2 = getUpdatedResolution(resKey(COMPLEX_LIB, GDC_CompilerLocation));
 		assertTrue(complexLib != complexLib2);
 		
-		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
+		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.CURRENT);
+		checkStaleStatus(resKey(COMPLEX_LIB, GDC_CompilerLocation), StaleState.CURRENT);
 		
-		/* FIXME: add more tests here */
+		
+		StandardLibraryResolution stdLib = sm.getUpdatedStdLibResolution(DMD_Install_WC);
+		
+		assertTrue(stdLib.checkIsModuleContentsStale() == false);
+		Path DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve("src/druntime/import/object.di");
+		stdLib.getBundleResolvedModule("object");
+		sm.setWorkingCopyAndParse(DMD_INSTALL_ObjectModule, "module object.d; /*SM_TEST*/"); 
+		assertTrue(stdLib.checkIsModuleContentsStale());
+		
+		
+		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.DEP_STALE);
+		checkStaleStatus(resKey(COMPLEX_LIB, GDC_CompilerLocation), StaleState.CURRENT);
+		
+		StandardLibraryResolution stdLib2 = sm.getUpdatedStdLibResolution(DMD_Install_WC);
+		assertTrue(stdLib2 != stdLib);
+		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(DMD_Install_WC));
+		
+		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.DEP_STALE);
+		complexLib = sm.getUpdatedResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
+		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.CURRENT);
+		
+		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(DMD_Install_WC));
 	}
-
+	
 }

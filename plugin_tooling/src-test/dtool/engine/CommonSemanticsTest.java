@@ -23,6 +23,7 @@ import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
+import dtool.tests.MockCompilerInstalls;
 
 public class CommonSemanticsTest extends CommonDToolTest {
 	
@@ -68,6 +69,10 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		return bundleKey(bundlePath.path, null);
 	}
 	
+	public ResolutionKey resKey(Path basePath, String subpackageName) {
+		return resKey(bundleKey(basePath, subpackageName));
+	}
+	
 	public ResolutionKey resKey(Path basePath) {
 		return resKey(BundlePath.create(basePath));
 	}
@@ -81,7 +86,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	}
 	
 	public ResolutionKey resKey(BundleKey bundleKey) {
-		return resKey(bundleKey, (Path) null);
+		return resKey(bundleKey, MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 	}
 	
 	public ResolutionKey resKey(BundleKey bundleKey, Path compilerPath) {

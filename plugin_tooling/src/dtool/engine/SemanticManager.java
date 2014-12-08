@@ -39,13 +39,11 @@ import dtool.engine.util.CachingRegistry;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
-class BundleInfo {
+class BundleResolutionEntry {
 	
-	protected final ResolutionKey resKey;
 	protected volatile BundleResolution bundleResolution;
 	
-	public BundleInfo(ResolutionKey resKey) {
-		this.resKey = resKey;
+	public BundleResolutionEntry() {
 	}
 	
 	public BundleResolution getSemanticResolution() {
@@ -110,9 +108,9 @@ public class SemanticManager {
 		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws ExecutionException {
 			return getUpdatedEntry(bundleKey).getValue();
 		}
-
+		
 		@Override
-		public boolean doCheckIsEntryStale(FileCachingEntry<ResolvedManifest> entry) {
+		public boolean doCheckIsEntryStale(BundleKey key, FileCachingEntry<ResolvedManifest> entry) {
 			if(entry.isStale()) {
 				return true;
 			}
@@ -120,13 +118,15 @@ public class SemanticManager {
 			synchronized(entriesLock) {
 				
 				for(ResolvedManifest depBundle : entry.getValue().getBundleDeps()) {
-					FileCachingEntry<ResolvedManifest> depBundleEntry = getEntry(depBundle.getBundleKey());
+					BundleKey depKey = depBundle.getBundleKey();
+					FileCachingEntry<ResolvedManifest> depBundleEntry = getEntry(depKey);
+					
 					if(depBundle != depBundleEntry.getValue()) {
 						// The manifest of the dependency is not stale, 
 						// but it has changed since the parent was created, therefore parent is stale.
 						return true;
 					}
-					if(doCheckIsEntryStale(depBundleEntry)) {
+					if(doCheckIsEntryStale(depKey, depBundleEntry)) {
 						return true;
 					}
 				}
@@ -173,23 +173,8 @@ public class SemanticManager {
 	
 	/* ----------------- Semantic Resolution and module list ----------------- */
 	
-	protected ResolutionKey bundleKey(BundlePath bundlePath) {
-		CompilerInstall compilerInstall = getCompilerInstallForPath(null);
-		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
-	}
-	
-	public BundleResolution getStoredResolution(BundlePath bundlePath) {
-		return getStoredResolution(bundleKey(bundlePath));
-	}
-	public boolean checkIsResolutionStale(BundlePath bundlePath) {
-		return checkIsResolutionStale(bundleKey(bundlePath));
-	}
-	public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
-		return getUpdatedResolution(bundleKey(bundlePath));
-	}	
-	
 	public BundleResolution getStoredResolution(ResolutionKey resKey) {
-		BundleInfo info = resolutionsManager.getEntry(resKey);
+		BundleResolutionEntry info = resolutionsManager.getEntry(resKey);
 		return info != null ? info.getSemanticResolution() : null;
 	}
 	public boolean checkIsResolutionStale(ResolutionKey resKey) {
@@ -199,22 +184,22 @@ public class SemanticManager {
 		return resolutionsManager.getUpdatedEntry(resKey).getSemanticResolution();
 	}
 	
-	public class ResolutionsManager extends AbstractCachingManager<ResolutionKey, BundleInfo> {
+	public class ResolutionsManager extends AbstractCachingManager<ResolutionKey, BundleResolutionEntry> {
 		@Override
-		protected BundleInfo doCreateEntry(ResolutionKey key) {
-			return new BundleInfo(key);
+		protected BundleResolutionEntry doCreateEntry(ResolutionKey key) {
+			return new BundleResolutionEntry();
 		}
 		
 		@Override
-		public boolean doCheckIsEntryStale(BundleInfo bundleInfo) {
+		public boolean doCheckIsEntryStale(ResolutionKey key, BundleResolutionEntry entry) {
 			return
-					bundleInfo.getSemanticResolution() == null ||
-					checkIsManifestStale(bundleInfo.resKey.bundleKey) ||
-					bundleInfo.getSemanticResolution().checkIsStale();
+					entry.getSemanticResolution() == null ||
+					checkIsManifestStale(key.bundleKey) ||
+					entry.getSemanticResolution().checkIsStale();
 		};
 		
 		@Override
-		protected void doUpdateEntry(ResolutionKey resKey, BundleInfo staleInfo) throws ExecutionException {
+		protected void doUpdateEntry(ResolutionKey resKey, BundleResolutionEntry staleInfo) throws ExecutionException {
 			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey);
 			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(resKey.compilerInstall);
 			
@@ -223,12 +208,12 @@ public class SemanticManager {
 			setNewBundleResolutionEntry(bundleRes);
 		}
 		
-		protected BundleInfo setNewBundleResolutionEntry(BundleResolution bundleRes) {
+		protected BundleResolutionEntry setNewBundleResolutionEntry(BundleResolution bundleRes) {
 			synchronized(entriesLock) {
 				for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
 					setNewBundleResolutionEntry(newDepBundleRes);
 				}
-				BundleInfo newInfo = getEntry(bundleRes.getResKey());
+				BundleResolutionEntry newInfo = getEntry(bundleRes.getResKey());
 				newInfo.bundleResolution = bundleRes;
 				return newInfo;
 			}
@@ -268,18 +253,28 @@ public class SemanticManager {
 		return getUpdatedStdLibResolution(foundInstall);
 	}
 	
-	public StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
-		 // found install can be null /* FIXME: make non-null*/
-		return stdLibResolutions.getEntry(foundInstall);
+	public ResolutionKey resolutionKey(BundlePath bundlePath, Path compilerPath) {
+		CompilerInstall compilerInstall = getCompilerInstallForPath(compilerPath);
+		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 	
 	protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
-		// FIXME: /*FIXME: BUG here*/ non null
+		CompilerInstall compilerInstall;
 		if(compilerPath != null) {
-			return new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
+			compilerInstall = new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
 		} else {
-			return new SM_SearchCompilersOnPath().searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
+			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
+			compilerInstall = compilersSearch.searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		}
+		if(compilerInstall == null) {
+			return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
+		}
+		return compilerInstall;
+	}
+	
+	protected StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
+		assertNotNull(foundInstall);
+		return stdLibResolutions.getEntry(foundInstall);
 	}
 	
 	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();

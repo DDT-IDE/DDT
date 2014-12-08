@@ -121,11 +121,27 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			super(new Tests_DToolServer());
 		}
 		
+		protected ResolutionKey resolutionKey(BundlePath bundlePath) {
+			return resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH);
+		}
+		
+		protected BundleResolution getStoredResolution(BundlePath bundlePath) {
+			return getStoredResolution(resolutionKey(bundlePath));
+		}
+		
 		@Override
 		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws ExecutionException {
 			ResolvedManifest manifest = super.getUpdatedManifest(bundleKey);
 			assertTrue(checkIsManifestStale(bundleKey) == false);
 			return manifest;
+		}
+		
+		public boolean checkIsResolutionStale(BundlePath bundlePath) {
+			return checkIsResolutionStale(resolutionKey(bundlePath));
+		}
+		
+		public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+			return getUpdatedResolution(resolutionKey(bundlePath));
 		}
 		
 		@Override
@@ -168,14 +184,6 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		@Override
-		protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
-			if(compilerPath == null) {
-				compilerPath = DEFAULT_DMD_INSTALL_EXE_PATH;
-			}
-			return super.getCompilerInstallForPath(compilerPath);
-		}
-		
-		@Override
 		public StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
 			StandardLibraryResolution stdLibRes = super.getUpdatedStdLibResolution(foundInstall);
 			
@@ -191,31 +199,29 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		
 	}
 	
-	public enum StaleState { CURRENT, MANIFEST_STALE, 
-		MODULE_LIST_STALE, MODULE_CONTENTS_STALE, MODULES_STALE, NO_BUNDLE_RESOLUTION,
-		DEP_STALE }
-	
-	protected void checkStaleStatus(BundlePath bundlePath, StaleState staleState) {
-		checkStaleStatus(bundleKey(bundlePath), staleState);
-	}
-	
-	protected void checkStaleStatus(BundleKey bundleKey, StaleState staleState) {
-		sm.checkStaleStatus(resKey(bundleKey), staleState);
-	}
-	
-	protected void checkStaleStatus(ResolutionKey resKey, StaleState staleState) {
-		sm.checkStaleStatus(resKey, staleState);
-	}
 	
 	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
-		assertTrue(sm.checkIsResolutionStale(bundlePath));
-		return sm.getUpdatedResolution(bundlePath);
+		return getUpdatedResolution(resKey(bundlePath));
 	}
 	
 	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
 		assertTrue(sm.checkIsResolutionStale(resKey));
 		return sm.getUpdatedResolution(resKey);
 	}
+	
+	
+	public enum StaleState { CURRENT, MANIFEST_STALE, 
+		MODULE_LIST_STALE, MODULE_CONTENTS_STALE, MODULES_STALE, NO_BUNDLE_RESOLUTION,
+		DEP_STALE }
+	
+	protected void checkStaleStatus(BundlePath bundlePath, StaleState staleState) {
+		checkStaleStatus(resKey(bundlePath), staleState);
+	}
+	
+	protected void checkStaleStatus(ResolutionKey resKey, StaleState staleState) {
+		sm.checkStaleStatus(resKey, staleState);
+	}
+	
 	
 	protected void checkGetModule(BundlePath bundlePath, String moduleName) throws ModuleSourceException {
 		checkGetModule(sm.getStoredResolution(bundlePath), moduleName, moduleName);
@@ -234,7 +240,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			assertTrue(resolvedModule.getModuleNode().getFullyQualifiedName().equals(expectedModuleName));
 			if(!sm.checkIsResolutionStale(bundleRes.resKey)) {
 				try {
-					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(resolvedModule.getModulePath()) );
+					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(
+						resolvedModule.getModulePath(),
+						bundleRes.getCompilerPath()));
 				} catch (ExecutionException e) {
 					assertFail();
 				}
@@ -254,6 +262,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
 			Path expectedPath) throws ModuleSourceException {
+		assertNotNull(bundleContext);
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
 		ResolvedModule resolvedModule = bundleContext.findResolvedModule(moduleFullName);
 		Path modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
@@ -276,7 +285,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	protected ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
-		return sm.getUpdatedResolvedModule(filePath);
+		return sm.getUpdatedResolvedModule(filePath, DEFAULT_DMD_INSTALL_EXE_PATH);
 	}
 	
 	/* ----------------- some common files ----------------- */

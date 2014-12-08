@@ -158,7 +158,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/* -----------------  ----------------- */
 	
-	// TODO: proper synchronization - for now assume no concurrent acesss to resolve operations 
+	// FIXME: proper synchronization - for now assume no concurrent acesss to resolve operations 
 	protected final Map<Path, ResolvedModule> resolvedModules = new HashMap<>();
 	
 	public synchronized boolean checkIsModuleContentsStale() {
