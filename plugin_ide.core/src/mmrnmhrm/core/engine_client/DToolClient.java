@@ -260,13 +260,8 @@ public class DToolClient {
 	
 	/* ----------------- Engine client requests ----------------- */
 	
-	public static Path defaultCompilerPathOverride = null; // For tests usage only
-	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) throws CoreException {
 		try {
-			if(compilerPath == null) {
-				compilerPath = defaultCompilerPathOverride;
-			}
 			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath);
 		} catch (ExecutionException e) {
 			throw DeeCore.createCoreException("Error performing code complete operation.", e.getCause());

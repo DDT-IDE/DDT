@@ -258,13 +258,14 @@ public class SemanticManager {
 		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 	
-	protected CompilerInstall getCompilerInstallForPath(Path compilerPath) {
-		CompilerInstall compilerInstall;
+	protected static CompilerInstall getCompilerInstallForPath(Path compilerPath) {
+		CompilerInstall compilerInstall = null;
 		if(compilerPath != null) {
 			compilerInstall = new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
 		} else {
-			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
-			compilerInstall = compilersSearch.searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
+			/* FIXME: BUG here test and fix DToolClient */
+//			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
+//			compilerInstall = compilersSearch.searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		}
 		if(compilerInstall == null) {
 			return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;

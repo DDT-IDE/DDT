@@ -10,25 +10,39 @@
  *******************************************************************************/
 package melnorme.lang.tooling.context;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.ast.ISemanticElement;
+import dtool.engine.AbstractBundleResolution;
+import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
+import dtool.engine.SemanticManager;
+import dtool.engine.StandardLibraryResolution;
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 
 /**
  * A mock semantic resolution. This implementation finds no modules.
  */
-public class EmptySemanticResolution extends AbstractSemanticContext {
+public class EmptySemanticResolution extends AbstractBundleResolution {
+	
+	protected final MissingStandardLibraryResolution stdLib;
 	
 	public EmptySemanticResolution() {
-		super(new BundleModules(new HashMap<ModuleFullName, Path>(), new HashSet<Path>(), new ArrayList<Path>()));
+		super(new SemanticManager(new Tests_DToolServer()), Collections.EMPTY_LIST);
+		stdLib = new MissingStandardLibraryResolution(manager);
 	}
 	
 	@Override
-	public INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException {
-		return null;
+	public StandardLibraryResolution getStdLibResolution() {
+		return stdLib;
+	}
+	
+	@Override
+	public ISemanticContext findSemanticContext(ISemanticElement element) {
+		ISemanticContext semanticContext = super.findSemanticContext(element);
+		if(semanticContext == null) {
+			return this;
+		}
+		return semanticContext;
 	}
 	
 }

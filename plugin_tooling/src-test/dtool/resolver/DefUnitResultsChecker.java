@@ -36,19 +36,20 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class DefUnitResultsChecker extends CommonTestUtils {
 	
-	protected LinkedList<INamedElement> resultDefUnits;
+	protected final LinkedList<INamedElement> resultElements;
+	protected final LinkedList<INamedElement> resultStdLibElements = CollectionUtil.createLinkedList();
 	
 	public DefUnitResultsChecker(Collection<? extends INamedElement> resultDefUnits) {
-		this.resultDefUnits = CollectionUtil.createLinkedList(resultDefUnits);
+		this.resultElements = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	
 	public DefUnitResultsChecker removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
-		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
+		removeIgnoredDefUnits(resultElements, ignoreDummyResults, ignorePrimitives, false);
 		return this;
 	}
 	
 	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
-		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
+		removeIgnoredDefUnits(resultElements, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
 	}
 	
 	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
@@ -75,12 +76,13 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public DefUnitResultsChecker removeStdLibObjectDefUnits() {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
-			INamedElement defElement = iterator.next();
+		for (Iterator<INamedElement> iterator = resultElements.iterator(); iterator.hasNext(); ) {
+			INamedElement namedElement = iterator.next();
 			
-			String moduleName = defElement.getModuleFullyQualifiedName();
+			String moduleName = namedElement.getModuleFullyQualifiedName();
 			if(areEqual(moduleName, "object")) {
 				iterator.remove();
+				resultStdLibElements.add(namedElement);
 			}
 		}
 		return this;
@@ -103,30 +105,41 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			if(expectedTarget.startsWith("@") ) {
 				String markerName = expectedTarget.substring(1);
 				MetadataEntry marker = assertNotNull(markers.get(markerName));
-				DefUnitResultsChecker.removeDefUnitByMarker(resultDefUnits, marker);
+				DefUnitResultsChecker.removeDefUnitByMarker(resultElements, marker);
 			} else {
 				removeDefUnit(expectedTarget);
 			}
 		}
 		
-		if(!resultDefUnits.isEmpty()) {
-			String resultDefUnitsStr = collToString(strmap(resultDefUnits,
+		if(!resultElements.isEmpty()) {
+			String resultDefUnitsStr = collToString(strmap(resultElements,
 				CompareDefUnits.fnElementToFullyQualifiedName()), "\n");
-			System.out.println("--- Unexpected elements ("+resultDefUnits.size()+") : ---\n" + resultDefUnitsStr);
+			System.out.println("--- Unexpected elements ("+resultElements.size()+") : ---\n" + resultDefUnitsStr);
 		}
-		assertTrue(resultDefUnits.isEmpty());
+		assertTrue(resultElements.isEmpty());
 	}
 	
-	public void removeDefUnit(String expectedTarget) {
-		String moduleName = StringUtil.segmentUntilMatch(expectedTarget, "/");
-		String defUnitModuleQualifiedName = StringUtil.substringAfterMatch(expectedTarget, "/");
+	public void removeDefUnit(String expectedElement) {
+		boolean removed = removeExpectedElement(expectedElement, resultElements);
+		if(removed == false) {
+			removed = removeExpectedElement(expectedElement, resultStdLibElements);
+		}
+		if(removed == false) {
+			System.out.println(" > Not Found: " + expectedElement);
+			assertFail(); // Must find a matching result
+		}
+	}
+	
+	public static boolean removeExpectedElement(String expectedElement, Iterable<INamedElement> iterable) {
+		String moduleName = StringUtil.segmentUntilMatch(expectedElement, "/");
+		String defUnitModuleQualifiedName = StringUtil.substringAfterMatch(expectedElement, "/");
 		
 		boolean removed = false;
 		if(moduleName == null ) {
-			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			for (Iterator<INamedElement> iterator = iterable.iterator(); iterator.hasNext(); ) {
 				INamedElement element = iterator.next();
 				
-				if(element.getName().equals(expectedTarget)) {
+				if(element.getName().equals(expectedElement)) {
 					iterator.remove();
 					removed = true;
 				}
@@ -135,7 +148,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			String expectedFullyTypedQualification = moduleName + 
 				(defUnitModuleQualifiedName != null ? "/" + defUnitModuleQualifiedName : "");
 			
-			for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			for (Iterator<INamedElement> iterator = iterable.iterator(); iterator.hasNext(); ) {
 				INamedElement element = iterator.next();
 				
 				String defUnitTypedQualification = NamedElementUtil.getElementTypedQualification(element);
@@ -147,10 +160,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				}
 			}
 		}
-		if(removed == false) {
-			System.out.println(" > Not Found: " + expectedTarget);
-			assertFail(); // Must find a matching result
-		}
+		return removed;
 	}
 	
 	

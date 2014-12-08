@@ -98,7 +98,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		String[] expectedResults = splitValues(mde.sourceValue);
 		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
 		assertTrue(findDefResult.isValidPickRef());
-		checkResults(findDefResult.resultsRaw, expectedResults, false, false);
+		checkResults(findDefResult.resultsRaw, expectedResults, false, false, false);
 		resolveAtOffset(mde.offset);
 	}
 	

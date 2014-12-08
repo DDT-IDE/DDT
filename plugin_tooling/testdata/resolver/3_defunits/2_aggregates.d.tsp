@@ -71,7 +71,6 @@ template Aggregate(T, alias A = int /*MISSING BODY*/
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ class/interface
 #@OBJ_AGGREGATE_KIND《class●interface》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ class properties
-#PROJECT(rawProject)
 #@OBJ_AGGREGATE_KIND Class {
 	int foo;
 }

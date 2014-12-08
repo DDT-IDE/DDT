@@ -94,6 +94,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	protected AnnotatedSource testCase;
 	protected String testsModuleName;
 	protected String testsProjectDirName;
+	protected boolean ignoreStdLibObject = true;
 	
 	protected ISemanticContext mr;
 	
@@ -126,6 +127,8 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 				if(mde.value != null) {
 					markers.put(mde.value, mde);
 				}
+			} else if(mde.name.equals("include_object_module")) {
+				ignoreStdLibObject = false;
 			}
 		}
 		
@@ -204,11 +207,11 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 				break;
 			}
 		}
-		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults);
+		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults, ignoreStdLibObject);
 	}
 	
 	public void checkResults(Collection<INamedElement> resultElementsOriginal, String[] expectedResults,
-		boolean ignoreDummyResults, boolean ignoreNativeResults) {
+		boolean ignoreDummyResults, boolean ignoreNativeResults, boolean ignoreStdLibObject) {
 		
 		if(resultElementsOriginal != null) {
 			precheckOriginalResults(resultElementsOriginal);
@@ -217,8 +220,11 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		DefUnitResultsChecker defUnitResultsChecker = new DefUnitResultsChecker(resultElementsOriginal);
 		
 		defUnitResultsChecker.removeIgnoredDefUnits(ignoreDummyResults, ignoreNativeResults);
+		if(ignoreStdLibObject) {
+			defUnitResultsChecker.removeStdLibObjectDefUnits();
+		}
 		
-		removeDefUnitsFromExpected(defUnitResultsChecker.resultDefUnits);
+		removeDefUnitsFromExpected(defUnitResultsChecker.resultElements);
 		defUnitResultsChecker.checkResults(expectedResults, markers);
 	}
 	
