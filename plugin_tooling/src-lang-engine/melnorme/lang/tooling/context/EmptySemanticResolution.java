@@ -15,7 +15,6 @@ import java.util.Collections;
 import melnorme.lang.tooling.ast.ISemanticElement;
 import dtool.engine.AbstractBundleResolution;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
-import dtool.engine.SemanticManager;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 
@@ -27,7 +26,7 @@ public class EmptySemanticResolution extends AbstractBundleResolution {
 	protected final MissingStandardLibraryResolution stdLib;
 	
 	public EmptySemanticResolution() {
-		super(new SemanticManager(new Tests_DToolServer()), Collections.EMPTY_LIST);
+		super(new Tests_DToolServer().getSemanticManager(), Collections.EMPTY_LIST);
 		stdLib = new MissingStandardLibraryResolution(manager);
 	}
 	

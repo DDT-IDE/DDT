@@ -7,6 +7,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
 import mmrnmhrm.core.compiler_installs.GDCInstallType;
@@ -49,7 +50,7 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 	public static final String MOCK_GDC_INSTALL_NAME = "gdcInstall";
 	
 	protected static void setupTestDeeInstalls() {
-		MockCompilerInstalls.load();
+		MiscUtil.loadClass(MockCompilerInstalls.class);
 		
 		createFakeDeeInstall(DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME, 
 			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH, true);

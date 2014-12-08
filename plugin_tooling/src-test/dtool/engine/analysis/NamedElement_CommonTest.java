@@ -187,7 +187,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		EmptySemanticResolution context = new EmptySemanticResolution();
 		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
 		
-		test_resolveSearchInMembersScope(picked(expType, context), expectedResults);
+		ISemanticContext context2 = expType.isLanguageIntrinsic() ? context.getStdLibResolution() : context;
+		test_resolveSearchInMembersScope(picked(expType, context2), expectedResults);
 	}
 	
 }

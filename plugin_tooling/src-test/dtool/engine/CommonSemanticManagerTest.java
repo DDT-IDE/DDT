@@ -16,7 +16,6 @@ import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULES_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_CONTENTS_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.MODULE_LIST_STALE;
 import static dtool.engine.CommonSemanticManagerTest.StaleState.NO_BUNDLE_RESOLUTION;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -77,7 +76,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	protected Tests_SemanticManager sm;
 	
 	protected Tests_SemanticManager ___initSemanticManager() throws IOException {
-		return ___initSemanticManager(new Tests_SemanticManager());
+		return ___initSemanticManager(new Tests_DToolServer().getSemanticManager());
 	}
 	
 	protected Tests_SemanticManager ___initSemanticManager(Tests_SemanticManager tests_SemanticManager) {
@@ -106,23 +105,21 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		@Override
+		public Tests_SemanticManager getSemanticManager() {
+			return (Tests_SemanticManager) super.getSemanticManager();
+		}
+		
+		@Override
 		public void logError(String message, Throwable throwable) {
 			assertFail();
 		}
+		
 	}
 	
 	public static class Tests_SemanticManager extends SemanticManager {
 		
-		public Tests_SemanticManager(DToolServer dtoolServer) {
+		private Tests_SemanticManager(DToolServer dtoolServer) {
 			super(dtoolServer);
-		}
-		
-		public Tests_SemanticManager() {
-			super(new Tests_DToolServer());
-		}
-		
-		protected ResolutionKey resolutionKey(BundlePath bundlePath) {
-			return resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH);
 		}
 		
 		protected BundleResolution getStoredResolution(BundlePath bundlePath) {
@@ -242,7 +239,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 				try {
 					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(
 						resolvedModule.getModulePath(),
-						bundleRes.getCompilerPath()));
+						bundleRes.getStdLibResolution().getCompilerInstall()));
 				} catch (ExecutionException e) {
 					assertFail();
 				}
@@ -285,11 +282,24 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	protected ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
-		return sm.getUpdatedResolvedModule(filePath, DEFAULT_DMD_INSTALL_EXE_PATH);
+		return sm.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall);
 	}
 	
 	/* ----------------- some common files ----------------- */
 	
+	public static ResolutionKey resolutionKey(BundlePath bundlePath) {
+		return resolutionKey(bundlePath, DEFAULT_TestsCompilerInstall);
+	}
+	
+	public static ResolutionKey resolutionKey(BundlePath bundlePath, Path compilerPath) {
+		CompilerInstall compilerInstall = DToolServer.getCompilerInstallForPath(compilerPath);
+		return resolutionKey(bundlePath, compilerInstall);
+	}
+	
+	public static ResolutionKey resolutionKey(BundlePath bundlePath, CompilerInstall compilerInstall) {
+		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
+	}
+
 	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d");
 	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	

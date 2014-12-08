@@ -11,6 +11,7 @@
 package dtool.tests;
 
 import static dtool.tests.DToolTestResources.getTestResourcePath;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,6 +19,8 @@ import java.nio.file.Path;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
+import dtool.engine.DToolServer;
+import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
 
 public class MockCompilerInstalls {
@@ -38,9 +41,7 @@ public class MockCompilerInstalls {
 	public static final Path DMD_CompilerLocation = DEFAULT_DMD_INSTALL_EXE_PATH; 
 	public static final Path GDC_CompilerLocation = DEFAULT_GDC_INSTALL_EXE_PATH;
 	
-	public static void load() {
-		// Not necessary due to static initialization, but mor readable.
-	}
+	public static final CompilerInstall DMD_CompilerInstall;
 	
 	static {
 		try {
@@ -48,6 +49,8 @@ public class MockCompilerInstalls {
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+		DMD_CompilerInstall = assertNotNull(
+			DToolServer.getCompilerInstallForPath(DEFAULT_DMD_INSTALL_EXE_PATH));
 	}
 	
 	protected static void setupMockCompilerInstalls() throws IOException {

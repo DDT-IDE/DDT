@@ -161,9 +161,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test when no StdLib install is found
-		___initSemanticManager(new Tests_SemanticManager());
-		ResolutionKey BASIC_LIB_NullCompilerInstall = resKey(BASIC_LIB, 
-			MissingStandardLibraryResolution.NULL_COMPILER_INSTALL_PATH);
+		___initSemanticManager(new Tests_DToolServer().getSemanticManager());
+		ResolutionKey BASIC_LIB_NullCompilerInstall = resolutionKey(BASIC_LIB, 
+			MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
 		
 		sr = sm.getUpdatedResolution(BASIC_LIB_NullCompilerInstall);
 		StandardLibraryResolution fallBackStdLibResolution = sr.stdLibResolution;
@@ -195,7 +195,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	public void testGetResolvedModule$() throws Exception {
 		prepSMTestsWorkingDir();
 		sm = ___initSemanticManager();
-		sm.getUpdatedResolution(sm.resolutionKey(COMPLEX_LIB, DEFAULT_DMD_INSTALL_EXE_PATH));
+		sm.getUpdatedResolution(CommonSemanticManagerTest.resolutionKey(COMPLEX_LIB));
 		
 		ResolvedModule rm = getUpdatedResolvedModule(BASIC_LIB_FOO_MODULE);
 		assertTrue(rm.semanticContext == sm.getStoredResolution(resKey(BASIC_LIB)));

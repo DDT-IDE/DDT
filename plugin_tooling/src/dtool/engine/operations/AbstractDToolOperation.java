@@ -15,13 +15,20 @@ import java.util.concurrent.ExecutionException;
 
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
+import dtool.engine.compiler_installs.CompilerInstall;
 
 public class AbstractDToolOperation {
 	
 	protected final SemanticManager semanticManager;
+	protected final CompilerInstall compilerInstall;
 	
 	public AbstractDToolOperation(SemanticManager semanticManager) {
+		this(semanticManager, null);
+	}
+	
+	public AbstractDToolOperation(SemanticManager semanticManager, Path compilerPath) {
 		this.semanticManager = semanticManager;
+		this.compilerInstall = semanticManager.getDtoolServer().findBestCompilerInstall(compilerPath);
 	}
 	
 	public SemanticManager getSemanticManager() {
@@ -29,7 +36,7 @@ public class AbstractDToolOperation {
 	}
 	
 	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return semanticManager.getUpdatedResolvedModule(filePath);
+		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	
 }

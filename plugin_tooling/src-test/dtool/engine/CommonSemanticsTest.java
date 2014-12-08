@@ -12,13 +12,16 @@ package dtool.engine;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
@@ -55,7 +58,9 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected static Tests_SemanticManager defaultSemMgr = new Tests_SemanticManager();
+	protected static final Tests_SemanticManager defaultSemMgr = new Tests_DToolServer().getSemanticManager() ;
+	
+	public static final CompilerInstall DEFAULT_TestsCompilerInstall = MockCompilerInstalls.DMD_CompilerInstall;
 	
 	public static BundlePath bundlePath(Path basePath, String other) {
 		return BundlePath.create(basePath.resolve(other));
@@ -86,11 +91,12 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	}
 	
 	public ResolutionKey resKey(BundleKey bundleKey) {
-		return resKey(bundleKey, MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
+		return new ResolutionKey(bundleKey, DEFAULT_TestsCompilerInstall);
 	}
 	
 	public ResolutionKey resKey(BundleKey bundleKey, Path compilerPath) {
-		CompilerInstall compilerInstall = defaultSemMgr.getCompilerInstallForPath(compilerPath);
+		assertTrue(compilerPath != MissingStandardLibraryResolution.NULL_COMPILER_INSTALL_PATH);
+		CompilerInstall compilerInstall = DToolServer.getCompilerInstallForPath(compilerPath);
 		assertNotNull(compilerInstall);
 		return new ResolutionKey(bundleKey, compilerInstall);
 	}

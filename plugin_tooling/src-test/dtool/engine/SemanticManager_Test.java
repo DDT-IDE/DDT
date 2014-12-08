@@ -34,6 +34,7 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
+import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -377,8 +378,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		___initSemanticManager();
 		
 		
-		assertTrue(sm.getCompilerInstallForPath(workingDirPath("")) == 
-				MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
+//		assertTrue(DToolServer.getCompilerInstallForPath(null) 
+//			== MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
 		
 		
 		Path DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolve("DMD_Install_WC");
@@ -397,7 +398,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkStaleStatus(resKey(COMPLEX_LIB, GDC_CompilerLocation), StaleState.CURRENT);
 		
 		
-		StandardLibraryResolution stdLib = sm.getUpdatedStdLibResolution(DMD_Install_WC);
+		StandardLibraryResolution stdLib = sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC));
 		
 		assertTrue(stdLib.checkIsModuleContentsStale() == false);
 		Path DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve("src/druntime/import/object.di");
@@ -409,15 +410,19 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.DEP_STALE);
 		checkStaleStatus(resKey(COMPLEX_LIB, GDC_CompilerLocation), StaleState.CURRENT);
 		
-		StandardLibraryResolution stdLib2 = sm.getUpdatedStdLibResolution(DMD_Install_WC);
+		StandardLibraryResolution stdLib2 = sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC));
 		assertTrue(stdLib2 != stdLib);
-		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(DMD_Install_WC));
+		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC)));
 		
 		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.DEP_STALE);
 		complexLib = sm.getUpdatedResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
 		checkStaleStatus(resKey(COMPLEX_LIB, DMD_Install_WC), StaleState.CURRENT);
 		
-		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(DMD_Install_WC));
+		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC)));
+	}
+	
+	protected static CompilerInstall compilerInstall(Path compilerPath) {
+		return DToolServer.getCompilerInstallForPath(compilerPath);
 	}
 	
 }

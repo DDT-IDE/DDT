@@ -39,6 +39,7 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.engine.BundleResolution;
+import dtool.engine.CommonSemanticManagerTest;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.resolver.DefUnitResultsChecker;
@@ -177,7 +178,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		BundleResolution sr;
 		try {
 			SemanticManager sm = client.getServerSemanticManager();
-			sr = sm.getUpdatedResolution(sm.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
+			sr = sm.getUpdatedResolution(CommonSemanticManagerTest.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
 		} catch (ExecutionException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

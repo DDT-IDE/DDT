@@ -20,8 +20,8 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import dtool.ast.definitions.Module;
@@ -38,17 +38,17 @@ import dtool.parser.common.LexerResult.TokenAtOffsetResult;
 
 public class CodeCompletionOperation extends AbstractDToolOperation {
 	
-	public CodeCompletionOperation(SemanticManager semanticManager) {
-		super(semanticManager);
+	public CodeCompletionOperation(SemanticManager semanticManager, Path compilerPath) {
+		super(semanticManager, compilerPath);
 	}
 	
-	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath)
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset)
 			throws ExecutionException {
 		if(filePath == null) { 
 			throw new ExecutionException(new Exception("Invalid path for content assist source.")); 
 		}
 		
-		ResolvedModule resolvedModule = getSemanticManager().getUpdatedResolvedModule(filePath, compilerPath);
+		ResolvedModule resolvedModule = getResolvedModule(filePath);
 		return doCodeCompletion(resolvedModule, offset);
 	}
 	

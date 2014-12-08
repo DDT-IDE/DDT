@@ -16,6 +16,9 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.CompilerInstallDetector;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
@@ -63,10 +66,6 @@ public class DToolServer {
 	}
 	
 	
-	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return getSemanticManager().getUpdatedResolvedModule(filePath);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	public class DToolTaskAgent extends ExecutorTaskAgent {
@@ -92,7 +91,44 @@ public class DToolServer {
 	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) 
 			throws ExecutionException {
-		return new CodeCompletionOperation(getSemanticManager()).doCodeCompletion(filePath, offset, compilerPath);
+		return new CodeCompletionOperation(getSemanticManager(), compilerPath).doCodeCompletion(filePath, offset);
+	}
+	
+	/* ----------------- helpers ----------------- */
+	
+	@Deprecated
+	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+		CompilerInstall compilerInstall = findBestCompilerInstall(null);
+		return getUpdatedResolvedModule(filePath, compilerInstall);
+	}
+	
+	public ResolvedModule getUpdatedResolvedModule(Path filePath, CompilerInstall compilerInstall) 
+			throws ExecutionException {
+		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
+	}
+	
+	public CompilerInstall findBestCompilerInstall(Path compilerPath) {
+		CompilerInstall compilerInstall = getCompilerInstallForPath(compilerPath);
+		if(compilerInstall == null) {
+			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
+			compilerInstall = compilersSearch.searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
+		}
+		return compilerInstall;
+	}
+	
+	public static CompilerInstall getCompilerInstallForPath(Path compilerPath) {
+		CompilerInstall compilerInstall = null;
+		if(compilerPath != null) {
+			return new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
+		}
+		return compilerInstall;
+	}
+	
+	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
+		@Override
+		protected void handleWarning(String message) {
+			DToolServer.this.logMessage(message);
+		}
 	}
 	
 }

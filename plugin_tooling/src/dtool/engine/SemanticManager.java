@@ -32,8 +32,6 @@ import dtool.dub.DubHelper.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.compiler_installs.CompilerInstallDetector;
-import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.util.CachingRegistry;
 import dtool.engine.util.FileCachingEntry;
@@ -65,7 +63,7 @@ public class SemanticManager {
 	protected final ResolutionsManager resolutionsManager = new ResolutionsManager();
 
 	
-	public SemanticManager(DToolServer dtoolServer) {
+	protected SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;
 		this.parseCache = new ModuleParseCache(dtoolServer);
 		this.dubProcessAgent = dtoolServer.new DToolTaskAgent("DToolServer.DubProcessAgent");
@@ -78,6 +76,12 @@ public class SemanticManager {
 	public ModuleParseCache getParseCache() {
 		return parseCache;
 	}
+	
+	public DToolServer getDtoolServer() {
+		return dtoolServer;
+	}
+	
+	/* ----------------- Manifest Registry ----------------- */
 	
 	public final ResolvedManifest getStoredManifest(BundleKey bundleKey) {
 		return manifestManager.getEntryManifest(bundleKey);
@@ -171,7 +175,39 @@ public class SemanticManager {
 	
 	};
 	
-	/* ----------------- Semantic Resolution and module list ----------------- */
+	/* ----------------- StandardLib Resolution resolution ----------------- */
+	
+	protected StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
+		assertNotNull(foundInstall);
+		return stdLibResolutions.getEntry(foundInstall);
+	}
+	
+	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
+	
+	protected class StdLibResolutionsCache extends CachingRegistry<CompilerInstall, StandardLibraryResolution> {
+		@Override
+		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
+			if(key == null) {
+				key = MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
+			}
+			StandardLibraryResolution entry = map.get(key);
+			if(entry == null || entry.checkIsStale()) {
+				entry = createEntry(key);
+				map.put(key, entry);
+			}
+			return entry;
+		}
+		
+		@Override
+		protected StandardLibraryResolution createEntry(CompilerInstall compilerInstall) {
+			if(compilerInstall == MissingStandardLibraryResolution.NULL_COMPILER_INSTALL) {
+				return new MissingStandardLibraryResolution(SemanticManager.this);
+			}
+			return new StandardLibraryResolution(SemanticManager.this, compilerInstall);
+		}
+	}
+	
+	/* ----------------- Semantic Resolution registry ----------------- */
 	
 	public BundleResolution getStoredResolution(ResolutionKey resKey) {
 		BundleResolutionEntry info = resolutionsManager.getEntry(resKey);
@@ -239,70 +275,6 @@ public class SemanticManager {
 		}
 	}
 	
-	/* ----------------- StdLib resolution ----------------- */
-	
-	protected class SM_SearchCompilersOnPath extends SearchCompilersOnPathOperation {
-		@Override
-		protected void handleWarning(String message) {
-			dtoolServer.logMessage(message);
-		}
-	}
-	
-	protected final StandardLibraryResolution getUpdatedStdLibResolution(Path compilerPath) {
-		CompilerInstall foundInstall = getCompilerInstallForPath(compilerPath);
-		return getUpdatedStdLibResolution(foundInstall);
-	}
-	
-	public ResolutionKey resolutionKey(BundlePath bundlePath, Path compilerPath) {
-		CompilerInstall compilerInstall = getCompilerInstallForPath(compilerPath);
-		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
-	}
-	
-	protected static CompilerInstall getCompilerInstallForPath(Path compilerPath) {
-		CompilerInstall compilerInstall = null;
-		if(compilerPath != null) {
-			compilerInstall = new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);
-		} else {
-			/* FIXME: BUG here test and fix DToolClient */
-//			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
-//			compilerInstall = compilersSearch.searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
-		}
-		if(compilerInstall == null) {
-			return MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
-		}
-		return compilerInstall;
-	}
-	
-	protected StandardLibraryResolution getUpdatedStdLibResolution(CompilerInstall foundInstall) {
-		assertNotNull(foundInstall);
-		return stdLibResolutions.getEntry(foundInstall);
-	}
-	
-	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
-	
-	protected class StdLibResolutionsCache extends CachingRegistry<CompilerInstall, StandardLibraryResolution> {
-		@Override
-		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
-			if(key == null) {
-				key = MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
-			}
-			StandardLibraryResolution entry = map.get(key);
-			if(entry == null || entry.checkIsStale()) {
-				entry = createEntry(key);
-				map.put(key, entry);
-			}
-			return entry;
-		}
-		
-		@Override
-		protected StandardLibraryResolution createEntry(CompilerInstall compilerInstall) {
-			if(compilerInstall == MissingStandardLibraryResolution.NULL_COMPILER_INSTALL) {
-				return new MissingStandardLibraryResolution(SemanticManager.this);
-			}
-			return new StandardLibraryResolution(SemanticManager.this, compilerInstall);
-		}
-	}
-	
 	/* ----------------- Working Copy and module resolution ----------------- */
 	
 	public ParsedModule setWorkingCopyAndParse(Path filePath, String source) {
@@ -313,16 +285,16 @@ public class SemanticManager {
 		parseCache.discardWorkingCopy(filePath);
 	}
 	
-	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
-		return getUpdatedResolvedModule(filePath, null);
-	}
-	
-	public ResolvedModule getUpdatedResolvedModule(Path filePath, Path compilerPath) throws ExecutionException {
+	public ResolvedModule getUpdatedResolvedModule(Path filePath, CompilerInstall compilerInstall)
+			throws ExecutionException {
 		if(!filePath.isAbsolute()) {
 			dtoolServer.logMessage("> getUpdatedResolvedModule for non-absolute path: " + filePath);
 		}
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
-		CompilerInstall compilerInstall = getCompilerInstallForPath(compilerPath);
+		
+		if(compilerInstall == null) {
+			compilerInstall =  MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
+		}
 		
 		try {
 			ResolvedModule resolvedModule;

@@ -268,8 +268,9 @@ public class DToolClient {
 		}
 	}
 	
+	@Deprecated
 	public ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return dtoolServer.getSemanticManager().getUpdatedResolvedModule(filePath);
+		return dtoolServer.getUpdatedResolvedModule(filePath);
 	}
 	
 	public FindDefinitionResult doFindDefinition(Path filePath, int offset) {
