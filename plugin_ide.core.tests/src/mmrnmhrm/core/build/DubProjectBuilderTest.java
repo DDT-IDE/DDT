@@ -11,6 +11,7 @@
 package mmrnmhrm.core.build;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.tests.SampleProject;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -28,6 +29,9 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 			sampleProj = project;
 			
 			testBuilder();
+			
+			// Await buildpath update, to prevent logging of error.
+			DeeCore.getWorkspaceModelManager().syncPendingUpdates();
 		}
 	}
 	
