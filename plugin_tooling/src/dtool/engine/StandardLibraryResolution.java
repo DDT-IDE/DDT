@@ -73,6 +73,8 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
 		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
 	
+	protected static final String SYNTHETIC_Module_Object = "module object; class TypeInfo_Class { }";
+	
 	/**
 	 * Fall-back synthetic StandardLibraryResolution for when no real compiler installs could be found.
 	 */
@@ -83,7 +85,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		public MissingStandardLibraryResolution(SemanticManager manager) {
 			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(objectPath));
 			
-			ParsedModule parsedModule = DeeParser.parseSource("module object; ", objectPath);
+			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, objectPath);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
 			resolvedModules.put(objectPath, resolvedModule);
 		}

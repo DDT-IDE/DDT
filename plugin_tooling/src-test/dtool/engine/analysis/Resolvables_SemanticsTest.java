@@ -27,6 +27,7 @@ import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefPrimitive;
 import dtool.dub.BundlePath;
+import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 
 public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	
@@ -80,7 +81,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		testResolveElement(new PickedElement<IResolvable>(
 				new ModuleQualifiedReference("object", "TypeInfo_Class"), 
-				defaultSemMgr.getUpdatedStdLibResolution(null)), "TypeInfo_Class");
+				new MissingStandardLibraryResolution(defaultSemMgr)), "TypeInfo_Class");
 		
 		testResolveElement(parseElement("import target;", "target", RefModule.class));
 		
