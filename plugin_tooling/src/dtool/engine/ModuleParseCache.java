@@ -178,7 +178,7 @@ public class ModuleParseCache {
 		 * that had been parsed already.
 		 */
 		public synchronized ParsedModule getParsedModuleIfNotStale() {
-			return getParsedModuleIfNotStale();
+			return getParsedModuleIfNotStale(true);
 		}
 		
 		protected synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
