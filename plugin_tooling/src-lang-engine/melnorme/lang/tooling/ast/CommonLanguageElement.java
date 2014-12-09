@@ -22,13 +22,13 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefUnit;
 
 
-public abstract class CommonSemanticElement implements ISemanticElement {
+public abstract class CommonLanguageElement implements ILanguageElement {
 	
-	public CommonSemanticElement() {
+	public CommonLanguageElement() {
 	}
 	
 	@Override
-	public abstract ISemanticElement getParent();
+	public abstract ILanguageElement getParent();
 	
 	public INamedElement getParentNamespace() {
 		return NodeElementUtil.getOuterNamedElement(this);

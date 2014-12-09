@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -90,32 +90,32 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return ASTNodeFinder.findElement(module, offset);
 	}
 	
-	public static <T extends ISemanticElement> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
+	public static <T extends ILanguageElement> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
 		ASTNode node = parseSourceAndPickNode(source, offset);
 		return NodeElementUtil.getMatchingParent(node, klass);
 	}
 	
-	protected static <T extends ISemanticElement> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
+	protected static <T extends ILanguageElement> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {
 		ASTNode node = ASTNodeFinder.findElement(moduleRes.getModuleNode(), offset);
 		return NodeElementUtil.getMatchingParent(node, klass);
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
+	protected static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
 		String offsetSource, Class<E> klass) {
 		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offsetSource, klass);
 	}
 	
-	protected static <E extends ISemanticElement> PickedElement<E> parseElement(String source, 
+	protected static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
 		int offset, Class<E> klass) {
 		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offset, klass);
 	}
 	
 	
-	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
+	public static <E extends ILanguageElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			String offsetSource, Class<E> klass) {
 		String source = resolvedModule.getParsedModule().source;
 		int indexOf = source.indexOf(offsetSource);
@@ -123,7 +123,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return pickElement(resolvedModule, indexOf, klass);
 	}
 	
-	public static <E extends ISemanticElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
+	public static <E extends ILanguageElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			int index, Class<E> klass) {
 		E node = findNode(resolvedModule, index, klass);
 		ISemanticContext context = resolvedModule.getSemanticContext();
@@ -132,11 +132,11 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* ----------------- ----------------- */
 	
-	public static <E extends ISemanticElement> PickedElement<E> picked(E node, ISemanticContext context) {
+	public static <E extends ILanguageElement> PickedElement<E> picked(E node, ISemanticContext context) {
 		return new PickedElement<>(node, context);
 	}
 	
-	public static <E extends ISemanticElement> PickedElement<E> pickedNative(E node) {
+	public static <E extends ILanguageElement> PickedElement<E> pickedNative(E node) {
 		return new PickedElement<>(node, getDefaultStdLibContext());
 	}
 	

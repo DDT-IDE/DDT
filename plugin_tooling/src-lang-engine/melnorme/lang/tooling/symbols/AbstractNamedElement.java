@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.AbstractElement;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -22,7 +22,7 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	
 	protected final String name;
 	
-	public AbstractNamedElement(String name, ISemanticElement parent) {
+	public AbstractNamedElement(String name, ILanguageElement parent) {
 		super(parent);
 		this.name = name;
 	}

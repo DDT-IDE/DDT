@@ -17,16 +17,24 @@ import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
-public interface ISemanticElement {
+/**
+ * Language element is a data node, part of a node tree, that encompasses data about a language/program.
+ * Usually parsed from string source, but not always.
+ * 
+ * Some properties:
+ *   The data it holds is immutable after the node has been parsed or fully constructed. 
+ *   (TODO: need to formalize this better) 
+ */
+public interface ILanguageElement {
 	
-	ISemanticElement getParent();
+	/** @return the parent element of this element. null if it is the top element of the tree. */
+	ILanguageElement getParent();
 	
 	/**
 	 * Create the semantics object for this element. 
 	 * The semantics object will be bound to the given {@link ISemanticContext} context.
 	 * Subclasses should reimplement when applicable.
 	 * Note that only the semantic context should be calling this class.
-	 * @param pickedElement TODO
 	 */
 	public IElementSemantics createSemantics(PickedElement<?> pickedElement);
 	

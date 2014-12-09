@@ -12,11 +12,11 @@ package melnorme.lang.tooling.engine;
 
 import java.util.Map;
 
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 
 /**
  * A class responsible for doing semantic analysis.
- * Each instance is bound to a specific {@link ISemanticElement}, except for NULL_NODE_SEMANTICS.
+ * Each instance is bound to a specific {@link ILanguageElement}, except for NULL_NODE_SEMANTICS.
  * This class uses the {@link #hashCode()} and {@link #equals()} of Object, such that each instance of 
  * this class can be seperately inserted in a {@link Map}. 
  */

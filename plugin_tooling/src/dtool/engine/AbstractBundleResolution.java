@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IModuleNode;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -221,7 +221,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	/* ----------------- NodeSemantics ----------------- */
 	
 	@Override
-	public ISemanticContext findSemanticContext(ISemanticElement element) {
+	public ISemanticContext findSemanticContext(ILanguageElement element) {
 		if(element.isLanguageIntrinsic()) {
 			return getStdLibResolution();
 		}

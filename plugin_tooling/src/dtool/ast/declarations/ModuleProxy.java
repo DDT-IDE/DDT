@@ -11,7 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -35,12 +35,12 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final ISemanticContext context;
 	protected final String fullModuleName;
 	
-	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ISemanticElement parent) {
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ILanguageElement parent) {
 		this(fullModuleName, moduleResolver, false, parent);
 	}
 	
 	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
-			ISemanticElement parent) {
+			ILanguageElement parent) {
 		super(getEffectiveModuleName(fullModuleName, useFullName), parent);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;

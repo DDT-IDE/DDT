@@ -14,7 +14,7 @@ package melnorme.lang.tooling.engine;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
@@ -25,7 +25,7 @@ public abstract class WrappedNamedElement extends AbstractNamedElement {
 	
 	protected final INamedElement wrappedElement;
 	
-	public WrappedNamedElement(INamedElement wrappedElement, ISemanticElement parent) {
+	public WrappedNamedElement(INamedElement wrappedElement, ILanguageElement parent) {
 		super(wrappedElement.getName(), parent);
 		this.wrappedElement = wrappedElement;
 	}

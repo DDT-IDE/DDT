@@ -2,14 +2,14 @@ package melnorme.lang.tooling.engine.resolver;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
  * A node that is a reference (or a value implicitly referring) to a named element.
  */
-public interface IResolvable extends ISemanticElement {
+public interface IResolvable extends ILanguageElement {
 	
 	@Override
 	public IResolvableSemantics getSemantics(ISemanticContext parentContext);

@@ -12,8 +12,8 @@ package melnorme.lang.tooling.context;
 
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.CommonSemanticElement;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.CommonLanguageElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -36,12 +36,12 @@ public interface ISemanticContext {
 	
 	
 	/** @return the {@link ISemanticContext} appropriate for the given element. */
-	ISemanticContext findSemanticContext(ISemanticElement element);
+	ISemanticContext findSemanticContext(ILanguageElement element);
 	
 	/**
 	 * @return The element semantics for the given element.
 	 * Note that: <code>assertTrue(findSemanticContext(element) == this);</code> 
 	 */
-	IElementSemantics getSemanticsEntry(CommonSemanticElement element);
+	IElementSemantics getSemanticsEntry(CommonLanguageElement element);
 	
 }

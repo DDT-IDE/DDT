@@ -11,7 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.INamedElementSemantics;
@@ -36,14 +36,14 @@ import dtool.ast.definitions.EArcheType;
 public class PackageNamespace extends AbstractNamedElement implements IScopeElement {
 	
 	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module, 
-			ISemanticElement container) {
+			ILanguageElement container) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
 		return createPartialDefUnits(defName, packages, module, container);
 	}
 	
 	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module, 
-			ISemanticElement container) {
+			ILanguageElement container) {
 		if(packages.length == 0) {
 			return new PackageNamespace(fqName, module, container);
 		} else {
@@ -60,7 +60,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	protected final String fqName;
 	protected final INamedElement containedElement;
 	
-	public PackageNamespace(String fqName, INamedElement module, ISemanticElement container) {
+	public PackageNamespace(String fqName, INamedElement module, ILanguageElement container) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
 		this.fqName = fqName;
 		this.containedElement = assertNotNull(module);

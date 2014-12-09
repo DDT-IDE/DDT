@@ -12,17 +12,17 @@ package melnorme.lang.tooling.ast;
 
 import java.nio.file.Path;
 
-
-public abstract class AbstractElement extends CommonSemanticElement {
+// TODO: need to formazile this class better, likely refactor.
+public abstract class AbstractElement extends CommonLanguageElement {
 	
-	protected final ISemanticElement parent;
+	protected final ILanguageElement parent;
 	
-	public AbstractElement(ISemanticElement parent) {
+	public AbstractElement(ILanguageElement parent) {
 		this.parent = parent;
 	}
 	
 	@Override
-	public ISemanticElement getParent() {
+	public ILanguageElement getParent() {
 		return parent;
 	}
 	

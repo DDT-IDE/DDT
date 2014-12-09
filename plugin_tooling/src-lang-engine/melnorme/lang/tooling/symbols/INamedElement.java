@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -25,7 +25,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
  * May exists in source or outside source, it can be implicitly or explicitly defined.
  * Implementation may be an AST node (that is the more common case), but it can be a non AST node too.
  */
-public interface INamedElement extends ISemanticElement, INamedElementExtensions {
+public interface INamedElement extends ILanguageElement, INamedElementExtensions {
 	
 	/** The name of the element that is referred to. */
 	public abstract String getName();

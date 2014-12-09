@@ -10,9 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 
-public class ElementResolution<E extends ISemanticElement> {
+public class ElementResolution<E extends ILanguageElement> {
 	
 	public final E result;
 	

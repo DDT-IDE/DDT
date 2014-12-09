@@ -11,15 +11,15 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 
 /**
- * A {@link ISemanticElement} with an attached semantic context.
+ * A {@link ILanguageElement} with an attached semantic context.
  * The attached context is where the given element will store semantic resolution info,
  * as such the element must have been created from the corresponding context.
  */
-public class PickedElement<E extends ISemanticElement> {
+public class PickedElement<E extends ILanguageElement> {
 	
 	public final E element;
 	public final ISemanticContext context;

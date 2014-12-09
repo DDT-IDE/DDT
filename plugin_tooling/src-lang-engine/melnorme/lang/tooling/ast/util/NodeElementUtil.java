@@ -11,13 +11,13 @@
 package melnorme.lang.tooling.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.ISemanticElement;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CoreUtil;
 
 public class NodeElementUtil {
 	
-	public static boolean isContainedIn(ISemanticElement node, ISemanticElement container) {
+	public static boolean isContainedIn(ILanguageElement node, ILanguageElement container) {
 		while(node != null) {
 			if(node == container) {
 				return true;
@@ -29,7 +29,7 @@ public class NodeElementUtil {
 	
 	/** @return the innermost node in the parent chain of given node (inclusive), that is
 	 * an instance of given klass. Null if not found. */
-	public static <T extends ISemanticElement> T getMatchingParent(ISemanticElement node, Class<T> klass) {
+	public static <T extends ILanguageElement> T getMatchingParent(ILanguageElement node, Class<T> klass) {
 		assertNotNull(klass);
 		
 		
@@ -46,12 +46,12 @@ public class NodeElementUtil {
 		}
 	}
 	
-	public static INamedElement getOuterNamedElement(ISemanticElement node) {
+	public static INamedElement getOuterNamedElement(ILanguageElement node) {
 		return getNamedElementParent(node.getParent());
 	}
 	
-	/** An optimized version of {@link #getMatchingParent(ISemanticElement, Class)}) for klass=INamedElement */
-	public static INamedElement getNamedElementParent(ISemanticElement node) {
+	/** An optimized version of {@link #getMatchingParent(ILanguageElement, Class)}) for klass=INamedElement */
+	public static INamedElement getNamedElementParent(ILanguageElement node) {
 		while(true) {
 			if(node == null) {
 				return null;
