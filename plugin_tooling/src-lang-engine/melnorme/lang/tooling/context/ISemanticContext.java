@@ -14,7 +14,7 @@ import java.util.Set;
 
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
@@ -42,6 +42,6 @@ public interface ISemanticContext {
 	 * @return The element semantics for the given element.
 	 * Note that: <code>assertTrue(findSemanticContext(element) == this);</code> 
 	 */
-	IElementSemantics getSemanticsEntry(CommonLanguageElement element);
+	ElementSemantics<?> getSemanticsEntry(CommonLanguageElement element);
 	
 }

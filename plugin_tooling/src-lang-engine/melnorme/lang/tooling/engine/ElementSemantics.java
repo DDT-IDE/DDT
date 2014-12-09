@@ -11,16 +11,28 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Map;
+
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 
-
-public abstract class ElementSemantics<ER> implements IElementSemantics {
+/**
+ * A class responsible for doing semantic analysis.
+ * Each instance is bound to a specific {@link ILanguageElement}.
+ * 
+ * This class uses the {@link #hashCode()} and {@link #equals()} of Object, such that each instance of 
+ * this class can be seperately inserted in a {@link Map}. 
+ */
+public abstract class ElementSemantics<ER> {
 	
 	protected final ISemanticContext context;
 	
 	public ElementSemantics(PickedElement<?> pickedElement) {
 		this.context = pickedElement.context;
 	}
+	
+	/* ----------------- Note #equals and #hashCode contract ----------------- */
 	
 	@Override
 	public final boolean equals(Object obj) {
@@ -56,7 +68,8 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	}
 	
 	/** 
-	 * Create and return the main resolution object for this semantics object. Non-null.
+	 * Create and return the resolution object for this semantics analysis. Non-null.
+	 * The resulting object must also be immutable!
 	 */
 	protected abstract ER createResolution();
 	

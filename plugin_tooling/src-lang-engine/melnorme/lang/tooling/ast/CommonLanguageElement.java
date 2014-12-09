@@ -14,7 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.IElementSemantics;
+import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
@@ -37,7 +37,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public IElementSemantics getSemantics(ISemanticContext parentContext) {
+	public ElementSemantics<?> getSemantics(ISemanticContext parentContext) {
 		ISemanticContext context = getContextForThisElement(parentContext);
 		return context.getSemanticsEntry(this);
 	}
@@ -48,13 +48,13 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public IElementSemantics createSemantics(PickedElement<?> pickedElement) {
+	public ElementSemantics<?> createSemantics(PickedElement<?> pickedElement) {
 		assertTrue(pickedElement.element == this); // Note this precondition!
 		return doCreateSemantics(pickedElement);
 	}
 	
 	@SuppressWarnings("unused")
-	protected IElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ElementSemantics<?> doCreateSemantics(PickedElement<?> pickedElement) {
 		throw assertFail(); // Not valid unless re-implemented.
 	}
 	
