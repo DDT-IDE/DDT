@@ -38,7 +38,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		super(comments, defId);
 		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
-		this.fnParams = parentizeI(fnParams);
+		this.fnParams = parentize(fnParams);
 		this.fnAttributes = fnAttributes;
 		assertTrue(fnAttributes == null || fnParams != null);
 	}

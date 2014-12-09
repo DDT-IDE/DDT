@@ -26,7 +26,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	public boolean isTransitive; // aka public imports
 	
 	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports) {
-		this.imports = parentizeI(imports);
+		this.imports = parentize(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = false; // TODO, should be determined by surrounding analysis
 	}

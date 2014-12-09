@@ -23,7 +23,7 @@ public abstract class CommonStatementList extends Statement {
 	public final ArrayView<IStatement> statements;
 	
 	public CommonStatementList(ArrayView<IStatement> statements) {
-		this.statements = parentizeI(assertNotNull(statements));
+		this.statements = parentize(assertNotNull(statements));
 	}
 	
 	/** This represents a missing block */

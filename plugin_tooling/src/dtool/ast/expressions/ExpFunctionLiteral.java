@@ -25,7 +25,7 @@ public class ExpFunctionLiteral extends Expression {
 		ArrayView<FunctionAttributes> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
 		this.isFunctionKeyword = isFunctionKeyword;
 		this.retType = parentize(retType);
-		this.fnParams = parentizeI(fnParams);
+		this.fnParams = parentize(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.fnBody = parentize(fnBody);
 		this.bodyExpression = parentize(bodyExpression);

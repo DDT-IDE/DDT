@@ -22,7 +22,7 @@ public class DeclarationAllocatorFunction extends ASTNode implements IDeclaratio
 	
 	public DeclarationAllocatorFunction(boolean isNew, ArrayView<IFunctionParameter> params, IFunctionBody fnBody) {
 		this.isNew = isNew;
-		this.params = parentizeI(params);
+		this.params = parentize(params);
 		this.fnBody = parentize(fnBody);
 	}
 	

@@ -44,7 +44,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId);
-		this.tplParams = parentizeI(tplParams);
+		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.aggrBody = parentize(aggrBody);
 	}

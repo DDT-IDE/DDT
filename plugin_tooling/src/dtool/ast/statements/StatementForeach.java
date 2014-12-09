@@ -27,7 +27,7 @@ public class StatementForeach extends Statement implements IScopeElement {
 	
 	public StatementForeach(boolean isForeachReverse, ArrayView<ForeachVariableDef> varParams, Expression iterable,
 			IStatement body) {
-		this.varParams = parentizeI(varParams);
+		this.varParams = parentize(varParams);
 		this.iterable = parentize(iterable);
 		this.body = parentize(body);
 		this.isForeachReverse = isForeachReverse;

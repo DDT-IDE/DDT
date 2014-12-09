@@ -24,7 +24,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.core.CoreUtil;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
@@ -212,26 +211,22 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	/** Set the parent of the given collection to the receiver. @return collection */
-	protected final <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
-		return parentize(collection, false);
+	protected final <C extends Iterable<? extends IASTNode>> C parentize(C collection) {
+		parentizeCollection(collection, false, asNode());
+		return collection;
 	}
 	
-	protected final <T extends ArrayView<? extends ASTNode>> T parentize(T collection, boolean allowNulls) {
-		if (collection != null) {
-			for (ASTNode node : collection) {
-				if(node != null) {
-					node.setParent(asNode());
-				} else {
-					assertTrue(allowNulls);
-				}
+	public static void parentizeCollection(Iterable<? extends IASTNode> coll, boolean allowNulls, ASTNode parent) {
+		if (coll == null) {
+			return;
+		}
+		for (IASTNode node : coll) {
+			if(node != null) {
+				node.setParent(parent);
+			} else {
+				assertTrue(allowNulls);
 			}
 		}
-		return collection;
-	}
-	
-	protected final <T extends IASTNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
-		parentize(CoreUtil.<ArrayView<ASTNode>>blindCast(collection), false);
-		return collection;
 	}
 	
 	/* =============== Analysis and semantics =============== */

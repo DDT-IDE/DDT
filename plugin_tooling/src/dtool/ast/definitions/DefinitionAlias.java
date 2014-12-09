@@ -70,7 +70,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		public DefinitionAliasFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
 				Reference target) {
 			super(defId);
-			this.tplParams = parentizeI(tplParams);
+			this.tplParams = parentize(tplParams);
 			this.target = parentize(target);
 		}
 		

@@ -49,7 +49,7 @@ public class DefinitionTemplate extends CommonDefinition
 			ArrayView<ITemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
 		super(comments, defId);
 		this.isMixin = isMixin;
-		this.tplParams = parentizeI(tplParams);
+		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.decls = parentize(decls);
 		

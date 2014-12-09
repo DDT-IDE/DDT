@@ -36,8 +36,8 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		IFunctionBody fnBody) {
 		super(comments, defId);
 		
-		this.tplParams = parentizeI(tplParams);
-		this.fnParams = parentizeI(fnParams);
+		this.tplParams = parentize(tplParams);
+		this.fnParams = parentize(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.tplConstraint = parentize(tplConstraint);
 		this.fnBody = parentize(fnBody);

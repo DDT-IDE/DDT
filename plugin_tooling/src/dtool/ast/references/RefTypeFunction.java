@@ -41,7 +41,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		ArrayView<FunctionAttributes> fnAttributes) {
 		this.retType = parentize(retType);
 		this.isDelegate = isDelegate;
-		this.params = parentizeI(params);
+		this.params = parentize(params);
 		this.fnAttributes = fnAttributes;
 	}
 	

@@ -78,7 +78,7 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		public DefinitionEnumVarFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
 				IInitializer initializer) {
 			super(defId);
-			this.tplParams = parentizeI(tplParams);
+			this.tplParams = parentize(tplParams);
 			this.initializer = parentize(initializer);
 		}
 		

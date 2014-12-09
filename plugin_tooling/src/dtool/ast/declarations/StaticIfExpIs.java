@@ -45,7 +45,7 @@ public class StaticIfExpIs extends Expression {
 		this.specTypeRef = parentize(specTypeRef);
 		assertTrue((specTypeRef == null) ==
 			(specKind != ExpIsSpecialization.TYPE_SUBTYPE && specKind != ExpIsSpecialization.TYPE_EXACT)); 
-		this.tplParams = parentizeI(tplParams);
+		this.tplParams = parentize(tplParams);
 		assertTrue((tplParams == null) ? true :
 			(specKind == ExpIsSpecialization.TYPE_SUBTYPE || specKind == ExpIsSpecialization.TYPE_EXACT)); 
 	}
