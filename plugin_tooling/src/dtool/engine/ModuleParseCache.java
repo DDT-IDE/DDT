@@ -171,12 +171,24 @@ public class ModuleParseCache {
 			}
 		}
 		
-		public synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
+		/**
+		 * @return the parsed module from this cache, but only if is up-to-date with the underlying source.
+		 * If it is not, return null; 
+		 * As such, this method will never cause a module to be parsed, any non-null result is a module
+		 * that had been parsed already.
+		 */
+		public synchronized ParsedModule getParsedModuleIfNotStale() {
+			return getParsedModuleIfNotStale();
+		}
+		
+		protected synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
 			if(!isStale()) {
 				return parsedModule;		
 			}
 			
 			if(attemptSourceRefresh) {
+				// Attemp an optimization, read the new source, and if it is the same as the previous one,
+				// then keep the same parsed module.
 				try {
 					readSource();
 					return parsedModule; // parsedModule will remain the same if the source didn't change.

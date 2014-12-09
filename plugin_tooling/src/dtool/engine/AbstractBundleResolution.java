@@ -158,26 +158,28 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/* -----------------  ----------------- */
 	
-	// FIXME: proper synchronization - for now assume no concurrent acesss to resolve operations 
 	protected final Map<Path, ResolvedModule> resolvedModules = new HashMap<>();
+	protected final Object resolvedModulesLock = new Object(); 
 	
-	public synchronized boolean checkIsModuleContentsStale() {
+	public boolean checkIsModuleContentsStale() {
 		ModuleParseCache parseCache = manager.parseCache;
 		
-		for (Entry<Path, ResolvedModule> entry : resolvedModules.entrySet()) {
-			Path path = entry.getKey();
-			ResolvedModule currentModule = entry.getValue();
-			
-			ParsedModule parsedModule = parseCache.getEntry(path).getParsedModuleIfNotStale(true);
-			if(parsedModule == null) {
-				return true;
+		synchronized(resolvedModulesLock) {
+			for(Entry<Path, ResolvedModule> entry : resolvedModules.entrySet()) {
+				Path path = entry.getKey();
+				ResolvedModule currentModule = entry.getValue();
+				
+				ParsedModule cacheModule = parseCache.getEntry(path).getParsedModuleIfNotStale();
+				if(cacheModule == null) {
+					return true; // Source has changed since last parse
+				}
+				
+				if(cacheModule != currentModule.parsedModule) {
+					return true; // Parse is up-to-date in the cache, but it's a newer module than the one here.
+				}
 			}
-			
-			if(parsedModule != currentModule.parsedModule) {
-				return true;
-			}
+			return false;
 		}
-		return false;
 	}
 	
 	protected ResolvedModule getBundleResolvedModule(String moduleFullName) throws ModuleSourceException {
@@ -201,17 +203,19 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		return getOrCreateBundleResolvedModule(modulePath);
 	}
 	
-	protected synchronized ResolvedModule getOrCreateBundleResolvedModule(Path filePath) throws ModuleSourceException {
+	protected ResolvedModule getOrCreateBundleResolvedModule(Path filePath) throws ModuleSourceException {
 		assertTrue(bundleContainsModule(filePath));
 		ModuleParseCache parseCache = manager.parseCache;
 		
-		ResolvedModule resolvedModule = resolvedModules.get(filePath);
-		if(resolvedModule == null) {
-			ParsedModule parsedModule = parseCache.getParsedModule(filePath);
-			resolvedModule = new ResolvedModule(parsedModule, this);
-			resolvedModules.put(filePath, resolvedModule);
+		synchronized(resolvedModulesLock) {
+			ResolvedModule resolvedModule = resolvedModules.get(filePath);
+			if(resolvedModule == null) {
+				ParsedModule parsedModule = parseCache.getParsedModule(filePath);
+				resolvedModule = new ResolvedModule(parsedModule, this);
+				resolvedModules.put(filePath, resolvedModule);
+			}
+			return resolvedModule;
 		}
-		return resolvedModule;
 	}
 	
 	/* ----------------- NodeSemantics ----------------- */

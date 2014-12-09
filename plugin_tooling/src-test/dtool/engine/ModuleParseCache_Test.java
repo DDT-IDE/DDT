@@ -194,7 +194,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	protected ParsedModule getParsedModuleIfNotStale(Path path) {
-		return mpc.getEntry(path).getParsedModuleIfNotStale(true);
+		return mpc.getEntry(path).getParsedModuleIfNotStale();
 	}
 	
 	protected ParsedModule setWorkingCopySourceAndParse(Path filePath, String source) {

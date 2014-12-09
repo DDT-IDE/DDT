@@ -33,7 +33,6 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
-import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -366,7 +365,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertTrue(sm.checkIsResolutionStale(bundlePath) == false);
 		sm.discardWorkingCopy(filePath);
 		
-		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale(true) == null);
+		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale() == null);
 	}
 	
 	/* -----------------  ----------------- */
