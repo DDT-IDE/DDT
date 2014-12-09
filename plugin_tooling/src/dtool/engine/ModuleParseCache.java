@@ -70,6 +70,11 @@ public class ModuleParseCache {
 	
 	/* -----------------  ----------------- */
 	
+	protected String keyFromPath(Path filePath) {
+		filePath = validatePath(filePath);
+		return getKeyFromPath(filePath);
+	}
+	
 	protected Path validatePath(Path filePath) {
 		assertNotNull(filePath);
 		//filePath can be relative
@@ -84,8 +89,7 @@ public class ModuleParseCache {
 	}
 	
 	public ModuleEntry getEntry(Path filePath) {
-		filePath = validatePath(filePath);
-		String key = getKeyFromPath(filePath);
+		String key = keyFromPath(filePath);
 		
 		synchronized(this) {
 			ModuleEntry entry = cache.get(key);
@@ -104,11 +108,22 @@ public class ModuleParseCache {
 	}
 	
 	public void discardWorkingCopy(Path filePath) {
-		filePath = validatePath(filePath);
-		String key = getKeyFromPath(filePath);
+		String key = keyFromPath(filePath);
 		ModuleEntry entry = cache.get(key);
 		if(entry != null) {
 			entry.discardWorkingCopy();
+		}
+	}
+	
+	/**
+	 * XXX: This method is currently only used by tests.
+	 * It would need review to make sure it actually works fully outside of that tests scenario, 
+	 * especially with regards to concurrency.
+	 */
+	public void discardEntry(Path filePath) {
+		String key = keyFromPath(filePath);
+		synchronized(this) {
+			cache.remove(key);
 		}
 	}
 	

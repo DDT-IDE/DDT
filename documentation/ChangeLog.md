@@ -2,6 +2,7 @@
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant unnecessary slowdown.
+ * Fixed: added loop detection for certain loop scenarios in the semantic engine.
 
 ### DDT 0.10.3
  * Added build console preference page. 

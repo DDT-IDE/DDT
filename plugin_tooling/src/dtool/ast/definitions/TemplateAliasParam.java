@@ -3,7 +3,7 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
@@ -55,7 +55,7 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		return new TODO_NamedElementSemantics(this, pickedElement) {
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement() {
-				return new NotFoundErrorElement(element, null);
+				return ErrorElement.newNotFoundError(element, null);
 			}
 		};
 	}

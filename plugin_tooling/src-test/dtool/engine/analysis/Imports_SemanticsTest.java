@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
@@ -41,7 +41,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
 		
 		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
-			NotFoundErrorElement.NOT_FOUND__NAME);
+			ErrorElement.NOT_FOUND__NAME);
 		
 		// Test package refs.
 		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");
@@ -62,7 +62,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == NotFoundErrorElement.NOT_FOUND__NAME) {
+		if(fqn == ErrorElement.NOT_FOUND__NAME) {
 			return;
 		}
 		
@@ -81,14 +81,14 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == NotFoundErrorElement.NOT_FOUND__NAME) {
+		if(fqn == ErrorElement.NOT_FOUND__NAME) {
 			return;
 		}
 		
 		assertTrue(result instanceof PackageNamespace); 
 		
 		IConcreteNamedElement concreteTarget = result.resolveConcreteElement(refToPackage.context);
-		assertTrue(concreteTarget instanceof NotFoundErrorElement); // TODO: define this behavior better
+		assertTrue(concreteTarget instanceof ErrorElement); // TODO: define this behavior better
 //		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	

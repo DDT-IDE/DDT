@@ -63,6 +63,9 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	/* -----------------  ----------------- */
 	
 	protected static ResolvedModule parseModule(String source) throws ExecutionException {
+		// make sure we reparse, even if source is the same. 
+		defaultSemMgr.getParseCache().discardEntry(DEFAULT_TestsModule);
+		
 		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule, source);
 		ResolvedModule result = getDefaultTestsModule();
 		assertTrue(result.getSource().equals(source));

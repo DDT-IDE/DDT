@@ -11,11 +11,15 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.LoopDetector.ResolutionLoopException;
 
 /**
  * A class responsible for doing semantic analysis.
@@ -47,44 +51,93 @@ public abstract class ElementSemantics<ER> {
 	/* ----------------- ----------------- */
 	
 	private ER resolution;
+	private ReentrantLock resolutionMetadataLock = new ReentrantLock();
+	private long resolutionThreadId = 0;
+	private Condition completionCondition;
 	
 	protected final ER getElementResolution() {
 		return getOrCreateElementResolution();
 	}
 	
 	protected ER getOrCreateElementResolution() {
-		if(resolution == null) {
-			// TODO: optimization: put information about a partial result that can be resolved without a context
-			// in the ILanguageElement itself. 
-			// This way, such information can be re-used a new resolution is created in a different context.
+		
+		resolutionMetadataLock.lock();
+		try {
 			
-			// TODO: loop detection during resolution
+			if(resolution != null) {
+				return resolution;
+			}
 			
-			// FIXME: BUG here, need to handle concurrent access properly. 
-			// We can't just wrap this in a synchronized block, because that would cause deadlock in loop scenarios.
-			resolution = assertNotNull(createResolution());
+			// First, check if a thread is already analysing this node
+			if(resolutionThreadId != 0) {
+				awaitCompletionByOtherThread();
+				assertNotNull(resolution);
+				return resolution;
+			}
+			
+			// If not, the current thread will do the analysis
+			
+			// First mark, this node as being processed by this thread: 
+			resolutionThreadId = Thread.currentThread().getId();
+			completionCondition = resolutionMetadataLock.newCondition(); // condition for other threads to wait on.
+			
+			ER createdResolution;
+			
+			resolutionMetadataLock.unlock();
+			try {
+				// perform the computation.
+				createdResolution = assertNotNull(createResolution());
+			} finally {
+				resolutionMetadataLock.lock();
+			}
+			
+			resolution = createdResolution;
+			completionCondition.signalAll();
+			
+		} finally {
+			resolutionMetadataLock.unlock();
 		}
 		return resolution;
 	}
+
+	private static LoopDetector loopDetector = new LoopDetector();
 	
+	private void awaitCompletionByOtherThread() {
+		assertTrue(resolutionMetadataLock.isLocked());
+		
+		long currentThreadId = Thread.currentThread().getId();
+		
+		try {
+			// Mark this thread as waiting on resolutionThreadId
+			loopDetector.registerWaitingThread(currentThreadId, resolutionThreadId);
+		} catch (ResolutionLoopException e) {
+			resolution = createLoopResolution();
+			return;
+		}
+		
+		try {
+			// await for other thread to complete on the completion condition 
+			assertTrue(completionCondition != null);
+			completionCondition.awaitUninterruptibly(); // TODO: make interruptable
+		} finally {
+			loopDetector.unregisterWaitingThread(currentThreadId);
+		}
+	}
+	
+	
+	// TODO: optimization: put information about a partial result that can be resolved without a context
+	// in the ILanguageElement itself. 
+	// This way, such information can be re-used a new resolution is created in a different context.
 	/** 
 	 * Create and return the resolution object for this semantics analysis. Non-null.
 	 * The resulting object must also be immutable!
 	 */
 	protected abstract ER createResolution();
 	
-	/* ----------------- Utility for classes with no semantics to resolve: ----------------- */
-	
-	public static class NullElementSemantics extends ElementSemantics<Void> {
-		
-		public NullElementSemantics(PickedElement<?> pickedElement) {
-			super(pickedElement);
-		}
-		
-		@Override
-		protected Void createResolution() {
-			return null;
-		}
-	}
+	/**
+	 * Create a resolution object representing a loop error.
+	 * No further node/element analysis can be performed after this!
+	 */
+	protected abstract ER createLoopResolution();
 	
 }

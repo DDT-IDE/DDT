@@ -14,6 +14,7 @@ package melnorme.lang.tooling.engine.resolver;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.engine.ElementSemantics;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -38,8 +39,12 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		return new ConcreteElementResult(doResolveConcreteElement());
 	}
 	
-	protected abstract IConcreteNamedElement doResolveConcreteElement();
+	@Override
+	protected ConcreteElementResult createLoopResolution() {
+		return new ConcreteElementResult(ErrorElement.newLoopError(element, null));
+	}
 	
+	protected abstract IConcreteNamedElement doResolveConcreteElement();
 	
 	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	

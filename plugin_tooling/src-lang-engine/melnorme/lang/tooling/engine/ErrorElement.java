@@ -23,25 +23,37 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
-public class NotFoundErrorElement extends AbstractNamedElement implements IConcreteNamedElement {
+public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
 	public static final String NOT_FOUND__NAME = "<not_found>";
+	public static final String LOOP_ERROR_ELEMENT_Name = "<Loop_Error>";
+	
+	
+	public static ErrorElement newNotFoundError(IResolvable resolvable) {
+		ElementDoc doc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
+		return new ErrorElement(NOT_FOUND__NAME, resolvable, doc);
+	}
+	
+	public static ErrorElement newNotFoundError(ILanguageElement parent, ElementDoc doc) {
+		return new ErrorElement(NOT_FOUND__NAME, parent, doc);
+	}
+	
+	public static ErrorElement newLoopError(ILanguageElement parent, ElementDoc doc) {
+		return new ErrorElement(LOOP_ERROR_ELEMENT_Name, parent, doc);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	protected final ElementDoc doc;
 	
-	public static NotFoundErrorElement newFromResolvable(IResolvable resolvable) {
-		ElementDoc doc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
-		return new NotFoundErrorElement(resolvable, doc);
-	}
-	
-	public NotFoundErrorElement(ILanguageElement parent, ElementDoc doc) {
-		super(NOT_FOUND__NAME, parent);
+	public ErrorElement(String name, ILanguageElement parent, ElementDoc doc) {
+		super(name, parent);
 		this.doc = doc;
 	}
 	
 	@Override
 	public String getNameInRegularNamespace() {
-		return getName(); ///*FIXME: BUG here*/
+		return null;
 	}
 	
 	@Override
@@ -87,7 +99,7 @@ public class NotFoundErrorElement extends AbstractNamedElement implements IConcr
 			
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement() {
-				return NotFoundErrorElement.this;
+				return ErrorElement.this;
 			}
 			
 			@Override

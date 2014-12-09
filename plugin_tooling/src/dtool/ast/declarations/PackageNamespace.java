@@ -15,7 +15,7 @@ import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -108,7 +108,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	protected final NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new AliasSemantics(this, pickedElement) {
 
-			protected final NotFoundErrorElement errorElement = new NotFoundErrorElement(PackageNamespace.this, null);
+			protected final ErrorElement errorElement = ErrorElement.newNotFoundError(PackageNamespace.this, null);
 			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);
 			
 			@Override

@@ -12,7 +12,7 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -27,7 +27,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	protected INamedElement resolveAliasTarget_nonNull() {
 		INamedElement result = resolveAliasTarget(context);
 		if(result == null) {
-			return new NotFoundErrorElement(element, null);
+			return ErrorElement.newNotFoundError(element, null);
 		}
 		return result;
 	}

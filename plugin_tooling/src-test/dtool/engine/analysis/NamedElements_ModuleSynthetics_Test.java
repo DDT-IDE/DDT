@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.lang.tooling.engine.NotFoundErrorElement.NOT_FOUND__NAME;
+import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__NAME;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;

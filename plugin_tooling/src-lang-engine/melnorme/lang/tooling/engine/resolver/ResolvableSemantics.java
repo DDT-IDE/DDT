@@ -20,7 +20,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ElementSemantics;
-import melnorme.lang.tooling.engine.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -39,6 +39,12 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	@Override
+	protected ResolvableResult createLoopResolution() {
+		// TODO: test this path
+		return new ResolvableResult(ErrorElement.newLoopError(resolvable, null));
+	}
+	
+	@Override
 	protected ResolvableResult createResolution() {
 		INamedElement result = null;
 		Collection<INamedElement> namedElems = findTargetDefElements(true);
@@ -47,7 +53,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		}
 		
 		if(result == null) {
-			result = NotFoundErrorElement.newFromResolvable(resolvable);
+			result = ErrorElement.newNotFoundError(resolvable);
 		}
 		
 		return new ResolvableResult(result);

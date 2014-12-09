@@ -1,0 +1,85 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package dtool.engine.analysis;
+
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
+
+import org.junit.Test;
+
+import dtool.ast.references.RefIdentifier;
+
+public class SemanticAnalysisErrors_Test extends CommonNodeSemanticsTest {
+	
+	protected IConcreteNamedElement doResolveConcreteElement(String source, String marker) {
+		PickedElement<INamedElement> pickedElement = parseElement(source, marker, INamedElement.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveConcreteElement(context);
+	}
+	
+	protected IConcreteNamedElement doResolveConcreteElementForRef(String source, String marker) {
+		PickedElement<RefIdentifier> pickedElement = parseElement(source, marker, RefIdentifier.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveTargetElement(context).resolveConcreteElement(context);
+	}
+
+	protected INamedElement doResolveNamedElementForRef(String source, String marker) {
+		PickedElement<RefIdentifier> pickedElement = parseElement(source, marker, RefIdentifier.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveTargetElement(context);
+	}
+	
+	@Test
+	public void testNotFound() throws Exception { testNotFound_____(); }
+	public void testNotFound_____() throws Exception {
+		
+		checkResultNotFound(
+			doResolveNamedElementForRef("int blah = xxx;", "xxx"));
+
+		checkResultNotFound(
+			doResolveNamedElementForRef("alias A = B; alias B = xxx;", "xxx"));
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("alias A = B; alias B = xxx; alias _ = A/**/;", "A/**/;"));
+	}
+	
+	protected void checkResultNotFound(INamedElement result) {
+		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__NAME));
+		assertTrue(result.getNameInRegularNamespace() == null);
+	}
+	
+	@Test
+	public void testLoop() throws Exception { testLoop_____(); }
+	public void testLoop_____() throws Exception {
+		
+		checkLoopResult(
+			doResolveConcreteElementForRef("alias A= B; alias B = A/**/;", "A/**/"));
+		
+		checkLoopResult(
+			doResolveConcreteElementForRef("alias A= B; alias B = C; alias C = A/**/;", "A/**/"));
+		
+		checkLoopResult(
+			doResolveConcreteElement("alias A= B; alias B = C; alias C = A/**/;", "C = A"));
+		
+		checkLoopResult(
+			doResolveConcreteElementForRef("B A/**/; A B; alias _ = A.xxx;", "xxx"));
+	}
+	
+	protected void checkLoopResult(INamedElement result) {
+		assertTrue(result.getName().equals(ErrorElement.LOOP_ERROR_ELEMENT_Name));
+		assertTrue(result.getNameInRegularNamespace() == null);
+	}
+	
+}
