@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 
@@ -62,14 +62,14 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	 * It may still return null since the underlying defunit may not exist at all (implicitly defined named elements).
 	 */
 	// TODO: add exception
-	INamedElementNode resolveUnderlyingNode();
+	public abstract INamedElementNode resolveUnderlyingNode();
 	
 	/** Resolve the underlying element and return its DDoc. See {@link #resolveUnderlyingNode()}.
 	 * Can be null. */
-	ElementDoc resolveDDoc();
+	public abstract ElementDoc resolveDDoc();
 	
 	@Override
-	INamedElementSemantics getSemantics(ISemanticContext parentContext);
+	public abstract NamedElementSemantics getSemantics(ISemanticContext parentContext);
 	
 	/**
 	 * If this element is an alias to some other element, resolve all of them until the non-alias element

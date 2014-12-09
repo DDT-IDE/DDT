@@ -13,8 +13,8 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
@@ -52,7 +52,7 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	
 	
 	@Override
-	public INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new VarSemantics(this, pickedElement) {
 			@Override
 			protected Resolvable getTypeReference() {

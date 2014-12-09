@@ -13,8 +13,8 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -63,7 +63,7 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeSemantics(this, pickedElement) {
 		
 			@Override

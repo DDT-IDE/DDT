@@ -13,9 +13,9 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	protected void testResolveEffectiveType(String source, String expectedTypeFQN, String errorSuffix) {
 		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
-		INamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
+		NamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		if(expectedTypeFQN == null || effectiveType == null) {
 			assertTrue(expectedTypeFQN == null && effectiveType == null);

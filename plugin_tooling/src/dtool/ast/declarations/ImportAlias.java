@@ -13,9 +13,9 @@ package dtool.ast.declarations;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
@@ -68,7 +68,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	}
 	
 	@Override
-	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeAliasSemantics(this, pickedElement) {
 			
 			@Override

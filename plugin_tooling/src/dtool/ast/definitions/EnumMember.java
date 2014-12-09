@@ -15,8 +15,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
@@ -86,7 +86,7 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new CommonDefVarSemantics(this, pickedElement) {
 			
 			@Override

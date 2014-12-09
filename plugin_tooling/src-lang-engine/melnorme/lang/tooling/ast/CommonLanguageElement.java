@@ -15,7 +15,6 @@ import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NullElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -54,7 +53,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@SuppressWarnings("unused")
 	protected IElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NullElementSemantics();
+		return new IElementSemantics() { };
 	}
 	
 	@Override

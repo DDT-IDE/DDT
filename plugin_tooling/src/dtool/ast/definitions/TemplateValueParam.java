@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Expression;
@@ -66,7 +66,7 @@ public class TemplateValueParam extends TemplateParameter implements IConcreteNa
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new VarSemantics(this, pickedElement) {
 			
 			@Override

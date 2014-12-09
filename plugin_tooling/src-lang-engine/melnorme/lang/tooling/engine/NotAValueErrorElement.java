@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -36,7 +37,7 @@ public class NotAValueErrorElement extends WrappedNamedElement implements INamed
 	/* -----------------  ----------------- */
 	
 	@Override
-	public INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new NamedElementSemantics(this, pickedElement) {
 			
 			@Override

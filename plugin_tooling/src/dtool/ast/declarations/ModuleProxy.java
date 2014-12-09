@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -102,7 +102,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	protected final INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected final NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new AliasSemantics(this, pickedElement) {
 			
 			{

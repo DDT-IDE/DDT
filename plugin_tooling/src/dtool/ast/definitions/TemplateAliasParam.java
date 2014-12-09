@@ -3,8 +3,8 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
@@ -48,8 +48,8 @@ public class TemplateAliasParam extends TemplateParameter {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected INamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NullNamedElementSemantics(); // Need template instance
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new NullNamedElementSemantics(this, pickedElement); // Need template instance
 	}
 	
 	@Override

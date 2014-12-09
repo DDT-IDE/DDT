@@ -20,11 +20,11 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.INamedElementSemantics;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -111,7 +111,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			namedElement.getSemantics(context).resolveConcreteElement()
 		);
 		
-		INamedElementSemantics semantics = namedElement.getSemantics(context);
+		NamedElementSemantics semantics = namedElement.getSemantics(context);
 		IConcreteNamedElement concreteElement = semantics.resolveConcreteElement().result;
 		
 		if(concreteElement instanceof NotFoundErrorElement) {
