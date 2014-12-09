@@ -18,8 +18,6 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	
 	protected final ISemanticContext context;
 	
-	private ER resolution;
-	
 	public ElementSemantics(PickedElement<?> pickedElement) {
 		this.context = pickedElement.context;
 	}
@@ -36,13 +34,22 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	
 	/* ----------------- ----------------- */
 	
+	private ER resolution;
+	
 	protected final ER getElementResolution() {
 		return getOrCreateElementResolution();
 	}
 	
 	protected ER getOrCreateElementResolution() {
 		if(resolution == null) {
-			// TODO: Optimization: put temporary result that can be resolved without a context
+			// TODO: optimization: put information about a partial result that can be resolved without a context
+			// in the ILanguageElement itself. 
+			// This way, such information can be re-used a new resolution is created in a different context.
+			
+			// TODO: loop detection during resolution
+			
+			// FIXME: BUG here, need to handle concurrent access properly. 
+			// We can't just wrap this in a synchronized block, because that would cause deadlock in loop scenarios.
 			resolution = assertNotNull(createResolution());
 		}
 		return resolution;
@@ -52,5 +59,19 @@ public abstract class ElementSemantics<ER> implements IElementSemantics {
 	 * Create and return the main resolution object for this semantics object. Non-null.
 	 */
 	protected abstract ER createResolution();
+	
+	/* ----------------- Utility for classes with no semantics to resolve: ----------------- */
+	
+	public static class NullElementSemantics extends ElementSemantics<Void> {
+		
+		public NullElementSemantics(PickedElement<?> pickedElement) {
+			super(pickedElement);
+		}
+		
+		@Override
+		protected Void createResolution() {
+			return null;
+		}
+	}
 	
 }

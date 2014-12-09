@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -37,7 +38,8 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@Override
 	public IElementSemantics getSemantics(ISemanticContext parentContext) {
-		return getContextForThisElement(parentContext).getSemanticsEntry(this);
+		ISemanticContext context = getContextForThisElement(parentContext);
+		return context.getSemanticsEntry(this);
 	}
 	
 	@Override
@@ -53,7 +55,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@SuppressWarnings("unused")
 	protected IElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new IElementSemantics() { };
+		throw assertFail(); // Not valid unless re-implemented.
 	}
 	
 	@Override

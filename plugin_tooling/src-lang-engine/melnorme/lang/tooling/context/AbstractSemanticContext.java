@@ -84,7 +84,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	}
 	
 	@Override
-	public IElementSemantics getSemanticsEntry(CommonLanguageElement element) {
+	public final IElementSemantics getSemanticsEntry(CommonLanguageElement element) {
 		assertTrue(findSemanticContext(element) == this);
 		return semanticsMap.getEntry(element);
 	}
