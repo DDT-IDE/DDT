@@ -23,9 +23,9 @@ public class StatementTry extends Statement {
 	public final IStatement finallyBody;
 	
 	public StatementTry(IStatement body, ArrayView<CatchClause> catches, IStatement finallyBody) {
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 		this.catches = parentize(catches);
-		this.finallyBody = parentizeI(finallyBody);
+		this.finallyBody = parentize(finallyBody);
 	}
 	
 	@Override

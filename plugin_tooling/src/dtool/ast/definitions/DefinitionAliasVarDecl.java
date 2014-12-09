@@ -39,7 +39,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		super(comments, defId);
 		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
-		this.cstyleSuffix = parentizeI(cstyleSuffix);
+		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.fragments = parentizeI(fragments);
 		assertTrue(fragments == null || fragments.size() > 0);
 	}

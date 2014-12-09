@@ -40,7 +40,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.tplConstraint = parentize(tplConstraint);
-		this.fnBody = parentizeI(fnBody);
+		this.fnBody = parentize(fnBody);
 	}
 	
 	public final ArrayView<ASTNode> getParams_asNodes() {

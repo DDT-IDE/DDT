@@ -25,7 +25,7 @@ public class StatementCaseRange extends Statement {
 	public StatementCaseRange(Expression expFirst, Expression expLast, IStatement body) {
 		this.expFirst = parentize(assertNotNull(expFirst));
 		this.expLast = parentize(expLast);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

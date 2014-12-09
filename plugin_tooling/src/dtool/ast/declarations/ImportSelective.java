@@ -27,7 +27,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	
 	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags) {
 		this.impSelFrags = CoreUtil.<ArrayView<ASTNode>>blindCast(parentizeFrags(frags));
-		this.fragment = parentizeI(subFragment);
+		this.fragment = parentize(subFragment);
 	}
 	
 	@Override

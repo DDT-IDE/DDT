@@ -29,7 +29,7 @@ public class StatementForeach extends Statement implements IScopeElement {
 			IStatement body) {
 		this.varParams = parentizeI(varParams);
 		this.iterable = parentize(iterable);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 		this.isForeachReverse = isForeachReverse;
 	}
 	

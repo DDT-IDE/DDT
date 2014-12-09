@@ -23,10 +23,10 @@ public class StatementFor extends Statement {
 	public final IStatement body;
 	
 	public StatementFor(IStatement init, Expression condition, Expression increment, IStatement body) {
-		this.init = parentizeI(init);
+		this.init = parentize(init);
 		this.condition = parentize(condition);
 		this.increment = parentize(increment);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

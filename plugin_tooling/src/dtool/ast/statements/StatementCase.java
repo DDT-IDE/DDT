@@ -23,7 +23,7 @@ public class StatementCase extends Statement {
 	
 	public StatementCase(ArrayView<Expression> caseValues, IStatement body) {
 		this.caseValues = parentize(caseValues);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

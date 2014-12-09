@@ -25,7 +25,7 @@ public class StatementSwitch extends Statement {
 	public StatementSwitch(boolean isFinal, Expression exp, IStatement body) {
 		this.isFinal = isFinal;
 		this.exp = parentize(exp);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

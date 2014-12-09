@@ -19,7 +19,7 @@ public class StatementDefault extends Statement {
 	public final IStatement body;
 	
 	public StatementDefault(IStatement body) {
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 		IFunctionBody fnBody) {
 		this.kind = assertNotNull(kind);
 		this.fnAttributes = fnAttributes;
-		this.fnBody = parentizeI(fnBody);
+		this.fnBody = parentize(fnBody);
 	}
 	
 	@Override

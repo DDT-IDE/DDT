@@ -23,8 +23,8 @@ public class StatementIf extends Statement {
 	
 	public StatementIf(Expression condition, IStatement thenBody, IStatement elseBody) {
 		this.condition = parentize(condition);
-		this.thenBody = parentizeI(thenBody);
-		this.elseBody = parentizeI(elseBody);
+		this.thenBody = parentize(thenBody);
+		this.elseBody = parentize(elseBody);
 	}
 	
 	@Override

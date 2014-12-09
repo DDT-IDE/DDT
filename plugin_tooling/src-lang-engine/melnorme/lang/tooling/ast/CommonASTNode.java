@@ -203,12 +203,20 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
 	}
 	
+	/** Set the parent of the given node to the receiver. @return node */
+	protected <T extends IASTNode> T parentize(T node) {
+		if (node != null) {
+			node.setParent(asNode());
+		}
+		return node;
+	}
+	
 	/** Set the parent of the given collection to the receiver. @return collection */
-	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
+	protected final <T extends ArrayView<? extends ASTNode>> T parentize(T collection) {
 		return parentize(collection, false);
 	}
 	
-	protected <T extends ArrayView<? extends ASTNode>> T parentize(T collection, boolean allowNulls) {
+	protected final <T extends ArrayView<? extends ASTNode>> T parentize(T collection, boolean allowNulls) {
 		if (collection != null) {
 			for (ASTNode node : collection) {
 				if(node != null) {
@@ -221,19 +229,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return collection;
 	}
 	
-	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends IASTNode> T parentize(T node) {
-		if (node != null) {
-			node.setParent(asNode());
-		}
-		return node;
-	}
-	
-	protected <T extends IASTNode> T parentizeI(T node) {
-		return parentize(node);
-	}
-	
-	protected <T extends IASTNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
+	protected final <T extends IASTNode> ArrayView<T> parentizeI(ArrayView<T> collection) {
 		parentize(CoreUtil.<ArrayView<ASTNode>>blindCast(collection), false);
 		return collection;
 	}

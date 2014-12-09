@@ -23,8 +23,8 @@ public class StatementIfVar extends Statement {
 	
 	public StatementIfVar(VariableDefWithInit conditionVar, IStatement thenBody, IStatement elseBody) {
 		this.conditionVar = parentize(assertNotNull(conditionVar));
-		this.thenBody = parentizeI(thenBody);
-		this.elseBody = parentizeI(elseBody);
+		this.thenBody = parentize(thenBody);
+		this.elseBody = parentize(elseBody);
 	}
 	
 	@Override

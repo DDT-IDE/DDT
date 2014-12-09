@@ -46,7 +46,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		super(comments, defId);
 		this.tplParams = parentizeI(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
-		this.aggrBody = parentizeI(aggrBody);
+		this.aggrBody = parentize(aggrBody);
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor) {

@@ -31,7 +31,7 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	public final NodeListView<Resolvable> tplArgs;
 	
 	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, NodeListView<Resolvable> tplArgs) {
-		this.tplRef = parentizeI(assertInstance(tplRef, Reference.class));
+		this.tplRef = parentize(assertInstance(tplRef, Reference.class));
 		assertTrue(exactlyOneIsNull(tplSingleArg, tplArgs));
 		this.tplSingleArg = parentize(tplSingleArg);
 		this.tplArgs = parentize(tplArgs);

@@ -36,7 +36,7 @@ public class StatementScope extends Statement {
 	
 	public StatementScope(Symbol scopeTypeId, IStatement body) {
 		this.scopeTypeId = parentize(scopeTypeId);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

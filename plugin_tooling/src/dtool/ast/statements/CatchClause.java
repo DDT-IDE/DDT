@@ -25,8 +25,8 @@ public class CatchClause extends ASTNode implements IScopeElement {
 	public final IStatement body;
 	
 	public CatchClause(SimpleVariableDef catchParam, IStatement body) {
-		this.catchParam = parentizeI(catchParam);
-		this.body = parentizeI(body);
+		this.catchParam = parentize(catchParam);
+		this.body = parentize(body);
 	}
 	
 	@Override

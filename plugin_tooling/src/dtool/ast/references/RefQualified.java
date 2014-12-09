@@ -35,7 +35,7 @@ public class RefQualified extends CommonQualifiedReference {
 	
 	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedId) {
 		super(assertNotNull(qualifiedId));
-		this.qualifier = parentizeI(assertInstance(qualifier, Resolvable.class));
+		this.qualifier = parentize(assertInstance(qualifier, Resolvable.class));
 		this.dotOffset = dotOffset;
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);
 	}

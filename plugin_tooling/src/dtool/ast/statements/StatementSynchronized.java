@@ -23,7 +23,7 @@ public class StatementSynchronized extends Statement {
 	
 	public StatementSynchronized(Expression exp, IStatement body) {
 		this.exp = parentize(exp);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

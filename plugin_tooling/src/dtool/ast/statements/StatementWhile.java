@@ -23,7 +23,7 @@ public class StatementWhile extends Statement {
 	
 	public StatementWhile(Expression condition, IStatement body) {
 		this.condition = parentize(condition);
-		this.body = parentizeI(body);
+		this.body = parentize(body);
 	}
 	
 	@Override

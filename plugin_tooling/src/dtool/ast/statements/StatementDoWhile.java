@@ -23,7 +23,7 @@ public class StatementDoWhile extends Statement {
 	public final Expression condition;
 	
 	public StatementDoWhile(IStatement body, Expression condition) {
-		this.body = parentizeI(assertNotNull(body));
+		this.body = parentize(assertNotNull(body));
 		this.condition = parentize(condition);
 	}
 	
