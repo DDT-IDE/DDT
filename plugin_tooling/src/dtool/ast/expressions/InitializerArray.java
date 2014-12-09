@@ -11,7 +11,6 @@ import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
@@ -69,15 +68,15 @@ public class InitializerArray extends Expression implements IInitializer {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
-		}
-		
-	};
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+			}
+			
+		};
 	}
 	
 }

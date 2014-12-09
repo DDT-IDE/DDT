@@ -12,7 +12,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 public interface IResolvable extends ILanguageElement {
 	
 	@Override
-	public IResolvableSemantics getSemantics(ISemanticContext parentContext);
+	public ResolvableSemantics getSemantics(ISemanticContext parentContext);
 	
 	public Collection<INamedElement> findTargetDefElements(ISemanticContext mr); 
 	

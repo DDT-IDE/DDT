@@ -7,7 +7,6 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionClass;
@@ -34,24 +33,24 @@ public class ExpSuper extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			DefinitionClass definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
-			if(definitionClass == null) {
-				return null;
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				DefinitionClass definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
+				if(definitionClass == null) {
+					return null;
+				}
+				
+				INamedElement superClass = definitionClass.getSemantics(context).resolveSuperClass(context);
+				if(superClass == null) {
+					return null;
+				}
+				return Collections.<INamedElement>singleton(superClass);
 			}
 			
-			INamedElement superClass = definitionClass.getSemantics(context).resolveSuperClass(context);
-			if(superClass == null) {
-				return null;
-			}
-			return Collections.<INamedElement>singleton(superClass);
-		}
-		
-	};
+		};
 	}
 	
 }

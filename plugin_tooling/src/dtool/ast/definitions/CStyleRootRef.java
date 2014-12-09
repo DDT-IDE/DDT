@@ -16,7 +16,6 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
@@ -45,14 +44,14 @@ public class CStyleRootRef extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ResolvableSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return null;
-		}
-		
-	};
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				return null;
+			}
+			
+		};
 	}
 }

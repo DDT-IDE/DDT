@@ -17,7 +17,6 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -72,15 +71,15 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	/* -----------------  ----------------- */
 
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected TypeReferenceSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeReferenceSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
-		}
-		
-	};
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
+			}
+			
+		};
 	}
 	
 	public static final IntrinsicFunctionType intrinsicFunctionTypeInstance = new IntrinsicFunctionType();

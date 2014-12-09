@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.IQualifierNode;
@@ -25,15 +25,13 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
-		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return Collections.emptySet(); // TODO
-		}
-		
-	};
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				return Collections.emptySet(); // TODO
+			}
+		};
 	}
 	
 }

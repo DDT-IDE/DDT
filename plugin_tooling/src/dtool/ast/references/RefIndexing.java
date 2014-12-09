@@ -16,7 +16,6 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
@@ -59,17 +58,17 @@ public class RefIndexing extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ResolvableSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			//TODO infer if its a static array, map array, or tupe
-			// Assume it's a static array. 
-			return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType);
-		}
-		
-	};
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				//TODO infer if its a static array, map array, or tupe
+				// Assume it's a static array. 
+				return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType);
+			}
+			
+		};
 	}
 	
 }

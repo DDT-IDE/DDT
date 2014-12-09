@@ -8,7 +8,6 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionClass;
@@ -46,19 +45,19 @@ public class ExpThis extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
-			if(definitionClass == null) {
-				return null;
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
+				if(definitionClass == null) {
+					return null;
+				}
+				return Collections.<INamedElement>singleton(definitionClass);
 			}
-			return Collections.<INamedElement>singleton(definitionClass);
-		}
-		
-	};
+			
+		};
 	}
 	
 }

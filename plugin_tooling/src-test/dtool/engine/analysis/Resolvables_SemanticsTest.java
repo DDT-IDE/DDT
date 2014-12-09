@@ -16,8 +16,8 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		ISemanticContext context = refElement.context;
 		
 		// Test caching
-		IResolvableSemantics semantics = ref.getSemantics(context);
+		ResolvableSemantics semantics = ref.getSemantics(context);
 		ResolvableResult resolveTargetElement = semantics.resolveTargetElement();
 		assertTrue(semantics == ref.getSemantics(context));
 		assertTrue(resolveTargetElement == semantics.resolveTargetElement());

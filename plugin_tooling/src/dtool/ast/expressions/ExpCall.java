@@ -10,7 +10,6 @@ import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -47,7 +46,7 @@ public class ExpCall extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override

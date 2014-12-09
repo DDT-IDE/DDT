@@ -20,7 +20,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
-import melnorme.lang.tooling.engine.resolver.IResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
@@ -61,20 +60,20 @@ public final class AutoReference extends Reference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ResolvableSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			IInitializer initializer = getParent_().getDeclaredInitializer();
-			if(initializer instanceof IResolvable) {
-				IResolvable valueNode = (IResolvable) initializer;
-				return valueNode.getSemantics(context).resolveTypeOfUnderlyingValue();
+			@Override
+			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+				IInitializer initializer = getParent_().getDeclaredInitializer();
+				if(initializer instanceof IResolvable) {
+					IResolvable valueNode = (IResolvable) initializer;
+					return valueNode.getSemantics(context).resolveTypeOfUnderlyingValue();
+				}
+				return null;
 			}
-			return null;
-		}
-		
-	};
+			
+		};
 	}
 	
 }

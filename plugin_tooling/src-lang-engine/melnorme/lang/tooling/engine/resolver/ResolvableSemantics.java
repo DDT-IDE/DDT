@@ -24,9 +24,7 @@ import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> 
-	implements IResolvableSemantics 
-{
+public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> {
 	
 	private final IResolvable resolvable;
 	
@@ -36,7 +34,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		this.resolvable = resolvable;
 	}
 	
-	@Override
 	public final ResolvableResult resolveTargetElement() {
 		return getElementResolution();
 	}
@@ -56,7 +53,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		return new ResolvableResult(result);
 	}
 	
-	@Override
 	public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
 		Collection<INamedElement> resolvedElements = this.findTargetDefElements(false);
 		
