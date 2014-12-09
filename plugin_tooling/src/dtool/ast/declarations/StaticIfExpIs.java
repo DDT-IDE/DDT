@@ -22,7 +22,7 @@ import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
@@ -35,17 +35,17 @@ public class StaticIfExpIs extends Expression {
 	public final StaticIfExpIsDefUnit isExpDefUnit;
 	public final ExpIsSpecialization specKind;
 	public final Reference specTypeRef;
-	public final ArrayView<TemplateParameter> tplParams;
+	public final ArrayView<ITemplateParameter> tplParams;
 	
 	public StaticIfExpIs(Reference typeRef, StaticIfExpIsDefUnit isExpDefUnit, ExpIsSpecialization specKind, 
-		Reference specTypeRef, ArrayView<TemplateParameter> tplParams) {
+		Reference specTypeRef, ArrayView<ITemplateParameter> tplParams) {
 		this.typeRef = parentize(assertNotNull(typeRef));
 		this.isExpDefUnit = parentize(isExpDefUnit);
 		this.specKind = specKind;
 		this.specTypeRef = parentize(specTypeRef);
 		assertTrue((specTypeRef == null) ==
 			(specKind != ExpIsSpecialization.TYPE_SUBTYPE && specKind != ExpIsSpecialization.TYPE_EXACT)); 
-		this.tplParams = parentize(tplParams);
+		this.tplParams = parentizeI(tplParams);
 		assertTrue((tplParams == null) ? true :
 			(specKind == ExpIsSpecialization.TYPE_SUBTYPE || specKind == ExpIsSpecialization.TYPE_EXACT)); 
 	}

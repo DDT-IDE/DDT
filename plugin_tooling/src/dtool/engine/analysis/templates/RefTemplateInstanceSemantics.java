@@ -21,7 +21,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
 
@@ -79,7 +79,7 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 		
 		Indexable<Resolvable> tplArgs = refTplInstance.getEffectiveArguments();
 		
-		int paramSize = template.getTemplateParameters().size();
+		int paramSize = template.getITemplateParameters().size();
 		if(paramSize != tplArgs.size()) {
 			return null;
 		}
@@ -87,7 +87,7 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();
 		
 		for (int ix = 0; ix < paramSize; ix++) {
-			TemplateParameter tplParameter = template.tplParams.get(ix);
+			ITemplateParameter tplParameter = template.tplParams.get(ix);
 			
 			instantiatedArgs.add(tplParameter.createTemplateArgument(tplArgs.get(ix)));
 		}

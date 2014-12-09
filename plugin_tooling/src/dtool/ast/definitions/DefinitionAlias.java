@@ -64,13 +64,13 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	
 	public static class DefinitionAliasFragment extends DefUnit {
 		
-		public final ArrayView<TemplateParameter> tplParams; // Since 2.064
+		public final ArrayView<ITemplateParameter> tplParams; // Since 2.064
 		public final Reference target;
 		
-		public DefinitionAliasFragment(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
+		public DefinitionAliasFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
 				Reference target) {
 			super(defId);
-			this.tplParams = parentize(tplParams);
+			this.tplParams = parentizeI(tplParams);
 			this.target = parentize(target);
 		}
 		

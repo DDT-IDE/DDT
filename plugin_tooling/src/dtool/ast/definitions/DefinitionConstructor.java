@@ -27,7 +27,7 @@ import dtool.parser.common.Token;
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration, IConcreteNamedElement {
 	
 	public DefinitionConstructor(Token[] comments, ProtoDefSymbol defId, 
-		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
+		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
 		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
 	{
 		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);

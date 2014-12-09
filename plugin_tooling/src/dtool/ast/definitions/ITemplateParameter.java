@@ -10,18 +10,13 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import dtool.ast.expressions.Resolvable;
 
-/**
- * TODO clean up template parameter semantics a bit
- */
-public abstract class TemplateParameter extends DefUnit {
+
+public interface ITemplateParameter extends IASTNode {
 	
-	public TemplateParameter(ProtoDefSymbol defId) {
-		super(defId);
-	}
-	
-	public abstract INamedElementNode createTemplateArgument(Resolvable argument);
+	INamedElementNode createTemplateArgument(Resolvable argument);
 	
 }

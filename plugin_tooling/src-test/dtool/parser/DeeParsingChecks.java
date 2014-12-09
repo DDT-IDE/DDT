@@ -26,7 +26,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 
@@ -171,12 +171,12 @@ public class DeeParsingChecks extends CommonTestUtils {
 			ASTNode nodeToCompareAgainst = null;
 			if(ambigParsedParameterResult instanceof IFunctionParameter) {
 				nodeToCompareAgainst = reparseAsFunctionParam ? (ASTNode) ambigParsedParameterResult : null;
-			} else if(ambigParsedParameterResult instanceof TemplateParameter) {
+			} else if(ambigParsedParameterResult instanceof ITemplateParameter) {
 				nodeToCompareAgainst = !reparseAsFunctionParam ? (ASTNode) ambigParsedParameterResult : null;
 			} else {
 				AmbiguousParameter ambigParsedParameter = (AmbiguousParameter) ambigParsedParameterResult;
-				nodeToCompareAgainst = reparseAsFunctionParam ? 
-					ambigParsedParameter.convertToFunction().asNode() : ambigParsedParameter.convertToTemplate(); 
+				nodeToCompareAgainst = (reparseAsFunctionParam ? 
+					ambigParsedParameter.convertToFunction() : ambigParsedParameter.convertToTemplate()).asNode(); 
 			}
 			
 			if(nodeToCompareAgainst != null) {

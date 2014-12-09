@@ -73,7 +73,7 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
@@ -800,7 +800,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		boolean isConstrutor, Reference retType, ProtoDefSymbol defId) {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<TemplateParameter> tplParams = null;
+		ArrayView<ITemplateParameter> tplParams = null;
 		ArrayView<FunctionAttributes> fnAttributes = null;
 		Expression tplConstraint = null;
 		IFunctionBody fnBody = null;
@@ -865,12 +865,12 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return fnParametersParse.parse(parse, isOptional).getAsFunctionParameters();
 	}
 	
-	protected final ArrayView<TemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
+	protected final ArrayView<ITemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		return tplParametersParse.parse(parse, isOptional).getAsTemplateParameters();
 	}
 	
-	protected final ArrayView<TemplateParameter> parseTemplateParametersList() {
+	protected final ArrayView<ITemplateParameter> parseTemplateParametersList() {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		tplParametersParse.parseParameterList(false);
 		return tplParametersParse.getAsTemplateParameters();
@@ -880,8 +880,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return (IFunctionParameter) new DeeParser_RuleParameters(TplOrFnMode.FN).parseParameter();
 	}
 	
-	public TemplateParameter parseTemplateParameter() {
-		return (TemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
+	public ITemplateParameter parseTemplateParameter() {
+		return (ITemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
 	}
 	
 	protected ArrayView<FunctionAttributes> parseFunctionAttributes() {
@@ -1021,7 +1021,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public class AggregateDefinitionParse extends DefParseHelper {
 
 		protected ProtoDefSymbol defId = null;
-		protected ArrayView<TemplateParameter> tplParams = null;
+		protected ArrayView<ITemplateParameter> tplParams = null;
 		protected Expression tplConstraint = null;
 		protected IAggregateBody declBody = null;
 		
@@ -1203,7 +1203,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public DefinitionAliasFragment parseAliasFragment() {
 		ProtoDefSymbol defId = parseDefId();
-		ArrayView<TemplateParameter> tplParams = null;
+		ArrayView<ITemplateParameter> tplParams = null;
 		Reference ref = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
@@ -1293,7 +1293,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 
 	public DefinitionEnumVarFragment parseEnumVarFragment() {
 		ProtoDefSymbol defId = parseDefId();
-		ArrayView<TemplateParameter> tplParams = null;
+		ArrayView<ITemplateParameter> tplParams = null;
 		IInitializer initializer = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());

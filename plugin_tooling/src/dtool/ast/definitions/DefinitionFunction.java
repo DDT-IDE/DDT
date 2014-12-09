@@ -27,7 +27,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	public final Reference retType;
 	
 	public DefinitionFunction(Token[] comments, Reference retType, ProtoDefSymbol defId,
-		ArrayView<TemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams,
+		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams,
 		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
 	{
 		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);

@@ -23,7 +23,7 @@ import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.AliasElement;
 
-public class TemplateValueParam extends TemplateParameter implements IConcreteNamedElement {
+public class TemplateValueParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
 	
 	public final Reference type;
 	public final Expression specializationValue;

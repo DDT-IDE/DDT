@@ -39,17 +39,17 @@ public class DefinitionTemplate extends CommonDefinition
 {
 	
 	public final boolean isMixin;
-	public final ArrayView<TemplateParameter> tplParams;
+	public final ArrayView<ITemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final DeclBlock decls;
 	
 	public final boolean wrapper;
 	
 	public DefinitionTemplate(Token[] comments, boolean isMixin, ProtoDefSymbol defId, 
-			ArrayView<TemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
+			ArrayView<ITemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
 		super(comments, defId);
 		this.isMixin = isMixin;
-		this.tplParams = parentize(tplParams);
+		this.tplParams = parentizeI(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.decls = parentize(decls);
 		
@@ -91,7 +91,7 @@ public class DefinitionTemplate extends CommonDefinition
 		}
 	}
 	
-	public ArrayView<TemplateParameter> getTemplateParameters() {
+	public ArrayView<ITemplateParameter> getITemplateParameters() {
 		return nonNull(tplParams);
 	}
 	

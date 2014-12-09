@@ -38,7 +38,7 @@ import dtool.ast.definitions.DefinitionAlias;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -422,7 +422,7 @@ public class DeeParserTester extends CommonTestUtils {
 		if(parseAsFnParamOnly) {
 			assertTrue(ambigParsedResult instanceof IFunctionParameter);
 		} else if(parseAsTplParamOnly) {
-			assertTrue(ambigParsedResult instanceof TemplateParameter);
+			assertTrue(ambigParsedResult instanceof ITemplateParameter);
 		} else {
 			assertTrue(ambigParsedResult instanceof AmbiguousParameter);
 		}

@@ -35,7 +35,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	public final ArrayView<Reference> baseClasses;
 	public final boolean baseClassesAfterConstraint;
 	
-	public DefinitionClass(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionClass(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
 		IAggregateBody aggrBody) 
 	{

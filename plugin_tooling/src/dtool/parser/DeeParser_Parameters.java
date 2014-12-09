@@ -29,7 +29,7 @@ import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.TemplateAliasParam;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.definitions.TemplateThisParam;
 import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.definitions.TemplateTypeParam;
@@ -161,12 +161,12 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			return getAsFunctionParameters();
 		}
 		
-		public final ArrayView<TemplateParameter> getAsTemplateParameters() {
+		public final ArrayView<ITemplateParameter> getAsTemplateParameters() {
 			assertTrue(mode == TplOrFnMode.TPL);
-			return arrayView(CoreUtil.<ArrayList<TemplateParameter>>blindCast(params));
+			return arrayView(CoreUtil.<ArrayList<ITemplateParameter>>blindCast(params));
 		}
 		
-		public final ArrayView<TemplateParameter> toTemplateParameters() {
+		public final ArrayView<ITemplateParameter> toTemplateParameters() {
 			assertTrue(isAmbiguous());
 			setMode(TplOrFnMode.TPL);
 			return getAsTemplateParameters();
@@ -288,7 +288,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 				new FunctionParameter(arrayViewG(attribs), ref, defId, paramDefault.toExpression().node, isVariadic));
 		}
 		
-		public TemplateParameter convertToTemplate() {
+		public ITemplateParameter convertToTemplate() {
 			if(attribs != null)  {
 				
 				for (int i = attribs.size()-1; i >= 0 ; i--) {

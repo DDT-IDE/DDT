@@ -12,7 +12,7 @@ import dtool.parser.common.Token;
  */
 public class DefinitionUnion extends DefinitionAggregate {
 	
-	public DefinitionUnion(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionUnion(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId, tplParams, tplConstraint, aggrBody);
 	}

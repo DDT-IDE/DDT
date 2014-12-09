@@ -13,7 +13,7 @@ import dtool.parser.common.Token;
  */
 public class DefinitionInterface extends DefinitionClass {
 	
-	public DefinitionInterface(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionInterface(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
 		IAggregateBody aggrBody) 
 	{

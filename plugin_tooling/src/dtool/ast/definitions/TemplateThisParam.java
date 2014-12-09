@@ -15,11 +15,12 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 
-public class TemplateThisParam extends TemplateParameter {
+public class TemplateThisParam extends DefUnit implements ITemplateParameter, IConcreteNamedElement {
 	
 	public TemplateThisParam(ProtoDefSymbol defId) {
 		super(defId);
@@ -49,7 +50,13 @@ public class TemplateThisParam extends TemplateParameter {
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NullNamedElementSemantics(this, pickedElement); // Need template instance
+		// Need template instance 
+		return new TODO_NamedElementSemantics(this, pickedElement) {
+			@Override
+			protected IConcreteNamedElement doResolveConcreteElement() {
+				return TemplateThisParam.this;
+			}
+		};
 	}
 	
 	@Override

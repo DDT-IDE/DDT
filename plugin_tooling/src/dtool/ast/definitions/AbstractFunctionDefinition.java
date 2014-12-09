@@ -25,18 +25,18 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	implements ICallableElement, IScopeElement, ITemplatableElement
 {
 	
-	public final ArrayView<TemplateParameter> tplParams;
+	public final ArrayView<ITemplateParameter> tplParams;
 	public final ArrayView<IFunctionParameter> fnParams;
 	public final ArrayView<FunctionAttributes> fnAttributes;
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint,
 		IFunctionBody fnBody) {
 		super(comments, defId);
 		
-		this.tplParams = parentize(tplParams);
+		this.tplParams = parentizeI(tplParams);
 		this.fnParams = parentizeI(fnParams);
 		this.fnAttributes = fnAttributes;
 		this.tplConstraint = parentize(tplConstraint);

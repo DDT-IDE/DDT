@@ -72,13 +72,13 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 	
 	public static class DefinitionEnumVarFragment extends DefUnit implements IVarDefinitionLike {
 		
-		public final ArrayView<TemplateParameter> tplParams; // Since 2.064
+		public final ArrayView<ITemplateParameter> tplParams; // Since 2.064
 		public final IInitializer initializer;
 		
-		public DefinitionEnumVarFragment(ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams, 
+		public DefinitionEnumVarFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
 				IInitializer initializer) {
 			super(defId);
-			this.tplParams = parentize(tplParams);
+			this.tplParams = parentizeI(tplParams);
 			this.initializer = parentize(initializer);
 		}
 		

@@ -31,7 +31,7 @@ import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.TemplateParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCall;
@@ -1455,7 +1455,7 @@ protected class ParseRule_Expression {
 		StaticIfExpIsDefUnit isExpDefUnit = null;
 		ExpIsSpecialization specKind = null;
 		Reference specTypeRef = null;
-		ArrayView<TemplateParameter> tplParams = null;
+		ArrayView<ITemplateParameter> tplParams = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;

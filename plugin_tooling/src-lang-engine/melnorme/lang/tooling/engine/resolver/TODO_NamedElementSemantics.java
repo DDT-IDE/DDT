@@ -16,23 +16,22 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /**
- * Does nothing.
+ * Common class for un-implemented NamedElementSemantics functionality.
  */
-public class NullNamedElementSemantics extends NamedElementSemantics {
+public class TODO_NamedElementSemantics extends NamedElementSemantics {
 	
-	public NullNamedElementSemantics(INamedElement element, PickedElement<?> pickedElement) {
+	public TODO_NamedElementSemantics(INamedElement element, PickedElement<?> pickedElement) {
 		super(element, pickedElement);
 	}
 	
 	@Override
 	protected IConcreteNamedElement doResolveConcreteElement() {
-		// /*FIXME: BUG here*/
-		return null; 
+		return null; // TODO
 	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext() {
-		return null;
+		return null; // TODO
 	}
 	
 	@Override

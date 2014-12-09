@@ -21,7 +21,7 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 
-public class TemplateTupleParam extends TemplateParameter implements IConcreteNamedElement {
+public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
 	
 	public TemplateTupleParam(ProtoDefSymbol defId) {
 		super(defId);

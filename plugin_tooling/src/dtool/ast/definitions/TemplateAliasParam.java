@@ -3,13 +3,15 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NullNamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 
-public class TemplateAliasParam extends TemplateParameter {
+public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	
 	public final Resolvable specializationValue;
 	public final Resolvable defaultValue;
@@ -49,7 +51,13 @@ public class TemplateAliasParam extends TemplateParameter {
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NullNamedElementSemantics(this, pickedElement); // Need template instance
+		 // Need template instance
+		return new TODO_NamedElementSemantics(this, pickedElement) {
+			@Override
+			protected IConcreteNamedElement doResolveConcreteElement() {
+				return new NotFoundErrorElement(element, null);
+			}
+		};
 	}
 	
 	@Override

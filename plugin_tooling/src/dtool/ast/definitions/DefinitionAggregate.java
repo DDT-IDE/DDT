@@ -37,14 +37,14 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	public interface IAggregateBody extends IASTNode {
 	}
 	
-	public final ArrayView<TemplateParameter> tplParams;
+	public final ArrayView<ITemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final IAggregateBody aggrBody;
 	
-	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<TemplateParameter> tplParams,
+	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId);
-		this.tplParams = parentize(tplParams);
+		this.tplParams = parentizeI(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.aggrBody = parentizeI(aggrBody);
 	}
