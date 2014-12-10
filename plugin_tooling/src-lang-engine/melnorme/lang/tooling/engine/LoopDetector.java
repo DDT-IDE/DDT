@@ -36,12 +36,12 @@ public class LoopDetector {
 		
 		Long nextId = waitingThreads.get(otherThreadId);
 		if(nextId != null) {
-			checkForLoop(currentThreadId, nextId); /*FIXME: BUG here MAKE*/
-//			checkForLoop(currentThreadId, otherThreadId);
+			checkForLoop(currentThreadId, nextId);
 		}
 	}
 	
 	public synchronized void unregisterWaitingThread(long currentThreadId) {
+		assertTrue(waitingThreads.containsKey(currentThreadId));
 		waitingThreads.remove(currentThreadId);
 	}
 	
