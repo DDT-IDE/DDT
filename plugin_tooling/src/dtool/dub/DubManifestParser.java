@@ -101,7 +101,7 @@ public class DubManifestParser extends CommonDubParser {
 		if(sourceFolders != null) {
 			effectiveSourceFolders = createPaths(sourceFolders);
 		} else if(searchImplicitSourceFolders && bundlePath != null) {
-			effectiveSourceFolders = searchImplicitSrcFolders(bundlePath.path);
+			effectiveSourceFolders = searchImplicitSrcFolders(bundlePath.getPath());
 		} else {
 			effectiveSourceFolders = null;
 		}

@@ -71,7 +71,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	}
 	
 	protected BundleKey bundleKey(BundlePath bundlePath) {
-		return bundleKey(bundlePath.path, null);
+		return bundleKey(bundlePath.getPath(), null);
 	}
 	
 	public ResolutionKey resKey(Path basePath, String subpackageName) {

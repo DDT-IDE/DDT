@@ -29,7 +29,7 @@ public final class ResolutionKey {
 	}
 	
 	public Path getPath() {
-		return bundleKey.bundlePath.path;
+		return bundleKey.bundlePath.getPath();
 	}
 	
 	@Override

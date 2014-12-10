@@ -54,7 +54,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static ResolvedModule getTesterModule(String sourcePath) {
 		try {
 			return defaultSemMgr.getUpdatedResolvedModule(
-				TESTER_TestsBundle.path.resolve("source").resolve(sourcePath), DEFAULT_TestsCompilerInstall);
+				TESTER_TestsBundle.getPath().resolve("source").resolve(sourcePath), DEFAULT_TestsCompilerInstall);
 		} catch (ExecutionException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

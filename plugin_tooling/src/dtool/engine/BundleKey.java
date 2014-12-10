@@ -33,7 +33,7 @@ public final class BundleKey {
 	}
 	
 	public Path getPath() {
-		return bundlePath.path;
+		return bundlePath.getPath();
 	}
 	
 	@Override

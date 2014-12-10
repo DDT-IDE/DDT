@@ -53,7 +53,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 		DubBundleDescription description = DubDescribeParser.parseDescription(XPTO_BUNDLE_PATH, describeSource);
 		
 		checkResolvedBundle(description, null, 
-			main(XPTO_BUNDLE_PATH.path, null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
+			main(XPTO_BUNDLE_PATH.getPath(), null, "xptobundle", "~master", paths("src", "src-test", "src-import"),
 				rawDeps("foo_lib"),
 				FOO_LIB_CHECKER, 
 				BAR_LIB_CHECKER));
@@ -114,7 +114,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 			SUB_PACKAGES_TEST, runDubDescribe(SUB_PACKAGES_TEST));
 		
 		checkResolvedBundle(description, null, 
-			main(SUB_PACKAGES_TEST.path, null, "sub_packages_test", "0.1.0", paths("src"),
+			main(SUB_PACKAGES_TEST.getPath(), null, "sub_packages_test", "0.1.0", paths("src"),
 				rawDeps(
 					"bar_lib", 
 					"sub_packages_test:sub_x",
@@ -123,9 +123,9 @@ public class DubDescribeParserTest extends CommonDubTest {
 				),
 				FOO_LIB_CHECKER, 
 				BAR_LIB_CHECKER,
-				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_x", "0.1.0", paths("src")),
-				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_a", "0.1.0", paths("src-A")),
-				bundle(SUB_PACKAGES_TEST.path, null, "sub_packages_test:sub_b", "0.1.0", paths("src-B"))
+				bundle(SUB_PACKAGES_TEST.getPath(), null, "sub_packages_test:sub_x", "0.1.0", paths("src")),
+				bundle(SUB_PACKAGES_TEST.getPath(), null, "sub_packages_test:sub_a", "0.1.0", paths("src-A")),
+				bundle(SUB_PACKAGES_TEST.getPath(), null, "sub_packages_test:sub_b", "0.1.0", paths("src-B"))
 			)
 		);
 		

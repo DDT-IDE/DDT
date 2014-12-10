@@ -211,20 +211,20 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		sm.getUpdatedResolution(SP_TEST);
-		checkStaleStatus(resKey(SP_TEST.path, "sub_x"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.path, "sub_b"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.path, "doesn't exists"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_x"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_b"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "doesn't exists"), StaleState.MANIFEST_STALE);
 		
 		sm.getUpdatedResolution(SP_FOO);
 		
 		___initSemanticManager();
-		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.MANIFEST_STALE);
 		BundleResolution bundleRes;
 		bundleRes = sm.getUpdatedResolution(SP_FOO2);
 		assertTrue(bundleRes.getDirectDependencies().size() == 1);
 		
-		checkStaleStatus(resKey(SP_TEST.path, "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.CURRENT);
 	}
 	
 	/* ----------------- module updates ----------------- */
@@ -313,7 +313,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	protected static final String SOURCE3 = "/* */ module  change3;";
 	
 	protected void testWorkingCopyModifications() throws ExecutionException, IOException {
-		Path modulePath = COMPLEX_LIB.path.resolve("source/complex_lib.d");
+		Path modulePath = COMPLEX_LIB.getPath().resolve("source/complex_lib.d");
 		
 		writeToFileAndUpdateMTime(modulePath, "module change0;");
 		getUpdatedResolution(COMPLEX_BUNDLE);

@@ -17,7 +17,9 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil.Location;
 
 /**
  * A valid directory path for a dub bundle.
@@ -38,7 +40,7 @@ public class BundlePath {
 	
 	public static BundlePath create(Path path) {
 		if(isValidBundlePath(path)) {
-			return new BundlePath(path);
+			return new BundlePath(PathUtil.newLocation_fromValid(path));
 		}
 		return null;
 	}
@@ -50,11 +52,11 @@ public class BundlePath {
 	
 	/* -----------------  ----------------- */
 	
-	public final Path path;
+	public final Location location;
 	
-	public BundlePath(Path path) {
-		assertTrue(BundlePath.isValidBundlePath(path));
-		this.path = path.normalize();
+	public BundlePath(Location location) {
+		assertTrue(BundlePath.isValidBundlePath(location.path));
+		this.location = location;
 	}
 	
 	@Override
@@ -64,29 +66,33 @@ public class BundlePath {
 		
 		BundlePath other = (BundlePath) obj;
 		
-		return areEqual(path, other.path);
+		return areEqual(location, other.location);
 	}
 	
 	@Override
 	public int hashCode() {
-		return path.hashCode();
+		return location.hashCode();
+	}
+	
+	public Path getPath() {
+		return location.path;
 	}
 	
 	public Path getManifestFilePath() {
-		return path.resolve(DUB_MANIFEST_FILENAME);
+		return getPath().resolve(DUB_MANIFEST_FILENAME);
 	}
 	
 	public Path resolve(Path other) {
-		return path.resolve(other);
+		return getPath().resolve(other);
 	}
 	
 	public Path resolve(String other) {
-		return path.resolve(other);
+		return getPath().resolve(other);
 	}
 	
 	@Override
 	public String toString() {
-		return path.toString();
+		return location.toString();
 	}
 	
 	/***

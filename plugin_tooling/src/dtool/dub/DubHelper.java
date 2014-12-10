@@ -53,7 +53,7 @@ public class DubHelper {
 			pb = new ProcessBuilder(getDubPath(), "describe", "--nodeps");
 		}
 		
-		pb.directory(bundlePath.path.toFile());
+		pb.directory(bundlePath.getPath().toFile());
 		
 		ExternalProcessResult processResult;
 		try {
