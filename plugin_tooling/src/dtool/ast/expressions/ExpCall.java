@@ -71,7 +71,7 @@ public class ExpCall extends Expression {
 			}
 			
 			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, false, context);
-			calleeElem.resolveSearchInMembersScope(search);
+			search.evaluateInMembersScope(calleeElem);
 			
 			for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
 				INamedElement defOpCall = iter.next();

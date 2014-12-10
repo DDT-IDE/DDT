@@ -16,6 +16,7 @@ import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -23,7 +24,6 @@ import org.junit.Test;
 
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.definitions.Module;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.engine.ResolvedModule;
@@ -33,37 +33,29 @@ import dtool.engine.analysis.templates.VarElement;
 
 public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	
-	public static TestsElementSearch resolveAllMembers(ResolvedModule module, Reference tplRef) {
+	public static CompletionScopeLookup resolveAllMembers(ResolvedModule module, Reference tplRef) {
 		ISemanticContext context = module.getSemanticContext();
-		TestsElementSearch search = allElementsSearch(module);
+		CompletionScopeLookup search = allElementsSearch(module);
 		INamedElement tplInstance_ = tplRef.getSemantics(context).resolveTargetElement().getSingleResult();
 		TemplateInstance tplInstance = assertCast(tplInstance_, TemplateInstance.class);
-		tplInstance.resolveSearchInMembersScope(search);
+		search.evaluateInMembersScope(tplInstance);
 		return search;
 	}
 	
-	protected static TestsElementSearch allElementsSearch(ResolvedModule module) {
-		return new TestsElementSearch(module.getModuleNode(), -1, module.getSemanticContext());
+	protected static CompletionScopeLookup allElementsSearch(ResolvedModule module) {
+		return new CompletionScopeLookup(module.getModuleNode(), -1, module.getSemanticContext());
 	}
 	
-	public static class TestsElementSearch extends CompletionScopeLookup {
+	public static INamedElement findElement(String elementName, CommonScopeLookup search) {
+		INamedElement foundMatch = null;
 		
-		public TestsElementSearch(Module refOriginModule, int refOffset, ISemanticContext moduleResolver) {
-			super(refOriginModule, refOffset, moduleResolver);
-		}
-		
-		public INamedElement findElement(String elementName) {
-			INamedElement foundMatch = null;
-			
-			for (INamedElement match : getMatchedElements()) {
-				if(match.getName().equals(elementName)) {
-					assertTrue(foundMatch == null);
-					foundMatch = match;
-				}
+		for (INamedElement match : search.getMatchedElements()) {
+			if(match.getName().equals(elementName)) {
+				assertTrue(foundMatch == null);
+				foundMatch = match;
 			}
-			return foundMatch;
 		}
-		
+		return foundMatch;
 	}
 	
 	/* -----------------  ----------------- */
@@ -94,11 +86,14 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 		ResolvedModule module = parseModule(TPL_DEF_A + "Tpl!(int) ref1;");
 		Reference tplRef = getSampleType(module, "ref1");
 		
-		// TODO:
-//		TestsElementSearch search = resolveAllMembers(module, tplRef);
-//		
-//		INamedElement tplArg = search.findElement("TYPE1");
-		//assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
+		
+		if(true)
+			return; // TODO: finish these tests
+		
+		CommonScopeLookup search = resolveAllMembers(module, tplRef);
+		
+		INamedElement tplArg = findElement("TYPE1", search);
+		assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
 		
 		
 		// TODO test template instantiated elements using NamedElements_Test

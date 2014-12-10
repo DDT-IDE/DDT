@@ -36,7 +36,10 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
 	
 	/** The scopes that have already been searched */
-	protected HashSet<IScopeElement> searchedScopes;
+	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
+	
+	/** The member scopes that have already been searched */
+	protected final HashSet<INamedElement> searchedMemberScopes = new HashSet<>(4);;
 	
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
@@ -45,7 +48,6 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, boolean findOneOnly, 
 		ISemanticContext moduleResolver) { 
-		this.searchedScopes = new HashSet<>(4);
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
@@ -145,6 +147,22 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		if(namedElement != null) {
 			visitElement(namedElement);
 		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	// XXX: perhaps refactor so that normal scopes can be used instead? 
+	public void evaluateInMembersScope(INamedElement nameElement) {
+		
+		if(isFinished() || nameElement == null)
+			return;
+		
+		if(searchedMemberScopes.contains(nameElement))
+			return;
+		
+		searchedMemberScopes.add(nameElement);
+		
+		nameElement.resolveSearchInMembersScope(this);
 	}
 	
 }

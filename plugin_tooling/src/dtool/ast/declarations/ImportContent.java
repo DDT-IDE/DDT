@@ -104,9 +104,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		//if(search.isScopeFinished()) return;
 		
 		INamedElement targetModule = findImportTargetModule(search.modResolver, impContent);
-		if(targetModule != null) {
-			targetModule.resolveSearchInMembersScope(search);
-		}
+		search.evaluateInMembersScope(targetModule);
 	}
 	
 	public static INamedElement findImportTargetModule(ISemanticContext modResolver, IImportFragment impSelective) {

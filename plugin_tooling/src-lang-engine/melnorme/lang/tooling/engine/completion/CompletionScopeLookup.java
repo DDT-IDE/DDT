@@ -39,10 +39,6 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 		this.searchOptions = searchOptions;
 	}
 	
-	public int getOffset() {
-		return refOffset;
-	}
-	
 	@Override
 	public boolean matchesName(String defName) {
 		return defName.startsWith(searchOptions.searchPrefix);

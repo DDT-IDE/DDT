@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__NAME;
+import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__Name;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -47,7 +47,7 @@ public class NamedElements_ModuleSynthetics_Test extends NamedElement_CommonTest
 			"import xxx.foo; auto _ = xxx;", "xxx;");
 		assertTrue(pickedElement.element instanceof PackageNamespace);
 		
-		test_resolveElement(pickedElement, NOT_FOUND__NAME, "xxx", true);
+		test_resolveElement(pickedElement, NOT_FOUND__Name, "xxx", true);
 	}
 	
 	/* -----------------  ----------------- */

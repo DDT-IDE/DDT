@@ -41,7 +41,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
 		
 		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
-			ErrorElement.NOT_FOUND__NAME);
+			ErrorElement.NOT_FOUND__Name);
 		
 		// Test package refs.
 		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");
@@ -62,7 +62,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == ErrorElement.NOT_FOUND__NAME) {
+		if(fqn == ErrorElement.NOT_FOUND__Name) {
 			return;
 		}
 		
@@ -81,7 +81,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == ErrorElement.NOT_FOUND__NAME) {
+		if(fqn == ErrorElement.NOT_FOUND__Name) {
 			return;
 		}
 		

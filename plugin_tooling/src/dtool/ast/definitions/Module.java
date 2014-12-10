@@ -208,9 +208,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	
 	public static void findDefUnitInObjectIntrinsic(CommonScopeLookup search) {
 		INamedElement targetModule = ResolvableSemantics.findModuleUnchecked(search.modResolver, "object");
-		if (targetModule != null) {
-			targetModule.resolveSearchInMembersScope(search);
-		}
+		search.evaluateInMembersScope(targetModule);
 	}
 	
 	@Override

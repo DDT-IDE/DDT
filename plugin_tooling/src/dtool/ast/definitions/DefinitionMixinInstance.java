@@ -72,9 +72,7 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 					// TODO: add fake element for missing syntax
 					
 					INamedElement result = templateInstance.getSemantics(context).resolveTargetElement().result;
-					if(result != null) {
-						result.resolveSearchInMembersScope(search);
-					}
+					search.evaluateInMembersScope(result);
 				}
 			}
 			

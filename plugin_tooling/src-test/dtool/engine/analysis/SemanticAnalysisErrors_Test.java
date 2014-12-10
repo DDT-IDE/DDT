@@ -56,7 +56,7 @@ public class SemanticAnalysisErrors_Test extends CommonNodeSemanticsTest {
 	}
 	
 	protected void checkResultNotFound(INamedElement result) {
-		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__NAME));
+		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__Name));
 		assertTrue(result.getNameInRegularNamespace() == null);
 	}
 	
@@ -73,12 +73,22 @@ public class SemanticAnalysisErrors_Test extends CommonNodeSemanticsTest {
 		checkLoopResult(
 			doResolveConcreteElement("alias A= B; alias B = C; alias C = A/**/;", "C = A"));
 		
-		checkLoopResult(
-			doResolveConcreteElementForRef("B A/**/; A B; alias _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("B A; A B; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("alias A= B; alias B = A; auto _ = A.xxx;", "xxx"));
+		
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : A { }; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : B { }; class B : A { }; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : A; auto _ = A.xxx;", "xxx"));
 	}
 	
 	protected void checkLoopResult(INamedElement result) {
-		assertTrue(result.getName().equals(ErrorElement.LOOP_ERROR_ELEMENT_Name));
+		assertTrue(result.getName().equals(ErrorElement.LOOP_ERROR_ELEMENT__Name));
 		assertTrue(result.getNameInRegularNamespace() == null);
 	}
 	

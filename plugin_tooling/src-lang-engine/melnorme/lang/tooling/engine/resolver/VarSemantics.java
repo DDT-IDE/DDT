@@ -26,9 +26,7 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
 		INamedElement effectiveType = resolveTypeForValueContext();
-		if(effectiveType != null) {
-			effectiveType.resolveSearchInMembersScope(search);
-		}
+		search.evaluateInMembersScope(effectiveType);
 	}
 	
 	@Override

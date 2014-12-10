@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__NAME;
+import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__Name;
 
 
 
@@ -22,12 +22,12 @@ public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "intVar", "int", false);
 		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "intVar", "int", false);
 		// broken variant
-		test_resolveElement(parseNamedElement("alias intVar XXX; "), NOT_FOUND__NAME, null, true);
-		test_resolveElement(parseNamedElement("alias XXX = intVar; "), NOT_FOUND__NAME, null, true);
+		test_resolveElement(parseNamedElement("alias intVar XXX; "), NOT_FOUND__Name, null, true);
+		test_resolveElement(parseNamedElement("alias XXX = intVar; "), NOT_FOUND__Name, null, true);
 		
 		/* FIXME: do syntax error element */
-		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__NAME, null, true);
-		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__NAME, null, true);
+		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name, null, true);
+		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, null, true);
 		
 		// Test alias to type
 		test_resolveElement(parseNamedElement("alias int XXX; "), "int", "int", true);

@@ -25,21 +25,21 @@ import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
-	public static final String NOT_FOUND__NAME = "<not_found>";
-	public static final String LOOP_ERROR_ELEMENT_Name = "<Loop_Error>";
+	public static final String NOT_FOUND__Name = "<not_found>";
+	public static final String LOOP_ERROR_ELEMENT__Name = "<Loop_Error>";
 	
 	
 	public static ErrorElement newNotFoundError(IResolvable resolvable) {
 		ElementDoc doc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
-		return new ErrorElement(NOT_FOUND__NAME, resolvable, doc);
+		return new ErrorElement(NOT_FOUND__Name, resolvable, doc);
 	}
 	
 	public static ErrorElement newNotFoundError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(NOT_FOUND__NAME, parent, doc);
+		return new ErrorElement(NOT_FOUND__Name, parent, doc);
 	}
 	
 	public static ErrorElement newLoopError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(LOOP_ERROR_ELEMENT_Name, parent, doc);
+		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, parent, doc);
 	}
 	
 	/* -----------------  ----------------- */

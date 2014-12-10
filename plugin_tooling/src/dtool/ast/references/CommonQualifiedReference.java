@@ -63,9 +63,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 			return;
 		
 		for (INamedElement container : containers) {
-			if(search.isFinished())
-				return;
-			container.resolveSearchInMembersScope(search);
+			search.evaluateInMembersScope(container);
 		}
 		
 	}

@@ -126,8 +126,8 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 			
 			visitConcrete(parseDefUnit("template xxx() { }"));
 			visitConcrete(parseDefUnit("template blah(int xxx) { }"));
-			visitAliasElement(parseDefUnit("template blah(xxx) { }"), ErrorElement.NOT_FOUND__NAME);
-			visitAliasElement(parseDefUnit("template blah(alias xxx) { }"), ErrorElement.NOT_FOUND__NAME);
+			visitAliasElement(parseDefUnit("template blah(xxx) { }"), ErrorElement.NOT_FOUND__Name);
+			visitAliasElement(parseDefUnit("template blah(alias xxx) { }"), ErrorElement.NOT_FOUND__Name);
 			visitConcrete(parseDefUnit("template blah(this xxx) { }"));
 			
 			visitConcrete(parseDefUnit("mixin blah xxx;"));

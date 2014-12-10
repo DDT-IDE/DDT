@@ -41,7 +41,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	
 	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		resolveAliasTarget_nonNull().resolveSearchInMembersScope(search);
+		search.evaluateInMembersScope(resolveAliasTarget_nonNull());
 	}
 	
 	@Override
