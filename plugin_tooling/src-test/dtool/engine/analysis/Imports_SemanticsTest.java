@@ -88,8 +88,8 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		assertTrue(result instanceof PackageNamespace); 
 		
 		IConcreteNamedElement concreteTarget = result.resolveConcreteElement(refToPackage.context);
-		assertTrue(concreteTarget instanceof ErrorElement); // TODO: define this behavior better
-//		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
+		assertTrue(concreteTarget instanceof PackageNamespace);
+		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	
 	

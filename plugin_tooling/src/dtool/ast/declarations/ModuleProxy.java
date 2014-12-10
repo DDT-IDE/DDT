@@ -19,6 +19,7 @@ import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -110,7 +111,7 @@ public class ModuleProxy extends AbstractNamedElement {
 			}
 			
 			@Override
-			protected INamedElement resolveAliasTarget(ISemanticContext context) {
+			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
 				return resolveUnderlyingNode();
 			}
 			

@@ -13,8 +13,8 @@ package dtool.engine.analysis.templates;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionTemplate;
 
@@ -34,7 +34,10 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 		if(defTemplate.wrapper) {
 			// TODO: go straight to members of wrapped definition
 		}
-		TypeSemantics.resolveSearchInScope(search, defTemplate.decls);
+		IScopeElement scope = defTemplate.decls; //TODO create empty scope.
+		if(scope != null) {
+			search.evaluateScope(scope);
+		}
 	}
 	
 	@Override

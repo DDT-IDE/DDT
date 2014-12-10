@@ -100,7 +100,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			resolveSearchInScope(search, DefinitionAggregate.this.membersScope);
+			search.evaluateScope(DefinitionAggregate.this.membersScope);
 			commonTypeScope.resolveSearchInScope(search);
 		}
 	

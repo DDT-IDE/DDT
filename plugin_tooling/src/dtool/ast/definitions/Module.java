@@ -217,7 +217,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				resolveSearchInScope(search, Module.this);
+				search.evaluateScope(Module.this);
 			}
 			
 		};

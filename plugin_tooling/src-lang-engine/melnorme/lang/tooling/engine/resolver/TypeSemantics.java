@@ -12,8 +12,6 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -33,12 +31,6 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	@Override
 	public final INamedElement resolveTypeForValueContext() {
 		return notAValueError;
-	}
-	
-	public static void resolveSearchInScope(CommonScopeLookup search, IScopeElement scope) {
-		if(scope != null) {
-			search.evaluateScope(scope);
-		}
 	}
 	
 }

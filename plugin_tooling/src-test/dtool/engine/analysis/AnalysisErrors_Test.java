@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import dtool.ast.references.RefIdentifier;
 
-public class SemanticAnalysisErrors_Test extends CommonNodeSemanticsTest {
+public class AnalysisErrors_Test extends CommonNodeSemanticsTest {
 	
 	protected IConcreteNamedElement doResolveConcreteElement(String source, String marker) {
 		PickedElement<INamedElement> pickedElement = parseElement(source, marker, INamedElement.class);

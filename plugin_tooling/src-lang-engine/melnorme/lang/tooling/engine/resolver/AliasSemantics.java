@@ -11,8 +11,8 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -24,19 +24,19 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		super(element, pickedElement);
 	}
 	
-	protected INamedElement resolveAliasTarget_nonNull() {
-		INamedElement result = resolveAliasTarget(context);
+	protected IConcreteNamedElement resolveAliasTarget_nonNull() {
+		IConcreteNamedElement result = resolveAliasTarget(context);
 		if(result == null) {
 			return ErrorElement.newNotFoundError(element, null);
 		}
 		return result;
 	}
 	
-	protected abstract INamedElement resolveAliasTarget(ISemanticContext context);
+	protected abstract IConcreteNamedElement resolveAliasTarget(ISemanticContext context);
 	
 	@Override
 	protected IConcreteNamedElement doResolveConcreteElement() {
-		return resolveAliasTarget_nonNull().resolveConcreteElement(context);
+		return resolveAliasTarget_nonNull();
 	}
 	
 	@Override
@@ -58,17 +58,18 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		}
 		
 		@Override
-		protected INamedElement resolveAliasTarget(ISemanticContext context) {
-			return resolveAliasTarget(context, getAliasTarget());
+		protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
+			return resolveAliasTarget(getAliasTarget());
 		}
 		
 		protected abstract IResolvable getAliasTarget();
 		
-		protected static INamedElement resolveAliasTarget(ISemanticContext context, IResolvable aliasTarget) {
+		protected IConcreteNamedElement resolveAliasTarget(IResolvable aliasTarget) {
 			if(aliasTarget == null) {
 				return null;
 			}
-			return aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
+			INamedElement namedElement = aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
+			return resolveConcreteElement(namedElement);
 		}
 		
 	}

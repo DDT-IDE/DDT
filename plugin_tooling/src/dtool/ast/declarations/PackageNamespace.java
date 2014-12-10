@@ -15,13 +15,13 @@ import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
-import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -33,7 +33,7 @@ import dtool.ast.definitions.EArcheType;
  * It does not represent the full package namespace, but just one of the elements containted in the namespace.
  * (the containted element must be a sub-package, or a module) 
  */
-public class PackageNamespace extends AbstractNamedElement implements IScopeElement {
+public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
 	
 	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module, 
 			ILanguageElement container) {
@@ -107,13 +107,12 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	@Override
 	protected final NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new AliasSemantics(this, pickedElement) {
-
-			protected final ErrorElement errorElement = ErrorElement.newNotFoundError(PackageNamespace.this, null);
+			
 			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);
 			
 			@Override
-			protected INamedElement resolveAliasTarget(ISemanticContext context) {
-				return errorElement;
+			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
+				return PackageNamespace.this;
 			}
 			
 			@Override

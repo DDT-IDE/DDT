@@ -19,6 +19,7 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
@@ -47,7 +48,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	}
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, boolean findOneOnly, 
-		ISemanticContext moduleResolver) { 
+			ISemanticContext moduleResolver) { 
 		this.refOffset = refOffset;
 		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
@@ -153,16 +154,23 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	// XXX: perhaps refactor so that normal scopes can be used instead? 
 	public void evaluateInMembersScope(INamedElement nameElement) {
-		
 		if(isFinished() || nameElement == null)
 			return;
 		
-		if(searchedMemberScopes.contains(nameElement))
+		IConcreteNamedElement concreteElement = nameElement.resolveConcreteElement(modResolver);
+		evaluateInMembersScope(concreteElement);
+	}
+	
+	protected void evaluateInMembersScope(IConcreteNamedElement concreteElement) {
+		if(concreteElement == null)
 			return;
 		
-		searchedMemberScopes.add(nameElement);
+		if(searchedMemberScopes.contains(concreteElement))
+			return;
 		
-		nameElement.resolveSearchInMembersScope(this);
+		searchedMemberScopes.add(concreteElement);
+		
+		concreteElement.resolveSearchInMembersScope(this);
 	}
 	
 }

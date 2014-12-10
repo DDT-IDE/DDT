@@ -115,7 +115,7 @@ public class DefinitionClass extends DefinitionAggregate {
 				
 				if(baseClassElem instanceof DefinitionClass) {
 					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-					baseClassDef.getSemantics(context).resolveSearchInMembersScope(search);
+					search.evaluateScope(baseClassDef.membersScope);
 				}
 			}
 		}

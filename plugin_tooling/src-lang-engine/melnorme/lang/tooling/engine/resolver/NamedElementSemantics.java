@@ -46,6 +46,13 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	protected abstract IConcreteNamedElement doResolveConcreteElement();
 	
+	protected IConcreteNamedElement resolveConcreteElement(INamedElement namedElement) {
+		if(namedElement == null) {
+			return null;
+		}
+		return namedElement.resolveConcreteElement(context);
+	}
+	
 	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	
 	/* FIXME: review this API */

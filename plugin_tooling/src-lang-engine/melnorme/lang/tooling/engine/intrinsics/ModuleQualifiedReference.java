@@ -18,6 +18,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 /**
@@ -54,9 +55,10 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 			INamedElement module = ResolvableSemantics.findModuleUnchecked(context, moduleFullName);
 			if(module == null) 
 				return null;
+			IConcreteNamedElement moduleConcrete = module.resolveConcreteElement(context);
 			
 			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, findOneOnly, context);
-			search.evaluateInMembersScope(module);
+			search.evaluateInMembersScope(moduleConcrete);
 			return search.getMatchedElements();
 		}
 		

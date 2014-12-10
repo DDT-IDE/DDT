@@ -51,6 +51,7 @@ public class ExpCall extends Expression {
 		
 		@Override
 		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			// FIXME: should use resolve type element:
 			INamedElement calleeElem = callee.resolveTargetElement(context);
 			if(calleeElem == null)
 				return null;
