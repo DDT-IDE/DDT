@@ -11,9 +11,11 @@
 package dtool.ast.definitions;
 
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
@@ -22,7 +24,6 @@ import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
-import dtool.ast.declarations.DeclarationEmpty;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
@@ -41,12 +42,19 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	public final Expression tplConstraint;
 	public final IAggregateBody aggrBody;
 	
+	public final IScopeElement membersScope;
+	
 	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId);
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.aggrBody = parentize(aggrBody);
+		
+		membersScope = aggrBody instanceof DeclBlock ? 
+				((DeclBlock) aggrBody) :
+				parentize(new DeclBlock(ArrayView.<ASTNode>createFrom())); 
+		assertNotNull(membersScope);
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor) {
@@ -71,9 +79,6 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		return tplParams != null;
 	}
 	
-	public IScopeElement getBodyScope() {
-		return aggrBody instanceof DeclarationEmpty ? null : ((DeclBlock) aggrBody);
-	}
 	
 	/* ----------------- ----------------- */
 	
@@ -95,7 +100,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			resolveSearchInScope(search, getBodyScope());
+			resolveSearchInScope(search, DefinitionAggregate.this.membersScope);
 			commonTypeScope.resolveSearchInScope(search);
 		}
 	

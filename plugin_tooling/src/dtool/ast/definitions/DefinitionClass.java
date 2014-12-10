@@ -105,20 +105,6 @@ public class DefinitionClass extends DefinitionAggregate {
 			super(classElement, commonTypeScope, pickedElement);
 		}
 		
-		@Override
-		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			resolveSearchInHierarchyScope(search);
-			commonTypeScope.resolveSearchInScope(search);
-		}
-		
-		public void resolveSearchInHierarchyScope(CommonScopeLookup search) {
-			resolveSearchInScope(search, getBodyScope());
-			if(getBodyScope() == null) {
-				// Even without a body scope, we can resolve in super scopes
-				resolveSearchInSuperScopes(search);
-			}
-		}
-		
 		public void resolveSearchInSuperScopes(CommonScopeLookup search) {
 			ISemanticContext context = search.modResolver;
 			
@@ -129,7 +115,7 @@ public class DefinitionClass extends DefinitionAggregate {
 				
 				if(baseClassElem instanceof DefinitionClass) {
 					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-					baseClassDef.getSemantics(context).resolveSearchInHierarchyScope(search);
+					baseClassDef.getSemantics(context).resolveSearchInMembersScope(search);
 				}
 			}
 		}

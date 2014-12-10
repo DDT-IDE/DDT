@@ -23,7 +23,12 @@ import melnorme.utilbox.misc.ArrayUtil;
  */
 public class ArrayView<E> implements Indexable<E> {
 	
-	public static ArrayView<?> EMPTY_ARRAYVIEW = new ArrayView<Object>(new Object[0]);
+	public static final ArrayView<?> EMPTY_ARRAYVIEW = new ArrayView<Object>(new Object[0]);
+	
+	@SafeVarargs
+	public static <T> ArrayView<T> createFrom(T... arr){
+		return new ArrayView<T>(arr);
+	}
 	
 	public static <T> ArrayView<T> create(T[] arr){
 		return new ArrayView<T>(arr);
