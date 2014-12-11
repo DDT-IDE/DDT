@@ -38,43 +38,43 @@ public class CompilerInstallDetector {
 	protected CompilerInstall detectDMDInstall(Location commandPath) {
 		Location cmdDir = commandPath.getParent();
 		
-		if(cmdDir.resolve("../../src/druntime").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../../src/druntime").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
-				cmdDir.resolve("../../src/druntime/import"),
-				cmdDir.resolve("../../src/phobos"));
+				cmdDir.resolve_fromValid("../../src/druntime/import"),
+				cmdDir.resolve_fromValid("../../src/phobos"));
 		}
 		// a MacOSX layout:
-		if(cmdDir.resolve("../src/druntime").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../src/druntime").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
-				cmdDir.resolve("../src/druntime/import"),
-				cmdDir.resolve("../src/phobos"));
+				cmdDir.resolve_fromValid("../src/druntime/import"),
+				cmdDir.resolve_fromValid("../src/phobos"));
 		}
 		// another MacOSX layout
-		Location resolvedCmdPath = cmdDir.resolve("../share/dmd/bin/dmd");
+		Location resolvedCmdPath = cmdDir.resolve_fromValid("../share/dmd/bin/dmd");
 		if(resolvedCmdPath.toFile().exists()) {
 			Location resolvedCmdDir = resolvedCmdPath.getParent();
-			if(resolvedCmdDir.resolve("../src/druntime").toFile().exists()) {
+			if(resolvedCmdDir.resolve_fromValid("../src/druntime").toFile().exists()) {
 				return new CompilerInstall(resolvedCmdPath, ECompilerType.DMD, 
-					resolvedCmdDir.resolve("../src/druntime/import"),
-					resolvedCmdDir.resolve("../src/phobos"));
+					resolvedCmdDir.resolve_fromValid("../src/druntime/import"),
+					resolvedCmdDir.resolve_fromValid("../src/phobos"));
 			}
 		}
 		
-		if(cmdDir.resolve("../include/dlang/dmd").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../include/dlang/dmd").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
-				cmdDir.resolve("../include/dlang/dmd"));
+				cmdDir.resolve_fromValid("../include/dlang/dmd"));
 		}
 		
-		if(cmdDir.resolve("../include/dmd").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../include/dmd").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
-				cmdDir.resolve("../include/dmd/druntime/import"),
-				cmdDir.resolve("../include/dmd/phobos"));
+				cmdDir.resolve_fromValid("../include/dmd/druntime/import"),
+				cmdDir.resolve_fromValid("../include/dmd/phobos"));
 		}
 		
-		if(cmdDir.resolve("../../include/d/dmd").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../../include/d/dmd").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
-				cmdDir.resolve("../../include/d/dmd/druntime/import"),
-				cmdDir.resolve("../../include/d/dmd/phobos"));
+				cmdDir.resolve_fromValid("../../include/d/dmd/druntime/import"),
+				cmdDir.resolve_fromValid("../../include/d/dmd/phobos"));
 		}
 		return null;
 	}
@@ -82,15 +82,15 @@ public class CompilerInstallDetector {
 	protected CompilerInstall detectLDCInstall(Location commandPath) {
 		Location cmdDir = commandPath.getParent();
 		
-		if(cmdDir.resolve("../include/dlang/ldc").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../include/dlang/ldc").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC, 
-				cmdDir.resolve("../include/dlang/ldc"));
+				cmdDir.resolve_fromValid("../include/dlang/ldc"));
 		}
 		
-		if(cmdDir.resolve("../import/core").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../import/core").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC,
-				cmdDir.resolve("../import/ldc"),
-				cmdDir.resolve("../import"));
+				cmdDir.resolve_fromValid("../import/ldc"),
+				cmdDir.resolve_fromValid("../import"));
 		}
 		return null;
 	}
@@ -98,16 +98,16 @@ public class CompilerInstallDetector {
 	protected CompilerInstall detectGDCInstall(Location commandPath) {
 		Location cmdDir = commandPath.getParent();
 		
-		if(cmdDir.resolve("../include/dlang/gdc").toFile().exists()) {
+		if(cmdDir.resolve_fromValid("../include/dlang/gdc").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.GDC, 
-				cmdDir.resolve("../include/dlang/gdc"));
+				cmdDir.resolve_fromValid("../include/dlang/gdc"));
 		}
 		
-		CompilerInstall install = checkGDCLibrariesAt(cmdDir.resolve("../include/d"), commandPath);
+		CompilerInstall install = checkGDCLibrariesAt(cmdDir.resolve_fromValid("../include/d"), commandPath);
 		if(install != null) 
 			return install;
 		
-		return checkGDCLibrariesAt(cmdDir.resolve("../include/d2"), commandPath);
+		return checkGDCLibrariesAt(cmdDir.resolve_fromValid("../include/d2"), commandPath);
 	}
 	
 	protected CompilerInstall checkGDCLibrariesAt(Location includeD2Dir, Location commandPath) {

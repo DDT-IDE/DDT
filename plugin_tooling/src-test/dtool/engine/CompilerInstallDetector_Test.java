@@ -30,22 +30,22 @@ import dtool.util.SearchPathEnvOperation;
 
 public class CompilerInstallDetector_Test extends CommonDToolTest {
 	
-	public static final Location MOCK_DMD = MOCK_COMPILERS_PATH.resolve("DMD_archive");
-	public static final Location MOCK_DMD_CMDPATH = MOCK_DMD.resolve("windows/bin/dmd.exe");
-	public static final Location MOCK_DMD_LINUX = MOCK_COMPILERS_PATH.resolve("DMD-linux");
-	public static final Location MOCK_DMD2_SYSTEM_CMDPATH = MOCK_DMD_LINUX.resolve("usr/bin/dmd");
-	public static final Location MOCK_DMD_LINUX2 = MOCK_COMPILERS_PATH.resolve("DMD-linux2");
-	public static final Location MOCK_DMD2_SYSTEM2_CMDPATH2 = MOCK_DMD_LINUX2.resolve("usr/bin/dmd");
+	public static final Location MOCK_DMD = loc(MOCK_COMPILERS_PATH, "DMD_archive");
+	public static final Location MOCK_DMD_CMDPATH = loc(MOCK_DMD, "windows/bin/dmd.exe");
+	public static final Location MOCK_DMD_LINUX = loc(MOCK_COMPILERS_PATH, "DMD-linux");
+	public static final Location MOCK_DMD2_SYSTEM_CMDPATH = loc(MOCK_DMD_LINUX, "usr/bin/dmd");
+	public static final Location MOCK_DMD_LINUX2 = loc(MOCK_COMPILERS_PATH, "DMD-linux2");
+	public static final Location MOCK_DMD2_SYSTEM2_CMDPATH2 = loc(MOCK_DMD_LINUX2, "usr/bin/dmd");
 
-	public static final Location MOCK_GDC = MOCK_COMPILERS_PATH.resolve("gdcInstall");
-	public static final Location MOCK_GDC_CMDPATH = MOCK_GDC.resolve("bin/gdc");
-	public static final Location MOCK_GDC_B = MOCK_COMPILERS_PATH.resolve("gdcInstallB");
-	public static final Location MOCK_GDC_B_CMDPATH = MOCK_GDC_B.resolve("bin/gdc");
+	public static final Location MOCK_GDC = loc(MOCK_COMPILERS_PATH, "gdcInstall");
+	public static final Location MOCK_GDC_CMDPATH = loc(MOCK_GDC, "bin/gdc");
+	public static final Location MOCK_GDC_B = loc(MOCK_COMPILERS_PATH, "gdcInstallB");
+	public static final Location MOCK_GDC_B_CMDPATH = loc(MOCK_GDC_B, "bin/gdc");
 
-	public static final Location MOCK_LDC_ARCHIVE = MOCK_COMPILERS_PATH.resolve("ldc-archive");
+	public static final Location MOCK_LDC_ARCHIVE = loc(MOCK_COMPILERS_PATH, "ldc-archive");
 	
 	
-	public static final Location MULTIPLE_IN_ONE_PATH = MOCK_COMPILERS_PATH.resolve("_multipleInSameLocation/bin");
+	public static final Location MULTIPLE_IN_ONE_PATH = loc(MOCK_COMPILERS_PATH, "_multipleInSameLocation/bin");
 
 	
 	protected final String PATH_SEP = SearchPathEnvOperation.getPathsSeparator();
@@ -69,11 +69,13 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			"include/d/dmd/druntime/import",
 			"include/d/dmd/phobos"
 		));
-		testDetectInstall(MOCK_COMPILERS_PATH.resolve("DMD-macosx/share/dmd"), "bin/dmd", ECompilerType.DMD, list(
+		
+		final Location MOCK_DMD_MACOSX = MOCK_COMPILERS_PATH.resolve_fromValid("DMD-macosx/share/dmd");
+		testDetectInstall(MOCK_DMD_MACOSX, "bin/dmd", ECompilerType.DMD, list(
 			"src/druntime/import",
 			"src/phobos"
 		));
-		testDetectInstall(MOCK_COMPILERS_PATH.resolve("DMD-macosx/share/dmd"), "../../bin/dmd", "bin/dmd", 
+		testDetectInstall(MOCK_DMD_MACOSX, "../../bin/dmd", "bin/dmd", 
 			ECompilerType.DMD, list(
 			"src/druntime/import",
 			"src/phobos"
@@ -93,13 +95,13 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		));
 		
 		// Arch Linux
-		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/dmd", ECompilerType.DMD, list(
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve_fromValid("archLinux/usr"), "bin/dmd", ECompilerType.DMD, list(
 			"include/dlang/dmd"
 		));
-		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/ldc2", ECompilerType.LDC, list(
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve_fromValid("archLinux/usr"), "bin/ldc2", ECompilerType.LDC, list(
 			"include/dlang/ldc"
 		));
-		testDetectInstall(MOCK_COMPILERS_PATH.resolve("archLinux/usr"), "bin/gdc", ECompilerType.GDC, list(
+		testDetectInstall(MOCK_COMPILERS_PATH.resolve_fromValid("archLinux/usr"), "bin/gdc", ECompilerType.GDC, list(
 			"include/dlang/gdc"
 		));
 	}
@@ -111,9 +113,9 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 	
 	protected void testDetectInstall(Location installPath, String compilerPathStr, String resolvedCompilerPathStr,
 			ECompilerType type, List<String> pathStrings) {
-		Location compilerPath = installPath.resolve(compilerPathStr);
+		Location compilerPath = installPath.resolve_fromValid(compilerPathStr);
 		CompilerInstall install = detector.detectInstallFromCompilerCommandPath(compilerPath);
-		Location resolvedCompilerPath = installPath.resolve(resolvedCompilerPathStr);
+		Location resolvedCompilerPath = installPath.resolve_fromValid(resolvedCompilerPathStr);
 		checkInstall(install, resolvedCompilerPath, type, installPath, pathStrings);
 	}
 	
@@ -121,7 +123,7 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			Location installPath, List<String> pathStrings) {
 		ArrayList<Location> paths = new ArrayList<>(pathStrings.size());
 		for (String pathString : pathStrings) {
-			paths.add(installPath.resolve(pathString));
+			paths.add(installPath.resolve_fromValid(pathString));
 		}
 		assertEquals(install == null, compilerType == null);
 		assertEquals(install.getCompilerPath(), compilerPath);
@@ -150,10 +152,10 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		List<CompilerInstall> foundInstalls = compilerSearch.getFoundInstalls();
 		assertTrue(foundInstalls.size() == 2);
 		
-		checkInstall(foundInstalls.get(0), MULTIPLE_IN_ONE_PATH.resolve("gdc"), ECompilerType.GDC, 
+		checkInstall(foundInstalls.get(0), MULTIPLE_IN_ONE_PATH.resolve_fromValid("gdc"), ECompilerType.GDC, 
 			MULTIPLE_IN_ONE_PATH.getParent(), 
 			list("include/d/4.6.1/"));
-		checkInstall(foundInstalls.get(1), MULTIPLE_IN_ONE_PATH.resolve("ldc2"), ECompilerType.LDC, 
+		checkInstall(foundInstalls.get(1), MULTIPLE_IN_ONE_PATH.resolve_fromValid("ldc2"), ECompilerType.LDC, 
 			MULTIPLE_IN_ONE_PATH.getParent(), 
 			list("import/ldc", "import/"));
 	}

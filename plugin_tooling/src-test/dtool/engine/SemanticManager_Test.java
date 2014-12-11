@@ -383,8 +383,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 //			== MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
 		
 		
-		Location DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolve("DMD_Install_WC");
-		Location DMD_Install_WC = DMD_Install_WC_Base.resolve("windows/bin/dmd.exe");
+		Location DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolveOrNull("DMD_Install_WC");
+		Location DMD_Install_WC = DMD_Install_WC_Base.resolveOrNull("windows/bin/dmd.exe");
 		MiscFileUtils.copyDirContentsIntoDirectory(DEFAULT_DMD_INSTALL_BaseLocation, DMD_Install_WC_Base);
 		
 		getUpdatedResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
@@ -402,7 +402,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		StandardLibraryResolution stdLib = sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC));
 		
 		assertTrue(stdLib.checkIsModuleContentsStale() == false);
-		Location DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve("src/druntime/import/object.di");
+		Location DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve_fromValid("src/druntime/import/object.di");
 		stdLib.getBundleResolvedModule("object");
 		sm.setWorkingCopyAndParse(DMD_INSTALL_ObjectModule.path, "module object.d; /*SM_TEST*/"); 
 		assertTrue(stdLib.checkIsModuleContentsStale());

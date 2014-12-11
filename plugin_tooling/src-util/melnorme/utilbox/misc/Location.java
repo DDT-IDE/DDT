@@ -104,12 +104,25 @@ public class Location {
 		return path.resolve(otherPath);
 	}
 	
-	/*FIXME: BUG here !!! location, need to review this code. */
-	public Location resolve(String otherPathStr) {
-		Path otherPath = PathUtil.createPathOrNull(otherPathStr);
+	/**
+	 * @return an new Location resolved from this Location against the given otherPathString. 
+	 * null if the other path is not valid. 
+	 */
+	public Location resolveOrNull(String otherPathString) {
+		Path otherPath = PathUtil.createPathOrNull(otherPathString);
 		if(otherPath == null) {
 			return null;
 		}
+		return resolve(otherPath);
+	}
+	
+	/**
+	 * @return an new Location resolved from this Location against the given otherPathString. Non-null.
+	 * The other path *must* be valid. 
+	 * (as such this method is usually used when otherPathString is known at compile-time.) 
+	 */
+	public Location resolve_fromValid(String otherPathString) {
+		Path otherPath = PathUtil.createValidPath(otherPathString);
 		return resolve(otherPath);
 	}
 	

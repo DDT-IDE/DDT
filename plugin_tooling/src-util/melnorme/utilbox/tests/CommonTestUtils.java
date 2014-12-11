@@ -26,7 +26,8 @@ import java.util.Set;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -164,15 +165,23 @@ public class CommonTestUtils {
 		return Collections.unmodifiableCollection(set);
 	}
 	
-	public static Path path(String pathString) {
-		return MiscUtil.createPathOrNull(pathString);
-	}
-	
 	public static String safeToString(Object obj) {
 		return obj == null ? null : obj.toString();
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- path utils ----------------- */
+	
+	public static Path path(String pathString) {
+		return PathUtil.createPathOrNull(pathString);
+	}
+	
+	public static Location loc(String pathString) {
+		return Location.create_fromValid(PathUtil.createValidPath(pathString));
+	}
+	
+	public static Location loc(Location baseLoc, String pathString) {
+		return baseLoc.resolve(PathUtil.createValidPath(pathString));
+	}
 	
 	public static Path workingDirPath(String relativePath) {
 		return TestsWorkingDir.getWorkingDirPath(relativePath);

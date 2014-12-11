@@ -53,10 +53,12 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 	
 	protected Location executableExists(Location pathEntry, String executableFileName) {
 		Location exePath;
-		if((exePath = pathEntry.resolve(executableFileName)).toFile().exists()) {
+		exePath = pathEntry.resolveOrNull(executableFileName);
+		if(exePath != null && exePath.toFile().exists()) {
 			return exePath;
 		}
-		if((exePath = pathEntry.resolve(executableFileName + ".exe")).toFile().exists()) {
+		exePath = pathEntry.resolveOrNull(executableFileName + ".exe");
+		if(exePath != null && exePath.toFile().exists()) {
 			return exePath;
 		}
 		return null;

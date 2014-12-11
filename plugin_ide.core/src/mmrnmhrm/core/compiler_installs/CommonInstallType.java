@@ -50,14 +50,14 @@ public abstract class CommonInstallType extends AbstractInterpreterInstallType {
 		String possibleCompilerExeNames[] = getPossibleInterpreterNames();
 		
 		for (String possibleCompilerExeName : possibleCompilerExeNames) {
-			Location compileExeLocation = exeDir.resolve(possibleCompilerExeName);
-			if(compileExeLocation.toFile().isFile()) {
+			Location compileExeLocation = exeDir.resolveOrNull(possibleCompilerExeName);
+			if(compileExeLocation != null && compileExeLocation.toFile().isFile()) {
 				return LocalEnvironment.getInstance().getFile(compileExeLocation.toUri());
 			}
 			// Try .exe extension. Note, it is intentional that both extensions are checked regardless of 
 			// what actual platform we are on. 
-			compileExeLocation = exeDir.resolve(possibleCompilerExeName + ".exe");
-			if(compileExeLocation.toFile().isFile()) {
+			compileExeLocation = exeDir.resolveOrNull(possibleCompilerExeName + ".exe");
+			if(compileExeLocation != null && compileExeLocation.toFile().isFile()) {
 				return LocalEnvironment.getInstance().getFile(compileExeLocation.toUri());
 			}
 		}

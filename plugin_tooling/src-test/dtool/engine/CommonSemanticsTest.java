@@ -65,7 +65,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	public static final CompilerInstall DEFAULT_TestsCompilerInstall = MockCompilerInstalls.DMD_CompilerInstall;
 	
 	public static BundlePath bundlePath(Location basePath, String other) {
-		return BundlePath.create(basePath.resolve(other));
+		return BundlePath.create(basePath.resolve_fromValid(other));
 	}
 	
 	/* FIXME: BUG here location */

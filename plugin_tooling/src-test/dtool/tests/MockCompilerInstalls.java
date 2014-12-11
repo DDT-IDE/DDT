@@ -25,13 +25,14 @@ public class MockCompilerInstalls {
 	
 	private static final String RESOURCE_CompilerInstalls = "compilerInstalls";
 	
-	public static final Location MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDir().resolve("_compilerInstalls");
+	public static final Location MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDir("_compilerInstalls");
 	
-	public static final Location DEFAULT_DMD_INSTALL_BaseLocation = MOCK_COMPILERS_PATH.resolve("DMD_archive");
+	public static final Location DEFAULT_DMD_INSTALL_BaseLocation = 
+			MOCK_COMPILERS_PATH.resolve_fromValid("DMD_archive");
 	public static final Location DEFAULT_DMD_INSTALL_EXE_PATH = 
-			DEFAULT_DMD_INSTALL_BaseLocation.resolve("windows/bin/dmd.exe");
+			DEFAULT_DMD_INSTALL_BaseLocation.resolve_fromValid("windows/bin/dmd.exe");
 	public static final Location DEFAULT_GDC_INSTALL_EXE_PATH = 
-			MOCK_COMPILERS_PATH.resolve("gdcInstall/bin/gdc");
+			MOCK_COMPILERS_PATH.resolve_fromValid("gdcInstall/bin/gdc");
 	
 	public static final Location DMD_CompilerLocation = DEFAULT_DMD_INSTALL_EXE_PATH; 
 	public static final Location GDC_CompilerLocation = DEFAULT_GDC_INSTALL_EXE_PATH;

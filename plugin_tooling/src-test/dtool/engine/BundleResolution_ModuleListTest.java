@@ -79,9 +79,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	}
 	
 	public static final Location DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path = 
-			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/phobos/std/stdio.d");
+			DEFAULT_DMD_INSTALL_BaseLocation.resolve_fromValid("src/phobos/std/stdio.d");
 	public static final Location DEFAULT_DMD_INSTALL_LOCATION__Object_Path = 
-			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/druntime/import/object.di");
+			DEFAULT_DMD_INSTALL_BaseLocation.resolve_fromValid("src/druntime/import/object.di");
 	
 	@Test
 	public void testModuleResolving() throws Exception { testModuleResolving$(); }
@@ -174,7 +174,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
 		BundleResolution bundleRes = sm.getStoredResolution(BASIC_LIB_NullCompilerInstall);
-		testFindResolvedModule(bundleRes, "object", NULL_COMPILER_INSTALL_PATH.resolve("object.di"));
+		testFindResolvedModule(bundleRes, "object", NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di"));
 		
 		assertEqualSet(sr.findModules(""), hashSet(
 			"basic_lib_pack.foo",

@@ -69,7 +69,7 @@ public class TestsWorkingDir {
 	}
 	
 	public static Location getWorkingDir(String relativePath) {
-		return getWorkingDir().resolve(relativePath);
+		return getWorkingDir().resolve_fromValid(relativePath);
 	}
 	
 	public static Path getWorkingDirPath(String relativePath) {
