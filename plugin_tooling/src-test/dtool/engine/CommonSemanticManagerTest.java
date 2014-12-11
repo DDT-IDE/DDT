@@ -34,6 +34,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.ResolvedManifest;
@@ -266,10 +267,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		Location modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
 		assertAreEqual(modulePath, expectedPath);
 		
-		if(expectedPath != null) {
-			assertTrue(bundleContext.findResolvedModule(modulePath) == resolvedModule);
-			assertEquals(bundleContext.findModuleNode(moduleFullName), resolvedModule.getModuleNode());
-		}
+		assertTrue(bundleContext.findResolvedModule(modulePath) == resolvedModule);
+		Module moduleNode = resolvedModule == null ? null : resolvedModule.getModuleNode();
+		assertAreEqual(bundleContext.findModuleNode(moduleFullName), moduleNode);
 	}
 	
 	/* -----------------  ----------------- */
