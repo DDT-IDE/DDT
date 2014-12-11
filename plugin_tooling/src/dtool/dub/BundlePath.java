@@ -92,11 +92,6 @@ public class BundlePath {
 		return location.resolve(other);
 	}
 	
-	/* FIXME: BUG HERE review!! */
-	public Location resolve(String other) {
-		return location.resolve(other);
-	}
-	
 	@Override
 	public String toString() {
 		return location.toString();

@@ -77,6 +77,12 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		return new BundleKey(BundlePath.create(basePath), subpackageName);
 	}
 	
+	public static Location loc(BundlePath bundlePath, String other) {
+		return bundlePath.resolve(path(other));
+	}
+	
+	/* -----------------  ----------------- */
+	
 	protected BundleKey bundleKey(BundlePath bundlePath) {
 		return bundleKey(bundlePath.getPath(), null);
 	}

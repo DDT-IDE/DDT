@@ -262,7 +262,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		// Test module-file add
-		Path newModule = writeToFile(BASIC_LIB.resolve("source/newModule.d"), "module newModule;").path;
+		Path newModule = writeToFile(loc(BASIC_LIB, "source/newModule.d"), "module newModule;").path;
 		checkStaleStatus(BASIC_LIB, StaleState.MODULE_LIST_STALE);
 		checkStaleStatus(COMPLEX_LIB, StaleState.DEP_STALE);
 		checkGetModule(BASIC_LIB, "newModule", null);

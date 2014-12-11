@@ -50,7 +50,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	@BeforeClass
 	public static void setup() throws IOException {
 		FileUtil.deleteDir(TEST_WORKING_DIR);
-		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve("src/").path, TEST_WORKING_DIR);
+		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve(path("src/")).path, TEST_WORKING_DIR);
 	}
 	
 	@Test

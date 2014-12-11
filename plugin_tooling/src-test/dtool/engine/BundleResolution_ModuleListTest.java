@@ -51,7 +51,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		}
 		
 		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateNameEntry) {
-			Path filePath = bundleRes.getBundlePath().resolve(relFilePath).path;
+			Path filePath = loc(bundleRes.getBundlePath(), relFilePath).path;
 			ModuleFullName key = new ModuleFullName(moduleFullName);
 			assertAreEqual(modules.get(key), filePath);
 			
@@ -118,7 +118,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		// Test Module resolver
 		
-		testFindResolvedModule(SMTEST, "sm_test_foo", SMTEST.resolve("src/sm_test_foo.d"));
+		testFindResolvedModule(SMTEST, "sm_test_foo", loc(SMTEST, "src/sm_test_foo.d"));
 		testFindResolvedModule(SMTEST, "non_existing", (Location) null);
 		
 		assertEqualSet(smtestSR.findModules("test."), hashSet(
@@ -126,7 +126,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		));
 		
 		// Test dependency bundles module resolution
-		testFindResolvedModule(SMTEST, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
+		testFindResolvedModule(SMTEST, "basic_lib_foo", loc(BASIC_LIB, "source/basic_lib_foo.d"));
 		
 		assertEqualSet(smtestSR.findModules("basic_lib"), hashSet(
 			"basic_lib_pack.foo",
@@ -145,7 +145,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		assertEqualSet(complexBundleSR.findModules("basic_lib_pack"), hashSet(
 			"basic_lib_pack.foo"
 		));
-		testFindResolvedModule(COMPLEX_BUNDLE, "basic_lib_foo", BASIC_LIB.resolve("source/basic_lib_foo.d"));
+		testFindResolvedModule(COMPLEX_BUNDLE, "basic_lib_foo", loc(BASIC_LIB, "source/basic_lib_foo.d"));
 		
 	}
 	
@@ -208,7 +208,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test getResolvedModule for module that is not in bundle import folders.
-		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d").path;
+		Path NOT_IN_SOURCE__MODULE = loc(BASIC_LIB, "not_source/not_source_foo.d").path;
 		rm = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
 		assertTrue(rm.semanticContext != sm.getStoredResolution(resKey(BASIC_LIB)));
 		assertEqualSet(rm.semanticContext.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
@@ -218,7 +218,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test getResolvedModule for module that is not in a bundle at all.
-		rm = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("not_a_bundle_foo.d"));
+		rm = getUpdatedResolvedModule(loc(NOT_A_BUNDLE, "not_a_bundle_foo.d"));
 		assertEqualSet(rm.semanticContext.findModules("o"), hashSet("object"));
 		assertEqualSet(rm.semanticContext.findModules("not"), hashSet("not_a_bundle_foo"));
 		testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
@@ -232,7 +232,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		// Test getResolvedModule for missing file - must throw
 		try {
-			rm = getUpdatedResolvedModule(NOT_A_BUNDLE.resolve("_does_not_exist.d"));
+			rm = getUpdatedResolvedModule(loc(NOT_A_BUNDLE, "_does_not_exist.d"));
 			assertFail();
 		} catch (ExecutionException e) {
 		}

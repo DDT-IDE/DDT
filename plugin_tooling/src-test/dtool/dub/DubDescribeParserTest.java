@@ -85,7 +85,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 	public void testDescriptionParseErrors() throws Exception { testDescriptionParseErrors$(); }
 	public void testDescriptionParseErrors$() throws Exception {
 		{
-			String source = readStringFromFile(DESCRIBE_RESPATH.resolve("error.no_mainPackage.json"));
+			String source = readStringFromFile(DESCRIBE_RESPATH.resolve(path("error.no_mainPackage.json")));
 			DubBundleDescription dubDescribe = DubDescribeParser.parseDescription(DESCRIBE_RESPATH, source);
 			
 			checkResolvedBundle(dubDescribe, DubDescribeParser.ERROR_PACKAGES_IS_EMPTY, 
@@ -93,7 +93,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 		}
 		
 		{
-			String source = readStringFromFile(DESCRIBE_RESPATH.resolve("error.no_package_name_in_dep.json"));
+			String source = readStringFromFile(DESCRIBE_RESPATH.resolve(path("error.no_package_name_in_dep.json")));
 			DubBundleDescription dubDescribe = DubDescribeParser.parseDescription(DESCRIBE_RESPATH, source);
 			
 			checkResolvedBundle(dubDescribe, "Bundle name not defined.",

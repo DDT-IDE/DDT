@@ -41,7 +41,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	public static final BundlePath TESTER_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "tester");
 	
 	public static final Path DEFAULT_TestsModule = 
-			DEFAULT_TestsBundle.resolve("source").resolve(DEFAULT_ModuleName + ".d").path;
+			loc(DEFAULT_TestsBundle, "source").resolve(DEFAULT_ModuleName + ".d").path;
 	
 	protected static ResolvedModule getDefaultTestsModule() throws ExecutionException {
 		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall);

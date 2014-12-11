@@ -318,7 +318,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 
-	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d").path;
+	protected final Path BASIC_LIB_FOO_MODULE = loc(BASIC_LIB, "source/basic_lib_pack/foo.d").path;
 	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	
 }
