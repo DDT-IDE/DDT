@@ -18,6 +18,7 @@ import java.net.URI;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 /**
@@ -25,9 +26,13 @@ import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
  */
 public class Location {
 	
-	/** @return a new {@link Location}. Assume path is absolute. */
 	public static Location create_fromValid(Path path) {
-		return new Location(path);
+		return fromAbsolutePath(path);
+	}
+	
+	/** @return a new {@link Location} from given absolutePath, which must be an absolute path. */
+	public static Location fromAbsolutePath(Path absolutePath) {
+		return new Location(absolutePath);
 	}
 	
 	/** @return a new {@link Location} from given path. 
@@ -48,6 +53,10 @@ public class Location {
 	
 	/** @return a new {@link Location} from given path, or null if path is not absolute.  */
 	public static Location createValidOrNull(Path path) {
+		if(path == null) {
+			return null;
+		}
+		
 		try {
 			return create(path);
 		} catch (InvalidPathExceptionX e) {
@@ -137,6 +146,21 @@ public class Location {
 			return null;
 		}
 		return Location.create_fromValid(parent);
+	}
+	
+	public static Location validateLocation(Path filePath, boolean isRequired, String descText) 
+			throws CommonException {
+		if(filePath == null) {
+			if(isRequired) {
+				throw new CommonException("Path not specified for " + descText + "."); 
+			}
+			return null;
+		}
+		try {
+			return create(filePath);
+		} catch (InvalidPathExceptionX e) {
+			throw new CommonException("Invalid location for " + descText + ", path not absolute: " + filePath);
+		}
 	}
 	
 }

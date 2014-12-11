@@ -11,8 +11,8 @@
 package dtool.engine.operations;
 
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
@@ -22,22 +22,25 @@ public class AbstractDToolOperation {
 	
 	protected final SemanticManager semanticManager;
 	protected final CompilerInstall compilerInstall;
+	protected final Location fileLoc;
+	protected final int offset;
 	
-	public AbstractDToolOperation(SemanticManager semanticManager) {
-		this(semanticManager, null);
-	}
-	
-	public AbstractDToolOperation(SemanticManager semanticManager, Location compilerPath) {
+	public AbstractDToolOperation(SemanticManager semanticManager, 
+			Path filePath, int offset, Path compilerPath) throws CommonException {
 		this.semanticManager = semanticManager;
-		this.compilerInstall = semanticManager.getDtoolServer().findBestCompilerInstall(compilerPath);
+		
+		this.fileLoc = Location.validateLocation(filePath, true, "D module");
+		this.offset = offset;
+		
+		Location compilerLoc = Location.validateLocation(compilerPath, false, "compiler location");
+		this.compilerInstall = semanticManager.getDToolServer().findBestCompilerInstall(compilerLoc);
 	}
 	
 	public SemanticManager getSemanticManager() {
 		return semanticManager;
 	}
 	
-	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		/*FIXME: BUG here Location !!*/
+	protected ResolvedModule getResolvedModule(Location filePath) throws CommonException {
 		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	

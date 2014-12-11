@@ -18,6 +18,7 @@ import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import dtool.genie.GenieServer.GenieCommandException;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 
 public class FindDefinitionCommandHandler extends JsonCommandHandler {
@@ -40,7 +41,13 @@ public class FindDefinitionCommandHandler extends JsonCommandHandler {
 		Path modulePath = getPath(commandArguments, "filepath");
 		int offset = getInt(commandArguments, "offset");
 		
-		FindDefinitionResult cmdResult = getDToolServer().doFindDefinition(modulePath, offset);
+		FindDefinitionResult cmdResult;
+		try {
+			cmdResult = getDToolServer().doFindDefinition(modulePath, offset);
+		} catch (CommonException e) {
+			// TODO: refactor common exception and GenieCommandException
+			throw new GenieCommandException(e.getMessage());
+		}
 		
 		if(cmdResult.errorMessage != null) {
 			jsonWriter.writeProperty("error", cmdResult.errorMessage);

@@ -12,10 +12,6 @@ package dtool.engine.analysis;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
-
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
@@ -25,6 +21,8 @@ import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
@@ -40,33 +38,33 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
 	public static final BundlePath TESTER_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "tester");
 	
-	public static final Path DEFAULT_TestsModule = 
-			loc(DEFAULT_TestsBundle, "source").resolve_fromValid(DEFAULT_ModuleName + ".d").path;
+	public static final Location DEFAULT_TestsModule = 
+			loc(DEFAULT_TestsBundle, "source").resolve_fromValid(DEFAULT_ModuleName + ".d");
 	
-	protected static ResolvedModule getDefaultTestsModule() throws ExecutionException {
+	protected static ResolvedModule getDefaultTestsModule() throws CommonException {
 		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall);
 	}
 	
-	protected static ISemanticContext getDefaultTestsModuleContext() throws ExecutionException {
+	protected static ISemanticContext getDefaultTestsModuleContext() throws CommonException {
 		return getDefaultTestsModule().getSemanticContext();
 	}
 	
 	protected static ResolvedModule getTesterModule(String sourcePath) {
 		try {
 			return defaultSemMgr.getUpdatedResolvedModule(
-				TESTER_TestsBundle.getPath().resolve("source").resolve(sourcePath), DEFAULT_TestsCompilerInstall);
-		} catch (ExecutionException e) {
+				loc(TESTER_TestsBundle, "source").resolve_fromValid(sourcePath), DEFAULT_TestsCompilerInstall);
+		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected static ResolvedModule parseModule(String source) throws ExecutionException {
+	protected static ResolvedModule parseModule(String source) throws CommonException {
 		// make sure we reparse, even if source is the same. 
-		defaultSemMgr.getParseCache().discardEntry(DEFAULT_TestsModule);
+		defaultSemMgr.getParseCache().discardEntry(DEFAULT_TestsModule.path);
 		
-		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule, source);
+		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule.path, source);
 		ResolvedModule result = getDefaultTestsModule();
 		assertTrue(result.getSource().equals(source));
 		return result;
@@ -75,7 +73,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static ResolvedModule parseModule_(String source) {
 		try {
 			return parseModule(source);
-		} catch (ExecutionException e) {
+		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
@@ -83,7 +81,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static Module parseSource(String source) {
 		try {
 			return parseModule(source).getModuleNode();
-		} catch (ExecutionException e) {
+		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}

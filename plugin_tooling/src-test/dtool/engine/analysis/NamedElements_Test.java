@@ -12,9 +12,6 @@ package dtool.engine.analysis;
 
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.concurrent.ExecutionException;
-
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -44,12 +41,7 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 	
 	public static PickedElement<INamedElement> parseDefUnit(String source, String markerString) {
 		int offset = source.indexOf(markerString);
-		ResolvedModule semanticModule;
-		try {
-			semanticModule = parseModule(source);
-		} catch (ExecutionException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
+		ResolvedModule semanticModule = parseModule_(source);
 		Module module = semanticModule.getModuleNode();
 		ASTNode node = ASTNodeFinder.findElement(module, offset);
 		DefSymbol name = assertCast(node, DefSymbol.class);

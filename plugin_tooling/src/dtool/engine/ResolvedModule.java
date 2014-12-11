@@ -11,10 +11,8 @@
 package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.Module;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -40,8 +38,8 @@ public class ResolvedModule {
 		return parsedModule.module;
 	}
 	
-	public Path getModulePath() {
-		return parsedModule.modulePath;
+	public Location getModulePath() {
+		return Location.createValidOrNull(parsedModule.modulePath);
 	}
 	
 	public ISemanticContext getSemanticContext() {

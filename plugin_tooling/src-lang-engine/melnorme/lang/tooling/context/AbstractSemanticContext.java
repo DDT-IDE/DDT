@@ -14,7 +14,6 @@ package melnorme.lang.tooling.context;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +23,7 @@ import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.utils.EntryMap;
+import melnorme.utilbox.misc.Location;
 
 public abstract class AbstractSemanticContext implements ISemanticContext {
 	
@@ -33,20 +33,20 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 		this.bundleModules = assertNotNull(bundleModules);
 	}
 	
-	public Map<ModuleFullName, Path> getBundleModulesMap() {
+	public Map<ModuleFullName, Location> getBundleModulesMap() {
 		return bundleModules.modules;
 	}
 	
-	public Set<Path> getBundleModuleFiles() {
+	public Set<Location> getBundleModuleFiles() {
 		return bundleModules.moduleFiles;
 	}
 	
-	public boolean bundleContainsModule(Path path) {
+	public boolean bundleContainsModule(Location path) {
 		return bundleModules.moduleFiles.contains(path);
 	}
 	
 	/** @return the absolute path of a module contained in this bundle resolution, or null if not found. */
-	protected Path getBundleModulePath(ModuleFullName moduleFullName) {
+	protected Location getBundleModulePath(ModuleFullName moduleFullName) {
 		return bundleModules.getModuleAbsolutePath(moduleFullName);
 	}
 	

@@ -29,8 +29,8 @@ import melnorme.utilbox.misc.Location;
 
 public abstract class BundleModulesVisitor {
 	
-	protected final HashMap<ModuleFullName, Path> modules = new HashMap<>();
-	protected final HashSet<Path> moduleFiles = new HashSet<>();
+	protected final HashMap<ModuleFullName, Location> modules = new HashMap<>();
+	protected final HashSet<Location> moduleFiles = new HashSet<>();
 	protected final List<Location> importFolders;
 	
 	public BundleModulesVisitor(List<Location> importFolders) {
@@ -38,7 +38,7 @@ public abstract class BundleModulesVisitor {
 		visitBundleModules(importFolders);
 	}
 	
-	public void visitBundleModules(List<Location> importFolders) {
+	public void visitBundleModules(Iterable<Location> importFolders) {
 		for (Location importFolder : importFolders) {
 			try {
 				visitImportFolder(importFolder);
@@ -89,18 +89,18 @@ public abstract class BundleModulesVisitor {
 		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(relPath);
 		if(moduleFullName != null) {
 			assertTrue(fullPath.isAbsolute());
-			addModuleEntry(moduleFullName, fullPath);
+			addModuleEntry(moduleFullName, Location.create_fromValid(fullPath));
 		}
 	}
 	
 	protected abstract FileVisitResult handleFileVisitException(Path file, IOException exc);
 	
-	protected void addModuleEntry(ModuleFullName moduleFullName, Path fullPath) {
+	protected void addModuleEntry(ModuleFullName moduleFullName, Location fullPath) {
 		modules.put(moduleFullName, fullPath);
 		moduleFiles.add(fullPath);
 	}
 	
-	public HashSet<Path> getModuleFiles() {
+	public HashSet<Location> getModuleFiles() {
 		return moduleFiles;
 	}
 	

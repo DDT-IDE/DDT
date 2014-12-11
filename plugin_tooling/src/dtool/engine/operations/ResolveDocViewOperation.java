@@ -11,20 +11,20 @@
 package dtool.engine.operations;
 
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.core.CommonException;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
-import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.AutoReference;
 import dtool.ast.references.NamedReference;
@@ -35,25 +35,14 @@ import dtool.engine.analysis.IVarDefinitionLike;
 
 public class ResolveDocViewOperation extends AbstractDToolOperation {
 	
-	protected final Path filePath;
-	protected final int offset;
-	
-	public ResolveDocViewOperation(SemanticManager semanticManager, Path filePath, int offset) {
-		super(semanticManager);
-		this.filePath = filePath;
-		this.offset = offset;
+	public ResolveDocViewOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
+			throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath);
 	}
-	
-	public String perform() {
-		ResolvedModule resolvedModule;
-		try {
-			resolvedModule = filePath == null ? null : getResolvedModule(filePath);
-		} catch (ExecutionException e) {
-			resolvedModule = null;
-		}
-		if(resolvedModule == null) {
-			return null; /*FIXME: BUG here: show error message. */
-		}
+
+	public String perform() throws CommonException {
+		ResolvedModule resolvedModule = getResolvedModule(fileLoc);
+		
 		Module module = resolvedModule.getModuleNode();
 		ASTNode pickedNode = ASTNodeFinder.findElement(module, offset);
 		ISemanticContext mr = resolvedModule.getSemanticContext();

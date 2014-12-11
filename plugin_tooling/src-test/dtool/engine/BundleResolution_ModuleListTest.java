@@ -16,13 +16,12 @@ import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
@@ -37,8 +36,8 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 	public static class BundleFilesChecker {
 		
 		protected final BundleResolution bundleRes;
-		protected final HashMap<ModuleFullName, Path> modules;
-		protected final HashSet<Path> moduleFiles;
+		protected final HashMap<ModuleFullName, Location> modules;
+		protected final HashSet<Location> moduleFiles;
 		
 		public BundleFilesChecker(BundleResolution bundleRes) {
 			modules = new HashMap<>(bundleRes.getBundleModulesMap());
@@ -51,7 +50,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		}
 		
 		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateNameEntry) {
-			Path filePath = loc(bundleRes.getBundlePath(), relFilePath).path;
+			Location filePath = loc(bundleRes.getBundlePath(), relFilePath);
 			ModuleFullName key = new ModuleFullName(moduleFullName);
 			assertAreEqual(modules.get(key), filePath);
 			
@@ -63,7 +62,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			modules.remove(key);
 		}
 		
-		public ResolvedModule findResolvedModule(Path filePath) {
+		public ResolvedModule findResolvedModule(Location filePath) {
 			try {
 				return bundleRes.findResolvedModule(filePath);
 			} catch (ModuleSourceException e) {
@@ -208,7 +207,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test getResolvedModule for module that is not in bundle import folders.
-		Path NOT_IN_SOURCE__MODULE = loc(BASIC_LIB, "not_source/not_source_foo.d").path;
+		Location NOT_IN_SOURCE__MODULE = loc(BASIC_LIB, "not_source/not_source_foo.d");
 		rm = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
 		assertTrue(rm.semanticContext != sm.getStoredResolution(resKey(BASIC_LIB)));
 		assertEqualSet(rm.semanticContext.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
@@ -234,14 +233,14 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		try {
 			rm = getUpdatedResolvedModule(loc(NOT_A_BUNDLE, "_does_not_exist.d"));
 			assertFail();
-		} catch (ExecutionException e) {
+		} catch (CommonException e) {
 		}
 		
-		boolean SUPPORT_RELATIVE_PATHS = true;
+		boolean SUPPORT_RELATIVE_PATHS = false; // Disabled because relative paths are no long supported.
 		if(SUPPORT_RELATIVE_PATHS) {
 			// Test getResolvedModule for a relative path.
-			Path specialPath = PathUtil.createValidPath(("###special/relative_bundle.d"));
-			sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
+			Location specialPath = loc(PathUtil.createValidPath(("###special/relative_bundle.d")));
+			sm.parseCache.parseModuleWithNewSource(specialPath.path, "module relative_bundle;");
 			rm = getUpdatedResolvedModule(specialPath);
 			assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
 				"object"
@@ -249,10 +248,10 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 			testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 			// Test same, when no parse source exists for that relative path
 			try {
-				rm = getUpdatedResolvedModule(PathUtil.createValidPath(("###special/non_existent.d")));
+				rm = getUpdatedResolvedModule(loc(PathUtil.createValidPath(("###special/non_existent.d"))));
 				assertFail();
-			} catch (ExecutionException ee) {
-				assertTrue(ee.getCause() instanceof ModuleSourceException);
+			} catch (CommonException ce) {
+				assertTrue(ce.getCause() instanceof ModuleSourceException);
 			}
 		}
 	}

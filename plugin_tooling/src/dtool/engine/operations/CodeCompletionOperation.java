@@ -15,7 +15,6 @@ import static melnorme.utilbox.misc.NumberUtil.isInRange;
 import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
 
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -24,7 +23,7 @@ import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
-import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
@@ -39,17 +38,13 @@ import dtool.parser.common.LexerResult.TokenAtOffsetResult;
 
 public class CodeCompletionOperation extends AbstractDToolOperation {
 	
-	public CodeCompletionOperation(SemanticManager semanticManager, Location compilerPath) {
-		super(semanticManager, compilerPath);
+	public CodeCompletionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
+			throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath);
 	}
 	
-	public CompletionSearchResult doCodeCompletion(Path filePath, int offset)
-			throws ExecutionException {
-		if(filePath == null) { 
-			throw new ExecutionException(new Exception("Invalid path for content assist source.")); 
-		}
-		
-		ResolvedModule resolvedModule = getResolvedModule(filePath);
+	public CompletionSearchResult doCodeCompletion() throws CommonException {
+		ResolvedModule resolvedModule = getResolvedModule(fileLoc);
 		return doCodeCompletion(resolvedModule, offset);
 	}
 	

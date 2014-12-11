@@ -10,8 +10,7 @@
  *******************************************************************************/
 package dtool.engine;
 
-import java.util.concurrent.ExecutionException;
-
+import melnorme.utilbox.core.CommonException;
 import dtool.engine.util.CachingRegistry;
 
 
@@ -42,7 +41,7 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 	/** Lock for reading/modifying the whole registry. */
 	protected final Object entriesLock = new Object();
 	
-	public VALUE getUpdatedEntry(KEY key) throws ExecutionException {
+	public VALUE getUpdatedEntry(KEY key) throws CommonException {
 		VALUE entry = getEntry(key);
 		if(doCheckIsEntryStale(key, entry)) {
 			return updateEntry(key);
@@ -55,7 +54,7 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 	/** Lock for performing the computation of update operations. */
 	protected final Object updateOperationLock = new Object();
 	
-	protected VALUE updateEntry(KEY key) throws ExecutionException {
+	protected VALUE updateEntry(KEY key) throws CommonException {
 		synchronized(updateOperationLock) {
 			VALUE staleInfo = getEntry(key);
 			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
@@ -68,6 +67,6 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 		}
 	}
 	
-	protected abstract void doUpdateEntry(KEY key, VALUE staleInfo) throws ExecutionException;
+	protected abstract void doUpdateEntry(KEY key, VALUE staleInfo) throws CommonException;
 	
 }

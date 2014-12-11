@@ -9,6 +9,7 @@ import java.util.Iterator;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -160,8 +161,8 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 	public void testTestData() throws Exception { testTestData$(); }
 	public void testTestData$() throws Exception {
 		ISourceModule srcModule = getModule(searchProj, "srcB", "", "search2");
-		Path filePath = DLTKUtils.getFilePath(srcModule.getResource().getLocation());
-		ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath);
+		Location filePath = loc(DLTKUtils.getFilePath(srcModule.getResource().getLocation()));
+		ParsedModule parseModule = DToolClient.getDefaultModuleCache().getParsedModuleOrNull(filePath.path);
 		Module module = parseModule.module;
 		
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");

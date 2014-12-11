@@ -62,8 +62,8 @@ public class NamedElements_ModuleSynthetics_Test extends NamedElement_CommonTest
 		testModuleSyntheticUnit____("module pack.subpack.foo;", "pack.subpack.foo");
 	}
 	
-	protected void testModuleSyntheticUnit____(String preSource, String elemName) throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule(
+	protected void testModuleSyntheticUnit____(String preSource, String elemName) {
+		ResolvedModule resolvedModule = parseModule_(
 			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
 		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
 		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);

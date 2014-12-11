@@ -13,7 +13,6 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,8 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -110,7 +109,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/** @return a resolved module from for the module with the given path, from the modules
 	 * available in this context (including dependencies). Can be null. */
-	public ResolvedModule findResolvedModule(final Path path) throws ModuleSourceException {
+	public ResolvedModule findResolvedModule(final Location path) throws ModuleSourceException {
 		return new BundleResolutionVisitor<ResolvedModule, ModuleSourceException>() {
 			@Override
 			protected void visit(AbstractBundleResolution bundleResolution) throws ModuleSourceException {
@@ -120,7 +119,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	}
 	
 	/** @return the bundle resolution that directly contains given modulePath, or null if none does. */
-	public AbstractBundleResolution getContainingBundleResolution(final Path modulePath) {
+	public AbstractBundleResolution getContainingBundleResolution(final Location modulePath) {
 		return new BundleResolutionVisitor<AbstractBundleResolution, RuntimeException>() {
 			@Override
 			protected void visit(AbstractBundleResolution bundleResolution) {
@@ -139,7 +138,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	public boolean checkIsModuleListStale() {
 		BundleModulesVisitor modulesVisitor = manager.new SM_BundleModulesVisitor(bundleModules.importFolders);
-		Set<Path> currentModules = modulesVisitor.getModuleFiles();
+		Set<Location> currentModules = modulesVisitor.getModuleFiles();
 		return !currentModules.equals(bundleModules.moduleFiles);
 	}
 	
@@ -159,18 +158,18 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/* -----------------  ----------------- */
 	
-	protected final Map<Path, ResolvedModule> resolvedModules = new HashMap<>();
+	protected final Map<Location, ResolvedModule> resolvedModules = new HashMap<>();
 	protected final Object resolvedModulesLock = new Object(); 
 	
 	public boolean checkIsModuleContentsStale() {
 		ModuleParseCache parseCache = manager.parseCache;
 		
 		synchronized(resolvedModulesLock) {
-			for(Entry<Path, ResolvedModule> entry : resolvedModules.entrySet()) {
-				Path path = entry.getKey();
+			for(Entry<Location, ResolvedModule> entry : resolvedModules.entrySet()) {
+				Location loc = entry.getKey();
 				ResolvedModule currentModule = entry.getValue();
 				
-				ParsedModule cacheModule = parseCache.getEntry(path).getParsedModuleIfNotStale();
+				ParsedModule cacheModule = parseCache.getEntry(loc.path).getParsedModuleIfNotStale();
 				if(cacheModule == null) {
 					return true; // Source has changed since last parse
 				}
@@ -189,7 +188,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	/** @return the module contained in this bundle, denoted by given moduleFullName, or null if none exists. */
 	protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName) throws ModuleSourceException {
-		Path modulePath = getBundleModulePath(moduleFullName);
+		Location modulePath = getBundleModulePath(moduleFullName);
 		if(modulePath == null)
 			return null;
 		
@@ -197,21 +196,21 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	}
 	
 	/** @return the module contained in this bundle, denoted by given modulePath, or null if none exists. */
-	protected ResolvedModule getBundleResolvedModule(Path modulePath) throws ModuleSourceException {
+	protected ResolvedModule getBundleResolvedModule(Location modulePath) throws ModuleSourceException {
 		if(!bundleContainsModule(modulePath))
 			return null;
 		
 		return getOrCreateBundleResolvedModule(modulePath);
 	}
 	
-	protected ResolvedModule getOrCreateBundleResolvedModule(Path filePath) throws ModuleSourceException {
+	protected ResolvedModule getOrCreateBundleResolvedModule(Location filePath) throws ModuleSourceException {
 		assertTrue(bundleContainsModule(filePath));
 		ModuleParseCache parseCache = manager.parseCache;
 		
 		synchronized(resolvedModulesLock) {
 			ResolvedModule resolvedModule = resolvedModules.get(filePath);
 			if(resolvedModule == null) {
-				ParsedModule parsedModule = parseCache.getParsedModule(filePath);
+				ParsedModule parsedModule = parseCache.getParsedModule(filePath.path);
 				resolvedModule = new ResolvedModule(parsedModule, this);
 				resolvedModules.put(filePath, resolvedModule);
 			}
@@ -227,11 +226,12 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 			return getStdLibResolution();
 		}
 		
-		if(element.getModulePath() == null) {
+		Location loc = Location.createValidOrNull(element.getModulePath());
+		if(loc == null) {
 			return null;
 		}
 		
-		return getContainingBundleResolution(element.getModulePath());
+		return getContainingBundleResolution(loc);
 	}
 	
 }

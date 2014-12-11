@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.engine;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
@@ -71,7 +70,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	
 	/** Use a fake Location for the null compiler install path. 
 	 * The path doesn't actually exists, but that's fine */
-	public static final Location NULL_COMPILER_INSTALL_PATH = Location.create_fromValid( 
+	public static final Location NULL_COMPILER_INSTALL_PATH = Location.fromAbsolutePath( 
 			PathUtil.DEFAULT_ROOT_PATH.resolve("###INTERNAL_PATH###/org.dsource.dtool/Missing_StdLib"));
 	
 	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
@@ -85,12 +84,12 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
-		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.path.resolve("object.di");
+		protected static final Location objectPath = NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di");
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
 			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(objectPath));
 			
-			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, objectPath);
+			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, objectPath.path);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
 			resolvedModules.put(objectPath, resolvedModule);
 		}

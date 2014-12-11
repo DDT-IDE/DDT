@@ -176,7 +176,11 @@ public class CommonTestUtils {
 	}
 	
 	public static Location loc(String pathString) {
-		return Location.create_fromValid(PathUtil.createValidPath(pathString));
+		Path createValidPath = PathUtil.createValidPath(pathString);
+		return loc(createValidPath);
+	}
+	public static Location loc(Path absolutePath) {
+		return Location.fromAbsolutePath(absolutePath);
 	}
 	
 	public static Location loc(Location baseLoc, String pathString) {

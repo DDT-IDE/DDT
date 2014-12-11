@@ -53,7 +53,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperationExt {
 	}
 	
 	@Override
-	protected void performLongRunningComputation_withUpdatedServerWorkingCopy() {
+	protected void performLongRunningComputation_withUpdatedServerWorkingCopy() throws CoreException {
 		findDefResult = DToolClient.getDefault().doFindDefinition(inputPath, offset);
 	}
 	

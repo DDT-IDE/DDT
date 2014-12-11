@@ -16,13 +16,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -45,24 +45,17 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	public static final String FIND_DEF_ReferenceResolveFailed = 
 		"Definition not found for reference: ";
 			
-	public FindDefinitionOperation(SemanticManager semanticManager) {
-		super(semanticManager);
+	public FindDefinitionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
+			throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath);
 	}
 	
-	public FindDefinitionResult findDefinition(Path filePath, final int offset) {
-		if(filePath == null) {
-			return new FindDefinitionResult("Invalid path for file: " );
-		}
-		final ResolvedModule resolvedModule;
-		try {
-			resolvedModule = getResolvedModule(filePath);
-		} catch (ExecutionException e) {
-			return new FindDefinitionResult("Error awaiting operation result: " + e);
-		}
+	public FindDefinitionResult findDefinition() throws CommonException {
+		final ResolvedModule resolvedModule = getResolvedModule(fileLoc);
 		final ISemanticContext mr = resolvedModule.getSemanticContext();
 		Module module = resolvedModule.getModuleNode();
 		
-		assertEquals(module.compilationUnitPath, filePath); /*FIXME: BUG here normalization */
+		assertEquals(module.compilationUnitPath, fileLoc.path);
 		return findDefinition(module, offset, mr);
 	}
 	

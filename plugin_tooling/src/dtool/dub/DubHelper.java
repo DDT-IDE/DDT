@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
@@ -98,11 +99,13 @@ public class DubHelper {
 			return startTimeStamp;
 		}
 		
-		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws ExecutionException {
+		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws CommonException {
 			try {
 				return processAgent.submit(this).get();
 			} catch (InterruptedException e) {
-				throw new ExecutionException(e);
+				throw new CommonException("Error running `dub describe`, operation interrupted.");
+			} catch (ExecutionException e) {
+				throw new CommonException("Error running `dub describe`:", e.getCause());
 			}
 		}
 		

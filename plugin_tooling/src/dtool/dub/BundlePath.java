@@ -39,7 +39,7 @@ public class BundlePath {
 	
 	public static BundlePath create(Path path) {
 		if(isValidBundlePath(path)) {
-			return new BundlePath(Location.create_fromValid(path));
+			return new BundlePath(Location.fromAbsolutePath(path));
 		}
 		return null;
 	}
@@ -100,8 +100,8 @@ public class BundlePath {
 	/***
 	 * Searches for a manifest file in any of the directories denoted by given path, starting in path. 
 	 */
-	public static BundlePath findBundleForPath(Path path) {
-		if(path == null || !path.isAbsolute()) {
+	public static BundlePath findBundleForPath(Location path) {
+		if(path == null) {
 			return null;
 		}
 		BundlePath bundlePath = create(path);

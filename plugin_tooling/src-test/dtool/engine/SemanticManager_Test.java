@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 
@@ -187,7 +188,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		try {
 			sm.getUpdatedResolution(NON_EXISTANT);
-		} catch (ExecutionException e) {
+		} catch (CommonException e) {
 			assertTrue(e.getCause() instanceof IOException);
 		}
 		
@@ -195,7 +196,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			// TODO: cleanup these casts.
 			DubBundleResolution bundleRes = (DubBundleResolution) sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
 			assertTrue(bundleRes != null && bundleRes.dubBundle.hasErrors());
-		} catch (ExecutionException e) {
+		} catch (CommonException e) {
 			throw assertFail();
 		}
 	}
@@ -237,14 +238,14 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		return newFile;
 	}
 	
-	public void writeToFileAndUpdateMTime(Path file, String contents) throws IOException {
+	public void writeToFileAndUpdateMTime(Location file, String contents) throws IOException {
 		writeToFileAndUpdateMTime(file, contents, true);
 	}
 	
-	public void writeToFileAndUpdateMTime(Path file, String contents, boolean isCacheEntryStale) 
+	public void writeToFileAndUpdateMTime(Location file, String contents, boolean isCacheEntryStale) 
 			throws IOException {
-		ModuleParseCache_Test.writeToFileAndUpdateMTime(file, contents);
-		assertTrue(sm.parseCache.getEntry(file).isStale() == isCacheEntryStale);
+		ModuleParseCache_Test.writeToFileAndUpdateMTime(file.path, contents);
+		assertTrue(sm.parseCache.getEntry(file.path).isStale() == isCacheEntryStale);
 	}
 	
 	protected void deleteFile(Path file) throws IOException {
@@ -298,10 +299,10 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
 		checkGetModule(BASIC_LIB, BASIC_LIB_FOO_MODULE_Name, BASIC_LIB_FOO_MODULE_Name);
 		writeToFileAndUpdateMTime(BASIC_LIB_FOO_MODULE, readStringFromFile(BASIC_LIB_FOO_MODULE));
-		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE).isStale() == true);
+		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE.path).isStale() == true);
 		// This stale check will make the parse cache entry no longer stale
 		sm.getStoredResolution(COMPLEX_LIB).checkIsStale();
-		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE).isStale() == false);
+		assertTrue(sm.parseCache.getEntry(BASIC_LIB_FOO_MODULE.path).isStale() == false);
 		checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
 		checkStaleStatus(COMPLEX_LIB, StaleState.CURRENT);
 		
@@ -314,8 +315,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	protected static final String SOURCE2 = "module change2; /* */";
 	protected static final String SOURCE3 = "/* */ module  change3;";
 	
-	protected void testWorkingCopyModifications() throws ExecutionException, IOException {
-		Path modulePath = COMPLEX_LIB.getPath().resolve("source/complex_lib.d");
+	protected void testWorkingCopyModifications() throws CommonException, IOException {
+		Location modulePath = loc(COMPLEX_LIB, "source/complex_lib.d");
 		
 		writeToFileAndUpdateMTime(modulePath, "module change0;");
 		getUpdatedResolution(COMPLEX_BUNDLE);
@@ -356,18 +357,18 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 	}
 
-	protected ParsedModule doUpdateWorkingCopy(Path filePath, String contents) {
+	protected ParsedModule doUpdateWorkingCopy(Location filePath, String contents) {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		assertTrue(sm.checkIsResolutionStale(bundlePath) == false);
-		return sm.setWorkingCopyAndParse(filePath, contents);
+		return sm.setWorkingCopyAndParse(filePath.path, contents);
 	}
 	
-	protected void doDiscardWorkingCopy(Path filePath) {
+	protected void doDiscardWorkingCopy(Location filePath) {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		assertTrue(sm.checkIsResolutionStale(bundlePath) == false);
-		sm.discardWorkingCopy(filePath);
+		sm.discardWorkingCopy(filePath.path);
 		
-		assertTrue(sm.parseCache.getEntry(filePath).getParsedModuleIfNotStale() == null);
+		assertTrue(sm.parseCache.getEntry(filePath.path).getParsedModuleIfNotStale() == null);
 	}
 	
 	/* -----------------  ----------------- */
@@ -377,10 +378,6 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public void testStdLibInteractions$() throws Exception {
 		prepSMTestsWorkingDir();
 		___initSemanticManager();
-		
-		
-//		assertTrue(DToolServer.getCompilerInstallForPath(null) 
-//			== MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
 		
 		
 		Location DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolveOrNull("DMD_Install_WC");

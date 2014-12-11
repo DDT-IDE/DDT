@@ -13,10 +13,10 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
@@ -261,26 +261,35 @@ public class DToolClient {
 	
 	/* ----------------- Engine client requests ----------------- */
 	
+	/* FIXME: review this code. */
+	@Deprecated
+	public ResolvedModule getResolvedModule(Location filePath) throws CommonException {
+		return dtoolServer.getUpdatedResolvedModule(filePath);
+	}
+	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws CoreException {
 		try {
 			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath);
-		} catch (ExecutionException e) {
-			throw DeeCore.createCoreException("Error performing code complete operation.", e.getCause());
+		} catch (CommonException e) {
+			throw DeeCore.createCoreException(e);
 		}
 	}
 	
-	@Deprecated
-	public ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
-		return dtoolServer.getUpdatedResolvedModule(filePath);
+	public FindDefinitionResult doFindDefinition(Path filePath, int offset) throws CoreException {
+		try {
+			return dtoolServer.doFindDefinition(filePath, offset);
+		} catch (CommonException e) {
+			throw DeeCore.createCoreException(e);
+		}
 	}
 	
-	public FindDefinitionResult doFindDefinition(Path filePath, int offset) {
-		return dtoolServer.doFindDefinition(filePath, offset);
-	}
-	
-	public String getDDocHTMLView(Path filePath, int offset) {
-		return dtoolServer.getDDocHTMLView(filePath, offset);
+	public String getDDocHTMLView(Path filePath, int offset) throws CoreException {
+		try {
+			return dtoolServer.getDDocHTMLView(filePath, offset);
+		} catch (CommonException e) {
+			throw DeeCore.createCoreException(e);
+		}
 	}
 	
 }

@@ -2,9 +2,6 @@ package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.symbols.INamedElement;

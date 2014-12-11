@@ -58,7 +58,9 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 			ddocOp.executeOperation();
 		} catch (CoreException ce) {
 			DeeCore.logStatus(ce);
-			return TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());					
+			String errorInfo = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());
+			// TODO: we could add a nicer HTML formatting:
+			return HoverUtil.getCompleteHoverInfo(errorInfo, getCSSStyles());
 		}
 		String info = ddocOp.info;
 		
@@ -80,7 +82,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		}
 		
 		@Override
-		protected void performLongRunningComputation_withUpdatedServerWorkingCopy() {
+		protected void performLongRunningComputation_withUpdatedServerWorkingCopy() throws CoreException {
 			info = DToolClient.getDefault().getDDocHTMLView(inputPath, offset);
 		}
 		

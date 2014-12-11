@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 
@@ -128,7 +129,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		@Override
-		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws ExecutionException {
+		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
 			ResolvedManifest manifest = super.getUpdatedManifest(bundleKey);
 			assertTrue(checkIsManifestStale(bundleKey) == false);
 			return manifest;
@@ -138,12 +139,12 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			return checkIsResolutionStale(resolutionKey(bundlePath));
 		}
 		
-		public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+		public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws CommonException {
 			return getUpdatedResolution(resolutionKey(bundlePath));
 		}
 		
 		@Override
-		public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+		public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
 			boolean manifestStale = checkIsManifestStale(resKey.bundleKey);
 			ResolvedManifest previousManifest = getStoredManifest(resKey.bundleKey);
 			
@@ -198,11 +199,11 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	
-	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws ExecutionException {
+	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws CommonException {
 		return getUpdatedResolution(resKey(bundlePath));
 	}
 	
-	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
 		assertTrue(sm.checkIsResolutionStale(resKey));
 		return sm.getUpdatedResolution(resKey);
 	}
@@ -241,7 +242,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(
 						resolvedModule.getModulePath(),
 						bundleRes.getStdLibResolution().getCompilerInstall()));
-				} catch (ExecutionException e) {
+				} catch (CommonException e) {
 					assertFail();
 				}
 			}
@@ -252,30 +253,18 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return resolvedModule;
 	}
 	
-	/* FIXME: BUG here: location */
 	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Location expectedPath) 
-			throws ModuleSourceException, ExecutionException {
-		testFindResolvedModule(bundlePath, moduleNameStr, expectedPath == null ? null : expectedPath.path);
-	}
-	
-	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Path expectedPath) 
 			throws ModuleSourceException, ExecutionException {
 		BundleResolution bundleRes = sm.getStoredResolution(bundlePath);
 		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
 	}
 	
-	/*FIXME: BUG here*/
 	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
 			Location expectedPath) throws ModuleSourceException {
-		testFindResolvedModule(bundleContext, moduleNameStr, expectedPath.path);
-	}
-	
-	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
-			Path expectedPath) throws ModuleSourceException {
 		assertNotNull(bundleContext);
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
 		ResolvedModule resolvedModule = bundleContext.findResolvedModule(moduleFullName);
-		Path modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
+		Location modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
 		assertAreEqual(modulePath, expectedPath);
 		
 		if(expectedPath != null) {
@@ -286,20 +275,15 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected ResolvedModule getUpdatedResolvedModule(Path filePath, String fullName) 
-			throws ExecutionException {
+	protected ResolvedModule getUpdatedResolvedModule(Location filePath, String fullName) 
+			throws CommonException {
 		ResolvedModule resolvedModule = getUpdatedResolvedModule(filePath);
 		assertTrue(resolvedModule == getUpdatedResolvedModule(filePath)); // Check instance remains same.
 		assertEquals(resolvedModule.getModuleNode().getFullyQualifiedName(), fullName);
 		return resolvedModule;
 	}
 	
-	/*FIXME: BUG here*/
-	protected ResolvedModule getUpdatedResolvedModule(Location filePath) throws ExecutionException {
-		return sm.getUpdatedResolvedModule(filePath.path, DEFAULT_TestsCompilerInstall);
-	}
-	
-	protected ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+	protected ResolvedModule getUpdatedResolvedModule(Location filePath) throws CommonException {
 		return sm.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall);
 	}
 	
@@ -318,7 +302,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 
-	protected final Path BASIC_LIB_FOO_MODULE = loc(BASIC_LIB, "source/basic_lib_pack/foo.d").path;
+	protected final Location BASIC_LIB_FOO_MODULE = loc(BASIC_LIB, "source/basic_lib_pack/foo.d");
 	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	
 }

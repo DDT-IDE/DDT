@@ -17,11 +17,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -178,8 +178,9 @@ public class DToolClient_Test extends CommonCoreTest {
 		BundleResolution sr;
 		try {
 			SemanticManager sm = client.getServerSemanticManager();
-			sr = sm.getUpdatedResolution(CommonSemanticManagerTest.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
-		} catch (ExecutionException e) {
+			sr = sm.getUpdatedResolution(
+				CommonSemanticManagerTest.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
+		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 		HashSet<String> modules = sr.findModules(moduleName);

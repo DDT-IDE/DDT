@@ -12,10 +12,10 @@ package dtool.engine;
 
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
@@ -82,29 +82,32 @@ public class DToolServer {
 	
 	/* ----------------- Operations ----------------- */
 	
-	public FindDefinitionResult doFindDefinition(Path filePath, final int offset) {
-		return new FindDefinitionOperation(getSemanticManager()).findDefinition(filePath, offset);
+	// TODO: compiler path for other operations
+	
+	public FindDefinitionResult doFindDefinition(Path filePath, final int offset) throws CommonException {
+		return new FindDefinitionOperation(getSemanticManager(), filePath, offset, null).findDefinition();
 	}
 	
-	public String getDDocHTMLView(Path filePath, int offset) {
-		return new ResolveDocViewOperation(getSemanticManager(), filePath, offset).perform();
+	public String getDDocHTMLView(Path filePath, int offset) throws CommonException {
+		return new ResolveDocViewOperation(getSemanticManager(), filePath, offset, null).perform();
 	}
 	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
-			throws ExecutionException {
-		return new CodeCompletionOperation(getSemanticManager(), compilerPath).doCodeCompletion(filePath, offset);
+			throws CommonException {
+		Path path = compilerPath == null ? null : compilerPath.path;
+		return new CodeCompletionOperation(getSemanticManager(), filePath, offset, path).doCodeCompletion();
 	}
 	
 	/* ----------------- helpers ----------------- */
 	
 	@Deprecated
-	public ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
+	public ResolvedModule getUpdatedResolvedModule(Location filePath) throws CommonException {
 		CompilerInstall compilerInstall = findBestCompilerInstall(null);
 		return getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	
-	public ResolvedModule getUpdatedResolvedModule(Path filePath, CompilerInstall compilerInstall) 
-			throws ExecutionException {
+	public ResolvedModule getUpdatedResolvedModule(Location filePath, CompilerInstall compilerInstall) 
+			throws CommonException {
 		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	

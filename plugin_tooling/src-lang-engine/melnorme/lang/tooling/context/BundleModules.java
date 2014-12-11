@@ -10,9 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.context;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,44 +23,30 @@ import dtool.engine.modules.ModuleNamingRules;
 
 public class BundleModules {
 	
-	public final Map<ModuleFullName, Path> modules;
-	public final Set<Path> moduleFiles;
+	// TODO use compile-time unmodifiable interfaces
+	public final Map<ModuleFullName, Location> modules;
+	public final Set<Location> moduleFiles;
 	public final List<Location> importFolders;
 	
 	/**
 	 * Optimized constructor 
 	 */
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, 
+	public BundleModules(HashMap<ModuleFullName, Location> modules, HashSet<Location> moduleFiles, 
 			List<Location> importFolders) {
-		this(modules, moduleFiles, importFolders, true);
-	}
-	
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, 
-			List<Location> importFolders, boolean requireAbsolute) {
-		// TODO use compile-time unmodifiable interfaces
 		this.modules = Collections.unmodifiableMap(modules);
 		this.moduleFiles = Collections.unmodifiableSet(moduleFiles);
 		this.importFolders = Collections.unmodifiableList(new ArrayList<>(importFolders));
-		
-		if(requireAbsolute) {
-			for (Path path : moduleFiles) {
-				assertTrue(path.isAbsolute());
-			}
-			for (Path path : modules.values()) {
-				assertTrue(path.isAbsolute());
-			}
-		}
 	}
 	
-	public Set<Path> getModuleFiles() {
+	public Set<Location> getModuleFiles() {
 		return moduleFiles;
 	}
 	
-	public Map<ModuleFullName, Path> getModules() {
+	public Map<ModuleFullName, Location> getModules() {
 		return modules;
 	}
 	
-	public Path getModuleAbsolutePath(ModuleFullName moduleFullName) {
+	public Location getModuleAbsolutePath(ModuleFullName moduleFullName) {
 		return modules.get(moduleFullName);
 	}
 	
@@ -77,15 +60,15 @@ public class BundleModules {
 		}
 	}
 	
-	public static BundleModules createSyntheticBundleModules(Path filePath) {
-		HashMap<ModuleFullName, Path> modules = new HashMap<>();
-		HashSet<Path> moduleFiles = new HashSet<>();
+	public static BundleModules createSyntheticBundleModules(Location filePath) {
+		HashMap<ModuleFullName, Location> modules = new HashMap<>();
+		HashSet<Location> moduleFiles = new HashSet<>();
 		
 		moduleFiles.add(filePath);
-		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(filePath.getFileName());
+		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(filePath.path.getFileName());
 		modules.put(moduleFullName, filePath);
 		
-		return new BundleModules(modules, moduleFiles, new ArrayList<Location>(), false);
+		return new BundleModules(modules, moduleFiles, new ArrayList<Location>());
 	}
 	
 }

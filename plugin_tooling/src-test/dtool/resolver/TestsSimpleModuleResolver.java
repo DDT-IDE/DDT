@@ -33,7 +33,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 		super(createBundles(projectFolder));
 		
 		
-		for (Entry<ModuleFullName, Path> entry : bundleModules.getModules().entrySet()) {
+		for (Entry<ModuleFullName, Location> entry : bundleModules.getModules().entrySet()) {
 			ModuleFullName moduleFullName = entry.getKey();
 			
 			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());

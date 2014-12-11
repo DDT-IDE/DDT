@@ -19,12 +19,12 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
@@ -78,7 +78,7 @@ public class SemanticManager {
 		return parseCache;
 	}
 	
-	public DToolServer getDtoolServer() {
+	public DToolServer getDToolServer() {
 		return dtoolServer;
 	}
 	
@@ -90,7 +90,7 @@ public class SemanticManager {
 	public final boolean checkIsManifestStale(BundleKey bundleKey) {
 		return manifestManager.checkIsEntryStale(bundleKey);
 	}
-	public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws ExecutionException {
+	public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
 		return manifestManager.getUpdatedManifest(bundleKey);
 	}
 	
@@ -110,7 +110,7 @@ public class SemanticManager {
 			return entry != null ? entry.getValue() : null;
 		}
 		
-		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws ExecutionException {
+		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
 			return getUpdatedEntry(bundleKey).getValue();
 		}
 		
@@ -141,7 +141,7 @@ public class SemanticManager {
 		
 		@Override
 		protected void doUpdateEntry(BundleKey key, FileCachingEntry<ResolvedManifest> staleInfo)
-				throws ExecutionException {
+				throws CommonException {
 			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, false);
 			DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 			
@@ -217,7 +217,7 @@ public class SemanticManager {
 	public boolean checkIsResolutionStale(ResolutionKey resKey) {
 		return resolutionsManager.checkIsEntryStale(resKey);
 	}
-	public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws ExecutionException {
+	public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
 		return resolutionsManager.getUpdatedEntry(resKey).getSemanticResolution();
 	}
 	
@@ -236,7 +236,7 @@ public class SemanticManager {
 		};
 		
 		@Override
-		protected void doUpdateEntry(ResolutionKey resKey, BundleResolutionEntry staleInfo) throws ExecutionException {
+		protected void doUpdateEntry(ResolutionKey resKey, BundleResolutionEntry staleInfo) throws CommonException {
 			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey);
 			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(resKey.compilerInstall);
 			
@@ -286,11 +286,8 @@ public class SemanticManager {
 		parseCache.discardWorkingCopy(filePath);
 	}
 	
-	public ResolvedModule getUpdatedResolvedModule(Path filePath, CompilerInstall compilerInstall)
-			throws ExecutionException {
-		if(!filePath.isAbsolute()) {
-			dtoolServer.logMessage("> getUpdatedResolvedModule for non-absolute path: " + filePath);
-		}
+	public ResolvedModule getUpdatedResolvedModule(Location filePath, CompilerInstall compilerInstall)
+			throws CommonException {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		if(compilerInstall == null) {
@@ -315,11 +312,11 @@ public class SemanticManager {
 			}
 			return createSyntheticBundle(filePath, stdLibResolution);
 		} catch (ModuleSourceException e) {
-			throw new ExecutionException(e);
+			throw new CommonException("Error parsing module source: ", e);
 		}
 	}
 	
-	protected ResolvedModule createSyntheticBundle(Path filePath, StandardLibraryResolution stdLibResolution) 
+	protected ResolvedModule createSyntheticBundle(Location filePath, StandardLibraryResolution stdLibResolution) 
 			throws ModuleSourceException {
 		BundleModules bundleModules = BundleModules.createSyntheticBundleModules(filePath);
 		BundleResolution syntheticBR = new BundleResolution(this, null, bundleModules, stdLibResolution,

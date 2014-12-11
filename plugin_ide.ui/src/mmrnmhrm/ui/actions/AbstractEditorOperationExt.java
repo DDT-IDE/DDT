@@ -50,7 +50,7 @@ public abstract class AbstractEditorOperationExt extends AbstractEditorOperation
 		}
 	}
 	
-	protected abstract void performLongRunningComputation_withUpdatedServerWorkingCopy();
+	protected abstract void performLongRunningComputation_withUpdatedServerWorkingCopy() throws CoreException;
 	
 	@Override
 	protected abstract void performOperation_handleResult() throws CoreException;
