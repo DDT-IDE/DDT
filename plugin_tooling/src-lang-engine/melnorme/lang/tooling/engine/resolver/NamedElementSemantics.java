@@ -55,7 +55,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	
-	/* FIXME: review this API */
+	/* TODO: review this API */
 	public abstract INamedElement resolveTypeForValueContext();
 	
 }

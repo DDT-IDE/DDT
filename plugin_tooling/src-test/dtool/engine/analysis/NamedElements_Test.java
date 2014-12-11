@@ -157,7 +157,7 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 		new NamedElementVisitor() {
 			@Override
 			protected void doVisit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
-				/* FIXME: test resolved type as well*/
+				/* TODO: test resolved type as well*/
 				test_resolveConcreteElement(pickedElement, aliasTarget);
 			}
 		}.visitElements();
