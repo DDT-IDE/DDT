@@ -21,6 +21,7 @@ import java.nio.file.attribute.FileTime;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -37,20 +38,21 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	
 	public static final BundlePath XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
 	
-	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDirPath();
-	public static final Path TEST_WORKING_DIR = WORKING_DIR.resolve(ModuleParseCache_Test.class.getSimpleName());
+	public static final Location WORKING_DIR = TestsWorkingDir.getWorkingDir();
+	public static final Location TEST_WORKING_DIR = 
+			WORKING_DIR.resolve_fromValid(ModuleParseCache_Test.class.getSimpleName());
 	
-	protected static final Path CU_PATH = TEST_WORKING_DIR.resolve("app.d");
+	protected static final Path CU_PATH = TEST_WORKING_DIR.resolve_fromValid("app.d").path;
 	protected static final String SOURCE1 = "module app; /** Source 1 */";
 	protected static final String WC_SOURCE = "module app; /** WC Source */";
 	protected static final String SOURCE3 = "module app; /** ModuleParse Test source3 */";
-
+	
 	protected ModuleParseCache mpc;
 	
 	@BeforeClass
 	public static void setup() throws IOException {
 		FileUtil.deleteDir(TEST_WORKING_DIR);
-		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve(path("src/")).path, TEST_WORKING_DIR);
+		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve(path("src/")), TEST_WORKING_DIR);
 	}
 	
 	@Test

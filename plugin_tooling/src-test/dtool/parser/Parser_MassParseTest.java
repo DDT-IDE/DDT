@@ -13,6 +13,7 @@ import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.CommonTestUtils;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
@@ -68,7 +69,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	}
 	
 	protected static File unzipSource(File zipFile) throws IOException {
-		File outDir = getMassParseUnpackedResource(zipFile.getName());
+		File outDir = getMassParseUnpackedResource(zipFile.getName()).toFile();
 		if(!DToolTests.TESTS_LITE_MODE) {
 			MiscFileUtils.unzipFile(zipFile, outDir);
 		} else {
@@ -77,9 +78,9 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		return outDir;
 	}
 	
-	public static File getMassParseUnpackedResource(String... segments) {
-		File unpackedRoot = TestsWorkingDir.getWorkingDirPath().resolve(COMMON_UNPACK).toFile();
-		return MiscFileUtils.getFile(unpackedRoot, segments);
+	public static Location getMassParseUnpackedResource(String... segments) {
+		Location unpackedRoot = TestsWorkingDir.getWorkingDir().resolve_fromValid(COMMON_UNPACK);
+		return Location.fromAbsolutePath(MiscFileUtils.getFile(unpackedRoot.toFile(), segments).toPath());
 	}
 	
 	/* ------------------------------------ */

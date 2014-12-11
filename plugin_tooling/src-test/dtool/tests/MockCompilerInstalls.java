@@ -50,7 +50,7 @@ public class MockCompilerInstalls {
 	}
 	
 	protected static void setupMockCompilerInstalls() throws IOException {
-		FileUtil.deleteDir(MOCK_COMPILERS_PATH.path);
+		FileUtil.deleteDir(MOCK_COMPILERS_PATH);
 		MiscFileUtils.copyDirContentsIntoDirectory(
 			DToolTestResources.getTestResourceFile(RESOURCE_CompilerInstalls).toPath(), MOCK_COMPILERS_PATH.path);
 	}

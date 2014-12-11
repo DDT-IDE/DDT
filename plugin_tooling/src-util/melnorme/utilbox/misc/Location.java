@@ -109,10 +109,6 @@ public class Location {
 		return path.toUri();
 	}
 	
-	public Path resolvePath(String otherPath) {
-		return path.resolve(otherPath);
-	}
-	
 	/**
 	 * @return an new Location resolved from this Location against the given otherPathString. 
 	 * null if the other path is not valid. 
