@@ -15,6 +15,10 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.CollectionUtil.createHashSet;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,8 +30,11 @@ import java.util.Set;
 import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil;
+import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 /**
@@ -189,6 +196,50 @@ public class CommonTestUtils {
 	
 	public static Path workingDirPath(String relativePath) {
 		return TestsWorkingDir.getWorkingDirPath(relativePath);
+	}
+	
+	/* -------------  Resources stuff   ------------ */
+	
+	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
+	
+	public static String readStringFromFile(Path path) {
+		return readStringFromFile(Location.create_fromValid(path));
+	}
+	public static String readStringFromFile(File file) {
+		return readStringFromFile(Location.create_fromValid(file.toPath()));
+	}
+	public static String readStringFromFile(Location loc) {
+		try {
+			return FileUtil.readStringFromFile(loc.toFile(), DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}	
+	
+	public static void writeStringToFile(Path file, String string) {
+		writeStringToFile(Location.create_fromValid(file), string);
+	}
+	public static void writeStringToFile(File file, String string) {
+		writeStringToFile(Location.create_fromValid(file.toPath()), string);
+	}
+	public static void writeStringToFile(Location file, String string) {
+		try {
+			StreamUtil.writeStringToStream(string, new FileOutputStream(file.toFile()), DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public static void appendStringToFile(File file, String string) {
+		try {
+			StreamUtil.writeStringToStream(string, new FileOutputStream(file, true), DEFAULT_TESTDATA_ENCODING);
+		} catch (IOException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		}
+	}
+	
+	public static String getClassResourceAsString(Class<?> klass, String resourceName) {
+		return MiscUtil.getClassResourceAsString(klass, resourceName);
 	}
 	
 }

@@ -21,7 +21,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleFullName;
@@ -42,7 +41,7 @@ import dtool.engine.compiler_installs.CompilerInstall;
 
 public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
-	public Path getDubRepositoryDir() {
+	public Location getDubRepositoryDir() {
 		return BUNDLEMODEL_TEST_BUNDLES;
 	}
 	
@@ -68,9 +67,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		prepSMTestsWorkingDir(BUNDLEMODEL_TEST_BUNDLES);
 	}
 	
-	protected static void prepSMTestsWorkingDir(Path pathToCopy) throws IOException {
+	protected static void prepSMTestsWorkingDir(Location pathToCopy) throws IOException {
 		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES);
-		MiscFileUtils.copyDirContentsIntoDirectory(pathToCopy, SMTEST_WORKING_DIR_BUNDLES.path);
+		MiscFileUtils.copyDirContentsIntoDirectory(pathToCopy, SMTEST_WORKING_DIR_BUNDLES);
 	}
 	
 	/* -----------------  ----------------- */

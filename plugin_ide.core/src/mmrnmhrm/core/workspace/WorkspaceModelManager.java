@@ -527,7 +527,7 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 	}
 	
 	protected IProject findProjectForBundle(DubBundle depBundle) {
-		return findProjectForBundleLocation(depBundle.getLocation());
+		return findProjectForBundleLocation(depBundle.getLocationPath());
 	}
 	
 	protected IProject findProjectForBundleLocation(java.nio.file.Path location) {

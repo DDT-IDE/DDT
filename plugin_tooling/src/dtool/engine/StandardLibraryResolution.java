@@ -70,8 +70,8 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	
 	/** Use a fake Location for the null compiler install path. 
 	 * The path doesn't actually exists, but that's fine */
-	public static final Location NULL_COMPILER_INSTALL_PATH = Location.fromAbsolutePath( 
-			PathUtil.DEFAULT_ROOT_PATH.resolve("###INTERNAL_PATH###/org.dsource.dtool/Missing_StdLib"));
+	public static final Location NULL_COMPILER_INSTALL_PATH = 
+			PathUtil.DEFAULT_ROOT_LOC.resolve_fromValid("###INTERNAL_PATH###/org.dsource.dtool/Missing_StdLib");
 	
 	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
 		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);

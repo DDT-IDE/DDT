@@ -55,6 +55,11 @@ public class ResourceUtils {
 		return ResourcesPlugin.getWorkspace();
 	}
 	
+	public static Location getWorkspaceLocation() {
+		IPath location_ = getWorkspaceRoot().getLocation();
+		return Location.fromAbsolutePath(location_.toFile().toPath());
+	}
+	
 	public static IProject getProject(String name) {
 		return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
 	}

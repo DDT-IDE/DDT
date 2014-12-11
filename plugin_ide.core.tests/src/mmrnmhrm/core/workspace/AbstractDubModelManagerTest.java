@@ -22,11 +22,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.IteratorUtil;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
@@ -108,7 +109,7 @@ abstract class JsHelpers extends CommonDeeWorkspaceTest {
  */
 public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	
-	protected static final Path ECLIPSE_WORKSPACE_PATH = EclipseUtils.getWorkspaceRoot().getLocation().toFile().toPath();
+	protected static final Location ECLIPSE_WORKSPACE_PATH = ResourceUtils.getWorkspaceLocation();
 	
 	static {
 		initDubRepositoriesPath();
@@ -133,8 +134,8 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	
 	/* -----------------  ----------------- */
 	
-	protected static Path loc(IProject project) {
-		return project.getLocation().toFile().toPath();
+	protected static Location loc(IProject project) {
+		return loc(project.getLocation().toFile().toPath());
 	}
 	
 	protected static BundlePath bpath(IProject project) {
@@ -379,7 +380,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			removeDepProjBPEntry(projDepChecker.project, buildpathToVerify);
 		} else {
 			for (Path srcFolderPath : IteratorUtil.iterable(bundleDep.sourceFolders)) {
-				Path srcFolderAbsolutePath = bundleDep.location.resolve(srcFolderPath);
+				Location srcFolderAbsolutePath = bundleDep.location.resolve(srcFolderPath);
 				removeDepBuildpathEntry(buildpathToVerify, srcFolderAbsolutePath);
 			}
 		}
@@ -400,12 +401,12 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	}
 	
 	protected static void removeDepBuildpathEntry(LinkedList<IBuildpathEntry> buildpathToVerify,
-			Path srcFolderAbsolutePath) {
+			Location srcFolderAbsolutePath) {
 		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
 			IBuildpathEntry bpEntry = iter.next();
 			
 			IPath bpEntryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
-			if(bpEntryPath.toFile().toPath().equals(srcFolderAbsolutePath)) {
+			if(bpEntryPath.toFile().toPath().equals(srcFolderAbsolutePath.path)) {
 				assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY);
 				iter.remove();
 				return;
@@ -419,7 +420,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		protected IProject project;
 		
 		public ProjDepChecker(IProject project, String bundleName) {
-			super(project.getLocation().toFile().toPath(), bundleName);
+			super(loc(project), bundleName);
 			this.project = project;
 		}
 		

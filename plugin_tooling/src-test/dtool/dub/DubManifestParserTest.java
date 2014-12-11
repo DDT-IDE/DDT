@@ -12,6 +12,8 @@ package dtool.dub;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
+
 import org.junit.Test;
 
 import dtool.tests.DToolTestResources;
@@ -22,37 +24,37 @@ public class DubManifestParserTest extends CommonDubTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		testBundle(main(DUB_TEST_BUNDLES.resolve("bar_lib"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"), 
 			null, "bar_lib", DubBundle.DEFAULT_VERSION, paths("source"),
 			rawDeps()));
 		
-		testBundle(main(DUB_TEST_BUNDLES.resolve("foo_lib"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve_fromValid("foo_lib"), 
 			null, "foo_lib", DubBundle.DEFAULT_VERSION, paths("src", "src2"), 
 			rawDeps("bar_lib")));
 		
-		testBundle(main(DUB_TEST_BUNDLES.resolve("XptoBundle"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve_fromValid("XptoBundle"), 
 			null, "xptobundle", DubBundle.DEFAULT_VERSION, paths("src", "src-test", "src-import"),
 			rawDeps("foo_lib")));
 		
-		testBundle(main(DUB_TEST_BUNDLES.resolve("LenientJsonA"), 
+		testBundle(main(DUB_TEST_BUNDLES.resolve_fromValid("LenientJsonA"), 
 			null, "lenient-json1", DubBundle.DEFAULT_VERSION, paths("src", "src-test"),
 			rawDeps("foo_lib", "other_lib")));
 		
 		
-		testPath(DUB_TEST_BUNDLES.resolve("XptoBundle"), 
+		testPath(DUB_TEST_BUNDLES.resolve_fromValid("XptoBundle"), 
 			"bin", path("bin/xptobundle" + DubBundle.getExecutableSuffix()));
 
-		testPath(DUB_TEST_BUNDLES.resolve("bar_lib"), 
+		testPath(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"), 
 			null, path("bar_lib" + DubBundle.getExecutableSuffix()));
 	}
 	
-	protected void testPath(Path location, String targetPath, Path expectedEffectiveFullPath) {
+	protected void testPath(Location location, String targetPath, Path expectedEffectiveFullPath) {
 		DubBundle xptoBundle = parseDubBundle(location);
 		assertAreEqual(xptoBundle.getTargetPath(), targetPath);
 		assertAreEqual(xptoBundle.getEffectiveTargetFullPath(), expectedEffectiveFullPath);
 	}
 	
-	public DubBundle parseDubBundle(Path location) {
+	public DubBundle parseDubBundle(Location location) {
 		return DubManifestParser.parseDubBundleFromLocation(BundlePath.create(location));
 	}
 	
@@ -64,7 +66,7 @@ public class DubManifestParserTest extends CommonDubTest {
 	@Test
 	public void testNonExistant() throws Exception { testNonExistant$(); }
 	public void testNonExistant$() throws Exception {
-		testBundle(bundle(DToolTestResources.getTestResourcePath("dub").resolve("nonExistent"), 
+		testBundle(bundle(DToolTestResources.getTestResourceLoc("dub").resolve_fromValid("nonExistent"), 
 			"java.io.FileNotFoundException", IGNORE_STR, IGNORE_STR, null));
 	}
 	

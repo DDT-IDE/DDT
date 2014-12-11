@@ -25,11 +25,11 @@ import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.core.tests.utils.ErrorLogListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
+import melnorme.utilbox.tests.CommonTestExt;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IFile;
@@ -158,11 +158,6 @@ public abstract class CommonCoreTest extends CommonTest {
 			assertTrue(currentRule != null && currentRule.contains(project));
 		}
 		EclipseUtils.addNature(project, LangNature.NATURE_ID);
-	}
-	
-	public static String readFileContents(Path path) throws IOException {
-		assertTrue(path.isAbsolute());
-		return FileUtil.readStringFromFile(path.toFile(), StringUtil.UTF8);
 	}
 	
 	public static String readFileContents(IFile file) throws CoreException, IOException {

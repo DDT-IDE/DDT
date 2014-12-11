@@ -44,22 +44,22 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
-		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES.path);
+		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES);
 	}
 	
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES.path);
+		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES);
 	}
 	
 	@Before
 	public void prepWorkingDir() throws IOException {
-		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES.path); // Make sure state is reset
+		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES); // Make sure state is reset
 	}
 	
 	@Override
-	public Path getDubRepositoryDir() {
-		return SMTEST_WORKING_DIR_BUNDLES.path;
+	public Location getDubRepositoryDir() {
+		return SMTEST_WORKING_DIR_BUNDLES;
 	}
 	
 	/* -----------------  ----------------- */

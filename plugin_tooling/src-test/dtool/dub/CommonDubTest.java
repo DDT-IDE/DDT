@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -29,9 +30,9 @@ import dtool.tests.DToolTestResources;
 
 public class CommonDubTest extends CommonDToolTest {
 	
-	public static final Path DUB_TEST_BUNDLES = DToolTestResources.getTestResourcePath("dub");	
+	public static final Location DUB_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("dub");	
 	
-	public static final BundlePath XPTO_BUNDLE_PATH = BundlePath.create(DUB_TEST_BUNDLES.resolve("XptoBundle"));
+	public static final BundlePath XPTO_BUNDLE_PATH = bundlePath(DUB_TEST_BUNDLES, "XptoBundle");
 	
 	public CommonDubTest() {
 		super();
@@ -57,7 +58,7 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	public static class DubBundleChecker extends CommonChecker {
 		
-		public final Path location;
+		public final Location location;
 		public final String bundleName;
 		public final String errorMsgStart;
 		public final String version;
@@ -65,11 +66,11 @@ public class CommonDubTest extends CommonDToolTest {
 		public final String[] rawDeps;
 		public final DubBundleChecker[] expectedDeps;
 		
-		public DubBundleChecker(Path location, String bundleName) {
+		public DubBundleChecker(Location location, String bundleName) {
 			this(location, bundleName, null, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
 		}
 		
-		public DubBundleChecker(Path location, String bundleName, String errorMsgStart, String version,
+		public DubBundleChecker(Location location, String bundleName, String errorMsgStart, String version,
 				Path[] sourceFolders, String[] rawDeps, DubBundleChecker[] deps) {
 			this.location = location;
 			this.bundleName = bundleName;
@@ -150,17 +151,17 @@ public class CommonDubTest extends CommonDToolTest {
 		
 	}
 	
-	public static DubBundleChecker main(Path location, String errorMsgStart, String name, 
+	public static DubBundleChecker main(Location location, String errorMsgStart, String name, 
 			String version, Path[] srcFolders, String[] rawDeps, DubBundleChecker... deps) {
 		return new DubBundleChecker(location, name, errorMsgStart, version, srcFolders, rawDeps, deps);
 	}
 	
-	public static DubBundleChecker bundle(Path location, String errorMsgStart, String name, 
+	public static DubBundleChecker bundle(Location location, String errorMsgStart, String name, 
 			String version, Path[] srcFolders) {
 		return main(location, errorMsgStart, name, version, srcFolders, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}
 	
-	public static DubBundleChecker bundle(Path location, String name) {
+	public static DubBundleChecker bundle(Location location, String name) {
 		return new DubBundleChecker(location, name, null, IGNORE_STR, null, IGNORE_RAW_DEPS, IGNORE_DEPS);
 	}
 	
@@ -200,7 +201,7 @@ public class CommonDubTest extends CommonDToolTest {
 		return new ExternalProcessHelper(pb);
 	}
 	
-	public static void dubAddPath(Path packageRootDir) {
+	public static void dubAddPath(Location packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Adding DUB package root path: " + packageRootDirStr);
 		try {
@@ -213,7 +214,7 @@ public class CommonDubTest extends CommonDToolTest {
 		}
 	}
 	
-	public static void dubRemovePath(Path packageRootDir) {
+	public static void dubRemovePath(Location packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Removing DUB package root path: " + packageRootDirStr);
 		try {

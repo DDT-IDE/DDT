@@ -22,10 +22,16 @@ import java.util.List;
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.fntypes.VoidFunction;
+import melnorme.utilbox.misc.Location;
+import dtool.dub.BundlePath;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.util.NewUtils;
 
 public class CommonDToolTest extends CommonToolingTest {
+	
+	public static BundlePath bundlePath(Location basePath, String other) {
+		return BundlePath.create(basePath.resolve_fromValid(other));
+	}
 	
 	public static String readStringFromFile_PreserveBOM(File file) {
 		try {

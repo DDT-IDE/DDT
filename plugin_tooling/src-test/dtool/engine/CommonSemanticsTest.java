@@ -31,9 +31,8 @@ import dtool.tests.MockCompilerInstalls;
 
 public class CommonSemanticsTest extends CommonDToolTest {
 	
-	/*FIXME: BUG here*/
-	public static final Path BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
-	public static final Path SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semantics");
+	public static final Location BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("semanticModel");
+	public static final Location SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("semantics");
 	
 	public static final Location SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDir("SemModel");
 	
@@ -42,7 +41,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	static {
 		if(!DToolTests.TESTS_LITE_MODE) {
 			// workaround to cleanup state of abruptly-terminated tests
-			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES.path); 
+			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); 
 			CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
 			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
 		}
@@ -63,15 +62,6 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	protected static final Tests_SemanticManager defaultSemMgr = new Tests_DToolServer().getSemanticManager() ;
 	
 	public static final CompilerInstall DEFAULT_TestsCompilerInstall = MockCompilerInstalls.DMD_CompilerInstall;
-	
-	public static BundlePath bundlePath(Location basePath, String other) {
-		return BundlePath.create(basePath.resolve_fromValid(other));
-	}
-	
-	/* FIXME: BUG here location */
-	public static BundlePath bundlePath(Path basePath, String other) {
-		return BundlePath.create(basePath.resolve(other));
-	}
 	
 	public static BundleKey bundleKey(Path basePath, String subpackageName) {
 		return new BundleKey(BundlePath.create(basePath), subpackageName);

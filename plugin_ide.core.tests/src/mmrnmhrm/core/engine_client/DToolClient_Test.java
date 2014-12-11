@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
@@ -52,11 +53,12 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	protected TestFixtureProject testsProject;
 	
+	@Ignore // relative paths no longer supported
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		String relativePath = "relative/path/foo.d";
-		ModuleSource moduleSource = new ModuleSource(relativePath, "module blah;");
+		String modulePath = "relative/path/foo.d";
+		ModuleSource moduleSource = new ModuleSource(modulePath, "module blah;");
 		Path filePath = DToolClient.getPathHandleForModuleSource(moduleSource);
 		
 		ClientModuleParseCache clientModuleCache = client.getClientModuleCache();
@@ -65,9 +67,9 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 		testCodeCompletion(moduleSource, 0, 
 			"blah");
-		testCodeCompletion(new ModuleSource(relativePath, "module xpto;"), 0, 
+		testCodeCompletion(new ModuleSource(modulePath, "module xpto;"), 0, 
 			"xpto");
-		assertTrue(client.getServerSemanticManager().getParseCache().getEntry(MiscUtil.createPath(relativePath))
+		assertTrue(client.getServerSemanticManager().getParseCache().getEntry(MiscUtil.createPath(modulePath))
 			.isWorkingCopy() == false);
 		
 		Path path = DToolTestResources.getTestResourcePath().resolve("dummy__non_existant.d");

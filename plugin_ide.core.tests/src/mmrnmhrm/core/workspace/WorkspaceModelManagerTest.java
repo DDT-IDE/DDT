@@ -8,14 +8,12 @@ import static dtool.dub.CommonDubTest.rawDeps;
 import static dtool.dub.DubBundle.DEFAULT_VERSION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
 import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.WorkspaceModel;
-import mmrnmhrm.core.workspace.WorkspaceModelManager;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
@@ -51,11 +49,11 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
-	public static final Path DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
+	public static final Location DUB_TEST_BUNDLES = DubManifestParserTest.DUB_TEST_BUNDLES;
 	
-	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("foo_lib"), 
+	protected static final DubBundleChecker FOO_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve_fromValid("foo_lib"), 
 		null, "foo_lib", DEFAULT_VERSION, paths("src", "src2"));
-	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve("bar_lib"), 
+	protected static final DubBundleChecker BAR_LIB_BUNDLE = bundle(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"), 
 		null, "bar_lib", DEFAULT_VERSION, paths("source"));
 	
 	
@@ -127,7 +125,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	}
 	
 	public void runBasicTestSequence______________(IProject project) throws Exception {
-		Path location = project.getLocation().toFile().toPath();
+		Location location = loc(project);
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
@@ -145,7 +143,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		
 		writeDubJsonAndCheckDubModel(
-			readFileContents(DUB_TEST_BUNDLES.resolve("XptoBundle/dub.json")),
+			readStringFromFile(DUB_TEST_BUNDLES.resolve_fromValid("XptoBundle/dub.json")),
 			
 			project,
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src", "src-test", "src-import"), 
@@ -166,7 +164,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		// Test errors occurring from running dub describe
 		writeDubJsonAndCheckDubModel(
-			readFileContents(DUB_TEST_BUNDLES.resolve("ErrorBundle_MissingDep/dub.json")),
+			readStringFromFile(DUB_TEST_BUNDLES.resolve_fromValid("ErrorBundle_MissingDep/dub.json")),
 			
 			project,
 			main(location, ERROR_DUB_RETURNED_NON_ZERO, "ErrorBundle_MissingDep", DEFAULT_VERSION, srcFolders("src"), 
@@ -185,7 +183,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		writeDubJson(project, dubTestJson);
 		
 		IProject libProject = createAndOpenProject(DUB_LIB, true).getProject();
-		Path libProjectLocation = loc(libProject);
+		Location libProjectLocation = loc(libProject);
 		String dubLibJson = jsObject(jsEntry("name", "dub_lib"));
 		writeDubJson(libProject, dubLibJson);
 		
