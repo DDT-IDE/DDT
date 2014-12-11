@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
@@ -30,17 +31,18 @@ import dtool.tests.MockCompilerInstalls;
 
 public class CommonSemanticsTest extends CommonDToolTest {
 	
+	/*FIXME: BUG here*/
 	public static final Path BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semanticModel");
 	public static final Path SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourcePath("semantics");
 	
-	public static final Path SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDirPath("SemModel");
+	public static final Location SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDir("SemModel");
 	
 	/* -----------------  ----------------- */
 	
 	static {
 		if(!DToolTests.TESTS_LITE_MODE) {
 			// workaround to cleanup state of abruptly-terminated tests
-			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); 
+			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES.path); 
 			CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
 			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
 		}
@@ -62,6 +64,11 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	
 	public static final CompilerInstall DEFAULT_TestsCompilerInstall = MockCompilerInstalls.DMD_CompilerInstall;
 	
+	public static BundlePath bundlePath(Location basePath, String other) {
+		return BundlePath.create(basePath.resolve(other));
+	}
+	
+	/* FIXME: BUG here location */
 	public static BundlePath bundlePath(Path basePath, String other) {
 		return BundlePath.create(basePath.resolve(other));
 	}
@@ -86,7 +93,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		return resKey(new BundleKey(bundlePath));
 	}
 	
-	public ResolutionKey resKey(BundlePath bundlePath, Path compilerPath) {
+	public ResolutionKey resKey(BundlePath bundlePath, Location compilerPath) {
 		return resKey(new BundleKey(bundlePath), compilerPath);
 	}
 	
@@ -94,7 +101,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		return new ResolutionKey(bundleKey, DEFAULT_TestsCompilerInstall);
 	}
 	
-	public ResolutionKey resKey(BundleKey bundleKey, Path compilerPath) {
+	public ResolutionKey resKey(BundleKey bundleKey, Location compilerPath) {
 		assertTrue(compilerPath != MissingStandardLibraryResolution.NULL_COMPILER_INSTALL_PATH);
 		CompilerInstall compilerInstall = DToolServer.getCompilerInstallForPath(compilerPath);
 		assertNotNull(compilerInstall);

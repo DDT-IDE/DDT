@@ -48,7 +48,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 		DubBundleDescription bundleInfo = DeeCore.getWorkspaceModel().getBundleInfo(project);
 		Path targetFilePath = bundleInfo.getMainBundle().getEffectiveTargetFullPath();
 		
-		return project.getFile(EclipseUtils.path(targetFilePath));
+		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}
 	
 }

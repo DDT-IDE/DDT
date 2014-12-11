@@ -29,7 +29,6 @@ import org.junit.Test;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
-import dtool.engine.ModuleParseCache;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.CommonDToolTest;
@@ -38,7 +37,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	
 	public static final BundlePath XPTO_BUNDLE_PATH = CommonDubTest.XPTO_BUNDLE_PATH;
 	
-	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDir().toPath();
+	public static final Path WORKING_DIR = TestsWorkingDir.getWorkingDirPath();
 	public static final Path TEST_WORKING_DIR = WORKING_DIR.resolve(ModuleParseCache_Test.class.getSimpleName());
 	
 	protected static final Path CU_PATH = TEST_WORKING_DIR.resolve("app.d");
@@ -51,7 +50,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	@BeforeClass
 	public static void setup() throws IOException {
 		FileUtil.deleteDir(TEST_WORKING_DIR);
-		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve("src/"), TEST_WORKING_DIR);
+		MiscFileUtils.copyDirContentsIntoDirectory(XPTO_BUNDLE_PATH.resolve("src/").path, TEST_WORKING_DIR);
 	}
 	
 	@Test

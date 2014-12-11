@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		}
 		
 		protected void checkEntry(String moduleFullName, String relFilePath, boolean duplicateNameEntry) {
-			Path filePath = bundleRes.getBundlePath().resolve(relFilePath);
+			Path filePath = bundleRes.getBundlePath().resolve(relFilePath).path;
 			ModuleFullName key = new ModuleFullName(moduleFullName);
 			assertAreEqual(modules.get(key), filePath);
 			
@@ -77,9 +78,9 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 	}
 	
-	public static final Path DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path = 
+	public static final Location DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path = 
 			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/phobos/std/stdio.d");
-	public static final Path DEFAULT_DMD_INSTALL_LOCATION__Object_Path = 
+	public static final Location DEFAULT_DMD_INSTALL_LOCATION__Object_Path = 
 			DEFAULT_DMD_INSTALL_BaseLocation.resolve("src/druntime/import/object.di");
 	
 	@Test
@@ -118,7 +119,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		// Test Module resolver
 		
 		testFindResolvedModule(SMTEST, "sm_test_foo", SMTEST.resolve("src/sm_test_foo.d"));
-		testFindResolvedModule(SMTEST, "non_existing", null);
+		testFindResolvedModule(SMTEST, "non_existing", (Location) null);
 		
 		assertEqualSet(smtestSR.findModules("test."), hashSet(
 			"test.fooLib"
@@ -154,7 +155,8 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		___initSemanticManager();
 		BundleResolution sr = sm.getUpdatedResolution(BASIC_LIB);
 		assertTrue(sr.stdLibResolution.getCompilerType() == ECompilerType.DMD);
-		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).startsWith(DEFAULT_DMD_INSTALL_BaseLocation));
+		assertTrue(sr.stdLibResolution.getLibrarySourceFolders().get(0).path.startsWith(
+			DEFAULT_DMD_INSTALL_BaseLocation.path));
 		
 		testFindResolvedModule(BASIC_LIB, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
 		testFindResolvedModule(BASIC_LIB, "std.stdio", DEFAULT_DMD_INSTALL_LOCATION__StdStdio_Path);
@@ -206,7 +208,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		
 		
 		// Test getResolvedModule for module that is not in bundle import folders.
-		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d");
+		Path NOT_IN_SOURCE__MODULE = BASIC_LIB.resolve("not_source/not_source_foo.d").path;
 		rm = getUpdatedResolvedModule(NOT_IN_SOURCE__MODULE);
 		assertTrue(rm.semanticContext != sm.getStoredResolution(resKey(BASIC_LIB)));
 		assertEqualSet(rm.semanticContext.getBundleModuleFiles(), hashSet(NOT_IN_SOURCE__MODULE));
@@ -235,21 +237,23 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		} catch (ExecutionException e) {
 		}
 		
-		
-		// Test getResolvedModule for a relative path.
-		Path specialPath = PathUtil.createValidPath(("###special/relative_bundle.d"));
-		sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
-		rm = getUpdatedResolvedModule(specialPath);
-		assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
-			"object"
-		));
-		testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
-		// Test same, when no parse source exists for that relative path
-		try {
-			rm = getUpdatedResolvedModule(PathUtil.createValidPath(("###special/non_existent.d")));
-			assertFail();
-		} catch (ExecutionException ee) {
-			assertTrue(ee.getCause() instanceof ModuleSourceException);
+		boolean SUPPORT_RELATIVE_PATHS = true;
+		if(SUPPORT_RELATIVE_PATHS) {
+			// Test getResolvedModule for a relative path.
+			Path specialPath = PathUtil.createValidPath(("###special/relative_bundle.d"));
+			sm.parseCache.parseModuleWithNewSource(specialPath, "module relative_bundle;");
+			rm = getUpdatedResolvedModule(specialPath);
+			assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
+				"object"
+			));
+			testFindResolvedModule(rm.semanticContext, "object", DEFAULT_DMD_INSTALL_LOCATION__Object_Path);
+			// Test same, when no parse source exists for that relative path
+			try {
+				rm = getUpdatedResolvedModule(PathUtil.createValidPath(("###special/non_existent.d")));
+				assertFail();
+			} catch (ExecutionException ee) {
+				assertTrue(ee.getCause() instanceof ModuleSourceException);
+			}
 		}
 	}
 	

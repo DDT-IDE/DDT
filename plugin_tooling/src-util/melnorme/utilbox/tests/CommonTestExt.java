@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -45,22 +46,28 @@ public class CommonTestExt extends CommonTest {
 	public static final Charset DEFAULT_TESTDATA_ENCODING = StringUtil.UTF8;
 	
 	public static String readStringFromFile(Path path) {
-		return readStringFromFile(path.toFile());
+		return readStringFromFile(Location.create_fromValid(path));
 	}
 	public static String readStringFromFile(File file) {
+		return readStringFromFile(Location.create_fromValid(file.toPath()));
+	}
+	public static String readStringFromFile(Location loc) {
 		try {
-			return FileUtil.readStringFromFile(file, DEFAULT_TESTDATA_ENCODING);
+			return FileUtil.readStringFromFile(loc.toFile(), DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-	}
+	}	
 	
 	public static void writeStringToFile(Path file, String string) {
-		writeStringToFile(file.toFile(), string);
+		writeStringToFile(Location.create_fromValid(file), string);
 	}
 	public static void writeStringToFile(File file, String string) {
+		writeStringToFile(Location.create_fromValid(file.toPath()), string);
+	}
+	public static void writeStringToFile(Location file, String string) {
 		try {
-			StreamUtil.writeStringToStream(string, new FileOutputStream(file), DEFAULT_TESTDATA_ENCODING);
+			StreamUtil.writeStringToStream(string, new FileOutputStream(file.toFile()), DEFAULT_TESTDATA_ENCODING);
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

@@ -11,11 +11,11 @@
 package mmrnmhrm.core.engine_client;
 
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -76,7 +76,7 @@ public class SearchAndAddCompilersTask extends SearchPathEnvOperation {
 	}
 	
 	@Override
-	protected void searchPathEntry(Path path) {
+	protected void searchPathEntry(Location path) {
 		if(monitor.isCanceled()) {
 			return;
 		}

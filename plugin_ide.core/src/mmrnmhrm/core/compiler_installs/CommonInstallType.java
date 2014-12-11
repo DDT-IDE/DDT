@@ -2,11 +2,11 @@ package mmrnmhrm.core.compiler_installs;
 
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.core.Assert;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 
 import org.dsource.ddt.ide.core.DeeNature;
@@ -46,11 +46,11 @@ public abstract class CommonInstallType extends AbstractInterpreterInstallType {
 		return DeeLaunchingPlugin.getInstance().getLog();
 	}
 	
-	public IFileHandle directoryHasCompilerPresent(Path exeDir) {
+	public IFileHandle directoryHasCompilerPresent(Location exeDir) {
 		String possibleCompilerExeNames[] = getPossibleInterpreterNames();
 		
 		for (String possibleCompilerExeName : possibleCompilerExeNames) {
-			Path compileExeLocation = exeDir.resolve(possibleCompilerExeName);
+			Location compileExeLocation = exeDir.resolve(possibleCompilerExeName);
 			if(compileExeLocation.toFile().isFile()) {
 				return LocalEnvironment.getInstance().getFile(compileExeLocation.toUri());
 			}

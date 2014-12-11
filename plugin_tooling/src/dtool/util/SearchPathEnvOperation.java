@@ -12,7 +12,9 @@ package dtool.util;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 
 public abstract class SearchPathEnvOperation {
@@ -52,12 +54,17 @@ public abstract class SearchPathEnvOperation {
 			if(!path.toFile().isDirectory()) {
 				continue;
 			}
-			searchPathEntry(path);
+			try {
+				Location location = Location.create(path);
+				searchPathEntry(location);
+			} catch (InvalidPathExceptionX e) {
+				continue;
+			}
 		}
 	}
 	
 	protected abstract void handleWarning(String message);
 	
-	protected abstract void searchPathEntry(Path path);
+	protected abstract void searchPathEntry(Location path);
 	
 }

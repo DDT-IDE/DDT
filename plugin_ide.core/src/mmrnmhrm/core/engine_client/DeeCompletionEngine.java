@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 
@@ -34,7 +35,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 			CompletionContext context = new CompletionContext();
 			requestor.acceptContext(context);
 			
-			Path compilerPath = getCompilerPath(moduleSource);
+			Location compilerPath = getCompilerPath(moduleSource);
 			CompletionSearchResult completionResult = DToolClient.getDefault().runCodeCompletion(
 				moduleSource, position, compilerPath);
 			if(completionResult.isFailure()) {
@@ -56,7 +57,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	}
 	
 	@SuppressWarnings("unused")
-	protected Path getCompilerPath(IModuleSource moduleSource) {
+	protected Location getCompilerPath(IModuleSource moduleSource) {
 		return null; // Use default
 	}
 	

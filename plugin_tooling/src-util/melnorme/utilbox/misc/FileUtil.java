@@ -99,6 +99,11 @@ public final class FileUtil {
 		return Files.deleteIfExists(path);
 	}
 	
+	public static void deleteDirContents(Location dir) throws IOException {
+		/*FIXME: BUG here convert to Location*/
+		deleteDirContents(dir.path, false);
+	}
+	
 	public static void deleteDirContents(Path dir) throws IOException {
 		deleteDirContents(dir, false);
 	}

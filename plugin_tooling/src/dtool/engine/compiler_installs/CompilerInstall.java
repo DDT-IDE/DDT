@@ -10,14 +10,13 @@
  *******************************************************************************/
 package dtool.engine.compiler_installs;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-import dtool.util.NewUtils;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.Location;
 
 public class CompilerInstall {
 	
@@ -25,25 +24,22 @@ public class CompilerInstall {
 		DMD, GDC, LDC, OTHER
 	}
 	
-	protected final Path compilerPath;
+	protected final Location compilerPath;
 	protected final ECompilerType compilerType;
-	protected final List<Path> librarySourceFolders;
+	protected final List<Location> librarySourceFolders;
 	
 	
-	public CompilerInstall(Path compilerPath, ECompilerType compilerType, Path... librarySourceFolders) {
-		this(compilerPath, compilerType, NewUtils.normalizePaths(librarySourceFolders));
+	public CompilerInstall(Location compilerPath, ECompilerType compilerType, Location... librarySourceFolders) {
+		this(compilerPath, compilerType, new ArrayList2<>(librarySourceFolders));
 	}
 	
-	public CompilerInstall(Path compilerPath, ECompilerType compilerType, List<Path> librarySourceFolders) {
-		this.compilerPath = compilerPath.normalize();
+	public CompilerInstall(Location compilerPath, ECompilerType compilerType, List<Location> librarySourceFolders) {
+		this.compilerPath = compilerPath;
 		this.compilerType = compilerType;
 		this.librarySourceFolders = Collections.unmodifiableList(librarySourceFolders);
-		for (Path path : librarySourceFolders) {
-			assertTrue(path.isAbsolute() && path.equals(path.normalize()));
-		}
 	}
 	
-	public Path getCompilerPath() {
+	public Location getCompilerPath() {
 		return compilerPath;
 	}
 	
@@ -51,7 +47,7 @@ public class CompilerInstall {
 		return compilerType;
 	}
 	
-	public List<Path> getLibrarySourceFolders() {
+	public List<Location> getLibrarySourceFolders() {
 		return librarySourceFolders;
 	}
 	

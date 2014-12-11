@@ -29,6 +29,7 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
@@ -514,10 +515,10 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 			} else {
 				for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
 					
-					java.nio.file.Path srcFolderAbsolute = bundlePath.resolve(srcFolder);
-					assertTrue(srcFolderAbsolute.isAbsolute());
+					Location srcFolderAbsolute = bundlePath.resolve(srcFolder);
 					depEntries.add(
-						DubDependenciesBuildpathContainer.createDubBuildpathEntry(EclipseUtils.path(srcFolderAbsolute)));
+						DubDependenciesBuildpathContainer.createDubBuildpathEntry(
+							EclipseUtils.epath(srcFolderAbsolute)));
 				}
 			}
 		}

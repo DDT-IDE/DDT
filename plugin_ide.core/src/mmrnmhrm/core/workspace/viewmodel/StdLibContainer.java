@@ -13,8 +13,9 @@ package mmrnmhrm.core.workspace.viewmodel;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
+
+import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
 
@@ -43,8 +44,8 @@ public class StdLibContainer extends CommonDubElement<IProject> {
 	protected DubDepSourceFolderElement[] createChildren() {
 		ArrayList<DubDepSourceFolderElement> sourceContainers = new ArrayList<>();
 		
-		for (Path localPath : getCompilerInstall().getLibrarySourceFolders()) {
-			sourceContainers.add(new DubDepSourceFolderElement(this, localPath));
+		for (Location localPath : getCompilerInstall().getLibrarySourceFolders()) {
+			sourceContainers.add(new DubDepSourceFolderElement(this, localPath.path));
 		}
 		return arrayFrom(sourceContainers, DubDepSourceFolderElement.class);
 	}

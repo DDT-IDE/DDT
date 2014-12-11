@@ -10,36 +10,31 @@
  *******************************************************************************/
 package dtool.tests;
 
-import static dtool.tests.DToolTestResources.getTestResourcePath;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.engine.DToolServer;
 import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.compiler_installs.CompilerInstallDetector;
 
 public class MockCompilerInstalls {
 	
 	private static final String RESOURCE_CompilerInstalls = "compilerInstalls";
 	
-	public static final Path EMPTY_COMPILER_INSTALL = getTestResourcePath(RESOURCE_CompilerInstalls, 
-		"_empty-install", CompilerInstallDetector.SPECIAL_EMPTY_INSTALL);
+	public static final Location MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDir().resolve("_compilerInstalls");
 	
-	public static final Path MOCK_COMPILERS_PATH = TestsWorkingDir.getWorkingDirPath().resolve("_compilerInstalls");
-	
-	public static final Path DEFAULT_DMD_INSTALL_BaseLocation = MOCK_COMPILERS_PATH.resolve("DMD_archive");
-	public static final Path DEFAULT_DMD_INSTALL_EXE_PATH = 
+	public static final Location DEFAULT_DMD_INSTALL_BaseLocation = MOCK_COMPILERS_PATH.resolve("DMD_archive");
+	public static final Location DEFAULT_DMD_INSTALL_EXE_PATH = 
 			DEFAULT_DMD_INSTALL_BaseLocation.resolve("windows/bin/dmd.exe");
-	public static final Path DEFAULT_GDC_INSTALL_EXE_PATH = 
+	public static final Location DEFAULT_GDC_INSTALL_EXE_PATH = 
 			MOCK_COMPILERS_PATH.resolve("gdcInstall/bin/gdc");
 	
-	public static final Path DMD_CompilerLocation = DEFAULT_DMD_INSTALL_EXE_PATH; 
-	public static final Path GDC_CompilerLocation = DEFAULT_GDC_INSTALL_EXE_PATH;
+	public static final Location DMD_CompilerLocation = DEFAULT_DMD_INSTALL_EXE_PATH; 
+	public static final Location GDC_CompilerLocation = DEFAULT_GDC_INSTALL_EXE_PATH;
 	
 	public static final CompilerInstall DMD_CompilerInstall;
 	
@@ -54,9 +49,9 @@ public class MockCompilerInstalls {
 	}
 	
 	protected static void setupMockCompilerInstalls() throws IOException {
-		FileUtil.deleteDir(MOCK_COMPILERS_PATH);
+		FileUtil.deleteDir(MOCK_COMPILERS_PATH.path);
 		MiscFileUtils.copyDirContentsIntoDirectory(
-			DToolTestResources.getTestResourceFile(RESOURCE_CompilerInstalls).toPath(), MOCK_COMPILERS_PATH);
+			DToolTestResources.getTestResourceFile(RESOURCE_CompilerInstalls).toPath(), MOCK_COMPILERS_PATH.path);
 	}
 	
 }

@@ -28,6 +28,7 @@ import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -68,7 +69,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	protected static void prepSMTestsWorkingDir(Path pathToCopy) throws IOException {
 		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES);
-		MiscFileUtils.copyDirContentsIntoDirectory(pathToCopy, SMTEST_WORKING_DIR_BUNDLES);
+		MiscFileUtils.copyDirContentsIntoDirectory(pathToCopy, SMTEST_WORKING_DIR_BUNDLES.path);
 	}
 	
 	/* -----------------  ----------------- */
@@ -251,10 +252,22 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return resolvedModule;
 	}
 	
+	/* FIXME: BUG here: location */
+	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Location expectedPath) 
+			throws ModuleSourceException, ExecutionException {
+		testFindResolvedModule(bundlePath, moduleNameStr, expectedPath == null ? null : expectedPath.path);
+	}
+	
 	protected void testFindResolvedModule(BundlePath bundlePath, String moduleNameStr, Path expectedPath) 
 			throws ModuleSourceException, ExecutionException {
 		BundleResolution bundleRes = sm.getStoredResolution(bundlePath);
 		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
+	}
+	
+	/*FIXME: BUG here*/
+	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
+			Location expectedPath) throws ModuleSourceException {
+		testFindResolvedModule(bundleContext, moduleNameStr, expectedPath.path);
 	}
 	
 	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
@@ -281,6 +294,11 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return resolvedModule;
 	}
 	
+	/*FIXME: BUG here*/
+	protected ResolvedModule getUpdatedResolvedModule(Location filePath) throws ExecutionException {
+		return sm.getUpdatedResolvedModule(filePath.path, DEFAULT_TestsCompilerInstall);
+	}
+	
 	protected ResolvedModule getUpdatedResolvedModule(Path filePath) throws ExecutionException {
 		return sm.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall);
 	}
@@ -291,7 +309,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return resolutionKey(bundlePath, DEFAULT_TestsCompilerInstall);
 	}
 	
-	public static ResolutionKey resolutionKey(BundlePath bundlePath, Path compilerPath) {
+	public static ResolutionKey resolutionKey(BundlePath bundlePath, Location compilerPath) {
 		CompilerInstall compilerInstall = DToolServer.getCompilerInstallForPath(compilerPath);
 		return resolutionKey(bundlePath, compilerInstall);
 	}
@@ -300,7 +318,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		return new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
 	}
 
-	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d");
+	protected final Path BASIC_LIB_FOO_MODULE = BASIC_LIB.resolve("source/basic_lib_pack/foo.d").path;
 	protected final String BASIC_LIB_FOO_MODULE_Name = "basic_lib_pack.foo";
 	
 }

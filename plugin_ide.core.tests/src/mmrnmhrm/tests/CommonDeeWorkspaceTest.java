@@ -3,10 +3,8 @@ package mmrnmhrm.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.core.compiler_installs.DMDInstallType;
@@ -72,7 +70,7 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 		checkTestSetupInvariants();
 	}
 	
-	protected static void createFakeDeeInstall(String installTypeId, String installName, Path installExePath, 
+	protected static void createFakeDeeInstall(String installTypeId, String installName, Location installExePath, 
 			boolean setAsDefault) {
 		IInterpreterInstallType deeDmdInstallType = ScriptRuntime.getInterpreterInstallType(installTypeId);
 		InterpreterStandin install = new InterpreterStandin(deeDmdInstallType, installName + ".id");

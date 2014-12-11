@@ -28,6 +28,7 @@ import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -36,7 +37,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	
 	protected final SemanticManager manager;
 	
-	public AbstractBundleResolution(SemanticManager manager, List<Path> importFolders) {
+	public AbstractBundleResolution(SemanticManager manager, List<Location> importFolders) {
 		this(manager, manager.createBundleModules(importFolders));
 	}
 	

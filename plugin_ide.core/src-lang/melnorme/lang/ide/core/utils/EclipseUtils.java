@@ -33,8 +33,9 @@ public class EclipseUtils extends ResourceUtils {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 	
+	@Deprecated
 	public static Path path(java.nio.file.Path path) {
-		return new Path(path.toString());
+		return epath(path);
 	}
 	
 	public static void startOtherPlugin(String pluginId) {

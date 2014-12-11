@@ -21,23 +21,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import melnorme.utilbox.misc.Location;
 import dtool.engine.modules.ModuleNamingRules;
 
 public class BundleModules {
 	
 	public final Map<ModuleFullName, Path> modules;
 	public final Set<Path> moduleFiles;
-	public final List<Path> importFolders;
+	public final List<Location> importFolders;
 	
 	/**
 	 * Optimized constructor 
 	 */
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, List<Path> importFolders) {
+	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, 
+			List<Location> importFolders) {
 		this(modules, moduleFiles, importFolders, true);
 	}
 	
-	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, List<Path> importFolders, 
-			boolean requireAbsolute) {
+	public BundleModules(HashMap<ModuleFullName, Path> modules, HashSet<Path> moduleFiles, 
+			List<Location> importFolders, boolean requireAbsolute) {
 		// TODO use compile-time unmodifiable interfaces
 		this.modules = Collections.unmodifiableMap(modules);
 		this.moduleFiles = Collections.unmodifiableSet(moduleFiles);
@@ -83,7 +85,7 @@ public class BundleModules {
 		ModuleFullName moduleFullName = ModuleNamingRules.getValidModuleNameOrNull(filePath.getFileName());
 		modules.put(moduleFullName, filePath);
 		
-		return new BundleModules(modules, moduleFiles, new ArrayList<Path>(), false);
+		return new BundleModules(modules, moduleFiles, new ArrayList<Location>(), false);
 	}
 	
 }

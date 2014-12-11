@@ -24,6 +24,7 @@ import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
@@ -38,7 +39,7 @@ import dtool.parser.common.LexerResult.TokenAtOffsetResult;
 
 public class CodeCompletionOperation extends AbstractDToolOperation {
 	
-	public CodeCompletionOperation(SemanticManager semanticManager, Path compilerPath) {
+	public CodeCompletionOperation(SemanticManager semanticManager, Location compilerPath) {
 		super(semanticManager, compilerPath);
 	}
 	

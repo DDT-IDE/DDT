@@ -10,10 +10,10 @@
  *******************************************************************************/
 package dtool.engine.compiler_installs;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.misc.Location;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.util.SearchPathEnvOperation;
 
@@ -31,8 +31,8 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 	}
 	
 	@Override
-	protected void searchPathEntry(Path pathEntry) {
-		Path exePath;
+	protected void searchPathEntry(Location pathEntry) {
+		Location exePath;
 		if((exePath = executableExists(pathEntry, "dmd")) != null) {
 			addPossibleInstall(detector.detectDMDInstall(exePath));
 		}
@@ -51,8 +51,8 @@ public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperat
 		}
 	}
 	
-	protected Path executableExists(Path pathEntry, String executableFileName) {
-		Path exePath;
+	protected Location executableExists(Location pathEntry, String executableFileName) {
+		Location exePath;
 		if((exePath = pathEntry.resolve(executableFileName)).toFile().exists()) {
 			return exePath;
 		}

@@ -25,20 +25,21 @@ import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.utilbox.misc.Location;
 
 public abstract class BundleModulesVisitor {
 	
 	protected final HashMap<ModuleFullName, Path> modules = new HashMap<>();
 	protected final HashSet<Path> moduleFiles = new HashSet<>();
-	protected final List<Path> importFolders;
+	protected final List<Location> importFolders;
 	
-	public BundleModulesVisitor(List<Path> importFolders) {
+	public BundleModulesVisitor(List<Location> importFolders) {
 		this.importFolders = importFolders;
 		visitBundleModules(importFolders);
 	}
 	
-	public void visitBundleModules(List<Path> importFolders) {
-		for (Path importFolder : importFolders) {
+	public void visitBundleModules(List<Location> importFolders) {
+		for (Location importFolder : importFolders) {
 			try {
 				visitImportFolder(importFolder);
 			} catch (IOException e) {
@@ -47,7 +48,8 @@ public abstract class BundleModulesVisitor {
 		}
 	}
 	
-	protected void visitImportFolder(final Path importFolder) throws IOException {
+	protected void visitImportFolder(final Location importFolderLocation) throws IOException {
+		final Path importFolder = importFolderLocation.path;
 		if(!importFolder.toFile().exists()) {
 			return;
 		}

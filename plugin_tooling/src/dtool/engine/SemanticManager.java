@@ -25,6 +25,7 @@ import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.misc.Location;
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
@@ -259,12 +260,12 @@ public class SemanticManager {
 	
 	/* ----------------- helper ----------------- */
 	
-	public BundleModules createBundleModules(List<Path> importFolders) {
+	public BundleModules createBundleModules(List<Location> importFolders) {
 		return new SM_BundleModulesVisitor(importFolders).toBundleModules();
 	}
 	
 	protected class SM_BundleModulesVisitor extends BundleModulesVisitor {
-		public SM_BundleModulesVisitor(List<Path> importFolders) {
+		public SM_BundleModulesVisitor(List<Location> importFolders) {
 			super(importFolders);
 		}
 		

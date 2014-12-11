@@ -16,6 +16,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
+
 public class TestsWorkingDir {
 	
 	protected static final String TEST_RESOURCES_WORKING_DIR_PROPERTY = "Melnorme.TestsWorkingDir";
@@ -33,23 +35,7 @@ public class TestsWorkingDir {
 		if(!file.exists()) {
 			file.mkdir();
 		}
-	}
-	
-	public static File getWorkingDir() {
-		defaultWorkingDirInit(); // attempt default init
-		
-		assertNotNull(testsWorkingDir);
-		File file = new File(testsWorkingDir);
-		assertTrue(file.exists() && file.isDirectory());
-		return file;
-	}
-	
-	public static Path getWorkingDirPath() {
-		return getWorkingDir().toPath();
-	}
-	
-	public static Path getWorkingDirPath(String relativePath) {
-		return getWorkingDirPath().resolve(relativePath);
+		assertTrue(file.toPath().isAbsolute());
 	}
 	
 	protected static void defaultWorkingDirInit() {
@@ -63,6 +49,31 @@ public class TestsWorkingDir {
 		} else {
 			initWorkingDir(System.getProperty("java.io.tmpdir") + "/_tests");
 		}
+	}
+	
+	public static Location getWorkingDir() {
+		defaultWorkingDirInit(); // attempt default init
+		
+		assertNotNull(testsWorkingDir);
+		File file = new File(testsWorkingDir);
+		assertTrue(file.exists() && file.isDirectory() && file.isAbsolute());
+		return Location.create_fromValid(file.toPath()); // Tests code, so assume valid
+	}
+	
+	public static File getWorkingDirFile() {
+		return getWorkingDir().toFile();
+	}
+	
+	public static Path getWorkingDirPath() {
+		return getWorkingDir().getPath();
+	}
+	
+	public static Location getWorkingDir(String relativePath) {
+		return getWorkingDir().resolve(relativePath);
+	}
+	
+	public static Path getWorkingDirPath(String relativePath) {
+		return getWorkingDirPath().resolve(relativePath);
 	}
 	
 }

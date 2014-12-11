@@ -15,7 +15,9 @@ import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.parser.DeeParser;
@@ -44,7 +46,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		return compilerInstall.getCompilerType();
 	}
 	
-	protected List<Path> getLibrarySourceFolders() {
+	protected List<Location> getLibrarySourceFolders() {
 		return compilerInstall.getLibrarySourceFolders();
 	}
 	
@@ -67,8 +69,10 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	
 	/* ----------------- synthetic install ----------------- */
 	
-	public static final Path NULL_COMPILER_INSTALL_PATH = 
-			MiscUtil.createValidPath("###DTOOL_SPECIAL###/Synthetic_StdLib");
+	/** Use a fake Location for the null compiler install path. 
+	 * The path doesn't actually exists, but that's fine */
+	public static final Location NULL_COMPILER_INSTALL_PATH = Location.create_fromValid( 
+			PathUtil.DEFAULT_ROOT_PATH.resolve("###INTERNAL_PATH###/org.dsource.dtool/Missing_StdLib"));
 	
 	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
 		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
@@ -81,7 +85,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
-		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.resolve("object.di");
+		protected static final Path objectPath = NULL_COMPILER_INSTALL_PATH.path.resolve("object.di");
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
 			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(objectPath));

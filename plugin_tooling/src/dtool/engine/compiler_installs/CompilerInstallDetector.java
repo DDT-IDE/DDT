@@ -11,25 +11,18 @@
 package dtool.engine.compiler_installs;
 
 import java.io.File;
-import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 
 public class CompilerInstallDetector {
 	
-	public static final String SPECIAL_EMPTY_INSTALL = "__special_empty_install";
-
 	public CompilerInstallDetector() {
 	}
 	
-	public CompilerInstall detectInstallFromCompilerCommandPath(Path commandPath) {
-		String fileName = commandPath.getFileName().toString();
-		
-		if(fileName.equals(SPECIAL_EMPTY_INSTALL)) {
-			// Special compiler install with no modules. Useful for testing purposes.
-			return new CompilerInstall(commandPath, ECompilerType.OTHER);
-		}
+	public CompilerInstall detectInstallFromCompilerCommandPath(Location commandPath) {
+		String fileName = commandPath.path.getFileName().toString();
 		
 		if(executableMatches(fileName, "dmd")) {
 			return detectDMDInstall(commandPath);
@@ -42,8 +35,8 @@ public class CompilerInstallDetector {
 		return null;
 	}
 	
-	protected CompilerInstall detectDMDInstall(Path commandPath) {
-		Path cmdDir = commandPath.getParent();
+	protected CompilerInstall detectDMDInstall(Location commandPath) {
+		Location cmdDir = commandPath.getParent();
 		
 		if(cmdDir.resolve("../../src/druntime").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.DMD, 
@@ -57,9 +50,9 @@ public class CompilerInstallDetector {
 				cmdDir.resolve("../src/phobos"));
 		}
 		// another MacOSX layout
-		Path resolvedCmdPath = cmdDir.resolve("../share/dmd/bin/dmd");
+		Location resolvedCmdPath = cmdDir.resolve("../share/dmd/bin/dmd");
 		if(resolvedCmdPath.toFile().exists()) {
-			Path resolvedCmdDir = resolvedCmdPath.getParent();
+			Location resolvedCmdDir = resolvedCmdPath.getParent();
 			if(resolvedCmdDir.resolve("../src/druntime").toFile().exists()) {
 				return new CompilerInstall(resolvedCmdPath, ECompilerType.DMD, 
 					resolvedCmdDir.resolve("../src/druntime/import"),
@@ -86,8 +79,8 @@ public class CompilerInstallDetector {
 		return null;
 	}
 	
-	protected CompilerInstall detectLDCInstall(Path commandPath) {
-		Path cmdDir = commandPath.getParent();
+	protected CompilerInstall detectLDCInstall(Location commandPath) {
+		Location cmdDir = commandPath.getParent();
 		
 		if(cmdDir.resolve("../include/dlang/ldc").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC, 
@@ -102,8 +95,8 @@ public class CompilerInstallDetector {
 		return null;
 	}
 	
-	protected CompilerInstall detectGDCInstall(Path commandPath) {
-		Path cmdDir = commandPath.getParent();
+	protected CompilerInstall detectGDCInstall(Location commandPath) {
+		Location cmdDir = commandPath.getParent();
 		
 		if(cmdDir.resolve("../include/dlang/gdc").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.GDC, 
@@ -117,7 +110,7 @@ public class CompilerInstallDetector {
 		return checkGDCLibrariesAt(cmdDir.resolve("../include/d2"), commandPath);
 	}
 	
-	protected CompilerInstall checkGDCLibrariesAt(Path includeD2Dir, Path commandPath) {
+	protected CompilerInstall checkGDCLibrariesAt(Location includeD2Dir, Location commandPath) {
 		if(includeD2Dir.toFile().exists()) {
 			
 			File[] d2entries = includeD2Dir.toFile().listFiles();
@@ -126,7 +119,9 @@ public class CompilerInstallDetector {
 			
 			for (File d2entry : d2entries) {
 				if(d2entry.isDirectory() && new File(d2entry, "object.di").exists()) {
-					return new CompilerInstall(commandPath, ECompilerType.GDC, d2entry.toPath());
+					return new CompilerInstall(commandPath, ECompilerType.GDC, 
+						Location.create_fromValid(d2entry.toPath())
+					);
 				}
 			}
 			

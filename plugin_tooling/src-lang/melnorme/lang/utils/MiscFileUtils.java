@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.misc.Location;
 
 /**
  * Miscellaneous utils relating to {@link File}'s.
@@ -82,6 +83,11 @@ public class MiscFileUtils {
 		} catch(IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	/*FIXME: BUG here, use Location */
+	public static void copyDirContentsIntoDirectory(Location sourceDir, Location destFolder) throws IOException {
+		copyDirContentsIntoDirectory(sourceDir.path, destFolder.path);
 	}
 	
 	public static void copyDirContentsIntoDirectory(Path sourceDir, Path destFolder) throws IOException {

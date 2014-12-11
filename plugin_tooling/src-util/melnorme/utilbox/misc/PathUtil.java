@@ -11,8 +11,6 @@
 package melnorme.utilbox.misc;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -22,6 +20,8 @@ import melnorme.utilbox.core.CommonException;
 
 
 public class PathUtil {
+	
+	public static final Path DEFAULT_ROOT_PATH = createValidPath("").toAbsolutePath().getRoot();
 	
 	/** @return a valid path, 
 	 * or null if a valid path could not be created from given pathString. */
@@ -66,58 +66,6 @@ public class PathUtil {
 	public static Path getParentOrEmpty(Path path) throws CommonException {
 		Path parent = path.getParent();
 		return parent == null ? createValidPath("") : parent;
-	}
-	
-	
-	public static Location newLocation(String pathString) throws InvalidPathExceptionX {
-		return newLocation(createPath(pathString));
-	}
-	
-	public static Location newLocation(Path path) throws InvalidPathExceptionX {
-		if(!path.isAbsolute()) {
-			throw new InvalidPathExceptionX(new InvalidPathException(path.toString(), 
-				"Invalid location: path is not absolute"));
-		}
-		return new Location(path);
-	}
-	
-	public static Location newLocation_fromValid(Path path) {
-		return new Location(path);
-	}
-
-	
-	/**
-	 * A location is a normalized, absolute path.
-	 */
-	public static class Location {
-		
-		public final Path path;
-		
-		protected Location(Path absolutePath) {
-			assertTrue(absolutePath != null && absolutePath.isAbsolute());
-			this.path = absolutePath.normalize();
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if(this == obj) return true;
-			if(!(obj instanceof PathUtil.Location)) return false;
-			
-			PathUtil.Location other = (PathUtil.Location) obj;
-			
-			return areEqual(path, other.path);
-		}
-		
-		@Override
-		public int hashCode() {
-			return path.hashCode();
-		}
-		
-		@Override
-		public String toString() {
-			return path.toString();
-		}
-		
 	}
 	
 }

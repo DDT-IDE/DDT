@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,24 +43,24 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
-		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES);
+		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES.path);
 	}
 	
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
-		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES);
+		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES.path);
 	}
 	
 	@Before
 	public void prepWorkingDir() throws IOException {
-		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES); // Make sure state is reset
+		FileUtil.deleteDirContents(SMTEST_WORKING_DIR_BUNDLES.path); // Make sure state is reset
 	}
 	
 	@Override
 	public Path getDubRepositoryDir() {
-		return SMTEST_WORKING_DIR_BUNDLES;
+		return SMTEST_WORKING_DIR_BUNDLES.path;
 	}
-
+	
 	/* -----------------  ----------------- */
 	
 	protected HashMap<BundlePath, BundleResolution> previousSRs;
@@ -230,8 +231,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	/* ----------------- module updates ----------------- */
 	
 	
-	protected Path writeToFile(Path newFile, String contents) throws IOException {
-		Files.createDirectories(newFile.getParent());
+	protected Location writeToFile(Location newFile, String contents) throws IOException {
+		Files.createDirectories(newFile.getParent().path);
 		writeStringToFile(newFile, contents);
 		return newFile;
 	}
@@ -240,7 +241,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		writeToFileAndUpdateMTime(file, contents, true);
 	}
 	
-	public void writeToFileAndUpdateMTime(Path file, String contents, boolean isCacheEntryStale) throws IOException {
+	public void writeToFileAndUpdateMTime(Path file, String contents, boolean isCacheEntryStale) 
+			throws IOException {
 		ModuleParseCache_Test.writeToFileAndUpdateMTime(file, contents);
 		assertTrue(sm.parseCache.getEntry(file).isStale() == isCacheEntryStale);
 	}
@@ -260,7 +262,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		// Test module-file add
-		Path newModule = writeToFile(BASIC_LIB.resolve("source/newModule.d"), "module newModule;");
+		Path newModule = writeToFile(BASIC_LIB.resolve("source/newModule.d"), "module newModule;").path;
 		checkStaleStatus(BASIC_LIB, StaleState.MODULE_LIST_STALE);
 		checkStaleStatus(COMPLEX_LIB, StaleState.DEP_STALE);
 		checkGetModule(BASIC_LIB, "newModule", null);
@@ -381,8 +383,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 //			== MissingStandardLibraryResolution.NULL_COMPILER_INSTALL);
 		
 		
-		Path DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolve("DMD_Install_WC");
-		Path DMD_Install_WC = DMD_Install_WC_Base.resolve("windows/bin/dmd.exe");
+		Location DMD_Install_WC_Base = SMTEST_WORKING_DIR_BUNDLES.resolve("DMD_Install_WC");
+		Location DMD_Install_WC = DMD_Install_WC_Base.resolve("windows/bin/dmd.exe");
 		MiscFileUtils.copyDirContentsIntoDirectory(DEFAULT_DMD_INSTALL_BaseLocation, DMD_Install_WC_Base);
 		
 		getUpdatedResolution(resKey(COMPLEX_LIB, DMD_Install_WC));
@@ -400,9 +402,9 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		StandardLibraryResolution stdLib = sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC));
 		
 		assertTrue(stdLib.checkIsModuleContentsStale() == false);
-		Path DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve("src/druntime/import/object.di");
+		Location DMD_INSTALL_ObjectModule = DMD_Install_WC_Base.resolve("src/druntime/import/object.di");
 		stdLib.getBundleResolvedModule("object");
-		sm.setWorkingCopyAndParse(DMD_INSTALL_ObjectModule, "module object.d; /*SM_TEST*/"); 
+		sm.setWorkingCopyAndParse(DMD_INSTALL_ObjectModule.path, "module object.d; /*SM_TEST*/"); 
 		assertTrue(stdLib.checkIsModuleContentsStale());
 		
 		
@@ -420,7 +422,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		assertTrue(stdLib2 == sm.getUpdatedStdLibResolution(compilerInstall(DMD_Install_WC)));
 	}
 	
-	protected static CompilerInstall compilerInstall(Path compilerPath) {
+	protected static CompilerInstall compilerInstall(Location compilerPath) {
 		return DToolServer.getCompilerInstallForPath(compilerPath);
 	}
 	

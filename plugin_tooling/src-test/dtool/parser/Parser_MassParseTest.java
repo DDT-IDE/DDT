@@ -78,7 +78,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 	}
 	
 	public static File getMassParseUnpackedResource(String... segments) {
-		File unpackedRoot = MiscFileUtils.getFile(TestsWorkingDir.getWorkingDir(), COMMON_UNPACK);
+		File unpackedRoot = TestsWorkingDir.getWorkingDirPath().resolve(COMMON_UNPACK).toFile();
 		return MiscFileUtils.getFile(unpackedRoot, segments);
 	}
 	

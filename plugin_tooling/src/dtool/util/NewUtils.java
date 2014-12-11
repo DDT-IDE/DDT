@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -21,9 +20,8 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.collections.SimpleChainedIterator;
-import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.core.Assert;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StreamUtil;
@@ -252,13 +250,6 @@ public class NewUtils {
 		ArrayList<T> list = new ArrayList<>();
 		list.add(element);
 		return list;
-	}
-	
-	public static ArrayList<Path> normalizePaths(Path... paths) {
-		for (int i = 0; i < paths.length; i++) {
-			paths[i] = paths[i].normalize();
-		}
-		return CollectionUtil.createArrayList(paths);
 	}
 	
 }

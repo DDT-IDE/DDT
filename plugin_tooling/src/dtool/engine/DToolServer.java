@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
+import melnorme.utilbox.misc.Location;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
@@ -89,7 +90,7 @@ public class DToolServer {
 		return new ResolveDocViewOperation(getSemanticManager(), filePath, offset).perform();
 	}
 	
-	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) 
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws ExecutionException {
 		return new CodeCompletionOperation(getSemanticManager(), compilerPath).doCodeCompletion(filePath, offset);
 	}
@@ -107,7 +108,7 @@ public class DToolServer {
 		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	
-	public CompilerInstall findBestCompilerInstall(Path compilerPath) {
+	public CompilerInstall findBestCompilerInstall(Location compilerPath) {
 		CompilerInstall compilerInstall = getCompilerInstallForPath(compilerPath);
 		if(compilerInstall == null) {
 			SM_SearchCompilersOnPath compilersSearch = new SM_SearchCompilersOnPath();
@@ -116,7 +117,7 @@ public class DToolServer {
 		return compilerInstall;
 	}
 	
-	public static CompilerInstall getCompilerInstallForPath(Path compilerPath) {
+	public static CompilerInstall getCompilerInstallForPath(Location compilerPath) {
 		CompilerInstall compilerInstall = null;
 		if(compilerPath != null) {
 			return new CompilerInstallDetector().detectInstallFromCompilerCommandPath(compilerPath);

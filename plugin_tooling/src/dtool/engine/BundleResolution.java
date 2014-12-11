@@ -12,11 +12,9 @@ package dtool.engine;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.dub.BundlePath;
 
@@ -58,7 +56,7 @@ public class BundleResolution extends AbstractBundleResolution {
 		return stdLibResolution;
 	}
 	
-	public Path getCompilerPath() {
+	public Location getCompilerPath() {
 		return getStdLibResolution().getCompilerInstall().getCompilerPath();
 	}
 	

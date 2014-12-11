@@ -119,8 +119,11 @@ public abstract class CommonCoreTest extends CommonTest {
 	
 	/* ----------------- utilities ----------------- */
 	
+	public static org.eclipse.core.runtime.Path epath(melnorme.utilbox.misc.Location loc) {
+		return ResourceUtils.epath(loc);
+	}
 	public static org.eclipse.core.runtime.Path epath(Path path) {
-		return new org.eclipse.core.runtime.Path(path.toString());
+		return ResourceUtils.epath(path);
 	}
 	
 	public static Path path(IPath path) {

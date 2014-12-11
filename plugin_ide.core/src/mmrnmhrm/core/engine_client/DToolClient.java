@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
@@ -218,7 +219,7 @@ public class DToolClient {
 	
 	/* -----------------  ----------------- */
 	
-	public CompletionSearchResult runCodeCompletion(IModuleSource moduleSource, int offset, Path compilerPath) 
+	public CompletionSearchResult runCodeCompletion(IModuleSource moduleSource, int offset, Location compilerPath) 
 			throws CoreException {
 		
 		if(moduleSource instanceof ISourceModule) {
@@ -240,7 +241,7 @@ public class DToolClient {
 		}
 	}
 	
-	public CompletionSearchResult runCodeCompletion(ISourceModule sourceModule, int offset, Path compilerPath) 
+	public CompletionSearchResult runCodeCompletion(ISourceModule sourceModule, int offset, Location compilerPath) 
 			throws CoreException {
 		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
 		
@@ -260,7 +261,8 @@ public class DToolClient {
 	
 	/* ----------------- Engine client requests ----------------- */
 	
-	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Path compilerPath) throws CoreException {
+	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
+			throws CoreException {
 		try {
 			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath);
 		} catch (ExecutionException e) {

@@ -2,7 +2,6 @@ package dtool.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -17,6 +16,7 @@ import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.Location;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -29,8 +29,8 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	protected ModuleFullName extraModuleName;
 	protected ParsedModule extraModuleResult;
 	
-	public TestsSimpleModuleResolver(File projectFolder) {
-		super(createBundles(projectFolder.toPath()));
+	public TestsSimpleModuleResolver(Location projectFolder) {
+		super(createBundles(projectFolder));
 		
 		
 		for (Entry<ModuleFullName, Path> entry : bundleModules.getModules().entrySet()) {
@@ -43,7 +43,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 		}
 	}
 	
-	protected static BundleModules createBundles(Path sourceFolder) {
+	protected static BundleModules createBundles(Location sourceFolder) {
 		BundleModules bundleModules = new BundleModulesVisitor(new ArrayList2<>(sourceFolder)) {
 			@Override
 			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -201,21 +202,21 @@ public class DubBundle {
 	
 	/* ----------------- utilities ----------------- */
 	
-	public ArrayList<Path> getEffectiveImportFolders_AbsolutePath() {
+	public ArrayList<Location> getEffectiveImportFolders_AbsolutePath() {
 		assertTrue(bundlePath != null);
 		
-		ArrayList<Path> importFolders = new ArrayList<>(effectiveSourceFolders.length);
-		for (Path srcFolder : effectiveSourceFolders) {
-			importFolders.add(bundlePath.resolve(srcFolder));
+		ArrayList<Location> importFolders = new ArrayList<>(effectiveSourceFolders.length);
+		for (Path srcFolder_relative : effectiveSourceFolders) {
+			importFolders.add(bundlePath.resolve(srcFolder_relative));
 		}
 		return importFolders;
 	}
 	
 	public Path relativizePathToImportFolder(Path path) {
-		ArrayList<Path> importFolders = getEffectiveImportFolders_AbsolutePath();
-		for(Path importFolderPath : importFolders) {
-			if(path.startsWith(importFolderPath)) {
-				return importFolderPath.relativize(path);
+		ArrayList<Location> importFolders = getEffectiveImportFolders_AbsolutePath();
+		for(Location importFolder : importFolders) {
+			if(path.startsWith(importFolder.path)) {
+				return importFolder.path.relativize(path);
 			}
 		}
 		return null;

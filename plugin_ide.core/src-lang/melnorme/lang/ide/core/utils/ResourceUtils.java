@@ -16,7 +16,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
 import org.eclipse.core.resources.IContainer;
@@ -32,6 +34,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ResourceUtils {
+	
+	public static org.eclipse.core.runtime.Path epath(melnorme.utilbox.misc.Location loc) {
+		return new org.eclipse.core.runtime.Path(loc.path.toString());
+	}
+	
+	public static org.eclipse.core.runtime.Path epath(Path path) {
+		return new org.eclipse.core.runtime.Path(path.toString());
+	}
+	
+	/* -----------------  ----------------- */ 
 	
 	/** Convenience method to get the workspace root. */
 	public static IWorkspaceRoot getWorkspaceRoot() {

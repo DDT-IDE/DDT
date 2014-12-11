@@ -2,11 +2,11 @@ package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -51,11 +51,11 @@ public class CompletionEngine_Test extends CommonCoreTest {
 	}
 	
 	public static DeeCompletionEngine testCompletionEngine(IModuleSource moduleSource, final int offset,
-		final int rplLen, final Path compilerPath) {
+		final int rplLen, final Location compilerPath) {
 		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
 		DeeCompletionEngine completionEngine = new DeeCompletionEngine() {
 			@Override
-			protected Path getCompilerPath(IModuleSource moduleSource) {
+			protected Location getCompilerPath(IModuleSource moduleSource) {
 				return compilerPath;
 			}
 		};

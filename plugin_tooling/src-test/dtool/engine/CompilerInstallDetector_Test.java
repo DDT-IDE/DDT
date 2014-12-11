@@ -14,9 +14,10 @@ import static dtool.tests.MockCompilerInstalls.MOCK_COMPILERS_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
@@ -29,22 +30,22 @@ import dtool.util.SearchPathEnvOperation;
 
 public class CompilerInstallDetector_Test extends CommonDToolTest {
 	
-	public static final Path MOCK_DMD = MOCK_COMPILERS_PATH.resolve("DMD_archive");
-	public static final Path MOCK_DMD_CMDPATH = MOCK_DMD.resolve("windows/bin/dmd.exe");
-	public static final Path MOCK_DMD_LINUX = MOCK_COMPILERS_PATH.resolve("DMD-linux");
-	public static final Path MOCK_DMD2_SYSTEM_CMDPATH = MOCK_DMD_LINUX.resolve("usr/bin/dmd");
-	public static final Path MOCK_DMD_LINUX2 = MOCK_COMPILERS_PATH.resolve("DMD-linux2");
-	public static final Path MOCK_DMD2_SYSTEM2_CMDPATH2 = MOCK_DMD_LINUX2.resolve("usr/bin/dmd");
+	public static final Location MOCK_DMD = MOCK_COMPILERS_PATH.resolve("DMD_archive");
+	public static final Location MOCK_DMD_CMDPATH = MOCK_DMD.resolve("windows/bin/dmd.exe");
+	public static final Location MOCK_DMD_LINUX = MOCK_COMPILERS_PATH.resolve("DMD-linux");
+	public static final Location MOCK_DMD2_SYSTEM_CMDPATH = MOCK_DMD_LINUX.resolve("usr/bin/dmd");
+	public static final Location MOCK_DMD_LINUX2 = MOCK_COMPILERS_PATH.resolve("DMD-linux2");
+	public static final Location MOCK_DMD2_SYSTEM2_CMDPATH2 = MOCK_DMD_LINUX2.resolve("usr/bin/dmd");
 
-	public static final Path MOCK_GDC = MOCK_COMPILERS_PATH.resolve("gdcInstall");
-	public static final Path MOCK_GDC_CMDPATH = MOCK_GDC.resolve("bin/gdc");
-	public static final Path MOCK_GDC_B = MOCK_COMPILERS_PATH.resolve("gdcInstallB");
-	public static final Path MOCK_GDC_B_CMDPATH = MOCK_GDC_B.resolve("bin/gdc");
+	public static final Location MOCK_GDC = MOCK_COMPILERS_PATH.resolve("gdcInstall");
+	public static final Location MOCK_GDC_CMDPATH = MOCK_GDC.resolve("bin/gdc");
+	public static final Location MOCK_GDC_B = MOCK_COMPILERS_PATH.resolve("gdcInstallB");
+	public static final Location MOCK_GDC_B_CMDPATH = MOCK_GDC_B.resolve("bin/gdc");
 
-	public static final Path MOCK_LDC_ARCHIVE = MOCK_COMPILERS_PATH.resolve("ldc-archive");
+	public static final Location MOCK_LDC_ARCHIVE = MOCK_COMPILERS_PATH.resolve("ldc-archive");
 	
 	
-	public static final Path MULTIPLE_IN_ONE_PATH = MOCK_COMPILERS_PATH.resolve("_multipleInSameLocation/bin");
+	public static final Location MULTIPLE_IN_ONE_PATH = MOCK_COMPILERS_PATH.resolve("_multipleInSameLocation/bin");
 
 	
 	protected final String PATH_SEP = SearchPathEnvOperation.getPathsSeparator();
@@ -103,22 +104,22 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		));
 	}
 	
-	protected void testDetectInstall(Path installPath, String compilerPathStr, ECompilerType type, 
+	protected void testDetectInstall(Location installPath, String compilerPathStr, ECompilerType type, 
 			List<String> pathStrings) {
 		testDetectInstall(installPath, compilerPathStr, compilerPathStr, type, pathStrings);
 	}
 	
-	protected void testDetectInstall(Path installPath, String compilerPathStr, String resolvedCompilerPathStr,
+	protected void testDetectInstall(Location installPath, String compilerPathStr, String resolvedCompilerPathStr,
 			ECompilerType type, List<String> pathStrings) {
-		Path compilerPath = installPath.resolve(compilerPathStr).normalize();
+		Location compilerPath = installPath.resolve(compilerPathStr);
 		CompilerInstall install = detector.detectInstallFromCompilerCommandPath(compilerPath);
-		Path resolvedCompilerPath = installPath.resolve(resolvedCompilerPathStr).normalize();
+		Location resolvedCompilerPath = installPath.resolve(resolvedCompilerPathStr);
 		checkInstall(install, resolvedCompilerPath, type, installPath, pathStrings);
 	}
 	
-	protected void checkInstall(CompilerInstall install, Path compilerPath, ECompilerType compilerType, 
-			Path installPath, List<String> pathStrings) {
-		ArrayList<Path> paths = new ArrayList<>(pathStrings.size());
+	protected void checkInstall(CompilerInstall install, Location compilerPath, ECompilerType compilerType, 
+			Location installPath, List<String> pathStrings) {
+		ArrayList<Location> paths = new ArrayList<>(pathStrings.size());
 		for (String pathString : pathStrings) {
 			paths.add(installPath.resolve(pathString));
 		}

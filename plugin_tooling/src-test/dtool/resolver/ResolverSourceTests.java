@@ -18,6 +18,7 @@ import java.io.File;
 
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
@@ -47,7 +48,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		TestsSimpleModuleResolver existingMR = moduleResolvers.get(projectFolderName);
 		if(existingMR == null) {
 			File projectFolder = getProjectDirectory(projectFolderName);
-			existingMR = new TestsSimpleModuleResolver(projectFolder);
+			existingMR = new TestsSimpleModuleResolver(Location.create_fromValid(projectFolder.toPath()));
 			moduleResolvers.put(projectFolderName, existingMR); // Cache the MR data
 		}
 		if(moduleName != null) {

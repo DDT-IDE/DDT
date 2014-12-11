@@ -13,6 +13,7 @@ package dtool.engine.operations;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.utilbox.misc.Location;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.compiler_installs.CompilerInstall;
@@ -26,7 +27,7 @@ public class AbstractDToolOperation {
 		this(semanticManager, null);
 	}
 	
-	public AbstractDToolOperation(SemanticManager semanticManager, Path compilerPath) {
+	public AbstractDToolOperation(SemanticManager semanticManager, Location compilerPath) {
 		this.semanticManager = semanticManager;
 		this.compilerInstall = semanticManager.getDtoolServer().findBestCompilerInstall(compilerPath);
 	}
@@ -36,6 +37,7 @@ public class AbstractDToolOperation {
 	}
 	
 	protected ResolvedModule getResolvedModule(Path filePath) throws ExecutionException {
+		/*FIXME: BUG here Location !!*/
 		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
 	}
 	
