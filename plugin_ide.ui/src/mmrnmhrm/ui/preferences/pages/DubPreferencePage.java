@@ -10,15 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.util.swt.SWTFactoryUtil;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.DeeUIPlugin;
 
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
@@ -26,9 +23,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 
 public class DubPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-	
-	protected static final String LABEL_MSG = 
-			"The 'DUB path' control above is currently disabled due to a bug. Only the default value works.";
 	
 	public DubPreferencePage() {
 		super(GRID);
@@ -52,10 +46,7 @@ public class DubPreferencePage extends FieldEditorPreferencePage implements IWor
 			}
 		};
 		addField(dubPathEditor);
-		dubPathEditor.setEnabled(false, getFieldEditorParent());
 		
-		SWTFactoryUtil.createLabel(getFieldEditorParent(), SWT.NONE, LABEL_MSG, 
-			GridDataFactory.swtDefaults().span(3, 1).create());
 	}
 	
 	@Override
