@@ -1,9 +1,11 @@
 ## DDT release ChangeLog
 
+### DDT 0.11.x
+ * Fixed: added loop detection for all known loop scenarios during semantic engine analysis.
+
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.
  * Fixed #82: Semantic operations do not work if "dub" program is not on the PATH.
- * Fixed: added loop detection for all known loop scenarios during semantic engine analysis.
  * Implemented #85: Support case-insensitive autocompletion.
 
 
