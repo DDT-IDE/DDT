@@ -94,6 +94,10 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperationExt {
 		if(newEditorFilePath == null) {
 			throw LangCore.createCoreException("no file path provided", null);
 		}
+		if(!newEditorFilePath.toFile().exists()) {
+			throw LangCore.createCoreException("File does not exist.", null);
+		}
+		
 		IEditorInput newInput;
 		if(areEqual(newEditorFilePath, inputPath)) {
 			newInput = editor.getEditorInput();
