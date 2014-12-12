@@ -192,7 +192,7 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, String... arguments) 
 			throws IOException {
-		String[] command = ArrayUtil.prepend(DubHelper.getDubPath(), arguments);
+		String[] command = ArrayUtil.prepend(DubHelper.getDubPath(null), arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
 		if(bundlePath != null) {
 			pb.directory(bundlePath.getPath().toFile());

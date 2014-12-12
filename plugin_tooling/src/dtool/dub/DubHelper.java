@@ -37,22 +37,26 @@ public class DubHelper {
 		}
 	}
 	
-	public static String getDubPath() {
+	public static String getDubPath(String dubPath) {
+		if(dubPath != null) {
+			return dubPath;
+		}
 		return DUB_PATH_OVERRIDE != null ? DUB_PATH_OVERRIDE : "dub";
 	}
 	
-	public static DubBundleDescription runDubDescribe(BundlePath bundlePath) throws IOException, InterruptedException {
-		return runDubDescribe(bundlePath, false);
+	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath) 
+			throws IOException, InterruptedException {
+		return runDubDescribe(bundlePath, dubPath, false);
 	}
 	
-	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, boolean allowDepDownload) 
-			throws IOException, InterruptedException {
-		ProcessBuilder pb;
-		if(allowDepDownload) {
-			pb = new ProcessBuilder(getDubPath(), "describe");
-		} else {
-			pb = new ProcessBuilder(getDubPath(), "describe", "--nodeps");
-		}
+	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath, boolean allowDepDownload) 
+			throws IOException, InterruptedException 
+	{
+		dubPath = getDubPath(dubPath);
+		
+		ProcessBuilder pb = allowDepDownload ? 
+				new ProcessBuilder(dubPath, "describe") : 
+				new ProcessBuilder(dubPath, "describe", "--nodeps");
 		
 		pb.directory(bundlePath.getPath().toFile());
 		
@@ -80,19 +84,21 @@ public class DubHelper {
 	public static class RunDubDescribeCallable implements ICallable<DubBundleDescription, Exception> {
 		
 		protected final BundlePath bundlePath;
+		protected final String dubPath;
 		protected final boolean allowDepDownload;
 		
 		protected volatile FileTime startTimeStamp = null;
 		
-		public RunDubDescribeCallable(BundlePath bundlePath, boolean allowDepDownload) {
+		public RunDubDescribeCallable(BundlePath bundlePath, String dubPath, boolean allowDepDownload) {
 			this.bundlePath = bundlePath;
+			this.dubPath = dubPath;
 			this.allowDepDownload = allowDepDownload;
 		}
 		
 		@Override
 		public DubBundleDescription call() throws IOException, InterruptedException {
 			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
-			return DubHelper.runDubDescribe(bundlePath, allowDepDownload);
+			return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
 		}
 		
 		public FileTime getStartTimeStamp() {

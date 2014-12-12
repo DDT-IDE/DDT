@@ -62,7 +62,7 @@ public class SemanticManager {
 	
 	protected final ManifestsManager manifestManager = new ManifestsManager();
 	protected final ResolutionsManager resolutionsManager = new ResolutionsManager();
-
+	
 	
 	protected SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;
@@ -142,7 +142,7 @@ public class SemanticManager {
 		@Override
 		protected void doUpdateEntry(BundleKey key, FileCachingEntry<ResolvedManifest> staleInfo)
 				throws CommonException {
-			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, false);
+			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, null, false);
 			DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 			
 			FileTime dubStartTimeStamp = dubDescribeTask.getStartTimeStamp();

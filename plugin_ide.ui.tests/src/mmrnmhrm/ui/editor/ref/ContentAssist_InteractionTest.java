@@ -28,12 +28,12 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 		"fParam", "func(int a, List!(Foo) a)", "foobarvar",
 		"foovar", "foox", 
 		"func(char b, List!(Foo) b)", "func()",
-		/*"FooBar",*/  "foo_t", "fooalias", "fooOfModule", "frak" /*,"Foo",*/
+		"FooBar",  "foo_t", "fooalias", "fooOfModule", "frak" , "Foo"
 	);
 	
 	public static final String[] EXPECTED_IN_TEST_fo = array(
 			"foobarvar",
-			"foovar", "foox", "foo_t", "fooalias", "fooOfModule"
+			"foovar", "foox", "foo_t", "fooalias", "fooOfModule", "FooBar", "Foo"
 	);
 	
 	@After
