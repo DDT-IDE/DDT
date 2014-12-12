@@ -259,7 +259,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		testFindResolvedModule(bundleRes, moduleNameStr, expectedPath);
 	}
 	
-	protected void testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
+	protected ResolvedModule testFindResolvedModule(AbstractBundleResolution bundleContext, String moduleNameStr, 
 			Location expectedPath) throws ModuleSourceException {
 		assertNotNull(bundleContext);
 		ModuleFullName moduleFullName = new ModuleFullName(moduleNameStr);
@@ -270,6 +270,8 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		assertTrue(bundleContext.findResolvedModule(modulePath) == resolvedModule);
 		Module moduleNode = resolvedModule == null ? null : resolvedModule.getModuleNode();
 		assertAreEqual(bundleContext.findModuleNode(moduleFullName), moduleNode);
+		
+		return resolvedModule;
 	}
 	
 	/* -----------------  ----------------- */

@@ -73,6 +73,9 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	public static final Location NULL_COMPILER_INSTALL_PATH = 
 			PathUtil.DEFAULT_ROOT_LOC.resolve_fromValid("###INTERNAL_PATH###/org.dsource.dtool/Missing_StdLib");
 	
+	protected static final Location NULL_COMPILER_INSTALL_PATH_objectPath = 
+			NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di");
+	
 	public static final CompilerInstall NULL_COMPILER_INSTALL = new CompilerInstall(
 		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
 	
@@ -84,14 +87,15 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
-		protected static final Location objectPath = NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di");
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
-			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(objectPath));
+			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(
+				NULL_COMPILER_INSTALL_PATH_objectPath));
 			
-			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, objectPath.path);
+			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, 
+				NULL_COMPILER_INSTALL_PATH_objectPath.path);
 			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
-			resolvedModules.put(objectPath, resolvedModule);
+			resolvedModules.put(NULL_COMPILER_INSTALL_PATH_objectPath, resolvedModule);
 		}
 		
 		@Override

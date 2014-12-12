@@ -172,6 +172,11 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		assertTrue(fallBackStdLibResolution.checkIsModuleContentsStale() == false);
 		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
+		// FIXME: re enable this test
+//		ResolvedModule objectModule = testFindResolvedModule(sr, "object", null);
+//		// Ensure it's null because file doesn't actually exists
+//		assertTrue(objectModule.getModuleNode().compilationUnitPath == null); 
+		
 		BundleResolution bundleRes = sm.getStoredResolution(BASIC_LIB_NullCompilerInstall);
 		testFindResolvedModule(bundleRes, "object", NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di"));
 		
