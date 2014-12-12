@@ -14,6 +14,8 @@ int bar;
 void _dummy()
 {
 	auto _dummy = abc/*CC1*/;
+	auto _dummy = aBc/*CC1-b*/; // Test case insensitive
+	auto _dummy = ABC/*CC1-c*/; // Test case insensitive
 	
 	Foo.xx/*CC2*/;
 	

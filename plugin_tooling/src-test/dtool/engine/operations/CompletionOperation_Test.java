@@ -46,6 +46,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
 		
+		
 		// Boundary condition, offset = 0 && offset = length
 		testFindDefinition(MODULE_FilePath, 0, 0,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
@@ -145,6 +146,20 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		checker.removeIgnoredDefUnits(true, false, false);
 		checker.removeStdLibObjectDefUnits();
 		checker.checkResults(expectedResults);
+	}
+	
+	
+	@Test
+	public void testNameMatching() throws Exception { testNameMatching$(); }
+	public void testNameMatching$() throws Exception {
+		// Test case insensitive matching
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-b*/"), 0,
+			"abc1", "abc2"
+		);
+		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-c*/"), 0,
+			"abc1", "abc2"
+		);
+		
 	}
 	
 }

@@ -41,7 +41,11 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	
 	@Override
 	public boolean matchesName(String defName) {
-		return defName.startsWith(searchOptions.searchPrefix);
+		if(searchOptions.searchPrefix.length() > defName.length()) {
+			return false;
+		}
+		String defNamePrefix = defName.substring(0, searchOptions.searchPrefix.length());
+		return defNamePrefix.equalsIgnoreCase(searchOptions.searchPrefix);
 	}
 	
 	@Override
