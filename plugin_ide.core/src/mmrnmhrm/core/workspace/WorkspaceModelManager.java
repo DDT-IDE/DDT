@@ -414,7 +414,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		BundlePath bundlePath = BundlePath.create(projectLocation.toFile().toPath());
 		
-		String dubPath = DeeCorePreferences.getEffectiveDubPath();
+		String dubPath = DubHelper.getDubPath(DeeCorePreferences.getEffectiveDubPath());
 		
 		DubCompositeOperation resolveProjectOperation = new DubCompositeOperation(
 			MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()), project);

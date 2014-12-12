@@ -38,7 +38,7 @@ public class DubHelper {
 	}
 	
 	public static String getDubPath(String dubPath) {
-		if(dubPath != null) {
+		if(dubPath != null && !dubPath.isEmpty()) {
 			return dubPath;
 		}
 		return "dub";
