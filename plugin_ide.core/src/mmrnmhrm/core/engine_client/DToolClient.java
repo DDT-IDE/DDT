@@ -19,6 +19,7 @@ import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
@@ -264,13 +265,14 @@ public class DToolClient {
 	/* FIXME: review this code. */
 	@Deprecated
 	public ResolvedModule getResolvedModule(Location filePath) throws CommonException {
-		return dtoolServer.getUpdatedResolvedModule(filePath);
+		return dtoolServer.getUpdatedResolvedModule(filePath, DeeCorePreferences.getEffectiveDubPath());
 	}
 	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws CoreException {
 		try {
-			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath);
+			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath, 
+				DeeCorePreferences.getEffectiveDubPath());
 		} catch (CommonException e) {
 			throw DeeCore.createCoreException(e);
 		}
@@ -278,7 +280,7 @@ public class DToolClient {
 	
 	public FindDefinitionResult doFindDefinition(Path filePath, int offset) throws CoreException {
 		try {
-			return dtoolServer.doFindDefinition(filePath, offset);
+			return dtoolServer.doFindDefinition(filePath, offset, DeeCorePreferences.getEffectiveDubPath());
 		} catch (CommonException e) {
 			throw DeeCore.createCoreException(e);
 		}
@@ -286,7 +288,7 @@ public class DToolClient {
 	
 	public String getDDocHTMLView(Path filePath, int offset) throws CoreException {
 		try {
-			return dtoolServer.getDDocHTMLView(filePath, offset);
+			return dtoolServer.getDDocHTMLView(filePath, offset, DeeCorePreferences.getEffectiveDubPath());
 		} catch (CommonException e) {
 			throw DeeCore.createCoreException(e);
 		}

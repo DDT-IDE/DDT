@@ -26,7 +26,7 @@ public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 	public static final String BASIC_FOO_Contents = readStringFromFile(BASIC_FOO_FilePath);
 	
 	protected FindDefinitionResult doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.doFindDefinition(filePath, offset);
+		return dtoolEngine.doFindDefinition(filePath, offset, testsDubPath());
 	}
 	
 	@Test

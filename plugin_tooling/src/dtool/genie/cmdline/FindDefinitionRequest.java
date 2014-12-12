@@ -49,11 +49,14 @@ public class FindDefinitionRequest extends AbstractClientOperation {
 		out.println("  offset    - offset (in Unicode characters) of the reference to resolve.");
 	}
 	
+	protected Path dubPath;
 	protected Path modulePath;
 	protected int offset = -1;
 	
-	public FindDefinitionRequest setArguments(Path modulePath, int offset) {
-		this.modulePath = modulePath; this.offset = offset;
+	public FindDefinitionRequest setArguments(Path dubPath, Path modulePath, int offset) {
+		this.dubPath = dubPath;
+		this.modulePath = modulePath; 
+		this.offset = offset;
 		return this;
 	}
 	
@@ -68,6 +71,7 @@ public class FindDefinitionRequest extends AbstractClientOperation {
 	protected void writeRequestObjectProperties(JsonWriterExt jsonWriter) throws IOException {
 		jsonWriter.name("find_definition");
 		jsonWriter.beginObject();
+		jsonWriter.writeProperty("dubpath", dubPath.toString());
 		jsonWriter.writeProperty("filepath", modulePath.toString());
 		jsonWriter.writeProperty("offset", offset);
 		jsonWriter.endObject();

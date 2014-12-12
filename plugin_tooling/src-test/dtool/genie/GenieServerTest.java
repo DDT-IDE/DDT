@@ -287,7 +287,8 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		@Override
 		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
 			try {
-				String response = new FindDefinitionRequest().setArguments(filePath, offset).performAndGetResponse();
+				String response = new FindDefinitionRequest().setArguments(testsDubPath2(), filePath, offset).
+						performAndGetResponse();
 				return new FindDefinitionResultParser().read(new JsonReaderExt(new StringReader(response)));
 			} catch (IOException e) {
 				throw assertFail();
@@ -301,7 +302,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		@Override
 		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
 			try {
-				new FindDefinitionRequest().setArguments(filePath, offset).
+				new FindDefinitionRequest().setArguments(testsDubPath2(), filePath, offset).
 					writeRequest(new JsonWriterExt(serverInput));
 				
 				return new FindDefinitionResultParser().read(new JsonReaderExt(serverOutput));

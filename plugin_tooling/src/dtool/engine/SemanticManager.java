@@ -84,17 +84,30 @@ public class SemanticManager {
 	
 	/* ----------------- Manifest Registry ----------------- */
 	
+	public static class ManifestUpdateOptions {
+		
+		public final String dubPath; // Can be null
+
+		public ManifestUpdateOptions(String dubPath) {
+			this.dubPath = dubPath;
+		}
+		
+	}
+	
 	public final ResolvedManifest getStoredManifest(BundleKey bundleKey) {
 		return manifestManager.getEntryManifest(bundleKey);
 	}
 	public final boolean checkIsManifestStale(BundleKey bundleKey) {
 		return manifestManager.checkIsEntryStale(bundleKey);
 	}
-	public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
-		return manifestManager.getUpdatedManifest(bundleKey);
+	public ResolvedManifest getUpdatedManifest(BundleKey bundleKey, ManifestUpdateOptions options) 
+			throws CommonException {
+		return manifestManager.getUpdatedManifest(bundleKey, options);
 	}
 	
-	public class ManifestsManager extends AbstractCachingManager<BundleKey, FileCachingEntry<ResolvedManifest>> {
+	public class ManifestsManager extends 
+		AbstractCachingManager<BundleKey, FileCachingEntry<ResolvedManifest>, ManifestUpdateOptions> 
+	{
 		
 		@Override
 		protected FileCachingEntry<ResolvedManifest> doCreateEntry(BundleKey bundleKey) {
@@ -110,8 +123,9 @@ public class SemanticManager {
 			return entry != null ? entry.getValue() : null;
 		}
 		
-		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
-			return getUpdatedEntry(bundleKey).getValue();
+		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey, ManifestUpdateOptions options) 
+				throws CommonException {
+			return getUpdatedEntry(bundleKey, options).getValue();
 		}
 		
 		@Override
@@ -140,9 +154,12 @@ public class SemanticManager {
 		}
 		
 		@Override
-		protected void doUpdateEntry(BundleKey key, FileCachingEntry<ResolvedManifest> staleInfo)
-				throws CommonException {
-			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, null, false);
+		protected void doUpdateEntry(BundleKey key, FileCachingEntry<ResolvedManifest> staleInfo, 
+				ManifestUpdateOptions options) throws CommonException {
+			assertNotNull(options);
+			
+			RunDubDescribeCallable dubDescribeTask = new RunDubDescribeCallable(key.bundlePath, options.dubPath, 
+				false);
 			DubBundleDescription bundleDesc = dubDescribeTask.submitAndGet(dubProcessAgent);
 			
 			FileTime dubStartTimeStamp = dubDescribeTask.getStartTimeStamp();
@@ -217,11 +234,15 @@ public class SemanticManager {
 	public boolean checkIsResolutionStale(ResolutionKey resKey) {
 		return resolutionsManager.checkIsEntryStale(resKey);
 	}
-	public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
-		return resolutionsManager.getUpdatedEntry(resKey).getSemanticResolution();
+	public BundleResolution getUpdatedResolution(ResolutionKey resKey, ManifestUpdateOptions options) 
+			throws CommonException {
+		assertNotNull(options);
+		return resolutionsManager.getUpdatedEntry(resKey, options).getSemanticResolution();
 	}
 	
-	public class ResolutionsManager extends AbstractCachingManager<ResolutionKey, BundleResolutionEntry> {
+	public class ResolutionsManager 
+		extends AbstractCachingManager<ResolutionKey, BundleResolutionEntry, ManifestUpdateOptions> 
+	{
 		@Override
 		protected BundleResolutionEntry doCreateEntry(ResolutionKey key) {
 			return new BundleResolutionEntry();
@@ -236,8 +257,9 @@ public class SemanticManager {
 		};
 		
 		@Override
-		protected void doUpdateEntry(ResolutionKey resKey, BundleResolutionEntry staleInfo) throws CommonException {
-			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey);
+		protected void doUpdateEntry(ResolutionKey resKey, BundleResolutionEntry staleInfo, 
+				ManifestUpdateOptions options) throws CommonException {
+			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey, options);
 			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(resKey.compilerInstall);
 			
 			BundleResolution bundleRes = new DubBundleResolution(SemanticManager.this, manifest, stdLibResolution);
@@ -286,13 +308,14 @@ public class SemanticManager {
 		parseCache.discardWorkingCopy(filePath);
 	}
 	
-	public ResolvedModule getUpdatedResolvedModule(Location filePath, CompilerInstall compilerInstall)
+	public ResolvedModule getUpdatedResolvedModule(Location filePath, CompilerInstall compilerInstall, String dubPath)
 			throws CommonException {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		if(compilerInstall == null) {
 			compilerInstall =  MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 		}
+		ManifestUpdateOptions options = new ManifestUpdateOptions(dubPath);
 		
 		try {
 			ResolvedModule resolvedModule;
@@ -302,7 +325,7 @@ public class SemanticManager {
 				resolvedModule = stdLibResolution.getBundleResolvedModule(filePath);
 			} else {
 				ResolutionKey resKey = new ResolutionKey(new BundleKey(bundlePath), compilerInstall);
-				BundleResolution bundleRes = getUpdatedResolution(resKey);
+				BundleResolution bundleRes = getUpdatedResolution(resKey, options);
 				stdLibResolution = bundleRes.getStdLibResolution();
 				resolvedModule = bundleRes.getBundleResolvedModule(filePath);
 			}

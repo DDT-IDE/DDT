@@ -10,11 +10,12 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.utilbox.core.CommonException;
 import dtool.engine.util.CachingRegistry;
 
 
-public abstract class AbstractCachingManager<KEY, VALUE> {
+public abstract class AbstractCachingManager<KEY, VALUE, UPDATE_OPTIONS> {
 	
 	public AbstractCachingManager() {
 	}
@@ -41,10 +42,10 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 	/** Lock for reading/modifying the whole registry. */
 	protected final Object entriesLock = new Object();
 	
-	public VALUE getUpdatedEntry(KEY key) throws CommonException {
+	public VALUE getUpdatedEntry(KEY key, UPDATE_OPTIONS options) throws CommonException {
 		VALUE entry = getEntry(key);
 		if(doCheckIsEntryStale(key, entry)) {
-			return updateEntry(key);
+			return updateEntry(key, options);
 		}
 		return entry;
 	}
@@ -54,7 +55,8 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 	/** Lock for performing the computation of update operations. */
 	protected final Object updateOperationLock = new Object();
 	
-	protected VALUE updateEntry(KEY key) throws CommonException {
+	protected VALUE updateEntry(KEY key, UPDATE_OPTIONS options) throws CommonException {
+		assertNotNull(options);
 		synchronized(updateOperationLock) {
 			VALUE staleInfo = getEntry(key);
 			// Recheck stale status after acquiring lock, it might have been updated in the meanwhile.
@@ -62,11 +64,11 @@ public abstract class AbstractCachingManager<KEY, VALUE> {
 			if(doCheckIsEntryStale(key, staleInfo) == false)
 				return staleInfo; // No longer stale.
 			
-			doUpdateEntry(key, staleInfo);
+			doUpdateEntry(key, staleInfo, options);
 			return staleInfo;
 		}
 	}
 	
-	protected abstract void doUpdateEntry(KEY key, VALUE staleInfo) throws CommonException;
+	protected abstract void doUpdateEntry(KEY key, VALUE staleInfo, UPDATE_OPTIONS options) throws CommonException;
 	
 }

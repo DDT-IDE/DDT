@@ -38,9 +38,9 @@ import dtool.parser.common.LexerResult.TokenAtOffsetResult;
 
 public class CodeCompletionOperation extends AbstractDToolOperation {
 	
-	public CodeCompletionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
-			throws CommonException {
-		super(semanticManager, filePath, offset, compilerPath);
+	public CodeCompletionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath,
+			String dubPath) throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath, dubPath);
 	}
 	
 	public CompletionSearchResult doCodeCompletion() throws CommonException {

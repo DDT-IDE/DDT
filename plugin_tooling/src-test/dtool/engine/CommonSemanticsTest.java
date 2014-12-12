@@ -22,6 +22,7 @@ import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;
+import dtool.engine.SemanticManager.ManifestUpdateOptions;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.tests.CommonDToolTest;
@@ -69,6 +70,10 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	
 	public static Location loc(BundlePath bundlePath, String other) {
 		return bundlePath.resolve(path(other));
+	}
+	
+	public static ManifestUpdateOptions defaultManifestUpdateOptions() {
+		return new ManifestUpdateOptions(testsDubPath());
 	}
 	
 	/* -----------------  ----------------- */

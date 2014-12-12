@@ -41,7 +41,7 @@ public class DubHelper {
 		if(dubPath != null) {
 			return dubPath;
 		}
-		return DUB_PATH_OVERRIDE != null ? DUB_PATH_OVERRIDE : "dub";
+		return "dub";
 	}
 	
 	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath) 

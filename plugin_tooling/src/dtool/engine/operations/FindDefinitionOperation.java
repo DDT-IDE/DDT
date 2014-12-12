@@ -45,9 +45,9 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	public static final String FIND_DEF_ReferenceResolveFailed = 
 		"Definition not found for reference: ";
 			
-	public FindDefinitionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
-			throws CommonException {
-		super(semanticManager, filePath, offset, compilerPath);
+	public FindDefinitionOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath,
+			String dubPath) throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath, dubPath);
 	}
 	
 	public FindDefinitionResult findDefinition() throws CommonException {

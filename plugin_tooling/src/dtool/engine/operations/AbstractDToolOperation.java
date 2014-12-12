@@ -24,9 +24,10 @@ public class AbstractDToolOperation {
 	protected final CompilerInstall compilerInstall;
 	protected final Location fileLoc;
 	protected final int offset;
+	protected final String dubPath;
 	
 	public AbstractDToolOperation(SemanticManager semanticManager, 
-			Path filePath, int offset, Path compilerPath) throws CommonException {
+			Path filePath, int offset, Path compilerPath, String dubPath) throws CommonException {
 		this.semanticManager = semanticManager;
 		
 		this.fileLoc = Location.validateLocation(filePath, true, "D module");
@@ -34,6 +35,8 @@ public class AbstractDToolOperation {
 		
 		Location compilerLoc = Location.validateLocation(compilerPath, false, "compiler location");
 		this.compilerInstall = semanticManager.getDToolServer().findBestCompilerInstall(compilerLoc);
+		
+		this.dubPath = dubPath; // XXX: should we validate this right now?
 	}
 	
 	public SemanticManager getSemanticManager() {
@@ -41,7 +44,7 @@ public class AbstractDToolOperation {
 	}
 	
 	protected ResolvedModule getResolvedModule(Location filePath) throws CommonException {
-		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall);
+		return semanticManager.getUpdatedResolvedModule(filePath, compilerInstall, dubPath);
 	}
 	
 }

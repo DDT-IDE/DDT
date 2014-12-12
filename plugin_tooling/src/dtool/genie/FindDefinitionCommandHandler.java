@@ -40,10 +40,12 @@ public class FindDefinitionCommandHandler extends JsonCommandHandler {
 		
 		Path modulePath = getPath(commandArguments, "filepath");
 		int offset = getInt(commandArguments, "offset");
+		Path dubPath = getPath(commandArguments, "dubpath", true); // TODO: test this
+		String dubPathString = dubPath == null ? null : dubPath.toString();
 		
 		FindDefinitionResult cmdResult;
 		try {
-			cmdResult = getDToolServer().doFindDefinition(modulePath, offset);
+			cmdResult = getDToolServer().doFindDefinition(modulePath, offset, dubPathString);
 		} catch (CommonException e) {
 			// TODO: refactor common exception and GenieCommandException
 			throw new GenieCommandException(e.getMessage());

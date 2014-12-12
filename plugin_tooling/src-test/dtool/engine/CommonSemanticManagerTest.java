@@ -128,9 +128,13 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			return getStoredResolution(resolutionKey(bundlePath));
 		}
 		
-		@Override
 		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey) throws CommonException {
-			ResolvedManifest manifest = super.getUpdatedManifest(bundleKey);
+			return getUpdatedManifest(bundleKey, defaultManifestUpdateOptions());
+		}
+		@Override
+		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey, ManifestUpdateOptions options) 
+				throws CommonException {
+			ResolvedManifest manifest = super.getUpdatedManifest(bundleKey, options);
 			assertTrue(checkIsManifestStale(bundleKey) == false);
 			return manifest;
 		}
@@ -140,16 +144,21 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		}
 		
 		public BundleResolution getUpdatedResolution(BundlePath bundlePath) throws CommonException {
-			return getUpdatedResolution(resolutionKey(bundlePath));
+			return getUpdatedResolution(resolutionKey(bundlePath), defaultManifestUpdateOptions());
 		}
 		
-		@Override
 		public BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
+			return getUpdatedResolution(resKey, defaultManifestUpdateOptions());
+		}
+		@Override
+		public BundleResolution getUpdatedResolution(ResolutionKey resKey, ManifestUpdateOptions options) 
+				throws CommonException 
+		{
 			boolean manifestStale = checkIsManifestStale(resKey.bundleKey);
 			ResolvedManifest previousManifest = getStoredManifest(resKey.bundleKey);
 			
 			// TODO: cleanup this cast
-			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey);
+			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey, options);
 			assertEquals(bundleResolution.resKey, resKey);
 			
 			assertEquals(bundleResolution.manifest == previousManifest, !manifestStale);
@@ -158,7 +167,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			assertTrue(checkIsResolutionStale(resKey) == false);
 			
 			// test caching
-			assertTrue(bundleResolution == super.getUpdatedResolution(resKey));
+			assertTrue(bundleResolution == super.getUpdatedResolution(resKey, options));
 			
 			return bundleResolution;
 		}
@@ -198,14 +207,13 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		
 	}
 	
-	
 	protected BundleResolution getUpdatedResolution(BundlePath bundlePath) throws CommonException {
 		return getUpdatedResolution(resKey(bundlePath));
 	}
 	
 	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
 		assertTrue(sm.checkIsResolutionStale(resKey));
-		return sm.getUpdatedResolution(resKey);
+		return sm.getUpdatedResolution(resKey, defaultManifestUpdateOptions());
 	}
 	
 	
@@ -240,8 +248,10 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			if(!sm.checkIsResolutionStale(bundleRes.resKey)) {
 				try {
 					assertTrue(resolvedModule == sm.getUpdatedResolvedModule(
-						resolvedModule.getModulePath(),
-						bundleRes.getStdLibResolution().getCompilerInstall()));
+							resolvedModule.getModulePath(),
+							bundleRes.getStdLibResolution().getCompilerInstall(),
+							null)
+					);
 				} catch (CommonException e) {
 					assertFail();
 				}
@@ -285,7 +295,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	protected ResolvedModule getUpdatedResolvedModule(Location filePath) throws CommonException {
-		return sm.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall);
+		return sm.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall, null);
 	}
 	
 	/* ----------------- some common files ----------------- */

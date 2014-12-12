@@ -42,7 +42,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 			loc(DEFAULT_TestsBundle, "source").resolve_fromValid(DEFAULT_ModuleName + ".d");
 	
 	protected static ResolvedModule getDefaultTestsModule() throws CommonException {
-		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall);
+		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall, testsDubPath());
 	}
 	
 	protected static ISemanticContext getDefaultTestsModuleContext() throws CommonException {
@@ -51,8 +51,8 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	protected static ResolvedModule getTesterModule(String sourcePath) {
 		try {
-			return defaultSemMgr.getUpdatedResolvedModule(
-				loc(TESTER_TestsBundle, "source").resolve_fromValid(sourcePath), DEFAULT_TestsCompilerInstall);
+			Location filePath = loc(TESTER_TestsBundle, "source").resolve_fromValid(sourcePath);
+			return defaultSemMgr.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall, testsDubPath());
 		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

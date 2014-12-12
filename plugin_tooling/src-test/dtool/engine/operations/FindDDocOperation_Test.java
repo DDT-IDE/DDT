@@ -22,7 +22,7 @@ public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 	public static final String DDOC_TESTER_Contents = readStringFromFile(DDOC_TESTER_FilePath);
 	
 	protected String doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.getDDocHTMLView(filePath, offset);
+		return dtoolEngine.getDDocHTMLView(filePath, offset, testsDubPath());
 	}
 	
 	protected String testFindDefinition(Path modulePath, int offset, String expectedEnd, String... expectedContains) 

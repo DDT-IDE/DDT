@@ -11,6 +11,7 @@
 package dtool.dub;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -192,7 +193,7 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, String... arguments) 
 			throws IOException {
-		String[] command = ArrayUtil.prepend(DubHelper.getDubPath(null), arguments);
+		String[] command = ArrayUtil.prepend(testsDubPath(), arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
 		if(bundlePath != null) {
 			pb.directory(bundlePath.getPath().toFile());
@@ -210,7 +211,7 @@ public class CommonDubTest extends CommonDToolTest {
 			processHelper.strictAwaitTermination(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			throw assertFail();
 		}
 	}
 	

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
+import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -23,6 +24,7 @@ import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
+import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
@@ -39,10 +41,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
+import dtool.dub.CommonDubTest;
+import dtool.dub.DubManifestParserTest;
 import dtool.engine.BundleResolution;
-import dtool.engine.CommonSemanticManagerTest;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
+import dtool.engine.SemanticManager.ManifestUpdateOptions;
 import dtool.resolver.DefUnitResultsChecker;
 import dtool.tests.DToolTestResources;
 import dtool.tests.MockCompilerInstalls;
@@ -180,8 +184,8 @@ public class DToolClient_Test extends CommonCoreTest {
 		BundleResolution sr;
 		try {
 			SemanticManager sm = client.getServerSemanticManager();
-			sr = sm.getUpdatedResolution(
-				CommonSemanticManagerTest.resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH));
+			sr = sm.getUpdatedResolution(resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH), 
+				new ManifestUpdateOptions(DeeCorePreferences.getEffectiveDubPath()));
 		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

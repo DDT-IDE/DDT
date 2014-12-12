@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,9 @@ import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.PathUtil;
 import dtool.dub.BundlePath;
+import dtool.dub.DubHelper;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.util.NewUtils;
 
@@ -32,6 +35,16 @@ public class CommonDToolTest extends CommonToolingTest {
 	public static BundlePath bundlePath(Location basePath, String other) {
 		return BundlePath.create(basePath.resolve_fromValid(other));
 	}
+	
+	public static String testsDubPath() {
+		return DubHelper.DUB_PATH_OVERRIDE;
+	}
+	
+	public static Path testsDubPath2() {
+		return testsDubPath() == null ? null : PathUtil.createPathOrNull(testsDubPath());
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static String readStringFromFile_PreserveBOM(File file) {
 		try {

@@ -35,11 +35,11 @@ import dtool.engine.analysis.IVarDefinitionLike;
 
 public class ResolveDocViewOperation extends AbstractDToolOperation {
 	
-	public ResolveDocViewOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath)
-			throws CommonException {
-		super(semanticManager, filePath, offset, compilerPath);
+	public ResolveDocViewOperation(SemanticManager semanticManager, Path filePath, int offset, Path compilerPath,
+			String dubPath) throws CommonException {
+		super(semanticManager, filePath, offset, compilerPath, dubPath);
 	}
-
+	
 	public String perform() throws CommonException {
 		ResolvedModule resolvedModule = getResolvedModule(fileLoc);
 		

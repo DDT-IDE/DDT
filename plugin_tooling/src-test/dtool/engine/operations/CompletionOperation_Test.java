@@ -27,7 +27,7 @@ import dtool.resolver.DefUnitResultsChecker;
 public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
 	protected CompletionSearchResult doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.doCodeCompletion(filePath, offset, null);
+		return dtoolEngine.doCodeCompletion(filePath, offset, null, testsDubPath());
 	}
 	
 	public static final Path MODULE_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve("completion_test.d");
