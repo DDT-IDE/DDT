@@ -37,7 +37,7 @@ public class CommonDToolTest extends CommonToolingTest {
 	}
 	
 	public static String testsDubPath() {
-		return DubHelper.DUB_PATH_OVERRIDE;
+		return DubHelper.DUB_PATH_OVERRIDE == null ? "dub" : DubHelper.DUB_PATH_OVERRIDE;
 	}
 	
 	public static Path testsDubPath2() {

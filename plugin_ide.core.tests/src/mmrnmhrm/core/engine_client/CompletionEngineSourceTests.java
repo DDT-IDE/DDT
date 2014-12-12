@@ -20,8 +20,10 @@ import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRe
 import org.eclipse.dltk.compiler.env.IModuleSource;
 
 import dtool.ast.definitions.EArcheType;
+import dtool.engine.CommonSemanticsTest;
 import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.tests.MockCompilerInstalls;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
@@ -49,7 +51,8 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
 	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {
 		DeeCompletionEngine completionEngine;
-		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen, null);
+		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen, 
+			CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath());
 		
 		CompletionEngineTestsRequestor requestor = (CompletionEngineTestsRequestor) completionEngine.getRequestor();
 		checkResults(requestor.results, expectedResults);
