@@ -25,7 +25,7 @@ import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
-public class NamedElements_ModuleSynthetics_Test extends NamedElement_CommonTest {
+public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
+import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
@@ -20,7 +20,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-public class DefVariable_SemanticsTest extends NamedElement_CommonTest {
+public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {

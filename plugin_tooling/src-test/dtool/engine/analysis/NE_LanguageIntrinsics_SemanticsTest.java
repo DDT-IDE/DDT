@@ -23,7 +23,7 @@ import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.Intrinsi
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 
-public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
+public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {

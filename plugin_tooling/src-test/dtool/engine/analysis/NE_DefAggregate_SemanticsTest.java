@@ -14,7 +14,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-public class DefAggregate_SemanticsTest extends NamedElement_CommonTest {
+public class NE_DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {

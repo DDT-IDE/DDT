@@ -18,10 +18,13 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.fntypes.Function;
@@ -29,12 +32,32 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
+import dtool.ast.references.RefIdentifier;
+
 public class NameLookupTest extends CommonNodeSemanticsTest {
+	
+	protected IConcreteNamedElement doResolveConcreteElement(String source, String marker) {
+		PickedElement<INamedElement> pickedElement = parseElement(source, marker, INamedElement.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveConcreteElement(context);
+	}
+	
+	protected IConcreteNamedElement doResolveConcreteElementForRef(String source, String marker) {
+		PickedElement<RefIdentifier> pickedElement = parseElement(source, marker, RefIdentifier.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveTargetElement(context).resolveConcreteElement(context);
+	}
+	
+	protected INamedElement doResolveNamedElementForRef(String source, String marker) {
+		PickedElement<RefIdentifier> pickedElement = parseElement(source, marker, RefIdentifier.class);
+		ISemanticContext context = pickedElement.context;
+		return pickedElement.element.resolveTargetElement(context);
+	}
 	
 	protected ASTNode pickedNode;
 	
-	protected ResolutionLookup doResolutionLookup(String source, String offsetSource) throws ExecutionException {
-		PickedElement<ASTNode> pick = parseElement(source, offsetSource, ASTNode.class);
+	protected ResolutionLookup doResolutionLookup(String source, String offsetMarker) throws ExecutionException {
+		PickedElement<ASTNode> pick = parseElement(source, offsetMarker, ASTNode.class);
 		return doResolutionLookup(pick, "xxx");
 	}
 	
@@ -45,6 +68,32 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 		pickedNode.performNameLookup(lookup);
 		return lookup;
 	}
+	
+	protected ResolutionLookup doResolutionInScopeTesterBundle(String fileName, String marker) {
+		PickedElement<ASTNode> pickElement = pickElement(getTesterModule(fileName), marker, ASTNode.class);
+		return doResolutionLookup(pickElement, "xxx");
+	}
+	
+	@Test
+	public void testNotFound() throws Exception { testNotFound_____(); }
+	public void testNotFound_____() throws Exception {
+		
+		checkResultNotFound(
+			doResolveNamedElementForRef("int blah = xxx;", "xxx"));
+
+		checkResultNotFound(
+			doResolveNamedElementForRef("alias A = B; alias B = xxx;", "xxx"));
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("alias A = B; alias B = xxx; alias _ = A/**/;", "A/**/;"));
+	}
+	
+	protected void checkResultNotFound(INamedElement result) {
+		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__Name));
+		assertTrue(result.getNameInRegularNamespace() == null);
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Test
 	public void testShadowing() throws Exception { testShadowing$(); }
@@ -98,7 +147,7 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 	
 	protected ResolutionLookup testScopeOverloadResolutionLookup(String file, String markerString, 
 			String[] expectedResults) {
-		ResolutionLookup lookup = doResolutionInScopeTesterModule(file, markerString);
+		ResolutionLookup lookup = doResolutionInScopeTesterBundle(file, markerString);
 		ArrayList2<INamedElement> matchingElementEntry = lookup.getMatchingElementEntry();
 		Object[] results = ArrayUtil.map(matchingElementEntry, new Function<INamedElement, String>() {
 			@Override
@@ -112,9 +161,38 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 		return lookup;
 	}
 	
-	protected ResolutionLookup doResolutionInScopeTesterModule(String fileName, String marker) {
-		PickedElement<ASTNode> pickElement = pickElement(getTesterModule(fileName), marker, ASTNode.class);
-		return doResolutionLookup(pickElement, "xxx");
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void testLoop() throws Exception { testLoop_____(); }
+	public void testLoop_____() throws Exception {
+		
+		checkLoopResult(
+			doResolveConcreteElementForRef("alias A= B; alias B = A/**/;", "A/**/"));
+		
+		checkLoopResult(
+			doResolveConcreteElementForRef("alias A= B; alias B = C; alias C = A/**/;", "A/**/"));
+		
+		checkLoopResult(
+			doResolveConcreteElement("alias A= B; alias B = C; alias C = A/**/;", "C = A"));
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("B A; A B; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("alias A= B; alias B = A; auto _ = A.xxx;", "xxx"));
+		
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : A { }; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : B { }; class B : A { }; auto _ = A.xxx;", "xxx"));
+		checkResultNotFound(
+			doResolveConcreteElementForRef("class A : A; auto _ = A.xxx;", "xxx"));
+	}
+	
+	protected void checkLoopResult(INamedElement result) {
+		assertTrue(result.getName().equals(ErrorElement.LOOP_ERROR_ELEMENT__Name));
+		assertTrue(result.getNameInRegularNamespace() == null);
 	}
 	
 }

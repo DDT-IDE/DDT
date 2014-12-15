@@ -11,7 +11,7 @@
 package dtool.engine.operations;
 
 import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
-import static dtool.engine.analysis.LanguageIntrinsics_SemanticsTest.PRIMITIVE_TYPES;
+import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIVE_TYPES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 

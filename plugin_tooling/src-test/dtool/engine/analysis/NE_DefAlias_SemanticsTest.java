@@ -14,7 +14,7 @@ import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__Name;
 
 
 
-public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
+public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {
@@ -40,11 +40,11 @@ public class DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	public void test_resolveSearchInMembersScope________() throws Exception {
 		
 		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias intVar XXX; "), 
-			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+			NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
 		
 		// TODO: more tests for this functionality
 		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias XXX = intVar; "), 
-			LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+			NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
 	}
 	
 }
