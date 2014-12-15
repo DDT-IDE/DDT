@@ -36,7 +36,8 @@ public class DeeElementFlagsTest {
 	
 	public void testArchetype(EArcheType archeType) {
 		int elementFlags = DefElementFlagsUtil.elementFlagsForArchetype(archeType);
-		assertTrue(archeType == DefElementFlagsUtil.elementFlagsToArcheType(elementFlags));
+		assertTrue(archeType == DefElementFlagsUtil.elementFlagsToArcheType(elementFlags)
+				|| archeType == EArcheType.Error);
 	}
 	
 }
