@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import melnorme.utilbox.collections.ChainedIterable;
+
 public class IteratorUtil { 
 	
 	public static final Iterator<?> EMPTY_ITERATOR = Collections.EMPTY_LIST.iterator();
@@ -69,6 +71,24 @@ public class IteratorUtil {
 		}
 		return iterable;
 	}
+	
+	/** @return combine two {@link Iterable}s to form a single chained iterable. 
+	 * Each given {@link Iterable} can be null, in which case they will be treated as empty. */
+	public static <E> Iterable<? extends E> chainedIterable(
+		Iterable<? extends E> firstIter, Iterable<? extends E> secondIter) {
+		
+		if(firstIter != null && secondIter != null) {
+			return new ChainedIterable<E>(firstIter, secondIter);
+		} else if(firstIter != null) {
+			return firstIter;
+		} else if(secondIter != null) {
+			return secondIter;
+		} else {
+			return emptyIterable();
+		}
+	}
+	
+	/* -----------------  ----------------- */
 	
 	/** @return the element the given listIterator currently refers to. (uses #previous and #next) */
 	public static <E> E getCurrentElement(ListIterator<E> listIterator) {

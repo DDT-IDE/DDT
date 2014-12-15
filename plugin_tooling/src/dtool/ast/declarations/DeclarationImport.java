@@ -72,8 +72,6 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	@Override
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
-		super.evaluateForScopeLookup(lookup, importsOnly, isSequentialLookup);
-		
 		if(!importsOnly) {
 			return;
 		}

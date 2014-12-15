@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
@@ -33,9 +33,16 @@ public class BlockStatement extends CommonStatementList implements IScopeElement
 		return ASTNodeTypes.BLOCK_STATEMENT;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateScopeNodeList(statements_asNodes(), true);
+	public Iterable<ASTNode> getScopeNodeList() {
+		return statements_asNodes();
+	}
+	
+	@Override
+	public boolean allowsForwardReferences() {
+		return false;
 	}
 	
 }

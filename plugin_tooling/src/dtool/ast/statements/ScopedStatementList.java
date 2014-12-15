@@ -11,9 +11,9 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
@@ -37,8 +37,13 @@ public class ScopedStatementList extends CommonStatementList implements IScopeEl
 	}
 	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateScopeNodeList(statements, true);
+	public Iterable<? extends ILanguageElement> getScopeNodeList() {
+		return statements;
+	}
+	
+	@Override
+	public boolean allowsForwardReferences() {
+		return false;
 	}
 	
 }

@@ -24,6 +24,7 @@ import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -128,18 +129,16 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		};
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-//		if(containedElement.getArcheType() == EArcheType.Module) {
-//			INamedElementNode resolvedDefUnit = containedElement.resolveUnderlyingNode();
-//			if(resolvedDefUnit == null) {
-//				// Note that we dont use resolvedDefUnit for evaluateNodeForSearch,
-//				// this means modules with mismatched names will match again the import name (file name),
-//				// instead of the module declaration name
-//				return;
-//			}
-//		}
-		search.evaluateNamedElementForSearch(containedElement);
+	public Iterable<? extends ILanguageElement> getScopeNodeList() {
+		return IteratorUtil.iterable(containedElement);
+	}
+	
+	@Override
+	public boolean allowsForwardReferences() {
+		return true;
 	}
 	
 }

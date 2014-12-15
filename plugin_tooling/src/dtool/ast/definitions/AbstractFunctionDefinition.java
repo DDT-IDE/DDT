@@ -11,12 +11,13 @@
 package dtool.ast.definitions;
 
 
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
@@ -68,12 +69,17 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		return tplParams != null;
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateScopeNodeList(tplParams);
-		search.evaluateScopeNodeList(fnParams);
+	public Iterable<? extends IASTNode> getScopeNodeList() {
+		// TODO: technically not correct, these are two separte scopes
+		return IteratorUtil.<IASTNode>chainedIterable(tplParams, fnParams);
 	}
 	
-	/* ------------------------------------------------------------------------ */
+	@Override
+	public boolean allowsForwardReferences() {
+		return false;
+	}
 	
 }

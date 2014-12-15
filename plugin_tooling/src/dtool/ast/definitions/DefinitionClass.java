@@ -16,8 +16,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -94,13 +94,13 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	@Override
 	protected ClassSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		InstrinsicsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
+		NamedElementsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
 		return new ClassSemantics(this, commonTypeScope, pickedElement);
 	}
 	
 	public class ClassSemantics extends AggregateSemantics {
 		
-		public ClassSemantics(IConcreteNamedElement classElement, InstrinsicsScope commonTypeScope,
+		public ClassSemantics(IConcreteNamedElement classElement, NamedElementsScope commonTypeScope,
 				PickedElement<?> pickedElement) {
 			super(classElement, commonTypeScope, pickedElement);
 		}

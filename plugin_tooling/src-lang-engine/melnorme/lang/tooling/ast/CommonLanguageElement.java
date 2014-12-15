@@ -17,9 +17,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.definitions.DefUnit;
 
 
 public abstract class CommonLanguageElement implements ILanguageElement {
@@ -60,16 +58,6 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@Override
 	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
-		if(this instanceof INonScopedContainer) {
-			INonScopedContainer container = ((INonScopedContainer) this);
-			// FIXME: remove need for isSequentialLookup?
-			lookup.evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
-		}
-		
-		if(!importsOnly && this instanceof DefUnit) {
-			DefUnit defunit = (DefUnit) this;
-			lookup.visitElement(defunit);
-		}
 	}
 	
 }

@@ -294,7 +294,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		assertTrue(search.isSequentialLookup());
 		assertTrue(search.refOffset >= 0);
 		
-		ASTNode.getPrimitivesScope().resolveSearchInScope(search);
+		search.evaluateScope(ASTNode.getPrimitivesScope());
 		if(search.isFinished())
 			return;
 		
@@ -302,7 +302,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	protected void doPerformNameLookupInFullLexicalScope(CommonScopeLookup search) {
-		doPerformNameLookupInThisLexicalScope(search);
+		doPerformLexicalLookupInThisScope(search);
 		
 		if(search.isFinished())
 			return;
@@ -313,7 +313,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		}
 	}
 	
-	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
+	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup search) {
 		if(this instanceof IScopeElement) {
 			IScopeElement scope = (IScopeElement) this;
 			search.evaluateScope(scope);

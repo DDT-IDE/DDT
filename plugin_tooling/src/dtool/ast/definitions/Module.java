@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -27,6 +28,7 @@ import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -124,7 +126,8 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		assertNotNull(members);
 		this.compilationUnitPath = compilationUnitPath;
 		
-		this.topLevelElement = createTopLevelElement();
+		INamedElement topLevelElement = createTopLevelElement();
+		this.topLevelScope = new NamedElementsScope(topLevelElement);
 	}
 	
 	@Override
@@ -186,7 +189,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	
 	/* -----------------  ----------------- */
 	
-	protected final INamedElement topLevelElement;
+	protected final NamedElementsScope topLevelScope;
 	
 	protected INamedElement createTopLevelElement() {
 		if(md == null || md.packages.length == 0 || md.packages[0] == "") {
@@ -198,15 +201,13 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
-	protected void doPerformNameLookupInThisLexicalScope(CommonScopeLookup search) {
+	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup search) {
 		search.evaluateScope(this);
-		
-		search.evaluateNamedElementForSearch(topLevelElement);
-		
-		findDefUnitInObjectIntrinsic(search);
+		search.evaluateScope(topLevelScope);
+		resolveLookupInObjectModule(search);
 	}
 	
-	public static void findDefUnitInObjectIntrinsic(CommonScopeLookup search) {
+	public static void resolveLookupInObjectModule(CommonScopeLookup search) {
 		INamedElement targetModule = ResolvableSemantics.findModuleUnchecked(search.modResolver, "object");
 		search.evaluateInMembersScope(targetModule);
 	}
@@ -223,9 +224,15 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		};
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateScopeNodeList(members, false);
+	public Iterable<? extends ILanguageElement> getScopeNodeList() {
+		return members;
+	}
+	@Override
+	public boolean allowsForwardReferences() {
+		return true;
 	}
 	
 }

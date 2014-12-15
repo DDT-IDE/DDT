@@ -12,6 +12,7 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.IModuleNode;
@@ -55,7 +56,9 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 		));
 		
 		// Test that we did look up redundant scopes
-		assertTrue(lookup.getSearchedScopes().size() == 1);
+		Set<IScopeElement> searchedScopes = lookup.getSearchedScopes();
+		searchedScopes.remove(ASTNode.getPrimitivesScope());
+		assertTrue(searchedScopes.size() == 1);
 		assertTrue(containsModuleScope(lookup, pickedNode) == false);
 	}
 	

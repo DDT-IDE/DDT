@@ -19,6 +19,7 @@ import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -29,13 +30,13 @@ public interface CommonLanguageIntrinsics {
 
 	public abstract class IntrinsicTypeDefUnit extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
-		protected InstrinsicsScope membersScope;
+		protected NamedElementsScope membersScope;
 		
 		public IntrinsicTypeDefUnit(String name, ElementDoc doc) {
 			super(name, doc);
 		}
 		
-		public InstrinsicsScope getMembersScope() {
+		public NamedElementsScope getMembersScope() {
 			return membersScope;
 		}
 		
@@ -53,7 +54,7 @@ public interface CommonLanguageIntrinsics {
 				@Override
 				public void resolveSearchInMembersScope(CommonScopeLookup search) {
 					assertNotNull(membersScope);
-					membersScope.resolveSearchInScope(search);
+					search.evaluateScope(membersScope);
 				}
 				
 			};

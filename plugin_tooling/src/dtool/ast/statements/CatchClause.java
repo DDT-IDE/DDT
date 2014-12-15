@@ -10,14 +10,12 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import java.util.Collections;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.utilbox.misc.IteratorUtil;
 
 public class CatchClause extends ASTNode implements IScopeElement {
 	
@@ -47,11 +45,16 @@ public class CatchClause extends ASTNode implements IScopeElement {
 		cp.append(body);
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		if(catchParam != null) {
-			search.evaluateScopeNodeList(Collections.singletonList(catchParam), false);
-		}
+	public Iterable<SimpleVariableDef> getScopeNodeList() {
+		return catchParam == null ? null : IteratorUtil.iterable(catchParam);
+	}
+	
+	@Override
+	public boolean allowsForwardReferences() {
+		return false;
 	}
 	
 }

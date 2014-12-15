@@ -5,7 +5,6 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ChainedIterable;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.Symbol;
@@ -50,15 +49,8 @@ public abstract class AbstractConditionalDeclaration extends ASTNode
 	
 	@Override
 	public Iterable<? extends IASTNode> getMembersIterable() {
-		if(body == null && elseBody == null)
-			return IteratorUtil.<ASTNode>emptyIterable();
-		if(elseBody == null)
-			return DeclarationAttrib.getBodyIterable(body);
-		if(body == null)
-			return DeclarationAttrib.getBodyIterable(elseBody);
-		
-		return ChainedIterable.create(DeclarationAttrib.getBodyIterable(body), 
-			DeclarationAttrib.getBodyIterable(elseBody)); 
+		return IteratorUtil.chainedIterable(DeclarationAttrib.getBodyIterable(body), 
+			DeclarationAttrib.getBodyIterable(elseBody));
 	}
 	
 	public void toStringAsCodeBodyAndElseBody(ASTCodePrinter cp) {

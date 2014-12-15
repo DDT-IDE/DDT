@@ -13,17 +13,18 @@ package dtool.ast.definitions;
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
@@ -91,8 +92,13 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		}
 		
 		@Override
-		public void resolveSearchInScope(CommonScopeLookup search) {
-			search.evaluateScopeNodeList(nodeList, false);
+		public Iterable<? extends IASTNode> getScopeNodeList() {
+			return nodeList;
+		}
+		
+		@Override
+		public boolean allowsForwardReferences() {
+			return true;
 		}
 		
 	}
@@ -127,18 +133,16 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeSemantics(this, pickedElement) {
 		
-			protected final InstrinsicsScope commonTypeScope = createAggregateCommonTypeScope();
+			protected final NamedElementsScope commonTypeScope = createAggregateCommonTypeScope();
 			
-			protected InstrinsicsScope createAggregateCommonTypeScope() {
-				return new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(getTypeElement()));
+			protected NamedElementsScope createAggregateCommonTypeScope() {
+				return new NamedElementsScope(D2_063_intrinsics.createCommonProperties(getTypeElement()));
 			}
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				if(body != null) {
-					body.resolveSearchInScope(search);
-				}
-				commonTypeScope.resolveSearchInScope(search);
+				search.evaluateScope(body);
+				search.evaluateScope(commonTypeScope);
 			}
 			
 		};

@@ -12,7 +12,7 @@ package melnorme.lang.tooling.ast_actual;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
-import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import dtool.ast.definitions.Module;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
@@ -34,7 +34,7 @@ public abstract class ASTNode extends CommonASTNode {
 		return (Module) getModuleNode();
 	}
 	
-	public static InstrinsicsScope getPrimitivesScope() {
+	public static NamedElementsScope getPrimitivesScope() {
 		return DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope;
 	}
 	

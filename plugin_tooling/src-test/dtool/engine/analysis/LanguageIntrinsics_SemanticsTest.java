@@ -65,7 +65,7 @@ public class LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	public static ArrayList<String> getMemberNames2(IntrinsicTypeDefUnit intrinsicDefUnit) {
 		ArrayList<String> names = new ArrayList<>();
-		for (INamedElement defUnit : intrinsicDefUnit.getMembersScope().members) {
+		for (INamedElement defUnit : intrinsicDefUnit.getMembersScope().getScopeNodeList()) {
 			names.add(defUnit.getName());
 		}
 		return names;

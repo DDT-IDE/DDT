@@ -10,21 +10,23 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.util.Iterator;
 
 
 public class ChainedIterable<E> implements Iterable<E> {
 	
-	public static <E> ChainedIterable<E> create(Iterable<E> firstIter, Iterable<E> secondIter) {
+	public static <E> ChainedIterable<E> create(Iterable<? extends E> firstIter, Iterable<? extends E> secondIter) {
 		return new ChainedIterable<E>(firstIter, secondIter);
 	}
 	
-	protected final Iterable<E> first;
-	protected final Iterable<E> second;
+	protected final Iterable<? extends E> first;
+	protected final Iterable<? extends E> second;
 	
-	public ChainedIterable(Iterable<E> first, Iterable<E> second) {
-		this.first = first;
-		this.second = second;
+	public ChainedIterable(Iterable<? extends E> first, Iterable<? extends E> second) {
+		this.first = assertNotNull(first);
+		this.second = assertNotNull(second);
 	}
 	
 	@Override

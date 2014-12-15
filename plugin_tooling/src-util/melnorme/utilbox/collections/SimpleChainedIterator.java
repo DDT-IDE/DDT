@@ -51,4 +51,3 @@ public class SimpleChainedIterator<T> implements Iterator<T> {
     }
 
 }
-

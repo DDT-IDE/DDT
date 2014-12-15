@@ -10,22 +10,31 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.scoping;
 
+import melnorme.lang.tooling.ast.ILanguageElement;
 
 
 /**
  * Interface for a scope element: 
- * a collection of nodes visited during a name lookup operation.
+ * A collection of nodes visited during a name lookup operation.
  * The scope is the basic unit of visitation for the name lookup operations.
  * Note: scope elements are used as key in a hash. 
  */
 public interface IScopeElement {
 	
-	/** Resolve given reference search in this scope. */
-	void resolveSearchInScope(CommonScopeLookup search);
+	Iterable<? extends ILanguageElement> getScopeNodeList();
+	
+	boolean allowsForwardReferences();
 	
 	@Override
 	public boolean equals(Object obj);
 	@Override
 	public int hashCode();
+	
+	
+	public static interface IExtendedScopeElement extends IScopeElement {
+		
+		void resolveLookupInSuperScopes(CommonScopeLookup lookup);
+		
+	}
 	
 }

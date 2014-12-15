@@ -17,8 +17,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
@@ -97,53 +99,67 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	 * Evaluate a scope (a collection of nodes), for this name lookup search. 
 	 */
 	public void evaluateScope(IScopeElement scope) {
-		assertNotNull(scope);
+		if(scope == null)
+			return;
 		
 		if(isFinished())
 			return;
 		
 		if(searchedScopes.contains(scope))
 			return;
-		
 		searchedScopes.add(scope);
-		scope.resolveSearchInScope(this);
+		
+		evaluateScopeNodeList(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+		
+		if(scope instanceof IExtendedScopeElement) {
+			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
+			// Warning: potential infinite loop problems here 
+			extendedScopeElement.resolveLookupInSuperScopes(this);
+		}
+		
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public void evaluateScopeNodeList(Iterable<? extends IASTNode> nodeIterable) {
-		evaluateScopeNodeList(nodeIterable, isSequentialLookup());
-	}
-	
 	/* FIXME: need to review this code, possibly remove importsOnly. */
-	public void evaluateScopeNodeList(Iterable<? extends IASTNode> nodeIterable, boolean isSequentialLookup) {
+	protected void evaluateScopeNodeList(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
 		if(nodeIterable != null) {
-			evaluateScopeElements(nodeIterable, isSequentialLookup, false);
-			evaluateScopeElements(nodeIterable, isSequentialLookup, true);
+			evaluateScopeElements(nodeIterable, isSequential, false);
+			evaluateScopeElements(nodeIterable, isSequential, true);
 		}
 	}
 	
-	public void evaluateScopeElements(Iterable<? extends IASTNode> nodeIter, boolean isSequential, 
+	protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
 			boolean importsOnly) {
 		
 		// Note: don't check for isFinished() during the loop
-		for (IASTNode node : nodeIter) {
+		for (ILanguageElement node : nodeIter) {
 			
 			// Check if we have passed the reference offset
-			if(isSequential && refOffset < node.getStartPos()) {
-				return;
+			if(isSequentialLookup && node instanceof IASTNode) {
+				/* FIXME: make getStartPos available in ILanguageElement */
+				IASTNode astNode = (IASTNode) node;
+				if(refOffset < astNode.getStartPos()) {
+					return;
+				}
 			}
 			
-			node.evaluateForScopeLookup(this, importsOnly, isSequential);
+			if(!importsOnly && node instanceof INamedElement) {
+				INamedElement namedElement = (INamedElement) node;
+				this.visitElement(namedElement);
+			}
+			
+			if(node instanceof INonScopedContainer) {
+				INonScopedContainer container = ((INonScopedContainer) node);
+				evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
+			}
+			
+			node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup);
 		}
 	}
 	
-	public void evaluateScopeElements(Iterable<? extends INamedElement> elementIterable) {
-		for (INamedElement namedElement : elementIterable) {
-			evaluateNamedElementForSearch(namedElement);
-		}
-	}
-	
+	/* FIXME: */
+	@Deprecated
 	public void evaluateNamedElementForSearch(INamedElement namedElement) {
 		if(namedElement != null) {
 			visitElement(namedElement);

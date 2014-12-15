@@ -12,15 +12,15 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
-import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.intrinsics.IntrinsicNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.DdocParser;
 import dtool.ddoc.TextUI;
@@ -94,16 +94,18 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 		@Override
 		public void createMembers(IntrinsicNamedElement... members) {
-			this.membersScope = new InstrinsicsScope(members);
+			ArrayList2<IntrinsicNamedElement> arrayList = new ArrayList2<>();
 			
-			membersScope.members.addAll(createCommonProperties(this));
-			membersScope.members.addAll(Arrays.asList(members));
+			arrayList.addElements(members);
+			arrayList.addAll(createCommonProperties(this));
+			
+			this.membersScope = new NamedElementsScope(arrayList);
 		}
 		
 	}
 	
-	public ArrayList<IntrinsicNamedElement> createCommonProperties(INamedElement type) {
-		return CollectionUtil.<IntrinsicNamedElement>createArrayList( 
+	public ArrayList2<IntrinsicNamedElement> createCommonProperties(INamedElement type) {
+		return new ArrayList2<IntrinsicNamedElement>( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
 				parseDDoc("size in bytes (equivalent to C's $(D sizeof(type)))")),
@@ -178,7 +180,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	}
 	
 	
-	public final InstrinsicsScope primitivesScope = new InstrinsicsScope(
+	public final NamedElementsScope primitivesScope = new NamedElementsScope(
 		void_type,
 		
 		bool_type,
@@ -291,9 +293,9 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public final IntrinsicTypeDefUnit object_type = new DeeIntrinsicType("___", null) { };
 	
-	public InstrinsicsScope createObjectPropertiesScope(INamedElement type) {
+	public NamedElementsScope createObjectPropertiesScope(INamedElement type) {
 		
-		return new InstrinsicsScope(CollectionUtil.addAll(
+		return new NamedElementsScope(CollectionUtil.addAll(
 			createCommonProperties(type), 
 			Arrays.asList(
 				new IntrinsicProperty2("classinfo", new ModuleQualifiedReference("object", "TypeInfo_Class"), 

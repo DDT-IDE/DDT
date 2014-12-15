@@ -17,10 +17,10 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.intrinsics.InstrinsicsScope;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -84,15 +84,15 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	@Override
 	protected AggregateSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		InstrinsicsScope commonTypeScope = new InstrinsicsScope(D2_063_intrinsics.createCommonProperties(this));
+		NamedElementsScope commonTypeScope = new NamedElementsScope(D2_063_intrinsics.createCommonProperties(this));
 		return new AggregateSemantics(this, commonTypeScope, pickedElement);
 	}
 	
 	public class AggregateSemantics extends TypeSemantics {
 		
-		protected final InstrinsicsScope commonTypeScope;
+		protected final NamedElementsScope commonTypeScope;
 		
-		public AggregateSemantics(IConcreteNamedElement typeElement, InstrinsicsScope commonTypeScope, 
+		public AggregateSemantics(IConcreteNamedElement typeElement, NamedElementsScope commonTypeScope, 
 				PickedElement<?> pickedElement) {
 			super(typeElement, pickedElement);
 			this.commonTypeScope = commonTypeScope;
@@ -101,14 +101,21 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			search.evaluateScope(DefinitionAggregate.this.membersScope);
-			commonTypeScope.resolveSearchInScope(search);
+			search.evaluateScope(commonTypeScope);
 		}
 	
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public void resolveSearchInScope(CommonScopeLookup search) {
-		search.evaluateScopeNodeList(tplParams);
+	public Iterable<? extends IASTNode> getScopeNodeList() {
+		return tplParams;
+	}
+	
+	@Override
+	public boolean allowsForwardReferences() {
+		return false;
 	}
 	
 }
