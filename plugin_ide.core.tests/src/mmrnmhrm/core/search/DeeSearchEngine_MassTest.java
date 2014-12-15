@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
@@ -67,7 +66,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 	public void testSearchForAllModelElementRefs() throws Exception { testSearchForAllModelElementRefs$(); }
 	public void testSearchForAllModelElementRefs$() throws Exception {
 		
-		final HashMap<Pair<ISourceModule, INamedElementNode>, HashSet<Reference>> defUnitToReferencesMap 
+		final HashMap<Pair<ISourceModule, INamedElement>, HashSet<Reference>> defUnitToReferencesMap 
 		= new HashMap<>();
 		
 		new DeeSearchEngineTestUtils.ElementsAndDefUnitVisitor() {
@@ -87,7 +86,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					for (INamedElement resolvedElement : resolvedElements) {
-						INamedElementNode defUnit = resolvedElement.resolveUnderlyingNode();
+						INamedElement defUnit = resolvedElement.resolveUnderlyingNode();
 						if(defUnit == null) {
 							continue;
 						}
@@ -98,7 +97,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 						
 						ISourceModule defUnitSrcModule = findSourceModule(moduleFullName, searchProj);
 						
-						Pair<ISourceModule, INamedElementNode> key = Pair.create(defUnitSrcModule, defUnit);
+						Pair<ISourceModule, INamedElement> key = Pair.create(defUnitSrcModule, defUnit);
 						
 						if(defUnitToReferencesMap.get(key) == null) {
 							defUnitToReferencesMap.put(key, new HashSet<Reference>());
@@ -112,7 +111,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 		
 		
 		
-		for (Pair<ISourceModule, INamedElementNode> key : defUnitToReferencesMap.keySet()) {
+		for (Pair<ISourceModule, INamedElement> key : defUnitToReferencesMap.keySet()) {
 			ISourceModule sourceModule = key.getFirst();
 			INamedElement defUnit = key.getSecond();
 			

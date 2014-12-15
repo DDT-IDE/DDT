@@ -36,7 +36,10 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 	protected void testModuleProxy() throws ExecutionException {
 		PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
 			"import target; auto _ = target;", "target;");
-		assertTrue(pickedElement.element instanceof ModuleProxy);
+		ModuleProxy moduleProxy = assertCast(pickedElement.element, ModuleProxy.class);
+		
+		moduleProxy.resolveUnderlyingNode();
+		assertTrue(moduleProxy.getSemantics(pickedElement.context).isResolved());
 		
 		test_resolveElement(pickedElement, "target", "target", true);
 	}

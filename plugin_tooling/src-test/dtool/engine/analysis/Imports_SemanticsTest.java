@@ -41,7 +41,7 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
 		
 		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
-			ErrorElement.NOT_FOUND__Name);
+			Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker);
 		
 		// Test package refs.
 		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");
@@ -62,17 +62,19 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == ErrorElement.NOT_FOUND__Name) {
-			return;
-		}
-		
 		// Test that it resolves to an alias of the actual module unit. 
 		// This is an optimization to not parse the module until really necessary. 
 		assertTrue(result instanceof ModuleProxy); 
 		
 		IConcreteNamedElement moduleTarget = result.resolveConcreteElement(refModuleElement.context);
-		assertTrue(moduleTarget instanceof Module);
-		assertTrue(moduleTarget.getFullyQualifiedName().equals(fqn));
+		
+		if(fqn.equals(Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker)) {
+			assertTrue(moduleTarget instanceof ErrorElement);
+			assertTrue(moduleTarget.getFullyQualifiedName().equals(ErrorElement.NOT_FOUND__Name));
+		} else {
+			assertTrue(moduleTarget instanceof Module);
+			assertTrue(moduleTarget.getFullyQualifiedName().equals(fqn));
+		}
 	}
 	
 	protected void testPackageRef(PickedElement<? extends NamedReference> refToPackage, String fqn) {

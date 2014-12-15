@@ -55,6 +55,11 @@ public abstract class ElementSemantics<ER> {
 	private long resolutionThreadId = 0;
 	private Condition completionCondition;
 	
+	/** Internal method made public: for use by tests only. */
+	public boolean isResolved() {
+		return resolution != null;
+	}
+	
 	protected final ER getElementResolution() {
 		return getOrCreateElementResolution();
 	}

@@ -10,15 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.tooling.context;
 
+import melnorme.utilbox.core.CommonException;
+
 /**
  * An exception representing a failure to retrieve the source of a module.
+ * TODO: make this {@link CommonException}?
  */
 public class ModuleSourceException extends Exception {
 	
 	private static final long serialVersionUID = 1L;
-	
-	public ModuleSourceException() {
-	}
 	
 	public ModuleSourceException(Throwable cause) {
 		super(cause);

@@ -94,15 +94,13 @@ public class RefModule extends NamedReference {
 			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
 			
 			for (String fqName : matchedModule) {
-				search.addMatch(new ModuleProxy(fqName, prefixDefUnitSearch.modResolver, true, RefModule.this));
+				search.addMatch(new ModuleProxy(fqName, search.modResolver, true, RefModule.this));
 			}
 		} else {
 			assertTrue(isMissingCoreReference() == false);
 			String moduleFQName = getRefModuleFullyQualifiedName();
 			ModuleProxy moduleProxy = new ModuleProxy(moduleFQName, search.modResolver, true, RefModule.this);
-			if(moduleProxy.resolveUnderlyingNode() != null) {
-				search.addMatch(moduleProxy);
-			}
+			search.addMatch(moduleProxy);
 		}
 	}
 	

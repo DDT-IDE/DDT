@@ -14,6 +14,7 @@ package melnorme.lang.tooling.context;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -81,12 +82,21 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 			return key.createSemantics(new PickedElement<>(key, AbstractSemanticContext.this));
 		}
 		
+		protected HashMap<CommonLanguageElement,ElementSemantics<?>> getMap() {
+			return map;
+		}
+		
 	}
 	
 	@Override
 	public final ElementSemantics<?> getSemanticsEntry(CommonLanguageElement element) {
 		assertTrue(findSemanticContext(element) == this);
 		return semanticsMap.getEntry(element);
+	}
+	
+	/** Internal method, made public for tests usage only ! */
+	public HashMap<CommonLanguageElement,ElementSemantics<?>> getSemanticsMap() {
+		return semanticsMap.getMap();
 	}
 	
 }

@@ -10,9 +10,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
@@ -24,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.definitions.DefUnit;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
@@ -207,11 +211,12 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 				break;
 			}
 		}
-		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults, ignoreStdLibObject);
+		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults, ignoreStdLibObject, false);
 	}
 	
 	public void checkResults(Collection<INamedElement> resultElementsOriginal, String[] expectedResults,
-		boolean ignoreDummyResults, boolean ignoreNativeResults, boolean ignoreStdLibObject) {
+		boolean ignoreDummyResults, boolean ignoreNativeResults, boolean ignoreStdLibObject, 
+		boolean ignoreMissingModuleProxies) {
 		
 		if(resultElementsOriginal != null) {
 			precheckOriginalResults(resultElementsOriginal);
@@ -224,7 +229,22 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 			defUnitResultsChecker.removeStdLibObjectDefUnits();
 		}
 		
-		removeDefUnitsFromExpected(defUnitResultsChecker.resultElements);
+		LinkedList<INamedElement> resultElements = defUnitResultsChecker.resultElements;
+		removeDefUnitsFromExpected(resultElements);
+		
+		
+		if(ignoreMissingModuleProxies) {
+			for (Iterator<INamedElement> iterator = resultElements.iterator(); iterator.hasNext(); ) {
+				INamedElement defElement = iterator.next();
+				if(defElement instanceof ModuleProxy) {
+					// Remove proxy element if the target module does not exist
+					if(((ModuleProxy) defElement).resolveConcreteElement() instanceof ErrorElement) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+		
 		defUnitResultsChecker.checkResults(expectedResults, markers);
 	}
 	

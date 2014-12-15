@@ -7,7 +7,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -111,7 +110,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
 		String moduleName = impSelective.getModuleRef().module;
 		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, moduleName));
-		return ResolvableSemantics.findModuleUnchecked(modResolver, moduleFullName);
+		return CommonScopeLookup.resolveModule(modResolver, impSelective, moduleFullName);
 	}
 	
 }

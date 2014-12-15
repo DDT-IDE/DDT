@@ -11,6 +11,7 @@
 package dtool.engine.analysis;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ILanguageElement;
@@ -127,6 +128,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	public static <E extends ILanguageElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			int index, Class<E> klass) {
 		E node = findNode(resolvedModule, index, klass);
+		assertNotNull(node);
 		ISemanticContext context = resolvedModule.getSemanticContext();
 		return picked(node, context);
 	}

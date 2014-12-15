@@ -13,6 +13,7 @@ package dtool.engine.analysis;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -34,6 +35,8 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	public final BundlePath LIB_FOO = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_foo");
 	public final BundlePath LIB_TPL = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_tpl");
 	
+	protected static final String NOT_FOUND_SpecialMarker = "not_found";
+	
 	protected static PickedElement<IResolvable> pickRef(IResolvable ref, ISemanticContext context) {
 		return new PickedElement<>(ref, context);
 	}
@@ -42,11 +45,11 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		NamedReference namedRef = refElement.element;
 		
 		String expectedName = namedRef.getCoreReferenceName();
-		if(areEqual(expectedName, "not_found")) {
-			expectedName = "<not_found>";
-		} else if(namedRef instanceof RefModule) {
+		if(namedRef instanceof RefModule) {
 			RefModule refModule = (RefModule) refElement.element;
 			expectedName = refModule.getRefModuleFullyQualifiedName();
+		} else if(areEqual(expectedName, NOT_FOUND_SpecialMarker)) {
+			expectedName = ErrorElement.NOT_FOUND__Name;
 		}
 		
 		return testResolveElement(refElement, expectedName);

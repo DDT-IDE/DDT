@@ -24,7 +24,6 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -204,12 +203,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup search) {
 		search.evaluateScope(this);
 		search.evaluateScope(topLevelScope);
-		resolveLookupInObjectModule(search);
-	}
-	
-	public static void resolveLookupInObjectModule(CommonScopeLookup search) {
-		INamedElement targetModule = ResolvableSemantics.findModuleUnchecked(search.modResolver, "object");
-		search.evaluateInMembersScope(targetModule);
+		search.evaluateInMembersScope(CommonScopeLookup.resolveModule(search.modResolver, this, "object"));
 	}
 	
 	@Override

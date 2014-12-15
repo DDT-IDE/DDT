@@ -97,6 +97,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
 		
 		if(namedElements == null || namedElements.size() == 0) {
+			// FIXME: check for not_found error element
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);
 		}
 		

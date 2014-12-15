@@ -20,6 +20,9 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -84,10 +87,24 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		});
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- module lookup helpers ----------------- */
 	
 	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
 		return modResolver.findModules(fqNamePrefix);
+	}
+	
+	public static IConcreteNamedElement resolveModule(ISemanticContext context, ILanguageElement refElement, 
+			String moduleFullName) {
+		return resolveModule(context, refElement, new ModuleFullName(moduleFullName));
+	}
+	
+	public static IConcreteNamedElement resolveModule(ISemanticContext context, ILanguageElement refElement, 
+			ModuleFullName moduleName) {
+		try {
+			return context.findModule(moduleName);
+		} catch (ModuleSourceException pse) {
+			return new ErrorElement(moduleName.getFullNameAsString(), refElement, null);
+		}
 	}
 	
 	/* -----------------  ----------------- */

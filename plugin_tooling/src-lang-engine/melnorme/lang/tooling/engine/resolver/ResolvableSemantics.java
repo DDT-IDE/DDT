@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleFullName;
-import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -32,6 +30,10 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		super(pickedElement);
 		assertTrue(pickedElement.element == resolvable);
 		this.resolvable = resolvable;
+	}
+	
+	protected IResolvable getResolvable() {
+		return resolvable;
 	}
 	
 	public final ResolvableResult resolveTargetElement() {
@@ -114,21 +116,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 			return findTargetDefElements(true); // TODO need to review this
 		}
 		
-	}
-	
-	/* ----------------- module lookup helpers ----------------- */
-	
-	public static INamedElement findModuleUnchecked(ISemanticContext mr, ModuleFullName moduleName) {
-		try {
-			return mr.findModule(moduleName);
-		} catch (ModuleSourceException pse) {
-			/* FIXME: add error to SemanticResolution / semantic operation. */
-			return null;
-		}
-	}
-	
-	public static INamedElement findModuleUnchecked(ISemanticContext mr, String moduleFullName) {
-		return ResolvableSemantics.findModuleUnchecked(mr, new ModuleFullName(moduleFullName));
 	}
 	
 }

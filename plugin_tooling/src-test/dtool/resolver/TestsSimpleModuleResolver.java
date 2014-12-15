@@ -14,7 +14,7 @@ import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 import dtool.engine.modules.BundleModulesVisitor;
@@ -68,7 +68,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	}
 	
 	@Override
-	public INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException {
+	public IConcreteNamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException {
 		if(extraModuleName != null && extraModuleName.equals(moduleName)) {
 			return extraModuleResult.module;
 		}

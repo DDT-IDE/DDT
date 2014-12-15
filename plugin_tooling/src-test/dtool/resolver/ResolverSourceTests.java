@@ -20,6 +20,7 @@ import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.references.NamedReference;
+import dtool.engine.AbstractBundleResolution;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
@@ -62,7 +63,12 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
-		
+		boolean resetSemantics = false;
+		if(resetSemantics)
+			if(mr instanceof AbstractBundleResolution) {
+				AbstractBundleResolution br = (AbstractBundleResolution) mr;
+				br.getSemanticsMap().clear();
+			}
 		CompletionSearchResult completion = CodeCompletionOperation.completionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(completion.getResultCode(), options.expectedStatusCode);
@@ -99,7 +105,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 		String[] expectedResults = splitValues(mde.sourceValue);
 		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
 		assertTrue(findDefResult.isValidPickRef());
-		checkResults(findDefResult.resultsRaw, expectedResults, false, false, false);
+		checkResults(findDefResult.resultsRaw, expectedResults, false, false, false, true);
 		resolveAtOffset(mde.offset);
 	}
 	

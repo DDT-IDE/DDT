@@ -12,19 +12,18 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.definitions.Module;
 
 /**
  * This class is an alias to an actual module element.
@@ -78,21 +77,25 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public Module resolveUnderlyingNode() {
-		INamedElement module = ResolvableSemantics.findModuleUnchecked(context, getModuleFullyQualifiedName());
-		if(module instanceof Module) {
-			return (Module) module;
+	public INamedElementNode resolveUnderlyingNode() {
+		INamedElement module = resolveConcreteElement(); 
+		if(module instanceof INamedElementNode) {
+			return (INamedElementNode) module;
 		}
 		return null; 
 	}
 	
 	@Override
 	public ElementDoc resolveDDoc() {
-		DefUnit resolvedModule = resolveUnderlyingNode();
+		IConcreteNamedElement resolvedModule = resolveConcreteElement(); 
 		if(resolvedModule != null) {
-			return resolveUnderlyingNode().getDDoc();
+			return resolvedModule.resolveDDoc();
 		}
 		return null;
+	}
+	
+	public IConcreteNamedElement resolveConcreteElement() {
+		return resolveConcreteElement(context);
 	}
 	
 	/* -----------------  ----------------- */
@@ -112,7 +115,7 @@ public class ModuleProxy extends AbstractNamedElement {
 			
 			@Override
 			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return resolveUnderlyingNode();
+				return CommonScopeLookup.resolveModule(context, ModuleProxy.this, getModuleFullyQualifiedName());
 			}
 			
 		};

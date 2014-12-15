@@ -15,7 +15,7 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.ElementSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 
 /** 
  * An interface for a service that given module names knows how to find parsed Module's in an 
@@ -32,7 +32,7 @@ public interface ISemanticContext {
 	 * @param module The name of the modules to find. 
 	 * @return the respective module or null if not found
 	 */
-	INamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
+	IConcreteNamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
 	
 	
 	/** @return the {@link ISemanticContext} appropriate for the given element. */

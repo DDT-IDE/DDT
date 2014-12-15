@@ -12,13 +12,17 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -32,7 +36,9 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
+import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
+import dtool.engine.ResolvedModule;
 
 public class NameLookupTest extends CommonNodeSemanticsTest {
 	
@@ -43,7 +49,7 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected IConcreteNamedElement doResolveConcreteElementForRef(String source, String marker) {
-		PickedElement<RefIdentifier> pickedElement = parseElement(source, marker, RefIdentifier.class);
+		PickedElement<NamedReference> pickedElement = parseElement(source, marker, NamedReference.class);
 		ISemanticContext context = pickedElement.context;
 		return pickedElement.element.resolveTargetElement(context).resolveConcreteElement(context);
 	}
@@ -86,11 +92,33 @@ public class NameLookupTest extends CommonNodeSemanticsTest {
 		
 		checkResultNotFound(
 			doResolveConcreteElementForRef("alias A = B; alias B = xxx; alias _ = A/**/;", "A/**/;"));
+		
+		checkResultNotFound(
+			doResolveConcreteElementForRef("import not_found; alias _ = not_found/**/;", "not_found/**/;"));
+		
+		testModuleParseException();
 	}
 	
 	protected void checkResultNotFound(INamedElement result) {
 		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__Name));
 		assertTrue(result.getNameInRegularNamespace() == null);
+	}
+	
+	protected void testModuleParseException() {
+		NamedReference element = parseElement("import not_found;", "not_found;", NamedReference.class).element;
+		ISemanticContext context = new EmptySemanticResolution() {
+			
+			@Override
+			protected ResolvedModule getBundleResolvedModule(ModuleFullName moduleFullName)
+					throws ModuleSourceException {
+				throw new ModuleSourceException(new IOException("FAKE_IO_ERROR"));
+			}
+		};
+		
+		IConcreteNamedElement resolvedElement = element.resolveTargetElement(context).resolveConcreteElement(context);
+		assertTrue(resolvedElement.getName().equals("not_found"));
+		assertTrue(resolvedElement.getNameInRegularNamespace() == null);
+		assertTrue(resolvedElement instanceof ErrorElement);
 	}
 	
 	/* -----------------  ----------------- */

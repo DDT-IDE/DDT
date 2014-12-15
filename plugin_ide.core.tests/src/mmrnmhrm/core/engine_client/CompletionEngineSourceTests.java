@@ -23,7 +23,6 @@ import dtool.ast.definitions.EArcheType;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
-import dtool.tests.MockCompilerInstalls;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
