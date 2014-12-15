@@ -45,6 +45,7 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageHandle ENT_TYPE_PARAMETER = createManaged(T_OBJ, "ent_type_parameter.png");
 	public static final ImageHandle ENT_TUPLE = createManaged(T_OBJ, "ent_tuple.png");
 //	public static final ImageHandle ENT_UNKOWN_ALIAS = createImage(T_OBJ, "ent_alias.png");
+	public static final ImageHandle ENT_ERROR = createManaged(T_OBJ, "ent_error.png");
 	
 	
 	public static final ImageHandle NODE_IMPORT = createManaged(T_OBJ, "elem_import.gif");

@@ -28,7 +28,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
-public class Scope_SemanticsTest extends CommonNodeSemanticsTest {
+public class NameLookupTest extends CommonNodeSemanticsTest {
 	
 	protected ASTNode pickedNode;
 	

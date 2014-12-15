@@ -78,7 +78,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Alias; // TODO: add error archetype
+		return EArcheType.Error;
 	}
 	
 	@Override

@@ -168,6 +168,8 @@ public class DeeElementImageProvider {
 			return DeeImages.ENT_TYPE_PARAMETER.getDescriptor();
 		case EnumMember:
 			return DeeImages.ENT_VARIABLE.getDescriptor();
+		case Error:
+			return DeeImages.ENT_ERROR.getDescriptor();
 		}
 		
 		throw assertFail();

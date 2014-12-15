@@ -35,6 +35,8 @@ public class DefElementFlagsUtil {
 		case Enum: return DefElementFlagConstants.FLAG_KIND_ENUM;
 		case EnumMember: return DefElementFlagConstants.FLAG_KIND_ENUM_MEMBER;
 		case Alias: return DefElementFlagConstants.FLAG_KIND_ALIAS;
+		// XXX: Not entirely correct, but errors should come up in content assist only:
+		case Error: return DefElementFlagConstants.FLAG_KIND_ALIAS; 
 		}
 		
 		throw assertUnreachable();

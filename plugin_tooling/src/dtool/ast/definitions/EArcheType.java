@@ -23,6 +23,8 @@ public enum EArcheType {
 	EnumMember, // Similar to Variable
 	
 	Alias,
+	
+	Error,
 	;
 	
 	protected final boolean isType;
