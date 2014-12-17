@@ -29,19 +29,6 @@ public abstract class NamedElementsVisitor {
 		return matches;
 	}
 	
-	public void visitElement(INamedElement namedElement) {
-		String name = getNameToMatch(namedElement);
-		if(name == null || name.isEmpty()) {
-			// Never match an element with missing name;
-			return;
-		}
-		if(!matchesName(name)) {
-			return;
-		}
-		
-		addMatch(namedElement);
-	}
-	
 	protected String getNameToMatch(INamedElement namedElement) {
 		return namedElement.getNameInRegularNamespace();
 	}

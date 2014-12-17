@@ -44,8 +44,8 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
 	
-	/** The member scopes that have already been searched */
-	protected final HashSet<INamedElement> searchedMemberScopes = new HashSet<>(4);;
+	/** Named elements for which evaluateInMembersScope() has been called for. */
+	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
 	
 	
 	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
@@ -112,6 +112,34 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	/** Return whether the search has found all matches. */
 	public abstract boolean isFinished();
 	
+	/* -----------------  ----------------- */
+	
+	public void evaluateInMembersScope(INamedElement nameElement) {
+		if(isFinished() || nameElement == null)
+			return;
+		
+		IConcreteNamedElement concreteElement = nameElement.resolveConcreteElement(modResolver);
+		evaluateInMembersScope(concreteElement);
+	}
+	
+	protected void evaluateInMembersScope(IConcreteNamedElement concreteElement) {
+		if(concreteElement == null)
+			return;
+		
+		// since evaluateInMembersScope() can call evaluateInMembersScope() of other elements,
+		// we need to add loop detection. The visited scopes hash is not enough to prevent this
+		// XXX: Perhaps this could be fixed instead by modifying how var nodes do evaluateInMembersScope
+		
+		if(resolvedElementsForMemberScopes.contains(concreteElement))
+			return;
+		
+		resolvedElementsForMemberScopes.add(concreteElement);
+		
+		concreteElement.resolveSearchInMembersScope(this);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	/** 
 	 * Evaluate a scope (a collection of nodes), for this name lookup search. 
 	 */
@@ -126,7 +154,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			return;
 		searchedScopes.add(scope);
 		
-		evaluateScopeNodeList(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+		evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
 		
 		if(scope instanceof IExtendedScopeElement) {
 			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
@@ -136,74 +164,70 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		
 	}
 	
-	/* -----------------  ----------------- */
-	
 	/* FIXME: need to review this code, possibly remove importsOnly. */
-	protected void evaluateScopeNodeList(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
-		if(nodeIterable != null) {
-			evaluateScopeElements(nodeIterable, isSequential, false);
-			evaluateScopeElements(nodeIterable, isSequential, true);
-		}
+	protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
+		if(nodeIterable == null)
+			return;
+		
+		ScopeNameResolution scopeResolution = new ScopeNameResolution();
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false);
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true);
 	}
 	
-	protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
-			boolean importsOnly) {
+	public class ScopeNameResolution {
 		
-		// Note: don't check for isFinished() during the loop
-		for (ILanguageElement node : nodeIter) {
+//		protected HashMap<String, ArrayList2<INamedElement>> names = new HashMap<>(2);
+
+		protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
+				boolean importsOnly) {
 			
-			// Check if we have passed the reference offset
-			if(isSequentialLookup && node instanceof IASTNode) {
-				/* FIXME: make getStartPos available in ILanguageElement */
-				IASTNode astNode = (IASTNode) node;
-				if(refOffset < astNode.getStartPos()) {
-					return;
+			// Note: don't check for isFinished() during the loop
+			for (ILanguageElement node : nodeIter) {
+				
+				// Check if we have passed the reference offset
+				if(isSequentialLookup && node instanceof IASTNode) {
+					/* FIXME: make getStartPos available in ILanguageElement */
+					IASTNode astNode = (IASTNode) node;
+					if(refOffset < astNode.getStartPos()) {
+						return;
+					}
 				}
+				
+				if(!importsOnly && node instanceof INamedElement) {
+					INamedElement namedElement = (INamedElement) node;
+					visitNamedElement(namedElement);
+				}
+				
+				if(node instanceof INonScopedContainer) {
+					INonScopedContainer container = ((INonScopedContainer) node);
+					evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
+				}
+				
+				node.evaluateForScopeLookup(CommonScopeLookup.this, importsOnly, isSequentialLookup);
 			}
-			
-			if(!importsOnly && node instanceof INamedElement) {
-				INamedElement namedElement = (INamedElement) node;
-				this.visitElement(namedElement);
-			}
-			
-			if(node instanceof INonScopedContainer) {
-				INonScopedContainer container = ((INonScopedContainer) node);
-				evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
-			}
-			
-			node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup);
 		}
+		
 	}
 	
 	/* FIXME: */
 	@Deprecated
 	public void evaluateNamedElementForSearch(INamedElement namedElement) {
 		if(namedElement != null) {
-			visitElement(namedElement);
+			visitNamedElement(namedElement);
 		}
 	}
 	
-	/* -----------------  ----------------- */
-	
-	// XXX: perhaps refactor so that normal scopes can be used instead? 
-	public void evaluateInMembersScope(INamedElement nameElement) {
-		if(isFinished() || nameElement == null)
+	public void visitNamedElement(INamedElement namedElement) {
+		String name = getNameToMatch(namedElement);
+		if(name == null || name.isEmpty()) {
+			// Never match an element with missing name;
 			return;
-		
-		IConcreteNamedElement concreteElement = nameElement.resolveConcreteElement(modResolver);
-		evaluateInMembersScope(concreteElement);
-	}
-	
-	protected void evaluateInMembersScope(IConcreteNamedElement concreteElement) {
-		if(concreteElement == null)
+		}
+		if(!matchesName(name)) {
 			return;
+		}
 		
-		if(searchedMemberScopes.contains(concreteElement))
-			return;
-		
-		searchedMemberScopes.add(concreteElement);
-		
-		concreteElement.resolveSearchInMembersScope(this);
+		addMatch(namedElement);
 	}
 	
 }
