@@ -178,6 +178,14 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		
 //		protected HashMap<String, ArrayList2<INamedElement>> names = new HashMap<>(2);
 
+		public ISemanticContext getContext() {
+			return modResolver;
+		}
+		
+		public CommonScopeLookup getLookup() {
+			return CommonScopeLookup.this;
+		}
+		
 		protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
 				boolean importsOnly) {
 			
@@ -203,31 +211,29 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 					evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
 				}
 				
-				node.evaluateForScopeLookup(CommonScopeLookup.this, importsOnly, isSequentialLookup);
+				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup);
 			}
 		}
 		
-	}
-	
-	/* FIXME: */
-	@Deprecated
-	public void evaluateNamedElementForSearch(INamedElement namedElement) {
-		if(namedElement != null) {
-			visitNamedElement(namedElement);
-		}
-	}
-	
-	public void visitNamedElement(INamedElement namedElement) {
-		String name = getNameToMatch(namedElement);
-		if(name == null || name.isEmpty()) {
-			// Never match an element with missing name;
-			return;
-		}
-		if(!matchesName(name)) {
-			return;
+		public void evaluateNamedElementForSearch(INamedElement namedElement) {
+			if(namedElement != null) {
+				visitNamedElement(namedElement);
+			}
 		}
 		
-		addMatch(namedElement);
+		public void visitNamedElement(INamedElement namedElement) {
+			String name = getNameToMatch(namedElement);
+			if(name == null || name.isEmpty()) {
+				// Never match an element with missing name;
+				return;
+			}
+			if(!matchesName(name)) {
+				return;
+			}
+			
+			addMatch(namedElement);
+		}
+		
 	}
 	
 }

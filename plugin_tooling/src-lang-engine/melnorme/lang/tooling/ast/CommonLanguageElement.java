@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 
@@ -57,7 +57,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup) {
 	}
 	
 }

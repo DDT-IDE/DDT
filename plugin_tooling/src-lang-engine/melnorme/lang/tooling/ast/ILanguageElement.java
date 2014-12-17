@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 
 /**
  * Language element is a data node, part of a node tree, that encompasses data about a language/program.
@@ -45,7 +45,7 @@ public interface ILanguageElement {
 	public Path getModulePath();
 	
 	
-	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup);
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup);
 	
 	
 	/* ----------------- Semantic resolution: ----------------- */

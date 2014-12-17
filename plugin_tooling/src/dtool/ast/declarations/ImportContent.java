@@ -8,6 +8,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -69,16 +70,16 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public void searchInSecondaryScope(CommonScopeLookup search) {
-		findDefUnitInStaticImport(this, search);
+	public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes) {
+		findDefUnitInStaticImport(this, scopeRes);
 		if(!getDeclarationImport().isStatic) {
-			findDefUnitInContentImport(this, search);
+			findDefUnitInContentImport(this, scopeRes);
 		}
 	}
 	
-	public static void findDefUnitInStaticImport(ImportContent importStatic, CommonScopeLookup search) {
-		INamedElement namedElement = importStatic.getPartialDefUnit(search.modResolver);
-		search.evaluateNamedElementForSearch(namedElement);
+	public static void findDefUnitInStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
+		INamedElement namedElement = importStatic.getPartialDefUnit(scopeRes.getContext());
+		scopeRes.evaluateNamedElementForSearch(namedElement);
 	}
 	
 	public INamedElement getPartialDefUnit(ISemanticContext mr) {
@@ -98,12 +99,12 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return defunit;
 	}
 	
-	public static void findDefUnitInContentImport(ImportContent impContent, CommonScopeLookup search) {
-		findDefUnitInStaticImport(impContent, search);
+	public static void findDefUnitInContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {
+		findDefUnitInStaticImport(impContent, scopeRes);
 		//if(search.isScopeFinished()) return;
 		
-		INamedElement targetModule = findImportTargetModule(search.modResolver, impContent);
-		search.evaluateInMembersScope(targetModule);
+		INamedElement targetModule = findImportTargetModule(scopeRes.getContext(), impContent);
+		scopeRes.getLookup().evaluateInMembersScope(targetModule);
 	}
 	
 	public static INamedElement findImportTargetModule(ISemanticContext modResolver, IImportFragment impSelective) {

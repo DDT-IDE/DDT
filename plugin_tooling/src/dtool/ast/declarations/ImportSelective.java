@@ -7,7 +7,8 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
@@ -85,13 +86,15 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void searchInSecondaryScope(CommonScopeLookup search) {
-		findDefUnitInSelectiveImport(this, search);
+	public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes) {
+		findDefUnitInSelectiveImport(this, scopeRes);
 	}
 	
-	public static void findDefUnitInSelectiveImport(ImportSelective impSelective, CommonScopeLookup search) {
+	public static void findDefUnitInSelectiveImport(ImportSelective impSelective, ScopeNameResolution scopeRes) {
 		
-		INamedElement targetModule = ImportContent.findImportTargetModule(search.modResolver, impSelective);
+		ISemanticContext context = scopeRes.getContext();
+		
+		INamedElement targetModule = ImportContent.findImportTargetModule(context, impSelective);
 		if (targetModule == null)
 			return;
 			
@@ -100,14 +103,14 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 				RefImportSelection refImportSelection = (RefImportSelection) impSelFrag;
 				String name = refImportSelection.getDenulledIdentifier();
 				// Do pre-emptive matching
-				if(!search.matchesName(name)) {
+				if(!scopeRes.getLookup().matchesName(name)) {
 					continue;
 				}
-				INamedElement namedElement = refImportSelection.findTargetDefElement(search.modResolver);
+				INamedElement namedElement = refImportSelection.findTargetDefElement(context);
 				
 				/*FIXME: BUG here if element not found*/
 				if(namedElement != null) { 
-					search.visitNamedElement(namedElement);
+					scopeRes.visitNamedElement(namedElement);
 				}
 			}
 		}

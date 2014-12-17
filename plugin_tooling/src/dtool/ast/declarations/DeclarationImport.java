@@ -7,6 +7,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -49,8 +50,8 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */
-		public void searchInSecondaryScope(CommonScopeLookup options);
-
+		public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes);
+		
 		public RefModule getModuleRef();
 	}
 	
@@ -71,22 +72,22 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateForScopeLookup(CommonScopeLookup lookup, boolean importsOnly, boolean isSequentialLookup) {
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup) {
 		if(!importsOnly) {
 			return;
 		}
 		
-		if(!isTransitive && !searchOriginInSameModule(lookup, this))
+		if(!isTransitive && !searchOriginIsInSameModule(scopeRes.getLookup(), this))
 			return; // Don't consider private imports
 		
 		for (IImportFragment impFrag : imports) {
-			impFrag.searchInSecondaryScope(lookup);
+			impFrag.evaluateShadowScopeContribution(scopeRes);
 			// continue regardless of search.findOnlyOne because of partial packages
 		}
 		
 	}
 	
-	protected static boolean searchOriginInSameModule(CommonScopeLookup search, DeclarationImport declImport) {
+	protected static boolean searchOriginIsInSameModule(CommonScopeLookup search, DeclarationImport declImport) {
 		IModuleElement searchOriginModule = search.getSearchOriginModule();
 		if(searchOriginModule == null) 
 			return false;

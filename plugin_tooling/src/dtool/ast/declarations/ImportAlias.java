@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -62,7 +62,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void searchInSecondaryScope(CommonScopeLookup options) {
+	public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes) {
 		// Do nothing. Aliasing imports do not contribute secondary-space DefUnits
 		// TODO: this is a bug in D, it's not according to spec.
 	}
