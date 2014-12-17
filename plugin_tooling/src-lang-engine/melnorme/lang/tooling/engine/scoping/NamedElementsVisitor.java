@@ -19,10 +19,11 @@ import dtool.ast.declarations.PackageNamespace;
 
 public abstract class NamedElementsVisitor {
 	
-	protected ArrayList2<INamedElement> matches = new ArrayList2<>(2);
+	protected final ArrayList2<INamedElement> matches = new ArrayList2<>(2);
 	
-	protected HashMap<String, ArrayList2<INamedElement>> matches2 = new HashMap<>(2);
+	protected final HashMap<String, INamedElement> matches2 = new HashMap<String, INamedElement>();
 	
+	// FIXME: deprecate, then remove
 	protected boolean matchesArePartialDefUnits = false;
 	
 	public List<INamedElement> getMatchedElements() {
@@ -37,32 +38,11 @@ public abstract class NamedElementsVisitor {
 	public abstract boolean matchesName(String name);
 	
 	public void addMatch(INamedElement namedElement) {
-		String name = getNameToMatch(namedElement);
 		matches.add(namedElement);
-		
-		addScopedMatch(name, namedElement);
 		
 		if(namedElement instanceof PackageNamespace) {
 			matchesArePartialDefUnits = true;
 		}
-	}
-	
-	private void addScopedMatch(String name, INamedElement newMatch) {
-		ArrayList2<INamedElement> currentEntry = matches2.get(name);
-		if(currentEntry == null) {
-			currentEntry = new ArrayList2<>(1);
-			matches2.put(name, currentEntry);
-		}
-		
-		if(currentEntry.size() > 0) {
-			
-		}
-		
-		currentEntry.add(newMatch);
-	}
-	
-	public HashMap<String, ArrayList2<INamedElement>> getMatches2() {
-		return matches2;
 	}
 	
 }

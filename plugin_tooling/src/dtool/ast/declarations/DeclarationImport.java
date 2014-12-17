@@ -50,7 +50,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 		
 		/** Performs a search in the secondary/background scope.
 		 * Only imports contribute to this secondary namespace. */
-		public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes);
+		public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes);
 		
 		public RefModule getModuleRef();
 	}
@@ -81,7 +81,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 			return; // Don't consider private imports
 		
 		for (IImportFragment impFrag : imports) {
-			impFrag.evaluateShadowScopeContribution(scopeRes);
+			impFrag.evaluateImportsScopeContribution(scopeRes);
 			// continue regardless of search.findOnlyOne because of partial packages
 		}
 		

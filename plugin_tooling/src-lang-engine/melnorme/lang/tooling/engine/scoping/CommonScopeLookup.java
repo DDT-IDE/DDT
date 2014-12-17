@@ -12,8 +12,10 @@ package melnorme.lang.tooling.engine.scoping;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IASTNode;
@@ -23,9 +25,14 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
+import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.EntriesMap;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -164,7 +171,6 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		
 	}
 	
-	/* FIXME: need to review this code, possibly remove importsOnly. */
 	protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
 		if(nodeIterable == null)
 			return;
@@ -172,12 +178,25 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		ScopeNameResolution scopeResolution = new ScopeNameResolution();
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false);
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true);
+		
+		scopeResolution.addScopeMatchesToLookup();
+		
+	}
+	
+	public static class NamesMap extends EntriesMap<String, ArrayList2<INamedElement>> {
+		
+		@Override
+		protected ArrayList2<INamedElement> createEntry(String key) {
+			return new ArrayList2<>();
+		}
+		
 	}
 	
 	public class ScopeNameResolution {
 		
-//		protected HashMap<String, ArrayList2<INamedElement>> names = new HashMap<>(2);
-
+		protected NamesMap names = new NamesMap();
+		protected NamesMap importedNames = new NamesMap();
+		
 		public ISemanticContext getContext() {
 			return modResolver;
 		}
@@ -203,7 +222,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				
 				if(!importsOnly && node instanceof INamedElement) {
 					INamedElement namedElement = (INamedElement) node;
-					visitNamedElement(namedElement);
+					visitNamedElement(namedElement, importsOnly);
 				}
 				
 				if(node instanceof INonScopedContainer) {
@@ -215,13 +234,13 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			}
 		}
 		
-		public void evaluateNamedElementForSearch(INamedElement namedElement) {
+		public void evaluateNamedElementForSearch(INamedElement namedElement, boolean isImportsScope) {
 			if(namedElement != null) {
-				visitNamedElement(namedElement);
+				visitNamedElement(namedElement, isImportsScope);
 			}
 		}
 		
-		public void visitNamedElement(INamedElement namedElement) {
+		public void visitNamedElement(INamedElement namedElement, boolean isImportsScope) {
 			String name = getNameToMatch(namedElement);
 			if(name == null || name.isEmpty()) {
 				// Never match an element with missing name;
@@ -231,7 +250,61 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				return;
 			}
 			
+			NamesMap namesMap = isImportsScope ? importedNames : names;
+			
+			ArrayList2<INamedElement> entry = namesMap.getEntry(name);
+			entry.add(namedElement);
+			
 			addMatch(namedElement);
+		}
+		
+		public NamesMap getCombinedScopeNames() {
+			for (Entry<String, ArrayList2<INamedElement>> nameEntry : importedNames.getMap().entrySet()) {
+				String matchedName = nameEntry.getKey();
+				ArrayList2<INamedElement> importedNamesEntry = nameEntry.getValue();
+				
+				if(names.getEntryOrNull(matchedName) == null) {
+					// Add imported scope name to main scope.
+					names.getMap().put(matchedName, importedNamesEntry);
+				}
+			}
+			return names;
+		}
+		
+		public void addScopeMatchesToLookup() {
+			NamesMap names = getCombinedScopeNames();
+			
+			for (Entry<String, ArrayList2<INamedElement>> nameEntry : names.getMap().entrySet()) {
+				String matchedName = nameEntry.getKey();
+				ArrayList2<INamedElement> namesEntry = nameEntry.getValue();
+				
+				addNameEntry(matchedName, namesEntry);
+			}
+		}
+
+		protected void addNameEntry(String matchedName, ArrayList2<INamedElement> namesEntry) {
+			assertTrue(namesEntry.size() > 0);
+			
+			if(namesEntry.size() == 1) {
+				// simplest case, add element directly:
+				INamedElement namedElement = namesEntry.get(0);
+				matches2.put(matchedName, namedElement);
+			}
+			
+			// we have an overload set, need to check contents.
+			
+			INamedElement firstElement = namesEntry.get(0);
+			ILanguageElement parent = firstElement.getParent();
+			
+			OverloadedNamedElement overloadedElement = new OverloadedNamedElement(namesEntry, parent) {
+				
+				@Override
+				protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+					/*FIXME: BUG here, todo*/
+					return null;
+				}
+			};
+			matches2.put(matchedName, overloadedElement);
 		}
 		
 	}

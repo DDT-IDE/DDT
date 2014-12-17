@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.engine;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertAreEqual;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -48,12 +48,15 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 			} else {
 				archeType = EArcheType.Error;
 			}
-			assertEquals(namedElement.getParent(), firstElement.getParent());
-			assertEquals(namedElement.getParentNamespace(), firstElement.getParentNamespace());
-			assertEquals(namedElement.getModuleFullyQualifiedName(), firstElement.getModuleFullyQualifiedName());
-			assertEquals(namedElement.getModuleFullName(), firstElement.getModuleFullName());
-			assertEquals(namedElement.getFullyQualifiedName(), firstElement.getFullyQualifiedName());
-			assertEquals(namedElement.getModulePath(), firstElement.getModulePath());
+			
+			/*FIXME: BUG here parent might not be the same actually */
+			assertAreEqual(namedElement.getParent(), firstElement.getParent());
+			
+			assertAreEqual(namedElement.getParentNamespace(), firstElement.getParentNamespace());
+			assertAreEqual(namedElement.getModuleFullyQualifiedName(), firstElement.getModuleFullyQualifiedName());
+			assertAreEqual(namedElement.getModuleFullName(), firstElement.getModuleFullName());
+			assertAreEqual(namedElement.getFullyQualifiedName(), firstElement.getFullyQualifiedName());
+			assertAreEqual(namedElement.getModulePath(), firstElement.getModulePath());
 		}
 		
 		this.archeType = archeType;
@@ -107,6 +110,10 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 	@Override
 	public ElementDoc resolveDDoc() {
 		return null;
+	}
+	
+	public ArrayList2<INamedElement> getOverloadedElements() {
+		return elements;
 	}
 	
 }

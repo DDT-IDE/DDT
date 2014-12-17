@@ -70,7 +70,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public void evaluateShadowScopeContribution(ScopeNameResolution scopeRes) {
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes) {
 		findDefUnitInStaticImport(this, scopeRes);
 		if(!getDeclarationImport().isStatic) {
 			findDefUnitInContentImport(this, scopeRes);
@@ -79,7 +79,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	
 	public static void findDefUnitInStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
 		INamedElement namedElement = importStatic.getPartialDefUnit(scopeRes.getContext());
-		scopeRes.evaluateNamedElementForSearch(namedElement);
+		scopeRes.evaluateNamedElementForSearch(namedElement, true);
 	}
 	
 	public INamedElement getPartialDefUnit(ISemanticContext mr) {
