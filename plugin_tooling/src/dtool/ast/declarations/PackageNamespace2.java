@@ -23,7 +23,7 @@ import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -34,41 +34,17 @@ import dtool.ast.definitions.EArcheType;
  * It does not represent the full package namespace, but just one of the elements containted in the namespace.
  * (the containted element must be a sub-package, or a module) 
  */
-public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
-	
-	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module, 
-			ILanguageElement container) {
-		String defName = packages[0];
-		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-		return createPartialDefUnits(defName, packages, module, container);
-	}
-	
-	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module, 
-			ILanguageElement container) {
-		if(packages.length == 0) {
-			return new PackageNamespace(fqName, module, container);
-		} else {
-			String childDefName = packages[0];
-			String childFqName = fqName + "." + childDefName;
-			packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PackageNamespace partialDefUnits = createPartialDefUnits(childFqName, packages, module, container);
-			return new PackageNamespace(fqName, partialDefUnits, container);
-		}
-	}
+public class PackageNamespace2 extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
 	
 	/* -----------------  ----------------- */
 	
 	protected final String fqName;
-	protected final INamedElement containedElement;
+	protected final ArrayList2<INamedElement> namedElements;
 	
-	public PackageNamespace(String fqName, INamedElement module, ILanguageElement container) {
+	public PackageNamespace2(String fqName, ILanguageElement container, ArrayList2<INamedElement> namedElements) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
 		this.fqName = fqName;
-		this.containedElement = assertNotNull(module);
-	}
-	
-	public INamedElement getContainedElement() {
-		return containedElement;
+		this.namedElements = assertNotNull(namedElements);
 	}
 	
 	@Override
@@ -116,7 +92,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 			
 			@Override
 			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return PackageNamespace.this;
+				return PackageNamespace2.this;
 			}
 			
 			@Override
@@ -126,7 +102,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(PackageNamespace.this);
+				search.evaluateScope(PackageNamespace2.this);
 			}
 			
 		};
@@ -136,7 +112,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	@Override
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return IteratorUtil.iterable(containedElement);
+		return IteratorUtil.iterable(namedElements);
 	}
 	
 	@Override

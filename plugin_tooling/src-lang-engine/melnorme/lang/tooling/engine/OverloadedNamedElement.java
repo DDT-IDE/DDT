@@ -49,8 +49,7 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 				archeType = EArcheType.Error;
 			}
 			
-			/*FIXME: BUG here parent might not be the same actually */
-			assertAreEqual(namedElement.getParent(), firstElement.getParent());
+			//assertAreEqual(namedElement.getParent(), firstElement.getParent());
 			
 			assertAreEqual(namedElement.getParentNamespace(), firstElement.getParentNamespace());
 			assertAreEqual(namedElement.getModuleFullyQualifiedName(), firstElement.getModuleFullyQualifiedName());

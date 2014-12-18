@@ -13,6 +13,9 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
@@ -62,10 +65,13 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	/* -----------------  ----------------- */
 	
 	protected static ResolvedModule parseModule(String source) throws CommonException {
+		return parseModule(source, DEFAULT_TestsModule.path);
+	}
+	
+	protected static ResolvedModule parseModule(String source, Path filePath) throws CommonException {
 		// make sure we reparse, even if source is the same. 
-		defaultSemMgr.getParseCache().discardEntry(DEFAULT_TestsModule.path);
-		
-		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(DEFAULT_TestsModule.path, source);
+		defaultSemMgr.getParseCache().discardEntry(filePath);
+		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filePath, source);
 		ResolvedModule result = getDefaultTestsModule();
 		assertTrue(result.getSource().equals(source));
 		return result;
@@ -79,12 +85,16 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		}
 	}
 	
-	protected static Module parseSource(String source) {
+	protected static ResolvedModule parseModule_(String source, Path filePath) {
 		try {
-			return parseModule(source).getModuleNode();
+			return parseModule(source, filePath);
 		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
+	}
+	
+	protected static Module parseSource(String source) {
+		return parseModule_(source).getModuleNode();
 	}
 	
 	protected static ASTNode parseSourceAndPickNode(String source, int offset) {

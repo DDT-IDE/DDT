@@ -100,9 +100,6 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	public static void findDefUnitInContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {
-		findDefUnitInStaticImport(impContent, scopeRes);
-		//if(search.isScopeFinished()) return;
-		
 		INamedElement targetModule = findImportTargetModule(scopeRes.getContext(), impContent);
 		scopeRes.getLookup().evaluateInMembersScope(targetModule);
 	}

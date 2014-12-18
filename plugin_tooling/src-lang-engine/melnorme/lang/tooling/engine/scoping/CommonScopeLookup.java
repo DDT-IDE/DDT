@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import dtool.ast.declarations.PackageNamespace;
+import dtool.ast.declarations.PackageNamespace2;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleElement;
@@ -293,9 +295,14 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			
 			// we have an overload set, need to check contents.
 			
+			PackageNamespace2 namespaceOverloadElement = getNamespaceOverloadElement(namesEntry);
+			if(namespaceOverloadElement != null) {
+				matches2.put(matchedName, namespaceOverloadElement);
+				return;
+			}
+			
 			INamedElement firstElement = namesEntry.get(0);
 			ILanguageElement parent = firstElement.getParent();
-			
 			OverloadedNamedElement overloadedElement = new OverloadedNamedElement(namesEntry, parent) {
 				
 				@Override
@@ -305,6 +312,30 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				}
 			};
 			matches2.put(matchedName, overloadedElement);
+		}
+		
+		protected PackageNamespace2 getNamespaceOverloadElement(ArrayList2<INamedElement> namesEntry) {
+			INamedElement firstElement = namesEntry.get(0);
+			
+			boolean overloadIsPackageNamespace = false;
+			for (INamedElement namedElement : namesEntry) {
+				if(namedElement instanceof PackageNamespace) {
+					overloadIsPackageNamespace = true;
+				} else {
+					overloadIsPackageNamespace = false;
+					return null;
+				}
+			}
+			
+			assertTrue(overloadIsPackageNamespace);
+			
+			ArrayList2<INamedElement> namespaceElements = new ArrayList2<>();
+			for (INamedElement namedElement : namesEntry) {
+				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
+				namespaceElements.add(packageNamespace.getContainedElement());
+			}
+			/*FIXME: BUG here, squash rest of namespace */
+			return new PackageNamespace2(firstElement.getName(), null, namespaceElements);
 		}
 		
 	}

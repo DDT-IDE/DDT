@@ -30,12 +30,21 @@ import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
+import dtool.engine.ResolvedModule;
+
 public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
+	
+	protected static final String DEFAULT_MARKER = "/*MARKER*/";
 	
 	protected ASTNode pickedNode;
 	
 	protected ResolutionLookup doResolutionLookup(String source, String offsetMarker) throws ExecutionException {
-		PickedElement<ASTNode> pick = parseElement(source, offsetMarker, ASTNode.class);
+		ResolvedModule resolvedModule = parseModule_(source);
+		return doResolutionLookup(resolvedModule, offsetMarker);
+	}
+	
+	protected ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
+		PickedElement<ASTNode> pick = pickElement(resolvedModule, offsetMarker, ASTNode.class);
 		return doResolutionLookup(pick, "xxx");
 	}
 	
@@ -46,13 +55,6 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 		pickedNode.performNameLookup(lookup);
 		return lookup;
 	}
-	
-	protected ResolutionLookup doResolutionInScopeTesterBundle(String fileName, String marker) {
-		PickedElement<ASTNode> pickElement = pickElement(getTesterModule(fileName), marker, ASTNode.class);
-		return doResolutionLookup(pickElement, "xxx");
-	}
-	
-	/* -----------------  ----------------- */
 	
 	@Test
 	public void testShadowing() throws Exception { testShadowing$(); }
@@ -75,38 +77,57 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 		return lookup.getSearchedScopes().contains(moduleNode);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected ResolutionLookup testNameOverloadFromFile(String file, String[] expectedResults) {
+		return testNameOverloadFromFile(file, DEFAULT_MARKER, expectedResults);
+	}
+	
+	protected ResolutionLookup testNameOverloadFromFile(String file, String markerString, 
+			String[] expectedResults) {
+		ResolutionLookup lookup = doResolutionLookup(getTesterModule(file), markerString);
+		return checkLookupResult(lookup, expectedResults);
+	}
+	
+	protected ResolutionLookup testNameOverload(String source, String markerString, 
+			String[] expectedResults) {
+		ResolvedModule resolvedModule = parseModule_(source, TESTER_TestsBundle.getPath());
+		ResolutionLookup lookup = doResolutionLookup(resolvedModule, markerString);
+		return checkLookupResult(lookup, expectedResults);
+	}
+	
 	@Test
 	public void testOverloads() throws Exception { testOverloads$(); }
 	public void testOverloads$() throws Exception {
 		
-		testScopeOverloadResolutionLookup("scope_overload1.d", array(
+		testNameOverloadFromFile("scope_overload1.d", array(
 			"void xxx;",
 			"int xxx;"
 		));
 		
 		// Test across multiple scopes
-		testScopeOverloadResolutionLookup("scope_overload2.d", array(
+		testNameOverloadFromFile("scope_overload2.d", array(
 			"void xxx;",
 			"int xxx;"
 		));
 		
-		// Test versus an secondary namespace match.
-//		testScopeOverloadResolutionLookup("scope_overload3_vsImport.d", array(
-//			"void xxx;"
-//		));
-//		
-//		testScopeOverloadResolutionLookup("scope_overload3_vsImport.d", "/*MARKER2*/", array(
-//			"import xxx;"
-//		));
+		// Test versus a secondary namespace match.
+		testNameOverloadFromFile("scope_overload3_vsImport.d", array(
+			"void xxx;"
+		));
+		
+		testNameOverloadFromFile("scope_overload3_vsImport.d", "/*MARKER2*/", array(
+			"module[xxx]"
+		));
+		
+		// Test namespace aggregation
+		checkLookupResult(doResolutionLookup("import xxx.foo; import xxx.bar; import xxx.; /*M*/", "/*M*/"), 
+			array(
+			"PNamespace[xxx]"
+		));
 	}
 	
-	protected ResolutionLookup testScopeOverloadResolutionLookup(String file, String[] expectedResults) {
-		return testScopeOverloadResolutionLookup(file, "/*MARKER*/", expectedResults);
-	}
-	
-	protected ResolutionLookup testScopeOverloadResolutionLookup(String file, String markerString, 
-			String[] expectedResults) {
-		ResolutionLookup lookup = doResolutionInScopeTesterBundle(file, markerString);
+	protected ResolutionLookup checkLookupResult(ResolutionLookup lookup, String[] expectedResults) {
 		INamedElement matchedElement = lookup.getMatchedElement();
 		ArrayList2<INamedElement> overloadedElements;
 		
@@ -119,8 +140,13 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 		
 		Object[] results = ArrayUtil.map(overloadedElements, new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
-				return ((SourceElement) obj).toStringAsCode();
+			public String evaluate(INamedElement namedElement) {
+				if(namedElement instanceof SourceElement) {
+					SourceElement sourceElement = (SourceElement) namedElement;
+					return sourceElement.toStringAsCode();
+				} else {
+					return namedElement.toString();
+				}
 			}
 		});
 		
