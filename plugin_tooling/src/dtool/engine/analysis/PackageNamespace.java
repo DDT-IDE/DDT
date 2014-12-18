@@ -8,9 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.declarations;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.HashMap;
+
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -23,28 +26,31 @@ import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
 /**
- * A named element corresponding to a partial package namespace.
- * It does not represent the full package namespace, but just one of the elements containted in the namespace.
- * (the containted element must be a sub-package, or a module) 
+ * A package namespace, parented on a given scope, implicitly created from import statements.
  */
-public class PackageNamespace2 extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
+public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
 	
 	/* -----------------  ----------------- */
 	
 	protected final String fqName;
-	protected final ArrayList2<INamedElement> namedElements;
+	protected final HashMap<String, INamedElement> namedElements;
 	
-	public PackageNamespace2(String fqName, ILanguageElement container, ArrayList2<INamedElement> namedElements) {
+	public PackageNamespace(String fqName, ILanguageElement container, INamedElement firstMember) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
+		assertNotNull(firstMember);
 		this.fqName = fqName;
-		this.namedElements = assertNotNull(namedElements);
+		this.namedElements = new HashMap<>();
+		this.namedElements.put(firstMember.getNameInRegularNamespace(), firstMember);
+	}
+	
+	public HashMap<String, INamedElement> getNamedElements() {
+		return namedElements;
 	}
 	
 	@Override
@@ -92,7 +98,7 @@ public class PackageNamespace2 extends AbstractNamedElement implements IScopeEle
 			
 			@Override
 			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return PackageNamespace2.this;
+				return PackageNamespace.this;
 			}
 			
 			@Override
@@ -102,7 +108,7 @@ public class PackageNamespace2 extends AbstractNamedElement implements IScopeEle
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(PackageNamespace2.this);
+				search.evaluateScope(PackageNamespace.this);
 			}
 			
 		};
@@ -112,7 +118,7 @@ public class PackageNamespace2 extends AbstractNamedElement implements IScopeEle
 	
 	@Override
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return IteratorUtil.iterable(namedElements);
+		return IteratorUtil.iterable(namedElements.values());
 	}
 	
 	@Override

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.declarations;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.ILanguageElement;
@@ -34,25 +34,25 @@ import dtool.ast.definitions.EArcheType;
  * It does not represent the full package namespace, but just one of the elements containted in the namespace.
  * (the containted element must be a sub-package, or a module) 
  */
-public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
+public class PackageNamespaceFragment extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
 	
-	public static PackageNamespace createPartialDefUnits(String[] packages, INamedElement module, 
+	public static PackageNamespaceFragment createNamespaceFragments(String[] packages, INamedElement module, 
 			ILanguageElement container) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-		return createPartialDefUnits(defName, packages, module, container);
+		return createNamespaceFragments(defName, packages, module, container);
 	}
 	
-	public static PackageNamespace createPartialDefUnits(String fqName, String[] packages, INamedElement module, 
+	public static PackageNamespaceFragment createNamespaceFragments(String fqName, String[] packages, INamedElement module, 
 			ILanguageElement container) {
 		if(packages.length == 0) {
-			return new PackageNamespace(fqName, module, container);
+			return new PackageNamespaceFragment(fqName, module, container);
 		} else {
 			String childDefName = packages[0];
 			String childFqName = fqName + "." + childDefName;
 			packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PackageNamespace partialDefUnits = createPartialDefUnits(childFqName, packages, module, container);
-			return new PackageNamespace(fqName, partialDefUnits, container);
+			PackageNamespaceFragment partialDefUnits = createNamespaceFragments(childFqName, packages, module, container);
+			return new PackageNamespaceFragment(fqName, partialDefUnits, container);
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	protected final String fqName;
 	protected final INamedElement containedElement;
 	
-	public PackageNamespace(String fqName, INamedElement module, ILanguageElement container) {
+	public PackageNamespaceFragment(String fqName, INamedElement module, ILanguageElement container) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
 		this.fqName = fqName;
 		this.containedElement = assertNotNull(module);
@@ -103,7 +103,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	@Override
 	public String toString() {
-		return "PNamespace[" + getFullyQualifiedName() + "]";
+		return "PNamespaceFragment[" + getFullyQualifiedName() + "]";
 	}
 	
 	/* -----------------  ----------------- */
@@ -116,7 +116,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 			
 			@Override
 			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return PackageNamespace.this;
+				return PackageNamespaceFragment.this;
 			}
 			
 			@Override
@@ -126,7 +126,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(PackageNamespace.this);
+				search.evaluateScope(PackageNamespaceFragment.this);
 			}
 			
 		};

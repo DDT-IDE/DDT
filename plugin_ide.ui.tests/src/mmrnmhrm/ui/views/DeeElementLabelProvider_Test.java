@@ -1,6 +1,6 @@
 package mmrnmhrm.ui.views;
 
-import static dtool.ast.declarations.PackageNamespace.createPartialDefUnits;
+import static dtool.engine.analysis.PackageNamespaceFragment.createNamespaceFragments;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -8,9 +8,9 @@ import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
 
-import dtool.ast.declarations.ModuleProxy;
 import dtool.ddoc.TextUI;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
+import dtool.engine.analysis.ModuleProxy;
 
 public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	
@@ -32,11 +32,11 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
 		
 		
-		defElement = createPartialDefUnits(array("pack"), new ModuleProxy("modA", null, null), null);
+		defElement = createNamespaceFragments(array("pack"), new ModuleProxy("modA", null, null), null);
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 
-		defElement = createPartialDefUnits(array("pack", "sub"), new ModuleProxy("modA", null, null), null);
+		defElement = createNamespaceFragments(array("pack", "sub"), new ModuleProxy("modA", null, null), null);
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		

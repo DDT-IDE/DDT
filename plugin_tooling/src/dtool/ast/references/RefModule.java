@@ -21,8 +21,10 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.declarations.ModuleProxy;
+import dtool.engine.analysis.ModuleProxy;
+import dtool.engine.analysis.PackageNamespaceFragment;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 
@@ -41,6 +43,8 @@ public class RefModule extends NamedReference {
 		this.moduleToken = assertNotNull(moduleToken);
 		this.packages = ArrayView.create(tokenArrayToStringArray(packageList));
 		this.module = moduleToken.getSourceValue();
+		
+		assertTrue(packages.size() == 0 || !packages.get(0).isEmpty());
 	}
 	
 	public static String[] tokenArrayToStringArray(ArrayView<IToken> tokenArray) {
@@ -82,6 +86,26 @@ public class RefModule extends NamedReference {
 	
 	public String getRefModuleFullyQualifiedName() {
 		return toStringAsCode();
+	}
+	
+	private String[] getPackageNames() {
+		return packages.getInternalArray();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	// TODO: we could cache this result in semantic resolution
+	public INamedElement getNamespaceFragment(ISemanticContext context) {
+		if(getPackageNames().length == 0) {
+			return resolveTargetElement(context);
+		}
+		
+		if(isMissingCoreReference()) {
+			return null;
+		} else {
+			INamedElement moduleElem = getModuleProxy(context);
+			return PackageNamespaceFragment.createNamespaceFragments(getPackageNames(), moduleElem, this); 
+		}
 	}
 	
 	/* -----------------  ----------------- */

@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -26,10 +28,12 @@ import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
+import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
 public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
@@ -39,8 +43,7 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 	protected ASTNode pickedNode;
 	
 	protected ResolutionLookup doResolutionLookup(String source, String offsetMarker) throws ExecutionException {
-		ResolvedModule resolvedModule = parseModule_(source);
-		return doResolutionLookup(resolvedModule, offsetMarker);
+		return doResolutionLookup(parseModule_(source), offsetMarker);
 	}
 	
 	protected ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
@@ -97,8 +100,8 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 	}
 	
 	@Test
-	public void testOverloads() throws Exception { testOverloads$(); }
-	public void testOverloads$() throws Exception {
+	public void testOverloads() throws Exception { testOverloads_________(); }
+	public void testOverloads_________() throws Exception {
 		
 		testNameOverloadFromFile("scope_overload1.d", array(
 			"void xxx;",
@@ -120,15 +123,14 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 			"module[xxx]"
 		));
 		
-		// Test namespace aggregation
-		checkLookupResult(doResolutionLookup("import xxx.foo; import xxx.bar; import xxx.; /*M*/", "/*M*/"), 
-			array(
-			"PNamespace[xxx]"
-		));
+		
+		testNamespaceAggregation();
 	}
 	
 	protected ResolutionLookup checkLookupResult(ResolutionLookup lookup, String[] expectedResults) {
 		INamedElement matchedElement = lookup.getMatchedElement();
+		assertNotNull(matchedElement);
+		
 		ArrayList2<INamedElement> overloadedElements;
 		
 		if(matchedElement instanceof OverloadedNamedElement) {
@@ -138,6 +140,13 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 			overloadedElements = new ArrayList2<>(matchedElement);
 		}
 		
+		Object[] results = elementToStringArray(overloadedElements);
+		assertEqualArrays(results, expectedResults);
+		
+		return lookup;
+	}
+	
+	protected Object[] elementToStringArray(Collection<INamedElement> overloadedElements) {
 		Object[] results = ArrayUtil.map(overloadedElements, new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement namedElement) {
@@ -149,10 +158,86 @@ public class NameLookup_ScopeTest extends CommonNodeSemanticsTest {
 				}
 			}
 		});
+		return results;
+	}
+	
+	private void testNamespaceAggregation() throws ExecutionException {
+		// Test namespace aggregation
+		doNamespaceLookupTest(parseModule_(
+			"import xxx.foo; import xxx.bar; import xxx.; auto + = xxx/*M*/"), "/*M*/", 
+			array(
+			"module[xxx.foo]", "module[xxx.bar]"
+		));
 		
-		assertEqualArrays(results, expectedResults);
+//		doNamespaceLookupTest(parseModule_(
+//			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.yyy.xpto;"
+//			+ "import a.xxx.; import a.zzz.bar; "
+//			+ "auto _ = a.xxx/*M*/"), "/*M*/",
+//			
+//			array(
+//			"module[a.xxx.foo]", "module[a.xxx.bar]", "module[a.xxx.xpto.foo]" 
+//		));
+		
+		doNamespaceLookupTest(parseModule_(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; "
+			+ "import a.zzz;"
+			+ "auto _ = a/*M*/"), "/*M*/",
+			
+			array(
+			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]" 
+		));
+		
+		
+		doLookupTest(parseModule_(
+			"module xxx; import xxx;"
+			+ "auto _ = xxx/*M*/"), "/*M*/", 
+			
+			checkModule("xxx") // We could do error element instead 
+		);
+	}
+	
+	protected ResolutionLookup doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
+			final String[] expectedResults) {
+		return doLookupTest(resolvedModule, offsetMarker, checkNS(expectedResults));
+	}
+	
+	protected ResolutionLookup doLookupTest(ResolvedModule resolvedModule, String offsetMarker,
+			Predicate<INamedElement> predicate) {
+		PickedElement<NamedReference> pick = pickElement(resolvedModule, offsetMarker, NamedReference.class);
+		ResolutionLookup lookup = pick.element.getSemantics(pick.context).doResolutionLookup(false);
+		
+		predicate.evaluate(lookup.getMatchedElement());
 		
 		return lookup;
+	}
+	
+	protected Predicate<INamedElement> checkNS(final String[] expectedResults) {
+		return new Predicate<INamedElement>() {
+			
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				PackageNamespace packageNameSpace = assertInstance(matchedElement, PackageNamespace.class);
+				assertEqualSet(
+					hashSet(elementToStringArray(packageNameSpace.getNamedElements().values())), 
+					hashSet(expectedResults)
+				);
+				
+				return true;
+			}
+			
+		};
+	}
+	
+	protected Predicate<INamedElement> checkModule(final String expectedFQN) {
+		return new Predicate<INamedElement>() {
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
+				assertTrue(moduleProxy.getFullyQualifiedName().equals(expectedFQN));
+				return true;
+			}
+		};
 	}
 	
 }

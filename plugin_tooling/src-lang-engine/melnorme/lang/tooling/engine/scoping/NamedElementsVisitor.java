@@ -15,7 +15,7 @@ import java.util.List;
 
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
-import dtool.ast.declarations.PackageNamespace;
+import dtool.engine.analysis.PackageNamespaceFragment;
 
 public abstract class NamedElementsVisitor {
 	
@@ -40,7 +40,7 @@ public abstract class NamedElementsVisitor {
 	public void addMatch(INamedElement namedElement) {
 		matches.add(namedElement);
 		
-		if(namedElement instanceof PackageNamespace) {
+		if(namedElement instanceof PackageNamespaceFragment) {
 			matchesArePartialDefUnits = true;
 		}
 	}

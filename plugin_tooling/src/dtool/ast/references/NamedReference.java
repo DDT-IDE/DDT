@@ -12,7 +12,9 @@ package dtool.ast.references;
 
 import java.util.Collection;
 
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -37,22 +39,40 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ResolvableSemantics(this, pickedElement) {
+	public NamedReferenceSemantics getSemantics(ISemanticContext parentContext) {
+		return (NamedReferenceSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	protected NamedReferenceSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new NamedReferenceSemantics(this, pickedElement);
+	}
+	
+	public class NamedReferenceSemantics extends ResolvableSemantics {
 		
-			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				if(isMissingCoreReference()) {
-					return null;
-				}
-				int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
-				ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode_(), startPos, 
-					findOneOnly, context);
-				performNameLookup(search);
-				return search.getMatchedElements();
+		protected NamedReferenceSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
+			super(resolvable, pickedElement);
+		}
+		
+		@Override
+		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			if(isMissingCoreReference()) {
+				return null;
+			}
+			ResolutionLookup search = doResolutionLookup(findOneOnly);
+			return search.getMatchedElements();
+		}
+		
+		public ResolutionLookup doResolutionLookup(boolean findOneOnly) {
+			if(isMissingCoreReference()) {
+				return null;
 			}
 			
-		};
+			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
+			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode_(), startPos, 
+				findOneOnly, context);
+			performNameLookup(search);
+			return search;
+		}
 	}
 	
 	/** Return wheter this reference can match the given defunit.

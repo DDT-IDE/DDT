@@ -106,12 +106,9 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 				if(!scopeRes.getLookup().matchesName(name)) {
 					continue;
 				}
-				INamedElement namedElement = refImportSelection.findTargetDefElement(context);
+				INamedElement selectedElement = refImportSelection.findTargetDefElement(context);
 				
-				/*FIXME: BUG here if element not found*/
-				if(namedElement != null) { 
-					scopeRes.visitNamedElement(namedElement, true);
-				}
+				scopeRes.visitNamedElement(selectedElement, true); /*FIXME: BUG here should be false*/
 			}
 		}
 	}

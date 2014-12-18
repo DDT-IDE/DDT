@@ -27,8 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 
-import dtool.ast.declarations.ModuleProxy;
 import dtool.ast.definitions.DefUnit;
+import dtool.engine.analysis.ModuleProxy;
 import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
 import dtool.sourcegen.AnnotatedSource;

@@ -24,8 +24,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-import dtool.ast.declarations.ModuleProxy;
-import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
@@ -87,10 +85,10 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 			return;
 		}
 		
-		assertTrue(result instanceof PackageNamespace); 
+		assertTrue(result instanceof PackageNamespaceFragment); 
 		
 		IConcreteNamedElement concreteTarget = result.resolveConcreteElement(refToPackage.context);
-		assertTrue(concreteTarget instanceof PackageNamespace);
+		assertTrue(concreteTarget instanceof PackageNamespaceFragment);
 		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	

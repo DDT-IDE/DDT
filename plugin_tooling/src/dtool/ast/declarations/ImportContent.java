@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -17,7 +27,6 @@ import dtool.ast.references.RefModule;
 public class ImportContent extends ASTNode implements IImportFragment {
 	
 	public final RefModule moduleRef;
-	private PackageNamespace defunit; // Non-Structural Element
 	
 	public ImportContent(RefModule refModule) {
 		this.moduleRef = parentize(refModule);
@@ -63,10 +72,6 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef;
 	}
 	
-	private String[] getPackageNames() {
-		return moduleRef.packages.getInternalArray();
-	}
-	
 	/* ----------------- ----------------- */
 	
 	@Override
@@ -78,25 +83,11 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	public static void findDefUnitInStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
-		INamedElement namedElement = importStatic.getPartialDefUnit(scopeRes.getContext());
-		scopeRes.evaluateNamedElementForSearch(namedElement, true);
+		scopeRes.addImportNameElement(importStatic);
 	}
 	
-	public INamedElement getPartialDefUnit(ISemanticContext mr) {
-		if(getPackageNames().length == 0 || getPackageNames()[0] == "") {
-			return moduleRef.resolveTargetElement(mr);
-		}
-		
-		// Do lazy PartialDefUnit creation
-		if(defunit == null) {
-			if(moduleRef.isMissingCoreReference()) {
-				defunit = null;
-			} else {
-				INamedElement moduleElem = moduleRef.getModuleProxy(mr);
-				defunit = PackageNamespace.createPartialDefUnits(getPackageNames(), moduleElem, ImportContent.this); 
-			}
-		}
-		return defunit;
+	public INamedElement getNamespaceFragment(ISemanticContext context) {
+		return moduleRef.getNamespaceFragment(context);
 	}
 	
 	public static void findDefUnitInContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {

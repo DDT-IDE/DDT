@@ -11,15 +11,15 @@
 package melnorme.lang.tooling.engine.scoping;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import dtool.ast.declarations.PackageNamespace;
-import dtool.ast.declarations.PackageNamespace2;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleElement;
@@ -37,6 +37,9 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.EntriesMap;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
+import dtool.ast.declarations.ImportContent;
+import dtool.engine.analysis.PackageNamespace;
+import dtool.engine.analysis.PackageNamespaceFragment;
 
 public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
@@ -197,7 +200,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public class ScopeNameResolution {
 		
 		protected NamesMap names = new NamesMap();
-		protected NamesMap importedNames = new NamesMap();
+		protected HashMap<String, INamedElement> importedNames = new HashMap<String, INamedElement>();
 		
 		public ISemanticContext getContext() {
 			return modResolver;
@@ -236,13 +239,10 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			}
 		}
 		
-		public void evaluateNamedElementForSearch(INamedElement namedElement, boolean isImportsScope) {
-			if(namedElement != null) {
-				visitNamedElement(namedElement, isImportsScope);
-			}
-		}
-		
 		public void visitNamedElement(INamedElement namedElement, boolean isImportsScope) {
+			if(namedElement == null)
+				return;
+			
 			String name = getNameToMatch(namedElement);
 			if(name == null || name.isEmpty()) {
 				// Never match an element with missing name;
@@ -252,22 +252,75 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				return;
 			}
 			
-			NamesMap namesMap = isImportsScope ? importedNames : names;
-			
-			ArrayList2<INamedElement> entry = namesMap.getEntry(name);
-			entry.add(namedElement);
-			
+			assertNotNull(namedElement);
 			addMatch(namedElement);
+			
+			if(!isImportsScope) {
+				ArrayList2<INamedElement> namesEntry = names.getEntry(name);
+				namesEntry.add(namedElement);
+			} else {
+				addSymbolToNamespace(importedNames, namedElement);
+			}
 		}
 		
+		protected void addSymbolToNamespace(HashMap<String, INamedElement> namesMap, INamedElement newElement) {
+			String name = newElement.getNameInRegularNamespace();
+			
+			INamedElement existingNamedElement = namesMap.get(name);
+			
+			if(existingNamedElement instanceof PackageNamespace && newElement instanceof PackageNamespaceFragment) {
+				PackageNamespace existingNamespace = (PackageNamespace) existingNamedElement;
+				PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
+				
+				INamedElement containedElement = newNamespace.getContainedElement();
+				addSymbolToNamespace(existingNamespace.getNamedElements(), containedElement);
+			} else {
+				
+				newElement = convertNameSpace(newElement);
+				
+				/*FIXME: BUG here*/
+//				addEntryToMap(name, namedElement);
+				
+				namesMap.put(name, newElement);
+			}
+		}
+		
+		protected INamedElement convertNameSpace(INamedElement newElement) {
+			if(newElement instanceof PackageNamespaceFragment) {
+				PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
+				// convert to PackageNamespace
+				String fqn = newNamespace.getFullyQualifiedName();
+				ILanguageElement parent = newNamespace.getParent();
+				INamedElement containedElement = convertNameSpace(newNamespace.getContainedElement());
+				return new PackageNamespace(fqn, parent, containedElement);
+			}
+			return newElement;
+		}
+		
+		protected void addEntryToMap(String name, INamedElement namedElement) {
+			INamedElement existingNamedEntry = importedNames.get(name);
+			if(existingNamedEntry == null) {
+				importedNames.put(name, namedElement);
+			} else {
+				assertFail();
+			}
+		}
+		
+		public void addImportNameElement(ImportContent importStatic) {
+			INamedElement namedElement = importStatic.moduleRef.getNamespaceFragment(getContext());
+			visitNamedElement(namedElement, true);
+		}
+		
+		/* -----------------  ----------------- */
+		
 		public NamesMap getCombinedScopeNames() {
-			for (Entry<String, ArrayList2<INamedElement>> nameEntry : importedNames.getMap().entrySet()) {
+			for (Entry<String, INamedElement> nameEntry : importedNames.entrySet()) {
 				String matchedName = nameEntry.getKey();
-				ArrayList2<INamedElement> importedNamesEntry = nameEntry.getValue();
+				INamedElement matchedElement = nameEntry.getValue();
 				
 				if(names.getEntryOrNull(matchedName) == null) {
 					// Add imported scope name to main scope.
-					names.getMap().put(matchedName, importedNamesEntry);
+					names.getEntry(matchedName).add(matchedElement);
 				}
 			}
 			return names;
@@ -283,7 +336,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				addNameEntry(matchedName, namesEntry);
 			}
 		}
-
+		
 		protected void addNameEntry(String matchedName, ArrayList2<INamedElement> namesEntry) {
 			assertTrue(namesEntry.size() > 0);
 			
@@ -291,53 +344,29 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				// simplest case, add element directly:
 				INamedElement namedElement = namesEntry.get(0);
 				matches2.put(matchedName, namedElement);
+				return;
 			}
 			
 			// we have an overload set, need to check contents.
 			
-			PackageNamespace2 namespaceOverloadElement = getNamespaceOverloadElement(namesEntry);
-			if(namespaceOverloadElement != null) {
-				matches2.put(matchedName, namespaceOverloadElement);
-				return;
-			}
-			
 			INamedElement firstElement = namesEntry.get(0);
 			ILanguageElement parent = firstElement.getParent();
-			OverloadedNamedElement overloadedElement = new OverloadedNamedElement(namesEntry, parent) {
-				
-				@Override
-				protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-					/*FIXME: BUG here, todo*/
-					return null;
-				}
-			};
+			OverloadedNamedElement overloadedElement = new OverloadedNamedElement2(namesEntry, parent);
 			matches2.put(matchedName, overloadedElement);
 		}
 		
-		protected PackageNamespace2 getNamespaceOverloadElement(ArrayList2<INamedElement> namesEntry) {
-			INamedElement firstElement = namesEntry.get(0);
-			
-			boolean overloadIsPackageNamespace = false;
-			for (INamedElement namedElement : namesEntry) {
-				if(namedElement instanceof PackageNamespace) {
-					overloadIsPackageNamespace = true;
-				} else {
-					overloadIsPackageNamespace = false;
-					return null;
-				}
-			}
-			
-			assertTrue(overloadIsPackageNamespace);
-			
-			ArrayList2<INamedElement> namespaceElements = new ArrayList2<>();
-			for (INamedElement namedElement : namesEntry) {
-				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
-				namespaceElements.add(packageNamespace.getContainedElement());
-			}
-			/*FIXME: BUG here, squash rest of namespace */
-			return new PackageNamespace2(firstElement.getName(), null, namespaceElements);
+	}
+	
+	protected final class OverloadedNamedElement2 extends OverloadedNamedElement {
+		public OverloadedNamedElement2(ArrayList2<INamedElement> elements, ILanguageElement parent) {
+			super(elements, parent);
 		}
 		
+		@Override
+		protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			/*FIXME: BUG here, todo*/
+			return null;
+		}
 	}
 	
 }

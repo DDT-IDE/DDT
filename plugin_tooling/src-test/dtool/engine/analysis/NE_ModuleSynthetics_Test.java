@@ -20,8 +20,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-import dtool.ast.declarations.ModuleProxy;
-import dtool.ast.declarations.PackageNamespace;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
@@ -47,7 +45,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 	protected void testPackageNamespace() throws ExecutionException {
 		PickedElement<INamedElement> pickedElement = parseSourceAndPickFromRefResolving(
 			"import xxx.foo; auto _ = xxx;", "xxx;");
-		assertTrue(pickedElement.element instanceof PackageNamespace);
+		assertTrue(pickedElement.element instanceof PackageNamespaceFragment);
 		
 		test_resolveElement(pickedElement, null, "xxx", true);
 	}
