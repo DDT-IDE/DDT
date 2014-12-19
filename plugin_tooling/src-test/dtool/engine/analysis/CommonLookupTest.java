@@ -36,10 +36,15 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	}
 	protected ResolutionLookup testLookup(ResolvedModule resolvedModule, String offsetMarker, 
 			Predicate<INamedElement> checker) {
+		return testLookup_______(resolvedModule, offsetMarker, checker);
+	}
+	private final ResolutionLookup testLookup_______(ResolvedModule resolvedModule, String offsetMarker,
+			Predicate<INamedElement> checker) {
 		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
 		runChecker(checker, lookup);
 		return lookup;
 	}
+	
 	protected void runChecker(Predicate<INamedElement> checker, ResolutionLookup lookup) {
 		INamedElement matchedElement = lookup.getMatchedElement();
 		assertNotNull(matchedElement);
@@ -56,12 +61,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		return pickedNode.getSemantics(pick.context).doResolutionLookup(false);
 	}
 	
-	protected ResolutionLookup testLookupFromFile(String file, String markerString, Predicate<INamedElement> checker) {
-		
-		ResolutionLookup lookup = doResolutionLookup(getTesterModule(file), markerString);
-		runChecker(checker, lookup);
-		return lookup;
-	}
+	
 	
 	/* -----------------  ----------------- */
 	
@@ -84,7 +84,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		}
 	}
 	
-	protected static Predicate<INamedElement> checkNameError(final String... expectedResults) {
+	protected static Predicate<INamedElement> checkNameConflict(final String... expectedResults) {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {

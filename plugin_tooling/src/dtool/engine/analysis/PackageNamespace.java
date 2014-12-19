@@ -11,9 +11,6 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.HashMap;
-
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -22,6 +19,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.NamesMap;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -39,17 +37,17 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	/* -----------------  ----------------- */
 	
 	protected final String fqName;
-	protected final HashMap<String, INamedElement> namedElements;
+	protected final CommonScopeLookup.NamesMap namedElements;
 	
 	public PackageNamespace(String fqName, ILanguageElement container, INamedElement firstMember) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
 		assertNotNull(firstMember);
 		this.fqName = fqName;
-		this.namedElements = new HashMap<>();
+		this.namedElements = new CommonScopeLookup.NamesMap();
 		this.namedElements.put(firstMember.getNameInRegularNamespace(), firstMember);
 	}
 	
-	public HashMap<String, INamedElement> getNamedElements() {
+	public NamesMap getNamedElements() {
 		return namedElements;
 	}
 	

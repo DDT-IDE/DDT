@@ -122,35 +122,49 @@ public class Imports_LookupTest extends CommonLookupTest {
 	public void test_PackageNamespace() throws Exception { test_PackageNamespace$(); }
 	public void test_PackageNamespace$() throws Exception {
 		
-		testLookup(parseModule_("module xxx; import xxx; "
+		// Test name conflicts
+		
+		testLookup(parseModule_("module xxx; int xxx; "
 				+ "auto _ = xxx/*M*/;"),
 				
-			checkModule("module[xxx]") 
+			checkSingleResult("int xxx;") 
 		);
 		
-//		testLookup(parseModule_("var xxx; import xxx; "
-//				+ "auto _ = xxx/*M*/;"),
-//				
-//			checkNameError("var xxx;", "PNamespace[xxx]") 
-//		);
+		testLookup(parseModule_("int xxx; import xxx; "
+				+ "auto _ = xxx/*M*/;"),
+				
+			checkNameConflict("int xxx;", "module[xxx]") 
+		);
+		
+		testLookup(parseModule_("int xxx; char xxx; import xxx; "
+				+ "auto _ = xxx/*M*/;"),
+				
+			checkNameConflict("int xxx;", "char xxx;", "module[xxx]") 
+		);
 		
 		
 		// Test namespace aggregation
-		doNamespaceLookupTest(
-			parseModule_("import xxx.foo; import xxx.bar; import xxx.; "
-				+ "auto _ = xxx/*M*/;"),
-			"/*M*/",
-			
-			array(
-			"module[xxx.foo]", "module[xxx.bar]"
-		));
+		testLookup(parseModule_("import xxx.foo; import xxx.bar; import xxx.; "
+				+ "auto _ = xxx/*M*/;"), 
+				
+			checkNS(array("module[xxx.foo]", "module[xxx.bar]"))
+		);
 		
-//		doNamespaceLookupTest(parseModule_(
-//			"import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;" // Test duplicate import
-//			+ " auto + = xxx/*M*/"), "/*M*/", 
-//			array(
-//			"module[xxx.foo]", "module[xxx.bar.z]"
-//		));
+		// Test duplicate import
+		
+//		testLookup(parseModule_(
+//			"import xxx; import xxx;" 
+//			+ " auto + = xxx/*M*/"),  
+//			
+//			checkModule("module[xxx]")
+//		);
+//		
+//		testLookup(parseModule_(
+//			"import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;" 
+//			+ " auto + = xxx/*M*/"),  
+//			
+//			checkNS(array("module[xxx.foo]", "module[xxx.bar.z]"))
+//		);
 		
 		
 //		doNamespaceLookupTest(parseModule_(
@@ -171,6 +185,18 @@ public class Imports_LookupTest extends CommonLookupTest {
 			
 			array(
 			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]" 
+		));
+		
+		
+		String scopeOverload_vsImport = 
+			"void xxx;" +
+			"void func() {" +
+			"	import xxx; auto _ = xxx/*M*/" +
+			"}";	
+		
+		testLookup(parseModule_(scopeOverload_vsImport), 
+			checkSingleResult(
+			"module[xxx]"
 		));
 		
 	}

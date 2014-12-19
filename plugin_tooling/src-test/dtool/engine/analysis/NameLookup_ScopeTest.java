@@ -50,33 +50,26 @@ public class NameLookup_ScopeTest extends CommonLookupTest {
 	public void testOverloads() throws Exception { testOverloads_________(); }
 	public void testOverloads_________() throws Exception {
 		
-		testLookupFromFile("scope_overload1.d", DEFAULT_MARKER, 
-			checkNameError(
-			"void xxx;",
-			"int xxx;"
-		));
+		testLookup(parseModule_("void xxx; int xxx; auto _ = xxx/*M*/; "), 
+			checkNameConflict("void xxx;", "int xxx;")
+		);
 		
 		// Test across multiple scopes
-		testLookupFromFile("scope_overload2.d", DEFAULT_MARKER,
-			checkNameError(
-			"void xxx;",
-			"int xxx;"
-		));
 		
-		// Test versus a secondary namespace match.
-		testLookupFromFile("scope_overload3_vsImport.d", DEFAULT_MARKER, 
-			checkSingleResult(
-			"void xxx;"
-		));
-		
-		testLookupFromFile("scope_overload3_vsImport.d", "/*MARKER2*/", 
-			checkSingleResult(
-			"module[xxx]"
-		));
+		testLookup(parseModule_(
+			" struct xxx ; class Foo {" +
+				"void func() {" +
+				"	void xxx; int xxx; 1 + xxx/*M*/;" +
+				"}" +
+				"char xxx;" +
+			"}"
+			), 
+			checkNameConflict("void xxx;", "int xxx;")
+		);
 		
 		
 		testLookup(parseModule_("int xxx; void func() { Blah xxx; char xxx; auto _ = xxx/*M*/; }"), 
-			checkNameError("Blah xxx;", "char xxx;") 
+			checkNameConflict("Blah xxx;", "char xxx;") 
 		);
 		
 	}

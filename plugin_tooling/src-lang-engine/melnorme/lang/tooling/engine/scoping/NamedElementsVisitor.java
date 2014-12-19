@@ -30,10 +30,6 @@ public abstract class NamedElementsVisitor {
 		return matches;
 	}
 	
-	protected String getNameToMatch(INamedElement namedElement) {
-		return namedElement.getNameInRegularNamespace();
-	}
-	
 	/** Returns whether this search matches the given name or not. */
 	public abstract boolean matchesName(String name);
 	

@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.scoping;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,8 +32,6 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.EntriesMap;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
@@ -180,34 +177,35 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		if(nodeIterable == null)
 			return;
 		
-		ScopeNameResolution scopeResolution = new ScopeNameResolution();
+		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false);
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true);
 		
-		scopeResolution.addScopeMatchesToLookup();
+		matches2.putAll(scopeResolution.names);
+	}
+	
+	@SuppressWarnings("serial")
+	public static class NamesMap extends HashMap<String, INamedElement> {
 		
 	}
 	
-	public static class NamesMap extends EntriesMap<String, ArrayList2<INamedElement>> {
+	public static class ScopeNameResolution {
 		
-		@Override
-		protected ArrayList2<INamedElement> createEntry(String key) {
-			return new ArrayList2<>();
-		}
-		
-	}
-	
-	public class ScopeNameResolution {
+		protected final CommonScopeLookup lookup;
 		
 		protected NamesMap names = new NamesMap();
-		protected HashMap<String, INamedElement> importedNames = new HashMap<String, INamedElement>();
+		protected NamesMap importedNames = new NamesMap();
 		
-		public ISemanticContext getContext() {
-			return modResolver;
+		public ScopeNameResolution(CommonScopeLookup lookup) {
+			this.lookup = lookup;
+		}
+
+		public CommonScopeLookup getLookup() {
+			return lookup;
 		}
 		
-		public CommonScopeLookup getLookup() {
-			return CommonScopeLookup.this;
+		public ISemanticContext getContext() {
+			return getLookup().modResolver;
 		}
 		
 		protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
@@ -220,7 +218,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				if(isSequentialLookup && node instanceof IASTNode) {
 					/* FIXME: make getStartPos available in ILanguageElement */
 					IASTNode astNode = (IASTNode) node;
-					if(refOffset < astNode.getStartPos()) {
+					if(getLookup().refOffset < astNode.getStartPos()) {
 						return;
 					}
 				}
@@ -243,27 +241,26 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			if(namedElement == null)
 				return;
 			
-			String name = getNameToMatch(namedElement);
+			String name = namedElement.getNameInRegularNamespace();
 			if(name == null || name.isEmpty()) {
 				// Never match an element with missing name;
 				return;
 			}
-			if(!matchesName(name)) {
+			if(!getLookup().matchesName(name)) {
 				return;
 			}
 			
 			assertNotNull(namedElement);
-			addMatch(namedElement);
+			getLookup().addMatch(namedElement); /* FIXME: deprecate */
 			
 			if(!isImportsScope) {
-				ArrayList2<INamedElement> namesEntry = names.getEntry(name);
-				namesEntry.add(namedElement);
+				addSymbolToNamespace(names, namedElement);
 			} else {
 				addSymbolToNamespace(importedNames, namedElement);
 			}
 		}
 		
-		protected void addSymbolToNamespace(HashMap<String, INamedElement> namesMap, INamedElement newElement) {
+		protected void addSymbolToNamespace(NamesMap namesMap, INamedElement newElement) {
 			String name = newElement.getNameInRegularNamespace();
 			
 			INamedElement existingNamedElement = namesMap.get(name);
@@ -275,17 +272,12 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				INamedElement containedElement = newNamespace.getContainedElement();
 				addSymbolToNamespace(existingNamespace.getNamedElements(), containedElement);
 			} else {
-				
 				newElement = convertNameSpace(newElement);
-				
-				/*FIXME: BUG here*/
-//				addEntryToMap(name, namedElement);
-				
-				namesMap.put(name, newElement);
+				addEntryToMap(namesMap, name, newElement);
 			}
 		}
 		
-		protected INamedElement convertNameSpace(INamedElement newElement) {
+		protected static INamedElement convertNameSpace(INamedElement newElement) {
 			if(newElement instanceof PackageNamespaceFragment) {
 				PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
 				// convert to PackageNamespace
@@ -297,18 +289,26 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			return newElement;
 		}
 		
-		protected void addEntryToMap(String name, INamedElement namedElement) {
-			INamedElement existingNamedEntry = importedNames.get(name);
-			if(existingNamedEntry == null) {
-				importedNames.put(name, namedElement);
+		protected static void addEntryToMap(NamesMap namesMap, String name, INamedElement newElement) {
+			INamedElement existingEntry = namesMap.get(name);
+			if(existingEntry == null) {
+				namesMap.put(name, newElement);
 			} else {
-				assertFail();
+				OverloadedNamedElement overloadElement;
+				
+				if(existingEntry instanceof OverloadedNamedElement) {
+					overloadElement = (OverloadedNamedElement) existingEntry;
+				} else {
+					overloadElement = new OverloadedNamedElement2(existingEntry, existingEntry.getParent());
+					namesMap.put(name, overloadElement);
+				}
+				overloadElement.addElement(newElement);
 			}
 		}
 		
 		public void addImportNameElement(ImportContent importStatic) {
 			INamedElement namedElement = importStatic.moduleRef.getNamespaceFragment(getContext());
-			visitNamedElement(namedElement, true);
+			visitNamedElement(namedElement, false);
 		}
 		
 		/* -----------------  ----------------- */
@@ -318,54 +318,30 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 				String matchedName = nameEntry.getKey();
 				INamedElement matchedElement = nameEntry.getValue();
 				
-				if(names.getEntryOrNull(matchedName) == null) {
+				if(names.get(matchedName) == null) {
 					// Add imported scope name to main scope.
-					names.getEntry(matchedName).add(matchedElement);
+					names.put(matchedName, matchedElement);
 				}
 			}
 			return names;
 		}
 		
-		public void addScopeMatchesToLookup() {
-			NamesMap names = getCombinedScopeNames();
-			
-			for (Entry<String, ArrayList2<INamedElement>> nameEntry : names.getMap().entrySet()) {
-				String matchedName = nameEntry.getKey();
-				ArrayList2<INamedElement> namesEntry = nameEntry.getValue();
-				
-				addNameEntry(matchedName, namesEntry);
-			}
-		}
-		
-		protected void addNameEntry(String matchedName, ArrayList2<INamedElement> namesEntry) {
-			assertTrue(namesEntry.size() > 0);
-			
-			if(namesEntry.size() == 1) {
-				// simplest case, add element directly:
-				INamedElement namedElement = namesEntry.get(0);
-				matches2.put(matchedName, namedElement);
-				return;
-			}
-			
-			// we have an overload set, need to check contents.
-			
-			INamedElement firstElement = namesEntry.get(0);
-			ILanguageElement parent = firstElement.getParent();
-			OverloadedNamedElement overloadedElement = new OverloadedNamedElement2(namesEntry, parent);
-			matches2.put(matchedName, overloadedElement);
-		}
-		
 	}
 	
-	protected final class OverloadedNamedElement2 extends OverloadedNamedElement {
-		public OverloadedNamedElement2(ArrayList2<INamedElement> elements, ILanguageElement parent) {
-			super(elements, parent);
+	protected static final class OverloadedNamedElement2 extends OverloadedNamedElement {
+		public OverloadedNamedElement2(INamedElement firstElement, ILanguageElement parent) {
+			super(firstElement, parent);
 		}
 		
 		@Override
 		protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 			/*FIXME: BUG here, todo*/
 			return null;
+		}
+		
+		@Override
+		public String toString() {
+			return "NameConflict["+getName()+"]";
 		}
 	}
 	

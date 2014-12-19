@@ -36,36 +36,11 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 	protected final EArcheType archeType;
 	protected final INamedElement firstElement;
 	
-	public OverloadedNamedElement(ArrayList2<INamedElement> elements, ILanguageElement parent) {
-		super(getCommonName(elements), parent);
-		this.elements = elements;
-		this.firstElement = elements.get(0);
-		
-		EArcheType archeType = null;
-		for (INamedElement namedElement : elements) {
-			if(archeType == null || archeType == namedElement.getArcheType()) {
-				archeType = namedElement.getArcheType();
-			} else {
-				archeType = EArcheType.Error;
-			}
-			
-			//assertAreEqual(namedElement.getParent(), firstElement.getParent());
-			
-			assertAreEqual(namedElement.getParentNamespace(), firstElement.getParentNamespace());
-			assertAreEqual(namedElement.getModuleFullyQualifiedName(), firstElement.getModuleFullyQualifiedName());
-			assertAreEqual(namedElement.getModuleFullName(), firstElement.getModuleFullName());
-			assertAreEqual(namedElement.getFullyQualifiedName(), firstElement.getFullyQualifiedName());
-			assertAreEqual(namedElement.getModulePath(), firstElement.getModulePath());
-		}
-		
-		/* FIXME: */
-//		this.archeType = archeType;
+	public OverloadedNamedElement(INamedElement firstElement, ILanguageElement parent) {
+		super(firstElement.getName(), parent);
+		this.firstElement = firstElement;
+		this.elements = new ArrayList2<>(firstElement);
 		this.archeType = EArcheType.Error;
-	}
-	
-	protected static String getCommonName(ArrayList2<INamedElement> elements) {
-		assertTrue(elements != null && elements.size() > 0);
-		return elements.get(0).getName();
 	}
 	
 	@Override
@@ -115,6 +90,13 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 	
 	public ArrayList2<INamedElement> getOverloadedElements() {
 		return elements;
+	}
+	
+	public void addElement(INamedElement newElement) {
+		assertTrue(newElement.getNameInRegularNamespace().equals(firstElement.getNameInRegularNamespace()));
+		assertAreEqual(newElement.getModulePath(), firstElement.getModulePath());
+		
+		elements.add(newElement);
 	}
 	
 }
