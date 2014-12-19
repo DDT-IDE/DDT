@@ -7,7 +7,7 @@ class Foo {
 	void func() {
 		void xxx;
 		int xxx;
-		1 + /*MARKER*/123;
+		1 + xxx/*MARKER*/;
 	}
 	
 	char xxx;

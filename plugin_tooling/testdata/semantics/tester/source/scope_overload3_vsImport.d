@@ -4,10 +4,10 @@ import xxx;
 
 void xxx;
 
-/*MARKER*/
+auto _ = xxx/*MARKER*/;
 
 void func() {
 	
 	import xxx;
-	1 + /*MARKER2*/123;
+	1 + xxx/*MARKER2*/;
 }

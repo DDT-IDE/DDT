@@ -130,7 +130,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	public static <E extends ILanguageElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			String offsetSource, Class<E> klass) {
 		String source = resolvedModule.getParsedModule().source;
-		int indexOf = source.indexOf(offsetSource);
+		int indexOf = offsetSource == null ? source.length() : source.indexOf(offsetSource);
 		assertTrue(indexOf >= 0);
 		return pickElement(resolvedModule, indexOf, klass);
 	}

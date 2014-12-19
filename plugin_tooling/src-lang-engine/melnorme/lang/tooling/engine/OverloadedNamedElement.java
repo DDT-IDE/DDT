@@ -58,7 +58,9 @@ public abstract class OverloadedNamedElement extends AbstractNamedElement {
 			assertAreEqual(namedElement.getModulePath(), firstElement.getModulePath());
 		}
 		
-		this.archeType = archeType;
+		/* FIXME: */
+//		this.archeType = archeType;
+		this.archeType = EArcheType.Error;
 	}
 	
 	protected static String getCommonName(ArrayList2<INamedElement> elements) {

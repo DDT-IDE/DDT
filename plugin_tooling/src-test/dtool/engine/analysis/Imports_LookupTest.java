@@ -19,17 +19,20 @@ import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.core.fntypes.Predicate;
 
 import org.junit.Test;
 
 import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
+import dtool.engine.ResolvedModule;
 
 
-public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
+public class Imports_LookupTest extends CommonLookupTest {
 	
 	@Test
 	public void testImports() throws Exception { testImports$(); }
@@ -111,6 +114,98 @@ public class Imports_SemanticsTest extends CommonNodeSemanticsTest {
 			"everywhere/everywhere_member"
 		));
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void test_PackageNamespace() throws Exception { test_PackageNamespace$(); }
+	public void test_PackageNamespace$() throws Exception {
+		
+		testLookup(parseModule_("module xxx; import xxx; "
+				+ "auto _ = xxx/*M*/;"),
+				
+			checkModule("module[xxx]") 
+		);
+		
+//		testLookup(parseModule_("var xxx; import xxx; "
+//				+ "auto _ = xxx/*M*/;"),
+//				
+//			checkNameError("var xxx;", "PNamespace[xxx]") 
+//		);
+		
+		
+		// Test namespace aggregation
+		doNamespaceLookupTest(
+			parseModule_("import xxx.foo; import xxx.bar; import xxx.; "
+				+ "auto _ = xxx/*M*/;"),
+			"/*M*/",
+			
+			array(
+			"module[xxx.foo]", "module[xxx.bar]"
+		));
+		
+//		doNamespaceLookupTest(parseModule_(
+//			"import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;" // Test duplicate import
+//			+ " auto + = xxx/*M*/"), "/*M*/", 
+//			array(
+//			"module[xxx.foo]", "module[xxx.bar.z]"
+//		));
+		
+		
+//		doNamespaceLookupTest(parseModule_(
+//			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.yyy.xpto;"
+//			+ "import a.xxx.; import a.zzz.bar; "
+//			+ "auto _ = a.xxx/*M*/"), "/*M*/",
+//			
+//			array(
+//			"module[a.xxx.foo]", "module[a.xxx.bar]", "module[a.xxx.xpto.foo]" 
+//		));
+		
+		doNamespaceLookupTest(parseModule_(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; "
+			+ "import a.zzz;"
+			+ "auto _ = a/*M*/"), 
+			"/*M*/",
+			
+			array(
+			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]" 
+		));
+		
+	}
+	
+	protected ResolutionLookup doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
+			final String[] expectedResults) {
+		return testLookup(resolvedModule, offsetMarker, checkNS(expectedResults));
+	}
+	
+	protected Predicate<INamedElement> checkNS(final String[] expectedResults) {
+		return new Predicate<INamedElement>() {
+			
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				PackageNamespace packageNameSpace = assertInstance(matchedElement, PackageNamespace.class);
+				assertEqualSet(
+					hashSet(elementToStringArray(packageNameSpace.getNamedElements().values())), 
+					hashSet(expectedResults)
+				);
+				
+				return true;
+			}
+			
+		};
+	}
+	
+	protected Predicate<INamedElement> checkModule(final String expectedToString) {
+		return new Predicate<INamedElement>() {
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
+				assertTrue(namedElementToString(moduleProxy).equals(expectedToString));
+				return true;
+			}
+		};
 	}
 	
 }

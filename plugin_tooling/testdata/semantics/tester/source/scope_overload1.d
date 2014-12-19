@@ -3,4 +3,4 @@ module _tests;
 void xxx;
 int xxx;
 
-/*MARKER*/ 
+auto _ = xxx/*MARKER*/; 
