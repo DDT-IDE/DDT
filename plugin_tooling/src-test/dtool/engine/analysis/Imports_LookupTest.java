@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -35,8 +34,8 @@ import dtool.engine.ResolvedModule;
 public class Imports_LookupTest extends CommonLookupTest {
 	
 	@Test
-	public void testImports() throws Exception { testImports$(); }
-	public void testImports$() throws Exception {
+	public void testResolveOfDirectRef() throws Exception { testResolveOfDirectRef$(); }
+	public void testResolveOfDirectRef$() throws Exception {
 		
 		testRefModule(parseElement("import target;", "target", RefModule.class), "target");
 		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
@@ -96,76 +95,65 @@ public class Imports_LookupTest extends CommonLookupTest {
 	}
 	
 	
-	@Test
-	public void testShadowing() throws Exception { testShadowing$(); }
-	public void testShadowing$() throws Exception {
-		PickedElement<Module> modulePick = parseElement("import foo; class foo_member; ", "", Module.class);
-		
-		Module node = modulePick.element;
-		CompletionScopeLookup lookup = new CompletionScopeLookup(node, node.getEndPos(), modulePick.context);
-		node.performNameLookup(lookup);
-		
-		resultsChecker(lookup).checkResults(array(
-			"_tests/", "foo/", "everywhere/",
-			
-			"_tests/foo_member",
-			"foo/foo_member2",
-			
-			"everywhere/everywhere_member"
-		));
-		
-	}
-	
 	/* -----------------  ----------------- */
 	
 	@Test
-	public void test_PackageNamespace() throws Exception { test_PackageNamespace$(); }
-	public void test_PackageNamespace$() throws Exception {
+	public void test_importImplicitNamespace() throws Exception { test_importImplicitNamespace$(); }
+	public void test_importImplicitNamespace$() throws Exception {
+		
+		testLookup(parseModuleWithRef("module xxx;", "xxx"),  
+			checkSingleResult("module xxx;###^")
+		);
+
 		
 		// Test name conflicts
 		
-		testLookup(parseModule_("module xxx; int xxx; "
-				+ "auto _ = xxx/*M*/;"),
+		testLookup(parseModuleWithRef("module xxx; int xxx; ", "xxx"),
 				
 			checkSingleResult("int xxx;") 
 		);
 		
-		testLookup(parseModule_("int xxx; import xxx; "
-				+ "auto _ = xxx/*M*/;"),
+		testLookup(parseModuleWithRef("int xxx; import xxx; ", "xxx"),
 				
 			checkNameConflict("int xxx;", "module[xxx]") 
 		);
 		
-		testLookup(parseModule_("int xxx; char xxx; import xxx; "
-				+ "auto _ = xxx/*M*/;"),
+		testLookup(parseModuleWithRef("int xxx; char xxx; import xxx; ", "xxx"),
 				
 			checkNameConflict("int xxx;", "char xxx;", "module[xxx]") 
 		);
 		
 		
+		// Test duplicate import
+		
+		testLookup(parseModuleWithRef("module xxx; import xxx;", "xxx"), 
+			
+			checkModuleProxy("module[xxx]")
+		);
+		
+		testLookup(parseModuleWithRef("import xxx; import xxx;", "xxx"),  
+			
+			checkModuleProxy("module[xxx]")
+		);
+		
+		testLookup(
+			parseModuleWithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx"),  
+			
+			checkNS(array("module[xxx.foo]", "PNamespace[xxx.bar]"))
+		);
+		testLookup(
+			parseModuleWithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx.bar"), 
+			
+			checkNS(array("module[xxx.bar.z]"))
+		);
+
+		
 		// Test namespace aggregation
-		testLookup(parseModule_("import xxx.foo; import xxx.bar; import xxx.; "
-				+ "auto _ = xxx/*M*/;"), 
+		
+		testLookup(parseModuleWithRef("import xxx.foo; import xxx.bar; import xxx.; ", "xxx"), 
 				
 			checkNS(array("module[xxx.foo]", "module[xxx.bar]"))
 		);
-		
-		// Test duplicate import
-		
-//		testLookup(parseModule_(
-//			"import xxx; import xxx;" 
-//			+ " auto + = xxx/*M*/"),  
-//			
-//			checkModule("module[xxx]")
-//		);
-//		
-//		testLookup(parseModule_(
-//			"import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;" 
-//			+ " auto + = xxx/*M*/"),  
-//			
-//			checkNS(array("module[xxx.foo]", "module[xxx.bar.z]"))
-//		);
-		
 		
 //		doNamespaceLookupTest(parseModule_(
 //			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.yyy.xpto;"
@@ -176,16 +164,16 @@ public class Imports_LookupTest extends CommonLookupTest {
 //			"module[a.xxx.foo]", "module[a.xxx.bar]", "module[a.xxx.xpto.foo]" 
 //		));
 		
-		doNamespaceLookupTest(parseModule_(
+		testLookup(parseModuleWithRef(
 			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
 			+ "import a.yyy.bar; "
-			+ "import a.zzz;"
-			+ "auto _ = a/*M*/"), 
-			"/*M*/",
+			+ "import a.zzz;",
+			"a"), 
 			
-			array(
-			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]" 
-		));
+			checkNS(array(
+			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]"
+			))
+		);
 		
 		
 		String scopeOverload_vsImport = 
@@ -223,7 +211,7 @@ public class Imports_LookupTest extends CommonLookupTest {
 		};
 	}
 	
-	protected Predicate<INamedElement> checkModule(final String expectedToString) {
+	protected Predicate<INamedElement> checkModuleProxy(final String expectedToString) {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {

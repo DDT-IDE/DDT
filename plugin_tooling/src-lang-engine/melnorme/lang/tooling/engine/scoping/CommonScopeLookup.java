@@ -11,8 +11,8 @@
 package melnorme.lang.tooling.engine.scoping;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +35,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
+import dtool.engine.analysis.ModuleProxy;
 import dtool.engine.analysis.PackageNamespace;
 import dtool.engine.analysis.PackageNamespaceFragment;
 
@@ -294,6 +295,12 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 			if(existingEntry == null) {
 				namesMap.put(name, newElement);
 			} else {
+				if(existingEntry instanceof ModuleProxy && newElement instanceof ModuleProxy) {
+					assertTrue(existingEntry.getFullyQualifiedName().equals(newElement.getFullyQualifiedName()));
+					// Don't add duplicated element.
+					return;
+				}
+				
 				OverloadedNamedElement overloadElement;
 				
 				if(existingEntry instanceof OverloadedNamedElement) {

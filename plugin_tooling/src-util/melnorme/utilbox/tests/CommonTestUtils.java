@@ -98,13 +98,13 @@ public class CommonTestUtils {
 			return;
 		}
 		HashSet<?> resultExtra = removeAllCopy(result, expected);
-		HashSet<?> expectedExtra = removeAllCopy(expected, result);
+		HashSet<?> expectedMissing = removeAllCopy(expected, result);
 		assertTrue(equals,
 				"Obtained result set not equal to expected set. \n" +
 				"--- Extra elements in result set ("+resultExtra.size()+") : --- \n" +
 				StringUtil.collToString(resultExtra, "\n") + "\n" +
-				"--- Extra elements in expected set ("+expectedExtra.size()+") : --- \n" +
-				StringUtil.collToString(expectedExtra, "\n") + "\n" +
+				"--- Extra elements in expected set ("+expectedMissing.size()+") : --- \n" +
+				StringUtil.collToString(expectedMissing, "\n") + "\n" +
 				"== -- =="
 		);
 	}

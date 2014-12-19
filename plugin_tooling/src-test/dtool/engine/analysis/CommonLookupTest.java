@@ -24,12 +24,17 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
 
 public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
+	
+	protected static ResolvedModule parseModuleWithRef(String source, String refName) {
+		return parseModule_(source + " auto _ = " + refName + "/*M*/");
+	}
 	
 	protected ResolutionLookup testLookup(ResolvedModule resolvedModule, Predicate<INamedElement> checker) {
 		return testLookup(resolvedModule, "/*M*/", checker);
@@ -110,7 +115,12 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
-				assertAreEqual(namedElementToString(matchedElement), expectedResult);
+				if(expectedResult.endsWith("###^")) {
+					assertTrue(namedElementToString(matchedElement).startsWith(
+						StringUtil.trimEnd(expectedResult, "###^")));
+				} else {
+					assertAreEqual(namedElementToString(matchedElement), expectedResult);
+				}
 				
 				return true;
 			}
