@@ -94,9 +94,10 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	
 	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISemanticContext moduleResolver) {
 		
-		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver, false);
+		// TODO need to refactor use of OverloadedNamedElement
+		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver);
 		
-		if(namedElements == null || namedElements.size() == 0) {
+		if(namedElements == null || namedElements.isEmpty()) {
 			// FIXME: check for not_found error element
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);
 		}

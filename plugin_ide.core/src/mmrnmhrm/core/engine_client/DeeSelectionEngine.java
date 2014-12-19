@@ -77,7 +77,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		Reference ref = (Reference) node;
 		
 		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver, false);
+		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
 			return new IModelElement[0];

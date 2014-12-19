@@ -22,7 +22,6 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
 
@@ -129,8 +128,8 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected INamedElement resolveType(ISemanticContext mr) {
-			return CollectionUtil.getFirstElementOrNull(typeRef.findTargetDefElements(mr, true));
+		protected INamedElement resolveType(ISemanticContext context) {
+			return typeRef.getSemantics(context).resolveTargetElement().result;
 		}
 		
 	}

@@ -10,15 +10,11 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.definitions.Module;
 
 /** An entity reference starting at module scope. 
  * Example: "a = .foo;"
@@ -51,9 +47,8 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findRootDefUnits(ISemanticContext moduleResolver) {
-		final Module module = getModuleNode_();
-		return Collections.<INamedElement>singletonList(module);
+	public INamedElement resolveRootNameElement(ISemanticContext moduleResolver) {
+		return getModuleNode_();
 	}
 	
 }

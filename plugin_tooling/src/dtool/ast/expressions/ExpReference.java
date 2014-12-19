@@ -46,8 +46,8 @@ public class ExpReference extends Expression {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return ref.getSemantics(context).findTargetDefElements(findOneOnly);
+			public INamedElement doResolveTargetElement() {
+				return ref.getSemantics(context).resolveTargetElement().result;
 			}
 			
 			@Override

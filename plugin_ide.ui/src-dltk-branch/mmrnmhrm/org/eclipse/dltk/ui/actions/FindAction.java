@@ -118,7 +118,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 			} else if(elem instanceof Reference) {
 				Reference ref = (Reference) elem;
 				ISemanticContext mr = DToolClient_Bad.getResolverFor(inputPath);
-				defunit = ref.findTargetDefElement(mr);
+				defunit = ref.resolveTargetElement(mr);
 				if(defunit == null) {
 					errorMessage = "No DefUnit found when resolving reference.";
 				}

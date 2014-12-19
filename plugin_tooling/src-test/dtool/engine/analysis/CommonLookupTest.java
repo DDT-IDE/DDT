@@ -27,6 +27,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
+import dtool.engine.AbstractBundleResolution;
 import dtool.engine.ResolvedModule;
 
 
@@ -45,6 +46,8 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	}
 	private final ResolutionLookup testLookup_______(ResolvedModule resolvedModule, String offsetMarker,
 			Predicate<INamedElement> checker) {
+		((AbstractBundleResolution) resolvedModule.getSemanticContext()).getSemanticsMap().clear();
+		
 		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
 		runChecker(checker, lookup);
 		return lookup;
@@ -63,7 +66,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	
 	protected ResolutionLookup doResolutionLookup(PickedElement<NamedReference> pick) {
 		NamedReference pickedNode = pick.element;
-		return pickedNode.getSemantics(pick.context).doResolutionLookup(false);
+		return pickedNode.getSemantics(pick.context).doResolutionLookup();
 	}
 	
 	

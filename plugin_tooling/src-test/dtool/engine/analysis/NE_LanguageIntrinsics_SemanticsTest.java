@@ -28,13 +28,13 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 	@Override
 	public void test_resolveElement________() throws Exception {
 		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.float_type), 
-			"float", true);
+			"float", false);
 		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.pointerType), 
-			IntrinsicTypePointer.POINTER_NAME, true);
+			IntrinsicTypePointer.POINTER_NAME, false);
 		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.dynArrayType), 
-			IntrinsicDynArray.DYNAMIC_ARRAY_NAME, true);
+			IntrinsicDynArray.DYNAMIC_ARRAY_NAME, false);
 		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.staticArrayType), 
-			IntrinsicStaticArray.STATIC_ARRAY_NAME, true);
+			IntrinsicStaticArray.STATIC_ARRAY_NAME, false);
 		
 		// TODO: test the intrinsic properties as well
 	}

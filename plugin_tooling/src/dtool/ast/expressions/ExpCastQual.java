@@ -2,9 +2,6 @@ package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -68,8 +65,8 @@ public class ExpCastQual extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return findTargetElementsForReference(context, exp, findOneOnly);
+		public INamedElement doResolveTargetElement() {
+			return findTargetElementsForReference(context, exp);
 		}
 		
 	};

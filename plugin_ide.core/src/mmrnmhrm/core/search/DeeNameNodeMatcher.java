@@ -66,7 +66,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
 			ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<INamedElement> defUnits = node.findTargetDefElements(mr, false);
+			Collection<INamedElement> defUnits = node.findTargetDefElements(mr);
 			
 			int matched = 0;
 			int notMatched = 0;

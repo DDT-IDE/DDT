@@ -54,22 +54,22 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 		}
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+		public INamedElement doResolveTargetElement() {
 			if(isMissingCoreReference()) {
 				return null;
 			}
-			ResolutionLookup search = doResolutionLookup(findOneOnly);
-			return search.getMatchedElements();
+			ResolutionLookup search = doResolutionLookup();
+			return search.getMatchedElement();
 		}
 		
-		public ResolutionLookup doResolutionLookup(boolean findOneOnly) {
+		public ResolutionLookup doResolutionLookup() {
 			if(isMissingCoreReference()) {
 				return null;
 			}
 			
 			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
 			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode_(), startPos, 
-				findOneOnly, context);
+				true, context);
 			performNameLookup(search);
 			return search;
 		}

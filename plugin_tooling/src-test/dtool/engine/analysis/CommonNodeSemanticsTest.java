@@ -46,7 +46,8 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 			loc(DEFAULT_TestsBundle, "source").resolve_fromValid(DEFAULT_ModuleName + ".d");
 	
 	protected static ResolvedModule getDefaultTestsModule() throws CommonException {
-		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall, testsDubPath());
+		String dubPath = testsDubPath();
+		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall, dubPath);
 	}
 	
 	protected static ISemanticContext getDefaultTestsModuleContext() throws CommonException {
@@ -186,7 +187,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	public static DefUnitResultsChecker resultsChecker(CommonScopeLookup lookup, boolean ignoreDummy,
 			boolean ignorePrimitives, boolean ignoreObjectModule) {
-		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements());
+		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements2());
 		checker.removeIgnoredDefUnits(ignoreDummy, ignorePrimitives);
 		if(ignoreObjectModule) {
 			checker.removeStdLibObjectDefUnits();

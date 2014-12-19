@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.ISemanticContext;
 
 /**
@@ -28,6 +29,11 @@ public class PickedElement<E extends ILanguageElement> {
 		assertTrue(element.getContextForThisElement(context) == context);
 		this.element = element;
 		this.context = context;
+	}
+	
+	/** public method, FOR TESTS/DEBUGGING USAGE only.*/
+	public void internal_resetSemanticResolutions() {
+		((AbstractSemanticContext) context).getSemanticsMap().clear();
 	}
 	
 }

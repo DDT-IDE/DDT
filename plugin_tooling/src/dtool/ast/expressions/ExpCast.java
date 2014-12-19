@@ -1,7 +1,5 @@
 package dtool.ast.expressions;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -44,12 +42,12 @@ public class ExpCast extends Expression {
 	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 		
-		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return findTargetElementsForReference(context, type, findOneOnly);
-		}
-		
-	};
+			@Override
+			public INamedElement doResolveTargetElement() {
+				return findTargetElementsForReference(context, type);
+			}
+			
+		};
 	}
 	
 }

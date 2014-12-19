@@ -109,8 +109,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 			
 			@Override
 			public INamedElement resolveTypeForValueContext() {
-				// Do nothing.
-				return null;
+				return ErrorElement.this;
 			}
 		};
 	}

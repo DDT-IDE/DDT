@@ -63,7 +63,7 @@ public class RefSlice extends Reference {
 			return new ResolvableSemantics(this, pickedElement) {
 			
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			public INamedElement doResolveTargetElement() {
 				return null; // TODO:
 			}
 			

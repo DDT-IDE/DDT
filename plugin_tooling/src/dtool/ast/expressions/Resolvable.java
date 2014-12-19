@@ -13,14 +13,15 @@ package dtool.ast.expressions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
-import java.util.Collections;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.references.Reference;
 
 /**
@@ -43,38 +44,28 @@ public abstract class Resolvable extends ASTNode implements IResolvable {
 		return getSemantics(context).resolveTargetElement().result;
 	}
 	
-	@Deprecated
-	public final INamedElement findTargetDefElement(ISemanticContext context) {
-		return resolveTargetElement(context);
-	}
 	
-	@Override
+	@Deprecated
 	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
-		return getSemantics(context).findTargetDefElements(true);
+		return resolveResultToCollection(resolveTargetElement(context));
 	}
 	
-	@Deprecated
-	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context, boolean findFirstOnly) {
-		return getSemantics(context).findTargetDefElements(findFirstOnly);
+	public static Collection<INamedElement> resolveResultToCollection(INamedElement result) {
+		if(result instanceof OverloadedNamedElement) {
+			OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) result;
+			return overloadedNamedElement.getOverloadedElements();
+		} else {
+			return new ArrayList2<>(result);
+		}
 	}
 	
 	/* ----------------- ----------------- */
 	
-	/** Convenience method for wraping a single defunit as a search result. */
-	public static Collection<INamedElement> wrapResult(INamedElement elem) {
-		if(elem == null)
-			return null;
-		return Collections.singletonList(elem);
-	}
-	
-	public static Collection<INamedElement> findTargetElementsForReference(ISemanticContext context, 
-		Resolvable resolvable,
-		boolean findFirstOnly) {
+	public static INamedElement findTargetElementsForReference(ISemanticContext context, Resolvable resolvable) {
 		if(resolvable == null) {
 			return null;
 		}
-		return resolvable.getSemantics(context).findTargetDefElements(findFirstOnly);
+		return resolvable.getSemantics(context).resolveTargetElement().result;
 	}
 	
 }

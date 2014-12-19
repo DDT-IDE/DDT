@@ -1,8 +1,5 @@
 package dtool.ast.expressions;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
@@ -42,8 +39,8 @@ public class ExpLiteralArray extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+		public INamedElement doResolveTargetElement() {
+			return DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType;
 		}
 		
 	};

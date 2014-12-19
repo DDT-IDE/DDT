@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -23,7 +21,6 @@ import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.FunctionAttributes;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.engine.analysis.DeeLanguageIntrinsics.DeeIntrinsicType;
 
@@ -75,8 +72,8 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		return new TypeReferenceSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return Resolvable.wrapResult(intrinsicFunctionTypeInstance);
+			public INamedElement doResolveTargetElement() {
+				return intrinsicFunctionTypeInstance;
 			}
 			
 		};

@@ -42,7 +42,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 				return true;
 			
 			ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr, false);
+			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr);
 			if(defUnits == null)
 				return true;
 			for (Iterator<INamedElement> iter = defUnits.iterator(); iter.hasNext();) {

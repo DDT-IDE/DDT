@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.Expression;
 
 public class RefTypeof extends Reference implements IQualifierNode {
@@ -71,8 +72,9 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return expression.getSemantics(context).resolveTypeOfUnderlyingValue();
+			public INamedElement doResolveTargetElement() {
+				return CollectionUtil.getFirstElementOrNull(
+					expression.getSemantics(context).resolveTypeOfUnderlyingValue());
 			}
 			
 			@Override

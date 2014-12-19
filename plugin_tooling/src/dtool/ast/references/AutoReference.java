@@ -11,9 +11,6 @@
 package dtool.ast.references;
 
 import static melnorme.utilbox.core.CoreUtil.assertCast;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -22,6 +19,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.IInitializer;
 import dtool.engine.analysis.IVarDefinitionLike;
 
@@ -64,11 +62,12 @@ public final class AutoReference extends Reference {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			public INamedElement doResolveTargetElement() {
 				IInitializer initializer = getParent_().getDeclaredInitializer();
 				if(initializer instanceof IResolvable) {
 					IResolvable valueNode = (IResolvable) initializer;
-					return valueNode.getSemantics(context).resolveTypeOfUnderlyingValue();
+					return CollectionUtil.getFirstElementOrNull(
+						valueNode.getSemantics(context).resolveTypeOfUnderlyingValue());
 				}
 				return null;
 			}

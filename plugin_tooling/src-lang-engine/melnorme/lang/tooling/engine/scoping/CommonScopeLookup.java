@@ -14,8 +14,10 @@ package melnorme.lang.tooling.engine.scoping;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -32,6 +34,7 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
@@ -39,7 +42,7 @@ import dtool.engine.analysis.ModuleProxy;
 import dtool.engine.analysis.PackageNamespace;
 import dtool.engine.analysis.PackageNamespaceFragment;
 
-public abstract class CommonScopeLookup extends NamedElementsVisitor {
+public abstract class CommonScopeLookup {
 	
 	/** Flag for stop searching when suitable matches are found. */
 	public final boolean findOnlyOne;
@@ -50,6 +53,9 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	public final int refOffset;
 	/** Module Resolver */
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
+	
+	protected final ArrayList2<INamedElement> matches = new ArrayList2<>(2);
+	protected final HashMap<String, INamedElement> matches2 = new HashMap<String, INamedElement>();
 	
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
@@ -119,8 +125,23 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 	
 	/* -----------------  ----------------- */
 	
+	@Deprecated
+	public List<INamedElement> getMatchedElements() {
+		return matches;
+	}
+	public Collection<INamedElement> getMatchedElements2() {
+		return matches2.values();
+	}
+	
 	/** Return whether the search has found all matches. */
 	public abstract boolean isFinished();
+	
+	/** Returns whether this search matches the given name or not. */
+	public abstract boolean matchesName(String name);
+	
+	public void addMatch(INamedElement namedElement) {
+		matches.add(namedElement);
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -174,7 +195,7 @@ public abstract class CommonScopeLookup extends NamedElementsVisitor {
 		
 	}
 	
-	protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
+	public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
 		if(nodeIterable == null)
 			return;
 		

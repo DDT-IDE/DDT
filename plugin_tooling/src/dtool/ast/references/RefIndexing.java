@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -62,10 +60,10 @@ public class RefIndexing extends Reference {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			public INamedElement doResolveTargetElement() {
 				//TODO infer if its a static array, map array, or tupe
 				// Assume it's a static array. 
-				return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType);
+				return DeeLanguageIntrinsics.D2_063_intrinsics.staticArrayType;
 			}
 			
 		};

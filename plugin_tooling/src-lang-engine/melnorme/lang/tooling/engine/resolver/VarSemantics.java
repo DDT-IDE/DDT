@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -33,8 +32,7 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 	public INamedElement resolveTypeForValueContext() {
 		Resolvable declaredType = getTypeReference();
 		if(declaredType != null) {
-			// TODO: handle finding multiple elements
-			return getFirstElementOrNull(declaredType.findTargetDefElements(context));
+			return declaredType.resolveTargetElement(context);
 		}
 		return null;
 	}

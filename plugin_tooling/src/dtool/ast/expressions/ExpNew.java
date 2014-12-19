@@ -1,7 +1,5 @@
 package dtool.ast.expressions;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
@@ -63,14 +61,14 @@ public class ExpNew extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+		public INamedElement doResolveTargetElement() {
 			// This is not entirely correct for struct-like types, 
 			// in that case a pointer to the the type is actually the type of the new exp.
 			// But current behavior is acceptable for now.
 			
 			// Also, if the type ref is a static array, the return type is supposed to be a dynamic array,
 			// but we don't implement that
-			return findTargetElementsForReference(context, newtype, findOneOnly);
+			return findTargetElementsForReference(context, newtype);
 		}
 		
 	};

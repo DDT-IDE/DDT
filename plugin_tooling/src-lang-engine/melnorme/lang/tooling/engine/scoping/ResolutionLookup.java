@@ -32,7 +32,7 @@ public class ResolutionLookup extends CommonScopeLookup {
 	 * all scopes, because there could allways be another partial. */
 	@Override
 	public boolean isFinished() {
-		return !getMatchedElements().isEmpty() && !matchesArePartialDefUnits;
+		return !getMatchedElements().isEmpty();
 	}
 	
 	@Override

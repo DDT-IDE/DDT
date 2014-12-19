@@ -13,6 +13,7 @@ package dtool.ast.references;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
@@ -112,20 +113,22 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
+		 ArrayList<ModuleProxy> moduleImportsScope = new ArrayList<>();
+		
 		if(search instanceof CompletionScopeLookup) {
 			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;
 			String prefix = prefixDefUnitSearch.searchOptions.searchPrefix;
 			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
 			
 			for (String fqName : matchedModule) {
-				search.addMatch(new ModuleProxy(fqName, search.modResolver, true, RefModule.this));
+				moduleImportsScope.add(new ModuleProxy(fqName, search.modResolver, true, RefModule.this));
 			}
 		} else {
 			assertTrue(isMissingCoreReference() == false);
 			String moduleFQName = getRefModuleFullyQualifiedName();
-			ModuleProxy moduleProxy = new ModuleProxy(moduleFQName, search.modResolver, true, RefModule.this);
-			search.addMatch(moduleProxy);
+			moduleImportsScope.add(new ModuleProxy(moduleFQName, search.modResolver, true, RefModule.this));
 		}
+		search.evaluateScopeElements(moduleImportsScope, false);
 	}
 	
 	public ModuleProxy getModuleProxy(ISemanticContext mr) {

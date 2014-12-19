@@ -13,6 +13,7 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -27,7 +28,7 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "char", false);
 		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "char", false);
 		
-		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), null, true);
+		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), ErrorElement.NOT_FOUND__Name, true);
 		
 		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "int", false);
 		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "int", false);

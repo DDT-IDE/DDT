@@ -1,10 +1,6 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-import java.util.Collections;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
@@ -72,8 +68,8 @@ public class InitializerArray extends Expression implements IInitializer {
 		return new ExpSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return Collections.<INamedElement>singleton(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+			public INamedElement doResolveTargetElement() {
+				return DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType;
 			}
 			
 		};

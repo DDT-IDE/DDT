@@ -168,7 +168,7 @@ public class DeeSearchEngine_BasicTest extends DeeSearchEngine_Test {
 		DefUnit defUnit = MiscNodeUtils.getDefUniFromScope(module.getChildren(), "xxxTestUnboundRef");
 		ISemanticContext mr = DToolClient.getDefault().getResolvedModule(filePath).getSemanticContext();
 		DefinitionVariable defVar = assertInstance(defUnit, DefinitionVariable.class);
-		INamedElement target = defVar.type.findTargetDefElement(mr);
+		INamedElement target = defVar.type.resolveTargetElement(mr);
 		assertTrue(target == null || target instanceof ErrorElement);
 	}
 	

@@ -1,8 +1,5 @@
 package dtool.ast.expressions;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -49,12 +46,12 @@ public class ExpThis extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+			public INamedElement doResolveTargetElement() {
 				DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
 				if(definitionClass == null) {
 					return null;
 				}
-				return Collections.<INamedElement>singleton(definitionClass);
+				return definitionClass;
 			}
 			
 		};

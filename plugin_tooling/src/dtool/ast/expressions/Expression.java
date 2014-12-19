@@ -11,9 +11,6 @@
 package dtool.ast.expressions;
 
 
-import java.util.Collection;
-import java.util.Collections;
-
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
@@ -28,8 +25,8 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return Collections.emptySet(); // TODO
+			public INamedElement doResolveTargetElement() {
+				return null; // TODO
 			}
 		};
 	}

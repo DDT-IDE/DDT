@@ -12,9 +12,6 @@ package dtool.ast.references;
 
 import static dtool.util.NewUtils.assertInstance;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -68,8 +65,8 @@ public class RefQualified extends CommonQualifiedReference {
 	}
 	
 	@Override
-	public Collection<INamedElement> findRootDefUnits(ISemanticContext context) {
-		return qualifier.getSemantics(context).findTargetDefElements(false);
+	public INamedElement resolveRootNameElement(ISemanticContext context) {
+		return qualifier.getSemantics(context).resolveTargetElement().result;
 	}
 	
 }

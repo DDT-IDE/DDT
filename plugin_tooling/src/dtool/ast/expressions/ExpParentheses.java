@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -43,8 +50,8 @@ public class ExpParentheses extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-			return resolvable.getSemantics(context).findTargetDefElements(findOneOnly);
+		public INamedElement doResolveTargetElement() {
+			return resolvable.getSemantics(context).resolveTargetElement().result;
 		}
 		
 	};

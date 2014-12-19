@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.intrinsics;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -52,33 +50,18 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+		public INamedElement doResolveTargetElement() {
 			INamedElement module = CommonScopeLookup.resolveModule(context, getResolvable(), moduleFullName);
 			if(module == null) 
 				return null;
 			IConcreteNamedElement moduleConcrete = module.resolveConcreteElement(context);
 			
-			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, findOneOnly, context);
+			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, true, context);
 			search.evaluateInMembersScope(moduleConcrete);
-			return search.getMatchedElements();
-		}
-		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return ResolvableSemantics.resolveTypeOfUnderlyingValue(context, findTargetDefElements(true));
+			return search.getMatchedElement();
 		}
 		
 	};
-	}
-	
-	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
-		return getSemantics(context).findTargetDefElements(true);
-	}
-	
-	@Override
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context, boolean findFirstOnly) {
-		return getSemantics(context).findTargetDefElements(true);
 	}
 	
 }

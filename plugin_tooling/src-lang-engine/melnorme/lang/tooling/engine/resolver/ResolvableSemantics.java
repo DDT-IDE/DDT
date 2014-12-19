@@ -15,12 +15,14 @@ import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 
 public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> {
 	
@@ -48,11 +50,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	
 	@Override
 	protected ResolvableResult createResolution() {
-		INamedElement result = null;
-		Collection<INamedElement> namedElems = findTargetDefElements(true);
-		if(namedElems != null && !namedElems.isEmpty()) {
-			result = namedElems.iterator().next();
-		}
+		INamedElement result = doResolveTargetElement();
 		
 		if(result == null) {
 			result = ErrorElement.newNotFoundError(resolvable);
@@ -61,17 +59,33 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		return new ResolvableResult(result);
 	}
 	
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-		Collection<INamedElement> resolvedElements = this.findTargetDefElements(false);
-		
-		return resolveTypeOfUnderlyingValue(context, resolvedElements); 
-	}
-	
-	/* TODO: deprecate this: */
 	/** Finds the named element matching this {@link IResolvable}. 
 	 * If no results are found, return null. */
-	public abstract Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
+	protected abstract INamedElement doResolveTargetElement();
 	
+	
+	/* FIXME: return a single element. */
+	public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
+		INamedElement target = this.resolveTargetElement().result;
+		
+		INamedElement resolvedType = null;
+		if(target != null) {
+			resolvedType = target.resolveTypeForValueContext(context);
+		}
+		
+		return resultToColl(resolvedType);
+	}
+
+	protected static Collection<INamedElement> resultToColl(INamedElement resolvedType) {
+		if(resolvedType != null) {
+			return new ArrayList2<>(resolvedType);
+		} else {
+			return Collections.EMPTY_LIST;
+		}
+	}
+	
+	
+	@Deprecated
 	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr, 
 		Collection<INamedElement> resolvedElements) {
 		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
@@ -109,11 +123,11 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		}
 		
 		@Override
-		public abstract Collection<INamedElement> findTargetDefElements(boolean findOneOnly);
+		public abstract INamedElement doResolveTargetElement();
 		
 		@Override
 		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return findTargetDefElements(true); // TODO need to review this
+			return resultToColl(doResolveTargetElement()); // TODO need to review this
 		}
 		
 	}

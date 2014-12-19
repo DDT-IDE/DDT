@@ -87,10 +87,10 @@ public class Imports_LookupTest extends CommonLookupTest {
 			return;
 		}
 		
-		assertTrue(result instanceof PackageNamespaceFragment); 
+		assertTrue(result instanceof PackageNamespace); 
 		
 		IConcreteNamedElement concreteTarget = result.resolveConcreteElement(refToPackage.context);
-		assertTrue(concreteTarget instanceof PackageNamespaceFragment);
+		assertTrue(concreteTarget instanceof PackageNamespace);
 		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	
@@ -106,7 +106,8 @@ public class Imports_LookupTest extends CommonLookupTest {
 		);
 
 		
-		// Test name conflicts
+		// ------- Test name conflicts
+		
 		
 		testLookup(parseModuleWithRef("module xxx; int xxx; ", "xxx"),
 				
@@ -123,8 +124,34 @@ public class Imports_LookupTest extends CommonLookupTest {
 			checkNameConflict("int xxx;", "char xxx;", "module[xxx]") 
 		);
 		
+		// ------- Test namespace aggregation
 		
-		// Test duplicate import
+		testLookup(parseModuleWithRef("import xxx.foo; import xxx.bar; import xxx.; ", "xxx"), 
+				
+			checkIsPackageNamespace(array("module[xxx.foo]", "module[xxx.bar]"))
+		);
+		
+		testLookup(parseModuleWithRef(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; import a.zzz;",
+			"a"), 
+			
+			checkIsPackageNamespace(array(
+				"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]"
+			))
+		);
+		// Aggregation on the second level
+		testLookup(parseModuleWithRef(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; import a.zzz;",
+			"a.xxx"), 
+			
+			checkIsPackageNamespace(array(
+				"module[a.xxx.foo]", "module[a.xxx.bar]", "PNamespace[a.xxx.xpto]" 
+			))
+		);
+		
+		// ------- Test duplicate import
 		
 		testLookup(parseModuleWithRef("module xxx; import xxx;", "xxx"), 
 			
@@ -139,42 +166,16 @@ public class Imports_LookupTest extends CommonLookupTest {
 		testLookup(
 			parseModuleWithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx"),  
 			
-			checkNS(array("module[xxx.foo]", "PNamespace[xxx.bar]"))
+			checkIsPackageNamespace(array("module[xxx.foo]", "PNamespace[xxx.bar]"))
 		);
 		testLookup(
 			parseModuleWithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx.bar"), 
 			
-			checkNS(array("module[xxx.bar.z]"))
+			checkIsPackageNamespace(array("module[xxx.bar.z]"))
 		);
 
 		
-		// Test namespace aggregation
-		
-		testLookup(parseModuleWithRef("import xxx.foo; import xxx.bar; import xxx.; ", "xxx"), 
-				
-			checkNS(array("module[xxx.foo]", "module[xxx.bar]"))
-		);
-		
-//		doNamespaceLookupTest(parseModule_(
-//			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.yyy.xpto;"
-//			+ "import a.xxx.; import a.zzz.bar; "
-//			+ "auto _ = a.xxx/*M*/"), "/*M*/",
-//			
-//			array(
-//			"module[a.xxx.foo]", "module[a.xxx.bar]", "module[a.xxx.xpto.foo]" 
-//		));
-		
-		testLookup(parseModuleWithRef(
-			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
-			+ "import a.yyy.bar; "
-			+ "import a.zzz;",
-			"a"), 
-			
-			checkNS(array(
-			"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]"
-			))
-		);
-		
+		// ------- import vs. parent lexical scopes
 		
 		String scopeOverload_vsImport = 
 			"void xxx;" +
@@ -191,10 +192,10 @@ public class Imports_LookupTest extends CommonLookupTest {
 	
 	protected ResolutionLookup doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
 			final String[] expectedResults) {
-		return testLookup(resolvedModule, offsetMarker, checkNS(expectedResults));
+		return testLookup(resolvedModule, offsetMarker, checkIsPackageNamespace(expectedResults));
 	}
 	
-	protected Predicate<INamedElement> checkNS(final String[] expectedResults) {
+	protected Predicate<INamedElement> checkIsPackageNamespace(final String[] expectedResults) {
 		return new Predicate<INamedElement>() {
 			
 			@Override

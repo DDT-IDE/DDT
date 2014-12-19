@@ -20,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
@@ -32,6 +31,7 @@ import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
 
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
 
 /**
@@ -66,9 +66,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	public void test_resolveElement() throws Exception { test_resolveElement________(); }
 	public abstract void test_resolveElement________() throws Exception;
 	
-	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, 
-			String aliasTarget, String expectedTypeName, boolean isValidValue) {
-		
+	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, String aliasTarget,
+			String expectedTypeName, boolean isError) {
 		final INamedElement namedElement = pickedElement.element;
 		
 		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
@@ -90,7 +89,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 		
 		test_resolveConcreteElement(pickedElement, aliasTarget);
-		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isValidValue);
+		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
 	}
 	
 	protected final void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
@@ -132,20 +131,16 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
-			String expectedTypeName, boolean isValidValue) {
+			String expectedTypeName, boolean isError) {
 		INamedElement namedElement = pickedElement.element;
+		pickedElement.internal_resetSemanticResolutions();
 		
 		INamedElement resolvedType = namedElement.resolveTypeForValueContext(pickedElement.context);
 		
 		// Test caching
 		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
-		if(expectedTypeName == null) {
-			assertTrue(resolvedType == null);
-			assertTrue(isValidValue);
-			return;
-		}
-		assertEquals(isValidValue, resolvedType instanceof NotAValueErrorElement);
+		assertEquals(isError, resolvedType.getArcheType() == EArcheType.Error);
 		String type_modulefullName = resolvedType.getFullyQualifiedName();
 		type_modulefullName = StringUtil.trimStart(type_modulefullName, DEFAULT_ModuleName + ".");
 		assertEquals(type_modulefullName, expectedTypeName);

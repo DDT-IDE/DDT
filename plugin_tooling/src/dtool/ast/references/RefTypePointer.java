@@ -10,15 +10,12 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class RefTypePointer extends CommonNativeTypeReference {
@@ -51,8 +48,8 @@ public class RefTypePointer extends CommonNativeTypeReference {
 		return new TypeReferenceSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return Resolvable.wrapResult(DeeLanguageIntrinsics.D2_063_intrinsics.pointerType);
+			public INamedElement doResolveTargetElement() {
+				return DeeLanguageIntrinsics.D2_063_intrinsics.pointerType;
 			}
 			
 		};

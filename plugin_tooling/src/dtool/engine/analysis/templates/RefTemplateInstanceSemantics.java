@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
@@ -19,7 +17,6 @@ import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.Resolvable;
@@ -35,33 +32,32 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	}
 	
 	@Override
-	public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+	public INamedElement doResolveTargetElement() {
 		// Not accurate, this will ignore the template parameters:
-		return this.refTemplateInstance.tplRef.findTargetDefElements(context, findOneOnly);
+		return this.refTemplateInstance.tplRef.resolveTargetElement(context);
 	}
 	
 	@Override
 	protected ResolvableResult createResolution() {
-		Collection<INamedElement> templates = this.refTemplateInstance.tplRef.findTargetDefElements(context, false);
+		INamedElement resolvedTemplate = this.refTemplateInstance.tplRef.resolveTargetElement(context);
 		if(false) {
 			// TODO
-			return createTemplateInstance(templates);
+			return createTemplateInstance(resolvedTemplate);
 		} else {
-			return new ResolvableResult(CollectionUtil.getFirstElementOrNull(templates));
+			return new ResolvableResult(resolvedTemplate);
 		}
 		
 	}
 	
-	protected ResolvableResult createTemplateInstance(Collection<INamedElement> templates) {
+	protected ResolvableResult createTemplateInstance(INamedElement resolvedTemplate) {
 		RefTemplateInstance refTplInstance = this.refTemplateInstance;
 		
 		// TODO: find best match for template overload
-		for (INamedElement namedElement : templates) {
 			
 			TemplateInstance templateInstance = null;
 			
-			if(namedElement instanceof DefinitionTemplate) {
-				DefinitionTemplate template = (DefinitionTemplate) namedElement;
+			if(resolvedTemplate instanceof DefinitionTemplate) {
+				DefinitionTemplate template = (DefinitionTemplate) resolvedTemplate;
 				
 				templateInstance = createTemplateInstance(template, refTplInstance);
 				
@@ -69,7 +65,6 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 					return new ResolvableResult(templateInstance);
 				}
 			}
-		}
 		
 		return new ResolvableResult(null);
 	}

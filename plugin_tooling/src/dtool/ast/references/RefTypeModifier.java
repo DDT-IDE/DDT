@@ -76,8 +76,8 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 			@Override
-			public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
-				return findTargetElementsForReference(context, ref, findOneOnly);
+			public INamedElement doResolveTargetElement() {
+				return findTargetElementsForReference(context, ref);
 			}
 			
 		};

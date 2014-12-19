@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -39,8 +37,8 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		Collection<INamedElement> targetModules = refMod.findTargetDefElements(search.modResolver, false);
-		CommonQualifiedReference.resolveSearchInMultipleContainers(targetModules, search);
+		INamedElement targetModule = refMod.resolveTargetElement(search.modResolver);
+		search.evaluateInMembersScope(targetModule);
 	}
 	
 }

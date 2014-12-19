@@ -54,7 +54,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver, false);
+		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver);
 		if(defUnits == null)
 			return;
 		

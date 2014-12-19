@@ -19,12 +19,12 @@ public class NE_DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveElement________() throws Exception {
 		
-		test_resolveElement_Concrete(parseNamedElement("class XXX {} "), "XXX", true);
-		test_resolveElement_Concrete(parseNamedElement("interface XXX {} "), "XXX", true);
-		test_resolveElement_Concrete(parseNamedElement("struct XXX {} "), "XXX", true);
-		test_resolveElement_Concrete(parseNamedElement("union XXX {} "), "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("class XXX {} "), "XXX", false);
+		test_resolveElement_Concrete(parseNamedElement("interface XXX {} "), "XXX", false);
+		test_resolveElement_Concrete(parseNamedElement("struct XXX {} "), "XXX", false);
+		test_resolveElement_Concrete(parseNamedElement("union XXX {} "), "XXX", false);
 		
-		test_resolveElement_Concrete(parseNamedElement("enum XXX {} "), "XXX", true);
+		test_resolveElement_Concrete(parseNamedElement("enum XXX {} "), "XXX", false);
 	}
 	
 	/* -----------------  ----------------- */

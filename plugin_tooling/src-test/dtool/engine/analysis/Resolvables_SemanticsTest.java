@@ -59,6 +59,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 			String expectedName) {
 		IResolvable ref = refElement.element;
 		ISemanticContext context = refElement.context;
+		//refElement.internal_resetSemanticResolutions();
 		
 		// Test caching
 		ResolvableSemantics semantics = ref.getSemantics(context);

@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
@@ -50,7 +49,7 @@ public class ExpCall extends Expression {
 		return new ResolvableSemantics(this, pickedElement) {
 		
 		@Override
-		public Collection<INamedElement> findTargetDefElements(boolean findOneOnly) {
+		public INamedElement doResolveTargetElement() {
 			// TODO: should use #resolveTypeOfUnderlyingValue():
 			INamedElement calleeElem = callee.resolveTargetElement(context);
 			if(calleeElem == null)
@@ -58,8 +57,7 @@ public class ExpCall extends Expression {
 			
 			if (calleeElem instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-				INamedElement calleeResult = defOpCallFunc.findReturnTypeTargetDefUnit(context);
-				return Collections.singleton(calleeResult);
+				return defOpCallFunc.findReturnTypeTargetDefUnit(context);
 			}
 			
 			Module moduleNode = null;
@@ -78,8 +76,7 @@ public class ExpCall extends Expression {
 				INamedElement defOpCall = iter.next();
 				if (defOpCall instanceof DefinitionFunction) {
 					DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
-					INamedElement targetDefUnit = defOpCallFunc.findReturnTypeTargetDefUnit(context);
-					return Collections.singleton(targetDefUnit);
+					return defOpCallFunc.findReturnTypeTargetDefUnit(context);
 				}
 			}
 			return null;
@@ -87,7 +84,7 @@ public class ExpCall extends Expression {
 		
 		@Override
 		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return findTargetDefElements(true); // TODO
+			return resultToColl(doResolveTargetElement()); // TODO
 		}
 		
 	};
