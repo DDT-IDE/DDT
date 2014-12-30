@@ -42,4 +42,8 @@ public enum EArcheType {
 		return isType;
 	}
 	
+	public boolean isError() {
+		return this == Error;
+	}
+	
 }

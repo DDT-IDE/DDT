@@ -91,7 +91,7 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 	protected String getDDocHTMLViewForAutoLike(ISemanticContext context, IVarDefinitionLike defVar) {
 		INamedElement resolvedType = defVar.getSemantics(context).resolveTypeForValueContext();
 		
-		if(resolvedType == null) {
+		if(resolvedType == null || resolvedType.getArcheType().isError()) {
 			return TextUI.span("semantic_error", "color:red;",
 				"<b> Error: Could not resolve auto initializer </b>");
 		}

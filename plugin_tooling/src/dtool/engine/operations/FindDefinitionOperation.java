@@ -21,10 +21,12 @@ import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
+import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
@@ -94,13 +96,14 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 	
 	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISemanticContext moduleResolver) {
 		
-		// TODO need to refactor use of OverloadedNamedElement
-		Collection<INamedElement> namedElements = ref.findTargetDefElements(moduleResolver);
+		INamedElement resolveResult = ref.resolveTargetElement(moduleResolver);
 		
-		if(namedElements == null || namedElements.isEmpty()) {
-			// FIXME: check for not_found error element
+		if(resolveResult instanceof ErrorElement) {
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);
 		}
+		
+		// TODO need to refactor use of OverloadedNamedElement
+		Collection<INamedElement> namedElements = Resolvable.resolveResultToCollection(resolveResult);
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
 		for (INamedElement namedElement : namedElements) {
