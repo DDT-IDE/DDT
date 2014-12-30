@@ -30,7 +30,7 @@ import dtool.ast.references.RefModule;
 import dtool.engine.ResolvedModule;
 
 
-public class Imports_LookupTest extends CommonLookupTest {
+public class Import_LookupTest extends CommonLookupTest {
 	
 	@Test
 	public void testResolveOfDirectRef() throws Exception { testResolveOfDirectRef$(); }
@@ -93,6 +93,21 @@ public class Imports_LookupTest extends CommonLookupTest {
 		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	
+	/* -----------------  ----------------- */
+
+	@Test
+	public void test_ImportContent() throws Exception { test_ImportContent$(); }
+	public void test_ImportContent$() throws Exception {
+		testLookup(parseModuleWithRef("import pack.foobar; ", "PackFoobar_member"),  
+			checkSingleResult("int PackFoobar_member;")
+		);
+		
+		// Special case: import self:
+		testLookup(parseModuleWithRef("import " + DEFAULT_ModuleName + " ; ", DEFAULT_ModuleName),  
+			checkSingleResult("module "+DEFAULT_ModuleName+"###")
+		);
+		
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -101,7 +116,7 @@ public class Imports_LookupTest extends CommonLookupTest {
 	public void test_importImplicitNamespace$() throws Exception {
 		
 		testLookup(parseModuleWithRef("module xxx;", "xxx"),  
-			checkSingleResult("module xxx;###^")
+			checkSingleResult("module xxx;###")
 		);
 
 		
@@ -149,6 +164,14 @@ public class Imports_LookupTest extends CommonLookupTest {
 				"module[a.xxx.foo]", "module[a.xxx.bar]", "PNamespace[a.xxx.xpto]" 
 			))
 		);
+		// Test overload vs. a module import/ns
+		testLookup(parseModuleWithRef("import xxx.foo; import xxx; ", "xxx"), 
+			checkModuleProxy("module[xxx]")
+		);
+		testLookup(parseModuleWithRef("import xxx; import xxx.foo; ", "xxx"), 
+			checkModuleProxy("module[xxx]")
+		);
+		
 		
 		// ------- Test duplicate import
 		
@@ -220,6 +243,19 @@ public class Imports_LookupTest extends CommonLookupTest {
 				return true;
 			}
 		};
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void test_public_imports() throws Exception { test_public_imports$(); }
+	public void test_public_imports$() throws Exception {
+		
+		testLookup(parseModuleWithRef("import pack.public_import; import pack.zzz.non_existant", "pack"),  
+			checkIsPackageNamespace(array(
+				"module[pack.public_import]", "module[pack.foobar]", "PNamespace[pack.zzz]"))
+		);
+		 
 	}
 	
 }

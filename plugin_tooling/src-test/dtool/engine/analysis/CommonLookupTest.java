@@ -54,9 +54,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	
 	public static INamedElement getReferenceResolvedElement(ResolvedModule resolvedModule, String offsetMarker) {
 		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
-		INamedElement matchedElement = lookup.getMatchedElement();
-		assertNotNull(matchedElement);
-		return matchedElement;
+		return lookup.getMatchedElement();
 	}
 	
 	protected static ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
@@ -118,9 +116,15 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
-				if(expectedResult.endsWith("###^")) {
+				if(expectedResult == null) {
+					assertTrue(matchedElement == null);
+					return true;
+				}
+				assertNotNull(matchedElement);
+				
+				if(expectedResult.endsWith("###")) {
 					assertTrue(namedElementToString(matchedElement).startsWith(
-						StringUtil.trimEnd(expectedResult, "###^")));
+						StringUtil.trimEnd(expectedResult, "###")));
 				} else {
 					assertAreEqual(namedElementToString(matchedElement), expectedResult);
 				}

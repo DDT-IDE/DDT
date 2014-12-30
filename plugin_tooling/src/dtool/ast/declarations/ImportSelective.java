@@ -94,7 +94,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 		
 		ISemanticContext context = scopeRes.getContext();
 		
-		INamedElement targetModule = ImportContent.findImportTargetModule(context, impSelective);
+		INamedElement targetModule = ImportContent.resolveTargetModule(context, impSelective);
 		if (targetModule == null)
 			return;
 			
@@ -107,8 +107,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 					continue;
 				}
 				INamedElement selectedElement = refImportSelection.resolveTargetElement(context);
-				
-				scopeRes.visitNamedElement(selectedElement, true); /*FIXME: BUG here should be false*/
+				scopeRes.visitNamedElement(selectedElement, false);
 			}
 		}
 	}

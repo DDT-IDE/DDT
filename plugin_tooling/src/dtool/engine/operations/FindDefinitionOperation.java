@@ -94,9 +94,9 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		}
 	}
 	
-	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISemanticContext moduleResolver) {
+	public static FindDefinitionResult doFindDefinitionForRef(Reference ref, ISemanticContext context) {
 		
-		INamedElement resolveResult = ref.resolveTargetElement(moduleResolver);
+		INamedElement resolveResult = ref.resolveTargetElement(context);
 		
 		if(resolveResult instanceof ErrorElement) {
 			return new FindDefinitionResult(FIND_DEF_ReferenceResolveFailed + ref.toStringAsCode(), ref);

@@ -16,11 +16,11 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 
+import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.references.NamedReference;
-import dtool.engine.AbstractBundleResolution;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
@@ -63,27 +63,25 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
-		boolean resetSemantics = false;
-		if(resetSemantics)
-			if(mr instanceof AbstractBundleResolution) {
-				AbstractBundleResolution br = (AbstractBundleResolution) mr;
-				br.getSemanticsMap().clear();
-			}
+		__resetSemantics();
 		CompletionSearchResult completion = CodeCompletionOperation.completionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(completion.getResultCode(), options.expectedStatusCode);
 		assertEquals(completion.getReplaceLength(), options.rplLen);
 		checkResults(completion.getResults(), options.expectedResults);
 	}
+	private void __resetSemantics() {
+		boolean resetSemantics = true;
+		if(resetSemantics) {
+			AbstractSemanticContext br = (AbstractSemanticContext) mr;
+			br.getSemanticsMap().clear();
+		}
+	}
 	
 	@Override
 	protected void runFindFailTest_________(MetadataEntry mde) {
 		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
 		assertTrue(!findDefResult.isValidPickRef());
-	}
-	
-	public FindDefinitionResult resolveAtOffset(int offset) {
-		return FindDefinitionOperation.findDefinition(parseResult.module, offset, mr);
 	}
 	
 	@Override
@@ -98,15 +96,17 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	
 	@Override
 	protected void runFindTest_________(MetadataEntry mde) {
-		doFindTest(mde);
-	}
-	
-	public void doFindTest(MetadataEntry mde) {
+		
 		String[] expectedResults = splitValues(mde.sourceValue);
 		FindDefinitionResult findDefResult = resolveAtOffset(mde.offset);
 		assertTrue(findDefResult.isValidPickRef());
 		checkResults(findDefResult.resultsRaw, expectedResults, false, false, false, true);
 		resolveAtOffset(mde.offset);
+	}
+	
+	public FindDefinitionResult resolveAtOffset(int offset) {
+		__resetSemantics();
+		return FindDefinitionOperation.findDefinition(parseResult.module, offset, mr);
 	}
 	
 }

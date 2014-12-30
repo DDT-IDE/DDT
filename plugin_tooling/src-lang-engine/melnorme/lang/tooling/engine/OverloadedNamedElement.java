@@ -11,7 +11,6 @@
 package melnorme.lang.tooling.engine;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertAreEqual;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -97,7 +96,8 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	
 	public void addElement(INamedElement newElement) {
 		assertTrue(newElement.getNameInRegularNamespace().equals(firstElement.getNameInRegularNamespace()));
-		assertAreEqual(newElement.getModulePath(), firstElement.getModulePath());
+		// FIXME: re enable this test. Will require import selections to be aliases
+		//assertAreEqual(newElement.getModulePath(), firstElement.getModulePath());
 		
 		elements.add(newElement);
 	}

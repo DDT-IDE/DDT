@@ -17,7 +17,7 @@
 	pack.sample.pack2.private_imported.fooprivateImportVar#FIND¤【】;
 	
 	pack.subpack#FIND¤【pack.subpack/】; // test import package
-	pack.subpack.#REFSEARCH¤【PackSubpackPackage▪mod3】; 
+	pack.subpack.#REFSEARCH¤【PackSubpackPackage】; // Used to include ▪mod3 
 	pack.subpack#REFSEARCH¤【pack.subpack/】;
 】
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -29,7 +29,7 @@ static import /* syntax error */;
 static import pack.mod2, pack.sample, pack.subpack.mod3;
 static import pack.subpack;
 
-import pack.modNonExistant, pack.modSyntaxErrors;
+import pack.modNonExistant, pack.modSyntaxErrors; // Need this for STATIC_IMPORT_TEST
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【importTest▪pack▪modA】

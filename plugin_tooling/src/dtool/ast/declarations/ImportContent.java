@@ -19,6 +19,8 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
@@ -76,13 +78,13 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	
 	@Override
 	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes) {
-		findDefUnitInStaticImport(this, scopeRes);
+		resolveStaticImport(this, scopeRes);
 		if(!getDeclarationImport().isStatic) {
-			findDefUnitInContentImport(this, scopeRes);
+			resolveContentImport(this, scopeRes);
 		}
 	}
 	
-	public static void findDefUnitInStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
+	public static void resolveStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
 		scopeRes.addImportNameElement(importStatic);
 	}
 	
@@ -90,16 +92,22 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		return moduleRef.getNamespaceFragment(context);
 	}
 	
-	public static void findDefUnitInContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {
-		INamedElement targetModule = findImportTargetModule(scopeRes.getContext(), impContent);
-		scopeRes.getLookup().evaluateInMembersScope(targetModule);
+	public static void resolveContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {
+		IConcreteNamedElement targetModule = resolveTargetModule(scopeRes.getContext(), impContent);
+		if(targetModule instanceof IScopeElement) {
+			IScopeElement scopeElement = (IScopeElement) targetModule;
+			
+			/*FIXME: BUG here if scope already evaluated */
+			
+			scopeRes.evaluateScopeElements(scopeElement.getScopeNodeList(), false);
+		}
 	}
 	
-	public static INamedElement findImportTargetModule(ISemanticContext modResolver, IImportFragment impSelective) {
+	public static IConcreteNamedElement resolveTargetModule(ISemanticContext context, IImportFragment impSelective) {
 		String[] packages = impSelective.getModuleRef().packages.getInternalArray();
 		String moduleName = impSelective.getModuleRef().module;
 		ModuleFullName moduleFullName = new ModuleFullName(ArrayUtil.concat(packages, moduleName));
-		return CommonScopeLookup.resolveModule(modResolver, impSelective, moduleFullName);
+		return CommonScopeLookup.resolveModule(context, impSelective, moduleFullName);
 	}
 	
 }

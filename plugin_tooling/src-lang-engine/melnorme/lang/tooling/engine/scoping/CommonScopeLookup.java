@@ -183,7 +183,7 @@ public abstract class CommonScopeLookup {
 			return;
 		searchedScopes.add(scope);
 		
-		evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+		evaluateScopeElements(scope);
 		
 		if(scope instanceof IExtendedScopeElement) {
 			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
@@ -193,15 +193,22 @@ public abstract class CommonScopeLookup {
 		
 	}
 	
-	public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
+	public void evaluateScopeElements(IScopeElement scope) {
+		evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+	}
+	
+	public ScopeNameResolution evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, 
+			boolean isSequential) {
 		if(nodeIterable == null)
-			return;
+			return null;
 		
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true);
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential);
 		
 		matches2.putAll(scopeResolution.names);
+		matches2.putAll(scopeResolution.importedNames); /*FIXME: BUG here*/
+		
+		return scopeResolution;
 	}
 	
 	@SuppressWarnings("serial")
@@ -228,7 +235,12 @@ public abstract class CommonScopeLookup {
 			return getLookup().modResolver;
 		}
 		
-		protected void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
+		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
+			evaluateScopeElements(nodeIterable, isSequential, false);
+			evaluateScopeElements(nodeIterable, isSequential, true);
+		}
+		
+		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
 				boolean importsOnly) {
 			
 			// Note: don't check for isFinished() during the loop
@@ -280,7 +292,7 @@ public abstract class CommonScopeLookup {
 			}
 		}
 		
-		protected void addSymbolToNamespace(NamesMap namesMap, INamedElement newElement) {
+		protected static void addSymbolToNamespace(NamesMap namesMap, INamedElement newElement) {
 			String name = newElement.getNameInRegularNamespace();
 			
 			INamedElement existingNamedElement = namesMap.get(name);
@@ -325,6 +337,15 @@ public abstract class CommonScopeLookup {
 				if(existingEntry instanceof OverloadedNamedElement) {
 					overloadElement = (OverloadedNamedElement) existingEntry;
 				} else {
+					// Give priority to ModuleProxy element (note: this isn't entirely like DMD behavior
+					if(newElement instanceof ModuleProxy && existingEntry instanceof PackageNamespace) {
+						namesMap.put(name, newElement);
+						return;
+					}
+					if(newElement instanceof PackageNamespace && existingEntry instanceof ModuleProxy) {
+						return;
+					}
+					
 					overloadElement = new OverloadedNamedElement(existingEntry, existingEntry.getParent());
 					namesMap.put(name, overloadElement);
 				}
