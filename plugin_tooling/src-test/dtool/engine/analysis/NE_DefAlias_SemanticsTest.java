@@ -30,8 +30,8 @@ public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name, true);
 		
 		// Test alias to type
-		test_resolveElement(parseNamedElement("alias int XXX; "), "int", "int", true);
-		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", "int", true);
+		test_resolveElement(parseNamedElement("alias int XXX; "), "int", "int", false);
+		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", "int", false);
 	}
 	
 	/* -----------------  ----------------- */

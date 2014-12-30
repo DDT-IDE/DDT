@@ -11,6 +11,7 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -39,7 +40,7 @@ public class CommonDefVarSemantics extends VarSemantics {
 			return getFirstElementOrNull(initializerR.getSemantics(context).resolveTypeOfUnderlyingValue());
 		}
 		
-		return null; // TODO: create error element
+		return ErrorElement.newNotFoundError(varDef, null);
 	}
 	
 	@Override

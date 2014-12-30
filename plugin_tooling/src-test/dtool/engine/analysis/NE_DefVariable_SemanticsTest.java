@@ -21,6 +21,8 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
+import dtool.ast.definitions.EArcheType;
+
 public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
@@ -89,8 +91,8 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
 		NamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
-		if(expectedTypeFQN == null || effectiveType == null) {
-			assertTrue(expectedTypeFQN == null && effectiveType == null);
+		if(expectedTypeFQN == null || effectiveType.getArcheType() == EArcheType.Error) {
+			assertTrue(expectedTypeFQN == null && effectiveType.getArcheType() == EArcheType.Error);
 			return;
 		}
 		assertEquals(effectiveType.getFullyQualifiedName(), expectedTypeFQN);

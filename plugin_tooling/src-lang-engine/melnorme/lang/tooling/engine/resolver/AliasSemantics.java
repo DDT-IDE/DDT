@@ -24,29 +24,28 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		super(element, pickedElement);
 	}
 	
-	protected IConcreteNamedElement resolveAliasTarget_nonNull() {
+	@Override
+	protected IConcreteNamedElement doResolveConcreteElement() {
 		IConcreteNamedElement result = resolveAliasTarget(context);
-		if(result == null) {
-			return ErrorElement.newNotFoundError(element, null);
-		}
-		return result;
+		return result != null ?
+				result :
+				ErrorElement.newNotFoundError(element, null);
+	}
+	
+	protected IConcreteNamedElement getResolvedConcreteElement() {
+		return getElementResolution().result;
 	}
 	
 	protected abstract IConcreteNamedElement resolveAliasTarget(ISemanticContext context);
 	
 	@Override
-	protected IConcreteNamedElement doResolveConcreteElement() {
-		return resolveAliasTarget_nonNull();
-	}
-	
-	@Override
 	public void resolveSearchInMembersScope(CommonScopeLookup search) {
-		search.evaluateInMembersScope(resolveAliasTarget_nonNull());
+		search.evaluateInMembersScope(getResolvedConcreteElement());
 	}
 	
 	@Override
 	public INamedElement resolveTypeForValueContext() {
-		return resolveAliasTarget_nonNull().resolveTypeForValueContext(context);
+		return getResolvedConcreteElement().resolveTypeForValueContext(context);
 	}
 	
 	/* -----------------  ----------------- */
