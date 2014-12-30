@@ -37,34 +37,34 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		return parseModule_(source + " auto _ = " + refName + "/*M*/");
 	}
 	
-	protected ResolutionLookup testLookup(ResolvedModule resolvedModule, Predicate<INamedElement> checker) {
-		return testLookup(resolvedModule, "/*M*/", checker);
+	protected static void testLookup(ResolvedModule resolvedModule, Predicate<INamedElement> checker) {
+		testLookup(resolvedModule, "/*M*/", checker);
 	}
-	protected ResolutionLookup testLookup(ResolvedModule resolvedModule, String offsetMarker, 
+	protected static void testLookup(ResolvedModule resolvedModule, String offsetMarker, 
 			Predicate<INamedElement> checker) {
-		return testLookup_______(resolvedModule, offsetMarker, checker);
+		testLookup_______(resolvedModule, offsetMarker, checker);
 	}
-	private final ResolutionLookup testLookup_______(ResolvedModule resolvedModule, String offsetMarker,
+	private static void testLookup_______(ResolvedModule resolvedModule, String offsetMarker,
 			Predicate<INamedElement> checker) {
 		((AbstractBundleResolution) resolvedModule.getSemanticContext()).getSemanticsMap().clear();
 		
-		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
-		runChecker(checker, lookup);
-		return lookup;
-	}
-	
-	protected void runChecker(Predicate<INamedElement> checker, ResolutionLookup lookup) {
-		INamedElement matchedElement = lookup.getMatchedElement();
-		assertNotNull(matchedElement);
+		INamedElement matchedElement = getReferenceResolvedElement(resolvedModule, offsetMarker);
 		checker.evaluate(matchedElement);
 	}
 	
-	protected ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
+	public static INamedElement getReferenceResolvedElement(ResolvedModule resolvedModule, String offsetMarker) {
+		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
+		INamedElement matchedElement = lookup.getMatchedElement();
+		assertNotNull(matchedElement);
+		return matchedElement;
+	}
+	
+	protected static ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
 		PickedElement<NamedReference> pick = pickElement(resolvedModule, offsetMarker, NamedReference.class);
 		return doResolutionLookup(pick);
 	}
 	
-	protected ResolutionLookup doResolutionLookup(PickedElement<NamedReference> pick) {
+	protected static ResolutionLookup doResolutionLookup(PickedElement<NamedReference> pick) {
 		NamedReference pickedNode = pick.element;
 		return pickedNode.getSemantics(pick.context).doResolutionLookup();
 	}

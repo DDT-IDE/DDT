@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;

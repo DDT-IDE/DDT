@@ -66,7 +66,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	public void test_resolveElement() throws Exception { test_resolveElement________(); }
 	public abstract void test_resolveElement________() throws Exception;
 	
-	protected void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, String aliasTarget,
+	
+	public static void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, String aliasTarget,
 			String expectedTypeName, boolean isError) {
 		final INamedElement namedElement = pickedElement.element;
 		
@@ -92,13 +93,13 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
 	}
 	
-	protected final void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
+	public static void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
 			String expectedTypeName, boolean isError) {
 		test_resolveElement(pickedElement, null, expectedTypeName, isError);
 	}
 	
 	
-	protected void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
+	protected static void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
 			String aliasTarget) {
 		final ISemanticContext context = pickedElement.context;
 		final INamedElement namedElement = pickedElement.element;
@@ -130,7 +131,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 	}
 	
-	protected void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
+	public static void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
 			String expectedTypeName, boolean isError) {
 		INamedElement namedElement = pickedElement.element;
 		pickedElement.internal_resetSemanticResolutions();
@@ -141,6 +142,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
 		assertEquals(isError, resolvedType.getArcheType() == EArcheType.Error);
+		// TODO: test that archetype is a type?
 		String type_modulefullName = resolvedType.getFullyQualifiedName();
 		type_modulefullName = StringUtil.trimStart(type_modulefullName, DEFAULT_ModuleName + ".");
 		assertEquals(type_modulefullName, expectedTypeName);

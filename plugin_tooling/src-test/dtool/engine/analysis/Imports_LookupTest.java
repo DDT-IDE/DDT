@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
-import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
@@ -190,9 +189,9 @@ public class Imports_LookupTest extends CommonLookupTest {
 		
 	}
 	
-	protected ResolutionLookup doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
+	protected void doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
 			final String[] expectedResults) {
-		return testLookup(resolvedModule, offsetMarker, checkIsPackageNamespace(expectedResults));
+		testLookup(resolvedModule, offsetMarker, checkIsPackageNamespace(expectedResults));
 	}
 	
 	protected Predicate<INamedElement> checkIsPackageNamespace(final String[] expectedResults) {

@@ -175,8 +175,8 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* ----------------- Helper to test caching ----------------- */
 	
-	protected void checkIsSameResolution(ElementResolution<?> resolutionA, ElementResolution<?> resolutionOther) {
-		assertTrue(resolutionA == resolutionOther);
+	protected static void checkIsSameResolution(ElementResolution<?> resA, ElementResolution<?> resOther) {
+		assertTrue(resA == resOther);
 	}
 	
 	/* -----------------  ----------------- */

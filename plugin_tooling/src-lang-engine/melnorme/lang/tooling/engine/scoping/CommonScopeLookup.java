@@ -29,8 +29,6 @@ import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
-import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -327,7 +325,7 @@ public abstract class CommonScopeLookup {
 				if(existingEntry instanceof OverloadedNamedElement) {
 					overloadElement = (OverloadedNamedElement) existingEntry;
 				} else {
-					overloadElement = new OverloadedNamedElement2(existingEntry, existingEntry.getParent());
+					overloadElement = new OverloadedNamedElement(existingEntry, existingEntry.getParent());
 					namesMap.put(name, overloadElement);
 				}
 				overloadElement.addElement(newElement);
@@ -354,23 +352,6 @@ public abstract class CommonScopeLookup {
 			return names;
 		}
 		
-	}
-	
-	protected static final class OverloadedNamedElement2 extends OverloadedNamedElement {
-		public OverloadedNamedElement2(INamedElement firstElement, ILanguageElement parent) {
-			super(firstElement, parent);
-		}
-		
-		@Override
-		protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			/*FIXME: BUG here, todo*/
-			return null;
-		}
-		
-		@Override
-		public String toString() {
-			return "NameConflict["+getName()+"]";
-		}
 	}
 	
 }
