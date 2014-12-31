@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package melnorme.lang.tooling.engine.scoping;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -14,25 +24,20 @@ public class ResolutionLookup extends CommonScopeLookup {
 	
 	protected final String searchName;
 	
-	public ResolutionLookup(String searchName, IModuleElement refOriginModule, boolean findOneOnly, 
-			ISemanticContext moduleResolver) {
-		this(searchName, refOriginModule, -1, findOneOnly, moduleResolver);
+	public ResolutionLookup(String searchName, IModuleElement refOriginModule, ISemanticContext moduleResolver) {
+		this(searchName, refOriginModule, -1, moduleResolver);
 	}
 	
-	public ResolutionLookup(String searchName, IModuleElement refOriginModule, int refOffset, boolean findOneOnly,
-		ISemanticContext moduleResolver) {
-		super(refOriginModule, refOffset, findOneOnly, moduleResolver);
+	public ResolutionLookup(String searchName, IModuleElement refOriginModule, int refOffset, 
+			ISemanticContext moduleResolver) {
+		super(refOriginModule, refOffset, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);
 	}
 	
-	/** Returns if this search is complete or not. A search is complete when
-	 * {@link #findOnlyOne} is set, and it has found all possible valid DefUnits. 
-	 * If one match is a partial DefUnit, then the search must continue searching
-	 * all scopes, because there could allways be another partial. */
 	@Override
 	public boolean isFinished() {
-		return !getMatchedElements().isEmpty();
+		return getMatchedElement() != null;
 	}
 	
 	@Override
@@ -42,7 +47,7 @@ public class ResolutionLookup extends CommonScopeLookup {
 	
 	/** @return the matched element. Can be null. */
 	public INamedElement getMatchedElement() {
-		return matches2.get(searchName);
+		return matches.get(searchName);
 	}
 	
 }

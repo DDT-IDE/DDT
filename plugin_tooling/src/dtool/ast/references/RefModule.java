@@ -22,6 +22,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.engine.analysis.ModuleProxy;
@@ -128,7 +129,11 @@ public class RefModule extends NamedReference {
 			String moduleFQName = getRefModuleFullyQualifiedName();
 			moduleImportsScope.add(new ModuleProxy(moduleFQName, search.modResolver, true, RefModule.this));
 		}
-		search.evaluateScopeElements(moduleImportsScope, false);
+		
+//		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
+		ScopeNameResolution scopeResolution =
+				search.evaluateScopeElements(moduleImportsScope, false);
+		search.addScopeResolutioMatches(scopeResolution);
 	}
 	
 	public ModuleProxy getModuleProxy(ISemanticContext mr) {

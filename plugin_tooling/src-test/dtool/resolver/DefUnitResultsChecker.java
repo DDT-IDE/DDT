@@ -151,7 +151,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			for (Iterator<INamedElement> iterator = iterable.iterator(); iterator.hasNext(); ) {
 				INamedElement element = iterator.next();
 				
-				String defUnitTypedQualification = NamedElementUtil.getElementTypedQualification(element);
+				String defUnitTypedQualification = NamedElementUtil.getElementTypedLabel(element);
 				if(defUnitTypedQualification.equals(expectedFullyTypedQualification)) {
 					iterator.remove();
 					removed = true;

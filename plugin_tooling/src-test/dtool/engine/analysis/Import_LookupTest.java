@@ -32,25 +32,6 @@ import dtool.engine.ResolvedModule;
 
 public class Import_LookupTest extends CommonLookupTest {
 	
-	@Test
-	public void testResolveOfDirectRef() throws Exception { testResolveOfDirectRef$(); }
-	public void testResolveOfDirectRef$() throws Exception {
-		
-		testRefModule(parseElement("import target;", "target", RefModule.class), "target");
-		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
-		
-		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
-			Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker);
-		
-		// Test package refs.
-		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");
-		testPackageRef(parseRef("import pack.subpack.target; auto x = pack;", "pack;"), "pack");
-		
-		testPackageRef(parseRef("import pack.subpack.target; auto x = pack.subpack/**/;", "subpack/**/"), 
-			"pack.subpack");
-		
-	}
-	
 	protected PickedElement<NamedReference> parseRef(String source, String marker) throws ExecutionException {
 		return parseElement(source, marker, NamedReference.class);
 	}
@@ -93,6 +74,25 @@ public class Import_LookupTest extends CommonLookupTest {
 		assertTrue(concreteTarget.getFullyQualifiedName().equals(fqn));
 	}
 	
+	@Test
+	public void testResolveOfDirectRef() throws Exception { testResolveOfDirectRef$(); }
+	public void testResolveOfDirectRef$() throws Exception {
+		
+		testRefModule(parseElement("import target;", "target", RefModule.class), "target");
+		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
+		
+		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
+			Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker);
+		
+		// Test package refs.
+		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");
+		testPackageRef(parseRef("import pack.subpack.target; auto x = pack;", "pack;"), "pack");
+		
+		testPackageRef(parseRef("import pack.subpack.target; auto x = pack.subpack/**/;", "subpack/**/"), 
+			"pack.subpack");
+		
+	}
+	
 	/* -----------------  ----------------- */
 
 	@Test
@@ -102,9 +102,25 @@ public class Import_LookupTest extends CommonLookupTest {
 			checkSingleResult("int PackFoobar_member;")
 		);
 		
+		testLookup(parseModuleWithRef("import pack.foobar; void PackFoobar_member;", "PackFoobar_member"),  
+			checkSingleResult("void PackFoobar_member;")
+		);
+		
 		// Special case: import self:
 		testLookup(parseModuleWithRef("import " + DEFAULT_ModuleName + " ; ", DEFAULT_ModuleName),  
-			checkSingleResult("module "+DEFAULT_ModuleName+"###")
+			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+		);
+		
+		
+		testLookup(parseModuleWithRef("import pack.foobar; ", "pack.foobar.pack"),  
+			checkSingleResult("PackFoobar pack;")
+		);
+		// vs. Module name
+		testLookup(parseModuleWithRef("import pack.foobar;", "pack"),  
+			checkSingleResult("PNamespace[pack]")
+		);
+		testLookup(parseModuleWithRef("import pack.foobar; int pack;", "pack"),  
+			checkNameConflict("PNamespace[pack]", "int pack;")
 		);
 		
 	}

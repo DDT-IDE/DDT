@@ -10,14 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.completion;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
  * Class that does a scoped name lookup for matches that start with a given prefix name. 
@@ -27,7 +23,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 public class CompletionScopeLookup extends CommonScopeLookup {
 	
 	public final PrefixSearchOptions searchOptions;
-	protected final Set<String> addedDefElements = new HashSet<>();
 	
 	public CompletionScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
 		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
@@ -51,17 +46,6 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	@Override
 	public boolean isFinished() {
 		return false;
-	}
-	
-	@Override
-	public void addMatch(INamedElement namedElem) {
-		String extendedName = namedElem.getExtendedName();
-		
-		if(addedDefElements.contains(extendedName)) {
-			return;
-		}
-		addedDefElements.add(extendedName);
-		super.addMatch(namedElem);
 	}
 	
 	@Override

@@ -67,7 +67,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 			
 			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
 			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), getModuleNode_(), startPos, 
-				true, context);
+				context);
 			performNameLookup(search);
 			return search;
 		}

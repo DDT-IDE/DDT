@@ -1,7 +1,6 @@
 package dtool.ast.expressions;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -69,13 +68,13 @@ public class ExpCall extends Expression {
 				return null;
 			}
 			
-			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, false, context);
+			ResolutionLookup search = new ResolutionLookup("opCall", moduleNode, context);
 			search.evaluateInMembersScope(calleeElem);
+			INamedElement matchedElement = search.getMatchedElement();
 			
-			for (Iterator<INamedElement> iter = search.getMatchedElements().iterator(); iter.hasNext();) {
-				INamedElement defOpCall = iter.next();
-				if (defOpCall instanceof DefinitionFunction) {
-					DefinitionFunction defOpCallFunc = (DefinitionFunction) defOpCall;
+			for (INamedElement possibleFunctionElement : Resolvable.resolveResultToCollection(matchedElement)) {
+				if (possibleFunctionElement instanceof DefinitionFunction) {
+					DefinitionFunction defOpCallFunc = (DefinitionFunction) possibleFunctionElement;
 					return defOpCallFunc.findReturnTypeTargetDefUnit(context);
 				}
 			}

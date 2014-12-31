@@ -49,7 +49,7 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	public static INamedElement findElement(String elementName, CommonScopeLookup search) {
 		INamedElement foundMatch = null;
 		
-		for (INamedElement match : search.getMatchedElements()) {
+		for (INamedElement match : search.getMatchedElements2()) {
 			if(match.getName().equals(elementName)) {
 				assertTrue(foundMatch == null);
 				foundMatch = match;

@@ -63,7 +63,7 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 			INamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {
-				String fqName = NamedElementUtil.getElementTypedQualification(defElement);
+				String fqName = NamedElementUtil.getElementTypedLabel(defElement);
 				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
 					iterator.remove();
 				}

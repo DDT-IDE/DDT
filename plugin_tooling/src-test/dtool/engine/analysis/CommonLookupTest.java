@@ -29,6 +29,7 @@ import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
 import dtool.engine.AbstractBundleResolution;
 import dtool.engine.ResolvedModule;
+import dtool.engine.util.NamedElementUtil;
 
 
 public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
@@ -122,11 +123,18 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 				}
 				assertNotNull(matchedElement);
 				
+				String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
+				
+				if(expectedResult.startsWith("$")) {
+					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
+					return true;
+				}
+				
+				String matchedElementToString = namedElementToString(matchedElement);
 				if(expectedResult.endsWith("###")) {
-					assertTrue(namedElementToString(matchedElement).startsWith(
-						StringUtil.trimEnd(expectedResult, "###")));
+					assertTrue(matchedElementToString.startsWith(StringUtil.trimEnd(expectedResult, "###")));
 				} else {
-					assertAreEqual(namedElementToString(matchedElement), expectedResult);
+					assertAreEqual(matchedElementToString, expectedResult);
 				}
 				
 				return true;

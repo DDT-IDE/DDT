@@ -17,7 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
@@ -42,8 +40,6 @@ import dtool.engine.analysis.PackageNamespaceFragment;
 
 public abstract class CommonScopeLookup {
 	
-	/** Flag for stop searching when suitable matches are found. */
-	public final boolean findOnlyOne;
 	/** The module where the search started. */
 	public final IModuleElement refOriginModule;
 	/** The offset of the reference. 
@@ -52,8 +48,7 @@ public abstract class CommonScopeLookup {
 	/** Module Resolver */
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
 	
-	protected final ArrayList2<INamedElement> matches = new ArrayList2<>(2);
-	protected final HashMap<String, INamedElement> matches2 = new HashMap<String, INamedElement>();
+	protected final HashMap<String, INamedElement> matches = new HashMap<String, INamedElement>();
 	
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
@@ -62,14 +57,8 @@ public abstract class CommonScopeLookup {
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
 	
 	
-	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
-		this(refOriginModule, refOffset, false, moduleResolver);
-	}
-	
-	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, boolean findOneOnly, 
-			ISemanticContext moduleResolver) { 
+	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) { 
 		this.refOffset = refOffset;
-		this.findOnlyOne = findOneOnly;
 		this.modResolver = assertNotNull(moduleResolver);
 		this.refOriginModule = refOriginModule;
 	}
@@ -93,7 +82,7 @@ public abstract class CommonScopeLookup {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(matches, "\n", new Function<INamedElement, String>() {
+		return StringUtil.iterToString(matches.values(), "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return obj.getFullyQualifiedName();
@@ -123,12 +112,8 @@ public abstract class CommonScopeLookup {
 	
 	/* -----------------  ----------------- */
 	
-	@Deprecated
-	public List<INamedElement> getMatchedElements() {
-		return matches;
-	}
 	public Collection<INamedElement> getMatchedElements2() {
-		return matches2.values();
+		return matches.values();
 	}
 	
 	/** Return whether the search has found all matches. */
@@ -136,10 +121,6 @@ public abstract class CommonScopeLookup {
 	
 	/** Returns whether this search matches the given name or not. */
 	public abstract boolean matchesName(String name);
-	
-	public void addMatch(INamedElement namedElement) {
-		matches.add(namedElement);
-	}
 	
 	/* -----------------  ----------------- */
 	
@@ -173,17 +154,12 @@ public abstract class CommonScopeLookup {
 	 * Evaluate a scope (a collection of nodes), for this name lookup search. 
 	 */
 	public void evaluateScope(IScopeElement scope) {
-		if(scope == null)
+		ScopeNameResolution scopeResolution = resolveScope(scope);
+		if(scopeResolution == null) {
 			return;
+		}
 		
-		if(isFinished())
-			return;
-		
-		if(searchedScopes.contains(scope))
-			return;
-		searchedScopes.add(scope);
-		
-		evaluateScopeElements(scope);
+		addScopeResolutioMatches(scopeResolution);
 		
 		if(scope instanceof IExtendedScopeElement) {
 			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
@@ -193,21 +169,31 @@ public abstract class CommonScopeLookup {
 		
 	}
 	
-	public void evaluateScopeElements(IScopeElement scope) {
-		evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+	public void addScopeResolutioMatches(ScopeNameResolution scopeResolution) {
+		matches.putAll(scopeResolution.getCombinedScopeNames());
 	}
 	
-	public ScopeNameResolution evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, 
-			boolean isSequential) {
+	public ScopeNameResolution resolveScope(IScopeElement scope) {
+		if(scope == null)
+			return null;
+		
+		if(isFinished())
+			return null;
+		
+		if(searchedScopes.contains(scope))
+			return null;
+		searchedScopes.add(scope);
+		
+		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+	}
+	
+	public ScopeNameResolution evaluateScopeElements( 
+			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
 		if(nodeIterable == null)
 			return null;
 		
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential);
-		
-		matches2.putAll(scopeResolution.names);
-		matches2.putAll(scopeResolution.importedNames); /*FIXME: BUG here*/
-		
 		return scopeResolution;
 	}
 	
@@ -283,7 +269,6 @@ public abstract class CommonScopeLookup {
 			}
 			
 			assertNotNull(namedElement);
-			getLookup().addMatch(namedElement); /* FIXME: deprecate */
 			
 			if(!isImportsScope) {
 				addSymbolToNamespace(names, namedElement);
@@ -371,6 +356,13 @@ public abstract class CommonScopeLookup {
 				}
 			}
 			return names;
+		}
+		
+		public void addModuleImport(ScopeNameResolution moduleScopeResolution) {
+			if(moduleScopeResolution == null)
+				return;
+			
+			importedNames.putAll(moduleScopeResolution.names);
 		}
 		
 	}

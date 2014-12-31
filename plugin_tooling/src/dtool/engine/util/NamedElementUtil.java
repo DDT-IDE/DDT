@@ -12,16 +12,16 @@ public class NamedElementUtil {
 	 * the containing defunits.
 	 * (the name is not enough to uniquely locate a defUnit in a project. That's the goal anyways)
 	 */
-	public static String getElementTypedQualification(INamedElement namedElement) {
+	public static String getElementTypedLabel(INamedElement namedElement) {
 		switch(namedElement.getArcheType()) {
 		case Package:
 			return namedElement.getFullyQualifiedName() + "/";
 		default:
 		}
-		return getElementTypeQualificationBase(namedElement);
+		return getElementTypeLabelBase(namedElement);
 	}
 	
-	public static String getElementTypeQualificationBase(INamedElement namedElement) {
+	public static String getElementTypeLabelBase(INamedElement namedElement) {
 		if(namedElement.getArcheType() == EArcheType.Module) {
 			return namedElement.getModuleFullyQualifiedName() + "/";
 		}
@@ -33,7 +33,7 @@ public class NamedElementUtil {
 		INamedElement parentNamespace = namedElement.getParentNamespace();
 		assertNotNull(parentNamespace);
 		String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
-		String parentQualifedName = getElementTypeQualificationBase(parentNamespace);
+		String parentQualifedName = getElementTypeLabelBase(parentNamespace);
 		String qualification = parentQualifedName + sep;
 		return qualification + namedElement.getName();
 	}

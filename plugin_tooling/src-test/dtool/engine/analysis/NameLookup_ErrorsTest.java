@@ -74,7 +74,7 @@ public class NameLookup_ErrorsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void testModuleParseException() {
-		NamedReference element = parseElement("import not_found;", "not_found;", NamedReference.class).element;
+		NamedReference element = parseElement("import not__found;", "not__found;", NamedReference.class).element;
 		ISemanticContext context = new EmptySemanticResolution() {
 			
 			@Override
@@ -85,7 +85,7 @@ public class NameLookup_ErrorsTest extends CommonNodeSemanticsTest {
 		};
 		
 		IConcreteNamedElement resolvedElement = element.resolveTargetElement(context).resolveConcreteElement(context);
-		assertTrue(resolvedElement.getName().equals("not_found"));
+		assertTrue(resolvedElement.getName().equals("not__found"));
 		assertTrue(resolvedElement.getNameInRegularNamespace() == null);
 		assertTrue(resolvedElement instanceof ErrorElement);
 	}

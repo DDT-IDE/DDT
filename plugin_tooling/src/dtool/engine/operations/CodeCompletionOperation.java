@@ -178,7 +178,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			ASTNode node, PrefixSearchOptions searchOptions) {
 		CompletionScopeLookup search = new CompletionScopeLookup(module, offset, mr, searchOptions);
 		node.performNameLookup(search);
-		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements());
+		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements2());
 	}
 	
 }
