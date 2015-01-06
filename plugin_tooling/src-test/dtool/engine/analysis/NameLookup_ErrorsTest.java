@@ -57,7 +57,7 @@ public class NameLookup_ErrorsTest extends CommonNodeSemanticsTest {
 			doResolveNamedElementForRef("int blah = xxx;", "xxx"));
 
 		checkResultNotFound(
-			doResolveNamedElementForRef("alias A = B; alias B = xxx;", "xxx"));
+			doResolveNamedElementForRef("alias A = xxx;", "xxx"));
 		
 		checkResultNotFound(
 			doResolveConcreteElementForRef("alias A = B; alias B = xxx; alias _ = A/**/;", "A/**/;"));

@@ -34,7 +34,7 @@ import dtool.engine.util.NamedElementUtil;
 
 public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	
-	protected static ResolvedModule parseModuleWithRef(String source, String refName) {
+	protected static ResolvedModule parseModule_WithRef(String source, String refName) {
 		return parseModule_(source + " auto _ = " + refName + "/*M*/");
 	}
 	

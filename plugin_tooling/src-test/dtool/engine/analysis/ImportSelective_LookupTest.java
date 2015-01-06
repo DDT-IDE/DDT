@@ -19,18 +19,17 @@ public class ImportSelective_LookupTest extends CommonLookupTest {
 	public void testImportSelective() throws Exception { testImportSelective$(); }
 	public void testImportSelective$() throws Exception {
 		 
-		testLookup(parseModuleWithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member"),  
+		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member"),  
 			checkSingleResult("int PackFoobar_member;")
 		);
-		testLookup(parseModuleWithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member2"),  
+		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member2"),  
 			checkSingleResult(null)
 		);
 		
-		testLookup(parseModuleWithRef("import pack.foobar : PackFoobar_member; void PackFoobar_member;", 
+		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member; void PackFoobar_member;", 
 			"PackFoobar_member"),  
 			checkNameConflict("int PackFoobar_member;", "void PackFoobar_member;")
 		);
-		
 		
 		// We should add more tests here. The other cases are currently tested by ResolverSourceTests
 		

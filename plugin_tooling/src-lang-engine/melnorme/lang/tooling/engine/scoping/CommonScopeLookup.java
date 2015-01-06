@@ -12,12 +12,10 @@ package melnorme.lang.tooling.engine.scoping;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IASTNode;
@@ -27,16 +25,13 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
-import dtool.engine.analysis.ModuleProxy;
-import dtool.engine.analysis.PackageNamespace;
-import dtool.engine.analysis.PackageNamespaceFragment;
 
 public abstract class CommonScopeLookup {
 	
@@ -52,6 +47,8 @@ public abstract class CommonScopeLookup {
 	
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
+	
+	protected final HashSet<IScopeElement> searchedScopes_asPublicImport = new HashSet<>(4);
 	
 	/** Named elements for which evaluateInMembersScope() has been called for. */
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
@@ -71,6 +68,7 @@ public abstract class CommonScopeLookup {
 		return searchedScopes;
 	}
 	
+	@Deprecated
 	/** @return the {@link IModuleElement} of the node or position where this search originates. */
 	public IModuleElement getSearchOriginModule() {
 		return refOriginModule;
@@ -154,12 +152,12 @@ public abstract class CommonScopeLookup {
 	 * Evaluate a scope (a collection of nodes), for this name lookup search. 
 	 */
 	public void evaluateScope(IScopeElement scope) {
-		ScopeNameResolution scopeResolution = resolveScope(scope);
-		if(scopeResolution == null) {
+		SymbolTable scopeNames = resolveScope(scope);
+		if(scopeNames == null) {
 			return;
 		}
 		
-		addScopeResolutioMatches(scopeResolution);
+		addSymbolTableToMatches(scopeNames);
 		
 		if(scope instanceof IExtendedScopeElement) {
 			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
@@ -169,45 +167,55 @@ public abstract class CommonScopeLookup {
 		
 	}
 	
-	public void addScopeResolutioMatches(ScopeNameResolution scopeResolution) {
-		matches.putAll(scopeResolution.getCombinedScopeNames());
+	public void addSymbolTableToMatches(SymbolTable scopeNames) {
+		matches.putAll(scopeNames.getMap());
 	}
 	
-	public ScopeNameResolution resolveScope(IScopeElement scope) {
+	public SymbolTable resolveScope(IScopeElement scope) {
+		return resolveScope(scope, false);
+	}
+	
+	public SymbolTable resolveScope(IScopeElement scope, boolean asPublicImport) {
 		if(scope == null)
 			return null;
 		
 		if(isFinished())
 			return null;
 		
-		if(searchedScopes.contains(scope))
-			return null;
-		searchedScopes.add(scope);
+		if(asPublicImport) {
+			// TODO: we should actually create a different scope class when search as public import
+			
+			if(searchedScopes_asPublicImport.contains(scope))
+				return null;
+			searchedScopes_asPublicImport.add(scope);
+			
+		} else {
+			if(searchedScopes.contains(scope))
+				return null;
+			searchedScopes.add(scope);
+		}
 		
-		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences());
+		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences(), asPublicImport);
 	}
 	
-	public ScopeNameResolution evaluateScopeElements( 
-			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
+	public SymbolTable evaluateScopeElements( 
+			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential, boolean publicImportsOnly) {
 		if(nodeIterable == null)
 			return null;
 		
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential);
-		return scopeResolution;
-	}
-	
-	@SuppressWarnings("serial")
-	public static class NamesMap extends HashMap<String, INamedElement> {
-		
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false, false /*Irrelevant*/);
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true, publicImportsOnly);
+		scopeResolution.addImportedNamesToSymbolTable();
+		return scopeResolution.names;
 	}
 	
 	public static class ScopeNameResolution {
 		
 		protected final CommonScopeLookup lookup;
 		
-		protected NamesMap names = new NamesMap();
-		protected NamesMap importedNames = new NamesMap();
+		protected SymbolTable names = new SymbolTable();
+		protected SymbolTable importedNames = new SymbolTable();
 		
 		public ScopeNameResolution(CommonScopeLookup lookup) {
 			this.lookup = lookup;
@@ -221,13 +229,8 @@ public abstract class CommonScopeLookup {
 			return getLookup().modResolver;
 		}
 		
-		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential) {
-			evaluateScopeElements(nodeIterable, isSequential, false);
-			evaluateScopeElements(nodeIterable, isSequential, true);
-		}
-		
 		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
-				boolean importsOnly) {
+				boolean importsOnly, boolean publicImportsOnly) {
 			
 			// Note: don't check for isFinished() during the loop
 			for (ILanguageElement node : nodeIter) {
@@ -248,10 +251,11 @@ public abstract class CommonScopeLookup {
 				
 				if(node instanceof INonScopedContainer) {
 					INonScopedContainer container = ((INonScopedContainer) node);
-					evaluateScopeElements(container.getMembersIterable(), isSequentialLookup, importsOnly);
+					evaluateScopeElements(container.getMembersIterable(), 
+						isSequentialLookup, importsOnly, publicImportsOnly);
 				}
 				
-				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup);
+				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup, publicImportsOnly);
 			}
 		}
 		
@@ -271,70 +275,9 @@ public abstract class CommonScopeLookup {
 			assertNotNull(namedElement);
 			
 			if(!isImportsScope) {
-				addSymbolToNamespace(names, namedElement);
+				names.addSymbol(namedElement);
 			} else {
-				addSymbolToNamespace(importedNames, namedElement);
-			}
-		}
-		
-		protected static void addSymbolToNamespace(NamesMap namesMap, INamedElement newElement) {
-			String name = newElement.getNameInRegularNamespace();
-			
-			INamedElement existingNamedElement = namesMap.get(name);
-			
-			if(existingNamedElement instanceof PackageNamespace && newElement instanceof PackageNamespaceFragment) {
-				PackageNamespace existingNamespace = (PackageNamespace) existingNamedElement;
-				PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
-				
-				INamedElement containedElement = newNamespace.getContainedElement();
-				addSymbolToNamespace(existingNamespace.getNamedElements(), containedElement);
-			} else {
-				newElement = convertNameSpace(newElement);
-				addEntryToMap(namesMap, name, newElement);
-			}
-		}
-		
-		protected static INamedElement convertNameSpace(INamedElement newElement) {
-			if(newElement instanceof PackageNamespaceFragment) {
-				PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
-				// convert to PackageNamespace
-				String fqn = newNamespace.getFullyQualifiedName();
-				ILanguageElement parent = newNamespace.getParent();
-				INamedElement containedElement = convertNameSpace(newNamespace.getContainedElement());
-				return new PackageNamespace(fqn, parent, containedElement);
-			}
-			return newElement;
-		}
-		
-		protected static void addEntryToMap(NamesMap namesMap, String name, INamedElement newElement) {
-			INamedElement existingEntry = namesMap.get(name);
-			if(existingEntry == null) {
-				namesMap.put(name, newElement);
-			} else {
-				if(existingEntry instanceof ModuleProxy && newElement instanceof ModuleProxy) {
-					assertTrue(existingEntry.getFullyQualifiedName().equals(newElement.getFullyQualifiedName()));
-					// Don't add duplicated element.
-					return;
-				}
-				
-				OverloadedNamedElement overloadElement;
-				
-				if(existingEntry instanceof OverloadedNamedElement) {
-					overloadElement = (OverloadedNamedElement) existingEntry;
-				} else {
-					// Give priority to ModuleProxy element (note: this isn't entirely like DMD behavior
-					if(newElement instanceof ModuleProxy && existingEntry instanceof PackageNamespace) {
-						namesMap.put(name, newElement);
-						return;
-					}
-					if(newElement instanceof PackageNamespace && existingEntry instanceof ModuleProxy) {
-						return;
-					}
-					
-					overloadElement = new OverloadedNamedElement(existingEntry, existingEntry.getParent());
-					namesMap.put(name, overloadElement);
-				}
-				overloadElement.addElement(newElement);
+				importedNames.addSymbol(namedElement);
 			}
 		}
 		
@@ -343,26 +286,15 @@ public abstract class CommonScopeLookup {
 			visitNamedElement(namedElement, false);
 		}
 		
-		/* -----------------  ----------------- */
-		
-		public NamesMap getCombinedScopeNames() {
-			for (Entry<String, INamedElement> nameEntry : importedNames.entrySet()) {
-				String matchedName = nameEntry.getKey();
-				INamedElement matchedElement = nameEntry.getValue();
-				
-				if(names.get(matchedName) == null) {
-					// Add imported scope name to main scope.
-					names.put(matchedName, matchedElement);
-				}
-			}
+		public SymbolTable addImportedNamesToSymbolTable() {
+			names.addVisibleSymbols(importedNames);
 			return names;
 		}
 		
-		public void addModuleImport(ScopeNameResolution moduleScopeResolution) {
-			if(moduleScopeResolution == null)
-				return;
-			
-			importedNames.putAll(moduleScopeResolution.names);
+		public void addModuleImport(SymbolTable moduleNames) {
+			if(moduleNames != null) {
+				importedNames.addSymbols(moduleNames);
+			}
 		}
 		
 	}

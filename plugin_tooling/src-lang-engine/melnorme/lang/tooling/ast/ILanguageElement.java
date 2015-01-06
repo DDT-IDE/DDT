@@ -45,7 +45,8 @@ public interface ILanguageElement {
 	public Path getModulePath();
 	
 	
-	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup);
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, 
+			boolean isSequentialLookup, boolean publicImportsOnly);
 	
 	
 	/* ----------------- Semantic resolution: ----------------- */

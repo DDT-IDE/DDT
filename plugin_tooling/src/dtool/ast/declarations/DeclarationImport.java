@@ -2,11 +2,9 @@ package dtool.ast.declarations;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
-import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayView;
@@ -72,12 +70,13 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup) {
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup,
+			boolean publicImportsOnly) {
 		if(!importsOnly) {
 			return;
 		}
 		
-		if(!isTransitive && !searchOriginIsInSameModule(scopeRes.getLookup(), this))
+		if(!isTransitive && publicImportsOnly)
 			return; // Don't consider private imports
 		
 		for (IImportFragment impFrag : imports) {
@@ -85,14 +84,6 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 			// continue regardless of search.findOnlyOne because of partial packages
 		}
 		
-	}
-	
-	protected static boolean searchOriginIsInSameModule(CommonScopeLookup search, DeclarationImport declImport) {
-		IModuleElement searchOriginModule = search.getSearchOriginModule();
-		if(searchOriginModule == null) 
-			return false;
-		// only visible if search lexical origin in same module as the private import.
-		return searchOriginModule == declImport.getModuleNode_();
 	}
 	
 }

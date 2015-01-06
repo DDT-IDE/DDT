@@ -22,6 +22,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolutio
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefModule;
@@ -97,10 +98,8 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		if(targetModule instanceof IScopeElement) {
 			IScopeElement scopeElement = (IScopeElement) targetModule;
 			
-			/*FIXME: BUG here if importing self. */
-			
-			ScopeNameResolution moduleScopeResolution = scopeRes.getLookup().resolveScope(scopeElement);
-			scopeRes.addModuleImport(moduleScopeResolution);
+			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScope(scopeElement, true);
+			scopeRes.addModuleImport(moduleScopeNames);
 		}
 	}
 	

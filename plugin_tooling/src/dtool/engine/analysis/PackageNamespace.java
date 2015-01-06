@@ -11,6 +11,9 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.Collection;
+
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -19,11 +22,11 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.NamesMap;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -37,18 +40,22 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	/* -----------------  ----------------- */
 	
 	protected final String fqName;
-	protected final CommonScopeLookup.NamesMap namedElements;
+	protected final SymbolTable namedElementsTable;
 	
 	public PackageNamespace(String fqName, ILanguageElement container, INamedElement firstMember) {
 		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
 		assertNotNull(firstMember);
 		this.fqName = fqName;
-		this.namedElements = new CommonScopeLookup.NamesMap();
-		this.namedElements.put(firstMember.getNameInRegularNamespace(), firstMember);
+		this.namedElementsTable = new SymbolTable();
+		this.namedElementsTable.addSymbol(firstMember);
 	}
 	
-	public NamesMap getNamedElements() {
-		return namedElements;
+	public SymbolTable getNamespace() {
+		return namedElementsTable;
+	}
+	
+	public Collection<INamedElement> getContainedElements() {
+		return namedElementsTable.getElements();
 	}
 	
 	@Override
@@ -116,7 +123,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	@Override
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return IteratorUtil.iterable(namedElements.values());
+		return IteratorUtil.iterable(namedElementsTable.getElements());
 	}
 	
 	@Override
