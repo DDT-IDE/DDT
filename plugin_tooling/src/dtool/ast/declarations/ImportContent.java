@@ -98,7 +98,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		if(targetModule instanceof IScopeElement) {
 			IScopeElement scopeElement = (IScopeElement) targetModule;
 			
-			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScope(scopeElement, true);
+			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScopeSymbols(scopeElement, true);
 			scopeRes.addModuleImport(moduleScopeNames);
 		}
 	}

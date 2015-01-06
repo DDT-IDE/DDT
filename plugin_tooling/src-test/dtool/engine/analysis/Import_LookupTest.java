@@ -268,18 +268,32 @@ public class Import_LookupTest extends CommonLookupTest {
 	public void test_public_imports() throws Exception { test_public_imports$(); }
 	public void test_public_imports$() throws Exception {
 		
-		testLookup(parseModule_WithRef("import pack.public_import; import pack.zzz.non_existant", "PackFoo_member"),  
-			checkSingleResult("int PackFoo_member;")
-		);
-		 
-		testLookup(parseModule_WithRef("import pack.public_import; import pack.zzz.non_existant", "pack"),  
+		// Check test sample file is correct for subsequent tests
+		String FOO_PRIVATE_XXX = "foo_private__xxx";
+		testLookup(parseModule_WithRef("import pack.foo_private; ", FOO_PRIVATE_XXX), 
+			checkSingleResult("PackFooPrivate " + FOO_PRIVATE_XXX + ";"));
+		
+		/* -----------------  ----------------- */
+		
+		String PUBLIC_IMPORT = "import pack.public_import; import pack.zzz.non_existant";
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "xxx"), checkSingleResult("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import]", "module[pack.foo]", 
 				"PNamespace[pack.zzz]"
 			))
 		);
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
+			checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
+			checkSingleResult(null));
 		
-		testLookup(parseModule_WithRef("import pack.public_import2; import pack.zzz.non_existant", "pack"),  
+		
+		String PUBLIC_IMPORT2 = "import pack.public_import2; import pack.zzz.non_existant";
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), checkSingleResult("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import2]", "module[pack.foo]", 
 				"PNamespace[pack.zzz]"
@@ -287,7 +301,10 @@ public class Import_LookupTest extends CommonLookupTest {
 		);
 		
 		
-		testLookup(parseModule_WithRef("import pack.public_import_x; import pack.zzz.non_existant", "pack"),  
+		String PUBLIC_IMPORT_INDIRECT = "import pack.public_import_x; import pack.zzz.non_existant";
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), checkSingleResult("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import_x]", 
 				"module[pack.public_import]", "module[pack.foo]", 

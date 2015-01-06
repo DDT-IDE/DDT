@@ -48,7 +48,7 @@ public abstract class CommonScopeLookup {
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
 	
-	protected final HashSet<IScopeElement> searchedScopes_asPublicImport = new HashSet<>(4);
+	protected final HashSet<IScopeElement> searchedScopes_asImport = new HashSet<>(4);
 	
 	/** Named elements for which evaluateInMembersScope() has been called for. */
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
@@ -149,45 +149,44 @@ public abstract class CommonScopeLookup {
 	/* -----------------  ----------------- */
 	
 	/** 
-	 * Evaluate a scope (a collection of nodes), for this name lookup search. 
+	 * Evaluate a scope (a collection of nodes with named elements) for this name lookup search. 
 	 */
 	public void evaluateScope(IScopeElement scope) {
-		SymbolTable scopeNames = resolveScope(scope);
-		if(scopeNames == null) {
-			return;
+		evaluateScope(scope, false);
+	}
+	
+	public SymbolTable evaluateScope(IScopeElement scope, boolean asImport) {
+		SymbolTable scopeNames = resolveScopeSymbols(scope, asImport);
+		if(scopeNames != null) {
+			addSymbolTableToMatches(scopeNames);
+			
+			if(scope instanceof IExtendedScopeElement) {
+				IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
+				// Warning: potential infinite loop problems here 
+				extendedScopeElement.resolveLookupInSuperScopes(this);
+			}
 		}
 		
-		addSymbolTableToMatches(scopeNames);
-		
-		if(scope instanceof IExtendedScopeElement) {
-			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
-			// Warning: potential infinite loop problems here 
-			extendedScopeElement.resolveLookupInSuperScopes(this);
-		}
-		
+		return scopeNames;
 	}
 	
 	public void addSymbolTableToMatches(SymbolTable scopeNames) {
 		matches.putAll(scopeNames.getMap());
 	}
 	
-	public SymbolTable resolveScope(IScopeElement scope) {
-		return resolveScope(scope, false);
-	}
-	
-	public SymbolTable resolveScope(IScopeElement scope, boolean asPublicImport) {
+	public SymbolTable resolveScopeSymbols(IScopeElement scope, boolean asImport) {
 		if(scope == null)
 			return null;
 		
 		if(isFinished())
 			return null;
 		
-		if(asPublicImport) {
-			// TODO: we should actually create a different scope class when search as public import
+		if(asImport) {
+			// TODO: we should actually create a different scope class when searching as import
 			
-			if(searchedScopes_asPublicImport.contains(scope))
+			if(searchedScopes_asImport.contains(scope))
 				return null;
-			searchedScopes_asPublicImport.add(scope);
+			searchedScopes_asImport.add(scope);
 			
 		} else {
 			if(searchedScopes.contains(scope))
@@ -195,17 +194,17 @@ public abstract class CommonScopeLookup {
 			searchedScopes.add(scope);
 		}
 		
-		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences(), asPublicImport);
+		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences(), asImport);
 	}
 	
 	public SymbolTable evaluateScopeElements( 
-			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential, boolean publicImportsOnly) {
+			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential, boolean asImport) {
 		if(nodeIterable == null)
 			return null;
 		
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
 		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false, false /*Irrelevant*/);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true, publicImportsOnly);
+		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true, asImport);
 		scopeResolution.addImportedNamesToSymbolTable();
 		return scopeResolution.names;
 	}
@@ -230,7 +229,7 @@ public abstract class CommonScopeLookup {
 		}
 		
 		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
-				boolean importsOnly, boolean publicImportsOnly) {
+				boolean importsOnly, boolean scopeAsImport) {
 			
 			// Note: don't check for isFinished() during the loop
 			for (ILanguageElement node : nodeIter) {
@@ -252,10 +251,10 @@ public abstract class CommonScopeLookup {
 				if(node instanceof INonScopedContainer) {
 					INonScopedContainer container = ((INonScopedContainer) node);
 					evaluateScopeElements(container.getMembersIterable(), 
-						isSequentialLookup, importsOnly, publicImportsOnly);
+						isSequentialLookup, importsOnly, scopeAsImport);
 				}
 				
-				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup, publicImportsOnly);
+				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup, scopeAsImport);
 			}
 		}
 		

@@ -71,12 +71,12 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	@Override
 	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup,
-			boolean publicImportsOnly) {
+			boolean scopeAsImport) {
 		if(!importsOnly) {
 			return;
 		}
 		
-		if(!isTransitive && publicImportsOnly)
+		if(!isTransitive && scopeAsImport)
 			return; // Don't consider private imports
 		
 		for (IImportFragment impFrag : imports) {
