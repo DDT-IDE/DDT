@@ -56,7 +56,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IResolv
 				return null;
 			IConcreteNamedElement moduleConcrete = module.resolveConcreteElement(context);
 			
-			ResolutionLookup search = new ResolutionLookup(elementName, null, -1, context);
+			ResolutionLookup search = new ResolutionLookup(elementName, -1, context);
 			search.evaluateInMembersScope(moduleConcrete);
 			return search.getMatchedElement();
 		}

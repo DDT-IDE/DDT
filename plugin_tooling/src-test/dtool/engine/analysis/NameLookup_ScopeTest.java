@@ -18,8 +18,12 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
+import melnorme.utilbox.collections.ArrayList2;
 
 import org.junit.Test;
+
+import dtool.ast.declarations.DeclBlock;
+import dtool.ast.definitions.DefinitionClass;
 
 public class NameLookup_ScopeTest extends CommonLookupTest {
 	
@@ -32,12 +36,13 @@ public class NameLookup_ScopeTest extends CommonLookupTest {
 			"_tests/Blah.xxx"
 		));
 		
-		// Test that we did look up redundant scopes
+		// Test that we didnt look up redundant scopes
 		Set<IScopeElement> searchedScopes = lookup.getSearchedScopes();
 		searchedScopes.remove(ASTNode.getPrimitivesScope());
 		assertTrue(searchedScopes.size() == 1);
 		
-		assertTrue(lookup.getSearchedScopes().contains((IScopeElement) lookup.refOriginModule) == false);
+		IScopeElement searchedScope = new ArrayList2<>(searchedScopes).get(0);
+		assertTrue(((DeclBlock) searchedScope).getParent() instanceof DefinitionClass);
 	}
 	
 	protected ResolutionLookup doResolutionLookup(String source, String offsetMarker) throws ExecutionException {

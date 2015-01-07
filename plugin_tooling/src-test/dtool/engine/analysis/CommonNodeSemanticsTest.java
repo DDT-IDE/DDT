@@ -187,7 +187,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	public static DefUnitResultsChecker resultsChecker(CommonScopeLookup lookup, boolean ignoreDummy,
 			boolean ignorePrimitives, boolean ignoreObjectModule) {
-		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements2());
+		DefUnitResultsChecker checker = new DefUnitResultsChecker(lookup.getMatchedElements());
 		checker.removeIgnoredDefUnits(ignoreDummy, ignorePrimitives);
 		if(ignoreObjectModule) {
 			checker.removeStdLibObjectDefUnits();

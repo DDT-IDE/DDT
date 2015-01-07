@@ -78,10 +78,13 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes) {
-		resolveStaticImport(this, scopeRes);
-		if(!getDeclarationImport().isStatic) {
-			resolveContentImport(this, scopeRes);
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly) {
+		if(!importsOnly) {
+			resolveStaticImport(this, scopeRes);
+		} else {
+			if(!getDeclarationImport().isStatic) {
+				resolveContentImport(this, scopeRes);
+			}
 		}
 	}
 	
@@ -99,7 +102,9 @@ public class ImportContent extends ASTNode implements IImportFragment {
 			IScopeElement scopeElement = (IScopeElement) targetModule;
 			
 			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScopeSymbols(scopeElement, true);
-			scopeRes.addModuleImport(moduleScopeNames);
+			if(moduleScopeNames != null) {
+				scopeRes.getNames().addSymbols(moduleScopeNames);
+			}
 		}
 	}
 	

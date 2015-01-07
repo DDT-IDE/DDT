@@ -41,7 +41,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
 		
 		
-		ResolutionLookup search = new ResolutionLookup("int", null, -1, new EmptySemanticResolution());
+		ResolutionLookup search = new ResolutionLookup("int", -1, new EmptySemanticResolution());
 		search.evaluateScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope);
 		defElement = search.getMatchedElement();
 		

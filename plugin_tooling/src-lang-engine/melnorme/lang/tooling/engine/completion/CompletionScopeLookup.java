@@ -10,37 +10,28 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.completion;
 
-import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 /** 
- * Class that does a scoped name lookup for matches that start with a given prefix name. 
- * TODO: The matches with the same name as matches in a scope with higher 
- * priority are not added.
+ * A scope name lookup that matches only symbols/names that start with a given prefix name. 
  */
 public class CompletionScopeLookup extends CommonScopeLookup {
 	
-	public final PrefixSearchOptions searchOptions;
+	public final String searchPrefix;
 	
-	public CompletionScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) {
-		this(refOriginModule, refOffset, moduleResolver, new PrefixSearchOptions());
-	}
-	
-	public CompletionScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver, 
-			PrefixSearchOptions searchOptions) {
-		super(refOriginModule, refOffset, moduleResolver);
-		this.searchOptions = searchOptions;
+	public CompletionScopeLookup(int refOffset, ISemanticContext moduleResolver, String searchPrefix) {
+		super(refOffset, moduleResolver);
+		this.searchPrefix = searchPrefix;
 	}
 	
 	@Override
 	public boolean matchesName(String defName) {
-		if(searchOptions.searchPrefix.length() > defName.length()) {
+		if(searchPrefix.length() > defName.length()) {
 			return false;
 		}
-		String defNamePrefix = defName.substring(0, searchOptions.searchPrefix.length());
-		return defNamePrefix.equalsIgnoreCase(searchOptions.searchPrefix);
+		String defNamePrefix = defName.substring(0, searchPrefix.length());
+		return defNamePrefix.equalsIgnoreCase(searchPrefix);
 	}
 	
 	@Override
@@ -51,7 +42,7 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	@Override
 	public String toString() {
 		String str = getClass().getName() + " ---\n";
-		str += "searchPrefix: " + searchOptions.searchPrefix +"\n";
+		str += "searchPrefix: " + searchPrefix +"\n";
 		str += "----- Results: -----\n";
 		str += toString_matches();
 		return str;

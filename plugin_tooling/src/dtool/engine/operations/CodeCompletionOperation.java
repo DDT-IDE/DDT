@@ -99,14 +99,14 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 				nodeAtOffset = namedRef.getParent();
 			}
 			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, module, nodeAtOffset, searchOptions);
+			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
 		} else if(nodeAtOffset instanceof RefModule) {
 			RefModule refModule = (RefModule) nodeAtOffset;
 			// RefModule has a specialized way to setup prefix len things
 			
 			String source = parseResult.source;
 			PrefixSearchOptions searchOptions = codeCompletionRefModule(offset, tokenAtOffsetRight, source, refModule);
-			return performCompletionSearch(offset, mr, module, nodeAtOffset, searchOptions);
+			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
 		} 
 		
 		if(nameToken != null) {
@@ -122,11 +122,11 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			// such that it won't be the same as nodeForNameLookup
 			ASTNode nodeForNameLookup = getStartingNodeForNameLookup(nameToken.getStartPos(), module);
 			
-			return performCompletionSearch(offset, mr, module, nodeForNameLookup, searchOptions);
+			return performCompletionSearch(offset, mr, nodeForNameLookup, searchOptions);
 			
 		} else {
 			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, module, nodeAtOffset, searchOptions);
+			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
 		}
 		
 	}
@@ -174,11 +174,11 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return searchOptions;
 	}
 	
-	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, Module module,
-			ASTNode node, PrefixSearchOptions searchOptions) {
-		CompletionScopeLookup search = new CompletionScopeLookup(module, offset, mr, searchOptions);
+	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, ASTNode node,
+			PrefixSearchOptions searchOptions) {
+		CompletionScopeLookup search = new CompletionScopeLookup(offset, mr, searchOptions.searchPrefix);
 		node.performNameLookup(search);
-		return new CompletionSearchResult(search.searchOptions, search.getMatchedElements2());
+		return new CompletionSearchResult(searchOptions, search.getMatchedElements());
 	}
 	
 }

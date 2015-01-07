@@ -43,13 +43,13 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected static CompletionScopeLookup allElementsSearch(ResolvedModule module) {
-		return new CompletionScopeLookup(module.getModuleNode(), -1, module.getSemanticContext());
+		return new CompletionScopeLookup(-1, module.getSemanticContext(), "");
 	}
 	
 	public static INamedElement findElement(String elementName, CommonScopeLookup search) {
 		INamedElement foundMatch = null;
 		
-		for (INamedElement match : search.getMatchedElements2()) {
+		for (INamedElement match : search.getMatchedElements()) {
 			if(match.getName().equals(elementName)) {
 				assertTrue(foundMatch == null);
 				foundMatch = match;

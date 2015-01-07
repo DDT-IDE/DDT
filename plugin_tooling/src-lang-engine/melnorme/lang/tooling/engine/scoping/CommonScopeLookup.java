@@ -12,19 +12,20 @@ package melnorme.lang.tooling.engine.scoping;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.ast.IModuleElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -32,18 +33,18 @@ import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.ImportContent;
+import dtool.ast.references.RefModule;
+import dtool.engine.analysis.ModuleProxy;
 
 public abstract class CommonScopeLookup {
 	
-	/** The module where the search started. */
-	public final IModuleElement refOriginModule;
 	/** The offset of the reference. 
 	 * Used to check availability in statement scopes. */
 	public final int refOffset;
 	/** Module Resolver */
 	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
 	
-	protected final HashMap<String, INamedElement> matches = new HashMap<String, INamedElement>();
+	protected final SymbolTable matches = new SymbolTable();
 	
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
@@ -54,10 +55,9 @@ public abstract class CommonScopeLookup {
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
 	
 	
-	public CommonScopeLookup(IModuleElement refOriginModule, int refOffset, ISemanticContext moduleResolver) { 
+	public CommonScopeLookup(int refOffset, ISemanticContext moduleResolver) { 
 		this.refOffset = refOffset;
 		this.modResolver = assertNotNull(moduleResolver);
-		this.refOriginModule = refOriginModule;
 	}
 	
 	public boolean isSequentialLookup() {
@@ -68,10 +68,8 @@ public abstract class CommonScopeLookup {
 		return searchedScopes;
 	}
 	
-	@Deprecated
-	/** @return the {@link IModuleElement} of the node or position where this search originates. */
-	public IModuleElement getSearchOriginModule() {
-		return refOriginModule;
+	public Collection<INamedElement> getMatchedElements() {
+		return matches.getElements();
 	}
 	
 	@Override
@@ -80,7 +78,7 @@ public abstract class CommonScopeLookup {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(matches.values(), "\n", new Function<INamedElement, String>() {
+		return StringUtil.iterToString(getMatchedElements(), "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return obj.getFullyQualifiedName();
@@ -108,11 +106,34 @@ public abstract class CommonScopeLookup {
 		}
 	}
 	
-	/* -----------------  ----------------- */
-	
-	public Collection<INamedElement> getMatchedElements2() {
-		return matches.values();
+	public void evaluateSearchInImportationNamespace(RefModule refModule) {
+		ArrayList<ModuleProxy> moduleImportsScope = new ArrayList<>();
+		
+		CommonScopeLookup search = this;
+		
+		/* FIXME: refactor this code */
+		if(search instanceof CompletionScopeLookup) {
+			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;
+			String prefix = prefixDefUnitSearch.searchPrefix;
+			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
+			
+			for (String fqName : matchedModule) {
+				moduleImportsScope.add(new ModuleProxy(fqName, search.modResolver, true, refModule));
+			}
+		} else {
+			assertTrue(refModule.isMissingCoreReference() == false);
+			String moduleFQName = refModule.getRefModuleFullyQualifiedName();
+			moduleImportsScope.add(new ModuleProxy(moduleFQName, search.modResolver, true, refModule));
+		}
+		
+		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
+		for (ModuleProxy moduleProxy : moduleImportsScope) {
+			scopeResolution.visitNamedElement(moduleProxy);
+		}
+		matches.addVisibleSymbols(scopeResolution.getNames());
 	}
+	
+	/* -----------------  ----------------- */
 	
 	/** Return whether the search has found all matches. */
 	public abstract boolean isFinished();
@@ -158,7 +179,7 @@ public abstract class CommonScopeLookup {
 	public SymbolTable evaluateScope(IScopeElement scope, boolean asImport) {
 		SymbolTable scopeNames = resolveScopeSymbols(scope, asImport);
 		if(scopeNames != null) {
-			addSymbolTableToMatches(scopeNames);
+			matches.addVisibleSymbols(scopeNames);
 			
 			if(scope instanceof IExtendedScopeElement) {
 				IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
@@ -168,10 +189,6 @@ public abstract class CommonScopeLookup {
 		}
 		
 		return scopeNames;
-	}
-	
-	public void addSymbolTableToMatches(SymbolTable scopeNames) {
-		matches.putAll(scopeNames.getMap());
 	}
 	
 	public SymbolTable resolveScopeSymbols(IScopeElement scope, boolean asImport) {
@@ -193,20 +210,67 @@ public abstract class CommonScopeLookup {
 				return null;
 			searchedScopes.add(scope);
 		}
+		Iterable<? extends ILanguageElement> nodeIterable = scope.getScopeNodeList();
+		boolean isSequential = !scope.allowsForwardReferences();
 		
-		return evaluateScopeElements(scope.getScopeNodeList(), !scope.allowsForwardReferences(), asImport);
-	}
-	
-	public SymbolTable evaluateScopeElements( 
-			Iterable<? extends ILanguageElement> nodeIterable, boolean isSequential, boolean asImport) {
 		if(nodeIterable == null)
 			return null;
 		
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, false, false /*Irrelevant*/);
-		scopeResolution.evaluateScopeElements(nodeIterable, isSequential, true, asImport);
-		scopeResolution.addImportedNamesToSymbolTable();
-		return scopeResolution.names;
+		new ScopeTraverser(false, asImport).evaluateScopeElements(scopeResolution, 
+			nodeIterable, refOffset, isSequential);
+		SymbolTable names = scopeResolution.names;
+		
+		ScopeNameResolution importsScopeResolution = new ScopeNameResolution(this);
+		new ScopeTraverser(true, asImport).evaluateScopeElements(importsScopeResolution, 
+			nodeIterable, refOffset, isSequential);
+		SymbolTable importedNames = importsScopeResolution.names;
+		
+		names.addVisibleSymbols(importedNames);
+		return names;
+	}
+	
+	public static class ScopeTraverser {
+		
+		protected boolean importsOnly;
+		protected boolean scopeAsImport;
+		
+		public ScopeTraverser(boolean importsOnly, boolean scopeAsImport) {
+			this.importsOnly = importsOnly;
+			this.scopeAsImport = scopeAsImport;
+		}
+		
+		public void evaluateScopeElements(ScopeNameResolution scopeResolution, 
+				Iterable<? extends ILanguageElement> nodeIter, 
+				int refOffset, boolean isSequentialLookup) {
+			
+			// Note: don't check for isFinished() during the loop
+			for (ILanguageElement node : nodeIter) {
+				
+				// Check if we have passed the reference offset
+				if(isSequentialLookup && node instanceof IASTNode) {
+					/* FIXME: make getStartPos available in ILanguageElement */
+					IASTNode astNode = (IASTNode) node;
+					if(refOffset < astNode.getStartPos()) {
+						return;
+					}
+				}
+				
+				if(node instanceof INamedElement) {
+					INamedElement namedElement = (INamedElement) node;
+					scopeResolution.visitNamedElement(namedElement);
+				}
+				
+				node.evaluateForScopeLookup(scopeResolution, importsOnly, isSequentialLookup, scopeAsImport);
+				
+				if(node instanceof INonScopedContainer) {
+					INonScopedContainer container = ((INonScopedContainer) node);
+					evaluateScopeElements(scopeResolution, container.getMembersIterable(), refOffset, 
+						isSequentialLookup);
+				}
+				
+			}
+		}
 	}
 	
 	public static class ScopeNameResolution {
@@ -214,10 +278,13 @@ public abstract class CommonScopeLookup {
 		protected final CommonScopeLookup lookup;
 		
 		protected SymbolTable names = new SymbolTable();
-		protected SymbolTable importedNames = new SymbolTable();
 		
 		public ScopeNameResolution(CommonScopeLookup lookup) {
 			this.lookup = lookup;
+		}
+		
+		public SymbolTable getNames() {
+			return names;
 		}
 
 		public CommonScopeLookup getLookup() {
@@ -228,37 +295,7 @@ public abstract class CommonScopeLookup {
 			return getLookup().modResolver;
 		}
 		
-		public void evaluateScopeElements(Iterable<? extends ILanguageElement> nodeIter, boolean isSequentialLookup, 
-				boolean importsOnly, boolean scopeAsImport) {
-			
-			// Note: don't check for isFinished() during the loop
-			for (ILanguageElement node : nodeIter) {
-				
-				// Check if we have passed the reference offset
-				if(isSequentialLookup && node instanceof IASTNode) {
-					/* FIXME: make getStartPos available in ILanguageElement */
-					IASTNode astNode = (IASTNode) node;
-					if(getLookup().refOffset < astNode.getStartPos()) {
-						return;
-					}
-				}
-				
-				if(!importsOnly && node instanceof INamedElement) {
-					INamedElement namedElement = (INamedElement) node;
-					visitNamedElement(namedElement, importsOnly);
-				}
-				
-				if(node instanceof INonScopedContainer) {
-					INonScopedContainer container = ((INonScopedContainer) node);
-					evaluateScopeElements(container.getMembersIterable(), 
-						isSequentialLookup, importsOnly, scopeAsImport);
-				}
-				
-				node.evaluateForScopeLookup(this, importsOnly, isSequentialLookup, scopeAsImport);
-			}
-		}
-		
-		public void visitNamedElement(INamedElement namedElement, boolean isImportsScope) {
+		public void visitNamedElement(INamedElement namedElement) {
 			if(namedElement == null)
 				return;
 			
@@ -273,27 +310,12 @@ public abstract class CommonScopeLookup {
 			
 			assertNotNull(namedElement);
 			
-			if(!isImportsScope) {
-				names.addSymbol(namedElement);
-			} else {
-				importedNames.addSymbol(namedElement);
-			}
+			names.addSymbol(namedElement);
 		}
 		
 		public void addImportNameElement(ImportContent importStatic) {
 			INamedElement namedElement = importStatic.moduleRef.getNamespaceFragment(getContext());
-			visitNamedElement(namedElement, false);
-		}
-		
-		public SymbolTable addImportedNamesToSymbolTable() {
-			names.addVisibleSymbols(importedNames);
-			return names;
-		}
-		
-		public void addModuleImport(SymbolTable moduleNames) {
-			if(moduleNames != null) {
-				importedNames.addSymbols(moduleNames);
-			}
+			visitNamedElement(namedElement);
 		}
 		
 	}

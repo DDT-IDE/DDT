@@ -160,7 +160,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	protected static void test_resolveSearchInMembersScope(PickedElement<? extends INamedElement> pickedElement, 
 			String... expectedResults) {
-		CompletionScopeLookup search = new CompletionScopeLookup(null, 0, pickedElement.context);
+		CompletionScopeLookup search = new CompletionScopeLookup(0, pickedElement.context, "");
 		search.evaluateInMembersScope(pickedElement.element);
 		
 		resultsChecker(search).checkResults(expectedResults);

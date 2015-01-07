@@ -86,7 +86,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes) {
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly) {
 		findDefUnitInSelectiveImport(this, scopeRes);
 	}
 	
@@ -107,7 +107,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 					continue;
 				}
 				INamedElement selectedElement = refImportSelection.resolveTargetElement(context);
-				scopeRes.visitNamedElement(selectedElement, false);
+				scopeRes.visitNamedElement(selectedElement);
 			}
 		}
 	}

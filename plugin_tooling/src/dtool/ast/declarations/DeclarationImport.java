@@ -46,9 +46,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	public static interface IImportFragment extends IASTNode {
 		
-		/** Performs a search in the secondary/background scope.
-		 * Only imports contribute to this secondary namespace. */
-		public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes);
+		public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly);
 		
 		public RefModule getModuleRef();
 	}
@@ -72,16 +70,12 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	@Override
 	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup,
 			boolean scopeAsImport) {
-		if(!importsOnly) {
-			return;
-		}
 		
-		if(!isTransitive && scopeAsImport)
-			return; // Don't consider private imports
+		if(scopeAsImport && !isTransitive)
+			return; // Don't consider private contributions
 		
 		for (IImportFragment impFrag : imports) {
-			impFrag.evaluateImportsScopeContribution(scopeRes);
-			// continue regardless of search.findOnlyOne because of partial packages
+			impFrag.evaluateImportsScopeContribution(scopeRes, importsOnly);
 		}
 		
 	}
