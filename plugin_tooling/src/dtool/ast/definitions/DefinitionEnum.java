@@ -13,7 +13,6 @@ package dtool.ast.definitions;
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
@@ -25,6 +24,7 @@ import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
@@ -92,13 +92,8 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 		}
 		
 		@Override
-		public Iterable<? extends IASTNode> getScopeNodeList() {
-			return nodeList;
-		}
-		
-		@Override
-		public boolean allowsForwardReferences() {
-			return true;
+		public ScopeTraverser getScopeTraverser() {
+			return new ScopeTraverser(nodeList, true);
 		}
 		
 	}

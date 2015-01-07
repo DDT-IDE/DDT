@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.IteratorUtil;
@@ -72,14 +73,10 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterable<? extends IASTNode> getScopeNodeList() {
+	public ScopeTraverser getScopeTraverser() {
 		// TODO: technically not correct, these are two separte scopes
-		return IteratorUtil.<IASTNode>chainedIterable(tplParams, fnParams);
-	}
-	
-	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+		Iterable<? extends IASTNode> iterable = IteratorUtil.<IASTNode>chainedIterable(tplParams, fnParams);
+		return new ScopeTraverser(iterable, false);
 	}
 	
 }

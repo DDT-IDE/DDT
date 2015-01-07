@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.misc.IteratorUtil;
 
 public class CatchClause extends ASTNode implements IScopeElement {
@@ -47,14 +48,13 @@ public class CatchClause extends ASTNode implements IScopeElement {
 	
 	/* -----------------  ----------------- */
 	
-	@Override
 	public Iterable<SimpleVariableDef> getScopeNodeList() {
 		return catchParam == null ? null : IteratorUtil.iterable(catchParam);
 	}
 	
 	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(getScopeNodeList(), false);
 	}
 	
 }

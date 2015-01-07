@@ -26,14 +26,13 @@ public class NamedElementsScope implements IScopeElement {
 		this.members = members; 
 	}
 	
-	@Override
-	public Iterable<? extends INamedElement> getScopeNodeList() {
+	public Iterable<? extends INamedElement> getMembersIterable() {
 		return members;
 	}
 	
 	@Override
-	public boolean allowsForwardReferences() {
-		return true;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(members, true);
 	}
 	
 }

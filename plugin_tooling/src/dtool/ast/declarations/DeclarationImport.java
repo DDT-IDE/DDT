@@ -46,7 +46,7 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	public static interface IImportFragment extends IASTNode {
 		
-		public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly);
+		public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope);
 		
 		public RefModule getModuleRef();
 	}
@@ -68,14 +68,14 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean importsOnly, boolean isSequentialLookup,
-			boolean scopeAsImport) {
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, 
+			boolean isSequentialLookup, boolean scopeAsImport) {
 		
 		if(scopeAsImport && !isTransitive)
 			return; // Don't consider private contributions
 		
 		for (IImportFragment impFrag : imports) {
-			impFrag.evaluateImportsScopeContribution(scopeRes, importsOnly);
+			impFrag.evaluateImportsScopeContribution(scopeRes, isSecondaryScope);
 		}
 		
 	}

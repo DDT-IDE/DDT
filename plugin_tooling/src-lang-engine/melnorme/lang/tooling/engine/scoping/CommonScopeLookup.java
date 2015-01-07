@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
@@ -48,8 +47,6 @@ public abstract class CommonScopeLookup {
 	
 	/** The scopes that have already been searched */
 	protected final HashSet<IScopeElement> searchedScopes = new HashSet<>(4);
-	
-	protected final HashSet<IScopeElement> searchedScopes_asImport = new HashSet<>(4);
 	
 	/** Named elements for which evaluateInMembersScope() has been called for. */
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
@@ -173,11 +170,7 @@ public abstract class CommonScopeLookup {
 	 * Evaluate a scope (a collection of nodes with named elements) for this name lookup search. 
 	 */
 	public void evaluateScope(IScopeElement scope) {
-		evaluateScope(scope, false);
-	}
-	
-	public SymbolTable evaluateScope(IScopeElement scope, boolean asImport) {
-		SymbolTable scopeNames = resolveScopeSymbols(scope, asImport);
+		SymbolTable scopeNames = resolveScopeSymbols(scope);
 		if(scopeNames != null) {
 			matches.addVisibleSymbols(scopeNames);
 			
@@ -187,90 +180,27 @@ public abstract class CommonScopeLookup {
 				extendedScopeElement.resolveLookupInSuperScopes(this);
 			}
 		}
-		
-		return scopeNames;
 	}
 	
-	public SymbolTable resolveScopeSymbols(IScopeElement scope, boolean asImport) {
+	public SymbolTable resolveScopeSymbols(IScopeElement scope) {
 		if(scope == null)
 			return null;
 		
 		if(isFinished())
 			return null;
 		
-		if(asImport) {
-			// TODO: we should actually create a different scope class when searching as import
-			
-			if(searchedScopes_asImport.contains(scope))
-				return null;
-			searchedScopes_asImport.add(scope);
-			
-		} else {
-			if(searchedScopes.contains(scope))
-				return null;
-			searchedScopes.add(scope);
-		}
-		Iterable<? extends ILanguageElement> nodeIterable = scope.getScopeNodeList();
-		boolean isSequential = !scope.allowsForwardReferences();
-		
-		if(nodeIterable == null)
+		if(searchedScopes.contains(scope))
 			return null;
+		searchedScopes.add(scope);
 		
-		ScopeNameResolution scopeResolution = new ScopeNameResolution(this);
-		new ScopeTraverser(false, asImport).evaluateScopeElements(scopeResolution, 
-			nodeIterable, refOffset, isSequential);
-		SymbolTable names = scopeResolution.names;
+		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
 		
-		ScopeNameResolution importsScopeResolution = new ScopeNameResolution(this);
-		new ScopeTraverser(true, asImport).evaluateScopeElements(importsScopeResolution, 
-			nodeIterable, refOffset, isSequential);
-		SymbolTable importedNames = importsScopeResolution.names;
+		SymbolTable names = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, false);
 		
+		SymbolTable importedNames = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, true);
 		names.addVisibleSymbols(importedNames);
+		
 		return names;
-	}
-	
-	public static class ScopeTraverser {
-		
-		protected boolean importsOnly;
-		protected boolean scopeAsImport;
-		
-		public ScopeTraverser(boolean importsOnly, boolean scopeAsImport) {
-			this.importsOnly = importsOnly;
-			this.scopeAsImport = scopeAsImport;
-		}
-		
-		public void evaluateScopeElements(ScopeNameResolution scopeResolution, 
-				Iterable<? extends ILanguageElement> nodeIter, 
-				int refOffset, boolean isSequentialLookup) {
-			
-			// Note: don't check for isFinished() during the loop
-			for (ILanguageElement node : nodeIter) {
-				
-				// Check if we have passed the reference offset
-				if(isSequentialLookup && node instanceof IASTNode) {
-					/* FIXME: make getStartPos available in ILanguageElement */
-					IASTNode astNode = (IASTNode) node;
-					if(refOffset < astNode.getStartPos()) {
-						return;
-					}
-				}
-				
-				if(node instanceof INamedElement) {
-					INamedElement namedElement = (INamedElement) node;
-					scopeResolution.visitNamedElement(namedElement);
-				}
-				
-				node.evaluateForScopeLookup(scopeResolution, importsOnly, isSequentialLookup, scopeAsImport);
-				
-				if(node instanceof INonScopedContainer) {
-					INonScopedContainer container = ((INonScopedContainer) node);
-					evaluateScopeElements(scopeResolution, container.getMembersIterable(), refOffset, 
-						isSequentialLookup);
-				}
-				
-			}
-		}
 	}
 	
 	public static class ScopeNameResolution {

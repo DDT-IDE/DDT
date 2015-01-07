@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.scoping;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
 
 
 /**
@@ -21,9 +20,7 @@ import melnorme.lang.tooling.ast.ILanguageElement;
  */
 public interface IScopeElement {
 	
-	Iterable<? extends ILanguageElement> getScopeNodeList();
-	
-	boolean allowsForwardReferences();
+	ScopeTraverser getScopeTraverser();
 	
 	@Override
 	public boolean equals(Object obj);

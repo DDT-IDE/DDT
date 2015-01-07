@@ -21,6 +21,7 @@ import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -109,13 +110,8 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterable<? extends IASTNode> getScopeNodeList() {
-		return tplParams;
-	}
-	
-	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(tplParams, false);
 	}
 	
 }

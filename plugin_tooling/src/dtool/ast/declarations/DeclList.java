@@ -14,6 +14,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 
 public class DeclList extends NodeList<ASTNode> {
@@ -35,8 +36,8 @@ public class DeclList extends NodeList<ASTNode> {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public boolean allowsForwardReferences() {
-		return true;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(nodes, true);
 	}
 	
 }

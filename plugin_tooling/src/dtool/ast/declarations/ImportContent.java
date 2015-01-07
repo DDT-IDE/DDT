@@ -21,6 +21,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.IImportableUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -78,8 +79,9 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	/* ----------------- ----------------- */
 	
 	@Override
-	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly) {
-		if(!importsOnly) {
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope) {
+		if(!isSecondaryScope) {
+			// the static import part (package/module name) goes in the primary namespace.
 			resolveStaticImport(this, scopeRes);
 		} else {
 			if(!getDeclarationImport().isStatic) {
@@ -98,10 +100,11 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	
 	public static void resolveContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {
 		IConcreteNamedElement targetModule = resolveTargetModule(scopeRes.getContext(), impContent);
-		if(targetModule instanceof IScopeElement) {
-			IScopeElement scopeElement = (IScopeElement) targetModule;
+		if(targetModule instanceof IImportableUnit) {
+			IImportableUnit module = (IImportableUnit) targetModule;
+			IScopeElement scopeElement = module.getImportableScope();
 			
-			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScopeSymbols(scopeElement, true);
+			SymbolTable moduleScopeNames = scopeRes.getLookup().resolveScopeSymbols(scopeElement);
 			if(moduleScopeNames != null) {
 				scopeRes.getNames().addSymbols(moduleScopeNames);
 			}

@@ -86,7 +86,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly) {
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope) {
 		findDefUnitInSelectiveImport(this, scopeRes);
 	}
 	

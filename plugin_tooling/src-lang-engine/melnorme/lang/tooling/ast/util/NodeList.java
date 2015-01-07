@@ -11,7 +11,6 @@
 package melnorme.lang.tooling.ast.util;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -33,13 +32,6 @@ public abstract class NodeList<E extends ASTNode> extends ASTNode implements ISc
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendList(nodes, "\n", true);
-	}
-	
-	/* -----------------  ----------------- */
-
-	@Override
-	public Iterable<? extends IASTNode> getScopeNodeList() {
-		return nodes;
 	}
 	
 }

@@ -11,10 +11,10 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 
 /**
@@ -37,13 +37,8 @@ public class ScopedStatementList extends CommonStatementList implements IScopeEl
 	}
 	
 	@Override
-	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return statements;
-	}
-	
-	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(statements, false);
 	}
 	
 }

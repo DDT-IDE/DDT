@@ -25,7 +25,7 @@ public class DeeElementFlagsTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		NamedElementsScope primitivesScope = DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope;
-		for (INamedElement nativeDefUnit : primitivesScope.getScopeNodeList()) {
+		for (INamedElement nativeDefUnit : primitivesScope.getMembersIterable()) {
 			assertTrue(new DefElementDescriptor(nativeDefUnit).isNative());
 		}
 		

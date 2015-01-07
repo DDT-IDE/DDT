@@ -11,10 +11,10 @@
 package dtool.ast.statements;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 
@@ -58,13 +58,8 @@ public class StatementForeach extends Statement implements IScopeElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return varParams;
-	}
-	
-	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(varParams, false);
 	}
 	
 }

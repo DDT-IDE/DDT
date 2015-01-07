@@ -23,6 +23,7 @@ import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -121,14 +122,13 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	/* -----------------  ----------------- */
 	
-	@Override
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
 		return IteratorUtil.iterable(namedElementsTable.getElements());
 	}
 	
 	@Override
-	public boolean allowsForwardReferences() {
-		return true;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(getScopeNodeList(), true);
 	}
 	
 }

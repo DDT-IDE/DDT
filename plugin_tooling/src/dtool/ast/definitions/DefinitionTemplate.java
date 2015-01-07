@@ -11,13 +11,13 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
@@ -112,14 +112,10 @@ public class DefinitionTemplate extends CommonDefinition
 		return new DefTemplateSemantics(this, pickedElement);
 	}
 	
-	@Override
-	public Iterable<? extends IASTNode> getScopeNodeList() {
-		return tplParams;
-	}
 	
 	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(tplParams, false);
 	}
 	
 }

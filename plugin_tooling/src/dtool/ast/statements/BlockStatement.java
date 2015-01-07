@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 
 /**
@@ -36,13 +36,8 @@ public class BlockStatement extends CommonStatementList implements IScopeElement
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterable<ASTNode> getScopeNodeList() {
-		return statements_asNodes();
-	}
-	
-	@Override
-	public boolean allowsForwardReferences() {
-		return false;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(statements_asNodes(), false);
 	}
 	
 }

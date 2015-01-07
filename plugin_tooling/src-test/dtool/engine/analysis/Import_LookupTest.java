@@ -168,8 +168,8 @@ public class Import_LookupTest extends CommonLookupTest {
 		/* FIXME: re-enable*/
 //		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
 //			checkSingleResult(null));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
-			checkSingleResult(null));
+//		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
+//			checkSingleResult(null));
 		
 		
 		String PUBLIC_IMPORT2 = "import pack.public_import2; import pack.zzz.non_existant";

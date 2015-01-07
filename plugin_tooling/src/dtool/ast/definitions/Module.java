@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -28,7 +27,9 @@ import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.IImportableUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.references.RefModule;
@@ -42,7 +43,7 @@ import dtool.util.NewUtils;
  * D Module. 
  * The top-level AST class, has no parent, is the first and main node of every compilation unit.
  */
-public class Module extends DefUnit implements IModuleNode, IConcreteNamedElement, IScopeElement {
+public class Module extends DefUnit implements IModuleNode, IConcreteNamedElement, IScopeElement, IImportableUnit {
 	
 	public static class ModuleDefSymbol extends DefSymbol {
 		
@@ -212,7 +213,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(Module.this, true); /*FIXME: BUG here*/
+				search.evaluateScope(Module.this); /*FIXME: BUG here, should be a special members scope*/
 			}
 			
 		};
@@ -221,12 +222,22 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	/* -----------------  ----------------- */
 	
 	@Override
-	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return members;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(members, true);
 	}
+	
+	protected final IScopeElement importableScope = new ModuleImportableScope();
+	
 	@Override
-	public boolean allowsForwardReferences() {
-		return true;
+	public IScopeElement getImportableScope() {
+		return importableScope; // Note: we must return same instance of IScopeElement
+	}
+	
+	protected class ModuleImportableScope implements IScopeElement {
+		@Override
+		public ScopeTraverser getScopeTraverser() {
+			return new ScopeTraverser(members, true, true);
+		}
 	}
 	
 }

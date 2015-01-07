@@ -62,7 +62,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean importsOnly) {
+	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope) {
 		// Do nothing. Aliasing imports do not contribute secondary-space DefUnits
 		// TODO: this is a bug in D, it's not according to spec.
 	}
