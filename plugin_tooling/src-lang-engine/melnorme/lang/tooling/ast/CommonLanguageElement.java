@@ -57,8 +57,8 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, boolean isSequentialLookup,
-			boolean publicImportsOnly) {
+	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, 
+			boolean isSequentialLookup, boolean publicImportsOnly) {
 	}
 	
 }

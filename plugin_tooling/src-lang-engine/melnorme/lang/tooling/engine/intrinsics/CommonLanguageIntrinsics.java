@@ -18,7 +18,6 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -48,15 +47,7 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		public TypeSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new TypeSemantics(this, pickedElement) {
-			
-				@Override
-				public void resolveSearchInMembersScope(CommonScopeLookup search) {
-					assertNotNull(membersScope);
-					search.evaluateScope(membersScope);
-				}
-				
-			};
+			return new TypeSemantics(this, pickedElement, membersScope);
 		}
 		
 	}

@@ -10,18 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class TypeSemantics extends ConcreteElementSemantics {
+public class TypeSemantics extends NonValueConcreteElementSemantics {
 	
-	protected final NotAValueErrorElement notAValueError;
+	protected final IScopeElement membersScope; // Can be null
 	
-	public TypeSemantics(IConcreteNamedElement typeElement, PickedElement<?> pickedElement) {
+	public TypeSemantics(IConcreteNamedElement typeElement, PickedElement<?> pickedElement, 
+			IScopeElement membersScope) {
 		super(typeElement, pickedElement);
-		this.notAValueError = new NotAValueErrorElement(typeElement);
+		this.membersScope = membersScope;
 	}
 	
 	protected final IConcreteNamedElement getTypeElement() {
@@ -29,8 +30,12 @@ public abstract class TypeSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public final INamedElement resolveTypeForValueContext() {
-		return notAValueError;
+	public void resolveSearchInMembersScope(CommonScopeLookup search) {
+		search.evaluateScope(getMembersScope());
+	}
+	
+	public IScopeElement getMembersScope() {
+		return membersScope;
 	}
 	
 }

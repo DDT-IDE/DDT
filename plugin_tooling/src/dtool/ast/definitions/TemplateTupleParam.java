@@ -15,7 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
@@ -52,7 +52,7 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
+		return new NonValueConcreteElementSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {

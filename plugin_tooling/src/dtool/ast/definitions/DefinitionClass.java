@@ -12,13 +12,12 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -89,35 +88,34 @@ public class DefinitionClass extends DefinitionAggregate {
 	/* -----------------  ----------------- */
 	
 	@Override
+	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup lookup) {
+		getSemantics(lookup.modResolver).getMembersScope().resolveLookupInSuperScopes(lookup);
+		
+		super.doPerformLexicalLookupInThisScope(lookup); // This lookup tpl params scope
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
 	public final ClassSemantics getSemantics(ISemanticContext parentContext) {
 		return (ClassSemantics) super.getSemantics(parentContext);
 	}
 	@Override
 	protected ClassSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		NamedElementsScope commonTypeScope = DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(this);
-		return new ClassSemantics(this, commonTypeScope, pickedElement);
+		return new ClassSemantics(this, pickedElement);
 	}
 	
 	public class ClassSemantics extends AggregateSemantics {
 		
-		public ClassSemantics(IConcreteNamedElement classElement, NamedElementsScope commonTypeScope,
-				PickedElement<?> pickedElement) {
-			super(classElement, commonTypeScope, pickedElement);
+		public ClassSemantics(DefinitionClass classElement, PickedElement<?> pickedElement) {
+			super(classElement, pickedElement,
+				new DefClassMembersScope(getAggregateMembers()),
+				DeeLanguageIntrinsics.D2_063_intrinsics.createObjectPropertiesScope(classElement));
 		}
 		
-		public void resolveSearchInSuperScopes(CommonScopeLookup search) {
-			ISemanticContext context = search.modResolver;
-			
-			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
-				INamedElement baseClassElem = baseclass.resolveTargetElement(context);
-				if(baseClassElem == null)
-					continue;
-				
-				if(baseClassElem instanceof DefinitionClass) {
-					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
-					search.evaluateScope(baseClassDef.membersScope);
-				}
-			}
+		@Override
+		public DefClassMembersScope getMembersScope() {
+			return (DefClassMembersScope) super.getMembersScope();
 		}
 		
 		public INamedElement resolveSuperClass(ISemanticContext mr) {
@@ -136,6 +134,29 @@ public class DefinitionClass extends DefinitionAggregate {
 			return DeeLanguageIntrinsics.OBJECT_CLASS_REF.getSemantics(mr).resolveTargetElement().result;
 		}
 		
+	}
+	
+	public class DefClassMembersScope extends MembersScopeElement {
+		
+		public DefClassMembersScope(Iterable<? extends ILanguageElement> membersIterable) {
+			super(membersIterable);
+		}
+		
+		@Override
+		public void resolveLookupInSuperScopes(CommonScopeLookup search) {
+			ISemanticContext context = search.modResolver;
+			
+			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
+				INamedElement baseClassElem = baseclass.resolveTargetElement(context);
+				if(baseClassElem == null)
+					continue;
+				
+				if(baseClassElem instanceof DefinitionClass) {
+					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
+					search.evaluateScope(baseClassDef.getSemantics(context).getMembersScope());
+				}
+			}
+		}
 	}
 	
 }

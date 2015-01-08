@@ -171,14 +171,15 @@ public abstract class CommonScopeLookup {
 	 */
 	public void evaluateScope(IScopeElement scope) {
 		SymbolTable scopeNames = resolveScopeSymbols(scope);
-		if(scopeNames != null) {
-			matches.addVisibleSymbols(scopeNames);
-			
-			if(scope instanceof IExtendedScopeElement) {
-				IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
-				// Warning: potential infinite loop problems here 
-				extendedScopeElement.resolveLookupInSuperScopes(this);
-			}
+		if(scopeNames == null)
+			 return;
+		
+		matches.addVisibleSymbols(scopeNames);
+		
+		if(scope instanceof IExtendedScopeElement) {
+			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
+			// Warning: potential infinite loop problems here 
+			extendedScopeElement.resolveLookupInSuperScopes(this);
 		}
 	}
 	

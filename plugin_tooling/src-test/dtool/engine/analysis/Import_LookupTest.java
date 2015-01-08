@@ -136,10 +136,12 @@ public class Import_LookupTest extends CommonLookupTest {
 		);
 		
 		// Test contents of fully-qualified namespace
-		/* FIXME: re enable */
-//		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.pack"),  
-//		checkSingleResult("PackFoobar pack;")
-//	);
+		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.PackFoobar_member"),  
+			checkSingleResult("int PackFoobar_member;")
+		);
+		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.pack"),  
+			checkSingleResult(null)
+		);
 		
 		test_public_imports();
 	}
@@ -165,15 +167,21 @@ public class Import_LookupTest extends CommonLookupTest {
 				"PNamespace[pack.zzz]"
 			))
 		);
-		/* FIXME: re-enable*/
-//		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
-//			checkSingleResult(null));
-//		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
-//			checkSingleResult(null));
+		
+		// Test as members scope 
+		// -> note this behavior is not according to DMD, but is it according to spec? 
+		// Should be, if not, ugly spec behavior
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
+			checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
+			checkSingleResult(null));
+		
+		testLookup(parseModule_WithRef("class Xpto { import pack.foo; }", "Xpto.pack"), 
+			checkSingleResult(null));
 		
 		
 		String PUBLIC_IMPORT2 = "import pack.public_import2; import pack.zzz.non_existant";
-//		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), checkSingleResult("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), checkSingleResult("PackFoo xxx;"));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), checkSingleResult(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "pack"),  
 			checkIsPackageNamespace(array(
@@ -184,7 +192,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		
 		String PUBLIC_IMPORT_INDIRECT = "import pack.public_import_x; import pack.zzz.non_existant";
-//		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), checkSingleResult("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), checkSingleResult("PackFoo xxx;"));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), checkSingleResult(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "pack"),  
 			checkIsPackageNamespace(array(

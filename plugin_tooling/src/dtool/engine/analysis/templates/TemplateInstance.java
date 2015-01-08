@@ -16,10 +16,11 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionTemplate;
@@ -64,12 +65,17 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	
 	@Override
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
+		return new ConcreteElementSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
 				// TODO
 //				search.evaluateScope(tplArguments);
+			}
+			
+			@Override
+			public INamedElement resolveTypeForValueContext() {
+				return null; // TODO resolveTypeForValueContext
 			}
 			
 		};

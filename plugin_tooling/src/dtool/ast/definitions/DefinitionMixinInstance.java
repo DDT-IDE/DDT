@@ -15,7 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -64,19 +64,24 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
+		return new DefMixinSemanticsExtension(this, pickedElement);
+	}
+	
+	public class DefMixinSemanticsExtension extends NonValueConcreteElementSemantics {
+		protected DefMixinSemanticsExtension(IConcreteNamedElement concreteElement,
+				PickedElement<?> pickedElement) {
+			super(concreteElement, pickedElement);
+		}
 		
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				if(templateInstance != null) {
-					// TODO: add fake element for missing syntax
-					
-					INamedElement result = templateInstance.getSemantics(context).resolveTargetElement().result;
-					search.evaluateInMembersScope(result);
-				}
+		@Override
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
+			if(templateInstance != null) {
+				// TODO: add fake element for missing syntax
+				
+				INamedElement result = templateInstance.getSemantics(context).resolveTargetElement().result;
+				search.evaluateInMembersScope(result);
 			}
-			
-		};
+		}
 	}
 	
 }

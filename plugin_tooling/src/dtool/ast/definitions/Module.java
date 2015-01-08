@@ -209,14 +209,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(Module.this); /*FIXME: BUG here, should be a special members scope*/
-			}
-			
-		};
+		return new TypeSemantics(this, pickedElement, new MembersScopeElement(members));
 	}
 	
 	/* -----------------  ----------------- */
@@ -226,18 +219,16 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		return new ScopeTraverser(members, true);
 	}
 	
-	protected final IScopeElement importableScope = new ModuleImportableScope();
-	
 	@Override
 	public IScopeElement getImportableScope() {
 		return importableScope; // Note: we must return same instance of IScopeElement
 	}
 	
-	protected class ModuleImportableScope implements IScopeElement {
+	protected final IScopeElement importableScope = new IScopeElement() {
 		@Override
 		public ScopeTraverser getScopeTraverser() {
 			return new ScopeTraverser(members, true, true);
 		}
-	}
+	};
 	
 }

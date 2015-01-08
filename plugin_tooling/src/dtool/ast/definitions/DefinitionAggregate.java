@@ -11,7 +11,6 @@
 package dtool.ast.definitions;
 
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -43,19 +42,12 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	public final Expression tplConstraint;
 	public final IAggregateBody aggrBody;
 	
-	public final IScopeElement membersScope;
-	
 	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId);
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
 		this.aggrBody = parentize(aggrBody);
-		
-		membersScope = aggrBody instanceof DeclBlock ? 
-				((DeclBlock) aggrBody) :
-				parentize(new DeclBlock(ArrayView.<ASTNode>createFrom())); 
-		assertNotNull(membersScope);
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor) {
@@ -80,31 +72,37 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		return tplParams != null;
 	}
 	
+	public ArrayView<ASTNode> getAggregateMembers() {
+		return (aggrBody instanceof DeclBlock) ? 
+				((DeclBlock) aggrBody).nodes :
+				ArrayView.<ASTNode>createFrom();
+	}
 	
 	/* ----------------- ----------------- */
 	
 	@Override
 	protected AggregateSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		NamedElementsScope commonTypeScope = new NamedElementsScope(D2_063_intrinsics.createCommonProperties(this));
-		return new AggregateSemantics(this, commonTypeScope, pickedElement);
+		return new AggregateSemantics(this, pickedElement,
+			new MembersScopeElement(getAggregateMembers()),
+			new NamedElementsScope(D2_063_intrinsics.createCommonProperties(this)));
 	}
 	
 	public class AggregateSemantics extends TypeSemantics {
 		
 		protected final NamedElementsScope commonTypeScope;
 		
-		public AggregateSemantics(IConcreteNamedElement typeElement, NamedElementsScope commonTypeScope, 
-				PickedElement<?> pickedElement) {
-			super(typeElement, pickedElement);
+		public AggregateSemantics(DefinitionAggregate typeElement, PickedElement<?> pickedElement, 
+				IScopeElement membersScope, NamedElementsScope commonTypeScope) {
+			super(typeElement, pickedElement, membersScope);
 			this.commonTypeScope = commonTypeScope;
 		}
 		
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
-			search.evaluateScope(DefinitionAggregate.this.membersScope);
+			search.evaluateScope(getMembersScope());
 			search.evaluateScope(commonTypeScope);
 		}
-	
+		
 	}
 	
 	/* -----------------  ----------------- */

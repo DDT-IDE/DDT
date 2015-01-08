@@ -126,7 +126,8 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
+		MembersScopeElement membersScopeElement = new MembersScopeElement(body == null ? null : body.nodeList);
+		return new TypeSemantics(this, pickedElement, membersScopeElement) {
 		
 			protected final NamedElementsScope commonTypeScope = createAggregateCommonTypeScope();
 			
@@ -136,7 +137,7 @@ public class DefinitionEnum extends CommonDefinition implements IDeclaration, IS
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(body);
+				super.resolveSearchInMembersScope(search);
 				search.evaluateScope(commonTypeScope);
 			}
 			

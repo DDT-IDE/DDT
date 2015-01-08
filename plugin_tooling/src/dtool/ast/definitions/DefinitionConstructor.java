@@ -14,10 +14,11 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
@@ -66,11 +67,16 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement) {
+		return new ConcreteElementSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
 				// Not applicable to constructor as it cannot be referred directly
+			}
+			
+			@Override
+			public INamedElement resolveTypeForValueContext() {
+				return null;
 			}
 			
 		};
