@@ -11,7 +11,11 @@
 package dtool.ast.references;
 
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.IImportableUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.ImportSelective;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
@@ -37,8 +41,21 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		INamedElement targetModule = refMod.resolveTargetElement(search.modResolver);
-		search.evaluateInMembersScope(targetModule);
+		ISemanticContext context = search.modResolver;
+		INamedElement targetModule = resolvedConcreteModule(refMod, context);
+		if(targetModule instanceof IImportableUnit) {
+			IImportableUnit module = (IImportableUnit) targetModule;
+			IScopeElement importableScope = module.getImportableScope();
+			search.evaluateScope(importableScope);
+		}
+	}
+	
+	protected IConcreteNamedElement resolvedConcreteModule(RefModule refMod, ISemanticContext context) {
+		INamedElement target = refMod.resolveTargetElement(context);
+		if(target == null) {
+			return null;
+		}
+		return target.resolveConcreteElement(context);
 	}
 	
 }

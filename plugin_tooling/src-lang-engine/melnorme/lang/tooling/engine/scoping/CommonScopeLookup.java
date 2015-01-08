@@ -31,7 +31,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.declarations.ImportContent;
 import dtool.ast.references.RefModule;
 import dtool.engine.analysis.ModuleProxy;
 
@@ -243,14 +242,15 @@ public abstract class CommonScopeLookup {
 			if(!getLookup().matchesName(name)) {
 				return;
 			}
+			// XXX: what about if namedElement is an error?
 			
 			assertNotNull(namedElement);
 			
 			names.addSymbol(namedElement);
 		}
 		
-		public void addImportNameElement(ImportContent importStatic) {
-			INamedElement namedElement = importStatic.moduleRef.getNamespaceFragment(getContext());
+		public void addImportNameElement(RefModule refModule) {
+			INamedElement namedElement = refModule.getNamespaceFragment(getContext());
 			visitNamedElement(namedElement);
 		}
 		

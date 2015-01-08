@@ -325,6 +325,8 @@ public class Import_LookupTest extends CommonLookupTest {
 			checkSingleResult(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
 			checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.pack"), 
+			checkSingleResult(null));
 		
 		testLookup(parseModule_WithRef("class Xpto { import pack.foo; }", "Xpto.pack"), 
 			checkSingleResult(null));
@@ -372,7 +374,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 	}
 	
-	protected Predicate<INamedElement> checkIsPackageNamespace(final String[] expectedResults) {
+	public static Predicate<INamedElement> checkIsPackageNamespace(final String[] expectedResults) {
 		return new Predicate<INamedElement>() {
 			
 			@Override

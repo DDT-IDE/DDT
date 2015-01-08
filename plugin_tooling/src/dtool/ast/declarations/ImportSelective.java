@@ -13,6 +13,7 @@ import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
 import dtool.ast.references.RefModule;
@@ -87,10 +88,20 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	
 	@Override
 	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope) {
-		findDefUnitInSelectiveImport(this, scopeRes);
+		if(isSecondaryScope) {
+			return;
+		}
+		if(DevelopmentCodeMarkers.DISABLED_FUNCTIONALITY) {
+			// DMD doesn't work like this.
+			if(fragment instanceof ImportContent) {
+				ImportContent importContent = (ImportContent) fragment;
+				ImportContent.resolveStaticImport(scopeRes, importContent.moduleRef);
+			}
+		}
+		resolveScopeElements(this, scopeRes);
 	}
 	
-	public static void findDefUnitInSelectiveImport(ImportSelective impSelective, ScopeNameResolution scopeRes) {
+	public static void resolveScopeElements(ImportSelective impSelective, ScopeNameResolution scopeRes) {
 		
 		ISemanticContext context = scopeRes.getContext();
 		

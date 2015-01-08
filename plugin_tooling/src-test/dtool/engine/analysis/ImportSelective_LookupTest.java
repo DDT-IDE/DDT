@@ -10,6 +10,8 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static dtool.engine.analysis.Import_LookupTest.checkIsPackageNamespace;
+
 import org.junit.Test;
 
 
@@ -31,6 +33,23 @@ public class ImportSelective_LookupTest extends CommonLookupTest {
 			checkNameConflict("int PackFoobar_member;", "void PackFoobar_member;")
 		);
 		
+		
+		// Test static import bit of import selective
+		testLookup(parseModule_WithRef("import pack.foo : NotFound;", "pack"),  
+			checkSingleResult(null)
+		);
+		
+		// Vs. public imports
+		testLookup(parseModule_WithRef("import pack.public_import : PackFoo_member;", "PackFoo_member"),  
+			checkSingleResult("int PackFoo_member;")
+		);
+		testLookup(parseModule_WithRef("import pack.public_import : foo_private__xxx;", "foo_private__xxx"),  
+			checkSingleResult(null)
+		);
+		
+		testLookup(parseModule_WithRef("import pack.public_import : pack;", "pack"),  
+			checkIsPackageNamespace(array("module[pack.foo]"))
+		);
 		// We should add more tests here. The other cases are currently tested by ResolverSourceTests
 		
 	}

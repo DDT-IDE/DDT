@@ -82,7 +82,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	public void evaluateImportsScopeContribution(ScopeNameResolution scopeRes, boolean isSecondaryScope) {
 		if(!isSecondaryScope) {
 			// the static import part (package/module name) goes in the primary namespace.
-			resolveStaticImport(this, scopeRes);
+			resolveStaticImport(scopeRes, moduleRef);
 		} else {
 			if(!getDeclarationImport().isStatic) {
 				resolveContentImport(this, scopeRes);
@@ -90,8 +90,8 @@ public class ImportContent extends ASTNode implements IImportFragment {
 		}
 	}
 	
-	public static void resolveStaticImport(ImportContent importStatic, ScopeNameResolution scopeRes) {
-		scopeRes.addImportNameElement(importStatic);
+	public static void resolveStaticImport(ScopeNameResolution scopeRes, RefModule refModule) {
+		scopeRes.addImportNameElement(refModule);
 	}
 	
 	public INamedElement getNamespaceFragment(ISemanticContext context) {

@@ -59,5 +59,5 @@ import pack.nonExistant#FIND¤【】 : Foo1#FIND¤【】, Foo2#FIND¤【】;
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ syntax errors
 #PROJECT(importsProject)
 
-import pack.sample :#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@PACK_SAMPLE_MBRS】#@SPACE_Opt2,
- 	sampleErrorAlias =#@SPACE_Opt#FINDMISSING#REFSEARCH¤【#@PACK_SAMPLE_MBRS】#@SPACE_Opt2;
+import pack.sample :#@SPACE_Opt#FINDMISSING#REFSEARCH¤【pack▪#@PACK_SAMPLE_MBRS▪pack2▪#@PACK2_PUBLIC_IMPORTED_MBRS】#@SPACE_Opt2,
+ 	sampleErrorAlias =#@SPACE_Opt#FINDMISSING#REFSEARCH¤【pack▪#@PACK_SAMPLE_MBRS▪pack2▪#@PACK2_PUBLIC_IMPORTED_MBRS】#@SPACE_Opt2;

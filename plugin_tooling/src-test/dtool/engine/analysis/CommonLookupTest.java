@@ -117,7 +117,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		};
 	}
 	
-	protected Predicate<INamedElement> checkSingleResult(final String expectedResult) {
+	public static Predicate<INamedElement> checkSingleResult(final String expectedResult) {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
