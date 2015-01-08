@@ -57,7 +57,7 @@ public class ScopeTraverser {
 				}
 			}
 			
-			if(node instanceof INamedElement) {
+			if(!isSecondaryScope && node instanceof INamedElement) {
 				INamedElement namedElement = (INamedElement) node;
 				scopeResolution.visitNamedElement(namedElement);
 			}

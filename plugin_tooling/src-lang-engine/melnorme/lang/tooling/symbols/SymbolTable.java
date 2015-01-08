@@ -19,6 +19,7 @@ import java.util.Set;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
+import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.ModuleProxy;
 import dtool.engine.analysis.PackageNamespace;
 import dtool.engine.analysis.PackageNamespaceFragment;
@@ -92,10 +93,16 @@ public class SymbolTable {
 		if(existingEntry == null) {
 			map.put(name, newElement);
 		} else {
-			if(existingEntry instanceof ModuleProxy && newElement instanceof ModuleProxy) {
+			// An entry already exists
+			
+			if(existingEntry.getArcheType() == EArcheType.Module && newElement.getArcheType() == EArcheType.Module) {
 				assertTrue(existingEntry.getFullyQualifiedName().equals(newElement.getFullyQualifiedName()));
-				// Don't add duplicated element.
-				return;
+				return; // Don't add duplicated element.
+			}
+			
+			if(existingEntry == newElement) {
+				// I don't think this case actually happens, but still, just in case:
+				return; // They are the same, so ignore
 			}
 			
 			OverloadedNamedElement overloadElement;
@@ -115,6 +122,7 @@ public class SymbolTable {
 				overloadElement = new OverloadedNamedElement(existingEntry, existingEntry.getParent());
 				map.put(name, overloadElement);
 			}
+			
 			overloadElement.addElement(newElement);
 		}
 	}

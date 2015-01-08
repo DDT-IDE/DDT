@@ -12,12 +12,12 @@ int mysample;
 #@__CONTEXT_START__
 
 	#REFSEARCH¤【importTest▪mysample】
-	importTest.#REFSEARCH¤【importTest▪mysample】;
+	importTest.#REFSEARCH¤【mysample】;
 	
 	importTest#FIND¤【importTest/】;
 	importTest.mysample#FIND¤【importTest/mysample】;
 	
-	importTest.importTest#FIND¤【importTest/】;
+	importTest.importTest#FIND¤【】;
 	
 #@__CONTEXT_END__
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
@@ -29,14 +29,14 @@ int mysample;
 
 #@__CONTEXT_START__
 	#REFSEARCH¤【pack▪mysample】
-	pack.importTest.#REFSEARCH¤【pack▪mysample】;
+	pack.importTest.#REFSEARCH¤【mysample】;
 	
 	pack#FIND¤【pack/】;
 	pack.importTest#FIND¤【pack.importTest/】;
 	pack.importTest.mysample#FIND¤【pack.importTest/mysample】;
 	
 	pack.importTest.importTest#FIND¤【】;
-	pack.importTest.pack#FIND¤【pack/】;
-	pack.importTest.pack.importTest#FIND¤【pack.importTest/】;
+	pack.importTest.pack#FIND¤【】;
+	pack.importTest.pack.importTest#FIND¤【】;
 	
 #@__CONTEXT_END__

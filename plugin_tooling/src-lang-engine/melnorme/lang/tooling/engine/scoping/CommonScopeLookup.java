@@ -194,13 +194,18 @@ public abstract class CommonScopeLookup {
 			return null;
 		searchedScopes.add(scope);
 		
+		SymbolTable names = doResolveScopeSymbols(scope);
+		
+		return names;
+	}
+	
+	protected SymbolTable doResolveScopeSymbols(IScopeElement scope) {
 		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
 		
 		SymbolTable names = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, false);
 		
 		SymbolTable importedNames = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, true);
 		names.addVisibleSymbols(importedNames);
-		
 		return names;
 	}
 	

@@ -5,7 +5,9 @@
 #@PACK_MOD2_MBRS【othervar▪Other▪OtherFoo】
 #@PACK_MOD3_MBRS【othervar▪Other】
 // It's a bit crap that pack▪pack2 are included too (ugly behavior)
-#@PACK_SAMPLE_MBRS【sampleVar▪sampleVarB▪SampleClass▪SampleClassB▪pack▪pack2▪#@PACK2_PUBLIC_IMPORTED_MBRS】  
+#@PACK_SAMPLE_MBRS【sampleVar▪sampleVarB▪SampleClass▪SampleClassB】
+//pack▪pack2▪@PACK2_PUBLIC_IMPORTED_MBRS
+  
 #@SUBPACK_MOD3_MBRS【mod3var▪Mod3Class▪Mod3Template】
 #@PACK2_PUBLIC_IMPORTED_MBRS【foopublicImportVar0▪foopublicImportVar▪foopublicImportVar2】
 

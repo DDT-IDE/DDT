@@ -40,24 +40,32 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static final String DEFAULT_ModuleName = "_tests";
 	
 	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	public static final Location DEFAULT_TestsBundle_Source = loc(DEFAULT_TestsBundle, "source");
 	public static final BundlePath TESTER_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "tester");
 	
 	public static final Location DEFAULT_TestsModule = 
-			loc(DEFAULT_TestsBundle, "source").resolve_fromValid(DEFAULT_ModuleName + ".d");
-	
-	protected static ResolvedModule getDefaultTestsModule() throws CommonException {
-		String dubPath = testsDubPath();
-		return defaultSemMgr.getUpdatedResolvedModule(DEFAULT_TestsModule, DEFAULT_TestsCompilerInstall, dubPath);
-	}
+			DEFAULT_TestsBundle_Source.resolve_fromValid(DEFAULT_ModuleName + ".d");
 	
 	protected static ISemanticContext getDefaultTestsModuleContext() throws CommonException {
 		return getDefaultTestsModule().getSemanticContext();
 	}
 	
+	protected static ResolvedModule getUpdatedModule(Location filePath) throws CommonException {
+		return defaultSemMgr.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall, testsDubPath());
+	}
+	
+	protected static ResolvedModule getDefaultTestsModule() throws CommonException {
+		return getUpdatedModule(DEFAULT_TestsModule);
+	}
+	
+	protected static ResolvedModule getTesterModule_(String sourcePath) throws CommonException {
+		Location filePath = loc(TESTER_TestsBundle, "source").resolve_fromValid(sourcePath);
+		return getUpdatedModule(filePath);
+	}
+	
 	protected static ResolvedModule getTesterModule(String sourcePath) {
 		try {
-			Location filePath = loc(TESTER_TestsBundle, "source").resolve_fromValid(sourcePath);
-			return defaultSemMgr.getUpdatedResolvedModule(filePath, DEFAULT_TestsCompilerInstall, testsDubPath());
+			return getTesterModule_(sourcePath);
 		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}

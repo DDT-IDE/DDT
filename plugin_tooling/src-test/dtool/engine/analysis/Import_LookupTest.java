@@ -100,6 +100,31 @@ public class Import_LookupTest extends CommonLookupTest {
 	@Test
 	public void test_ImportContent() throws Exception { test_ImportContent$(); }
 	public void test_ImportContent$() throws Exception {
+		
+		// ---------- Basic test - module statement
+		
+		testLookup(parseModule_WithRef("module xxx;", "xxx"),  
+			checkSingleResult("module xxx;###")
+		);
+		testLookup(parseModule_WithRef("", DEFAULT_ModuleName),  
+			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+		);
+		
+		
+		testLookup(parseModule_WithRef("module xxx; int foo;", "xxx.foo"),  
+			checkSingleResult("int foo;")
+		);
+		
+		testLookup(parseModule_WithRef("module xxx; int foo;", "xxx.foo"),  
+			checkSingleResult("int foo;")
+		);
+		testLookup(parseModule_WithRef("module pack.xxx; int foo;", "pack.xxx.foo"),  
+			checkSingleResult("int foo;")
+		);
+		
+		
+		// ---------- Basic test 
+		
 		testLookup(parseModule_WithRef("import pack.foobar; ", "PackFoobar_member"),  
 			checkSingleResult("int PackFoobar_member;")
 		);
@@ -116,11 +141,43 @@ public class Import_LookupTest extends CommonLookupTest {
 			checkNameConflict("PNamespace[pack]", "int pack;")
 		);
 		
+		// Special case: import self:
+		testLookup(parseModule_WithRef(SRC_IMPORT_SELF, DEFAULT_ModuleName),  
+			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+		);
+		testLookup(parseModule_WithRef(SRC_IMPORT_SELF + "int xxx;", "xxx"),  
+			checkSingleResult("int xxx;")
+		);
 		
-		// Test namespace aggregation
-		testLookup(parseModule_WithRef("import pack.foo; import pack.foobar;", "pack"),  
+		testLookup(parseModule_WithRef("module "+DEFAULT_ModuleName+";"+ SRC_IMPORT_SELF, DEFAULT_ModuleName),  
+			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+		);
+		testLookup(parseModule_WithRef("module "+DEFAULT_ModuleName+";"+ SRC_IMPORT_SELF + "int xxx;", "xxx"),  
+			checkSingleResult("int xxx;")
+		);
+		
+		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")),  
+			checkSingleResult("$pack.import_self/")
+		);
+		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")), 
+			"/*M2*/", checkSingleResult("int xpto;")
+		);
+		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self_indirect.d")),  
+			checkSingleResult("$pack.import_self_indirect/")
+		);
+		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self_indirect.d")),  
+			"/*M2*/", checkSingleResult("int xpto;")
+		);
+		
+		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")), 
+			"/*M3*/", checkSingleResult("int xpto;")
+		);
+		
+		
+		// ------- Test namespace aggregation
+		testLookup(parseModule_WithRef("import pack.foo; import pack.foobar; import pack.non_existant;", "pack"),  
 			checkIsPackageNamespace(array(
-				"module[pack.foo]", "module[pack.foobar]" 
+				"module[pack.foo]", "module[pack.foobar]", "module[pack.non_existant]"
 			))
 		);
 		// Test namespace aggregation - across scopes
@@ -130,10 +187,73 @@ public class Import_LookupTest extends CommonLookupTest {
 			))
 		);
 		
-		// Special case: import self:
-		testLookup(parseModule_WithRef(SRC_IMPORT_SELF, DEFAULT_ModuleName),  
-			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+		testLookup(parseModule_WithRef(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; import a.zzz;",
+			"a"), 
+			
+			checkIsPackageNamespace(array(
+				"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]"
+			))
 		);
+		// Aggregation on the second level
+		testLookup(parseModule_WithRef(
+			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
+			+ "import a.yyy.bar; import a.zzz;",
+			"a.xxx"), 
+			
+			checkIsPackageNamespace(array(
+				"module[a.xxx.foo]", "module[a.xxx.bar]", "PNamespace[a.xxx.xpto]" 
+			))
+		);
+		
+		// Test overload: packagevs. a module import/ns
+		testLookup(parseModule_WithRef("import xxx.foo; import xxx; ", "xxx"), 
+			checkModuleProxy("module[xxx]")
+		);
+		testLookup(parseModule_WithRef("import xxx; import xxx.foo; ", "xxx"), 
+			checkModuleProxy("module[xxx]")
+		);
+		
+		
+		// ------- Test duplicate import
+		testLookup(parseModule_WithRef("import xxx; import xxx;", "xxx"),  
+			checkModuleProxy("module[xxx]")
+		);
+		
+		testLookup(parseModule_WithRef("module xxx; import xxx;", "xxx"), 
+			checkModuleProxy("module[xxx]")
+		);
+
+		
+		testLookup(
+			parseModule_WithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx"),  
+			
+			checkIsPackageNamespace(array("module[xxx.foo]", "PNamespace[xxx.bar]"))
+		);
+		testLookup(
+			parseModule_WithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx.bar"), 
+			
+			checkIsPackageNamespace(array("module[xxx.bar.z]"))
+		);
+		
+		// ------- Test name conflicts
+		
+		testLookup(parseModule_WithRef("module xxx; int xxx; ", "xxx"),
+			checkSingleResult("int xxx;") 
+		);
+		
+		testLookup(parseModule_WithRef("int xxx; import xxx; ", "xxx"),
+			checkNameConflict("int xxx;", "module[xxx]") 
+		);
+		
+		testLookup(parseModule_WithRef("int xxx; char xxx; import xxx; ", "xxx"),
+			checkNameConflict("int xxx;", "char xxx;", "module[xxx]") 
+		);
+
+		
+		// ----------------------
+		
 		
 		// Test contents of fully-qualified namespace
 		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.PackFoobar_member"),  
@@ -143,9 +263,39 @@ public class Import_LookupTest extends CommonLookupTest {
 			checkSingleResult(null)
 		);
 		
+
+
+		// ------- import vs. parent lexical scopes
+		
+		String scopeOverload_vsImport = 
+			"void xxx;" +
+			"void func() {" +
+			"	import xxx; auto _ = xxx/*M*/" +
+			"}";	
+		testLookup(parseModule_(scopeOverload_vsImport), 
+			checkSingleResult(
+			"module[xxx]"
+		));
+		
+
 		test_public_imports();
 	}
 	
+	protected void doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
+			final String[] expectedResults) {
+		testLookup(resolvedModule, offsetMarker, checkIsPackageNamespace(expectedResults));
+	}
+	
+	protected Predicate<INamedElement> checkModuleProxy(final String expectedToString) {
+		return new Predicate<INamedElement>() {
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
+				assertTrue(namedElementToString(moduleProxy).equals(expectedToString));
+				return true;
+			}
+		};
+	}
 	
 	/* -----------------  ----------------- */
 	
@@ -236,125 +386,6 @@ public class Import_LookupTest extends CommonLookupTest {
 				return true;
 			}
 			
-		};
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Test
-	public void test_importImplicitNamespace() throws Exception { test_importImplicitNamespace$(); }
-	public void test_importImplicitNamespace$() throws Exception {
-		
-		testLookup(parseModule_WithRef("module xxx;", "xxx"),  
-			checkSingleResult("module xxx;###")
-		);
-
-		
-		// ------- Test name conflicts
-		
-		
-		testLookup(parseModule_WithRef("module xxx; int xxx; ", "xxx"),
-				
-			checkSingleResult("int xxx;") 
-		);
-		
-		testLookup(parseModule_WithRef("int xxx; import xxx; ", "xxx"),
-				
-			checkNameConflict("int xxx;", "module[xxx]") 
-		);
-		
-		testLookup(parseModule_WithRef("int xxx; char xxx; import xxx; ", "xxx"),
-				
-			checkNameConflict("int xxx;", "char xxx;", "module[xxx]") 
-		);
-		
-		// ------- Test namespace aggregation
-		
-		testLookup(parseModule_WithRef("import xxx.foo; import xxx.bar; import xxx.; ", "xxx"), 
-				
-			checkIsPackageNamespace(array("module[xxx.foo]", "module[xxx.bar]"))
-		);
-		
-		testLookup(parseModule_WithRef(
-			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
-			+ "import a.yyy.bar; import a.zzz;",
-			"a"), 
-			
-			checkIsPackageNamespace(array(
-				"PNamespace[a.xxx]", "PNamespace[a.yyy]","module[a.zzz]"
-			))
-		);
-		// Aggregation on the second level
-		testLookup(parseModule_WithRef(
-			"import a.xxx.foo; import a.xxx.bar; import a.xxx.xpto.foo; import a.xxx.; "
-			+ "import a.yyy.bar; import a.zzz;",
-			"a.xxx"), 
-			
-			checkIsPackageNamespace(array(
-				"module[a.xxx.foo]", "module[a.xxx.bar]", "PNamespace[a.xxx.xpto]" 
-			))
-		);
-		// Test overload vs. a module import/ns
-		testLookup(parseModule_WithRef("import xxx.foo; import xxx; ", "xxx"), 
-			checkModuleProxy("module[xxx]")
-		);
-		testLookup(parseModule_WithRef("import xxx; import xxx.foo; ", "xxx"), 
-			checkModuleProxy("module[xxx]")
-		);
-		
-		
-		// ------- Test duplicate import
-		
-		testLookup(parseModule_WithRef("module xxx; import xxx;", "xxx"), 
-			
-			checkModuleProxy("module[xxx]")
-		);
-		
-		testLookup(parseModule_WithRef("import xxx; import xxx;", "xxx"),  
-			
-			checkModuleProxy("module[xxx]")
-		);
-		
-		testLookup(
-			parseModule_WithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx"),  
-			
-			checkIsPackageNamespace(array("module[xxx.foo]", "PNamespace[xxx.bar]"))
-		);
-		testLookup(
-			parseModule_WithRef("import xxx.foo; import xxx.bar.z; import xxx.bar.z; import xxx.foo;", "xxx.bar"), 
-			
-			checkIsPackageNamespace(array("module[xxx.bar.z]"))
-		);
-
-		
-		// ------- import vs. parent lexical scopes
-		
-		String scopeOverload_vsImport = 
-			"void xxx;" +
-			"void func() {" +
-			"	import xxx; auto _ = xxx/*M*/" +
-			"}";	
-		
-		testLookup(parseModule_(scopeOverload_vsImport), 
-			checkSingleResult(
-			"module[xxx]"
-		));
-		
-	}
-	
-	protected void doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
-			final String[] expectedResults) {
-		testLookup(resolvedModule, offsetMarker, checkIsPackageNamespace(expectedResults));
-	}
-	
-	protected Predicate<INamedElement> checkModuleProxy(final String expectedToString) {
-		return new Predicate<INamedElement>() {
-			@Override
-			public boolean evaluate(INamedElement matchedElement) {
-				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
-				assertTrue(namedElementToString(moduleProxy).equals(expectedToString));
-				return true;
-			}
 		};
 	}
 	

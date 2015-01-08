@@ -5,16 +5,17 @@
 	pack.#REFSEARCH¤【mod2▪mod1▪sample▪subpack▪modNonExistant▪modSyntaxErrors】;
 	
 	pack.sample#FIND¤【pack.sample/】;
-	pack.sample.#REFSEARCH¤【#@PACK_SAMPLE_MBRS】;
 	pack.sample.SampleClass#FIND¤【pack.sample/SampleClass】;
 	pack.sample.SampleClass.foo#FIND¤【pack.sample/SampleClass.foo】++;
 	
-	pack.sample.foopublicImportVar#FIND¤【pack2.public_imported/foopublicImportVar】++; // Ugly D behavior?
-	pack.sample.pack2.public_imported.foopublicImportVar#FIND¤【pack2.public_imported/foopublicImportVar】; // Ugly D 
+	pack.sample.foopublicImportVar#FIND¤【】++;
+	//pack.sample.pack2.public_imported.foopublicImportVar 
 
 	pack.sample.fooprivateImportVar#FIND¤【】;
-	pack.sample.pack2.private_imported#FIND¤【】;
+	//pack.sample.pack2.private_imported
 	pack.sample.pack2.private_imported.fooprivateImportVar#FIND¤【】;
+	
+	pack.sample.#REFSEARCH¤【#@PACK_SAMPLE_MBRS】;
 	
 	pack.subpack#FIND¤【pack.subpack/】; // test import package
 	pack.subpack.#REFSEARCH¤【PackSubpackPackage】; // Used to include ▪mod3 
@@ -72,7 +73,7 @@ import pack.subpack;
 #@__CONTEXT_START__
 	pack.#REFSEARCH¤【mod1▪mod2▪sample▪subpack▪modNonExistant▪modSyntaxErrors】;
 	#REFSEARCH¤【importTest▪modA▪#@MODA_MBRS▪pack▪#@PACK_MOD1_MBRS▪
-		#@PACK_MOD2_MBRS▪#@PACK_SAMPLE_MBRS▪#@SUBPACK_MOD3_MBRS▪PackSubpackPackage】;
+		#@PACK_MOD2_MBRS▪#@PACK_SAMPLE_MBRS▪pack2▪#@PACK2_PUBLIC_IMPORTED_MBRS▪#@SUBPACK_MOD3_MBRS▪PackSubpackPackage】;
 	
 	SampleClass#FIND¤【pack.sample/SampleClass】;
 	SampleClass.foo#FIND¤【pack.sample/SampleClass.foo】;

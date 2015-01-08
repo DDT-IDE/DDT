@@ -1,5 +1,6 @@
 package dtool.engine.util;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
@@ -22,6 +23,10 @@ public class NamedElementUtil {
 	}
 	
 	public static String getElementTypeLabelBase(INamedElement namedElement) {
+		if(namedElement.getArcheType().isError()) {
+			assertFail();
+		}
+		
 		if(namedElement.getArcheType() == EArcheType.Module) {
 			return namedElement.getModuleFullyQualifiedName() + "/";
 		}
