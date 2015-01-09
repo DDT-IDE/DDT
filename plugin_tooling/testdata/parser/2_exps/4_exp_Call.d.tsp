@@ -26,6 +26,5 @@
 #PARSE(EXPRESSION)    const Bar (123 )
 #STRUCTURE_EXPECTED:  ExpCall( ExpReference(RefTypeModifier(RefIdentifier)) Integer )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ special case for opCall
-#PARSE(EXPRESSION)    #error(TYPE_AS_EXP_VALUE)【const int】 (123 )
+#PARSE(EXPRESSION)    const int(123 )
 #STRUCTURE_EXPECTED:  ExpCall( ExpReference(RefTypeModifier(RefPrimitive)) Integer )
-

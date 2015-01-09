@@ -1,7 +1,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 
-#@TYPE_AS_EXP《#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int】●ExpReference(RefPrimitive)】》
- #@INT_AS_EXP《#?STRUCTURE_EXPECTED!【#error(TYPE_AS_EXP_VALUE)【int】●ExpReference(RefPrimitive)】》
+#@TYPE_AS_EXP《#?STRUCTURE_EXPECTED!【int●ExpReference(RefPrimitive)】》
+ #@INT_AS_EXP《#?STRUCTURE_EXPECTED!【int●ExpReference(RefPrimitive)】》
 
 #@EXP_PRIMARY_SIMPLE《
   ►#?STRUCTURE_EXPECTED!【this●ExpThis】●
@@ -72,16 +72,16 @@ _EXP_AMBIG : marker for cases that can be cleanly parsed as refs
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo!(int)●ExpReference(RefTemplateInstance(RefIdentifier RefPrimitive) )】●
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[]● ExpIndex(#@ExpIdentifier)】●
   
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【int】[]   ●ExpIndex(#@INT_AS_EXP)】●
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[#error(TYPE_AS_EXP_VALUE)【int】]●ExpIndex(#@ExpIdentifier #@INT_AS_EXP)】●
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【int】[foo]●ExpIndex(#@INT_AS_EXP #@ExpIdentifier)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) int[]   ●ExpIndex(#@INT_AS_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo[int]●ExpIndex(#@ExpIdentifier #@INT_AS_EXP)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) int[foo]●ExpIndex(#@INT_AS_EXP #@ExpIdentifier)】●
 ¤》
 
 #@EXP_NON_UNARY_REFS《
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo * #@NO_EXP #EXP_RULE_BROKEN(flag)● 
     ExpInfix(ExpReference(RefIdentifier) #@NO_EXP)】●
 
-  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) #error(TYPE_AS_EXP_VALUE)【float】 * #@NO_EXP #EXP_RULE_BROKEN(flag)● 
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) float * #@NO_EXP #EXP_RULE_BROKEN(flag)● 
     ExpInfix(ExpReference(RefPrimitive) #@NO_EXP)】●
   
   ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) foo**[bar* #@NO_EXP] ● ExpInfix(#@ExpIdentifier ExpPrefix(*))】●

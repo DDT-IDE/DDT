@@ -4,7 +4,7 @@
 #STRUCTURE_EXPECTED: DefVariable(RefPrimitive DefSymbol)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ duplicate case
-#PARSE(STATEMENT)    foo[#error(TYPE_AS_EXP_VALUE)【int】];
+#PARSE(STATEMENT)    foo[int];
 #STRUCTURE_EXPECTED: StatementExpression(*)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(STATEMENT)    int foo(Object) {  } #@IGNORE_REST ;

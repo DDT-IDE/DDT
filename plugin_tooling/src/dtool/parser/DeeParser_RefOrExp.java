@@ -514,15 +514,11 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return exp == null || exp instanceof MissingExpression;
 	}
 	
-	public Expression createExpReference(Reference reference, boolean reportError) {
-		ExpReference expReference = createExpReference(reference);
-		return conclude(reportError ? createErrorTypeAsExpValue(reference) : null, expReference);
-	}
-	
-	protected ExpReference createExpReference(Reference ref) {
-		ExpReference node = new ExpReference(ref);
-		node.setSourceRange(ref.getSourceRange());
-		return node;
+	public Expression createExpReference(Reference reference) {
+		ExpReference node = new ExpReference(reference);
+		node.setSourceRange(reference.getSourceRange());
+		ExpReference expReference = node;
+		return conclude(expReference);
 	}
 	
 	protected ParserError createErrorTypeAsExpValue(Reference reference) {
@@ -582,13 +578,14 @@ protected class ParseRule_Expression {
 	
 	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit) {
 		Expression prefixExp;
+		
 		Resolvable prefixExpResolvable = parsePrimaryExpression();
 		if(prefixExpResolvable == null || prefixExpResolvable instanceof Expression) {
 			prefixExp = (Expression) prefixExpResolvable;
 		} else {
 			Reference ref = (Reference) prefixExpResolvable;
-			boolean isTypeAsExpError = !refIsAllowedInExp(ref, breakRule || lookAhead() == DeeTokens.OPEN_PARENS);
-			prefixExp = createExpReference(ref, isTypeAsExpError);
+//			boolean isTypeAsExpError = !refIsAllowedInExp(ref, breakRule || lookAhead() == DeeTokens.OPEN_PARENS);
+			prefixExp = createExpReference(ref);
 		}
 		
 		if(prefixExp == null || shouldReturnToParseRuleTopLevel(prefixExp)) {
@@ -728,7 +725,7 @@ protected class ParseRule_Expression {
 			if(!parse.ruleBroken) {
 				ref = parseTypeReference_withLeftReference(ref, RefParseRestrictions.TEMPLATE_ONLY).node; 
 			}
-			return parsePostfixExpression(conclude(createExpReference(ref)));
+			return parsePostfixExpression(createExpReference(ref));
 		}
 		default:
 			return exp;
@@ -931,9 +928,9 @@ protected class ParseRule_Expression {
 		
 } /* ---------------- ParseRule_TypeOrExp END----------------*/
 	
+	@Deprecated
 	protected static boolean refIsAllowedInExp(Reference ref, boolean allowOpCallTypeRefs) {
 		switch (ref.getNodeType()) {
-		case REF_PRIMITIVE:
 		case REF_TYPE_FUNCTION:
 			return false;
 		case REF_MODIFIER:
@@ -941,12 +938,17 @@ protected class ParseRule_Expression {
 				return false;
 			RefTypeModifier refModifier = (RefTypeModifier) ref;
 			return refModifier.ref == null ? true : refIsAllowedInExp(refModifier.ref, true);
-		case REF_TYPEOF:
-			return allowOpCallTypeRefs;
 		case REF_TYPE_DYN_ARRAY:
 		case REF_TYPE_POINTER:
 		case REF_INDEXING:
 			return false;
+			
+		// These don't generate parser errors. Semantic analysis should be responsible for errors in invalid cases. 
+		// This simplifies the parser.
+		case REF_PRIMITIVE:
+			return true;
+		case REF_TYPEOF:
+			return true;
 		default:
 			return true;
 		}
@@ -1046,10 +1048,10 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	protected Expression resolvableToExp(Resolvable resolvable, boolean reportError) {
+	protected Expression resolvableToExp(Resolvable resolvable) {
 		if(resolvable instanceof Reference) {
 			Reference reference = (Reference) resolvable;
-			return createExpReference(reference, reportError);
+			return createExpReference(reference);
 		}
 		return (Expression) resolvable;
 	}
@@ -1248,8 +1250,7 @@ protected class ParseRule_Expression {
 		if(isDotAfterParensSyntax) {
 			resolvable = nullTypeOrExpToParseMissing(arg.toFinalResult(true).node);
 		} else {
-			resolvable = arg.toFinalResult(false).node;
-			resolvable = nullExpToParseMissing(resolvableToExp(resolvable, true));
+			resolvable = nullExpToParseMissing(resolvableToExp(arg.toFinalResult(false).node));
 		}
 		parse.consumeRequired(DeeTokens.CLOSE_PARENS);
 		

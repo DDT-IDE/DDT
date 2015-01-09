@@ -3,6 +3,8 @@
 ### DDT 0.11.x
  * Fixed: added loop detection for known loop scenarios during semantic engine analysis.
  * Fixed: Error parsing UDAS as function attributes (example: `int foo() @blah { }`) .
+ * Fixed: removed parser errors about types being used in expressions. 
+   * Fixes false errors occurring in valid code such as `auto x = int(223)`;
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.
