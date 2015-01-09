@@ -15,6 +15,8 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.jface.resource.ImageDescriptor;
 
+/* FIXME: review this code: */
+@Deprecated
 public class DeeCompletionProposalLabelProvider extends CompletionProposalLabelProvider {
 	
 	protected DeeModelElementLabelProvider modelElementLabelProvider = new DeeModelElementLabelProvider();

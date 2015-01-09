@@ -20,7 +20,6 @@ import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCoreMessages;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.DefaultProblem;
 import org.eclipse.dltk.compiler.problem.ProblemSeverity;
 import org.eclipse.dltk.core.CompletionProposal;
@@ -30,14 +29,13 @@ public class DeeCompletionOperation {
 	
 	// Tests may modify this variable, but only tests
 	public static volatile Location compilerPathOverride = null;
-
-	public ArrayList2<CompletionProposal> runCompletion(IModuleSource moduleSource, final int position)
+	
+	public ArrayList2<CompletionProposal> completionResultAdapt(CompletionSearchResult completionResult,
+			final int position)
 			throws CoreException {
-		
-		CompletionSearchResult completionResult = DToolClient.getDefault().runCodeCompletion(
-			moduleSource, position, compilerPathOverride);
 		if(completionResult.isFailure()) {
-			throw LangCore.createCoreException(DeeCoreMessages.ContentAssist_LocationFailure, null);
+			throw LangCore.createCoreException(DeeCoreMessages.ContentAssist_LocationFailure +
+				completionResult.resultCode.getMessage(), null);
 		}
 		
 		ArrayList2<CompletionProposal> proposals = new ArrayList2<>();

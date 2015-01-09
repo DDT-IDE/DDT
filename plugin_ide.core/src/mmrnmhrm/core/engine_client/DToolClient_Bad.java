@@ -57,15 +57,6 @@ public class DToolClient_Bad {
 	}
 	
 	@Deprecated
-	public static Path getFilePath(IModuleSource input) throws CoreException {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
-		}
-	}
-	
-	@Deprecated
 	public static Path getFilePathOrNull(ISourceModule input) {
 		try {
 			return DLTKUtils.getFilePath(input);

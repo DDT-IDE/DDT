@@ -30,6 +30,6 @@ public abstract class DeeCoreMessages extends LangCoreMessages {
 			"Error running dub build command.";
 	
 	public static final String ContentAssist_LocationFailure = 
-			"Could not perform content assist at location.";
+			"Could not perform content assist: ";
 	
 }

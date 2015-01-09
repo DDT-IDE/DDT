@@ -213,34 +213,17 @@ public class DToolClient {
 		}
 	}
 	
+	/** Warning: some code must later be responsible for disposing of the server's working copy */
+	public void updateWorkingCopyIfInconsistent2(Path filePath, String source) {
+		getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
+	}
+	
 	public void discardServerWorkingCopy(Path filePath) {
 		getServerSemanticManager().discardWorkingCopy(filePath);
 	}
 	
 	
 	/* -----------------  ----------------- */
-	
-	public CompletionSearchResult runCodeCompletion(IModuleSource moduleSource, int offset, Location compilerPath) 
-			throws CoreException {
-		
-		if(moduleSource instanceof ISourceModule) {
-			ISourceModule sourceModule = (ISourceModule) moduleSource;
-			return runCodeCompletion(sourceModule, offset, compilerPath);
-		}
-		
-		Path filePath = DToolClient_Bad.getFilePath(moduleSource);
-		// Update source to engine server.
-		if(filePath == null) {
-			throw DeeCore.createCoreException("Invalid file path", null); 
-		}
-		String sourceContents = moduleSource.getSourceContents();
-		try {
-			getServerSemanticManager().setWorkingCopyAndParse(filePath, sourceContents);
-			return doCodeCompletion(filePath, offset, compilerPath);
-		} finally {
-			discardServerWorkingCopy(filePath);
-		}
-	}
 	
 	public CompletionSearchResult runCodeCompletion(ISourceModule sourceModule, int offset, Location compilerPath) 
 			throws CoreException {

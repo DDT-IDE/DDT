@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -14,7 +15,7 @@ import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
-import mmrnmhrm.core.engine_client.CompletionEngineSourceTests;
+import mmrnmhrm.core.engine_client.CoreResolverSourceTests;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
@@ -26,10 +27,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
+import dtool.ast.definitions.EArcheType;
 import dtool.ddoc.TextUI;
+import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource;
+import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
-public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
+public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	
 	static {
 		MiscUtil.loadClass(CommonDeeUITest.class);
@@ -134,6 +138,34 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 			}
 		}
 		return results;
+	}
+	
+	@Override
+	public void removeDefUnitsFromExpected(Collection<INamedElement> resultDefUnits) {
+		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+			INamedElement defElement = iterator.next();
+			
+			if(defElement.getArcheType() == EArcheType.Module) {
+				String fqName = NamedElementUtil.getElementTypedLabel(defElement);
+				if(fqName.equals("object/") || fqName.equals("std.stdio/")) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+	
+	/* ----------------- Find def cases - don't test that ----------------- */
+	
+	@Override
+	protected void runFindTest_________(MetadataEntry mde) {
+	}
+	
+	@Override
+	protected void runFindFailTest_________(MetadataEntry mde) {
+	}
+	
+	@Override
+	protected void runFindMissingTest_________(MetadataEntry mde) {
 	}
 	
 }

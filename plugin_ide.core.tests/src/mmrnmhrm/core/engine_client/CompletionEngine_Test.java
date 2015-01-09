@@ -6,14 +6,12 @@ import java.util.ArrayList;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation.RefSearchCompletionProposal;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 import org.eclipse.dltk.core.DLTKCore;
@@ -21,10 +19,8 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.junit.Test;
 
-import dtool.tests.MockCompilerInstalls;
-
 // These tests could be expanded
-public class CompletionEngine_Test extends CommonCoreTest {
+public abstract class CompletionEngine_Test extends CommonCoreTest {
 	
 	protected ISourceModule srcModule;
 	
@@ -45,27 +41,7 @@ public class CompletionEngine_Test extends CommonCoreTest {
 		testCompletionEngine(getMarkerEndPos("/+CC3@+/")+1, 2);
 	}
 	
-	protected void testCompletionEngine(final int offset, final int rplLen) throws ModelException {
-		testCompletionEngine((IModuleSource) srcModule, offset, rplLen,
-			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
-	}
-	
-	public static ArrayList<INamedElement> testCompletionEngine(IModuleSource moduleSource, final int offset,
-		final int rplLen, final Location compilerPath) {
-		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
-		
-		Location previousOverride = DeeCompletionOperation.compilerPathOverride;
-		try {
-			DeeCompletionOperation.compilerPathOverride = compilerPath;
-			
-			DeeCompletionEngine completionEngine = new DeeCompletionEngine();
-			completionEngine.setRequestor(requestor);
-			completionEngine.complete(moduleSource, offset, 0);
-			return requestor.results;
-		} finally {
-			DeeCompletionOperation.compilerPathOverride = previousOverride;
-		}
-	}
+	protected abstract void testCompletionEngine(final int offset, final int rplLen) throws ModelException;
 	
 	protected int getMarkerEndPos(String markerString) throws ModelException {
 		int startPos = srcModule.getSource().indexOf(markerString);
@@ -105,17 +81,8 @@ public class CompletionEngine_Test extends CommonCoreTest {
 		try {
 			final int offset = srcModule.getSource().indexOf("Foo foo");
 			
-			class CompletionRequestorTestCheck extends CompletionRequestor {
-				@Override
-				public void accept(CompletionProposal proposal) {
-					assertTrue(proposal.getCompletionLocation() == offset);
-					assertTrue(proposal.getReplaceStart() == offset);
-				}
-			}
+			testCompletionEngine(offset, 0);
 			
-			DeeCompletionEngine completionEngine = new DeeCompletionEngine();
-			completionEngine.setRequestor(new CompletionRequestorTestCheck());
-			completionEngine.complete((IModuleSource) srcModule, offset, 0);
 		} finally {
 			srcModule.discardWorkingCopy();
 		}

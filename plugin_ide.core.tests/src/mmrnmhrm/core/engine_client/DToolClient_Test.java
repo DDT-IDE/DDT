@@ -12,20 +12,16 @@ package mmrnmhrm.core.engine_client;
 
 import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashSet;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine_client.DToolClient.ClientModuleParseCache;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
@@ -34,21 +30,16 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
-import dtool.dub.CommonDubTest;
-import dtool.dub.DubManifestParserTest;
 import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
 import dtool.resolver.DefUnitResultsChecker;
-import dtool.tests.DToolTestResources;
 import dtool.tests.MockCompilerInstalls;
 
 public class DToolClient_Test extends CommonCoreTest {
@@ -56,45 +47,6 @@ public class DToolClient_Test extends CommonCoreTest {
 	protected static final DToolClient client = DToolClient.getDefault();
 	
 	protected TestFixtureProject testsProject;
-	
-	@Ignore // relative paths no longer supported
-	@Test
-	public void testBasic() throws Exception { testBasic$(); }
-	public void testBasic$() throws Exception {
-		String modulePath = "relative/path/foo.d";
-		ModuleSource moduleSource = new ModuleSource(modulePath, "module blah;");
-		Path filePath = DToolClient.getPathHandleForModuleSource(moduleSource);
-		
-		ClientModuleParseCache clientModuleCache = client.getClientModuleCache();
-		assertEquals(clientModuleCache.getParsedModuleOrNull(filePath, moduleSource).module.getName(), "blah");
-		assertEquals(clientModuleCache.getExistingParsedModuleNode(filePath).getName(), "blah");
-		
-		testCodeCompletion(moduleSource, 0, 
-			"blah");
-		testCodeCompletion(new ModuleSource(modulePath, "module xpto;"), 0, 
-			"xpto");
-		assertTrue(client.getServerSemanticManager().getParseCache().getEntry(MiscUtil.createPath(modulePath))
-			.isWorkingCopy() == false);
-		
-		Path path = DToolTestResources.getTestResourcePath().resolve("dummy__non_existant.d");
-		assertTrue(path.isAbsolute());
-		testCodeCompletion(new ModuleSource(path.toString(), "module blah;"), 0, 
-				"blah");
-		
-		// Error case
-		try {
-			client.doCodeCompletion((Path) null, 0, null);
-			assertFail();
-		} catch (CoreException e) {
-		}
-		
-	}
-	
-	protected void testCodeCompletion(ModuleSource moduleSource, int offset, String... results) throws CoreException {
-		CompletionSearchResult cc = client.runCodeCompletion(moduleSource, offset, 
-			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
-		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
-	}
 	
 	@Test
 	public void testUpdates() throws Exception { testUpdates________________(); }

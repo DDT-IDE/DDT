@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -32,10 +33,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import dtool.engine.CommonSemanticsTest;
 import dtool.resolver.BaseResolverSourceTests;
 import dtool.sourcegen.AnnotatedSource;
 
 public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
+	
+	protected static final Location COMPILER_PATH = CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath();
 	
 	static {
 		MiscUtil.loadClass(CommonDeeWorkspaceTestNew.class);

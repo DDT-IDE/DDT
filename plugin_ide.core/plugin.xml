@@ -158,14 +158,6 @@
       </selectionEngine>
    </extension>
    <extension
-         point="org.eclipse.dltk.core.completionEngine">
-      <completionEngine
-            class="mmrnmhrm.core.engine_client.DeeCompletionEngine"
-            nature="org.dsource.ddt.ide.core.nature"
-            priority="0">
-      </completionEngine>
-   </extension>
-   <extension
          point="org.eclipse.dltk.core.search">
       <searchFactory
             class="mmrnmhrm.core.search.DeeSearchFactory"
