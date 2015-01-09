@@ -75,16 +75,24 @@ Test function/template interactions - paramDefault convertion :
 #@FN_PARAMS__NO_BROKEN《#FN_PARAM__NO_BROKEN(flag)#@FN_PARAMS》
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Function attributes
-#@FN_ATTRIB《#?STRUCTURE_EXPECTED!【
-►#@《#@IMMUT_TYPE_MODIFIERS●nothrow●pure●
-  ►@property●@safe●@trusted●@system●@disable● 
-  ►@property @safe●nothrow @property pure @safe @disable》
-● 】》
+
+#@FN_ATTRIB《
+ ►#?STRUCTURE_EXPECTED!【 /*no fn attrib*/ ● 】●  
+ ►#?STRUCTURE_EXPECTED!【 #@IMMUT_TYPE_MODIFIERS ● FnAttrib 】●
+ ►#?STRUCTURE_EXPECTED!【 nothrow ● FnAttrib 】●
+ ►#?STRUCTURE_EXPECTED!【 pure ● FnAttrib 】●    
+ ►#?STRUCTURE_EXPECTED!【 #@【@property●@trusted●@system●@disable】 ● AttribAtKeyword(Symbol) 】●
+ ►#?STRUCTURE_EXPECTED!【 @user_property ● AttribCustom ( RefIdentifier ) 】●
+ ►#?STRUCTURE_EXPECTED!【 @foo ! #@TPL_ARGLIST__SAMPLE ● AttribCustom( RefTemplateInstance(RefIdentifier #@TPL_ARGLIST__SAMPLE) ) 】●
+ ►#?STRUCTURE_EXPECTED!【nothrow @xxx!(123) pure @safe ● FnAttrib AttribCustom(RefTemplateInstance(RefIdentifier Integer)) FnAttrib AttribAtKeyword(Symbol)】●
+ ►#?STRUCTURE_EXPECTED!【 @safe @user_property!(int) const● AttribAtKeyword(Symbol) AttribCustom(RefTemplateInstance(RefIdentifier RefPrimitive)) FnAttrib】●
+¤》
+
 
 #@FN_ATTRIB__SAMPLE《
  ►#?STRUCTURE_EXPECTED!【 /*no fn attrib*/ ● 】●  
- ►#?STRUCTURE_EXPECTED!【 nothrow ● 】●  
- ►#?STRUCTURE_EXPECTED!【 @safe const● 】●
+ ►#?STRUCTURE_EXPECTED!【 nothrow ● FnAttrib 】●  
+ ►#?STRUCTURE_EXPECTED!【 @safe @user_property!(int) const● AttribAtKeyword(Symbol) AttribCustom(RefTemplateInstance(RefIdentifier RefPrimitive)) FnAttrib】●
 ¤》
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function Body

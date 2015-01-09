@@ -12,6 +12,7 @@ package dtool.ast.definitions;
 
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -29,18 +30,18 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	public final ArrayView<ITemplateParameter> tplParams;
 	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final ArrayView<IFunctionAttribute> fnAttributes;
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
 	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
-		ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint,
+		ArrayView<IFunctionParameter> fnParams, ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint,
 		IFunctionBody fnBody) {
 		super(comments, defId);
 		
 		this.tplParams = parentize(tplParams);
 		this.fnParams = parentize(fnParams);
-		this.fnAttributes = fnAttributes;
+		this.fnAttributes = parentize(fnAttributes);
 		this.tplConstraint = parentize(tplConstraint);
 		this.fnBody = parentize(fnBody);
 	}
@@ -51,6 +52,15 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	public static ArrayView<IFunctionParameter> NO_PARAMS = new ArrayView<>(new IFunctionParameter[0]);
 	
+	protected void visitChildren_common(IASTVisitor visitor) {
+		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, tplParams);
+		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, fnAttributes);
+		acceptVisitor(visitor, tplConstraint);
+		acceptVisitor(visitor, fnBody);
+	}
+	
 	@Override
 	public ArrayView<IFunctionParameter> getParameters() {
 		return fnParams == null ? NO_PARAMS : fnParams;
@@ -60,7 +70,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		cp.append(defname);
 		cp.appendList("(", tplParams, ",", ") ");
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
-		cp.appendTokenList(fnAttributes, " ", true);
+		cp.appendList(fnAttributes, " ", true);
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendNodeOrNullAlt(fnBody, " ");
 	}

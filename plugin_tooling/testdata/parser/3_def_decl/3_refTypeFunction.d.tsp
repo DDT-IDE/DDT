@@ -3,7 +3,7 @@
 #STRUCTURE_EXPECTED:  RefTypeFunction(RefIdentifier #@FN_PARAMS_SAMPLE)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(REFERENCE)     foo delegate(#@FN_PARAMS_SAMPLE) const
-#STRUCTURE_EXPECTED:  RefTypeFunction(RefIdentifier #@FN_PARAMS_SAMPLE)
+#STRUCTURE_EXPECTED:  RefTypeFunction(RefIdentifier #@FN_PARAMS_SAMPLE FnAttrib)
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #@FN_KEYWORD《function●delegate》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  ret type
@@ -27,4 +27,4 @@ RefTypeFunction(RefTypeDynArray(?) #@FN_PARAMS )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ fn attributes
 #PARSE(REFERENCE)     bar[] delegate ( #@FN_PARAMS_SAMPLE ) #@FN_ATTRIB
 #STRUCTURE_EXPECTED:
-RefTypeFunction( RefTypeDynArray(?) #@FN_PARAMS_SAMPLE )
+RefTypeFunction( RefTypeDynArray(?) #@FN_PARAMS_SAMPLE #@FN_ATTRIB )

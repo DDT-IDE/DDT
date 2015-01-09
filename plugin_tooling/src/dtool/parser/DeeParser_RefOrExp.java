@@ -28,10 +28,10 @@ import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.CStyleRootRef;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
-import dtool.ast.definitions.FunctionAttributes;
+import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.Symbol;
 import dtool.ast.definitions.ITemplateParameter;
+import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpArrayLength;
 import dtool.ast.expressions.ExpAssert;
 import dtool.ast.expressions.ExpCall;
@@ -1170,7 +1170,7 @@ protected class ParseRule_Expression {
 		fnParametersRule.parseParameters(parse);
 		
 		if(!parse.ruleBroken) {
-			ArrayView<FunctionAttributes> fnAttributes = thisParser().parseFunctionAttributes();
+			ArrayView<IFunctionAttribute> fnAttributes = thisParser().parseFunctionAttributes();
 			
 			if(lookAhead() == DeeTokens.OPEN_BRACE || lookAhead() == DeeTokens.LAMBDA) {
 				ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
@@ -1202,7 +1202,7 @@ protected class ParseRule_Expression {
 		Reference retType = parseTypeReference().node;
 		
 		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		ArrayView<IFunctionAttribute> fnAttributes = null;
 		
 		parsing: {
 			fnParams = thisParser().parseFunctionParameters(parse);
@@ -1220,7 +1220,7 @@ protected class ParseRule_Expression {
 	
 	protected NodeResult<ExpFunctionLiteral> parseFunctionLiteral_atFunctionBody(int nodeStart,
 		Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<FunctionAttributes> fnAttributes) 
+		ArrayView<IFunctionAttribute> fnAttributes) 
 	{
 		if(tryConsume(DeeTokens.LAMBDA)) {
 			assertTrue(fnParams != null);

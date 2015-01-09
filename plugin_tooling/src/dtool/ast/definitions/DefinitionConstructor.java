@@ -29,7 +29,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	
 	public DefinitionConstructor(Token[] comments, ProtoDefSymbol defId, 
 		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
-		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
+		ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
 	{
 		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 	}
@@ -41,11 +41,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
-		acceptVisitor(visitor, tplParams);
-		acceptVisitor(visitor, fnParams);
-		acceptVisitor(visitor, tplConstraint);
-		acceptVisitor(visitor, fnBody);
+		visitChildren_common(visitor);
 	}
 	
 	@Override

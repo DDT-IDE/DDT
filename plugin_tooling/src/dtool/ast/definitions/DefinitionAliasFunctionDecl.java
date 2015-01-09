@@ -31,15 +31,15 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	public final ArrayView<Attribute> aliasedAttributes;
 	public final Reference target;
 	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final ArrayView<IFunctionAttribute> fnAttributes;
 	
 	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<Attribute> aliasedAttributes, Reference target, 
-		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<FunctionAttributes> fnAttributes) {
+		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<IFunctionAttribute> fnAttributes) {
 		super(comments, defId);
 		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
 		this.fnParams = parentize(fnParams);
-		this.fnAttributes = fnAttributes;
+		this.fnAttributes = parentize(fnAttributes);
 		assertTrue(fnAttributes == null || fnParams != null);
 	}
 	
@@ -58,6 +58,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		acceptVisitor(visitor, target);
 		acceptVisitor(visitor, defname);
 		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, fnAttributes);
 	}
 	
 	@Override
@@ -67,7 +68,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		cp.append(target, " ");
 		cp.append(defname);
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
-		cp.appendTokenList(fnAttributes, " ", true);
+		cp.appendList(fnAttributes, " ", true);
 		cp.append(";");
 	}
 	

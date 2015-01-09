@@ -6,7 +6,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.definitions.FunctionAttributes;
+import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.statements.IFunctionBody;
 
 public class DeclarationSpecialFunction extends ASTNode implements IDeclaration {
@@ -28,13 +28,13 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	}
 	
 	public final SpecialFunctionKind kind;
-	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final ArrayView<IFunctionAttribute> fnAttributes;
 	public final IFunctionBody fnBody;
 	
-	public DeclarationSpecialFunction(SpecialFunctionKind kind, ArrayView<FunctionAttributes> fnAttributes, 
+	public DeclarationSpecialFunction(SpecialFunctionKind kind, ArrayView<IFunctionAttribute> fnAttributes, 
 		IFunctionBody fnBody) {
 		this.kind = assertNotNull(kind);
-		this.fnAttributes = fnAttributes;
+		this.fnAttributes = parentize(fnAttributes);
 		this.fnBody = parentize(fnBody);
 	}
 	
@@ -45,13 +45,14 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, fnAttributes);
 		acceptVisitor(visitor, fnBody);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(kind.toStringAsCode());
-		cp.appendTokenList(fnAttributes, " ", true);
+		cp.appendList(fnAttributes, " ", true);
 		cp.append(fnBody);
 	}
 	

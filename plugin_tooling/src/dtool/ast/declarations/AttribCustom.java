@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -16,7 +26,7 @@ import dtool.ast.references.Reference;
  * (and it's a reference and not a symbol def, it should refer to another element.
  * 
  */
-public class AttribCustom extends Attribute {
+public class AttribCustom extends AttribAmpersat {
 	
 	public final Reference ref;
 	public final NodeListView<Expression> args; // if null, no argument list

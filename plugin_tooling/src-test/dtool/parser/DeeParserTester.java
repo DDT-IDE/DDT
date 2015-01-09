@@ -35,6 +35,7 @@ import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
+import dtool.ast.definitions.FunctionAttribute;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.Module;
@@ -278,6 +279,9 @@ public class DeeParserTester extends CommonTestUtils {
 			return SimpleVariableDef.class.getSimpleName();
 		} if(expectedNameRaw.equals("StatementExp")) {
 			return StatementExpression.class.getSimpleName();
+		}
+		if(expectedNameRaw.equals("FnAttrib")) {
+			return FunctionAttribute.class.getSimpleName();
 		}
 		
 		return replaceRegexFirstOccurrence(expectedNameRaw, 

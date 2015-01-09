@@ -6,7 +6,7 @@
 #STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(RefTypeDynArray(RefIdentifier)  DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case
 #PARSE(DECLARATION)   alias foo[] aliasDef(int[2] a) nothrow;
-#STRUCTURE_EXPECTED:  DefinitionAliasFunctionDecl(RefTypeDynArray(?) DefSymbol FunctionParameter(* ?))
+#STRUCTURE_EXPECTED:  DefinitionAliasFunctionDecl(RefTypeDynArray(?) DefSymbol FunctionParameter(* ?) FnAttrib)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -88,7 +88,7 @@
 #STRUCTURE_EXPECTED:  DefinitionAliasFunctionDecl(#@ALIAS_FN_DECL)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  
 #PARSE(DECLARATION)   alias #@TYPEREF_NBNE__LITE #@DEFID #@NO_SEMICOLON #@BREAK nothrow ;  
-#STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(#@TYPEREF_NBNE__LITE #@DEFID #@BREAK)
+#STRUCTURE_EXPECTED:  DefinitionAliasVarDecl(#@TYPEREF_NBNE__LITE #@DEFID #@BREAK FnAttrib)
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ alias this
 

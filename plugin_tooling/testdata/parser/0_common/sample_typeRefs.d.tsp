@@ -52,9 +52,9 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【dai * [bar .. 123] ●RefSlice(#@_FOO_PTR #@ExpIdentifier Integer)】●
 
   ►#?STRUCTURE_EXPECTED!【foo #?PARSING_AS_EXP【#@IGNORE_REST】 #?PARSING_AS_NESTEDEXP【#@BREAK】 function(in int blah) nothrow● 
-    RefTypeFunction(RefIdentifier FunctionParameter(? ?))   #?PARSING_AS_NESTEDEXP【#@BREAK】】 #CANT_FULLY_EXP_PARSE(flag)●
+    RefTypeFunction(RefIdentifier FunctionParameter(? ?) FnAttrib)   #?PARSING_AS_NESTEDEXP【#@BREAK】】 #CANT_FULLY_EXP_PARSE(flag)●
   ►#?STRUCTURE_EXPECTED!【foo* function(in int blah) nothrow #?PARSING_AS_EXP【#@BREAK】 ●
-    RefTypeFunction(#@_FOO_PTR FunctionParameter(? ?))】●
+    RefTypeFunction(#@_FOO_PTR FunctionParameter(? ?) FnAttrib)】●
 ¤》
 
 #@TYPE_REFS__NO_BROKEN《

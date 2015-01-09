@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -7,7 +17,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.definitions.FunctionAttributes;
+import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
@@ -17,16 +27,16 @@ public class ExpFunctionLiteral extends Expression {
 	public final Boolean isFunctionKeyword;
 	public final Reference retType;
 	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final ArrayView<IFunctionAttribute> fnAttributes;
 	public final IFunctionBody fnBody;
 	public final Expression bodyExpression;
 	
 	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<FunctionAttributes> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
+		ArrayView<IFunctionAttribute> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
 		this.isFunctionKeyword = isFunctionKeyword;
 		this.retType = parentize(retType);
 		this.fnParams = parentize(fnParams);
-		this.fnAttributes = fnAttributes;
+		this.fnAttributes = parentize(fnAttributes);
 		this.fnBody = parentize(fnBody);
 		this.bodyExpression = parentize(bodyExpression);
 		assertTrue(fnBody == null || bodyExpression == null); // only one of each
@@ -45,6 +55,7 @@ public class ExpFunctionLiteral extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, retType);
 		acceptVisitor(visitor, fnParams);
+		acceptVisitor(visitor, fnAttributes);
 		acceptVisitor(visitor, fnBody);
 		acceptVisitor(visitor, bodyExpression);
 	}
@@ -55,7 +66,7 @@ public class ExpFunctionLiteral extends Expression {
 		cp.append(isFunctionKeyword == Boolean.FALSE, "delegate ");
 		cp.append(retType);
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
-		cp.appendTokenList(fnAttributes, " ", true);
+		cp.appendList(fnAttributes, " ", true);
 		cp.append(fnBody);
 		cp.append(" => ", bodyExpression);
 	}

@@ -27,7 +27,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	
 	public DefinitionFunction(Token[] comments, Reference retType, ProtoDefSymbol defId,
 		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<FunctionAttributes> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
+		ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
 	{
 		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 		this.retType = parentize(retType);
@@ -41,11 +41,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, retType);
-		acceptVisitor(visitor, defname);
-		acceptVisitor(visitor, tplParams);
-		acceptVisitor(visitor, fnParams);
-		acceptVisitor(visitor, tplConstraint);
-		acceptVisitor(visitor, fnBody);
+		visitChildren_common(visitor);
 	}
 	
 	@Override

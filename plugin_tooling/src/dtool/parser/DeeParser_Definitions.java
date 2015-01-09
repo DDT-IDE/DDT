@@ -68,12 +68,14 @@ import dtool.ast.definitions.DefinitionUnion;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.DefinitionVariable.DefinitionAutoVariable;
 import dtool.ast.definitions.EnumMember;
-import dtool.ast.definitions.FunctionAttributes;
+import dtool.ast.definitions.FunctionAttribute;
+import dtool.ast.definitions.FunctionAttribute.FunctionAttributes;
+import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 import dtool.ast.definitions.Symbol;
-import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpInfix.InfixOpType;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
@@ -801,7 +803,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		ArrayView<IFunctionParameter> fnParams = null;
 		ArrayView<ITemplateParameter> tplParams = null;
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		ArrayView<IFunctionAttribute> fnAttributes = null;
 		Expression tplConstraint = null;
 		IFunctionBody fnBody = null;
 		
@@ -884,28 +886,33 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return (ITemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
 	}
 	
-	protected ArrayView<FunctionAttributes> parseFunctionAttributes() {
-		ArrayList<FunctionAttributes> attributes = null;
+	protected ArrayView<IFunctionAttribute> parseFunctionAttributes() {
+		ArrayList<IFunctionAttribute> attributes = null;
 		
 		while(true) {
-			FunctionAttributes attrib = FunctionAttributes.fromToken(lookAhead());
-			if(attrib != null) {
-				consumeLookAhead();
-			} else {
-				if(lookAhead() == DeeTokens.AT && lookAhead(1) == DeeTokens.IDENTIFIER) {
-					attrib = FunctionAttributes.fromCustomAttribId(lookAheadElement(1).source);
-					if(attrib != null) {
-						consumeLookAhead();
-						consumeLookAhead();
-					}
-				}
-				if(attrib == null)
-					break;
+			IFunctionAttribute attrib = parseFunctionAttribute();
+			if(attrib == null) {
+				break;
 			}
+			
 			attributes = NewUtils.lazyInitArrayList(attributes);
 			attributes.add(attrib);
 		}
 		return arrayViewG(attributes);
+	}
+	
+	protected IFunctionAttribute parseFunctionAttribute() {
+		
+		FunctionAttributes functionAttrib = FunctionAttributes.fromToken(lookAhead());
+		if(functionAttrib != null) {
+			ParseHelper parse = new ParseHelper(lookAheadElement());
+			consumeLookAhead();
+			return parse.resultConclude(new FunctionAttribute(functionAttrib)).node;
+		} else if(lookAhead() == DeeTokens.AT) {
+			return parseAmpersatAttrib().node;
+		} else {
+			return null;
+		}
 	}
 	
 	public Expression parseTemplateConstraint(ParseHelper parse) {
@@ -1088,7 +1095,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		ParseHelper parse = new ParseHelper(retType);
 		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		ArrayView<IFunctionAttribute> fnAttributes = null;
 		
 		parsing: {
 			fnParams = parseFunctionParameters(parse);
@@ -1167,7 +1174,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		ArrayView<Attribute> attributes, Reference ref, ProtoDefSymbol defId) {
 		
 		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		ArrayView<IFunctionAttribute> fnAttributes = null;
 		if(!parse.ruleBroken) {
 			fnAttributes = parseFunctionAttributes();
 		} else {
@@ -1512,7 +1519,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction_AtParams(ParseHelper parse, 
 		SpecialFunctionKind kind) {
 		IFunctionBody fnBody = null;
-		ArrayView<FunctionAttributes> fnAttributes = null;
+		ArrayView<IFunctionAttribute> fnAttributes = null;
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			if(kind == SpecialFunctionKind.POST_BLIT) {

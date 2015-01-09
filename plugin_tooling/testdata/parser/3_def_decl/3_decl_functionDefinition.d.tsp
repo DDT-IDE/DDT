@@ -13,14 +13,14 @@ DefFunction(RefPrimitive DefSymbol CStyleVarArgsParameter #@EMPTY_BODY)
 inout(xpto) fn( #@FN_PARAMS_SAMPLE ) nothrow body { int foo; }
 inout(xpto) fn( #@FN_PARAMS_SAMPLE ) in {int foo; } out(result) { } body { int foo; }
 #STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE FunctionBody(*) )
+DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE FnAttrib FunctionBody(*) )
 DefFunction( RefTypeModifier(?) DefSymbol #@FN_PARAMS_SAMPLE InOutFunctionBody(* FunctionBodyOutBlock(Symbol *) *))
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic cases with template params
 inout(xpto) func(#@TPL_PARAMS__SAMPLE) ( #@FN_PARAMS_SAMPLE ) nothrow body { int foo; }
 inout(xpto) func(#@TPL_PARAMS__SAMPLE) ( #@FN_PARAMS_SAMPLE ) if( #@EXP_ANY__LITE ) body { int foo; }
 #STRUCTURE_EXPECTED:
-DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPLE FunctionBody(*) )
+DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPLE FnAttrib FunctionBody(*) )
 DefFunction( RefTypeModifier(?) DefSymbol #@TPL_PARAMS__SAMPLE #@FN_PARAMS_SAMPLE #@EXP_ANY__LITE FunctionBody(*) )
 
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃
@@ -76,14 +76,14 @@ DefFunction(RefIdentifier DefSymbol #@TPLPARAMS_NB #@FN_PARAMS_SAMPLE #@ST_BLOCK
 Ⓗ▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃ Function  Attributes
 
 #@FN_ATTRIBS_END《
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB ;                     ● #@EMPTY_BODY】●
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #@ST_BLOCK__SAMPLE    ● #@ST_BLOCK__SAMPLE】●
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #error(EXPRULE_FnBody) #@BREAK● 】●
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB body {} ● FunctionBody(*)】●
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB in {} body {} ● InOutFunctionBody(* *)】●  
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB out(foo) {} body {} ● InOutFunctionBody(* *)】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB ;                     ● #@FN_ATTRIB #@EMPTY_BODY】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #@ST_BLOCK__SAMPLE    ● #@FN_ATTRIB #@ST_BLOCK__SAMPLE】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #error(EXPRULE_FnBody) #@BREAK● #@FN_ATTRIB 】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB body {}             ● #@FN_ATTRIB FunctionBody(*)】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB in {} body {}       ● #@FN_ATTRIB InOutFunctionBody(* *)】●  
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB out(foo) {} body {} ● #@FN_ATTRIB InOutFunctionBody(* *)】●
   
-  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #@NO_BODY #@BREAK @invalidProperty  { }● 】●
+  ►#?STRUCTURE_EXPECTED!【#@FN_ATTRIB #@NO_BODY #@BREAK invalidProperty  { }● #@FN_ATTRIB 】●
   ►#?STRUCTURE_EXPECTED!【#@NO_BODY #@BREAK ref               { }● 】●
 ¤》
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 

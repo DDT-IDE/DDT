@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
-import melnorme.lang.tooling.ast_actual.ASTNode;
+import dtool.ast.definitions.IFunctionAttribute;
 
-public abstract class Attribute extends ASTNode {
+
+public abstract class AttribAmpersat extends Attribute implements IFunctionAttribute {
 	
-	public Attribute() {
+	public AttribAmpersat() {
+		super();
 	}
 	
 }

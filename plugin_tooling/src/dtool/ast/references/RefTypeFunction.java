@@ -19,7 +19,7 @@ import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.TypeReferenceSe
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
-import dtool.ast.definitions.FunctionAttributes;
+import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.engine.analysis.DeeLanguageIntrinsics.DeeIntrinsicType;
@@ -32,14 +32,14 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	public final Reference retType;
 	public final boolean isDelegate;
 	public final ArrayView<IFunctionParameter> params;
-	public final ArrayView<FunctionAttributes> fnAttributes;
+	public final ArrayView<IFunctionAttribute> fnAttributes;
 	
 	public RefTypeFunction(Reference retType, boolean isDelegate, ArrayView<IFunctionParameter> params, 
-		ArrayView<FunctionAttributes> fnAttributes) {
+		ArrayView<IFunctionAttribute> fnAttributes) {
 		this.retType = parentize(retType);
 		this.isDelegate = isDelegate;
 		this.params = parentize(params);
-		this.fnAttributes = fnAttributes;
+		this.fnAttributes = parentize(fnAttributes);
 	}
 	
 	public final ArrayView<ASTNode> getParams_asNodes() {
@@ -55,6 +55,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, retType);
 		acceptVisitor(visitor, params);
+		acceptVisitor(visitor, fnAttributes);
 	}
 	
 	@Override
@@ -62,7 +63,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		cp.append(retType, " ");
 		cp.append(isDelegate ? "delegate" : "function");
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
-		cp.appendTokenList(fnAttributes, " ", true);
+		cp.appendList(fnAttributes, " ", true);
 	}
 	
 	/* -----------------  ----------------- */

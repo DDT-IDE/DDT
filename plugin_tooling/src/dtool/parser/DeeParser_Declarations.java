@@ -23,6 +23,7 @@ import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.AttribAlign;
+import dtool.ast.declarations.AttribAmpersat;
 import dtool.ast.declarations.AttribAtKeyword;
 import dtool.ast.declarations.AttribBasic;
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
@@ -337,7 +338,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	public static final ParseRuleDescription RULE_ID_OR_EXP_ARGLIST = 
 		new ParseRuleDescription("IdOrExpArgList", "ID or (<Expression List>)");
 	
-	public NodeResult<? extends Attribute> parseAmpersatAttrib() {
+	public NodeResult<? extends AttribAmpersat> parseAmpersatAttrib() {
 		if(!tryConsume(DeeTokens.AT)) 
 			return null;
 		
