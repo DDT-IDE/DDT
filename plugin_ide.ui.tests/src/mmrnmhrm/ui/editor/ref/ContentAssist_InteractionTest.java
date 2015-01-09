@@ -27,7 +27,7 @@ public class ContentAssist_InteractionTest extends ContentAssistUI_CommonTest {
 	public static final String[] EXPECTED_IN_TEST_f = array(
 		"fParam", "func(int a, List!(Foo) a)", "foobarvar",
 		"foovar", "foox", 
-		"func(char b, List!(Foo) b)", "func()",
+//		"func(char b, List!(Foo) b)", "func()",
 		"FooBar",  "foo_t", "fooalias", "fooOfModule", "frak" , "Foo"
 	);
 	
