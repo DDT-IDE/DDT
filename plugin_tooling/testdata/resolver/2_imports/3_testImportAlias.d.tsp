@@ -18,7 +18,7 @@ import pack.mod2, sampleAlias = pack.sample;
 	sampleAlias.SampleClass.foo#FIND¤【pack.sample/SampleClass.foo】++;
 
 	sampleAlias.foopublicImportVar#FIND¤【】++;
-	sampleAlias.pack2.public_imported.foopublicImportVar
+//	sampleAlias.pack2.public_imported.foopublicImportVar
 	
 	sampleAlias.fooprivateImportVar#FIND¤【】++;  // fail
 	sampleAlias.pack2.private_imported#FIND¤【】++;  // fail

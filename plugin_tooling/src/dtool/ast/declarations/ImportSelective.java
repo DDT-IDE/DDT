@@ -91,12 +91,14 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 		if(isSecondaryScope) {
 			return;
 		}
-		if(DevelopmentCodeMarkers.DISABLED_FUNCTIONALITY) {
-			// DMD doesn't work like this.
-			if(fragment instanceof ImportContent) {
+		if(fragment instanceof ImportContent) {
+			if(DevelopmentCodeMarkers.DISABLED_FUNCTIONALITY) {
+				// DMD doesn't work like this.
 				ImportContent importContent = (ImportContent) fragment;
 				ImportContent.resolveStaticImport(scopeRes, importContent.moduleRef);
 			}
+		} else if(fragment instanceof ImportAlias){
+			// TODO: blah, blah, stupid feature anyways
 		}
 		resolveScopeElements(this, scopeRes);
 	}

@@ -15,7 +15,24 @@ import static dtool.engine.analysis.Import_LookupTest.checkIsPackageNamespace;
 import org.junit.Test;
 
 
-public class ImportSelective_LookupTest extends CommonLookupTest {
+public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
+	
+	@Test
+	public void testImportAlias() throws Exception { testImportAlias$(); }
+	public void testImportAlias$() throws Exception {
+		testLookup(parseModule_WithRef("import foo = pack.foo;", "foo"),  
+			checkSingleResult("foo = pack.foo")
+		);
+		
+		testLookup(parseModule_WithRef("int foo; import foo = pack.foo;", "foo"),
+			checkNameConflict("foo = pack.foo", "int foo;")
+		);
+		
+		// Test member scope
+		testLookup(parseModule_WithRef("import foo = pack.foo;", "foo.PackFoo_member"),  
+			checkSingleResult("int PackFoo_member;")
+		);
+	}
 	
 	@Test
 	public void testImportSelective() throws Exception { testImportSelective$(); }
@@ -50,7 +67,23 @@ public class ImportSelective_LookupTest extends CommonLookupTest {
 		testLookup(parseModule_WithRef("import pack.public_import : pack;", "pack"),  
 			checkIsPackageNamespace(array("module[pack.foo]"))
 		);
-		// We should add more tests here. The other cases are currently tested by ResolverSourceTests
+
+		// ---------- selective alias
+		test_SelectiveAlias$();
+	}
+	
+	protected void test_SelectiveAlias$() {
+		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member;", "xxx"),  
+			checkSingleResult("xxx = PackFoo_member")
+		);
+		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member;", "PackFoo_member"),  
+			checkSingleResult(null)
+		);
+		// Test conflict
+		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member; void xxx;", 
+			"xxx"),  
+			checkNameConflict("xxx = PackFoo_member", "void xxx;")
+		);
 		
 	}
 	
