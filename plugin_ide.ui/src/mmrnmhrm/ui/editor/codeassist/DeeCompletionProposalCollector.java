@@ -2,7 +2,7 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.tooling.symbols.INamedElement;
-import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
+import mmrnmhrm.core.engine_client.DeeCompletionOperation.RefSearchCompletionProposal;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 

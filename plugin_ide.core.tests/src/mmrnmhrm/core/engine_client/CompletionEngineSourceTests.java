@@ -11,12 +11,12 @@
 package mmrnmhrm.core.engine_client;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
 
@@ -52,10 +52,10 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {
-		CompletionEngineTestsRequestor requestor = 
-				CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen, COMPILER_PATH);
+		ArrayList<INamedElement> results = CompletionEngine_Test.testCompletionEngine(
+			moduleSource, offset, rplLen, COMPILER_PATH);
 		
-		checkResults(requestor.results, expectedResults);
+		checkResults(results, expectedResults);
 	}
 	
 	@Override

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine_client.DeeCompletionEngine.RefSearchCompletionProposal;
+import mmrnmhrm.core.engine_client.DeeCompletionOperation.RefSearchCompletionProposal;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
 import mmrnmhrm.tests.SampleMainProject;
@@ -50,20 +50,20 @@ public class CompletionEngine_Test extends CommonCoreTest {
 			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 	}
 	
-	public static CompletionEngineTestsRequestor testCompletionEngine(IModuleSource moduleSource, final int offset,
+	public static ArrayList<INamedElement> testCompletionEngine(IModuleSource moduleSource, final int offset,
 		final int rplLen, final Location compilerPath) {
 		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
 		
-		Location previousOverride = DeeCompletionEngine.compilerPathOverride;
+		Location previousOverride = DeeCompletionOperation.compilerPathOverride;
 		try {
-			DeeCompletionEngine.compilerPathOverride = compilerPath;
+			DeeCompletionOperation.compilerPathOverride = compilerPath;
 			
 			DeeCompletionEngine completionEngine = new DeeCompletionEngine();
 			completionEngine.setRequestor(requestor);
 			completionEngine.complete(moduleSource, offset, 0);
-			return requestor;
+			return requestor.results;
 		} finally {
-			DeeCompletionEngine.compilerPathOverride = previousOverride;
+			DeeCompletionOperation.compilerPathOverride = previousOverride;
 		}
 	}
 	
