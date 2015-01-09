@@ -11,9 +11,11 @@ import java.util.List;
 
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.util.swt.SWTTestUtils;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.engine_client.CompletionEngineSourceTests;
+import mmrnmhrm.core.engine_client.DeeCompletionEngine;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
@@ -77,8 +79,13 @@ public class ContentAssistUISourceTests extends CompletionEngineSourceTests {
 		ReflectionUtils.invokeMethod(ca, "hide"); //ca.hide();
 		SWTTestUtils.________________clearEventQueue________________();
 		
-		ContentAssistUI_CommonTest.invokeContentAssist(editor, offset); 
-		
+		Location previousOverride = DeeCompletionEngine.compilerPathOverride;
+		try {
+			DeeCompletionEngine.compilerPathOverride = COMPILER_PATH;
+			ContentAssistUI_CommonTest.invokeContentAssist(editor, offset); 
+		} finally {
+			DeeCompletionEngine.compilerPathOverride = previousOverride;
+		}
 		
 		ICompletionProposal[] proposals;
 		Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");

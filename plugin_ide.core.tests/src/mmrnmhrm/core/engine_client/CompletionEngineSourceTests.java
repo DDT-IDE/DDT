@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test.CompletionEngineTestsRequestor;
 
 import org.eclipse.dltk.compiler.env.IModuleSource;
@@ -26,6 +27,8 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 
 public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	
+	protected static final Location COMPILER_PATH = CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath();
+
 	public CompletionEngineSourceTests(String testUIDescription, File file) {
 		super(testUIDescription, file);
 	}
@@ -49,11 +52,9 @@ public class CompletionEngineSourceTests extends CoreResolverSourceTests {
 	}
 	
 	public void runCompletionEngineTest(IModuleSource moduleSource, int offset, String[] expectedResults, int rplLen) {
-		DeeCompletionEngine completionEngine;
-		completionEngine = CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen, 
-			CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath());
+		CompletionEngineTestsRequestor requestor = 
+				CompletionEngine_Test.testCompletionEngine(moduleSource, offset, rplLen, COMPILER_PATH);
 		
-		CompletionEngineTestsRequestor requestor = (CompletionEngineTestsRequestor) completionEngine.getRequestor();
 		checkResults(requestor.results, expectedResults);
 	}
 	

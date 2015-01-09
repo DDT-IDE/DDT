@@ -50,18 +50,21 @@ public class CompletionEngine_Test extends CommonCoreTest {
 			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
 	}
 	
-	public static DeeCompletionEngine testCompletionEngine(IModuleSource moduleSource, final int offset,
+	public static CompletionEngineTestsRequestor testCompletionEngine(IModuleSource moduleSource, final int offset,
 		final int rplLen, final Location compilerPath) {
 		CompletionEngineTestsRequestor requestor = new CompletionEngineTestsRequestor(offset, rplLen);
-		DeeCompletionEngine completionEngine = new DeeCompletionEngine() {
-			@Override
-			protected Location getCompilerPath(IModuleSource moduleSource) {
-				return compilerPath;
-			}
-		};
-		completionEngine.setRequestor(requestor);
-		completionEngine.complete(moduleSource, offset, 0);
-		return completionEngine;
+		
+		Location previousOverride = DeeCompletionEngine.compilerPathOverride;
+		try {
+			DeeCompletionEngine.compilerPathOverride = compilerPath;
+			
+			DeeCompletionEngine completionEngine = new DeeCompletionEngine();
+			completionEngine.setRequestor(requestor);
+			completionEngine.complete(moduleSource, offset, 0);
+			return requestor;
+		} finally {
+			DeeCompletionEngine.compilerPathOverride = previousOverride;
+		}
 	}
 	
 	protected int getMarkerEndPos(String markerString) throws ModelException {

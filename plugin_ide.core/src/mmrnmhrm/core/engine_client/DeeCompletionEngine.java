@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -19,6 +29,9 @@ import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.CompletionRequestor;
 
 public class DeeCompletionEngine extends ScriptCompletionEngine {
+	
+	// Tests may modify this variable, but only tests
+	public static volatile Location compilerPathOverride = null;
 	
 	protected CompletionRequestor getRequestor() {
 		return requestor;
@@ -55,7 +68,7 @@ public class DeeCompletionEngine extends ScriptCompletionEngine {
 	
 	@SuppressWarnings("unused")
 	protected Location getCompilerPath(IModuleSource moduleSource) {
-		return null; // Use default
+		return compilerPathOverride; // Use default
 	}
 	
 	protected void handleCompletionFailure(String errorMessage, final int position) {
