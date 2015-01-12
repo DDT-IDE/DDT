@@ -61,9 +61,9 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 			return resolveAliasTarget(getAliasTarget());
 		}
 		
-		protected abstract IResolvable getAliasTarget();
+		protected abstract IReference getAliasTarget();
 		
-		protected IConcreteNamedElement resolveAliasTarget(IResolvable aliasTarget) {
+		protected IConcreteNamedElement resolveAliasTarget(IReference aliasTarget) {
 			if(aliasTarget == null) {
 				return null;
 			}

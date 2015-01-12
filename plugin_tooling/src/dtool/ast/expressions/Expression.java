@@ -12,8 +12,8 @@ package dtool.ast.expressions;
 
 
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.IQualifierNode;
 

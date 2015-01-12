@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
@@ -61,7 +62,7 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeAliasSemantics(this, pickedElement) {
 			@Override
-			protected Resolvable getAliasTarget() {
+			protected IReference getAliasTarget() {
 				return specializationType;
 			}
 		};

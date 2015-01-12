@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
@@ -111,9 +111,9 @@ public interface CommonLanguageIntrinsics {
 	
 	public class IntrinsicProperty2 extends AbstractIntrinsicProperty {
 		
-		public final IResolvable typeRef;
+		public final IReference typeRef;
 		
-		public IntrinsicProperty2(String name, IResolvable typeRef, ElementDoc doc) {
+		public IntrinsicProperty2(String name, IReference typeRef, ElementDoc doc) {
 			super(name, doc);
 			this.typeRef = assertNotNull(typeRef);
 		}

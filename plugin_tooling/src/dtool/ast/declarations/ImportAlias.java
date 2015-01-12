@@ -15,12 +15,12 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefModule;
 
 public class ImportAlias extends DefUnit implements IImportFragment {
@@ -72,7 +72,7 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		return new TypeAliasSemantics(this, pickedElement) {
 			
 			@Override
-			protected Resolvable getAliasTarget() {
+			protected IReference getAliasTarget() {
 				return moduleRef;
 			}
 		};

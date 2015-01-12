@@ -12,15 +12,17 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 /** 
- * A node that is a reference (or a value implicitly referring) to a named element.
+ * A node that is a reference to a {@link INamedElement}.
  */
-public interface IResolvable extends ILanguageElement {
+public interface IReference extends ILanguageElement, IResolvable {
 	
 	@Override
 	public ResolvableSemantics getSemantics(ISemanticContext parentContext);
 	
-	public String toStringAsCode(); /* FIXME: review usage of this method. */
+	@Override
+	public String toStringAsCode();
 	
 }

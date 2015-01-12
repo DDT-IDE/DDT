@@ -13,7 +13,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
@@ -23,7 +23,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 /**
  * Helper reference class.
  */
-public class ModuleQualifiedReference extends AbstractElement implements IResolvable {
+public class ModuleQualifiedReference extends AbstractElement implements IReference {
 	
 	public final String moduleFullName;
 	public final String elementName;

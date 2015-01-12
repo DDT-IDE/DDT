@@ -11,13 +11,10 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -85,20 +82,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	}
 	
 	
-	@Deprecated
-	public static Collection<INamedElement> resolveTypeOfUnderlyingValue(ISemanticContext mr, 
-		Collection<INamedElement> resolvedElements) {
-		ArrayList<INamedElement> resolvedTypeForValueContext = new ArrayList<>();
-		for (INamedElement defElement : nullToEmpty(resolvedElements)) {
-			INamedElement resolveTypeForValueContext = defElement.resolveTypeForValueContext(mr);
-			if(resolvedTypeForValueContext != null) {
-				resolvedTypeForValueContext.add(resolveTypeForValueContext);
-			}
-		}
-		return resolvedTypeForValueContext;
-	}
-	
-	
 	protected Collection<INamedElement> resolveToInvalidValue() {
 		return null; // TODO
 	}
@@ -112,22 +95,6 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 		@Override
 		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
 			return resolveToInvalidValue();
-		}
-		
-	}
-	
-	public abstract static class ExpSemantics extends ResolvableSemantics {
-		
-		public ExpSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
-			super(resolvable, pickedElement);
-		}
-		
-		@Override
-		public abstract INamedElement doResolveTargetElement();
-		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return resultToColl(doResolveTargetElement()); // TODO need to review this
 		}
 		
 	}

@@ -17,8 +17,9 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.IReference;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -26,7 +27,6 @@ import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.ExpIs;
 import dtool.ast.expressions.ExpIs.ExpIsSpecialization;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 
 public class StaticIfExpIs extends Expression {
@@ -118,7 +118,7 @@ public class StaticIfExpIs extends Expression {
 			return new TypeAliasSemantics(this, pickedElement) {
 			
 			@Override
-			protected Resolvable getAliasTarget() {
+			protected IReference getAliasTarget() {
 				return getParent_Concrete().typeRef;
 			}
 			

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import dtool.ast.expressions.Resolvable;
 
 /**
  * Common class for entity references. (might not be necessary anymore)
  */
-public abstract class Reference extends Resolvable implements IResolvable {
+public abstract class Reference extends Resolvable implements IReference {
 	
 }

@@ -17,7 +17,7 @@ import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 

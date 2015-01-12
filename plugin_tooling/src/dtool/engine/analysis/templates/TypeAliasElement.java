@@ -14,20 +14,24 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.Reference;
 
 public class TypeAliasElement extends InstantiatedDefUnit {
 	
-	public final Resolvable target;
+	public final Reference target;
 	
 	public TypeAliasElement(DefSymbol defname, Resolvable target) {
 		super(defname);
-		this.target = target;
+		this.target = (target instanceof Reference) ? 
+				(Reference) target :  
+				null; // TODO: error element
 	}
 	
 	@Override
@@ -62,7 +66,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 			}
 			
 			@Override
-			protected Resolvable getAliasTarget() {
+			protected IReference getAliasTarget() {
 				return target;
 			}
 			

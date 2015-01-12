@@ -16,6 +16,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
@@ -55,9 +56,9 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		return testResolveElement(refElement, expectedName);
 	}
 	
-	protected static ResolvableResult testResolveElement(PickedElement<? extends IResolvable> refElement, 
+	protected static ResolvableResult testResolveElement(PickedElement<? extends IReference> refElement, 
 			String expectedName) {
-		IResolvable ref = refElement.element;
+		IReference ref = refElement.element;
 		ISemanticContext context = refElement.context;
 		
 		//refElement.internal_resetSemanticResolutions();
@@ -84,7 +85,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		testResolveElement(parseElement("not_found foo;", "not_found", RefIdentifier.class));
 		
-		testResolveElement(new PickedElement<IResolvable>(
+		testResolveElement(new PickedElement<IReference>(
 				new ModuleQualifiedReference("object", "TypeInfo_Class"), 
 				new MissingStandardLibraryResolution(defaultSemMgr)), "TypeInfo_Class");
 		
