@@ -15,12 +15,18 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.engine_client.DToolClient;
@@ -121,13 +127,31 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 		return completionProposals;
 	}
 	
-	protected CompletionSearchResult performCompletionOperation(Path filePath, int offset, String source)
+	protected CompletionSearchResult performCompletionOperation(final Path filePath, final int offset, String source)
 			throws CoreException {
 		try {
 			DToolClient.getDefault().updateWorkingCopyIfInconsistent2(filePath, source);
 			
-			return DToolClient.getDefault().doCodeCompletion(
-				filePath, offset, DeeCompletionOperation.compilerPathOverride);
+			ExecutorTaskAgent completionExecutor = new ExecutorTaskAgent("CompletionExecutor");
+			
+			Future<CompletionSearchResult> future = completionExecutor.submit(new Callable<CompletionSearchResult>() {
+				@Override
+				public CompletionSearchResult call() throws Exception {
+					return DToolClient.getDefault().doCodeCompletion(
+						filePath, offset, DeeCompletionOperation.compilerPathOverride);
+				}
+			});
+			
+			try {
+				return future.get(5, TimeUnit.SECONDS);
+			} catch (InterruptedException | ExecutionException e) {
+				throw LangCore.createCoreException("Error performing Content Assist.", e);
+			} catch (TimeoutException e) {
+				throw LangCore.createCoreException("Timeout performing Content Assist.", e);
+			} finally {
+				completionExecutor.shutdown();
+			}
+			
 		} finally {
 			DToolClient.getDefault().discardServerWorkingCopy(filePath);
 		}
