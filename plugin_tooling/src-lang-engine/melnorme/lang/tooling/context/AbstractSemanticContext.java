@@ -94,9 +94,9 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 		return semanticsMap.getEntry(element);
 	}
 	
-	/** Internal method, made public for tests usage only ! */
-	public HashMap<CommonLanguageElement,ElementSemantics<?>> getSemanticsMap() {
-		return semanticsMap.getMap();
+	@Override
+	public void _resetSemantics() {
+		semanticsMap.getMap().clear();
 	}
 	
 }

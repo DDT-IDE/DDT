@@ -44,4 +44,7 @@ public interface ISemanticContext {
 	 */
 	ElementSemantics<?> getSemanticsEntry(CommonLanguageElement element);
 	
+	/** Clears the semantics cache. NOTE: Internal method, for usage only by tests and interactive debugging! */
+	void _resetSemantics();
+	
 }

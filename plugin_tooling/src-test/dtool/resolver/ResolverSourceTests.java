@@ -16,7 +16,6 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 
 import java.io.File;
 
-import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.misc.Location;
@@ -73,8 +72,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	private void __resetSemantics() {
 		boolean resetSemantics = true;
 		if(resetSemantics) {
-			AbstractSemanticContext br = (AbstractSemanticContext) mr;
-			br.getSemanticsMap().clear();
+			mr._resetSemantics();
 		}
 	}
 	

@@ -134,7 +134,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	public static void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
 			String expectedTypeName, boolean isError) {
 		INamedElement namedElement = pickedElement.element;
-		pickedElement.internal_resetSemanticResolutions();
+		pickedElement.context._resetSemantics();
 		
 		INamedElement resolvedType = namedElement.resolveTypeForValueContext(pickedElement.context);
 		
