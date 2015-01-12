@@ -134,7 +134,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 			return EArcheType.Alias;
 		}
 		
-		protected Reference getAliasTarget() {
+		public Reference getAliasTarget() {
 			return getParent_Concrete().target;
 		}
 		

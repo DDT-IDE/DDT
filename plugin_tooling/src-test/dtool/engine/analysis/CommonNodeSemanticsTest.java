@@ -123,18 +123,17 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
+	public static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
 		String offsetSource, Class<E> klass) {
 		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offsetSource, klass);
 	}
 	
-	protected static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
+	public static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
 		int offset, Class<E> klass) {
 		ResolvedModule resolvedModule = parseModule_(source);
 		return pickElement(resolvedModule, offset, klass);
 	}
-	
 	
 	public static <E extends ILanguageElement> PickedElement<E> pickElement(ResolvedModule resolvedModule,
 			String offsetSource, Class<E> klass) {

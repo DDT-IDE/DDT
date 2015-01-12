@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.views;
 
 import static dtool.engine.analysis.PackageNamespaceFragment.createNamespaceFragments;
@@ -9,6 +19,7 @@ import mmrnmhrm.ui.CommonDeeUITest;
 import org.junit.Test;
 
 import dtool.ddoc.TextUI;
+import dtool.engine.analysis.CommonNodeSemanticsTest;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.engine.analysis.ModuleProxy;
 
@@ -18,36 +29,36 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		INamedElement defElement;
-		defElement = new ModuleProxy("foo", null, null);
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "foo");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "foo");
+		checkLabel(new ModuleProxy("foo", null, null), "foo", "foo");
 		
-		defElement = new ModuleProxy("pack.mod", null, null);
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack.mod");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
+		checkLabel(new ModuleProxy("pack.mod", null, null), "pack.mod", "mod");
 		
-		defElement = new ModuleProxy("pack.sub.mod", null, null);
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack.sub.mod");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "mod");
+		checkLabel(new ModuleProxy("pack.sub.mod", null, null), "pack.sub.mod", "mod");
 		
 		
-		defElement = createNamespaceFragments(array("pack"), new ModuleProxy("modA", null, null), null);
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
+		checkLabel(createNamespaceFragments(array("pack"), new ModuleProxy("modA", null, null), null), 
+			"pack", "pack");
 
-		defElement = createNamespaceFragments(array("pack", "sub"), new ModuleProxy("modA", null, null), null);
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "pack");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "pack");
+		checkLabel(createNamespaceFragments(array("pack", "sub"), new ModuleProxy("modA", null, null), null), 
+			"pack", "pack");
 		
 		
 		ResolutionLookup search = new ResolutionLookup("int", -1, new EmptySemanticResolution());
 		search.evaluateScope(DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope);
-		defElement = search.getMatchedElement();
 		
-		assertEquals(TextUI.getLabelForHoverSignature(defElement), "int");
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), "int");
+		checkLabel(search.getMatchedElement(), "int", "int");
 		
+		/* -----------------  ----------------- */
+		
+		checkLabel(CommonNodeSemanticsTest.parseElement("alias xxx = ;", "xx", INamedElement.class).element, 
+			"xxx", 
+			"xxx -> ? - _tests");
+		
+	}
+	
+	protected void checkLabel(INamedElement defElement, String hoverSignatureLabel, String contentAssistPopupLabel) {
+		assertEquals(TextUI.getLabelForHoverSignature(defElement), hoverSignatureLabel);
+		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), contentAssistPopupLabel);
 	}
 	
 }

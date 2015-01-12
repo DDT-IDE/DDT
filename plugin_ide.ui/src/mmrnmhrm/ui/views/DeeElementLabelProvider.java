@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
@@ -9,6 +19,7 @@ import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
+import dtool.ast.definitions.DefinitionAliasVarDecl.AliasVarDeclFragment;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
@@ -71,10 +82,14 @@ public class DeeElementLabelProvider {
 			DefinitionAliasVarDecl elem = (DefinitionAliasVarDecl) defUnit;
 			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
 		}
+		case ALIAS_VAR_DECL_FRAGMENT: {
+			AliasVarDeclFragment elem = (AliasVarDeclFragment) defUnit;
+			return elem.getName() + getAliasSegment(elem.getAliasTarget()) + getDefUnitContainerSuffix(defUnit);
+		}
 		case DEFINITION_ALIAS_FUNCTION_DECL: {
 			DefinitionAliasFunctionDecl elem = (DefinitionAliasFunctionDecl) defUnit;
-			// TODO: print a proper alias segment
-			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
+			// TODO: print the correct alias target (a function type)
+			return elem.getName() + getAliasSegment(elem.target) + "(?)" + getDefUnitContainerSuffix(defUnit);
 		}
 		
 		
@@ -93,7 +108,11 @@ public class DeeElementLabelProvider {
 	}
 	
 	public static String getAliasSegment(Reference target) {
-		return " -> " + target.toStringAsCode(); /*FIXME: BUG here*/
+		String targetToString = target == null ? "?" : target.toStringAsCode();
+		if(targetToString.isEmpty()) {
+			targetToString = "?";
+		}
+		return " -> " + targetToString;
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
