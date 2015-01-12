@@ -75,14 +75,16 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	
 	public abstract static class TypeAliasSemantics extends RefAliasSemantics {
 		
-		public TypeAliasSemantics(INamedElement aliasDef, PickedElement<?> pickedElement) {
-			super(aliasDef, pickedElement);
+		protected final NotAValueErrorElement notAValueError;
+		
+		public TypeAliasSemantics(INamedElement aliasElement, PickedElement<?> pickedElement) {
+			super(aliasElement, pickedElement);
+			this.notAValueError = new NotAValueErrorElement(aliasElement);
 		}
 		
 		@Override
 		public INamedElement resolveTypeForValueContext() {
-			// FIXME: fix leak here, this element should be created only once per resolution.
-			return new NotAValueErrorElement(element);
+			return notAValueError;
 		};
 		
 	}
