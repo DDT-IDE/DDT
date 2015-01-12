@@ -17,7 +17,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 
 public class ExpCastQual extends Expression {
 	
@@ -43,7 +43,7 @@ public class ExpCastQual extends Expression {
 	}
 	
 	public final CastQualifiers castQualifier;
-	public final Resolvable exp;
+	public final Expression exp;
 	
 	public ExpCastQual(CastQualifiers castQualifier, Expression exp) {
 		this.castQualifier = assertNotNull(castQualifier);
@@ -73,13 +73,17 @@ public class ExpCastQual extends Expression {
 	@Override
 	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
-		
-		@Override
-		public INamedElement doResolveTargetElement() {
-			return findTargetElementsForReference(context, exp);
-		}
-		
-	};
+			
+			@Override
+			public TypeReferenceResult doCreateExpResolution() {
+				if(exp == null) 
+					return null;
+				TypeReferenceResult baseExpType = exp.resolveTypeOfUnderlyingValue(context);
+				// TODO: should modify baseExpType with modifiers
+				return baseExpType;
+			}
+			
+		};
 	}
 	
 }

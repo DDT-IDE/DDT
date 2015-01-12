@@ -16,12 +16,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
 
@@ -101,7 +101,7 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new VarSemantics(this, pickedElement) {
 			@Override
-			protected Resolvable getTypeReference() {
+			protected Reference getTypeReference() {
 				return type;
 			}
 		};

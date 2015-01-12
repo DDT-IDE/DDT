@@ -18,7 +18,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -42,7 +42,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		return new PickedElement<>(ref, context);
 	}
 	
-	protected static ResolvableResult testResolveElement(PickedElement<? extends NamedReference> refElement) {
+	protected static ReferenceResult testResolveElement(PickedElement<? extends NamedReference> refElement) {
 		NamedReference namedRef = refElement.element;
 		
 		String expectedName = namedRef.getCoreReferenceName();
@@ -56,7 +56,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		return testResolveElement(refElement, expectedName);
 	}
 	
-	protected static ResolvableResult testResolveElement(PickedElement<? extends IReference> refElement, 
+	protected static ReferenceResult testResolveElement(PickedElement<? extends IReference> refElement, 
 			String expectedName) {
 		IReference ref = refElement.element;
 		ISemanticContext context = refElement.context;
@@ -65,7 +65,7 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		// Test caching
 		ResolvableSemantics semantics = ref.getSemantics(context);
-		ResolvableResult resolveTargetElement = semantics.resolveTargetElement();
+		ReferenceResult resolveTargetElement = semantics.resolveTargetElement();
 		assertTrue(semantics == ref.getSemantics(context));
 		assertTrue(resolveTargetElement == semantics.resolveTargetElement());
 		

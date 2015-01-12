@@ -20,6 +20,7 @@ import melnorme.lang.tooling.engine.intrinsics.IntrinsicNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.CollectionUtil;
 import descent.core.ddoc.DdocParser;
@@ -41,7 +42,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 	}
 	
-	public class DeePrimitiveType extends DeeIntrinsicType implements IPrimitiveDefUnit {
+	public class DeePrimitiveType extends DeeIntrinsicType implements IPrimitiveDefUnit, ITypeNamedElement {
 		
 		// TODO DDOC
 		public DeePrimitiveType(String name) {
@@ -86,7 +87,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	public final ModuleQualifiedReference string_type = new ModuleQualifiedReference("object", "string");
 	
 	
-	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit {
+	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit implements ITypeNamedElement {
 		
 		public DeeIntrinsicType(String name, ElementDoc doc) {
 			super(name, doc);

@@ -10,19 +10,19 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Module;
+import dtool.ast.references.Reference;
 
 public class ExpCall extends Expression {
 	
@@ -54,19 +54,18 @@ public class ExpCall extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ResolvableSemantics(this, pickedElement) {
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ExpSemantics(this, pickedElement) {
 		
 		@Override
-		public INamedElement doResolveTargetElement() {
-			// TODO: should use #resolveTypeOfUnderlyingValue():
-			INamedElement calleeElem = callee.resolveTargetElement(context);
+		public TypeReferenceResult doCreateExpResolution() {
+			INamedElement calleeElem = callee.resolveTypeOfUnderlyingValue(context).originalType;
 			if(calleeElem == null)
 				return null;
 			
 			if (calleeElem instanceof DefinitionFunction) {
 				DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-				return defOpCallFunc.findReturnTypeTargetDefUnit(context);
+				return resolveTypeReference(defOpCallFunc.retType);
 			}
 			
 			Module moduleNode = null;
@@ -82,18 +81,13 @@ public class ExpCall extends Expression {
 			search.evaluateInMembersScope(calleeElem);
 			INamedElement matchedElement = search.getMatchedElement();
 			
-			for (INamedElement possibleFunctionElement : Resolvable.resolveResultToCollection(matchedElement)) {
+			for (INamedElement possibleFunctionElement : Reference.resolveResultToCollection(matchedElement)) {
 				if (possibleFunctionElement instanceof DefinitionFunction) {
 					DefinitionFunction defOpCallFunc = (DefinitionFunction) possibleFunctionElement;
-					return defOpCallFunc.findReturnTypeTargetDefUnit(context);
+					return resolveTypeReference(defOpCallFunc.retType);
 				}
 			}
 			return null;
-		}
-		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return resultToColl(doResolveTargetElement()); // TODO
 		}
 		
 	};

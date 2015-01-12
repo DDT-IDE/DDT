@@ -15,7 +15,9 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.definitions.DefinitionClass;
 
 public class ExpSuper extends Expression {
@@ -44,17 +46,17 @@ public class ExpSuper extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 			@Override
-			public INamedElement doResolveTargetElement() {
+			public TypeReferenceResult doCreateExpResolution() {
 				DefinitionClass definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
 				if(definitionClass == null) {
 					return null;
 				}
 				
 				INamedElement superClass = definitionClass.getSemantics(context).resolveSuperClass(context);
-				if(superClass == null) {
-					return null;
+				if(superClass instanceof ITypeNamedElement) {
+					return concreteTypeResult((ITypeNamedElement) superClass);
 				}
-				return superClass;
+				return null;
 			}
 			
 		};

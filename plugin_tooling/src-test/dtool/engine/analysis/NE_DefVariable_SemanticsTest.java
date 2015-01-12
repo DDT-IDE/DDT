@@ -11,17 +11,15 @@
 package dtool.engine.analysis;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
-
-import dtool.ast.definitions.EArcheType;
 
 public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
@@ -43,62 +41,56 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	public void testResolveEffectiveType() throws Exception { testResolveEffectiveType$(); }
 	public void testResolveEffectiveType$() throws Exception {
 		
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			"int xxx = 123;",
 			"int z, xxx = 123;",
 			"int xxx = int;"
-		), "int", null);
+		), "intrinsic_type#int");
 		
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = 123;",
 			"auto z, xxx = 123;",
 			"enum xxx = 123;"
-		), "int", null);
+		), "intrinsic_type#int");
 		
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = int;",
 			"auto z, xxx = int;",
 			"enum xxx = int;"
-		), "int", NotAValueErrorElement.ERROR_IS_NOT_A_VALUE);
+		), ERROR_IS_NOT_A_VALUE + ":int");
 		
 
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx;",
 			"auto z, xxx;"
-		), null, null);
+		), NotFoundErrorElement.NOT_FOUND__Name);
 		
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = ref_not_found;",
 			"auto z = 1, xxx = ref_not_found;",
 			"enum xxx = ref_not_found;"
-		), null, null);
+		), NotFoundErrorElement.NOT_FOUND__Name + ":ref_not_found");
 		
-		testMultiple_ResolveEffectiveType(array(
+		testMultiple_ResolveEffectiveType2(array(
 			SOURCE_PREFIX1+"auto xxx = foovar;",
 			SOURCE_PREFIX1+"auto z = 1, xxx = foovar;",
 			SOURCE_PREFIX1+"enum xxx = foovar;"
-		), "mod.Foo", null);
+		), "$mod/Foo");
 		
 	}
 	
-	protected void testMultiple_ResolveEffectiveType(String[] sources, String expectedTypeFQN, String errorSuffix) {
+	protected void testMultiple_ResolveEffectiveType2(String[] sources, String expectedTypeFQN) {
 		for (String source : sources) {
-			testResolveEffectiveType(source, expectedTypeFQN, errorSuffix);
+			testResolveEffectiveType(source, expectedTypeFQN);
 		}
 	}
 	
-	protected void testResolveEffectiveType(String source, String expectedTypeFQN, String errorSuffix) {
+	protected void testResolveEffectiveType(String source, String expectedResult) {
 		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
 		NamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
-		if(expectedTypeFQN == null || effectiveType.getArcheType() == EArcheType.Error) {
-			assertTrue(expectedTypeFQN == null && effectiveType.getArcheType() == EArcheType.Error);
-			return;
-		}
-		assertEquals(effectiveType.getFullyQualifiedName(), expectedTypeFQN);
-		if(errorSuffix != null) {
-			assertTrue(effectiveType.getExtendedName().endsWith(errorSuffix));
-		}
+		
+		namedElementChecker2(expectedResult).evaluate(effectiveType);
 	}
 	
 	/* -----------------  ----------------- */

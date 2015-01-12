@@ -29,7 +29,7 @@ public abstract class ConcreteElementSemantics extends NamedElementSemantics {
 	}
 	
 	@Override
-	protected IConcreteNamedElement doResolveConcreteElement() {
+	protected final IConcreteNamedElement doResolveConcreteElement() {
 		return elementRes.result;
 	}
 	

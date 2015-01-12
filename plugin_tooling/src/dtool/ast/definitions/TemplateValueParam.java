@@ -15,6 +15,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -70,7 +71,7 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 		return new VarSemantics(this, pickedElement) {
 			
 			@Override
-			protected Resolvable getTypeReference() {
+			protected Reference getTypeReference() {
 				return type;
 			}
 			

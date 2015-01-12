@@ -23,10 +23,6 @@ public class NamedElementUtil {
 	}
 	
 	public static String getElementTypeLabelBase(INamedElement namedElement) {
-		if(namedElement.getArcheType().isError()) {
-			assertFail();
-		}
-		
 		if(namedElement.getArcheType() == EArcheType.Module) {
 			return namedElement.getModuleFullyQualifiedName() + "/";
 		}
@@ -36,6 +32,13 @@ public class NamedElementUtil {
 		}
 		
 		INamedElement parentNamespace = namedElement.getParentNamespace();
+		
+		if(namedElement.getArcheType().isError()) {
+			assertFail();
+//			assertTrue(parentNamespace == null);
+//			return "!!" + namedElement.getName();
+		}
+		
 		assertNotNull(parentNamespace);
 		String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
 		String parentQualifedName = getElementTypeLabelBase(parentNamespace);

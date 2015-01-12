@@ -110,7 +110,8 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new NamedElementSemantics(this, pickedElement) {
 			
-			protected final NotAValueErrorElement notAValueError = new NotAValueErrorElement(this.element);
+			protected final NotAValueErrorElement notAValueError = 
+					new NotAValueErrorElement(OverloadedNamedElement.this);
 			
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement() {

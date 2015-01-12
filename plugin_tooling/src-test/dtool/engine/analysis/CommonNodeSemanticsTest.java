@@ -18,6 +18,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -26,13 +27,16 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
+import dtool.engine.util.NamedElementUtil;
 import dtool.resolver.DefUnitResultsChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
@@ -123,6 +127,10 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* -----------------  ----------------- */
 	
+	public static <E extends ILanguageElement> PickedElement<E> parseElement(String source, Class<E> klass) {
+		return parseElement(source, "/*M*/", klass);
+	}
+	
 	public static <E extends ILanguageElement> PickedElement<E> parseElement(String source, 
 		String offsetSource, Class<E> klass) {
 		ResolvedModule resolvedModule = parseModule_(source);
@@ -186,7 +194,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		assertTrue(resA == resOther);
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- result checkers ----------------- */
 	
 	public static DefUnitResultsChecker resultsChecker(CommonScopeLookup lookup) {
 		return resultsChecker(lookup, true, true, true);
@@ -200,6 +208,67 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 			checker.removeStdLibObjectDefUnits();
 		}
 		return checker;
+	}
+	
+	public static Predicate<INamedElement> namedElementChecker(final String expectedResult) {
+		return new Predicate<INamedElement>() {
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				if(expectedResult == null) {
+					assertTrue(matchedElement == null);
+					return true;
+				}
+				assertNotNull(matchedElement);
+				
+				if(expectedResult.startsWith("$")) {
+					String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
+					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
+					return true;
+				}
+				
+				String matchedElementToString = namedElementToString(matchedElement);
+				if(expectedResult.endsWith("###")) {
+					assertTrue(matchedElementToString.startsWith(StringUtil.trimEnd(expectedResult, "###")));
+				} else {
+					assertAreEqual(matchedElementToString, expectedResult);
+				}
+				
+				return true;
+			}
+		};
+	}
+	
+	protected static String namedElementToString(INamedElement namedElement) {
+		if(namedElement instanceof SourceElement) {
+			SourceElement sourceElement = (SourceElement) namedElement;
+			return sourceElement.toStringAsCode();
+		} else {
+			return namedElement.toString();
+		}
+	}
+	
+	/* FIXME: reduce duplication in these two methods. */
+	public static Predicate<INamedElement> namedElementChecker2(final String expectedResult) {
+		return new Predicate<INamedElement>() {
+			@Override
+			public boolean evaluate(INamedElement matchedElement) {
+				if(expectedResult == null) {
+					assertTrue(matchedElement == null);
+					return true;
+				}
+				assertNotNull(matchedElement);
+				
+				if(expectedResult.startsWith("$")) {
+					String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
+					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
+					return true;
+				}
+				
+				assertAreEqual(matchedElement.toString(), expectedResult);
+				
+				return true;
+			}
+		};
 	}
 	
 }

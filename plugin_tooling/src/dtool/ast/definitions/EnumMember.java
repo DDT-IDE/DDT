@@ -20,7 +20,6 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.IInitializer;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.CommonDefVarSemantics;
 import dtool.engine.analysis.IVarDefinitionLike;
@@ -90,7 +89,7 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 		return new CommonDefVarSemantics(this, pickedElement) {
 			
 			@Override
-			protected Resolvable getTypeReference() {
+			protected Reference getTypeReference() {
 				return getEffectiveTypeReference();
 			}
 		};

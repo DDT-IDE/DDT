@@ -10,7 +10,7 @@ void fooFunc(string defA)
 	
 	auto a1 = "string";
 	auto a2 = 123;
-	auto aNotAType = int;
+	auto aNotAValue = int;
 	auto aError;
 	
 	Bar bar;

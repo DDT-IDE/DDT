@@ -11,6 +11,10 @@
 package dtool.ast.expressions;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 
 /**
  * Default class for initializers.
@@ -18,5 +22,11 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
  * @see http://dlang.org/declaration.html#Initializer
  */
 public abstract class Initializer extends ASTNode implements IInitializer {
+	
+	@Override
+	public TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context) {
+		// TODO resolveTypeOfUnderlyingValue for subclasses
+		return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(this, null));
+	}
 	
 }

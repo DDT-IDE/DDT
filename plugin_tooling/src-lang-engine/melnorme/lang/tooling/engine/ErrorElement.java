@@ -14,26 +14,33 @@ import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ModuleFullName;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
-public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement {
+public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement, ITypeNamedElement {
 	
-	public static final String NOT_FOUND__Name = "<not_found>";
-	public static final String LOOP_ERROR_ELEMENT__Name = "<Loop_Error>";
-	
-	
-	public static ErrorElement newNotFoundError(IResolvable resolvable) {
-		ElementDoc doc = DeeLanguageIntrinsics.parseDDoc("Could not resolve: " + resolvable.toStringAsCode());
-		return new ErrorElement(NOT_FOUND__Name, resolvable, doc);
+	public static ElementDoc quoteDoc(String string) {
+		// TODO: need to quote ddoc macros that might occur in string:
+		return DeeLanguageIntrinsics.parseDDoc(string);
 	}
 	
+	public static final String NOT_FOUND__Name = "#NotFound";
+	public static final String LOOP_ERROR_ELEMENT__Name = "#LoopError";
+	
+	public static ErrorElement newNotFoundError(IReference resolvable) {
+		return new NotFoundErrorElement(resolvable);
+	}
+	
+	// TODO: review this API, probably remove.
 	public static ErrorElement newNotFoundError(ILanguageElement parent, ElementDoc doc) {
 		return new ErrorElement(NOT_FOUND__Name, parent, doc);
 	}
@@ -91,27 +98,50 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		return doc;
 	}
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NamedElementSemantics(this, pickedElement) {
-			
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement() {
-				return ErrorElement.this;
-			}
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				// Do nothing.
-			}
-			
-			@Override
-			public INamedElement resolveTypeForValueContext() {
-				return ErrorElement.this;
-			}
-		};
+		return new ErrorNamedElementSemantics(this, pickedElement);
+	}
+	
+	public static class ErrorNamedElementSemantics extends ConcreteElementSemantics {
+		
+		public ErrorNamedElementSemantics(IConcreteNamedElement element, PickedElement<?> pickedElement) {
+			super(element, pickedElement);
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
+			// Do nothing.
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext() {
+			return element;
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class NotFoundErrorElement extends ErrorElement {
+		
+		protected final IResolvable resolvable;
+		
+		public NotFoundErrorElement(IResolvable resolvable) {
+			super(NOT_FOUND__Name, resolvable, quoteDoc("Could not resolve reference: " + resolvable.toStringAsCode()));
+			this.resolvable = resolvable;
+		}
+		
+		@Override
+		public String toString() {
+			return getName() + ":" + resolvable.toStringAsCode();
+		}
 	}
 	
 }

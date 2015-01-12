@@ -25,6 +25,7 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ddoc.TextUI;
+import dtool.engine.analysis.IVarDefinitionLike;
 
 public class DeeElementLabelProvider {
 	
@@ -44,6 +45,12 @@ public class DeeElementLabelProvider {
 		DefUnit defUnit = tryCast(namedElement, DefUnit.class); 
 		if(defUnit == null) {
 			return namedElement.getName();
+		}
+		
+		if(defUnit instanceof IVarDefinitionLike) {
+			IVarDefinitionLike varDefinitionLike = (IVarDefinitionLike) defUnit;
+			/* FIXME: review this code, TODO*/
+//			varDefinitionLike.resolveTypeForValueContext(null);
 		}
 		
 		ASTCodePrinter cp = new ASTCodePrinter();

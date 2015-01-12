@@ -22,7 +22,6 @@ import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.expressions.Resolvable;
 
 public interface CommonLanguageIntrinsics {
 
@@ -80,7 +79,7 @@ public interface CommonLanguageIntrinsics {
 				};
 				
 				@Override
-				protected Resolvable getTypeReference() {
+				protected IReference getTypeReference() {
 					throw assertFail();
 				};
 				

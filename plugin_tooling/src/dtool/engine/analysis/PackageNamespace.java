@@ -17,7 +17,6 @@ import java.util.Collection;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;

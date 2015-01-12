@@ -14,7 +14,6 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.expressions.Resolvable;
 
 public abstract class VarSemantics extends ConcreteElementSemantics {
 	
@@ -30,13 +29,13 @@ public abstract class VarSemantics extends ConcreteElementSemantics {
 	
 	@Override
 	public INamedElement resolveTypeForValueContext() {
-		Resolvable declaredType = getTypeReference();
+		IReference declaredType = getTypeReference();
 		if(declaredType != null) {
-			return declaredType.resolveTargetElement(context);
+			return declaredType.getSemantics(context).resolveTargetElement().result;
 		}
 		return null;
 	}
 	
-	protected abstract Resolvable getTypeReference();
+	protected abstract IReference getTypeReference();
 	
 }

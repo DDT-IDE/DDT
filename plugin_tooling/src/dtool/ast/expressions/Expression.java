@@ -11,9 +11,10 @@
 package dtool.ast.expressions;
 
 
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.IQualifierNode;
 
@@ -22,13 +23,27 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	public ExpSemantics getSemantics(ISemanticContext parentContext) {
+		return (ExpSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 			@Override
-			public INamedElement doResolveTargetElement() {
+			public TypeReferenceResult doCreateExpResolution() {
 				return null; // TODO
 			}
 		};
+	}
+	
+	@Override
+	public TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context) {
+		return getSemantics(context).resolveTypeOfUnderlyingValue();
+	}
+	
+	@Override
+	public INamedElement resolveAsQualifiedRefRoot(ISemanticContext context) {
+		return resolveTypeOfUnderlyingValue(context).originalType;
 	}
 	
 }

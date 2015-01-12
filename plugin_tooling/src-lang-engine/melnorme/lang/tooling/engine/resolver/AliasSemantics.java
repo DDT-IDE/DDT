@@ -12,7 +12,6 @@ package melnorme.lang.tooling.engine.resolver;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;

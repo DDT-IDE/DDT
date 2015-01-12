@@ -11,7 +11,11 @@
 package dtool.ast.expressions;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 
 public interface IInitializer extends IASTNode {
+	
+	TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context);
 	
 }

@@ -60,6 +60,7 @@ public abstract class ElementSemantics<ER> {
 		return resolution != null;
 	}
 	
+	/** @return not null. */
 	protected final ER getElementResolution() {
 		return getOrCreateElementResolution();
 	}

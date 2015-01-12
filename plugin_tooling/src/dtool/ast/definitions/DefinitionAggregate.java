@@ -22,6 +22,7 @@ import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.expressions.Expression;
@@ -32,7 +33,7 @@ import dtool.parser.common.Token;
  * A definition of a aggregate. 
  */
 public abstract class DefinitionAggregate extends CommonDefinition 
-	implements IStatement, IScopeElement, ITemplatableElement, IConcreteNamedElement
+	implements IStatement, IScopeElement, ITemplatableElement, IConcreteNamedElement, ITypeNamedElement
 {
 	
 	public interface IAggregateBody extends IASTNode {

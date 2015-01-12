@@ -78,6 +78,8 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	 */
 	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticContext context);
 	
+	/* FIXME: move these methods to IConcreteNamedElement */
+	
 	/**
 	 * Resolve given search in the members scope of this defunit.
 	 * Note that the members can be different from the lexical scope that a defunit may provide.
@@ -86,10 +88,9 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	
 	/** 
 	 * Return the type of this defElement, when it is referenced as a value/expression.
-	 * This is only valid of def elements such as variable definitions, which can be reference in expressions,
-	 * and have an associated type, but are not types themselves.
-	 * FIXME: need to review this API
+	 * This is only valid of def elements such as variable definitions, which can be referenced 
+	 * in expressions and have an associated type, but are not types themselves.
 	 */
-	public abstract INamedElement resolveTypeForValueContext(ISemanticContext mr);
+	public abstract INamedElement resolveTypeForValueContext(ISemanticContext context);
 	
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.engine.resolver;
+package melnorme.lang.tooling.symbols;
 
-import melnorme.lang.tooling.engine.ElementResolution;
-import melnorme.lang.tooling.symbols.INamedElement;
 
-public class ResolvableResult extends ElementResolution<INamedElement> {
+/**
+ * Marker interface for non-alias INamedElements that can be used to declare variables.
+ */
+public interface ITypeNamedElement extends IConcreteNamedElement {
 	
-	public ResolvableResult(INamedElement result) {
-		super(result);
-	}
-	
-	public INamedElement getSingleResult() {
-		return result;
-	}
+	/* FIXME: BUG here: need to make sure all type Elements implement this. */
 	
 }

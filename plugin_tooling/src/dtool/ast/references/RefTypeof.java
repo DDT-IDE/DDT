@@ -10,15 +10,12 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.Expression;
 
 public class RefTypeof extends Reference implements IQualifierNode {
@@ -73,14 +70,8 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {
-				return CollectionUtil.getFirstElementOrNull(
-					expression.getSemantics(context).resolveTypeOfUnderlyingValue());
+				return expression.resolveTypeOfUnderlyingValue(context).originalType;
 			}
-			
-			@Override
-			public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-				return resolveToInvalidValue();
-			};
 			
 		};
 	}

@@ -15,7 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
+import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		moduleProxy.resolveUnderlyingNode();
 		assertTrue(moduleProxy.getSemantics(pickedElement.context).isResolved());
 		
-		test_resolveElement(pickedElement, "target", "target", !true);
+		test_resolveElement(pickedElement, "target", NotAValueErrorElement.ERROR_IS_NOT_A_VALUE, true);
 	}
 	
 	protected void testPackageNamespace() throws ExecutionException {
@@ -47,7 +48,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 			"import xxx.foo; auto _ = xxx;", "xxx;");
 		assertTrue(pickedElement.element instanceof PackageNamespace);
 		
-		test_resolveElement(pickedElement, null, "xxx", !true);
+		test_resolveElement(pickedElement, null, NotAValueErrorElement.ERROR_IS_NOT_A_VALUE, true);
 	}
 	
 	/* -----------------  ----------------- */
@@ -70,8 +71,8 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
 		assertTrue(pickA.element != pickB.element);
 		
-		ResolvableResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
-		ResolvableResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
+		ReferenceResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
+		ReferenceResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
 		
 		/* FIXME: renable this check */
 //		assertTrue(resultA.result == resultB.result);

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static dtool.util.NewUtils.getSingleElementOrNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
@@ -24,8 +23,10 @@ import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -40,12 +41,18 @@ import dtool.ast.expressions.Expression;
  */
 public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
+	protected final String ERROR_NotAValue = NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
+	
 	protected INamedElement parseNamedElement_(String source) {
 		return parseSourceAndFindNode(source, getMarkerIndex(source), INamedElement.class);
 	}
 	
 	protected PickedElement<INamedElement> parseNamedElement(String source) {
 		return parseElement(source, getMarkerIndex(source), INamedElement.class);
+	}
+	
+	protected PickedElement<ITypeNamedElement> parseTypeElement(String source) {
+		return parseElement(source, getMarkerIndex(source), ITypeNamedElement.class);
 	}
 	
 	protected int getMarkerIndex(String source) {
@@ -68,7 +75,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	
 	public static void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, String aliasTarget,
-			String expectedTypeName, boolean isError) {
+			String expectedTypeForValueContext, boolean isError) {
 		final INamedElement namedElement = pickedElement.element;
 		
 		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
@@ -90,7 +97,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 		
 		test_resolveConcreteElement(pickedElement, aliasTarget);
-		test_resolveTypeForValueContext(pickedElement, expectedTypeName, isError);
+		test_resolveTypeForValueContext(pickedElement, expectedTypeForValueContext, isError);
 	}
 	
 	public static void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
@@ -98,6 +105,9 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		test_resolveElement(pickedElement, null, expectedTypeName, isError);
 	}
 	
+	public static void test_resolveElement_Type(PickedElement<? extends ITypeNamedElement> pickedElement) {
+		test_resolveElement(pickedElement, null, null, true);
+	}
 	
 	protected static void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
 			String aliasTarget) {
@@ -141,6 +151,12 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		// Test caching
 		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
+		if(expectedTypeName == null) {
+			assertTrue(resolvedType instanceof NotAValueErrorElement);
+			assertTrue(isError);
+			return;
+		}
+		
 		assertEquals(isError, resolvedType.getArcheType() == EArcheType.Error);
 		// TODO: test that archetype is a type?
 		String type_modulefullName = resolvedType.getFullyQualifiedName();
@@ -182,7 +198,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
 		EmptySemanticResolution context = new EmptySemanticResolution();
-		INamedElement expType = getSingleElementOrNull(exp.getSemantics(context).resolveTypeOfUnderlyingValue());
+		INamedElement expType = exp.resolveTypeOfUnderlyingValue(context).originalType;
+		/* FIXME: review this code*/
 		
 		ISemanticContext context2 = expType.isLanguageIntrinsic() ? context.getStdLibResolution() : context;
 		test_resolveSearchInMembersScope(picked(expType, context2), expectedResults);

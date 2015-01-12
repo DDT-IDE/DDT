@@ -21,7 +21,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 	public void testImportAlias() throws Exception { testImportAlias$(); }
 	public void testImportAlias$() throws Exception {
 		testLookup(parseModule_WithRef("import foo = pack.foo;", "foo"),  
-			checkSingleResult("foo = pack.foo")
+			namedElementChecker("foo = pack.foo")
 		);
 		
 		testLookup(parseModule_WithRef("int foo; import foo = pack.foo;", "foo"),
@@ -30,7 +30,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 		
 		// Test member scope
 		testLookup(parseModule_WithRef("import foo = pack.foo;", "foo.PackFoo_member"),  
-			checkSingleResult("int PackFoo_member;")
+			namedElementChecker("int PackFoo_member;")
 		);
 	}
 	
@@ -39,10 +39,10 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 	public void testImportSelective$() throws Exception {
 		 
 		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member"),  
-			checkSingleResult("int PackFoobar_member;")
+			namedElementChecker("int PackFoobar_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member2"),  
-			checkSingleResult(null)
+			namedElementChecker(null)
 		);
 		
 		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member; void PackFoobar_member;", 
@@ -53,15 +53,15 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 		
 		// Test static import bit of import selective
 		testLookup(parseModule_WithRef("import pack.foo : NotFound;", "pack"),  
-			checkSingleResult(null)
+			namedElementChecker(null)
 		);
 		
 		// Vs. public imports
 		testLookup(parseModule_WithRef("import pack.public_import : PackFoo_member;", "PackFoo_member"),  
-			checkSingleResult("int PackFoo_member;")
+			namedElementChecker("int PackFoo_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.public_import : foo_private__xxx;", "foo_private__xxx"),  
-			checkSingleResult(null)
+			namedElementChecker(null)
 		);
 		
 		testLookup(parseModule_WithRef("import pack.public_import : pack;", "pack"),  
@@ -74,10 +74,10 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 	
 	protected void test_SelectiveAlias$() {
 		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member;", "xxx"),  
-			checkSingleResult("xxx = PackFoo_member")
+			namedElementChecker("xxx = PackFoo_member")
 		);
 		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member;", "PackFoo_member"),  
-			checkSingleResult(null)
+			namedElementChecker(null)
 		);
 		// Test conflict
 		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member; void xxx;", 

@@ -10,12 +10,50 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import java.util.Collection;
+
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
+import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.expressions.Resolvable;
 
 /**
  * Common class for entity references. (might not be necessary anymore)
  */
 public abstract class Reference extends Resolvable implements IReference {
+	
+	@Override
+	public ResolvableSemantics getSemantics(ISemanticContext parentContext) {
+		return (ResolvableSemantics) super.getSemantics(parentContext);
+	}
+	@Override
+	protected abstract ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement);
+	
+	public final INamedElement resolveTargetElement(ISemanticContext context) {
+		return getSemantics(context).resolveTargetElement().result;
+	}
+	
+	@Override
+	public INamedElement resolveAsQualifiedRefRoot(ISemanticContext context) {
+		return resolveTargetElement(context);
+	}
+	
+	@Deprecated
+	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
+		return resolveResultToCollection(resolveTargetElement(context));
+	}
+	
+	public static Collection<INamedElement> resolveResultToCollection(INamedElement result) {
+		if(result instanceof OverloadedNamedElement) {
+			OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) result;
+			return overloadedNamedElement.getOverloadedElements();
+		} else {
+			return new ArrayList2<>(result);
+		}
+	}
 	
 }

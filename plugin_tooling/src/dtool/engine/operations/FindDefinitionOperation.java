@@ -26,7 +26,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.CommonQualifiedReference;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.Reference;
@@ -103,7 +102,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		}
 		
 		// TODO need to refactor use of OverloadedNamedElement
-		Collection<INamedElement> namedElements = Resolvable.resolveResultToCollection(resolveResult);
+		Collection<INamedElement> namedElements = Reference.resolveResultToCollection(resolveResult);
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
 		for (INamedElement namedElement : namedElements) {

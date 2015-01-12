@@ -66,7 +66,7 @@ public class RefQualified extends CommonQualifiedReference {
 	
 	@Override
 	public INamedElement resolveRootNameElement(ISemanticContext context) {
-		return qualifier.getSemantics(context).resolveTargetElement().result;
+		return qualifier.resolveAsQualifiedRefRoot(context);
 	}
 	
 }

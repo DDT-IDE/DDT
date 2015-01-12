@@ -13,7 +13,6 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -63,12 +62,6 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Function;
-	}
-	
-	public INamedElement findReturnTypeTargetDefUnit(ISemanticContext context) {
-		if(retType == null) 
-			return null;
-		return retType.resolveTargetElement(context);
 	}
 	
 	@Override

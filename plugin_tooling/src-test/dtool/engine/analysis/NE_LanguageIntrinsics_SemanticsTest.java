@@ -14,27 +14,20 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 
 import java.util.ArrayList;
 
-import dtool.ast.expressions.Expression;
-import dtool.engine.analysis.DeeLanguageIntrinsics.IntrinsicDynArray;
-import dtool.engine.analysis.DeeLanguageIntrinsics.IntrinsicStaticArray;
-import dtool.engine.analysis.DeeLanguageIntrinsics.IntrinsicTypePointer;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
+import dtool.ast.expressions.Expression;
+import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
 public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {
-		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.float_type), 
-			"float", false);
-		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.pointerType), 
-			IntrinsicTypePointer.POINTER_NAME, false);
-		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.dynArrayType), 
-			IntrinsicDynArray.DYNAMIC_ARRAY_NAME, false);
-		test_resolveElement_Concrete(pickedNative(D2_063_intrinsics.staticArrayType), 
-			IntrinsicStaticArray.STATIC_ARRAY_NAME, false);
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.float_type));
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.pointerType));
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.dynArrayType));
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.staticArrayType));
 		
 		// TODO: test the intrinsic properties as well
 	}

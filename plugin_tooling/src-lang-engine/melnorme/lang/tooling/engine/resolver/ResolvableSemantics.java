@@ -11,49 +11,45 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-import java.util.Collections;
-
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayList2;
 
-public abstract class ResolvableSemantics extends ElementSemantics<ResolvableResult> {
+public abstract class ResolvableSemantics extends ElementSemantics<ReferenceResult> {
 	
-	private final IResolvable resolvable;
+	private final IReference reference;
 	
-	public ResolvableSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
+	public ResolvableSemantics(IReference reference, PickedElement<?> pickedElement) {
 		super(pickedElement);
-		assertTrue(pickedElement.element == resolvable);
-		this.resolvable = resolvable;
+		assertTrue(pickedElement.element == reference);
+		this.reference = reference;
 	}
 	
 	protected IResolvable getResolvable() {
-		return resolvable;
+		return reference;
 	}
 	
-	public final ResolvableResult resolveTargetElement() {
+	public final ReferenceResult resolveTargetElement() {
 		return getElementResolution();
 	}
 	
 	@Override
-	protected ResolvableResult createLoopResolution() {
+	protected final ReferenceResult createLoopResolution() {
 		// TODO: test this path
-		return new ResolvableResult(ErrorElement.newLoopError(resolvable, null));
+		return new ReferenceResult(ErrorElement.newLoopError(reference, null));
 	}
 	
 	@Override
-	protected ResolvableResult createResolution() {
+	protected final ReferenceResult createResolution() {
 		INamedElement result = doResolveTargetElement();
 		
 		if(result == null) {
-			result = ErrorElement.newNotFoundError(resolvable);
+			result = ErrorElement.newNotFoundError(reference);
 		}
 		
-		return new ResolvableResult(result);
+		return new ReferenceResult(result);
 	}
 	
 	/** Finds the named element matching this {@link IResolvable}. 
@@ -61,42 +57,19 @@ public abstract class ResolvableSemantics extends ElementSemantics<ResolvableRes
 	protected abstract INamedElement doResolveTargetElement();
 	
 	
-	/* FIXME: return a single element. */
-	public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-		INamedElement target = this.resolveTargetElement().result;
-		
-		INamedElement resolvedType = null;
-		if(target != null) {
-			resolvedType = target.resolveTypeForValueContext(context);
-		}
-		
-		return resultToColl(resolvedType);
-	}
-
-	protected static Collection<INamedElement> resultToColl(INamedElement resolvedType) {
-		if(resolvedType != null) {
-			return new ArrayList2<>(resolvedType);
-		} else {
-			return Collections.EMPTY_LIST;
-		}
-	}
-	
-	
-	protected Collection<INamedElement> resolveToInvalidValue() {
-		return null; // TODO
-	}
-	
 	public abstract static class TypeReferenceSemantics extends ResolvableSemantics {
 		
-		public TypeReferenceSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
-			super(resolvable, pickedElement);
+		public TypeReferenceSemantics(IReference reference, PickedElement<?> pickedElement) {
+			super(reference, pickedElement);
 		}
 		
-		@Override
-		public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-			return resolveToInvalidValue();
+	}
+	
+	public static INamedElement resolveReference(ISemanticContext context, IReference reference) {
+		if(reference == null) {
+			return null;
 		}
-		
+		return reference.getSemantics(context).resolveTargetElement().result;
 	}
 	
 }

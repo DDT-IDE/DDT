@@ -85,15 +85,6 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		return results;
 	}
 	
-	protected static String namedElementToString(INamedElement namedElement) {
-		if(namedElement instanceof SourceElement) {
-			SourceElement sourceElement = (SourceElement) namedElement;
-			return sourceElement.toStringAsCode();
-		} else {
-			return namedElement.toString();
-		}
-	}
-	
 	protected static Predicate<INamedElement> checkNameConflict(final String... expectedResults) {
 		return new Predicate<INamedElement>() {
 			@Override
@@ -109,35 +100,6 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 					assertTrue(overload.getArcheType() == EArcheType.Error);
 				} else {
 					assertFail(); // TODO
-				}
-				
-				return true;
-			}
-		};
-	}
-	
-	public static Predicate<INamedElement> checkSingleResult(final String expectedResult) {
-		return new Predicate<INamedElement>() {
-			@Override
-			public boolean evaluate(INamedElement matchedElement) {
-				if(expectedResult == null) {
-					assertTrue(matchedElement == null);
-					return true;
-				}
-				assertNotNull(matchedElement);
-				
-				String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
-				
-				if(expectedResult.startsWith("$")) {
-					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
-					return true;
-				}
-				
-				String matchedElementToString = namedElementToString(matchedElement);
-				if(expectedResult.endsWith("###")) {
-					assertTrue(matchedElementToString.startsWith(StringUtil.trimEnd(expectedResult, "###")));
-				} else {
-					assertAreEqual(matchedElementToString, expectedResult);
 				}
 				
 				return true;

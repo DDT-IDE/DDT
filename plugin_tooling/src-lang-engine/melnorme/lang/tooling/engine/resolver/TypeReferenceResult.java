@@ -10,23 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-
-import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 
-public abstract class NonValueConcreteElementSemantics extends ConcreteElementSemantics {
+public class TypeReferenceResult {
 	
-	protected final NotAValueErrorElement notAValueError;
+	public final INamedElement originalType;
+	public final ITypeNamedElement concreteType;
 	
-	public NonValueConcreteElementSemantics(IConcreteNamedElement concreteElement, PickedElement<?> pickedElement) {
-		super(concreteElement, pickedElement);
-		this.notAValueError = new NotAValueErrorElement(concreteElement);
-	}
-	
-	@Override
-	public final INamedElement resolveTypeForValueContext() {
-		return notAValueError;
+	public TypeReferenceResult(INamedElement originalType, ITypeNamedElement concreteType) {
+		this.originalType = originalType;
+		this.concreteType = concreteType;
 	}
 	
 }

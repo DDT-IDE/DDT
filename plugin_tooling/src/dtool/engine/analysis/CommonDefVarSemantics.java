@@ -10,14 +10,12 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.utilbox.misc.CollectionUtil.getFirstElementOrNull;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.IInitializer;
-import dtool.ast.expressions.Resolvable;
 
 public class CommonDefVarSemantics extends VarSemantics {
 	
@@ -35,16 +33,15 @@ public class CommonDefVarSemantics extends VarSemantics {
 		}
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();
-		if(initializer instanceof IResolvable) {
-			IResolvable initializerR = (IResolvable) initializer;
-			return getFirstElementOrNull(initializerR.getSemantics(context).resolveTypeOfUnderlyingValue());
+		if(initializer != null) {
+			return initializer.resolveTypeOfUnderlyingValue(context).originalType;
 		}
 		
 		return ErrorElement.newNotFoundError(varDef, null);
 	}
 	
 	@Override
-	protected Resolvable getTypeReference() {
+	protected IReference getTypeReference() {
 		return varDef.getDeclaredType();
 	}
 	

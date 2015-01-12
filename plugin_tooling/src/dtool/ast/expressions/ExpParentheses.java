@@ -14,9 +14,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.references.Reference;
 
 public class ExpParentheses extends Expression {
 	
@@ -48,13 +51,30 @@ public class ExpParentheses extends Expression {
 	@Override
 	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
-		
-		@Override
-		public INamedElement doResolveTargetElement() {
-			return resolvable.getSemantics(context).resolveTargetElement().result;
+			
+			@Override
+			public TypeReferenceResult doCreateExpResolution() {
+				Resolvable parensExp = ExpParentheses.this.resolvable;
+				if(parensExp instanceof Reference) {
+					Reference refRoot = (Reference) parensExp;
+					return resolveTypeOfExpressionReference(refRoot);
+				} else {
+					Expression expRoot = (Expression) parensExp;
+					return expRoot.resolveTypeOfUnderlyingValue(context);
+				}
+			}
+			
+		};
+	}
+	
+	@Override
+	public INamedElement resolveAsQualifiedRefRoot(ISemanticContext context) {
+		if(resolvable instanceof Reference) {
+			Reference reference = (Reference) resolvable;
+			return reference.resolveTargetElement(context);
+		} else {
+			return super.resolveAsQualifiedRefRoot(context);
 		}
-		
-	};
 	}
 	
 }

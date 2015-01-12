@@ -14,20 +14,25 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.Reference;
 
 public class VarElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
-	public final Resolvable type;
+	public final Reference type;
 	
 	public VarElement(DefSymbol defname, Resolvable type) {
 		super(defname);
-		this.type = type; /*FIXME: BUG here NPE/parenting*/
+		/*FIXME: BUG here NPE/parenting*/
+		this.type = (type instanceof Reference) ? 
+				(Reference) type :  
+				null; // TODO: error element
 	}
 	
 	@Override
@@ -55,7 +60,7 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new VarSemantics(this, pickedElement) {
 			@Override
-			protected Resolvable getTypeReference() {
+			protected IReference getTypeReference() {
 				return type;
 			};
 		};

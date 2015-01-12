@@ -14,12 +14,12 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.parser.common.LexElement;
 
@@ -67,7 +67,7 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 		return new VarSemantics(this, pickedElement) {
 			
 			@Override
-			protected Resolvable getTypeReference() {
+			protected IReference getTypeReference() {
 				return type;
 			};
 			

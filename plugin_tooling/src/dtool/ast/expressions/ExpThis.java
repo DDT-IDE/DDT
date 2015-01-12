@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import dtool.ast.definitions.DefinitionClass;
 
 public class ExpThis extends Expression {
@@ -56,12 +56,12 @@ public class ExpThis extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 		
 			@Override
-			public INamedElement doResolveTargetElement() {
+			public TypeReferenceResult doCreateExpResolution() {
 				DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
 				if(definitionClass == null) {
 					return null;
 				}
-				return definitionClass;
+				return concreteTypeResult(definitionClass);
 			}
 			
 		};

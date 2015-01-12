@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,17 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.engine.ElementResolution;
+import melnorme.lang.tooling.symbols.INamedElement;
 
-/** 
- * A node that is a reference (or a value implicitly referring) to a named element.
- */
-public interface IResolvable extends ILanguageElement {
+public class ReferenceResult extends ElementResolution<INamedElement> {
 	
-	public String toStringAsCode(); /* FIXME: review usage of this method. */
+	public ReferenceResult(INamedElement result) {
+		super(result);
+	}
+	
+	public INamedElement getSingleResult() {
+		return result;
+	}
 	
 }

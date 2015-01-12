@@ -16,10 +16,8 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.misc.CollectionUtil;
 import dtool.ast.expressions.IInitializer;
 import dtool.engine.analysis.IVarDefinitionLike;
 
@@ -64,10 +62,8 @@ public final class AutoReference extends Reference {
 			@Override
 			public INamedElement doResolveTargetElement() {
 				IInitializer initializer = getParent_().getDeclaredInitializer();
-				if(initializer instanceof IResolvable) {
-					IResolvable valueNode = (IResolvable) initializer;
-					return CollectionUtil.getFirstElementOrNull(
-						valueNode.getSemantics(context).resolveTypeOfUnderlyingValue());
+				if(initializer != null) {
+					return initializer.resolveTypeOfUnderlyingValue(context).originalType;
 				}
 				return null;
 			}

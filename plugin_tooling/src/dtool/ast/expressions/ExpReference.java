@@ -11,15 +11,12 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import dtool.ast.references.Reference;
 
 /**
@@ -52,17 +49,12 @@ public class ExpReference extends Expression {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ResolvableSemantics(this, pickedElement) {
-		
-			@Override
-			public INamedElement doResolveTargetElement() {
-				return ref.getSemantics(context).resolveTargetElement().result;
-			}
+	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ExpSemantics(this, pickedElement) {
 			
 			@Override
-			public Collection<INamedElement> resolveTypeOfUnderlyingValue() {
-				return ref.getSemantics(context).resolveTypeOfUnderlyingValue();
+			public TypeReferenceResult doCreateExpResolution() {
+				return resolveTypeOfExpressionReference(ref);
 			}
 			
 		};

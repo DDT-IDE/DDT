@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
+import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
@@ -37,7 +37,7 @@ public class Import_LookupTest extends CommonLookupTest {
 	}
 	
 	protected void testRefModule(PickedElement<RefModule> refModuleElement, String fqn) {
-		ResolvableResult resolution = testResolveElement(refModuleElement);
+		ReferenceResult resolution = testResolveElement(refModuleElement);
 		
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
@@ -58,7 +58,7 @@ public class Import_LookupTest extends CommonLookupTest {
 	}
 	
 	protected void testPackageRef(PickedElement<? extends NamedReference> refToPackage, String fqn) {
-		ResolvableResult resolution = testResolveElement(refToPackage);
+		ReferenceResult resolution = testResolveElement(refToPackage);
 		
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
@@ -104,38 +104,38 @@ public class Import_LookupTest extends CommonLookupTest {
 		// ---------- Basic test - module statement
 		
 		testLookup(parseModule_WithRef("module xxx;", "xxx"),  
-			checkSingleResult("module xxx;###")
+			namedElementChecker("module xxx;###")
 		);
 		testLookup(parseModule_WithRef("", DEFAULT_ModuleName),  
-			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+			namedElementChecker("$"+DEFAULT_ModuleName+"/")
 		);
 		
 		
 		testLookup(parseModule_WithRef("module xxx; int foo;", "xxx.foo"),  
-			checkSingleResult("int foo;")
+			namedElementChecker("int foo;")
 		);
 		
 		testLookup(parseModule_WithRef("module xxx; int foo;", "xxx.foo"),  
-			checkSingleResult("int foo;")
+			namedElementChecker("int foo;")
 		);
 		testLookup(parseModule_WithRef("module pack.xxx; int foo;", "pack.xxx.foo"),  
-			checkSingleResult("int foo;")
+			namedElementChecker("int foo;")
 		);
 		
 		
 		// ---------- Basic test 
 		
 		testLookup(parseModule_WithRef("import pack.foobar; ", "PackFoobar_member"),  
-			checkSingleResult("int PackFoobar_member;")
+			namedElementChecker("int PackFoobar_member;")
 		);
 		
 		testLookup(parseModule_WithRef("import pack.foobar; void PackFoobar_member;", "PackFoobar_member"),  
-			checkSingleResult("void PackFoobar_member;")
+			namedElementChecker("void PackFoobar_member;")
 		);
 		
 		// vs. package name
 		testLookup(parseModule_WithRef("import pack.foobar;", "pack"),  
-			checkSingleResult("PNamespace[pack]")
+			namedElementChecker("PNamespace[pack]")
 		);
 		testLookup(parseModule_WithRef("import pack.foobar; int pack;", "pack"),  
 			checkNameConflict("PNamespace[pack]", "int pack;")
@@ -143,34 +143,34 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		// Special case: import self:
 		testLookup(parseModule_WithRef(SRC_IMPORT_SELF, DEFAULT_ModuleName),  
-			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+			namedElementChecker("$"+DEFAULT_ModuleName+"/")
 		);
 		testLookup(parseModule_WithRef(SRC_IMPORT_SELF + "int xxx;", "xxx"),  
-			checkSingleResult("int xxx;")
+			namedElementChecker("int xxx;")
 		);
 		
 		testLookup(parseModule_WithRef("module "+DEFAULT_ModuleName+";"+ SRC_IMPORT_SELF, DEFAULT_ModuleName),  
-			checkSingleResult("$"+DEFAULT_ModuleName+"/")
+			namedElementChecker("$"+DEFAULT_ModuleName+"/")
 		);
 		testLookup(parseModule_WithRef("module "+DEFAULT_ModuleName+";"+ SRC_IMPORT_SELF + "int xxx;", "xxx"),  
-			checkSingleResult("int xxx;")
+			namedElementChecker("int xxx;")
 		);
 		
 		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")),  
-			checkSingleResult("$pack.import_self/")
+			namedElementChecker("$pack.import_self/")
 		);
 		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")), 
-			"/*M2*/", checkSingleResult("int xpto;")
+			"/*M2*/", namedElementChecker("int xpto;")
 		);
 		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self_indirect.d")),  
-			checkSingleResult("$pack.import_self_indirect/")
+			namedElementChecker("$pack.import_self_indirect/")
 		);
 		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self_indirect.d")),  
-			"/*M2*/", checkSingleResult("int xpto;")
+			"/*M2*/", namedElementChecker("int xpto;")
 		);
 		
 		testLookup(getUpdatedModule(DEFAULT_TestsBundle_Source.resolve_fromValid("pack/import_self.d")), 
-			"/*M3*/", checkSingleResult("int xpto;")
+			"/*M3*/", namedElementChecker("int xpto;")
 		);
 		
 		
@@ -240,7 +240,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		// ------- Test name conflicts
 		
 		testLookup(parseModule_WithRef("module xxx; int xxx; ", "xxx"),
-			checkSingleResult("int xxx;") 
+			namedElementChecker("int xxx;") 
 		);
 		
 		testLookup(parseModule_WithRef("int xxx; import xxx; ", "xxx"),
@@ -257,10 +257,10 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		// Test contents of fully-qualified namespace
 		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.PackFoobar_member"),  
-			checkSingleResult("int PackFoobar_member;")
+			namedElementChecker("int PackFoobar_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.pack"),  
-			checkSingleResult(null)
+			namedElementChecker(null)
 		);
 		
 
@@ -273,7 +273,7 @@ public class Import_LookupTest extends CommonLookupTest {
 			"	import xxx; auto _ = xxx/*M*/" +
 			"}";	
 		testLookup(parseModule_(scopeOverload_vsImport), 
-			checkSingleResult(
+			namedElementChecker(
 			"module[xxx]"
 		));
 		
@@ -304,13 +304,13 @@ public class Import_LookupTest extends CommonLookupTest {
 		// Check test sample file is correct for subsequent tests
 		String FOO_PRIVATE_XXX = "foo_private__xxx";
 		testLookup(parseModule_WithRef("import pack.foo_private; ", FOO_PRIVATE_XXX), 
-			checkSingleResult("PackFooPrivate " + FOO_PRIVATE_XXX + ";"));
+			namedElementChecker("PackFooPrivate " + FOO_PRIVATE_XXX + ";"));
 		
 		/* -----------------  ----------------- */
 		
 		String PUBLIC_IMPORT = "import pack.public_import; import pack.zzz.non_existant";
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "xxx"), checkSingleResult("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "xxx"), namedElementChecker("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, FOO_PRIVATE_XXX), namedElementChecker(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import]", "module[pack.foo]", 
@@ -322,19 +322,19 @@ public class Import_LookupTest extends CommonLookupTest {
 		// -> note this behavior is not according to DMD, but is it according to spec? 
 		// Should be, if not, ugly spec behavior
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
-			checkSingleResult(null));
+			namedElementChecker(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
-			checkSingleResult(null));
+			namedElementChecker(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.pack"), 
-			checkSingleResult(null));
+			namedElementChecker(null));
 		
 		testLookup(parseModule_WithRef("class Xpto { import pack.foo; }", "Xpto.pack"), 
-			checkSingleResult(null));
+			namedElementChecker(null));
 		
 		
 		String PUBLIC_IMPORT2 = "import pack.public_import2; import pack.zzz.non_existant";
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), checkSingleResult("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), namedElementChecker("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), namedElementChecker(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import2]", "module[pack.foo]", 
@@ -344,8 +344,8 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		
 		String PUBLIC_IMPORT_INDIRECT = "import pack.public_import_x; import pack.zzz.non_existant";
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), checkSingleResult("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), checkSingleResult(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), namedElementChecker("PackFoo xxx;"));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), namedElementChecker(null));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import_x]", 
@@ -361,7 +361,7 @@ public class Import_LookupTest extends CommonLookupTest {
 				+ SRC_IMPORT_SELF 
 				+ " auto _ = xxx/*M*/; }"),
 				
-			checkSingleResult("int xxx;")
+			namedElementChecker("int xxx;")
 		);
 		testLookup(parseModule_(
 			" import foo;"
@@ -369,7 +369,7 @@ public class Import_LookupTest extends CommonLookupTest {
 				+ SRC_IMPORT_SELF 
 				+ " auto _ = foo_member/*M*/; }"),
 				
-			checkSingleResult("int foo_member;")
+			namedElementChecker("int foo_member;")
 		);
 		
 	}

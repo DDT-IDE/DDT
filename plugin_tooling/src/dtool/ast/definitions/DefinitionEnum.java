@@ -26,12 +26,14 @@ import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IStatement;
 import dtool.parser.common.Token;
 
-public class DefinitionEnum extends CommonDefinition implements IDeclaration, IStatement, IConcreteNamedElement {
+public class DefinitionEnum extends CommonDefinition 
+	implements IDeclaration, IStatement, IConcreteNamedElement, ITypeNamedElement {
 	
 	public final Reference type;
 	public final EnumBody body;

@@ -12,7 +12,6 @@ package dtool.engine.analysis.templates;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableResult;
 import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
@@ -33,40 +32,32 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	
 	@Override
 	public INamedElement doResolveTargetElement() {
-		// Not accurate, this will ignore the template parameters:
-		return this.refTemplateInstance.tplRef.resolveTargetElement(context);
-	}
-	
-	@Override
-	protected ResolvableResult createResolution() {
 		INamedElement resolvedTemplate = this.refTemplateInstance.tplRef.resolveTargetElement(context);
 		if(false) {
-			// TODO
 			return createTemplateInstance(resolvedTemplate);
 		} else {
-			return new ResolvableResult(resolvedTemplate);
+			return resolvedTemplate;
 		}
-		
 	}
 	
-	protected ResolvableResult createTemplateInstance(INamedElement resolvedTemplate) {
+	protected TemplateInstance createTemplateInstance(INamedElement resolvedTemplate) {
 		RefTemplateInstance refTplInstance = this.refTemplateInstance;
 		
 		// TODO: find best match for template overload
 			
-			TemplateInstance templateInstance = null;
-			
-			if(resolvedTemplate instanceof DefinitionTemplate) {
-				DefinitionTemplate template = (DefinitionTemplate) resolvedTemplate;
-				
-				templateInstance = createTemplateInstance(template, refTplInstance);
-				
-				if(templateInstance != null) {
-					return new ResolvableResult(templateInstance);
-				}
-			}
+		TemplateInstance templateInstance = null;
 		
-		return new ResolvableResult(null);
+		if(resolvedTemplate instanceof DefinitionTemplate) {
+			DefinitionTemplate template = (DefinitionTemplate) resolvedTemplate;
+			
+			templateInstance = createTemplateInstance(template, refTplInstance);
+			
+			if(templateInstance != null) {
+				return templateInstance;
+			}
+		}
+		
+		return null;
 	}
 	
 	protected TemplateInstance createTemplateInstance(DefinitionTemplate template, 

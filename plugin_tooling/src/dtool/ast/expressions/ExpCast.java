@@ -15,17 +15,17 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import dtool.ast.references.Reference;
 
 public class ExpCast extends Expression {
 	
-	public final Reference type;
+	public final Reference castTypeRef;
 	public final Resolvable exp;
 	
 	public ExpCast(Reference castType, Expression exp) {
+		this.castTypeRef = parentize(castType);
 		this.exp = parentize(exp);
-		this.type = parentize(castType);
 	}
 	
 	@Override
@@ -35,14 +35,14 @@ public class ExpCast extends Expression {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, type);
+		acceptVisitor(visitor, castTypeRef);
 		acceptVisitor(visitor, exp);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("cast");
-		cp.append("(", type, ")");
+		cp.append("(", castTypeRef, ")");
 		cp.append(exp);
 	}
 	
@@ -51,10 +51,10 @@ public class ExpCast extends Expression {
 	@Override
 	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
-		
+			
 			@Override
-			public INamedElement doResolveTargetElement() {
-				return findTargetElementsForReference(context, type);
+			public TypeReferenceResult doCreateExpResolution() {
+				return resolveTypeReference(castTypeRef);
 			}
 			
 		};
