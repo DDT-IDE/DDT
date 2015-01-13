@@ -29,7 +29,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
@@ -210,28 +209,23 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return checker;
 	}
 	
-	public static Predicate<INamedElement> namedElementChecker(final String expectedResult) {
+	public static Predicate<INamedElement> namedElementChecker(final String expectedLabel) {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
-				if(expectedResult == null) {
+				if(expectedLabel == null) {
 					assertTrue(matchedElement == null);
 					return true;
 				}
 				assertNotNull(matchedElement);
 				
-				if(expectedResult.startsWith("$")) {
-					String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
-					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
-					return true;
-				}
-				
-				String matchedElementToString = namedElementToString(matchedElement);
-				if(expectedResult.endsWith("###")) {
-					assertTrue(matchedElementToString.startsWith(StringUtil.trimEnd(expectedResult, "###")));
+				String elementLabel;
+				if(expectedLabel.startsWith("$")) {
+					elementLabel = "$" + NamedElementUtil.getElementTypedLabel(matchedElement);
 				} else {
-					assertAreEqual(matchedElementToString, expectedResult);
+					elementLabel = namedElementToString(matchedElement);
 				}
+				assertAreEqual(elementLabel, expectedLabel);
 				
 				return true;
 			}
@@ -245,30 +239,6 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		} else {
 			return namedElement.toString();
 		}
-	}
-	
-	/* FIXME: reduce duplication in these two methods. */
-	public static Predicate<INamedElement> namedElementChecker2(final String expectedResult) {
-		return new Predicate<INamedElement>() {
-			@Override
-			public boolean evaluate(INamedElement matchedElement) {
-				if(expectedResult == null) {
-					assertTrue(matchedElement == null);
-					return true;
-				}
-				assertNotNull(matchedElement);
-				
-				if(expectedResult.startsWith("$")) {
-					String elementTypedLabel = NamedElementUtil.getElementTypedLabel(matchedElement);
-					assertAreEqual(elementTypedLabel, StringUtil.trimStart(expectedResult, "$") );
-					return true;
-				}
-				
-				assertAreEqual(matchedElement.toString(), expectedResult);
-				
-				return true;
-			}
-		};
 	}
 	
 }

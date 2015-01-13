@@ -104,7 +104,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		// ---------- Basic test - module statement
 		
 		testLookup(parseModule_WithRef("module xxx;", "xxx"),  
-			namedElementChecker("module xxx;###")
+			namedElementChecker("$xxx/")
 		);
 		testLookup(parseModule_WithRef("", DEFAULT_ModuleName),  
 			namedElementChecker("$"+DEFAULT_ModuleName+"/")

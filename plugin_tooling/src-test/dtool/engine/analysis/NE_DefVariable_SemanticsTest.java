@@ -45,13 +45,13 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 			"int xxx = 123;",
 			"int z, xxx = 123;",
 			"int xxx = int;"
-		), "intrinsic_type#int");
+		), "$/int");
 		
 		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = 123;",
 			"auto z, xxx = 123;",
 			"enum xxx = 123;"
-		), "intrinsic_type#int");
+		), "$/int");
 		
 		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = int;",
@@ -90,7 +90,7 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		NamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		
-		namedElementChecker2(expectedResult).evaluate(effectiveType);
+		namedElementChecker(expectedResult).evaluate(effectiveType);
 	}
 	
 	/* -----------------  ----------------- */
