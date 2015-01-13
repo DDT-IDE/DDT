@@ -48,9 +48,8 @@ public class DeeElementLabelProvider {
 		}
 		
 		if(defUnit instanceof IVarDefinitionLike) {
-			IVarDefinitionLike varDefinitionLike = (IVarDefinitionLike) defUnit;
-			/* FIXME: review this code, TODO*/
-//			varDefinitionLike.resolveTypeForValueContext(null);
+//			IVarDefinitionLike varDefinitionLike = (IVarDefinitionLike) defUnit;
+			// TODO: add more info to label, such as var type.
 		}
 		
 		ASTCodePrinter cp = new ASTCodePrinter();

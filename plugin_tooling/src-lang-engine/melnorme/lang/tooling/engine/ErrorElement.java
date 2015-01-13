@@ -134,7 +134,8 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		protected final IResolvable resolvable;
 		
 		public NotFoundErrorElement(IResolvable resolvable) {
-			super(NOT_FOUND__Name, resolvable, quoteDoc("Could not resolve reference: " + resolvable.toStringAsCode()));
+			super(NOT_FOUND__Name, resolvable, 
+				quoteDoc("Could not resolve reference: " + resolvable.toStringAsCode()));
 			this.resolvable = resolvable;
 		}
 		

@@ -17,6 +17,6 @@ import melnorme.lang.tooling.ast.ILanguageElement;
  */
 public interface IResolvable extends ILanguageElement {
 	
-	public String toStringAsCode(); /* FIXME: review usage of this method. */
+	public String toStringAsCode();
 	
 }
