@@ -41,8 +41,7 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
 		RefModule refMod = getImportSelectiveContainer().getModuleRef();
-		ISemanticContext context = search.modResolver;
-		INamedElement targetModule = resolvedConcreteModule(refMod, context);
+		INamedElement targetModule = resolvedConcreteModule(refMod, search.context);
 		if(targetModule instanceof IImportableUnit) {
 			IImportableUnit module = (IImportableUnit) targetModule;
 			IScopeElement importableScope = module.getImportableScope();

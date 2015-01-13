@@ -115,7 +115,7 @@ public class RefModule extends NamedReference {
 		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
 		Set<String> matchedModules = search.findMatchingModules();
 		for (String moduleFQName : matchedModules) {
-			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.modResolver, true, this));
+			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.context, true, this));
 		}
 		search.getMatchesTable().addSymbols(scopeResolution.getNames());
 	}

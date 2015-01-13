@@ -29,7 +29,6 @@ import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.references.RefModule;
-import dtool.engine.analysis.ModuleProxy;
 
 public abstract class CommonScopeLookup {
 	
@@ -37,7 +36,7 @@ public abstract class CommonScopeLookup {
 	 * Used to check availability in statement scopes. */
 	public final int refOffset;
 	/** Module Resolver */
-	public final ISemanticContext modResolver; // TODO will need to deprecate this field eventually.
+	public final ISemanticContext context;
 	
 	protected final SymbolTable matches = new SymbolTable();
 	
@@ -48,9 +47,9 @@ public abstract class CommonScopeLookup {
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
 	
 	
-	public CommonScopeLookup(int refOffset, ISemanticContext moduleResolver) { 
+	public CommonScopeLookup(int refOffset, ISemanticContext context) { 
 		this.refOffset = refOffset;
-		this.modResolver = assertNotNull(moduleResolver);
+		this.context = assertNotNull(context);
 	}
 	
 	public boolean isSequentialLookup() {
@@ -115,7 +114,7 @@ public abstract class CommonScopeLookup {
 		if(isFinished() || nameElement == null)
 			return;
 		
-		IConcreteNamedElement concreteElement = nameElement.resolveConcreteElement(modResolver);
+		IConcreteNamedElement concreteElement = nameElement.resolveConcreteElement(context);
 		evaluateInMembersScope(concreteElement);
 	}
 	
@@ -199,7 +198,7 @@ public abstract class CommonScopeLookup {
 		}
 		
 		public ISemanticContext getContext() {
-			return getLookup().modResolver;
+			return getLookup().context;
 		}
 		
 		public void visitNamedElement(INamedElement namedElement) {

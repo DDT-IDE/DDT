@@ -22,14 +22,14 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	
 	public final String searchPrefix;
 	
-	public CompletionScopeLookup(int refOffset, ISemanticContext moduleResolver, String searchPrefix) {
-		super(refOffset, moduleResolver);
+	public CompletionScopeLookup(int refOffset, ISemanticContext context, String searchPrefix) {
+		super(refOffset, context);
 		this.searchPrefix = searchPrefix;
 	}
 	
 	@Override
 	public Set<String> findMatchingModules() {
-		return modResolver.findModules(searchPrefix);
+		return context.findModules(searchPrefix);
 	}
 	
 	@Override

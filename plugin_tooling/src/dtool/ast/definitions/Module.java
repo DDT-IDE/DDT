@@ -204,7 +204,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup search) {
 		search.evaluateScope(this);
 		search.evaluateScope(topLevelScope);
-		search.evaluateInMembersScope(CommonScopeLookup.resolveModule(search.modResolver, this, "object"));
+		search.evaluateInMembersScope(CommonScopeLookup.resolveModule(search.context, this, "object"));
 	}
 	
 	@Override

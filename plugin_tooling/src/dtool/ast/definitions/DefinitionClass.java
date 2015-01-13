@@ -89,7 +89,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup lookup) {
-		getSemantics(lookup.modResolver).getMembersScope().resolveLookupInSuperScopes(lookup);
+		getSemantics(lookup.context).getMembersScope().resolveLookupInSuperScopes(lookup);
 		
 		super.doPerformLexicalLookupInThisScope(lookup); // This lookup tpl params scope
 	}
@@ -144,7 +144,7 @@ public class DefinitionClass extends DefinitionAggregate {
 		
 		@Override
 		public void resolveLookupInSuperScopes(CommonScopeLookup search) {
-			ISemanticContext context = search.modResolver;
+			ISemanticContext context = search.context;
 			
 			for(Reference baseclass : CoreUtil.nullToEmpty(baseClasses)) {
 				INamedElement baseClassElem = baseclass.resolveTargetElement(context);

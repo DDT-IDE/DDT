@@ -164,7 +164,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	@Override
 	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
-		getSemantics(search.modResolver).resolveSearchInMembersScope(search);
+		getSemantics(search.context).resolveSearchInMembersScope(search);
 	}
 	
 	@Override

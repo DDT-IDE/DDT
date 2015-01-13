@@ -49,7 +49,7 @@ public abstract class CommonQualifiedReference extends NamedReference implements
 	}
 	
 	public void performQualifiedRefSearch(CommonScopeLookup search) {
-		INamedElement rootElement = resolveRootNameElement(search.modResolver);
+		INamedElement rootElement = resolveRootNameElement(search.context);
 		// TODO: create new search object here.
 		search.evaluateInMembersScope(rootElement);
 	}

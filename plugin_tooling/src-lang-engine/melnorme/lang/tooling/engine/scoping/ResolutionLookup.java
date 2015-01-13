@@ -27,12 +27,12 @@ public class ResolutionLookup extends CommonScopeLookup {
 	
 	protected final String searchName;
 	
-	public ResolutionLookup(String searchName, ISemanticContext moduleResolver) {
-		this(searchName, -1, moduleResolver);
+	public ResolutionLookup(String searchName, ISemanticContext context) {
+		this(searchName, -1, context);
 	}
 	
-	public ResolutionLookup(String searchName, int refOffset, ISemanticContext moduleResolver) {
-		super(refOffset, moduleResolver);
+	public ResolutionLookup(String searchName, int refOffset, ISemanticContext context) {
+		super(refOffset, context);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);
 	}
