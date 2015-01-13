@@ -47,8 +47,8 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	}
 	
 	@Override
-	public Path getModulePath() {
-		return parent.getModulePath();
+	public Path getSemanticContainerKey() {
+		return parent.getSemanticContainerKey();
 	}
 	
 	@Override

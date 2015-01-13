@@ -78,7 +78,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			String expectedTypeForValueContext, boolean isError) {
 		final INamedElement namedElement = pickedElement.element;
 		
-		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
+		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getSemanticContainerKey() != null);
 		
 		if(emptyAsNull(namedElement.getModuleFullName()) == null) {
 			assertTrue(namedElement.getParentNamespace() == null);
@@ -121,7 +121,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		
 		if(concreteElement instanceof ErrorElement) {
 			ErrorElement notFoundError = (ErrorElement) concreteElement;
-			assertTrue(notFoundError.getModulePath() == namedElement.getModulePath());
+			assertTrue(notFoundError.getSemanticContainerKey() == namedElement.getSemanticContainerKey());
 			assertTrue(notFoundError.getParent() != null);
 			assertTrue(NodeElementUtil.isContainedIn(notFoundError.getParent(), namedElement));
 			assertTrue(notFoundError.getParentNamespace() == null);

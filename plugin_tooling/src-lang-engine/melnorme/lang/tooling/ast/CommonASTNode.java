@@ -12,9 +12,6 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
@@ -47,6 +44,11 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	@Override
 	public final ASTNode getParent() {
+		return parent;
+	}
+	
+	@Override
+	public ILanguageElement getOwnerElement() {
 		return parent;
 	}
 	
@@ -272,15 +274,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	@Override
 	public boolean isLanguageIntrinsic() {
 		return false;
-	}
-	
-	@Override
-	public Path getModulePath() {
-		IModuleNode moduleNode = getModuleNode();
-		if(moduleNode == null) {
-			return null;
-		}
-		return moduleNode.getCompilationUnitPath();
 	}
 	
 	/* ----------------- Lexical lookup ----------------- */

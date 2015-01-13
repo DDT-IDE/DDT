@@ -31,18 +31,18 @@ public interface ILanguageElement {
 	ILanguageElement getParent();
 	
 	/** 
-	 * @return true if this is a pre-defined/native language element. 
+	 * @return true if this is an element predefined by the language. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).
-	 * This is a special case for which the elements do not have a well defined containing module path. 
+	 * This is a special case for in which the elements do not have a containing module path, 
+	 * and {@link #getSemanticContainerKey() is null}. 
 	 */
 	public boolean isLanguageIntrinsic();
-	
 	/**
-	 * @returnt the path of the module file from where this element was parsed or created.
-	 * This is important because it is used to find which semantic context to use for the semantic element.
+	 * @return the path of the module from where this element was created.
+	 * This is used to find which semantic context to use for the semantic element.
 	 * Non-null in most cases, but it can be null.
 	 */
-	public Path getModulePath();
+	public Path getSemanticContainerKey();
 	
 	
 	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, 

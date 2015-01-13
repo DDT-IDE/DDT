@@ -10,9 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import java.nio.file.Path;
 
-// TODO: need to formazile this class better, likely refactor.
+// TODO: need to formalize this class better, likely refactor.
 public abstract class AbstractElement extends CommonLanguageElement {
 	
 	protected final ILanguageElement parent;
@@ -27,13 +26,8 @@ public abstract class AbstractElement extends CommonLanguageElement {
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return parent == null ? true : parent.isLanguageIntrinsic();
-	}
-	
-	@Override
-	public Path getModulePath() {
-		return parent == null ? null : parent.getModulePath();
+	public ILanguageElement getOwnerElement() {
+		return parent;
 	}
 	
 }

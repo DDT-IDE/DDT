@@ -226,7 +226,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 			return getStdLibResolution();
 		}
 		
-		Location loc = Location.createValidOrNull(element.getModulePath());
+		Location loc = Location.createValidOrNull(element.getSemanticContainerKey());
 		if(loc == null) {
 			return null;
 		}

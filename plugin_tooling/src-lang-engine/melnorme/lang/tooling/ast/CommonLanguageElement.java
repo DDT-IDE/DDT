@@ -12,6 +12,9 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.nio.file.Path;
+
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
@@ -30,6 +33,18 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	public INamedElement getParentNamespace() {
 		return NodeElementUtil.getOuterNamedElement(this);
+	}
+	
+	public abstract ILanguageElement getOwnerElement();
+	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
+	}
+	
+	@Override
+	public Path getSemanticContainerKey() {
+		return getOwnerElement() == null ? null : getOwnerElement().getSemanticContainerKey();
 	}
 	
 	/* -----------------  ----------------- */

@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -175,16 +176,26 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
-	public Path getCompilationUnitPath() {
-		return compilationUnitPath;
-	}
-	
-	@Override
 	public Token[] getDocComments() {
 		if(md != null) {
 			return md.comments;
 		}
 		return null;
+	}
+	
+	@Override
+	public Path getCompilationUnitPath() {
+		return compilationUnitPath;
+	}
+	
+	@Override
+	public ILanguageElement getOwnerElement() {
+		return this;
+	}
+	
+	@Override
+	public Path getSemanticContainerKey() {
+		return getCompilationUnitPath();
 	}
 	
 	/* -----------------  ----------------- */
