@@ -35,13 +35,13 @@ public class ModuleProxy extends AbstractNamedElement {
 	protected final ISemanticContext context;
 	protected final String fullModuleName;
 	
-	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ILanguageElement parent) {
-		this(fullModuleName, moduleResolver, false, parent);
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ILanguageElement owner) {
+		this(fullModuleName, moduleResolver, false, owner);
 	}
 	
 	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
-			ILanguageElement parent) {
-		super(getEffectiveModuleName(fullModuleName, useFullName), parent);
+			ILanguageElement owner) {
+		super(getEffectiveModuleName(fullModuleName, useFullName), null, owner);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;

@@ -62,8 +62,8 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	protected final String fqName;
 	protected final SymbolTable namedElementsTable;
 	
-	public PackageNamespace(String fqName, ILanguageElement container, INamedElement firstMember) {
-		super(StringUtil.substringAfterLastMatch(fqName, "."), container);
+	public PackageNamespace(String fqName, ILanguageElement owner, INamedElement firstMember) {
+		super(StringUtil.substringAfterLastMatch(fqName, "."), null, owner);
 		assertNotNull(firstMember);
 		this.fqName = fqName;
 		this.namedElementsTable = new SymbolTable();

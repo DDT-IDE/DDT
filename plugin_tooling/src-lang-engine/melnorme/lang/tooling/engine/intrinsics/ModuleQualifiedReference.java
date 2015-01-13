@@ -29,7 +29,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 	public final String elementName;
 	
 	public ModuleQualifiedReference(String moduleFullName, String elementName) {
-		super(null);
+		super(null, null);
 		this.moduleFullName = moduleFullName;
 		this.elementName = elementName;
 	}

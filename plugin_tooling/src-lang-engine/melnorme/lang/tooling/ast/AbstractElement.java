@@ -11,23 +11,24 @@
 package melnorme.lang.tooling.ast;
 
 
-// TODO: need to formalize this class better, likely refactor.
 public abstract class AbstractElement extends CommonLanguageElement {
 	
-	protected final ILanguageElement parent;
+	protected final ILanguageElement ownerElement; // can be null
+	protected final ILanguageElement lexicalParent; // can be null
 	
-	public AbstractElement(ILanguageElement parent) {
-		this.parent = parent;
+	public AbstractElement(ILanguageElement ownerElement, ILanguageElement lexicalParent) {
+		this.ownerElement = ownerElement;
+		this.lexicalParent = lexicalParent;
 	}
 	
 	@Override
-	public ILanguageElement getParent() {
-		return parent;
+	public ILanguageElement getLexicalParent() {
+		return lexicalParent;
 	}
 	
 	@Override
 	public ILanguageElement getOwnerElement() {
-		return parent;
+		return ownerElement;
 	}
 	
 }

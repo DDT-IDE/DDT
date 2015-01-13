@@ -13,11 +13,9 @@ package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -38,17 +36,12 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	protected final EArcheType archeType;
 	protected final INamedElement firstElement;
 	
-	public OverloadedNamedElement(INamedElement firstElement, ILanguageElement parent) {
-		super(firstElement.getName(), parent);
+	public OverloadedNamedElement(INamedElement firstElement) {
+		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement);
 		this.firstElement = firstElement;
 		this.elements = new HashSet<>();
 		elements.add(firstElement);
 		this.archeType = EArcheType.Error;
-	}
-	
-	@Override
-	public Path getSemanticContainerKey() {
-		return parent.getSemanticContainerKey();
 	}
 	
 	@Override
@@ -64,11 +57,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	@Override
 	public String getModuleFullName() {
 		return firstElement.getModuleFullName();
-	}
-	
-	@Override
-	public INamedElement getParentNamespace() {
-		return firstElement.getParentNamespace();
 	}
 	
 	@Override

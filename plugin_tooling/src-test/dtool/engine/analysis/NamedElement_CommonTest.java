@@ -16,7 +16,6 @@ import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
@@ -122,8 +121,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		if(concreteElement instanceof ErrorElement) {
 			ErrorElement notFoundError = (ErrorElement) concreteElement;
 			assertTrue(notFoundError.getSemanticContainerKey() == namedElement.getSemanticContainerKey());
-			assertTrue(notFoundError.getParent() != null);
-			assertTrue(NodeElementUtil.isContainedIn(notFoundError.getParent(), namedElement));
+			assertTrue(notFoundError.getOwnerElement() != null);
+			assertTrue(notFoundError.getLexicalParent() == null);
 			assertTrue(notFoundError.getParentNamespace() == null);
 		}
 		
@@ -151,7 +150,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			assertTrue(isError);
 			return;
 		}
-		
+		/* FIXME: isError expectedTypeName */
 		assertEquals(isError, resolvedType.getArcheType() == EArcheType.Error);
 		// TODO: test that archetype is a type?
 		String type_modulefullName = resolvedType.getFullyQualifiedName();

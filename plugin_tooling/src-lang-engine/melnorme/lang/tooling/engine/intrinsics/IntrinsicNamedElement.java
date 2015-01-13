@@ -13,7 +13,7 @@ public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	protected final ElementDoc doc;
 	
 	public IntrinsicNamedElement(String name, ElementDoc doc) {
-		super(name, null);
+		super(name, null, null);
 		this.doc = doc;
 	}
 	

@@ -41,19 +41,19 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	
 	// TODO: review this API, probably remove.
 	public static ErrorElement newNotFoundError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(NOT_FOUND__Name, parent, doc);
+		return new ErrorElement(NOT_FOUND__Name, null, parent, doc);
 	}
 	
 	public static ErrorElement newLoopError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, parent, doc);
+		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, null, parent, doc);
 	}
 	
 	/* -----------------  ----------------- */
 	
 	protected final ElementDoc doc;
 	
-	public ErrorElement(String name, ILanguageElement parent, ElementDoc doc) {
-		super(name, parent);
+	public ErrorElement(String name, ILanguageElement lexicalParent, ILanguageElement ownerElement, ElementDoc doc) {
+		super(name, lexicalParent, ownerElement);
 		this.doc = doc;
 	}
 	
@@ -128,7 +128,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		protected final IResolvable resolvable;
 		
 		public NotFoundErrorElement(IResolvable resolvable) {
-			super(NOT_FOUND__Name, resolvable, 
+			super(NOT_FOUND__Name, null, resolvable, 
 				quoteDoc("Could not resolve reference: " + resolvable.toStringAsCode()));
 			this.resolvable = resolvable;
 		}

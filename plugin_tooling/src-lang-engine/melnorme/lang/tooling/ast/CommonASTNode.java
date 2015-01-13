@@ -42,8 +42,13 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/* ------------------------  Parent and children visitor ------------------------ */
 	
-	@Override
+	/* FIXME: need to review this method, subside with getLexicalParent */
 	public final ASTNode getParent() {
+		return parent;
+	}
+	
+	@Override
+	public ILanguageElement getLexicalParent() {
 		return parent;
 	}
 	

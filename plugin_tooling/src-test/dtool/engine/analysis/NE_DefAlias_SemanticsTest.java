@@ -26,6 +26,9 @@ public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveElement(parseNamedElement("alias intVar XXX; "), NOT_FOUND__Name, NOT_FOUND__Name, true);
 		test_resolveElement(parseNamedElement("alias XXX = intVar; "), NOT_FOUND__Name, NOT_FOUND__Name, true);
 		
+		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = intVar"), NOT_FOUND__Name, 
+			NOT_FOUND__Name, true);
+		
 		/* FIXME: do syntax error element */
 		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name, NOT_FOUND__Name, true);
 		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name, true);

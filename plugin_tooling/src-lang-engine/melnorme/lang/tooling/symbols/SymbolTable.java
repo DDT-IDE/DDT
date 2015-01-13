@@ -103,7 +103,7 @@ public class SymbolTable {
 					return;
 				}
 				
-				overloadElement = new OverloadedNamedElement(existingEntry, existingEntry.getParent());
+				overloadElement = new OverloadedNamedElement(existingEntry);
 				map.put(name, overloadElement);
 			}
 			

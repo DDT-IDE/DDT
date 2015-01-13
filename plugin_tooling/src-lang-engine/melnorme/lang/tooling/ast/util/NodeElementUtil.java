@@ -22,7 +22,7 @@ public class NodeElementUtil {
 			if(node == container) {
 				return true;
 			}
-			node = node.getParent();
+			node = node.getLexicalParent();
 		}
 		return false;
 	}
@@ -42,12 +42,12 @@ public class NodeElementUtil {
 			if(klass.isInstance(node)) {
 				return CoreUtil.<T>blindCast(node);
 			}
-			node = node.getParent();
+			node = node.getLexicalParent();
 		}
 	}
 	
 	public static INamedElement getOuterNamedElement(ILanguageElement node) {
-		return getNamedElementParent(node.getParent());
+		return getNamedElementParent(node.getLexicalParent());
 	}
 	
 	/** An optimized version of {@link #getMatchingParent(ILanguageElement, Class)}) for klass=INamedElement */
@@ -59,7 +59,7 @@ public class NodeElementUtil {
 			if (node instanceof INamedElement) {
 				return (INamedElement) node;
 			}
-			node = node.getParent();
+			node = node.getLexicalParent();
 		}
 	}
 	

@@ -29,13 +29,12 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public abstract ILanguageElement getParent();
+	public abstract ILanguageElement getLexicalParent();
+	public abstract ILanguageElement getOwnerElement();
 	
 	public INamedElement getParentNamespace() {
 		return NodeElementUtil.getOuterNamedElement(this);
 	}
-	
-	public abstract ILanguageElement getOwnerElement();
 	
 	@Override
 	public boolean isLanguageIntrinsic() {
