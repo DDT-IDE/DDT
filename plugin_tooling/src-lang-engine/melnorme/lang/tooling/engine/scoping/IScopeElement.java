@@ -27,11 +27,4 @@ public interface IScopeElement {
 	@Override
 	public int hashCode();
 	
-	
-	public static interface IExtendedScopeElement extends IScopeElement {
-		
-		void resolveLookupInSuperScopes(CommonScopeLookup lookup);
-		
-	}
-	
 }

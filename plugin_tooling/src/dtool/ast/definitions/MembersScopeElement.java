@@ -12,12 +12,12 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import dtool.ast.declarations.DeclarationImport;
 
-public class MembersScopeElement implements IScopeElement, IScopeElement.IExtendedScopeElement{
+public class MembersScopeElement implements IScopeElement {
 	
 	protected Iterable<? extends ILanguageElement> membersIterable;
 	
@@ -38,10 +38,15 @@ public class MembersScopeElement implements IScopeElement, IScopeElement.IExtend
 				
 				super.doEvaluateNode(scopeResolution, isSequentialLookup, isSecondaryScope, node);
 			}
+			
+			@Override
+			public void evaluateSuperScopes(CommonScopeLookup lookup) {
+				resolveLookupInSuperScopes(lookup);
+			}
 		};
 	}
 	
-	@Override
+	@SuppressWarnings("unused")
 	public void resolveLookupInSuperScopes(CommonScopeLookup lookup) {
 		// Default: do nothing
 	}

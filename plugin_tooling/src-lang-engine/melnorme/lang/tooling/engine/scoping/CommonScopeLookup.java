@@ -22,7 +22,6 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.SymbolTable;
@@ -147,14 +146,10 @@ public abstract class CommonScopeLookup {
 		matches.addVisibleSymbols(scopeNames);
 		
 		if(scope != null) {
+			// Warning: potential infinite loop problems here ? 
 			scope.getScopeTraverser().evaluateSuperScopes(this);
 		}
 		
-		if(scope instanceof IExtendedScopeElement) {
-			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
-			// Warning: potential infinite loop problems here 
-			extendedScopeElement.resolveLookupInSuperScopes(this);
-		}
 	}
 	
 	public SymbolTable resolveScopeSymbols(IScopeElement scope) {
