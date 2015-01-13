@@ -12,11 +12,15 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.Set;
+
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.engine.analysis.ModuleProxy;
@@ -108,7 +112,12 @@ public class RefModule extends NamedReference {
 	
 	@Override
 	public void performNameLookup(CommonScopeLookup search) {
-		search.evaluateSearchInImportationNamespace(this);
+		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
+		Set<String> matchedModules = search.findMatchingModules();
+		for (String moduleFQName : matchedModules) {
+			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.modResolver, true, this));
+		}
+		search.getMatchesTable().addSymbols(scopeResolution.getNames());
 	}
 	
 	public ModuleProxy getModuleProxy(ISemanticContext mr) {

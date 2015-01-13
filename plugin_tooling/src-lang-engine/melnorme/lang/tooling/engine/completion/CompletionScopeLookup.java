@@ -10,6 +10,8 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.completion;
 
+import java.util.Set;
+
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
@@ -26,17 +28,22 @@ public class CompletionScopeLookup extends CommonScopeLookup {
 	}
 	
 	@Override
+	public Set<String> findMatchingModules() {
+		return modResolver.findModules(searchPrefix);
+	}
+	
+	@Override
+	public boolean isFinished() {
+		return false;
+	}
+	
+	@Override
 	public boolean matchesName(String defName) {
 		if(searchPrefix.length() > defName.length()) {
 			return false;
 		}
 		String defNamePrefix = defName.substring(0, searchPrefix.length());
 		return defNamePrefix.equalsIgnoreCase(searchPrefix);
-	}
-	
-	@Override
-	public boolean isFinished() {
-		return false;
 	}
 	
 	@Override

@@ -12,9 +12,13 @@ package melnorme.lang.tooling.engine.scoping;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import dtool.engine.analysis.PackageNamespace;
+
+import java.util.Set;
+
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.misc.CollectionUtil;
+import dtool.engine.analysis.PackageNamespace;
 
 /**
  * A scope name lookup for symbols/names that exactly match a given name.
@@ -31,6 +35,11 @@ public class ResolutionLookup extends CommonScopeLookup {
 		super(refOffset, moduleResolver);
 		this.searchName = assertNotNull(searchName);
 		assertTrue(searchName.isEmpty() == false);
+	}
+	
+	@Override
+	public Set<String> findMatchingModules() {
+		return CollectionUtil.createHashSet(searchName);
 	}
 	
 	@Override

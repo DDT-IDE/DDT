@@ -12,9 +12,7 @@ package melnorme.lang.tooling.engine.scoping;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +22,6 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement.IExtendedScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -64,6 +61,10 @@ public abstract class CommonScopeLookup {
 		return searchedScopes;
 	}
 	
+	public SymbolTable getMatchesTable() {
+		return matches;
+	}
+	
 	public Collection<INamedElement> getMatchedElements() {
 		return matches.getElements();
 	}
@@ -84,10 +85,6 @@ public abstract class CommonScopeLookup {
 	
 	/* ----------------- module lookup helpers ----------------- */
 	
-	public Set<String> findModulesWithPrefix(String fqNamePrefix) {
-		return modResolver.findModules(fqNamePrefix);
-	}
-	
 	public static IConcreteNamedElement resolveModule(ISemanticContext context, ILanguageElement refElement, 
 			String moduleFullName) {
 		return resolveModule(context, refElement, new ModuleFullName(moduleFullName));
@@ -102,32 +99,7 @@ public abstract class CommonScopeLookup {
 		}
 	}
 	
-	public void evaluateSearchInImportationNamespace(RefModule refModule) {
-		ArrayList<ModuleProxy> moduleImportsScope = new ArrayList<>();
-		
-		CommonScopeLookup search = this;
-		
-		/* FIXME: refactor this code */
-		if(search instanceof CompletionScopeLookup) {
-			CompletionScopeLookup prefixDefUnitSearch = (CompletionScopeLookup) search;
-			String prefix = prefixDefUnitSearch.searchPrefix;
-			Set<String> matchedModule = prefixDefUnitSearch.findModulesWithPrefix(prefix);
-			
-			for (String fqName : matchedModule) {
-				moduleImportsScope.add(new ModuleProxy(fqName, search.modResolver, true, refModule));
-			}
-		} else {
-			assertTrue(refModule.isMissingCoreReference() == false);
-			String moduleFQName = refModule.getRefModuleFullyQualifiedName();
-			moduleImportsScope.add(new ModuleProxy(moduleFQName, search.modResolver, true, refModule));
-		}
-		
-		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
-		for (ModuleProxy moduleProxy : moduleImportsScope) {
-			scopeResolution.visitNamedElement(moduleProxy);
-		}
-		matches.addVisibleSymbols(scopeResolution.getNames());
-	}
+	public abstract Set<String> findMatchingModules();
 	
 	/* -----------------  ----------------- */
 	
