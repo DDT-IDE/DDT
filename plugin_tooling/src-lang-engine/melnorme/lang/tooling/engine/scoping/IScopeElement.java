@@ -11,7 +11,6 @@
 package melnorme.lang.tooling.engine.scoping;
 
 
-
 /**
  * Interface for a scope element: 
  * A collection of nodes visited during a name lookup operation.
@@ -20,7 +19,8 @@ package melnorme.lang.tooling.engine.scoping;
  */
 public interface IScopeElement {
 	
-	ScopeTraverser getScopeTraverser();
+	/** @return non-null. */
+	public ScopeTraverser getScopeTraverser();
 	
 	@Override
 	public boolean equals(Object obj);

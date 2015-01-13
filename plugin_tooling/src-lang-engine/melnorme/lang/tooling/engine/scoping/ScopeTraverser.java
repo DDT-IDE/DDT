@@ -78,4 +78,9 @@ public class ScopeTraverser {
 		node.evaluateForScopeLookup(scopeResolution, isSecondaryScope, isSequentialLookup, scopeAsImport);
 	}
 	
+	@SuppressWarnings("unused")
+	public void evaluateSuperScopes(CommonScopeLookup lookup) {
+		// Default: do nothing
+	}
+	
 }

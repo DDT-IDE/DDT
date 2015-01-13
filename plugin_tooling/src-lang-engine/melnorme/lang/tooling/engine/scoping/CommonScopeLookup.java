@@ -146,6 +146,10 @@ public abstract class CommonScopeLookup {
 		
 		matches.addVisibleSymbols(scopeNames);
 		
+		if(scope != null) {
+			scope.getScopeTraverser().evaluateSuperScopes(this);
+		}
+		
 		if(scope instanceof IExtendedScopeElement) {
 			IExtendedScopeElement extendedScopeElement = (IExtendedScopeElement) scope;
 			// Warning: potential infinite loop problems here 
@@ -164,14 +168,11 @@ public abstract class CommonScopeLookup {
 			return null;
 		searchedScopes.add(scope);
 		
-		SymbolTable names = doResolveScopeSymbols(scope);
-		
-		return names;
+		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
+		return doResolveScopeSymbols(scopeTraverser);
 	}
 	
-	protected SymbolTable doResolveScopeSymbols(IScopeElement scope) {
-		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
-		
+	protected SymbolTable doResolveScopeSymbols(ScopeTraverser scopeTraverser) {
 		SymbolTable names = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, false);
 		
 		SymbolTable importedNames = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, true);

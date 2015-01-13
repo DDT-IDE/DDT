@@ -44,8 +44,8 @@ public class SymbolTable {
 		return map.values();
 	}
 	
-	public void addSymbols(SymbolTable importedNames) {
-		addSymbols(importedNames.map.values());
+	public void addSymbols(SymbolTable symbolTable) {
+		addSymbols(symbolTable.map.values());
 	}
 	
 	public void addSymbols(Collection<INamedElement> values) {

@@ -200,23 +200,18 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		}
 	}
 	
-	@Override
-	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup search) {
-		search.evaluateScope(this);
-		search.evaluateScope(topLevelScope);
-		search.evaluateInMembersScope(CommonScopeLookup.resolveModule(search.context, this, "object"));
-	}
-	
-	@Override
-	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeSemantics(this, pickedElement, new MembersScopeElement(members));
-	}
-	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public ScopeTraverser getScopeTraverser() {
-		return new ScopeTraverser(members, true);
+		return new ScopeTraverser(members, true) {
+			@Override
+			public void evaluateSuperScopes(CommonScopeLookup lookup) {
+				lookup.evaluateScope(topLevelScope);
+				lookup.evaluateInMembersScope(
+					CommonScopeLookup.resolveModule(lookup.context, Module.this, "object"));
+			}
+		};
 	}
 	
 	@Override
@@ -230,5 +225,10 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			return new ScopeTraverser(members, true, true);
 		}
 	};
+	
+	@Override
+	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new TypeSemantics(this, pickedElement, new MembersScopeElement(members));
+	}
 	
 }

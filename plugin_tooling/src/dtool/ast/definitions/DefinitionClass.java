@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
@@ -88,10 +89,13 @@ public class DefinitionClass extends DefinitionAggregate {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected void doPerformLexicalLookupInThisScope(CommonScopeLookup lookup) {
-		getSemantics(lookup.context).getMembersScope().resolveLookupInSuperScopes(lookup);
-		
-		super.doPerformLexicalLookupInThisScope(lookup); // This lookup tpl params scope
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(tplParams, false) {
+			@Override
+			public void evaluateSuperScopes(CommonScopeLookup lookup) {
+				getSemantics(lookup.context).getMembersScope().resolveLookupInSuperScopes(lookup);
+			}
+		};
 	}
 	
 	/* -----------------  ----------------- */
