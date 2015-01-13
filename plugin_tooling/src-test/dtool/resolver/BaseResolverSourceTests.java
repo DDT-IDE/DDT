@@ -263,7 +263,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	public void precheckOriginalResults(Collection<INamedElement> resultElementsOriginal) {
 		for (INamedElement elem : resultElementsOriginal) {
 			elem.getExtendedName();
-			elem.getModuleFullyQualifiedName();
+			elem.getModuleFullName();
 			if(elem instanceof DefUnit) {
 				DefUnit defUnit = (DefUnit) elem;
 				defUnit.getModuleNode();

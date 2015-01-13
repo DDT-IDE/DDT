@@ -57,13 +57,13 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
+	public String getModuleFullName() {
 		return fullModuleName;
 	}
 	
 	@Override
 	public String toString() {
-		return "module["+getModuleFullyQualifiedName()+"]";
+		return "module["+getModuleFullName()+"]";
 	}
 	
 	@Override
@@ -115,7 +115,7 @@ public class ModuleProxy extends AbstractNamedElement {
 			
 			@Override
 			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return CommonScopeLookup.resolveModule(context, ModuleProxy.this, getModuleFullyQualifiedName());
+				return CommonScopeLookup.resolveModule(context, ModuleProxy.this, getModuleFullName());
 			}
 			
 		};

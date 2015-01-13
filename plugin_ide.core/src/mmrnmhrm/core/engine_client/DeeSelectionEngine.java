@@ -99,7 +99,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		if(defUnit == null) {
 			return null;
 		}
-		ModuleFullName moduleFullName = namedElement.getModuleFullName();
+		ModuleFullName moduleFullName = ModuleFullName.fromString(namedElement.getModuleFullName());
 		if(moduleFullName == null) {
 			return null;
 		}

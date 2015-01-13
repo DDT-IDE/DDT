@@ -192,7 +192,7 @@ public abstract class FindAction extends SelectionDispatchAction {
 		IScriptProject scriptProject = deeEditor.getInputModelElement().getScriptProject();
 		
 		boolean isInsideInterpreterEnvironment;
-		String moduleFQName = defunit.getModuleFullyQualifiedName();
+		String moduleFQName = defunit.getModuleFullName();
 		if(moduleFQName == null) {
 			isInsideInterpreterEnvironment = false;
 		} else {

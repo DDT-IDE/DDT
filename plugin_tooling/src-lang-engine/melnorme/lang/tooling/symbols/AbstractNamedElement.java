@@ -13,7 +13,6 @@ package melnorme.lang.tooling.symbols;
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -40,11 +39,6 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	@Override
 	public String getNameInRegularNamespace() {
 		return getName();
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
-		return ModuleFullName.fromString(getModuleFullyQualifiedName());
 	}
 	
 	/* ----------------- ----------------- */

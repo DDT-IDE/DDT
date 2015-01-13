@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
@@ -69,13 +68,8 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
+	public String getModuleFullName() {
 		return getName();
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
-		return ModuleFullName.fromString("");
 	}
 	
 	@Override

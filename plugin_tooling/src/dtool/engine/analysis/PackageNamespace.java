@@ -94,7 +94,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
+	public String getModuleFullName() {
 		return null;
 	}
 	

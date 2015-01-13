@@ -163,7 +163,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
+	public String getModuleFullName() {
 		return getFullyQualifiedName();
 	}
 	

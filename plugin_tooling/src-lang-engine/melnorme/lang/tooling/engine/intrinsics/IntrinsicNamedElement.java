@@ -28,8 +28,8 @@ public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
-		return ""; // Special module value for intrinsic elements.
+	public String getModuleFullName() {
+		return null;
 	}
 	
 	@Override

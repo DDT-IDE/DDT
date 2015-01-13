@@ -24,7 +24,7 @@ public abstract class ASTNode extends CommonASTNode {
 	
 	/* ------------------------------------------------------------ */
 	
-	public String getModuleFullyQualifiedName() {
+	public String getModuleFullName() {
 		/* This must be overriden by synthetic defUnits */
 		Module moduleNode = assertNotNull(getModuleNode_());
 		return moduleNode.getFullyQualifiedName();

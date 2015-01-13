@@ -80,20 +80,15 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		
 		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getModulePath() != null);
 		
-		if(emptyAsNull(namedElement.getModuleFullyQualifiedName()) == null) {
+		if(emptyAsNull(namedElement.getModuleFullName()) == null) {
 			assertTrue(namedElement.getParentNamespace() == null);
-			assertTrue(namedElement.getModuleFullName() == null
-					|| emptyAsNull(namedElement.getModuleFullName().getFullNameAsString()) == null);
+			assertTrue(namedElement.getModuleFullName() == null);
 		} else {
-			if(namedElement.getModuleFullyQualifiedName().equals(namedElement.getFullyQualifiedName())) {
+			if(namedElement.getModuleFullName().equals(namedElement.getFullyQualifiedName())) {
 				assertTrue(namedElement.getParentNamespace() == null);
 			} else {
 				assertTrue(namedElement.getParentNamespace() != null);
 			}
-			
-			/* FIXME: refactor getModuleFullName */
-			assertAreEqual(namedElement.getModuleFullName().getFullNameAsString(), 
-				namedElement.getModuleFullyQualifiedName());
 		}
 		
 		test_resolveConcreteElement(pickedElement, aliasTarget);

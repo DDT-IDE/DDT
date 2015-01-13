@@ -24,7 +24,7 @@ public class NamedElementUtil {
 	
 	public static String getElementTypeLabelBase(INamedElement namedElement) {
 		if(namedElement.getArcheType() == EArcheType.Module) {
-			return namedElement.getModuleFullyQualifiedName() + "/";
+			return namedElement.getModuleFullName() + "/";
 		}
 		
 		if(namedElement.isLanguageIntrinsic()) { 

@@ -20,7 +20,6 @@ import java.util.HashSet;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
@@ -63,12 +62,7 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
-		return firstElement.getModuleFullyQualifiedName();
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
+	public String getModuleFullName() {
 		return firstElement.getModuleFullName();
 	}
 	

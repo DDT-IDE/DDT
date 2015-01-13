@@ -31,7 +31,7 @@ public class DeeModelEngine {
 		if(targetDefUnit == null) 
 			return null;
 		
-		ModuleFullName moduleFullName = targetDefUnit.getModuleFullName();
+		ModuleFullName moduleFullName = ModuleFullName.fromString(targetDefUnit.getModuleFullName());
 		// TODO: would be nice to have test for module == null path
 		if(moduleFullName == null) {
 			return null;

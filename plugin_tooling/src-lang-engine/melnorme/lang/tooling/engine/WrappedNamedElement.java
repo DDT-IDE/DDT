@@ -13,10 +13,9 @@ package melnorme.lang.tooling.engine;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
@@ -46,12 +45,7 @@ public abstract class WrappedNamedElement extends AbstractNamedElement {
 	}
 	
 	@Override
-	public String getModuleFullyQualifiedName() {
-		return wrappedElement.getModuleFullyQualifiedName();
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
+	public String getModuleFullName() {
 		return wrappedElement.getModuleFullName();
 	}
 	

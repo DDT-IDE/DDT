@@ -122,7 +122,7 @@ public class DeeElementLabelProvider {
 	}
 	
 	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
-		String moduleFullyQualifiedName = defUnit.getModuleFullyQualifiedName();
+		String moduleFullyQualifiedName = defUnit.getModuleFullName();
 		return moduleFullyQualifiedName == null ? "" : " - " + moduleFullyQualifiedName;
 	}
 	

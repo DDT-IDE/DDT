@@ -18,7 +18,6 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -123,11 +122,6 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 		} else {
 			return parentNamespace.getFullyQualifiedName() + "." + getName();
 		}
-	}
-	
-	@Override
-	public ModuleFullName getModuleFullName() {
-		return ModuleFullName.fromString(getModuleFullyQualifiedName());
 	}
 	
 	@Override

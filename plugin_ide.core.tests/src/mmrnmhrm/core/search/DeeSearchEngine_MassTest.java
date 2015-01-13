@@ -90,7 +90,8 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 						if(defUnit == null) {
 							continue;
 						}
-						ModuleFullName moduleFullName = resolvedElement.getModuleFullName();
+						ModuleFullName moduleFullName = ModuleFullName.fromString(
+							resolvedElement.getModuleFullName());
 						if(moduleFullName == null) {
 							continue; // consider this case more
 						}
@@ -141,7 +142,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					for (Reference pair : expectedReferences) {
 						Reference reference = pair;
 						
-						String refModuleName = reference.getModuleNode_().getModuleFullyQualifiedName();
+						String refModuleName = reference.getModuleNode_().getModuleFullName();
 						
 						IModelElement modelElement = downCast(referenceMatch.getElement());
 						ISourceModule matchSrcModule = DeeSearchEngineTestUtils.getSourceModule(modelElement);
