@@ -56,36 +56,36 @@ public class ExpCall extends Expression {
 	protected ExpSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ExpSemantics(this, pickedElement) {
 		
-		@Override
-		public TypeReferenceResult doCreateExpResolution() {
-			INamedElement calleeElem = callee.resolveTypeOfUnderlyingValue(context).originalType;
-			if(calleeElem == null)
-				return null;
-			
-			if (calleeElem instanceof DefinitionFunction) {
-				DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
-				return resolveTypeReference(defOpCallFunc.retType);
-			}
-			
-			if(calleeElem instanceof NotAValueErrorElement) {
-				NotAValueErrorElement notAValueErrorElement = (NotAValueErrorElement) calleeElem;
-				calleeElem = notAValueErrorElement.invalidElement; 
-			}
-			
-			ResolutionLookup search = new ResolutionLookup("opCall", context);
-			search.evaluateInMembersScope(calleeElem);
-			INamedElement matchedElement = search.getMatchedElement();
-			
-			for (INamedElement possibleFunctionElement : Reference.resolveResultToCollection(matchedElement)) {
-				if (possibleFunctionElement instanceof DefinitionFunction) {
-					DefinitionFunction defOpCallFunc = (DefinitionFunction) possibleFunctionElement;
+			@Override
+			public TypeReferenceResult doCreateExpResolution() {
+				INamedElement calleeElem = callee.resolveTypeOfUnderlyingValue(context).originalType;
+				if(calleeElem == null)
+					return null;
+				
+				if (calleeElem instanceof DefinitionFunction) {
+					DefinitionFunction defOpCallFunc = (DefinitionFunction) calleeElem;
 					return resolveTypeReference(defOpCallFunc.retType);
 				}
+				
+				if(calleeElem instanceof NotAValueErrorElement) {
+					NotAValueErrorElement notAValueErrorElement = (NotAValueErrorElement) calleeElem;
+					calleeElem = notAValueErrorElement.invalidElement; 
+				}
+				
+				ResolutionLookup search = new ResolutionLookup("opCall", context);
+				search.evaluateInMembersScope(calleeElem);
+				INamedElement matchedElement = search.getMatchedElement();
+				
+				for (INamedElement possibleFunctionElement : Reference.resolveResultToCollection(matchedElement)) {
+					if (possibleFunctionElement instanceof DefinitionFunction) {
+						DefinitionFunction defOpCallFunc = (DefinitionFunction) possibleFunctionElement;
+						return resolveTypeReference(defOpCallFunc.retType);
+					}
+				}
+				return null;
 			}
-			return null;
-		}
-		
-	};
+			
+		};
 	}
 	
 }

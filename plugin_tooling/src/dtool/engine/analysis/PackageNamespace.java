@@ -26,6 +26,7 @@ import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.SymbolTable;
+import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.DefUnit;
@@ -35,6 +36,26 @@ import dtool.ast.definitions.EArcheType;
  * A package namespace, parented on a given scope, implicitly created from import statements.
  */
 public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
+	
+	public static PackageNamespace createNamespaceFragments(String[] packages, INamedElement module, 
+			ILanguageElement container) {
+		String defName = packages[0];
+		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
+		return createNamespaceFragments(defName, packages, module, container);
+	}
+	
+	public static PackageNamespace createNamespaceFragments(String fqName, String[] packages, INamedElement module, 
+			ILanguageElement container) {
+		if(packages.length == 0) {
+			return new PackageNamespace(fqName, container, module);
+		} else {
+			String childDefName = packages[0];
+			String childFqName = fqName + "." + childDefName;
+			packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
+			PackageNamespace subPackage = createNamespaceFragments(childFqName, packages, module, container);
+			return new PackageNamespace(fqName, container, subPackage);
+		}
+	}
 	
 	/* -----------------  ----------------- */
 	

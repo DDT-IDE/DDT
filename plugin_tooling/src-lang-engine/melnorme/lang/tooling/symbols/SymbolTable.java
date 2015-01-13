@@ -17,12 +17,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.ModuleProxy;
 import dtool.engine.analysis.PackageNamespace;
-import dtool.engine.analysis.PackageNamespaceFragment;
 
 /**
  * A symbol table (map of named elements).
@@ -57,21 +55,7 @@ public class SymbolTable {
 	}
 	
 	public void addSymbol(INamedElement newElement) {
-		newElement = convertNameSpace(newElement);
-		
 		doAddSymbol(newElement);
-	}
-	
-	protected static INamedElement convertNameSpace(INamedElement newElement) {
-		if(newElement instanceof PackageNamespaceFragment) {
-			PackageNamespaceFragment newNamespace = (PackageNamespaceFragment) newElement;
-			// convert to PackageNamespace
-			String fqn = newNamespace.getFullyQualifiedName();
-			ILanguageElement parent = newNamespace.getParent();
-			INamedElement containedElement = convertNameSpace(newNamespace.getContainedElement());
-			return new PackageNamespace(fqn, parent, containedElement);
-		}
-		return newElement;
 	}
 	
 	protected void doAddSymbol(INamedElement newElement) {

@@ -20,7 +20,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.engine.analysis.ModuleProxy;
-import dtool.engine.analysis.PackageNamespaceFragment;
+import dtool.engine.analysis.PackageNamespace;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 
@@ -100,7 +100,7 @@ public class RefModule extends NamedReference {
 			return null;
 		} else {
 			INamedElement moduleElem = getModuleProxy(context);
-			return PackageNamespaceFragment.createNamespaceFragments(getPackageNames(), moduleElem, this); 
+			return PackageNamespace.createNamespaceFragments(getPackageNames(), moduleElem, this); 
 		}
 	}
 	

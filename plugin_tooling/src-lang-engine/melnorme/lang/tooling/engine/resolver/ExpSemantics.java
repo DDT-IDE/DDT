@@ -24,7 +24,7 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 	
 	public ExpSemantics(IResolvable resolvable, PickedElement<?> pickedElement) {
 		super(pickedElement);
-		assertTrue(pickedElement.element == resolvable); /* FIXME: simplify this API */
+		assertTrue(pickedElement.element == resolvable);
 		this.resolvable = resolvable;
 	}
 	

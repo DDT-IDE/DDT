@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.views;
 
-import static dtool.engine.analysis.PackageNamespaceFragment.createNamespaceFragments;
+import static dtool.engine.analysis.PackageNamespace.createNamespaceFragments;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
