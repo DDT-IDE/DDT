@@ -13,15 +13,14 @@ package dtool.ast.expressions;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeListView;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionFunction;
-import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 
 public class ExpCall extends Expression {
@@ -68,13 +67,9 @@ public class ExpCall extends Expression {
 				return resolveTypeReference(defOpCallFunc.retType);
 			}
 			
-			Module moduleNode = null;
-			if(calleeElem instanceof ASTNode) {
-				ASTNode astNode = (ASTNode) calleeElem;
-				moduleNode = astNode.getModuleNode_();
-			}
-			if(moduleNode == null) {
-				return null;
+			if(calleeElem instanceof NotAValueErrorElement) {
+				NotAValueErrorElement notAValueErrorElement = (NotAValueErrorElement) calleeElem;
+				calleeElem = notAValueErrorElement.invalidElement; 
 			}
 			
 			ResolutionLookup search = new ResolutionLookup("opCall", context);

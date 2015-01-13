@@ -64,7 +64,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		
 		public static final String ERROR_IS_NOT_A_VALUE = "#NotAValue";
 		
-		protected final INamedElement concreteResult;
+		public final INamedElement invalidElement;
 		
 		public NotAValueErrorElement(INamedElement invalidElement) {
 			this(invalidElement, invalidElement); 
@@ -73,12 +73,12 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		public NotAValueErrorElement(ILanguageElement parent, INamedElement invalidElement) {
 			super(ERROR_IS_NOT_A_VALUE, parent, 
 				quoteDoc("Element does not have a value: " + invalidElement.getFullyQualifiedName()));
-			this.concreteResult = invalidElement;
+			this.invalidElement = invalidElement;
 		}
 		
 		@Override
 		public String getExtendedName() {
-			return getName() + ":" + concreteResult.getFullyQualifiedName();
+			return getName() + ":" + invalidElement.getFullyQualifiedName();
 		}
 		
 		@Override

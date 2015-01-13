@@ -105,7 +105,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public final INamedElement resolveTypeForValueContext() {
+		public INamedElement resolveTypeForValueContext() {
 			// TODO implicit function call
 			return null;
 		}
@@ -129,6 +129,11 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		@Override
 		public void resolveSearchInMembersScope(CommonScopeLookup search) {
 			resolveSearchInMembersScopeForFunction(search, function.retType);
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext() {
+			return function; // Not entirely, we need to extract the function type.
 		}
 	}
 	
