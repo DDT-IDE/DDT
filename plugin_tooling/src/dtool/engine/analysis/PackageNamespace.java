@@ -16,9 +16,8 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -97,14 +96,9 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	@Override
 	protected final NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new AliasSemantics(this, pickedElement) {
+		return new ConcreteElementSemantics(this, pickedElement) {
 			
 			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);
-			
-			@Override
-			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return PackageNamespace.this;
-			}
 			
 			@Override
 			public INamedElement resolveTypeForValueContext() {

@@ -17,7 +17,6 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
@@ -123,11 +122,6 @@ public class PackageNamespaceFragment extends AbstractNamedElement implements IS
 			public INamedElement resolveTypeForValueContext() {
 				return notAValueErrorElement;
 			};
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(PackageNamespaceFragment.this);
-			}
 			
 		};
 	}

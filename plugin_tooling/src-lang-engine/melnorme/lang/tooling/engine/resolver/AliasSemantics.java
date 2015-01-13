@@ -38,7 +38,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	protected abstract IConcreteNamedElement resolveAliasTarget(ISemanticContext context);
 	
 	@Override
-	public void resolveSearchInMembersScope(CommonScopeLookup search) {
+	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
 		search.evaluateInMembersScope(getResolvedConcreteElement());
 	}
 	

@@ -78,8 +78,6 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	 */
 	public abstract IConcreteNamedElement resolveConcreteElement(ISemanticContext context);
 	
-	/* FIXME: move these methods to IConcreteNamedElement */
-	
 	/**
 	 * Resolve given search in the members scope of this defunit.
 	 * Note that the members can be different from the lexical scope that a defunit may provide.
