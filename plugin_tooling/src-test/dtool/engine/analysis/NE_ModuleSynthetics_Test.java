@@ -10,12 +10,12 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -40,7 +40,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		moduleProxy.resolveUnderlyingNode();
 		assertTrue(moduleProxy.getSemantics(pickedElement.context).isResolved());
 		
-		test_resolveElement(pickedElement, "target", NotAValueErrorElement.ERROR_IS_NOT_A_VALUE, true);
+		test_resolveElement(pickedElement, "target", ERROR_IS_NOT_A_VALUE + ":target");
 	}
 	
 	protected void testPackageNamespace() throws ExecutionException {
@@ -48,7 +48,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 			"import xxx.foo; auto _ = xxx;", "xxx;");
 		assertTrue(pickedElement.element instanceof PackageNamespace);
 		
-		test_resolveElement(pickedElement, null, NotAValueErrorElement.ERROR_IS_NOT_A_VALUE, true);
+		test_resolveElement(pickedElement, null, ERROR_IS_NOT_A_VALUE + ":xxx");
 	}
 	
 	/* -----------------  ----------------- */

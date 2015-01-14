@@ -25,14 +25,14 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {
-		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "char", false);
-		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "char", false);
+		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "$/char");
+		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "$/char");
 		
-		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), ErrorElement.NOT_FOUND__Name, true);
+		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), ErrorElement.NOT_FOUND__Name + ":NotFound");
 		
-		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "int", false);
-		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "int", false);
-		test_resolveElement_Concrete(parseNamedElement("enum xxx = 123;"), "int", false);
+		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "$/int");
+		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "$/int");
+		test_resolveElement_Concrete(parseNamedElement("enum xxx = 123;"), "$/int");
 	}
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";

@@ -27,11 +27,9 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
 
 /**
@@ -74,7 +72,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	
 	public static void test_resolveElement(PickedElement<? extends INamedElement> pickedElement, String aliasTarget,
-			String expectedTypeForValueContext, boolean isError) {
+			String expectedTypeForValueContext) {
 		final INamedElement namedElement = pickedElement.element;
 		
 		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getSemanticContainerKey() != null);
@@ -91,16 +89,16 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		}
 		
 		test_resolveConcreteElement(pickedElement, aliasTarget);
-		test_resolveTypeForValueContext(pickedElement, expectedTypeForValueContext, isError);
+		test_resolveTypeForValueContext(pickedElement, expectedTypeForValueContext);
 	}
 	
 	public static void test_resolveElement_Concrete(PickedElement<? extends INamedElement> pickedElement, 
-			String expectedTypeName, boolean isError) {
-		test_resolveElement(pickedElement, null, expectedTypeName, isError);
+			String expectedTypeName) {
+		test_resolveElement(pickedElement, null, expectedTypeName);
 	}
 	
 	public static void test_resolveElement_Type(PickedElement<? extends ITypeNamedElement> pickedElement) {
-		test_resolveElement(pickedElement, null, null, true);
+		test_resolveElement(pickedElement, null, new NotAValueErrorElement(pickedElement.element).toString());
 	}
 	
 	protected static void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
@@ -136,7 +134,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	public static void test_resolveTypeForValueContext(PickedElement<? extends INamedElement> pickedElement, 
-			String expectedTypeName, boolean isError) {
+			String expectedTypeName) {
 		INamedElement namedElement = pickedElement.element;
 		pickedElement.context._resetSemantics();
 		
@@ -145,17 +143,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		// Test caching
 		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
-		if(expectedTypeName == null) {
-			assertTrue(resolvedType instanceof NotAValueErrorElement);
-			assertTrue(isError);
-			return;
-		}
-		/* FIXME: isError expectedTypeName */
-		assertEquals(isError, resolvedType.getArcheType() == EArcheType.Error);
-		// TODO: test that archetype is a type?
-		String type_modulefullName = resolvedType.getFullyQualifiedName();
-		type_modulefullName = StringUtil.trimStart(type_modulefullName, DEFAULT_ModuleName + ".");
-		assertEquals(type_modulefullName, expectedTypeName);
+		namedElementChecker(expectedTypeName).evaluate(resolvedType);
 	}
 	
 	/* -----------------  ----------------- */

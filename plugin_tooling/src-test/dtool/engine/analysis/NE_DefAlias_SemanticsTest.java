@@ -20,22 +20,24 @@ public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveElement________() throws Exception {
 		// Test alias to var
-		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "intVar", "int", false);
-		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "intVar", "int", false);
+		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "intVar", "$/int");
+		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "intVar", "$/int");
+
 		// broken variant
-		test_resolveElement(parseNamedElement("alias intVar XXX; "), NOT_FOUND__Name, NOT_FOUND__Name, true);
-		test_resolveElement(parseNamedElement("alias XXX = intVar; "), NOT_FOUND__Name, NOT_FOUND__Name, true);
+		String NOT_FOUND__target = NOT_FOUND__Name + ":target";
+		test_resolveElement(parseNamedElement("alias target XXX; "), NOT_FOUND__Name, NOT_FOUND__target);
+		test_resolveElement(parseNamedElement("alias XXX = target; "), NOT_FOUND__Name, NOT_FOUND__target);
 		
-		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = intVar"), NOT_FOUND__Name, 
-			NOT_FOUND__Name, true);
+		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = target"), NOT_FOUND__Name, 
+			NOT_FOUND__target);
 		
 		/* FIXME: do syntax error element */
-		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name, NOT_FOUND__Name, true);
-		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name, true);
+		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name, NOT_FOUND__Name+":");
+		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name);
 		
 		// Test alias to type
-		test_resolveElement(parseNamedElement("alias int XXX; "), "int", ERROR_IS_NOT_A_VALUE, true);
-		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", ERROR_IS_NOT_A_VALUE, true);
+		test_resolveElement(parseNamedElement("alias int XXX; "), "int", ERROR_IS_NOT_A_VALUE+":int");
+		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", ERROR_IS_NOT_A_VALUE+":int");
 	}
 	
 	/* -----------------  ----------------- */

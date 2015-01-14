@@ -21,7 +21,7 @@ public class NE_OverloadElement_Test extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveElement________() throws Exception {
 		test_resolveElement(
-			pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), null, null, true);
+			pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), null, "#NotAValue:_tests.xxx");
 	}
 	
 	protected PickedElement<INamedElement> pickedElementFromResolution(String source) {
