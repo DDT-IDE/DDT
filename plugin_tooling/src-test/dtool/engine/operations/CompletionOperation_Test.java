@@ -22,7 +22,7 @@ import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletio
 
 import org.junit.Test;
 
-import dtool.resolver.DefUnitResultsChecker;
+import dtool.engine.tests.DefUnitResultsChecker;
 
 public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	

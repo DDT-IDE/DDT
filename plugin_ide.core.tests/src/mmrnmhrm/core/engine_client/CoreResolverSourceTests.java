@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import dtool.engine.CommonSemanticsTest;
-import dtool.resolver.BaseResolverSourceTests;
+import dtool.engine.tests.BaseResolverSourceTests;
 import dtool.sourcegen.AnnotatedSource;
 
 public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {

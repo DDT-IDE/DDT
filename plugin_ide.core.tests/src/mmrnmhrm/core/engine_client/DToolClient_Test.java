@@ -39,7 +39,7 @@ import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
-import dtool.resolver.DefUnitResultsChecker;
+import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.tests.MockCompilerInstalls;
 
 public class DToolClient_Test extends CommonCoreTest {

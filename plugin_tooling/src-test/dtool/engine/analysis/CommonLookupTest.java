@@ -11,12 +11,10 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 
-import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
@@ -24,11 +22,9 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
-import dtool.engine.util.NamedElementUtil;
 
 
 public abstract class CommonLookupTest extends CommonNodeSemanticsTest {

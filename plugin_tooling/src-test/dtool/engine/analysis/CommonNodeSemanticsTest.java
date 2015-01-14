@@ -35,8 +35,8 @@ import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
+import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.engine.util.NamedElementUtil;
-import dtool.resolver.DefUnitResultsChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	

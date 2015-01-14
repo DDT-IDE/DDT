@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.resolver;
+package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -23,6 +23,8 @@ import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.tests.BaseResolverSourceTests;
+import dtool.engine.tests.TestsSimpleModuleResolver;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.sourcegen.AnnotatedSource;
