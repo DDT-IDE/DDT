@@ -74,8 +74,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		ReferenceResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
 		ReferenceResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
 		
-		/* FIXME: renable this check */
-//		assertTrue(resultA.result == resultB.result);
+		assertTrue(resultA.result == resultB.result);
 	}
 	
 	@Override

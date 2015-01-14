@@ -172,19 +172,21 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		test_resolveSearchInMembersScope(pickedElement, expectedResults);
 	}
 	
-	protected static void testExpressionResolution(String source, String... expectedResults) 
+	protected static void testExpressionResolution(String source, String... expectedResults)
 			throws ExecutionException {
 		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
 		assertNotNull(exp);
 		testExpressionResolution_(exp, expectedResults);
 	}
 	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
-		EmptySemanticResolution context = new EmptySemanticResolution();
+		ISemanticContext context = new EmptySemanticResolution();
 		INamedElement expType = exp.resolveTypeOfUnderlyingValue(context).originalType;
-		/* FIXME: review this code*/
 		
-		ISemanticContext context2 = expType.isLanguageIntrinsic() ? context.getStdLibResolution() : context;
-		test_resolveSearchInMembersScope(picked(expType, context2), expectedResults);
+		test_resolveSearchInMembersScope(picked2(expType, context), expectedResults);
+	}
+	
+	protected static PickedElement<INamedElement> picked2(INamedElement namedElement, ISemanticContext context) {
+		return picked(namedElement, namedElement.getContextForThisElement(context));
 	}
 	
 }
