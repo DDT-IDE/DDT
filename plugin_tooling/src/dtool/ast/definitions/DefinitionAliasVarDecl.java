@@ -13,15 +13,16 @@ package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.IDeclaration;
@@ -39,14 +40,14 @@ import dtool.parser.common.Token;
 // Note implementation similarities with {@link DefinitionVariable} and {@link DefVarFragment}
 public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclaration, IStatement, INonScopedContainer {
 	
-	public final ArrayView<Attribute> aliasedAttributes;
+	public final NodeVector<Attribute> aliasedAttributes;
 	public final Reference target;
 	public final Reference cstyleSuffix;
-	public final ArrayView<AliasVarDeclFragment> fragments;
+	public final NodeVector<AliasVarDeclFragment> fragments;
 	
-	public DefinitionAliasVarDecl(Token[] comments, ArrayView<Attribute> aliasedAttributes, Reference target,
-		ProtoDefSymbol defId, Reference cstyleSuffix, ArrayView<AliasVarDeclFragment> fragments) {
-		super(comments, defId);
+	public DefinitionAliasVarDecl(Token[] comments, NodeVector<Attribute> aliasedAttributes, Reference target,
+			DefSymbol defName, Reference cstyleSuffix, NodeVector<AliasVarDeclFragment> fragments) {
+		super(comments, defName);
 		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
 		this.cstyleSuffix = parentize(cstyleSuffix);
@@ -63,9 +64,15 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, aliasedAttributes);
 		acceptVisitor(visitor, target);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, cstyleSuffix);
 		acceptVisitor(visitor, fragments);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionAliasVarDecl(comments, clone(aliasedAttributes), clone(target), clone(defName), 
+			clone(cstyleSuffix), clone(fragments));
 	}
 	
 	@Override
@@ -73,7 +80,7 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		cp.append("alias ");
 		cp.appendList(aliasedAttributes, " ", true);
 		cp.append(target, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(cstyleSuffix);
 		cp.appendList(", ", fragments, ", ", "");
 		cp.append(";");
@@ -105,8 +112,8 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 	
 	public static class AliasVarDeclFragment extends DefUnit {
 		
-		public AliasVarDeclFragment(ProtoDefSymbol defId) {
-			super(defId);
+		public AliasVarDeclFragment(DefSymbol defName) {
+			super(defName);
 		}
 		
 		@Override
@@ -121,12 +128,17 @@ public class DefinitionAliasVarDecl extends CommonDefinition implements IDeclara
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, defName);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new AliasVarDeclFragment(clone(defName));
 		}
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(defname);
+			cp.append(defName);
 		}
 		
 		@Override

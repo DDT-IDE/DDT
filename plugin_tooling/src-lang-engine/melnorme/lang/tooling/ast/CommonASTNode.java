@@ -17,6 +17,7 @@ import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
@@ -144,6 +145,31 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		for(IASTNode node : nodes) {
 			acceptVisitor(visitor, node);
 		}
+	}
+	
+	/* ----------------- cloning ----------------- */
+	
+	@Override
+	public final CommonASTNode cloneTree() {
+		final ASTNode clonedNode = (ASTNode) doCloneTree();
+		
+		assertTrue(clonedNode.getClass() == this.getClass());
+		return clonedNode;
+	}
+	
+	protected abstract CommonASTNode doCloneTree();
+	
+	@SuppressWarnings("unchecked")
+	protected static <T extends IASTNode> T clone(T node) {
+		if(node == null)
+			return null;
+		return (T) node.cloneTree();
+	}
+	
+	protected static <T extends IASTNode> NodeVector<T> clone(NodeVector<T> nodeListView) {
+		if(nodeListView == null)
+			return null;
+		return nodeListView.cloneTree();
 	}
 	
 	/* ------------------------  Node data ------------------------  */

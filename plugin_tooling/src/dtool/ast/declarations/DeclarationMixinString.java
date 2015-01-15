@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -40,6 +41,11 @@ public class DeclarationMixinString extends ASTNode implements INonScopedContain
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationMixinString(clone(exp));
 	}
 	
 	@Override

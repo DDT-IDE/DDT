@@ -11,9 +11,10 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.RefIdentifier;
@@ -29,9 +30,9 @@ import dtool.ast.references.Reference;
 public class AttribCustom extends AttribAmpersat {
 	
 	public final Reference ref;
-	public final NodeListView<Expression> args; // if null, no argument list
+	public final NodeVector<Expression> args; // if null, no argument list
 	
-	public AttribCustom(Reference ref, NodeListView<Expression> args) {
+	public AttribCustom(Reference ref, NodeVector<Expression> args) {
 		this.ref = parentize(ref);
 		this.args = parentize(args);
 		
@@ -47,6 +48,11 @@ public class AttribCustom extends AttribAmpersat {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, ref);
 		acceptVisitor(visitor, args);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new AttribCustom(clone(ref), clone(args));
 	}
 	
 	@Override

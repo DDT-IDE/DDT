@@ -5,7 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.Symbol;
@@ -40,7 +40,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public abstract class ElementListParseHelper<T extends ASTNode> extends ParseHelper {
 		
-		public NodeListView<T> members; 
+		public NodeVector<T> members; 
 		
 		public ElementListParseHelper() {
 			nodeStart = -1;
@@ -89,9 +89,9 @@ public abstract class DeeParser_Common extends AbstractParser {
 	
 	public abstract class SimpleListParseHelper<T extends ASTNode> {
 		
-		public NodeListView<T> members; 
+		public NodeVector<T> members; 
 		
-		public NodeListView<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep) {
+		public NodeVector<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep) {
 			ArrayList<T> membersList = new ArrayList<T>();
 			
 			do {

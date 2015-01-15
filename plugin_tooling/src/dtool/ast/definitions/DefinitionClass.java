@@ -11,16 +11,17 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.misc.IteratorUtil.nonNullIterable;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
@@ -32,11 +33,11 @@ import dtool.parser.common.Token;
  */
 public class DefinitionClass extends DefinitionAggregate {
 	
-	public final ArrayView<Reference> baseClasses;
+	public final NodeVector<Reference> baseClasses;
 	public final boolean baseClassesAfterConstraint;
 	
-	public DefinitionClass(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
-		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
+	public DefinitionClass(Token[] comments, DefSymbol defId, NodeVector<ITemplateParameter> tplParams,
+		Expression tplConstraint, NodeVector<Reference> baseClasses, boolean baseClassesAfterConstraint, 
 		IAggregateBody aggrBody) 
 	{
 		super(comments, defId, tplParams, tplConstraint, aggrBody);
@@ -55,13 +56,19 @@ public class DefinitionClass extends DefinitionAggregate {
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionClass(comments, clone(defName), clone(tplParams), clone(tplConstraint), 
+			clone(baseClasses), baseClassesAfterConstraint, clone(aggrBody));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		classLikeToStringAsCode(cp, "class ");
 	}
 	
 	public void classLikeToStringAsCode(ASTCodePrinter cp, String keyword) {
 		cp.append(keyword);
-		cp.append(defname, " ");
+		cp.append(defName, " ");
 		cp.appendList("(", tplParams, ",", ") ");
 		if(baseClassesAfterConstraint) DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.appendList(": ", baseClasses, ",", " ");
@@ -76,7 +83,7 @@ public class DefinitionClass extends DefinitionAggregate {
 	
 	@Override
 	protected void acceptNodeChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, tplParams);
 		if(baseClassesAfterConstraint)
 			acceptVisitor(visitor, tplConstraint);

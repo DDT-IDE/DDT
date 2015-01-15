@@ -12,17 +12,17 @@ package dtool.ast.declarations;
 
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
 import dtool.ast.references.RefImportSelection;
@@ -35,11 +35,11 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	}
 	
 	public final IImportFragment fragment;
-	public final ArrayView<ASTNode> impSelFrags;
+	public final NodeVector<IImportSelectiveSelection> impSelFrags;
 	
-	public ImportSelective(IImportFragment subFragment, ArrayView<IImportSelectiveSelection> frags) {
-		this.impSelFrags = CoreUtil.<ArrayView<ASTNode>>blindCast(parentizeFrags(frags));
-		this.fragment = parentize(subFragment);
+	public ImportSelective(IImportFragment fragment, NodeVector<IImportSelectiveSelection> frags) {
+		this.fragment = parentize(fragment);
+		this.impSelFrags = parentizeFrags(frags);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 		return getParent_Concrete();
 	}
 	
-	public ArrayView<IImportSelectiveSelection> parentizeFrags(ArrayView<IImportSelectiveSelection> frags) {
+	public NodeVector<IImportSelectiveSelection> parentizeFrags(NodeVector<IImportSelectiveSelection> frags) {
 		if (frags != null) {
 			for (IImportSelectiveSelection selection : frags) {
 				((ASTNode) selection).setParent(this);
@@ -81,6 +81,11 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, fragment);
 		acceptVisitor(visitor, impSelFrags);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ImportSelective(clone(fragment), clone(impSelFrags));
 	}
 	
 	@Override
@@ -121,7 +126,7 @@ public class ImportSelective extends ASTNode implements INonScopedContainer, IIm
 		if (targetModule == null)
 			return;
 			
-		for(ASTNode impSelFrag: impSelective.impSelFrags) {
+		for(IImportSelectiveSelection impSelFrag: impSelective.impSelFrags) {
 			if(impSelFrag instanceof RefImportSelection) {
 				RefImportSelection refImportSelection = (RefImportSelection) impSelFrag;
 				String name = refImportSelection.getDenulledIdentifier();

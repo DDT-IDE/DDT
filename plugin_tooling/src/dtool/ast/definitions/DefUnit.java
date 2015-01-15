@@ -50,9 +50,24 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 		public int getStartPos() {
 			return nameSourceRange.getStartPos();
 		}
+		
+		public DefSymbol createDefId() {
+			ProtoDefSymbol defIdTuple = this;
+			DefSymbol defId = new DefSymbol(defIdTuple.name);
+			if(defIdTuple.nameSourceRange != null) {
+				defId.setSourceRange(defIdTuple.nameSourceRange);
+			}
+			if(defIdTuple.error == null) {
+				defId.setParsedStatus();
+			} else {
+				defId.setParsedStatusWithErrors(defIdTuple.error);
+			}
+			return defId;
+		}
+		
 	}
 	
-	public final DefSymbol defname; // It may happen that this is not a child of DefUnit
+	public final DefSymbol defName; // It may happen that this is not a child of DefUnit
 	
 	protected DefUnit(DefSymbol defname) {
 		this(defname, true);
@@ -60,41 +75,23 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	protected DefUnit(DefSymbol defname, boolean defIdIsChild) {
 		assertNotNull(defname);
-		this.defname = defIdIsChild ? parentize(defname) : defname;
+		this.defName = defIdIsChild ? parentize(defname) : defname;
 
-	}
-	
-	public DefUnit(ProtoDefSymbol defIdTuple) {
-		this(createDefId(defIdTuple));
-	}
-	
-	public static DefSymbol createDefId(ProtoDefSymbol defIdTuple) {
-		assertNotNull(defIdTuple);
-		DefSymbol defId = new DefSymbol(defIdTuple.name);
-		if(defIdTuple.nameSourceRange != null) {
-			defId.setSourceRange(defIdTuple.nameSourceRange);
-		}
-		if(defIdTuple.error == null) {
-			defId.setParsedStatus();
-		} else {
-			defId.setParsedStatusWithErrors(defIdTuple.error);
-		}
-		return defId;
 	}
 	
 	/** Constructor for synthetic defunits. */
 	protected DefUnit(String defName) {
-		this(new ProtoDefSymbol(defName, null, null));
+		this(new ProtoDefSymbol(defName, null, null).createDefId());
 	}
 	
 	@Override
 	public String getName() {
-		return defname.name;
+		return defName.name;
 	}
 	
 	@Override
 	public SourceRange getNameSourceRangeOrNull() {
-		return defname.getSourceRange();
+		return defName.getSourceRange();
 	}
 	
 	public boolean syntaxIsMissingName() {

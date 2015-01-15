@@ -14,6 +14,7 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
@@ -39,11 +40,11 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	public interface IAggregateBody extends IASTNode {
 	}
 	
-	public final ArrayView<ITemplateParameter> tplParams;
+	public final NodeVector<ITemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final IAggregateBody aggrBody;
 	
-	public DefinitionAggregate(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
+	public DefinitionAggregate(Token[] comments, DefSymbol defId, NodeVector<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
 		super(comments, defId);
 		this.tplParams = parentize(tplParams);
@@ -52,7 +53,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	}
 	
 	protected void acceptNodeChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, tplParams);
 		acceptVisitor(visitor, tplConstraint);
 		acceptVisitor(visitor, aggrBody);
@@ -60,7 +61,7 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	public void aggregateToStringAsCode(ASTCodePrinter cp, String keyword, boolean printDecls) {
 		cp.append(keyword);
-		cp.append(defname, " ");
+		cp.append(defName, " ");
 		cp.appendList("(", tplParams, ",", ") ");
 		DefinitionTemplate.tplConstraintToStringAsCode(cp, tplConstraint);
 		if(printDecls) {

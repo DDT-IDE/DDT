@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;
@@ -89,7 +89,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		}
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<IStatement> body = parseStatements(DeeTokens.CLOSE_BRACE, true);
+		NodeVector<IStatement> body = parseStatements(DeeTokens.CLOSE_BRACE, true);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		
 		return parse.resultConclude(isScoped ? new BlockStatement(body) : new BlockStatementUnscoped(body));
@@ -109,7 +109,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	protected NodeResult<ScopedStatementList> parseScopedStatementList() {
 		ParseHelper parse = new ParseHelper(getSourcePosition());
 		
-		ArrayView<IStatement> body = parseStatements(null, false);
+		NodeVector<IStatement> body = parseStatements(null, false);
 		
 		return parse.resultConclude(new ScopedStatementList(body));
 	}
@@ -120,7 +120,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 	public static final ParseRuleDescription RULE_ST_OR_BLOCK = 
 		new ParseRuleDescription("StOrBlock", "Statement or Block");
 	
-	protected ArrayView<IStatement> parseStatements(DeeTokens nodeListTerminator, boolean parseCaseDefault) {
+	protected NodeVector<IStatement> parseStatements(DeeTokens nodeListTerminator, boolean parseCaseDefault) {
 		ArrayList<IStatement> nodeList = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
@@ -361,7 +361,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			} else {
 				defaultValue = parseExpression_toMissing();
 			}
-			return parse.conclude(new VariableDefWithInit(type, defId, defaultValue));
+			return parse.conclude(new VariableDefWithInit(type, defId.createDefId(), defaultValue));
 		}
 		restoreOriginalState(savedState);
 		return null;  // An exp will be parsed instead 
@@ -456,7 +456,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		ParseHelper parse = new ParseHelper();
 		
 		boolean isForeachReverse = lastLexElement().type == DeeTokens.KW_FOREACH_REVERSE;
-		ArrayView<ForeachVariableDef> varParams = null;
+		NodeVector<ForeachVariableDef> varParams = null;
 		Expression iterable = null;
 		IStatement body = null;
 		
@@ -498,7 +498,8 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		
 		typeRef_defId.parseRuleFragment(parse, true);
 		
-		return parse.conclude(new ForeachVariableDef(isRef, typeMod, typeRef_defId.type, typeRef_defId.defId));
+		return parse.conclude(new ForeachVariableDef(
+			isRef, typeMod, typeRef_defId.type, typeRef_defId.defId.createDefId()));
 	}
 	
 	public Expression parseForeachIterableExpression() {
@@ -533,7 +534,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<Expression> caseValues;
+		NodeVector<Expression> caseValues;
 		ScopedStatementList body = null;
 		parsing: {
 			ArrayList<Expression> caseValuesList = new ArrayList<>(2);
@@ -793,7 +794,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		ParseHelper parse = new ParseHelper(-1);
 		TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Type_RuleFragment();
 		typeRef_defId.parseRuleFragment(parse, true);
-		return parse.conclude(new SimpleVariableDef(typeRef_defId.type, typeRef_defId.defId));
+		return parse.conclude(new SimpleVariableDef(typeRef_defId.type, typeRef_defId.defId.createDefId()));
 	}
 	
 }

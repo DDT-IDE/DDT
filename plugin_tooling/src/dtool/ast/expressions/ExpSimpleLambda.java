@@ -10,12 +10,14 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
@@ -45,6 +47,11 @@ public class ExpSimpleLambda extends Expression {
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpSimpleLambda(clone(simpleLambdaDefUnit), clone(bodyExpression));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(simpleLambdaDefUnit, " => ");
 		cp.append(bodyExpression);
@@ -52,8 +59,8 @@ public class ExpSimpleLambda extends Expression {
 	
 	public static class SimpleLambdaDefUnit extends DefUnit {
 		
-		public SimpleLambdaDefUnit(ProtoDefSymbol defId) {
-			super(defId);
+		public SimpleLambdaDefUnit(DefSymbol defName) {
+			super(defName);
 		}
 		
 		@Override
@@ -63,12 +70,17 @@ public class ExpSimpleLambda extends Expression {
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, defName);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new SimpleLambdaDefUnit(clone(defName));
 		}
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(defname);
+			cp.append(defName);
 		}
 		
 		@Override

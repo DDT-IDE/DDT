@@ -11,6 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -30,24 +31,29 @@ public abstract class AbstractConditionalDeclaration extends ASTNode
 		public VersionSymbol(String value) {
 			super(value);
 		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new VersionSymbol(name);
+		}
 	}
 	
 	public final boolean isStatement;
 	public final AttribBodySyntax bodySyntax;
-	public final ASTNode body; // Note: can be DeclList
+	public final ASTNode thenBody; // Note: can be DeclList
 	public final ASTNode elseBody;
 	
 	public AbstractConditionalDeclaration(AttribBodySyntax bodySyntax, ASTNode bodyDecls, ASTNode elseDecls) {
 		this.isStatement = false;
 		this.bodySyntax = bodySyntax;
-		this.body = parentize(bodyDecls);
+		this.thenBody = parentize(bodyDecls);
 		this.elseBody = parentize(elseDecls);
 	}
 	
 	public AbstractConditionalDeclaration(IStatement thenBody, IStatement elseBody) {
 		this.isStatement = true;
 		this.bodySyntax = AttribBodySyntax.SINGLE_DECL;
-		this.body = parentize((ASTNode) thenBody);
+		this.thenBody = parentize((ASTNode) thenBody);
 		this.elseBody = parentize((ASTNode) elseBody);
 		assertTrue(!(thenBody instanceof BlockStatement));
 		assertTrue(!(elseBody instanceof BlockStatement));
@@ -59,13 +65,13 @@ public abstract class AbstractConditionalDeclaration extends ASTNode
 	
 	@Override
 	public Iterable<? extends IASTNode> getMembersIterable() {
-		return IteratorUtil.chainedIterable(DeclarationAttrib.getBodyIterable(body), 
+		return IteratorUtil.chainedIterable(DeclarationAttrib.getBodyIterable(thenBody), 
 			DeclarationAttrib.getBodyIterable(elseBody));
 	}
 	
 	public void toStringAsCodeBodyAndElseBody(ASTCodePrinter cp) {
 		cp.append(bodySyntax == AttribBodySyntax.COLON, " :\n");
-		cp.append(body);
+		cp.append(thenBody);
 		if(elseBody != null) {
 			cp.append("else ");
 			cp.append(elseBody);

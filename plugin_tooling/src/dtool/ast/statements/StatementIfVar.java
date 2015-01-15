@@ -11,6 +11,7 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -37,6 +38,11 @@ public class StatementIfVar extends Statement {
 		acceptVisitor(visitor, conditionVar);
 		acceptVisitor(visitor, thenBody);
 		acceptVisitor(visitor, elseBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementIfVar(clone(conditionVar), clone(thenBody), clone(elseBody));
 	}
 	
 	@Override

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -25,14 +26,14 @@ public class ExpTypeId extends Expression {
 		this.expressionArgument = null;
 	}
 	
-	@Override
-	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.EXP_TYPEID;
-	}
-	
 	public ExpTypeId(Expression expressionArgument) {
 		this.typeArgument = null;
 		this.expressionArgument = parentize(expressionArgument);
+	}
+	
+	@Override
+	public ASTNodeTypes getNodeType() {
+		return ASTNodeTypes.EXP_TYPEID;
 	}
 	
 	public Resolvable getArgument() {
@@ -42,6 +43,11 @@ public class ExpTypeId extends Expression {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, getArgument());
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return typeArgument != null ? new ExpTypeId(clone(typeArgument)) : new ExpTypeId(clone(expressionArgument));
 	}
 	
 	@Override

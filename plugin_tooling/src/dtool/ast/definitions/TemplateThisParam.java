@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -22,8 +23,8 @@ import dtool.engine.analysis.templates.AliasElement;
 
 public class TemplateThisParam extends DefUnit implements ITemplateParameter, IConcreteNamedElement {
 	
-	public TemplateThisParam(ProtoDefSymbol defId) {
-		super(defId);
+	public TemplateThisParam(DefSymbol defName) {
+		super(defName);
 	}
 	
 	@Override
@@ -33,12 +34,17 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new TemplateThisParam(clone(defName));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("this ", defname);
+		cp.append("this ", defName);
 	}
 	
 	@Override
@@ -61,7 +67,7 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable resolvable) {
-		return new AliasElement(defname, null); // TODO: correct instantiation
+		return new AliasElement(defName, null); // TODO: correct instantiation
 	}
 	
 }

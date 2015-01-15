@@ -11,10 +11,12 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Expression;
@@ -28,7 +30,7 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	public final Reference type;
 	public final Expression defaultValue;
 	
-	public VariableDefWithInit(Reference type, ProtoDefSymbol defId, Expression defaultValue) {
+	public VariableDefWithInit(Reference type, DefSymbol defId, Expression defaultValue) {
 		super(defId);
 		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
@@ -42,14 +44,19 @@ public class VariableDefWithInit extends DefUnit implements IVarDefinitionLike {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, defaultValue);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new VariableDefWithInit(clone(type), clone(defName), clone(defaultValue));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" = ", defaultValue);
 	}
 	

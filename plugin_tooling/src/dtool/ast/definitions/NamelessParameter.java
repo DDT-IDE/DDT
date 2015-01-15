@@ -12,14 +12,13 @@ package dtool.ast.definitions;
 
 import static dtool.ast.definitions.FunctionParameter.getStringRepresentation;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.parser.common.LexElement;
 
 
 /** 
@@ -33,9 +32,9 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	public final Expression defaultValue;
 	public final boolean isVariadic;
 	
-	public NamelessParameter(ArrayView<LexElement> attribList, Reference type, Expression defaultValue, 
+	public NamelessParameter(FnParameterAttributes paramAttribs, Reference type, Expression defaultValue, 
 		boolean isVariadic) {
-		this.paramAttribs = FnParameterAttributes.create(attribList); 
+		this.paramAttribs = paramAttribs; 
 		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
 		this.isVariadic = isVariadic;
@@ -50,6 +49,11 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
 		acceptVisitor(visitor, defaultValue);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new NamelessParameter(paramAttribs, clone(type), clone(defaultValue), isVariadic);
 	}
 	
 	@Override

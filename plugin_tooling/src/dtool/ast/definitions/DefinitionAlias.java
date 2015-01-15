@@ -12,16 +12,17 @@ package dtool.ast.definitions;
 
 
 import static dtool.util.NewUtils.assertCast;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.references.Reference;
@@ -39,9 +40,9 @@ import dtool.parser.common.Token;
 public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement, INonScopedContainer {
 	
 	public final Token[] comments;
-	public final ArrayView<DefinitionAliasFragment> aliasFragments;
+	public final NodeVector<DefinitionAliasFragment> aliasFragments;
 	
-	public DefinitionAlias(Token[] comments, ArrayView<DefinitionAliasFragment> aliasFragments) {
+	public DefinitionAlias(Token[] comments, NodeVector<DefinitionAliasFragment> aliasFragments) {
 		this.comments = comments;
 		this.aliasFragments = parentize(aliasFragments);
 	}
@@ -54,6 +55,11 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, aliasFragments);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionAlias(comments, clone(aliasFragments));
 	}
 	
 	@Override
@@ -74,12 +80,11 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 	
 	public static class DefinitionAliasFragment extends DefUnit {
 		
-		public final ArrayView<ITemplateParameter> tplParams; // Since 2.064
+		public final NodeVector<ITemplateParameter> tplParams; // Since 2.064
 		public final Reference target;
 		
-		public DefinitionAliasFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
-				Reference target) {
-			super(defId);
+		public DefinitionAliasFragment(DefSymbol defName, NodeVector<ITemplateParameter> tplParams, Reference target) {
+			super(defName);
 			this.tplParams = parentize(tplParams);
 			this.target = parentize(target);
 		}
@@ -96,14 +101,19 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, defName);
 			acceptVisitor(visitor, tplParams);
 			acceptVisitor(visitor, target);
 		}
 		
 		@Override
+		protected CommonASTNode doCloneTree() {
+			return new DefinitionAliasFragment(clone(defName), clone(tplParams), clone(target));
+		}
+		
+		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(defname);
+			cp.append(defName);
 			cp.appendList("(", tplParams, ",", ") ");
 			cp.append(" = ", target);
 		}

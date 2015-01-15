@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -37,6 +38,11 @@ public class CatchClause extends ASTNode implements IScopeElement {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, catchParam);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new CatchClause(clone(catchParam), clone(body));
 	}
 	
 	@Override

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.Expression;
@@ -20,9 +21,9 @@ import dtool.ast.expressions.Expression;
 public class AttribPragma extends Attribute {
 	
 	public final Symbol pragmaId;
-	public final NodeListView<Expression> expList;
+	public final NodeVector<Expression> expList;
 	
-	public AttribPragma(Symbol id, NodeListView<Expression> expList) {
+	public AttribPragma(Symbol id, NodeVector<Expression> expList) {
 		this.pragmaId = parentize(id);
 		this.expList = parentize(expList);
 	}
@@ -36,6 +37,11 @@ public class AttribPragma extends Attribute {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, pragmaId);
 		acceptVisitor(visitor, expList);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new AttribPragma(clone(pragmaId), clone(expList));
 	}
 	
 	@Override

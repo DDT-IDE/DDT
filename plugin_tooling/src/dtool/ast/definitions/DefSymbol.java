@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -40,6 +41,11 @@ public class DefSymbol extends Symbol {
 	/** @return the defunit associated with this defSymbol. Cannot be null. */
 	public DefUnit getDefUnit() {
 		return (DefUnit) getParent();
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefSymbol(name);
 	}
 	
 	@Override

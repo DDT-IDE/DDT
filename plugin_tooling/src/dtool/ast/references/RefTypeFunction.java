@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -31,11 +33,11 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	
 	public final Reference retType;
 	public final boolean isDelegate;
-	public final ArrayView<IFunctionParameter> params;
-	public final ArrayView<IFunctionAttribute> fnAttributes;
+	public final NodeVector<IFunctionParameter> params;
+	public final NodeVector<IFunctionAttribute> fnAttributes;
 	
-	public RefTypeFunction(Reference retType, boolean isDelegate, ArrayView<IFunctionParameter> params, 
-		ArrayView<IFunctionAttribute> fnAttributes) {
+	public RefTypeFunction(Reference retType, boolean isDelegate, NodeVector<IFunctionParameter> params, 
+			NodeVector<IFunctionAttribute> fnAttributes) {
 		this.retType = parentize(retType);
 		this.isDelegate = isDelegate;
 		this.params = parentize(params);
@@ -56,6 +58,11 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		acceptVisitor(visitor, retType);
 		acceptVisitor(visitor, params);
 		acceptVisitor(visitor, fnAttributes);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefTypeFunction(clone(retType), isDelegate, clone(params), clone(fnAttributes));
 	}
 	
 	@Override

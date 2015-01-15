@@ -11,6 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -32,6 +33,11 @@ public class AttribAtKeyword extends AttribAmpersat {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, attribId);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new AttribAtKeyword(clone(attribId));
 	}
 	
 	@Override

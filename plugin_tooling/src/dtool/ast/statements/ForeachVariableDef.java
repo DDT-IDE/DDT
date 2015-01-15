@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -18,6 +19,7 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
@@ -29,8 +31,8 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	public final LexElement typeMod;
 	public final Reference type;
 	
-	public ForeachVariableDef(boolean isRef, LexElement typeMod, Reference type, ProtoDefSymbol defId) {
-		super(defId);
+	public ForeachVariableDef(boolean isRef, LexElement typeMod, Reference type, DefSymbol defName) {
+		super(defName);
 		this.isRef = isRef;
 		this.typeMod = typeMod;
 		this.type = parentize(type);
@@ -44,7 +46,12 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ForeachVariableDef(isRef, typeMod, clone(type), clone(defName));
 	}
 	
 	@Override
@@ -52,7 +59,7 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 		cp.append(isRef, "ref ");
 		cp.appendToken(typeMod, " ");
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 	}
 	
 	@Override

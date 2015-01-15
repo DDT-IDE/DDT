@@ -12,8 +12,10 @@ package dtool.ast.definitions;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -38,14 +40,14 @@ import dtool.parser.common.Token;
  */
 public class DefinitionAliasFunctionDecl extends CommonDefinition implements IStatement {
 	
-	public final ArrayView<Attribute> aliasedAttributes;
+	public final NodeVector<Attribute> aliasedAttributes;
 	public final Reference target;
-	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<IFunctionAttribute> fnAttributes;
+	public final NodeVector<IFunctionParameter> fnParams;
+	public final NodeVector<IFunctionAttribute> fnAttributes;
 	
-	public DefinitionAliasFunctionDecl(Token[] comments, ArrayView<Attribute> aliasedAttributes, Reference target, 
-		ProtoDefSymbol defId, ArrayView<IFunctionParameter> fnParams, ArrayView<IFunctionAttribute> fnAttributes) {
-		super(comments, defId);
+	public DefinitionAliasFunctionDecl(Token[] comments, NodeVector<Attribute> aliasedAttributes, Reference target, 
+			DefSymbol defName, NodeVector<IFunctionParameter> fnParams, NodeVector<IFunctionAttribute> fnAttributes) {
+		super(comments, defName);
 		this.aliasedAttributes = parentize(aliasedAttributes);
 		this.target = parentize(target);
 		this.fnParams = parentize(fnParams);
@@ -66,9 +68,15 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, aliasedAttributes);
 		acceptVisitor(visitor, target);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, fnParams);
 		acceptVisitor(visitor, fnAttributes);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionAliasFunctionDecl(comments, clone(aliasedAttributes), clone(target), clone(defName), 
+			clone(fnParams), clone(fnAttributes));
 	}
 	
 	@Override
@@ -76,7 +84,7 @@ public class DefinitionAliasFunctionDecl extends CommonDefinition implements ISt
 		cp.append("alias ");
 		cp.appendList(aliasedAttributes, " ", true);
 		cp.append(target, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
 		cp.appendList(fnAttributes, " ", true);
 		cp.append(";");

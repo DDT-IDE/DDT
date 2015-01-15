@@ -11,6 +11,7 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -36,6 +37,11 @@ public class StatementDoWhile extends Statement {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, body);
 		acceptVisitor(visitor, condition);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementDoWhile(clone(body), clone(condition));
 	}
 	
 	@Override

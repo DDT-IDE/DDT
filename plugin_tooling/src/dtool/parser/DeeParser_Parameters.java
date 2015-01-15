@@ -19,17 +19,18 @@ import static melnorme.utilbox.core.CoreUtil.blindCast;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.ast.definitions.IFunctionParameter.FnParameterAttributes;
 import dtool.ast.definitions.IFunctionParameter.FunctionParamAttribKinds;
+import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.definitions.NamelessParameter;
 import dtool.ast.definitions.TemplateAliasParam;
-import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.definitions.TemplateThisParam;
 import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.definitions.TemplateTypeParam;
@@ -110,7 +111,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			if(mode != TplOrFnMode.FN && tryConsume(DeeTokens.KW_THIS)) {
 				setMode(TplOrFnMode.TPL);
 				ProtoDefSymbol defId = parseDefId();
-				return parse.conclude(new TemplateThisParam(defId));
+				return parse.conclude(new TemplateThisParam(defId.createDefId()));
 			}
 			
 			ArrayList<LexElement> attribs = null;
@@ -150,23 +151,23 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			} 
 		}
 		
-		public final ArrayView<IFunctionParameter> getAsFunctionParameters() {
+		public final NodeVector<IFunctionParameter> getAsFunctionParameters() {
 			assertTrue(mode == TplOrFnMode.FN);
 			return arrayView(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
 		}
 		
-		public final ArrayView<IFunctionParameter> toFunctionParameters() {
+		public final NodeVector<IFunctionParameter> toFunctionParameters() {
 			assertTrue(isAmbiguous());
 			setMode(TplOrFnMode.FN);
 			return getAsFunctionParameters();
 		}
 		
-		public final ArrayView<ITemplateParameter> getAsTemplateParameters() {
+		public final NodeVector<ITemplateParameter> getAsTemplateParameters() {
 			assertTrue(mode == TplOrFnMode.TPL);
 			return arrayView(CoreUtil.<ArrayList<ITemplateParameter>>blindCast(params));
 		}
 		
-		public final ArrayView<ITemplateParameter> toTemplateParameters() {
+		public final NodeVector<ITemplateParameter> toTemplateParameters() {
 			assertTrue(isAmbiguous());
 			setMode(TplOrFnMode.TPL);
 			return getAsTemplateParameters();
@@ -281,11 +282,11 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		
 		public IFunctionParameter convertToFunction() {
 			if(defId == null) {
-				return conclude(sr,
-					new NamelessParameter(arrayViewG(attribs), ref, paramDefault.toExpression().node, isVariadic));
+				return conclude(sr, new NamelessParameter(FnParameterAttributes.create(arrayViewG(attribs)), ref, 
+					paramDefault.toExpression().node, isVariadic));
 			}
-			return conclude(sr,
-				new FunctionParameter(arrayViewG(attribs), ref, defId, paramDefault.toExpression().node, isVariadic));
+			return conclude(sr, new FunctionParameter(FnParameterAttributes.create(arrayViewG(attribs)), ref, 
+				defId.createDefId(), paramDefault.toExpression().node, isVariadic));
 		}
 		
 		public ITemplateParameter convertToTemplate() {
@@ -301,12 +302,13 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			if(defId == null && couldHaveBeenParsedAsId(ref)) {
 				defId = convertRefIdToDef(ref);
 				return conclude(sr, isVariadic ? 
-					new TemplateTupleParam(defId) :
-					new TemplateTypeParam(defId, typeSpecialization, paramDefault.toReference().node));
+					new TemplateTupleParam(defId.createDefId()) :
+					new TemplateTypeParam(defId.createDefId(), typeSpecialization, paramDefault.toReference().node));
 			} else {
 				defId = defId != null ? defId : createEmptyDefSymbol(ref.getEndPos());
 				return conclude(sr, 
-					new TemplateValueParam(ref, defId, valueSpecialization, paramDefault.toExpression().node));
+					new TemplateValueParam(ref, defId.createDefId(), valueSpecialization, 
+						paramDefault.toExpression().node));
 			}
 		}
 	}
@@ -336,7 +338,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			}
 		}
 		
-		return parse.conclude(new TemplateAliasParam(defId, specialization, init));
+		return parse.conclude(new TemplateAliasParam(defId.createDefId(), specialization, init));
 	}
 	
 }

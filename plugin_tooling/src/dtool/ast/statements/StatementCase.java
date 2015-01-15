@@ -10,18 +10,19 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 
 public class StatementCase extends Statement {
 	
-	public final ArrayView<Expression> caseValues;
+	public final NodeVector<Expression> caseValues;
 	public final IStatement body;
 	
-	public StatementCase(ArrayView<Expression> caseValues, IStatement body) {
+	public StatementCase(NodeVector<Expression> caseValues, IStatement body) {
 		this.caseValues = parentize(caseValues);
 		this.body = parentize(body);
 	}
@@ -35,6 +36,11 @@ public class StatementCase extends Statement {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, caseValues);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementCase(clone(caseValues), clone(body));
 	}
 	
 	@Override

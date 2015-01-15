@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
@@ -27,10 +29,10 @@ import dtool.ast.statements.IFunctionBody;
 public class DeclarationAllocatorFunction extends ASTNode implements IDeclaration {
 	
 	public final boolean isNew;
-	public final ArrayView<IFunctionParameter> params;
+	public final NodeVector<IFunctionParameter> params;
 	public final IFunctionBody fnBody;
 	
-	public DeclarationAllocatorFunction(boolean isNew, ArrayView<IFunctionParameter> params, IFunctionBody fnBody) {
+	public DeclarationAllocatorFunction(boolean isNew, NodeVector<IFunctionParameter> params, IFunctionBody fnBody) {
 		this.isNew = isNew;
 		this.params = parentize(params);
 		this.fnBody = parentize(fnBody);
@@ -49,6 +51,11 @@ public class DeclarationAllocatorFunction extends ASTNode implements IDeclaratio
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, params);
 		acceptVisitor(visitor, fnBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationAllocatorFunction(isNew, clone(params), clone(fnBody));
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
@@ -203,7 +204,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		assertNotNull(defaultModuleName);
 		DeclarationModule md = parseModuleDeclaration();
 		
-		ArrayView<ASTNode> members = parseDeclarations(null, true);
+		NodeVector<ASTNode> members = parseDeclarations(null, true);
 		assertTrue(lookAhead() == DeeTokens.EOF);
 		advanceSubChannelTokens(); // Ensure pending whitespace is consumed as well
 		assertTrue(getSourcePosition() == lookAheadElement().getStartPos());
@@ -246,7 +247,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.conclude(new DeclarationModule(comments, arrayViewG(packagesList), moduleId));
 	}
 	
-	public ArrayView<ASTNode> parseDeclarations(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
+	public NodeVector<ASTNode> parseDeclarations(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
 		ArrayList<ASTNode> declarations = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
@@ -465,7 +466,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		DefinitionStartInfo defStartInfo = parseDefStartInfo();
 		ParseHelper parse = new ParseHelper(lookAheadElement());
-		ArrayView<Attribute> attributes = parseDefinitionAttributes(parse);
+		NodeVector<Attribute> attributes = parseDefinitionAttributes(parse);
 		
 		if(attributes == null) {
 			parse.checkRuleBroken();
@@ -510,7 +511,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return true;
 	}
 	
-	protected ArrayView<Attribute> parseDefinitionAttributes(ParseHelper parse) {
+	protected NodeVector<Attribute> parseDefinitionAttributes(ParseHelper parse) {
 		ArrayList<Attribute> stcList = null;
 		
 		while(true) {
@@ -608,10 +609,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		if(isAutoRef) {
 			return parse.resultConclude(
-				new DefinitionAutoVariable(comments, defId, init, arrayView(fragments)));
+				new DefinitionAutoVariable(comments, defId.createDefId(), init, arrayView(fragments)));
 		}
 		return parse.resultConclude(
-			new DefinitionVariable(comments, defId, ref, cstyleSuffix, init, arrayView(fragments)));
+			new DefinitionVariable(comments, defId.createDefId(), ref, cstyleSuffix, init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
@@ -626,7 +627,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				parse.storeError(createExpectedTokenError(DeeTokens.ASSIGN));
 			}
 		}
-		return parse.conclude(new DefVarFragment(fragId, init));
+		return parse.conclude(new DefVarFragment(fragId.createDefId(), init));
 	}
 	
 	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer", "Initializer");
@@ -801,9 +802,9 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(DefParseHelper parse,
 		boolean isConstrutor, Reference retType, ProtoDefSymbol defId) {
 		
-		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<ITemplateParameter> tplParams = null;
-		ArrayView<IFunctionAttribute> fnAttributes = null;
+		NodeVector<IFunctionParameter> fnParams = null;
+		NodeVector<ITemplateParameter> tplParams = null;
+		NodeVector<IFunctionAttribute> fnAttributes = null;
 		Expression tplConstraint = null;
 		IFunctionBody fnBody = null;
 		
@@ -848,31 +849,31 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		if(isConstrutor) {
 			return parse.resultConclude(new DefinitionConstructor(
-				comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+				comments, defId.createDefId(), tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 		}
 		
 		return parse.resultConclude(new DefinitionFunction(
-			comments, retType, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
+			comments, retType, defId.createDefId(), tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
 	protected final DeeParser_RuleParameters parseParameters(ParseHelper parse) {
 		return new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parse(parse, false);
 	}
 	
-	protected final ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse) {
+	protected final NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse) {
 		return parseFunctionParameters(parse, false);
 	}
-	protected ArrayView<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) {
+	protected NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) {
 		DeeParser_RuleParameters fnParametersParse = new DeeParser_RuleParameters(TplOrFnMode.FN);
 		return fnParametersParse.parse(parse, isOptional).getAsFunctionParameters();
 	}
 	
-	protected final ArrayView<ITemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
+	protected final NodeVector<ITemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		return tplParametersParse.parse(parse, isOptional).getAsTemplateParameters();
 	}
 	
-	protected final ArrayView<ITemplateParameter> parseTemplateParametersList() {
+	protected final NodeVector<ITemplateParameter> parseTemplateParametersList() {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		tplParametersParse.parseParameterList(false);
 		return tplParametersParse.getAsTemplateParameters();
@@ -886,7 +887,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return (ITemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
 	}
 	
-	protected ArrayView<IFunctionAttribute> parseFunctionAttributes() {
+	protected NodeVector<IFunctionAttribute> parseFunctionAttributes() {
 		ArrayList<IFunctionAttribute> attributes = null;
 		
 		while(true) {
@@ -898,7 +899,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			attributes = NewUtils.lazyInitArrayList(attributes);
 			attributes.add(attrib);
 		}
-		return arrayViewG(attributes);
+		return arrayView(attributes);
 	}
 	
 	protected IFunctionAttribute parseFunctionAttribute() {
@@ -1019,7 +1020,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		Token[] comments = adp.parseEndDDocComments();
 		
 		return adp.resultConclude(new DefinitionTemplate(
-			comments, isMixin, adp.defId, adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
+			comments, isMixin, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, adp.getDeclBlock()));
 	}
 	
 	public static final ParseRuleDescription RULE_AGGR_BODY = 
@@ -1028,7 +1029,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public class AggregateDefinitionParse extends DefParseHelper {
 
 		protected ProtoDefSymbol defId = null;
-		protected ArrayView<ITemplateParameter> tplParams = null;
+		protected NodeVector<ITemplateParameter> tplParams = null;
 		protected Expression tplConstraint = null;
 		protected IAggregateBody declBody = null;
 		
@@ -1085,7 +1086,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		ParseHelper parse = new ParseHelper();
 		
-		ArrayView<ASTNode> declDefs = parseDeclarations(DeeTokens.CLOSE_BRACE, false);
+		NodeVector<ASTNode> declDefs = parseDeclarations(DeeTokens.CLOSE_BRACE, false);
 		parse.consumeRequired(DeeTokens.CLOSE_BRACE);
 		return parse.resultConclude(new DeclBlock(declDefs));
 	}
@@ -1094,8 +1095,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		boolean isDelegate = lastLexElement().type == DeeTokens.KW_DELEGATE;
 		
 		ParseHelper parse = new ParseHelper(retType);
-		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<IFunctionAttribute> fnAttributes = null;
+		NodeVector<IFunctionParameter> fnParams = null;
+		NodeVector<IFunctionAttribute> fnAttributes = null;
 		
 		parsing: {
 			fnParams = parseFunctionParameters(parse);
@@ -1117,7 +1118,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		
 		// Note that there are heavy similarites between this code and var/function declaration parsing
-		ArrayView<Attribute> attributes = null;
+		NodeVector<Attribute> attributes = null;
 		Reference ref = null;
 		ProtoDefSymbol defId = null;
 		Reference cstyleSuffix = null;
@@ -1166,15 +1167,15 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		parse.clearRuleBroken().consumeRequired(DeeTokens.SEMICOLON);
 		Token[] comments = parse.parseEndDDocComments();
-		return parse.resultConclude(
-			new DefinitionAliasVarDecl(comments, attributes, ref, defId, cstyleSuffix, arrayView(fragments)));
+		return parse.resultConclude(new DefinitionAliasVarDecl(
+			comments, attributes, ref, defId.createDefId(), cstyleSuffix, arrayView(fragments)));
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(DefParseHelper parse, 
-		ArrayView<Attribute> attributes, Reference ref, ProtoDefSymbol defId) {
+		NodeVector<Attribute> attributes, Reference ref, ProtoDefSymbol defId) {
 		
-		ArrayView<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
-		ArrayView<IFunctionAttribute> fnAttributes = null;
+		NodeVector<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
+		NodeVector<IFunctionAttribute> fnAttributes = null;
 		if(!parse.ruleBroken) {
 			fnAttributes = parseFunctionAttributes();
 		} else {
@@ -1182,13 +1183,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 		parse.consumeRequired(DeeTokens.SEMICOLON);
 		Token[] comments = parse.parseEndDDocComments();
-		return parse.resultConclude(
-			new DefinitionAliasFunctionDecl(comments, attributes, ref, defId, fnParams, fnAttributes));
+		return parse.resultConclude(new DefinitionAliasFunctionDecl(
+			comments, attributes, ref, defId.createDefId(), fnParams, fnAttributes));
 	}
 	
 	protected AliasVarDeclFragment parseAliasVarDeclFragment() {
 		ProtoDefSymbol fragId = parseDefId();
-		return conclude(fragId.nameSourceRange, new AliasVarDeclFragment(fragId));
+		return conclude(fragId.nameSourceRange, new AliasVarDeclFragment(fragId.createDefId()));
 	}
 	
 	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart(DefParseHelper parse) {
@@ -1210,7 +1211,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public DefinitionAliasFragment parseAliasFragment() {
 		ProtoDefSymbol defId = parseDefId();
-		ArrayView<ITemplateParameter> tplParams = null;
+		NodeVector<ITemplateParameter> tplParams = null;
 		Reference ref = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
@@ -1227,7 +1228,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			NodeResult<Reference> refResult = parseTypeReference_ToMissing();
 			ref = refResult.node;
 		}
-		return parse.conclude(new DefinitionAliasFragment(defId, tplParams, ref));
+		return parse.conclude(new DefinitionAliasFragment(defId.createDefId(), tplParams, ref));
 	}
 	
 	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
@@ -1279,7 +1280,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 		}
 		Token[] comments = parse.parseEndDDocComments();
-		return parse.resultConclude(new DefinitionEnum(comments, defId, type, body));
+		return parse.resultConclude(new DefinitionEnum(comments, defId.createDefId(), type, body));
 	}
 	
 	protected NodeResult<DefinitionEnumVar> parseDefinitionEnumVar_afterId(DefParseHelper parse) {
@@ -1300,7 +1301,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 
 	public DefinitionEnumVarFragment parseEnumVarFragment() {
 		ProtoDefSymbol defId = parseDefId();
-		ArrayView<ITemplateParameter> tplParams = null;
+		NodeVector<ITemplateParameter> tplParams = null;
 		IInitializer initializer = null;
 		
 		ParseHelper parse = new ParseHelper(defId.nameSourceRange.getStartPos());
@@ -1316,7 +1317,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			
 			initializer = parseInitializer().node;
 		}
-		return parse.conclude(new DefinitionEnumVarFragment(defId, tplParams, initializer));
+		return parse.conclude(new DefinitionEnumVarFragment(defId.createDefId(), tplParams, initializer));
 	}
 	
 	protected NodeResult<DeclarationEnum> parseDeclarationEnum_start() {
@@ -1365,7 +1366,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 				value = parseAssignExpression_toMissing();
 			}
 			
-			return parse.conclude(new EnumMember(typeRef_defId.type, typeRef_defId.defId, value));
+			return parse.conclude(new EnumMember(typeRef_defId.type, typeRef_defId.defId.createDefId(), value));
 		}
 		
 	}
@@ -1395,8 +1396,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		Token[] comments = adp.parseEndDDocComments();
 		
 		return adp.resultConclude(isStruct ?
-			new DefinitionStruct(comments, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody) :
-			new DefinitionUnion (comments, adp.defId, adp.tplParams, adp.tplConstraint, adp.declBody));
+			new DefinitionStruct(comments, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, adp.declBody) :
+			new DefinitionUnion (comments, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, adp.declBody));
 	}
 	
 	public NodeResult<DefinitionClass> parseDefinitionClass(DefinitionStartInfo defStartInfo) {
@@ -1435,10 +1436,10 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		Token[] comments = adp.parseEndDDocComments();
 		
 		return adp.resultConclude(isClass ?
-			new DefinitionClass(
-				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, baseAfter, adp.declBody) :
-			new DefinitionInterface(
-				comments, adp.defId, adp.tplParams, adp.tplConstraint, baseClasses.members, baseAfter, adp.declBody)
+			new DefinitionClass(comments, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, 
+				baseClasses.members, baseAfter, adp.declBody) :
+			new DefinitionInterface(comments, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, 
+				baseClasses.members, baseAfter, adp.declBody)
 		);
 	}
 	
@@ -1468,7 +1469,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			ProtoDefSymbol defId = parseDefId();
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			Token[] comments = parse.parseEndDDocComments();
-			return parse.resultConclude(new DefinitionMixinInstance(comments, defId, tplInstance));
+			return parse.resultConclude(new DefinitionMixinInstance(comments, defId.createDefId(), tplInstance));
 		} else {
 			parse.consumeRequired(DeeTokens.SEMICOLON);
 			parse.discardDocComments();
@@ -1519,7 +1520,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction_AtParams(ParseHelper parse, 
 		SpecialFunctionKind kind) {
 		IFunctionBody fnBody = null;
-		ArrayView<IFunctionAttribute> fnAttributes = null;
+		NodeVector<IFunctionAttribute> fnAttributes = null;
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
 			if(kind == SpecialFunctionKind.POST_BLIT) {
@@ -1540,7 +1541,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		ParseHelper parse = new ParseHelper();
 		
 		boolean isNew = lastLexElement().type == DeeTokens.KW_NEW;
-		ArrayView<IFunctionParameter> params = null;
+		NodeVector<IFunctionParameter> params = null;
 		IFunctionBody fnBody = null;
 		
 		parsing: {

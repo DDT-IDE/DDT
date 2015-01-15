@@ -11,11 +11,12 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.statements.IFunctionBody;
 
@@ -38,10 +39,10 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	}
 	
 	public final SpecialFunctionKind kind;
-	public final ArrayView<IFunctionAttribute> fnAttributes;
+	public final NodeVector<IFunctionAttribute> fnAttributes;
 	public final IFunctionBody fnBody;
 	
-	public DeclarationSpecialFunction(SpecialFunctionKind kind, ArrayView<IFunctionAttribute> fnAttributes, 
+	public DeclarationSpecialFunction(SpecialFunctionKind kind, NodeVector<IFunctionAttribute> fnAttributes, 
 		IFunctionBody fnBody) {
 		this.kind = assertNotNull(kind);
 		this.fnAttributes = parentize(fnAttributes);
@@ -57,6 +58,11 @@ public class DeclarationSpecialFunction extends ASTNode implements IDeclaration 
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, fnAttributes);
 		acceptVisitor(visitor, fnBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationSpecialFunction(kind, clone(fnAttributes), clone(fnBody));
 	}
 	
 	@Override

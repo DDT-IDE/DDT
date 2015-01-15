@@ -10,17 +10,18 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
-import melnorme.utilbox.collections.ArrayView;
 
 /**
  * A compound statement. Allways introduces a new Scope.
  */
 public class BlockStatement extends CommonStatementList implements IScopeElement, IFunctionBody {
 	
-	public BlockStatement(ArrayView<IStatement> statements) {
+	public BlockStatement(NodeVector<IStatement> statements) {
 		super(statements);
 	}
 	
@@ -31,6 +32,11 @@ public class BlockStatement extends CommonStatementList implements IScopeElement
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.BLOCK_STATEMENT;
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return statements == null ? new BlockStatement() : new BlockStatement(clone(statements));
 	}
 	
 	/* -----------------  ----------------- */

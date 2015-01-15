@@ -26,11 +26,11 @@ public class DeeParserAdditionalTests extends CommonDToolTest {
 	public void testModule() throws Exception { testModule$(); }
 	public void testModule$() throws Exception {
 		Module module = new DeeParser("").parseModule("defaultModuleName", null).node;
-		assertTrue(module.defname.hasSourceRangeInfo());
+		assertTrue(module.defName.hasSourceRangeInfo());
 		
 		module = new DeeParser(" int x;").parseModule("defaultModuleName", null).node;
-		assertTrue(module.defname.hasSourceRangeInfo());
-		assertTrue(module.defname.getSourceRange().equals(SourceRange.srStartToEnd(0, 0)));
+		assertTrue(module.defName.hasSourceRangeInfo());
+		assertTrue(module.defName.getSourceRange().equals(SourceRange.srStartToEnd(0, 0)));
 	}
 	
 	@Test

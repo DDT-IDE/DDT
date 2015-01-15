@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -20,10 +21,10 @@ import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class RefTypeDynArray extends CommonNativeTypeReference {
 	
-	public final Reference elemtype;
+	public final Reference elemType;
 	
 	public RefTypeDynArray(Reference elemType) {
-		this.elemtype = parentize(elemType);
+		this.elemType = parentize(elemType);
 	}
 	
 	@Override
@@ -33,12 +34,17 @@ public class RefTypeDynArray extends CommonNativeTypeReference {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, elemtype);
+		acceptVisitor(visitor, elemType);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefTypeDynArray(clone(elemType));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(elemtype, "[]");
+		cp.append(elemType, "[]");
 	}
 	
 	/* -----------------  ----------------- */

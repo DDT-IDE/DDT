@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -27,8 +28,8 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	
 	public final IInitializer initializer;
 	
-	public DefVarFragment(ProtoDefSymbol defId, IInitializer initializer) {
-		super(defId);
+	public DefVarFragment(DefSymbol defName, IInitializer initializer) {
+		super(defName);
 		this.initializer = parentize(initializer);
 	}
 	
@@ -44,13 +45,18 @@ public class DefVarFragment extends DefUnit implements IVarDefinitionLike {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, initializer);
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefVarFragment(clone(defName), clone(initializer));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(defname);
+		cp.append(defName);
 		cp.append("= ", initializer);
 	}
 	

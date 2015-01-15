@@ -12,18 +12,16 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
-import dtool.parser.common.LexElement;
 
 public class FunctionParameter extends DefUnit implements IFunctionParameter, IConcreteNamedElement {
 	
@@ -32,10 +30,10 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	public final Expression defaultValue;
 	public final boolean isVariadic;
 	
-	public FunctionParameter(ArrayView<LexElement> attribList, Reference type, ProtoDefSymbol defId, 
+	public FunctionParameter(FnParameterAttributes paramAttribs, Reference type, DefSymbol defName, 
 		Expression defaultValue, boolean isVariadic) {
-		super(defId);
-		this.paramAttribs = FnParameterAttributes.create(attribList);
+		super(defName);
+		this.paramAttribs = paramAttribs;
 		this.type = parentize(assertNotNull(type));
 		this.defaultValue = parentize(defaultValue);
 		assertTrue(!isVariadic || defaultValue == null);
@@ -50,15 +48,20 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, defaultValue);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new FunctionParameter(paramAttribs, clone(type), clone(defName), clone(defaultValue), isVariadic);
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		paramAttribs.toStringAsCode(cp);
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" = ", defaultValue);
 		cp.append(isVariadic, "...");
 	}

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -26,8 +27,8 @@ public class AliasElement extends InstantiatedDefUnit {
 	
 	public final Reference target;
 	
-	public AliasElement(DefSymbol defname, Resolvable target) {
-		super(defname);
+	public AliasElement(DefSymbol defName, Resolvable target) {
+		super(defName);
 		this.target = (target instanceof Reference) ? 
 				(Reference) target :  
 				null; // TODO: error element
@@ -44,8 +45,13 @@ public class AliasElement extends InstantiatedDefUnit {
 	
 	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" = ", target);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new AliasElement(clone(defName), clone(target));
 	}
 	
 	@Override

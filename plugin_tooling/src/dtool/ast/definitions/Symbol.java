@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -38,6 +39,11 @@ public class Symbol extends ASTNode {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new Symbol(name);
 	}
 	
 	@Override

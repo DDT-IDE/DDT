@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -36,6 +37,11 @@ public class DeclarationStaticAssert extends ASTNode implements IDeclaration, IS
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, pred);
 		acceptVisitor(visitor, msg);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationStaticAssert(clone(pred), clone(msg));
 	}
 	
 	@Override

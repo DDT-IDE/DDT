@@ -10,9 +10,10 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
@@ -30,15 +31,15 @@ import dtool.ast.references.Reference;
 public class ExpNew extends Expression {
 	
 	public final Expression outerClassArg;
-	public final NodeListView<Expression> allocArgs;
+	public final NodeVector<Expression> allocArgs;
 	public final Reference newType;
-	public final NodeListView<Expression> args;
+	public final NodeVector<Expression> args;
 	
-	public ExpNew(Expression outerClassArg, NodeListView<Expression> atorArgs, Reference type,
-		NodeListView<Expression> args) {
+	public ExpNew(Expression outerClassArg, NodeVector<Expression> allocArgs, Reference newType,
+		NodeVector<Expression> args) {
 		this.outerClassArg = parentize(outerClassArg);
-		this.allocArgs = parentize(atorArgs);
-		this.newType = parentize(type);
+		this.allocArgs = parentize(allocArgs);
+		this.newType = parentize(newType);
 		this.args = parentize(args);
 	}
 	
@@ -53,6 +54,11 @@ public class ExpNew extends Expression {
 		acceptVisitor(visitor, allocArgs);
 		acceptVisitor(visitor, newType);
 		acceptVisitor(visitor, args);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpNew(clone(outerClassArg), clone(allocArgs), clone(newType), clone(args)); 
 	}
 	
 	@Override

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -41,6 +42,11 @@ public class DeclarationEnum extends ASTNode implements INonScopedContainer, IDe
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationEnum(clone(type), clone(body));
 	}
 	
 	@Override

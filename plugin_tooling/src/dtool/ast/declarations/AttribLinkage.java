@@ -39,6 +39,11 @@ public class AttribLinkage extends Attribute {
 	}
 	
 	@Override
+	protected AttribLinkage doCloneTree() {
+		return new AttribLinkage(linkageName);
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("extern");
 		if(linkageName != null) {

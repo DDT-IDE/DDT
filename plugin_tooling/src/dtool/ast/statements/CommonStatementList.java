@@ -14,15 +14,15 @@ package dtool.ast.statements;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.core.CoreUtil;
 
 public abstract class CommonStatementList extends Statement {
 	
-	public final ArrayView<IStatement> statements;
+	public final NodeVector<IStatement> statements;
 	
-	public CommonStatementList(ArrayView<IStatement> statements) {
+	public CommonStatementList(NodeVector<IStatement> statements) {
 		this.statements = parentize(assertNotNull(statements));
 	}
 	
@@ -32,7 +32,7 @@ public abstract class CommonStatementList extends Statement {
 	}
 	
 	public final ArrayView<ASTNode> statements_asNodes() {
-		return CoreUtil.<ArrayView<ASTNode>>blindCast(statements);
+		return NodeVector.<ASTNode>castTypeParameter(statements);
 	}
 	
 	@Override

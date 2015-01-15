@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -36,6 +37,11 @@ public class RefImportSelection extends CommonRefIdentifier implements IImportSe
 	
 	public ImportSelective getImportSelectiveContainer() {
 		return impSel;
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefImportSelection(identifier);
 	}
 	
 	@Override

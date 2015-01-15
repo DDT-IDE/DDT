@@ -11,6 +11,7 @@
 package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -29,8 +30,8 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	public final Reference type;
 	public final Expression value;
 	
-	public EnumMember(Reference type, ProtoDefSymbol defId, Expression value) {
-		super(defId);
+	public EnumMember(Reference type, DefSymbol defName, Expression value) {
+		super(defName);
 		this.type = parentize(type);
 		this.value = parentize(value);
 	}
@@ -48,14 +49,19 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, value);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new EnumMember(clone(type), clone(defName), clone(value));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" = ", value);
 	}
 	

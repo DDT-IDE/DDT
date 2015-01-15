@@ -10,9 +10,11 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
@@ -30,11 +32,11 @@ import dtool.ast.statements.IStatement;
  */
 public class DeclarationImport extends ASTNode implements INonScopedContainer, IDeclaration, IStatement {
 	
-	public final ArrayView<IImportFragment> imports;
+	public final NodeVector<IImportFragment> imports;
 	public final boolean isStatic;
 	public boolean isTransitive; // aka public imports
 	
-	public DeclarationImport(boolean isStatic, ArrayView<IImportFragment> imports) {
+	public DeclarationImport(boolean isStatic, NodeVector<IImportFragment> imports) {
 		this.imports = parentize(imports);
 		this.isStatic = isStatic;
 		this.isTransitive = false; // TODO, should be determined by surrounding analysis
@@ -52,6 +54,11 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, imports);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationImport(isStatic, clone(imports));
 	}
 	
 	public static interface IImportFragment extends IASTNode {

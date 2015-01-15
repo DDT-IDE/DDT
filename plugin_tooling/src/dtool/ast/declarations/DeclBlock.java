@@ -10,18 +10,19 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeList;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;
 
 public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, IScopeElement {
 	
-	public DeclBlock(ArrayView<ASTNode> nodes) {
+	public DeclBlock(NodeVector<ASTNode> nodes) {
 		super(nodes);
 	}
 	
@@ -33,6 +34,11 @@ public class DeclBlock extends NodeList<ASTNode> implements IAggregateBody, ISco
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendList("{\n", nodes, "\n", "\n}\n");
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclBlock(clone(nodes));
 	}
 	
 	/* -----------------  ----------------- */

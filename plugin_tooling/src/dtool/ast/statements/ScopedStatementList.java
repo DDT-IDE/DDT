@@ -11,24 +11,30 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
-import melnorme.utilbox.collections.ArrayView;
 
 /**
  * A scoped statement list. Used by case/default statements
  */
 public class ScopedStatementList extends CommonStatementList implements IScopeElement {
 	
-	public ScopedStatementList(ArrayView<IStatement> statements) {
+	public ScopedStatementList(NodeVector<IStatement> statements) {
 		super(assertNotNull(statements));
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.SCOPED_STATEMENT_LIST;
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ScopedStatementList(clone(statements));
 	}
 	
 	@Override

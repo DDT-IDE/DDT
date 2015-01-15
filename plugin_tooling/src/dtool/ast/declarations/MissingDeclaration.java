@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -30,6 +31,11 @@ public class MissingDeclaration extends ASTNode implements IDeclaration
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new MissingDeclaration();
 	}
 	
 	@Override

@@ -19,9 +19,8 @@ import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
@@ -62,7 +61,7 @@ import dtool.ast.expressions.ExpParentheses;
 import dtool.ast.expressions.ExpPostfixOperator;
 import dtool.ast.expressions.ExpPostfixOperator.PostfixOpType;
 import dtool.ast.expressions.ExpPrefix;
-import dtool.ast.expressions.ExpPrefix.PrefixOpType;
+import dtool.ast.expressions.ExpPrefix.EPrefixOpType;
 import dtool.ast.expressions.ExpReference;
 import dtool.ast.expressions.ExpSimpleLambda;
 import dtool.ast.expressions.ExpSimpleLambda.SimpleLambdaDefUnit;
@@ -324,7 +323,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 			consumeLookAhead();
 			
 			ITemplateRefNode tplRef = (ITemplateRefNode) leftRef;
-			NodeListView<Resolvable> tplArgs = null;
+			NodeVector<Resolvable> tplArgs = null;
 			Resolvable singleArg = null;
 			
 			if(tryConsume(DeeTokens.OPEN_PARENS)) {
@@ -641,7 +640,7 @@ protected class ParseRule_Expression {
 		case CONCAT:
 		case KW_DELETE: {
 			LexElement prefixExpOpToken = consumeLookAhead();
-			PrefixOpType prefixOpType = PrefixOpType.tokenToPrefixOpType(prefixExpOpToken.type);
+			EPrefixOpType prefixOpType = EPrefixOpType.tokenToPrefixOpType(prefixExpOpToken.type);
 			
 			Expression exp = parseUnaryExpression();
 			if(exp == null) {
@@ -1118,11 +1117,11 @@ protected class ParseRule_Expression {
 	
 	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
 		ParseHelper parse = new ParseHelper(callee);
-		NodeListView<Expression> args = parseParenthesesDelimited_ExpArgumentList(parse);
+		NodeVector<Expression> args = parseParenthesesDelimited_ExpArgumentList(parse);
 		return parse.resultConclude(new ExpCall(callee, args));
 	}
 	
-	protected NodeListView<Expression> parseExpArgumentList(ParseHelper parse, boolean canBeEmpty, 
+	protected NodeVector<Expression> parseExpArgumentList(ParseHelper parse, boolean canBeEmpty, 
 		DeeTokens tokenLISTCLOSE) {
 		SimpleListParseHelper<Expression> elementListParse = new SimpleListParseHelper<Expression>() {
 			@Override
@@ -1137,7 +1136,7 @@ protected class ParseRule_Expression {
 		return elementListParse.members;
 	}
 	
-	protected final NodeListView<Expression> parseParenthesesDelimited_ExpArgumentList(ParseHelper parse) {
+	protected final NodeVector<Expression> parseParenthesesDelimited_ExpArgumentList(ParseHelper parse) {
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
 			return parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 		} else {
@@ -1153,7 +1152,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	protected final NodeListView<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
+	protected final NodeVector<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
 		DeeTokens tkCLOSE) {
 		
 		SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
@@ -1172,10 +1171,10 @@ protected class ParseRule_Expression {
 		fnParametersRule.parseParameters(parse);
 		
 		if(!parse.ruleBroken) {
-			ArrayView<IFunctionAttribute> fnAttributes = thisParser().parseFunctionAttributes();
+			NodeVector<IFunctionAttribute> fnAttributes = thisParser().parseFunctionAttributes();
 			
 			if(lookAhead() == DeeTokens.OPEN_BRACE || lookAhead() == DeeTokens.LAMBDA) {
-				ArrayView<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
+				NodeVector<IFunctionParameter> fnParams = fnParametersRule.getAsFunctionParameters();
 				return parseFunctionLiteral_atFunctionBody(parse.nodeStart, null, null, fnParams, fnAttributes);
 			}
 		}
@@ -1191,8 +1190,8 @@ protected class ParseRule_Expression {
 		ParseHelper parse = new ParseHelper(defId.getStartPos());
 		Expression bodyExp = parse.checkResult(parseAssignExpression_toMissing(true, RULE_EXPRESSION));
 		
-		SimpleLambdaDefUnit lambdaDefId = conclude(defId.nameSourceRange, new SimpleLambdaDefUnit(defId));
-		return parse.resultConclude(new ExpSimpleLambda(lambdaDefId, bodyExp));
+		SimpleLambdaDefUnit lambdaDef = conclude(defId.nameSourceRange, new SimpleLambdaDefUnit(defId.createDefId()));
+		return parse.resultConclude(new ExpSimpleLambda(lambdaDef, bodyExp));
 	}
 	
 	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() {
@@ -1203,8 +1202,8 @@ protected class ParseRule_Expression {
 		
 		Reference retType = parseTypeReference().node;
 		
-		ArrayView<IFunctionParameter> fnParams = null;
-		ArrayView<IFunctionAttribute> fnAttributes = null;
+		NodeVector<IFunctionParameter> fnParams = null;
+		NodeVector<IFunctionAttribute> fnAttributes = null;
 		
 		parsing: {
 			fnParams = thisParser().parseFunctionParameters(parse);
@@ -1221,8 +1220,8 @@ protected class ParseRule_Expression {
 	}
 	
 	protected NodeResult<ExpFunctionLiteral> parseFunctionLiteral_atFunctionBody(int nodeStart,
-		Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<IFunctionAttribute> fnAttributes) 
+		Boolean isFunctionKeyword, Reference retType, NodeVector<IFunctionParameter> fnParams,
+		NodeVector<IFunctionAttribute> fnAttributes) 
 	{
 		if(tryConsume(DeeTokens.LAMBDA)) {
 			assertTrue(fnParams != null);
@@ -1342,9 +1341,9 @@ protected class ParseRule_Expression {
 	}
 	
 	public NodeResult<? extends Expression> parseNewExpression_do(ParseHelper parse, Expression outerClass) {
-		NodeListView<Expression> allocArgs = null;
+		NodeVector<Expression> allocArgs = null;
 		Reference type = null;
-		NodeListView<Expression> args = null;
+		NodeVector<Expression> args = null;
 		
 		parsing: {
 			assertTrue(!parse.ruleBroken);
@@ -1366,9 +1365,9 @@ protected class ParseRule_Expression {
 	}
 	
 	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 
-		ArrayView<Expression> allocArgs) {
+		NodeVector<Expression> allocArgs) {
 		
-		ArrayView<Expression> args = null;
+		NodeVector<Expression> args = null;
 		SimpleListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceSimpleListParse();
 		DeclBlock declBody = null;
 		
@@ -1456,7 +1455,7 @@ protected class ParseRule_Expression {
 		StaticIfExpIsDefUnit isExpDefUnit = null;
 		ExpIsSpecialization specKind = null;
 		Reference specTypeRef = null;
-		ArrayView<ITemplateParameter> tplParams = null;
+		NodeVector<ITemplateParameter> tplParams = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
@@ -1465,7 +1464,7 @@ protected class ParseRule_Expression {
 			
 			if(lookAhead() == DeeTokens.IDENTIFIER) {
 				ProtoDefSymbol defId = parseDefId();
-				isExpDefUnit = concludeNode(srOf(lastLexElement(), new StaticIfExpIsDefUnit(defId)));
+				isExpDefUnit = concludeNode(srOf(lastLexElement(), new StaticIfExpIsDefUnit(defId.createDefId())));
 			}
 			
 			if(tryConsume(DeeTokens.COLON)) {
@@ -1540,7 +1539,7 @@ protected class ParseRule_Expression {
 		ParseHelper parse = new ParseHelper();
 		
 		Symbol traitsId = null;
-		NodeListView<Resolvable> args = null;
+		NodeVector<Resolvable> args = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;

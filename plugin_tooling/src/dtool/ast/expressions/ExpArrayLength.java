@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -29,6 +30,11 @@ public class ExpArrayLength extends Expression {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpArrayLength();
 	}
 	
 	@Override

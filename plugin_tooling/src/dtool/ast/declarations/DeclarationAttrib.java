@@ -11,15 +11,16 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeList;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
@@ -35,11 +36,11 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	
 	public static enum AttribBodySyntax { SINGLE_DECL, BRACE_BLOCK, COLON }
 	
-	public final ArrayView<Attribute> attributes;
+	public final NodeVector<Attribute> attributes;
 	public final AttribBodySyntax bodySyntax;
 	public final ASTNode body; // Note: can be DeclList
 	
-	public DeclarationAttrib(ArrayView<Attribute> attributes, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
+	public DeclarationAttrib(NodeVector<Attribute> attributes, AttribBodySyntax bodySyntax, ASTNode bodyDecls) {
 		this.attributes = parentize(assertNotNull(attributes));
 		this.bodySyntax = assertNotNull(bodySyntax);
 		this.body = parentize(bodyDecls);
@@ -56,6 +57,11 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, attributes);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationAttrib(clone(attributes), bodySyntax, clone(body));
 	}
 	
 	@Override

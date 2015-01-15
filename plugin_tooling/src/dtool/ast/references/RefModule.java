@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -55,6 +56,10 @@ public class RefModule extends NamedReference {
 		return stringArray;
 	}
 	
+	public String getModuleSimpleName() {
+		return module;
+	}
+	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.REF_MODULE;
@@ -64,8 +69,9 @@ public class RefModule extends NamedReference {
 	public void visitChildren(IASTVisitor visitor) {
 	}
 	
-	public String getModuleSimpleName() {
-		return module;
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefModule(packageList, moduleToken);
 	}
 	
 	@Override

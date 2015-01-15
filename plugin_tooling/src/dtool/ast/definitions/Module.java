@@ -15,11 +15,13 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -63,6 +65,12 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		public DefUnit getDefUnit() {
 			return module;
 		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new ModuleDefSymbol(name);
+		}
+		
 	}
 	
 	public static class DeclarationModule extends ASTNode {
@@ -70,16 +78,24 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		public final Token[] comments;
 		public final ArrayView<IToken> packageList;
 		public final String[] packages; // Old API
-		public final DefSymbol moduleName; 
+		public final ModuleDefSymbol moduleName; 
 		
 		public DeclarationModule(Token[] comments, ArrayView<IToken> packageList, BaseLexElement moduleDefUnit) {
+			this(comments, packageList, createModuleDefSymbol(moduleDefUnit));
+		}
+		
+		public DeclarationModule(Token[] comments, ArrayView<IToken> packageList, ModuleDefSymbol moduleDefUnit) {
 			this.comments = comments;
 			this.packageList = assertNotNull(packageList);
 			this.packages = RefModule.tokenArrayToStringArray(packageList);
-			this.moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
-			this.moduleName.setSourceRange(moduleDefUnit.getSourceRange());
-			this.moduleName.setParsedStatus();
-			parentize(moduleName);
+			this.moduleName = parentize(moduleDefUnit);
+		}
+		
+		protected static ModuleDefSymbol createModuleDefSymbol(BaseLexElement moduleDefUnit) {
+			ModuleDefSymbol moduleName = new ModuleDefSymbol(moduleDefUnit.getSourceValue());
+			moduleName.setSourceRange(moduleDefUnit.getSourceRange());
+			moduleName.setParsedStatus();
+			return moduleName;
 		}
 		
 		public ModuleDefSymbol getModuleSymbol() {
@@ -93,8 +109,12 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			//TreeVisitor.acceptChildren(visitor, packages);
 			acceptVisitor(visitor, moduleName);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new DeclarationModule(comments, packageList, clone(moduleName));
 		}
 		
 		@Override
@@ -107,7 +127,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		
 	}
 	
-	public static Module createModuleNoModuleDecl(String moduleName, ArrayView<ASTNode> members,
+	public static Module createModuleNoModuleDecl(String moduleName, NodeVector<ASTNode> members,
 			Path compilationUnitPath, SourceRange modRange) {
 		ModuleDefSymbol defSymbol = new ModuleDefSymbol(moduleName);
 		defSymbol.setSourceRange(modRange.getStartPos(), 0);
@@ -115,10 +135,10 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	public final DeclarationModule md;
-	public final ArrayView<ASTNode> members;
+	public final NodeVector<ASTNode> members;
 	public final Path compilationUnitPath; // can be null. This might be removed in the future.
 	
-	public Module(ModuleDefSymbol defSymbol, DeclarationModule md, ArrayView<ASTNode> members, 
+	public Module(ModuleDefSymbol defSymbol, DeclarationModule md, NodeVector<ASTNode> members, 
 			Path compilationUnitPath) {
 		super(defSymbol, false);
 		defSymbol.module = this;
@@ -140,6 +160,11 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, md);
 		acceptVisitor(visitor, members);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new Module((ModuleDefSymbol) clone(defName), clone(md), clone(members), compilationUnitPath);
 	}
 	
 	@Override

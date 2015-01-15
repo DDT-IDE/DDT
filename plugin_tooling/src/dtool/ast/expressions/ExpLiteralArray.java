@@ -10,9 +10,10 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
@@ -21,9 +22,9 @@ import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class ExpLiteralArray extends Expression {
 	
-	public final NodeListView<Expression> elements;
+	public final NodeVector<Expression> elements;
 	
-	public ExpLiteralArray(NodeListView<Expression> elements) {
+	public ExpLiteralArray(NodeVector<Expression> elements) {
 		this.elements = parentize(elements);
 	}
 	
@@ -35,6 +36,11 @@ public class ExpLiteralArray extends Expression {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, elements);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpLiteralArray(clone(elements));
 	}
 	
 	@Override

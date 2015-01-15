@@ -12,6 +12,7 @@ package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -19,7 +20,7 @@ import dtool.parser.DeeTokens;
 
 public class ExpPrefix extends Expression {
 	
-	public static enum PrefixOpType {
+	public static enum EPrefixOpType {
 		ADDRESS(DeeTokens.AND),
 		PRE_INCREMENT(DeeTokens.INCREMENT),
 		PRE_DECREMENT(DeeTokens.DECREMENT),
@@ -34,16 +35,16 @@ public class ExpPrefix extends Expression {
 		
 		public final DeeTokens token;
 		
-		private PrefixOpType(DeeTokens token) {
+		private EPrefixOpType(DeeTokens token) {
 			this.token = token;
 			assertTrue(token.hasSourceValue());
 		}
 		
-		private static final PrefixOpType[] mapping = initMapping(PrefixOpType.values());
+		private static final EPrefixOpType[] mapping = initMapping(EPrefixOpType.values());
 		
-		private static PrefixOpType[] initMapping(PrefixOpType[] tokenEnum) {
-			PrefixOpType[] mappingArray = new PrefixOpType[DeeTokens.values().length];
-			for (PrefixOpType prefixOpType : tokenEnum) {
+		private static EPrefixOpType[] initMapping(EPrefixOpType[] tokenEnum) {
+			EPrefixOpType[] mappingArray = new EPrefixOpType[DeeTokens.values().length];
+			for (EPrefixOpType prefixOpType : tokenEnum) {
 				int ix = prefixOpType.token.ordinal();
 				assertTrue(mappingArray[ix] == null);
 				mappingArray[ix] = prefixOpType;
@@ -51,7 +52,7 @@ public class ExpPrefix extends Expression {
 			return mappingArray;
 		}
 		
-		public static PrefixOpType tokenToPrefixOpType(DeeTokens token) {
+		public static EPrefixOpType tokenToPrefixOpType(DeeTokens token) {
 			return mapping[token.ordinal()];
 		}
 		
@@ -61,10 +62,10 @@ public class ExpPrefix extends Expression {
 		
 	}
 	
-	public final PrefixOpType kind;
+	public final EPrefixOpType kind;
 	public final Expression exp;
 	
-	public ExpPrefix(PrefixOpType kind, Expression exp) {
+	public ExpPrefix(EPrefixOpType kind, Expression exp) {
 		this.kind = assertNotNull(kind);
 		this.exp = parentize(exp);
 	}
@@ -77,6 +78,11 @@ public class ExpPrefix extends Expression {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpPrefix(kind, clone(exp));
 	}
 	
 	@Override

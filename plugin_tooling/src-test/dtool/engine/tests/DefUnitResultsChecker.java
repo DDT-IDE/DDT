@@ -176,7 +176,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			INamedElement element = iterator.next();
 			if(element instanceof DefUnit) {
 				DefUnit defNode = (DefUnit) element;
-				if(defNode.defname.getEndPos() == marker.offset || defNode.defname.getStartPos() == marker.offset) {
+				if(defNode.defName.getEndPos() == marker.offset || defNode.defName.getStartPos() == marker.offset) {
 					iterator.remove();
 					return;
 				}

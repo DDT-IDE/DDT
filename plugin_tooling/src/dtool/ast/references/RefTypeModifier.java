@@ -11,6 +11,7 @@
 package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -54,6 +55,11 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, ref);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefTypeModifier(modifier, clone(ref), hasParens);
 	}
 	
 	@Override

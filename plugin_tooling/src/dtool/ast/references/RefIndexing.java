@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -31,8 +32,8 @@ public class RefIndexing extends Reference {
 	public final Reference elemType;
 	public final Resolvable indexArg;
 	
-	public RefIndexing(Reference keyType, Resolvable indexArg) {
-		this.elemType = parentize(keyType);
+	public RefIndexing(Reference elemType, Resolvable indexArg) {
+		this.elemType = parentize(elemType);
 		this.indexArg = parentize(indexArg);
 	}
 	
@@ -45,6 +46,11 @@ public class RefIndexing extends Reference {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, elemType);
 		acceptVisitor(visitor, indexArg);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefIndexing(clone(elemType), clone(indexArg));
 	}
 	
 	@Override

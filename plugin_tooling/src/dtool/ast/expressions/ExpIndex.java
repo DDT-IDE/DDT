@@ -10,9 +10,10 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 
 /**
@@ -22,9 +23,9 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 public class ExpIndex extends Expression {
 	
 	public final Expression indexee;
-	public final NodeListView<Expression> args;
+	public final NodeVector<Expression> args;
 	
-	public ExpIndex(Expression indexee, NodeListView<Expression> args) {
+	public ExpIndex(Expression indexee, NodeVector<Expression> args) {
 		this.indexee = parentize(indexee);
 		this.args = parentize(args);
 	}
@@ -38,6 +39,11 @@ public class ExpIndex extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, indexee);
 		acceptVisitor(visitor, args);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpIndex(clone(indexee), clone(args));
 	}
 	
 	@Override

@@ -11,6 +11,7 @@
 package dtool.ast.references;
 
 import static melnorme.utilbox.core.CoreUtil.assertCast;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -46,6 +47,11 @@ public final class AutoReference extends Reference {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new AutoReference();
 	}
 	
 	@Override

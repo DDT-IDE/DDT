@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -32,6 +33,11 @@ public class DeclarationInvariant extends ASTNode implements IDeclaration {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationInvariant(clone(body));
 	}
 	
 	@Override

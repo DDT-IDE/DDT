@@ -156,11 +156,11 @@ public class ASTCodePrinter {
 		}
 	}
 	
-	public void appendNodeList(String open, NodeListView<? extends IASTNode> args, String sep, String close) {
+	public void appendNodeList(String open, NodeVector<? extends IASTNode> args, String sep, String close) {
 		appendNodeList(open, args, sep, close, null);
 	}
 	
-	public void appendNodeList(String open, NodeListView<? extends IASTNode> args, String sep, String close, 
+	public void appendNodeList(String open, NodeVector<? extends IASTNode> args, String sep, String close, 
 		String spacingIfArgsNull) {
 		boolean hasEndingSeparator = args == null ? false : args.hasEndingSeparator;
 		appendList(open, args, sep, hasEndingSeparator, close, spacingIfArgsNull);

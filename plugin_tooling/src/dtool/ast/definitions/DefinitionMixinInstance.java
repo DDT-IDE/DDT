@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -31,8 +32,8 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	
 	public final Reference templateInstance;
 	
-	public DefinitionMixinInstance(Token[] comments, ProtoDefSymbol defId, Reference templateInstance) {
-		super(comments, defId);
+	public DefinitionMixinInstance(Token[] comments, DefSymbol defName, Reference templateInstance) {
+		super(comments, defName);
 		this.templateInstance = parentize(templateInstance);
 	}
 	
@@ -44,14 +45,19 @@ public class DefinitionMixinInstance extends CommonDefinition implements IStatem
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, templateInstance);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionMixinInstance(comments, clone(defName), clone(templateInstance));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("mixin ");
 		cp.append(templateInstance, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(";");
 	}
 	

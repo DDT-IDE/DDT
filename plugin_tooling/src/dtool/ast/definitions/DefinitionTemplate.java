@@ -11,8 +11,10 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -39,15 +41,15 @@ public class DefinitionTemplate extends CommonDefinition
 {
 	
 	public final boolean isMixin;
-	public final ArrayView<ITemplateParameter> tplParams;
+	public final NodeVector<ITemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final DeclBlock decls;
 	
 	public final boolean wrapper;
 	
-	public DefinitionTemplate(Token[] comments, boolean isMixin, ProtoDefSymbol defId, 
-			ArrayView<ITemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
-		super(comments, defId);
+	public DefinitionTemplate(Token[] comments, boolean isMixin, DefSymbol defName, 
+			NodeVector<ITemplateParameter> tplParams, Expression tplConstraint, DeclBlock decls) {
+		super(comments, defName);
 		this.isMixin = isMixin;
 		this.tplParams = parentize(tplParams);
 		this.tplConstraint = parentize(tplConstraint);
@@ -67,17 +69,23 @@ public class DefinitionTemplate extends CommonDefinition
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, tplParams);
 		acceptVisitor(visitor, tplConstraint);
 		acceptVisitor(visitor, decls);
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionTemplate(comments, isMixin, clone(defName), clone(tplParams), clone(tplConstraint), 
+			clone(decls));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isMixin, "mixin ");
 		cp.append("template ");
-		cp.append(defname, " ");
+		cp.append(defName, " ");
 		cp.appendList("(", tplParams, ",", ") ");
 		tplConstraintToStringAsCode(cp, tplConstraint);
 		cp.append(decls);

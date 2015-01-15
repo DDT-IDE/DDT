@@ -32,7 +32,7 @@ public class RefTemplateInstanceSemantics extends ResolvableSemantics {
 	
 	@Override
 	public INamedElement doResolveTargetElement() {
-		INamedElement resolvedTemplate = this.refTemplateInstance.tplRef.resolveTargetElement(context);
+		INamedElement resolvedTemplate = this.refTemplateInstance.tplRef.getSemantics(context).resolveTargetElement_();
 		if(false) {
 			return createTemplateInstance(resolvedTemplate);
 		} else {

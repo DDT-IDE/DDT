@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -33,6 +34,11 @@ public class ExpAssert extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
 		acceptVisitor(visitor, msg);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpAssert(clone(exp), clone(msg));
 	}
 	
 	@Override

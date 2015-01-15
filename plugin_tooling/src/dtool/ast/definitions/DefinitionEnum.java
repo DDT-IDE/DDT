@@ -13,9 +13,10 @@ package dtool.ast.definitions;
 import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -38,8 +39,8 @@ public class DefinitionEnum extends CommonDefinition
 	public final Reference type;
 	public final EnumBody body;
 	
-	public DefinitionEnum(Token[] comments, ProtoDefSymbol defId, Reference type, EnumBody body) {
-		super(comments, defId);
+	public DefinitionEnum(Token[] comments, DefSymbol defName, Reference type, EnumBody body) {
+		super(comments, defName);
 		this.type = parentize(type);
 		this.body = parentize(body);
 	}
@@ -51,24 +52,29 @@ public class DefinitionEnum extends CommonDefinition
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, type);
 		acceptVisitor(visitor, body);
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionEnum(comments, clone(defName), clone(type), clone(body));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("enum ");
-		cp.append(defname, " ");
+		cp.append(defName, " ");
 		cp.append(": ", type);
 		cp.append(body);
 	}
 	
 	public static class EnumBody extends ASTNode implements IScopeElement {
 		
-		public final NodeListView<EnumMember> nodeList;
+		public final NodeVector<EnumMember> nodeList;
 		
-		public EnumBody(NodeListView<EnumMember> nodeList) {
+		public EnumBody(NodeVector<EnumMember> nodeList) {
 			this.nodeList = parentize(assertNotNull(nodeList));
 		}
 		
@@ -89,6 +95,11 @@ public class DefinitionEnum extends CommonDefinition
 		}
 		
 		@Override
+		protected CommonASTNode doCloneTree() {
+			return new EnumBody(clone(nodeList));
+		}
+		
+		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.appendNodeList("{", nodeList, ", ", "}");
 		}
@@ -102,7 +113,7 @@ public class DefinitionEnum extends CommonDefinition
 	
 	public static class NoEnumBody extends EnumBody {
 		
-		public static NodeListView<EnumMember> NULL_DECLS = new NodeListView<>(new EnumMember[0], false);
+		public static NodeVector<EnumMember> NULL_DECLS = new NodeVector<>(new EnumMember[0], false);
 		
 		public NoEnumBody() {
 			super(NULL_DECLS);
@@ -111,6 +122,11 @@ public class DefinitionEnum extends CommonDefinition
 		@Override
 		public ASTNodeTypes getNodeType() {
 			return ASTNodeTypes.ENUM_BODY;
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new NoEnumBody();
 		}
 		
 		@Override

@@ -12,6 +12,7 @@ package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -43,6 +44,11 @@ public class RefSlice extends Reference {
 		acceptVisitor(visitor, slicee);
 		acceptVisitor(visitor, startIndex);
 		acceptVisitor(visitor, endIndex);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefSlice(clone(slicee), clone(startIndex), clone(endIndex));
 	}
 	
 	@Override

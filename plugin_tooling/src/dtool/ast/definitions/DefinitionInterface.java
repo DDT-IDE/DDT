@@ -10,10 +10,11 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.ast.references.Reference;
 import dtool.parser.common.Token;
@@ -23,8 +24,8 @@ import dtool.parser.common.Token;
  */
 public class DefinitionInterface extends DefinitionClass {
 	
-	public DefinitionInterface(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
-		Expression tplConstraint, ArrayView<Reference> baseClasses, boolean baseClassesAfterConstraint, 
+	public DefinitionInterface(Token[] comments, DefSymbol defId, NodeVector<ITemplateParameter> tplParams,
+		Expression tplConstraint, NodeVector<Reference> baseClasses, boolean baseClassesAfterConstraint, 
 		IAggregateBody aggrBody) 
 	{
 		super(comments, defId, tplParams, tplConstraint, baseClasses, baseClassesAfterConstraint, aggrBody);
@@ -38,6 +39,12 @@ public class DefinitionInterface extends DefinitionClass {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptNodeChildren(visitor);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionInterface(comments, clone(defName), clone(tplParams), clone(tplConstraint), 
+			clone(baseClasses), baseClassesAfterConstraint, clone(aggrBody));
 	}
 	
 	@Override

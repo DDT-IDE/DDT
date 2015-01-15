@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -45,8 +46,13 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new VarElement(clone(defName), clone(type));
+	}
+	
+	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" : ", type);
 	}
 	

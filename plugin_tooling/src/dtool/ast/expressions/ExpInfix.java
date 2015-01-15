@@ -11,6 +11,7 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -126,14 +127,14 @@ public class ExpInfix extends Expression {
 	}
 	
 	public final Expression leftExp;
-	public final Expression rightExp;
 	public final InfixOpType kind;
+	public final Expression rightExp;
 	
-	public ExpInfix(Expression left, InfixOpType kind, Expression right) {
-		this.leftExp = parentize(left);
+	public ExpInfix(Expression leftExp, InfixOpType kind, Expression rightExp) {
+		this.leftExp = parentize(leftExp);
 		this.kind = kind;
 		assertTrue(this.kind != InfixOpType.NULL);
-		this.rightExp = parentize(right);
+		this.rightExp = parentize(rightExp);
 	}
 	
 	@Override
@@ -145,6 +146,11 @@ public class ExpInfix extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, leftExp);
 		acceptVisitor(visitor, rightExp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpInfix(clone(leftExp), kind, clone(rightExp));
 	}
 	
 	@Override

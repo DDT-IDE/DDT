@@ -13,14 +13,16 @@ package dtool.ast.declarations;
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.utilbox.collections.ArrayView;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplateParameter;
@@ -35,10 +37,10 @@ public class StaticIfExpIs extends Expression {
 	public final StaticIfExpIsDefUnit isExpDefUnit;
 	public final ExpIsSpecialization specKind;
 	public final Reference specTypeRef;
-	public final ArrayView<ITemplateParameter> tplParams;
+	public final NodeVector<ITemplateParameter> tplParams;
 	
 	public StaticIfExpIs(Reference typeRef, StaticIfExpIsDefUnit isExpDefUnit, ExpIsSpecialization specKind, 
-		Reference specTypeRef, ArrayView<ITemplateParameter> tplParams) {
+		Reference specTypeRef, NodeVector<ITemplateParameter> tplParams) {
 		this.typeRef = parentize(assertNotNull(typeRef));
 		this.isExpDefUnit = parentize(isExpDefUnit);
 		this.specKind = specKind;
@@ -64,6 +66,11 @@ public class StaticIfExpIs extends Expression {
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StaticIfExpIs(clone(typeRef), clone(isExpDefUnit), specKind, clone(specTypeRef), clone(tplParams));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("is(");
 		cp.append(typeRef, " ");
@@ -82,8 +89,8 @@ public class StaticIfExpIs extends Expression {
 	
 	public static class StaticIfExpIsDefUnit extends DefUnit {
 		
-		public StaticIfExpIsDefUnit(ProtoDefSymbol defIdTuple) {
-			super(defIdTuple);
+		public StaticIfExpIsDefUnit(DefSymbol defName) {
+			super(defName);
 		}
 		
 		@Override
@@ -98,12 +105,17 @@ public class StaticIfExpIs extends Expression {
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, defName);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new StaticIfExpIsDefUnit(clone(defName));
 		}
 		
 		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(defname);
+			cp.append(defName);
 		}
 		
 		@Override

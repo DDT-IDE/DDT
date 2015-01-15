@@ -10,18 +10,19 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.definitions.Symbol;
 
 public class ExpTraits extends Expression {
 	
 	public final Symbol traitsId;
-	public final NodeListView<Resolvable> args;
+	public final NodeVector<Resolvable> args;
 	
-	public ExpTraits(Symbol traitsId, NodeListView<Resolvable> args) {
+	public ExpTraits(Symbol traitsId, NodeVector<Resolvable> args) {
 		this.traitsId = parentize(traitsId);
 		this.args = parentize(args);
 	}
@@ -35,6 +36,11 @@ public class ExpTraits extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, traitsId);
 		acceptVisitor(visitor, args);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpTraits(clone(traitsId), clone(args));
 	}
 	
 	@Override

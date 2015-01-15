@@ -11,6 +11,7 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -37,6 +38,11 @@ public class ExpConditional extends Expression {
 		acceptVisitor(visitor, condExp);
 		acceptVisitor(visitor, thenExp);
 		acceptVisitor(visitor, elseExp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpConditional(clone(condExp), clone(thenExp), clone(elseExp));
 	}
 	
 	@Override

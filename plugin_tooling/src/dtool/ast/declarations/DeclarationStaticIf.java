@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -41,8 +42,16 @@ public class DeclarationStaticIf extends AbstractConditionalDeclaration {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
-		acceptVisitor(visitor, body);
+		acceptVisitor(visitor, thenBody);
 		acceptVisitor(visitor, elseBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return isStatement == false ?
+			new DeclarationStaticIf(clone(exp), bodySyntax, clone(thenBody), clone(elseBody)) :
+			new DeclarationStaticIf(clone(exp), clone((IStatement) thenBody), clone((IStatement) elseBody));
+				
 	}
 	
 	@Override

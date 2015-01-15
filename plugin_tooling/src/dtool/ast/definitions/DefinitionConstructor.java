@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
@@ -19,7 +21,6 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.statements.IFunctionBody;
@@ -27,11 +28,10 @@ import dtool.parser.common.Token;
 
 public class DefinitionConstructor extends AbstractFunctionDefinition implements IDeclaration, IConcreteNamedElement {
 	
-	public DefinitionConstructor(Token[] comments, ProtoDefSymbol defId, 
-		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams, 
-		ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) 
-	{
-		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+	public DefinitionConstructor(Token[] comments, DefSymbol defName, 
+			NodeVector<ITemplateParameter> tplParams, NodeVector<IFunctionParameter> fnParams, 
+			NodeVector<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) {
+		super(comments, defName, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 	}
 	
 	@Override
@@ -42,6 +42,12 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		visitChildren_common(visitor);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionConstructor(comments, clone(defName), clone(tplParams), clone(fnParams), 
+			clone(fnAttributes), clone(tplConstraint), clone(fnBody));
 	}
 	
 	@Override

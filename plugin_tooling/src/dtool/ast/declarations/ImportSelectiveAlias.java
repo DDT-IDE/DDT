@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -17,6 +18,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefImportSelection;
@@ -26,8 +28,8 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	public final RefImportSelection target;
 	
-	public ImportSelectiveAlias(ProtoDefSymbol defId, RefImportSelection impSelection) {
-		super(defId);
+	public ImportSelectiveAlias(DefSymbol defName, RefImportSelection impSelection) {
+		super(defName);
 		this.target = parentize(impSelection);
 	}
 	
@@ -38,8 +40,13 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, target);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ImportSelectiveAlias(clone(defName), clone(target));
 	}
 	
 	@Override

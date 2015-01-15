@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -42,6 +43,11 @@ public class DeclarationMixin extends ASTNode implements INonScopedContainer, ID
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, templateInstance);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationMixin(clone(templateInstance));
 	}
 	
 	@Override

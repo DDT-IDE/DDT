@@ -14,14 +14,15 @@ package dtool.ast.definitions;
 import static dtool.util.NewUtils.assertCast;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.IInitializer;
@@ -37,9 +38,9 @@ import dtool.engine.analysis.IVarDefinitionLike;
  */
 public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStatement, INonScopedContainer {
 	
-	public final ArrayView<DefinitionEnumVarFragment> defFragments;
+	public final NodeVector<DefinitionEnumVarFragment> defFragments;
 
-	public DefinitionEnumVar(ArrayView<DefinitionEnumVarFragment> defFragments) {
+	public DefinitionEnumVar(NodeVector<DefinitionEnumVarFragment> defFragments) {
 		this.defFragments = parentize(assertNotNull(defFragments));
 		assertTrue(defFragments.size() > 0);
 	}
@@ -52,6 +53,11 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, defFragments);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionEnumVar(clone(defFragments));
 	}
 	
 	@Override
@@ -72,12 +78,12 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 	
 	public static class DefinitionEnumVarFragment extends DefUnit implements IVarDefinitionLike {
 		
-		public final ArrayView<ITemplateParameter> tplParams; // Since 2.064
+		public final NodeVector<ITemplateParameter> tplParams; // Since 2.064
 		public final IInitializer initializer;
 		
-		public DefinitionEnumVarFragment(ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams, 
+		public DefinitionEnumVarFragment(DefSymbol defName, NodeVector<ITemplateParameter> tplParams, 
 				IInitializer initializer) {
-			super(defId);
+			super(defName);
 			this.tplParams = parentize(tplParams);
 			this.initializer = parentize(initializer);
 		}
@@ -94,14 +100,19 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		
 		@Override
 		public void visitChildren(IASTVisitor visitor) {
-			acceptVisitor(visitor, defname);
+			acceptVisitor(visitor, defName);
 			acceptVisitor(visitor, tplParams);
 			acceptVisitor(visitor, initializer);
 		}
 		
 		@Override
+		protected CommonASTNode doCloneTree() {
+			return new DefinitionEnumVarFragment(clone(defName), clone(tplParams), clone(initializer));
+		}
+		
+		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
-			cp.append(defname);
+			cp.append(defName);
 			cp.appendList("(", tplParams, ",", ") ");
 			cp.append(" = ", initializer);
 		}

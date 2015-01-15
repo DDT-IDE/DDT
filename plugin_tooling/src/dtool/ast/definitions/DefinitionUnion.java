@@ -10,10 +10,11 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 import dtool.parser.common.Token;
 
@@ -22,9 +23,9 @@ import dtool.parser.common.Token;
  */
 public class DefinitionUnion extends DefinitionAggregate {
 	
-	public DefinitionUnion(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
+	public DefinitionUnion(Token[] comments, DefSymbol defName, NodeVector<ITemplateParameter> tplParams,
 		Expression tplConstraint, IAggregateBody aggrBody) {
-		super(comments, defId, tplParams, tplConstraint, aggrBody);
+		super(comments, defName, tplParams, tplConstraint, aggrBody);
 	}
 	
 	@Override
@@ -35,6 +36,11 @@ public class DefinitionUnion extends DefinitionAggregate {
 	@Override	
 	public void visitChildren(IASTVisitor visitor) {
 		acceptNodeChildren(visitor);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionUnion(comments, clone(defName), clone(tplParams), clone(tplConstraint), clone(aggrBody));
 	}
 	
 	@Override

@@ -11,6 +11,7 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -61,6 +62,11 @@ public class ExpIs extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, typeRef);
 		acceptVisitor(visitor, specTypeRef);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpIs(clone(typeRef), specKind, clone(specTypeRef));
 	}
 	
 	@Override

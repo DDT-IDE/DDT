@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -26,8 +27,8 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	public final Resolvable specializationValue;
 	public final Resolvable defaultValue;
 	
-	public TemplateAliasParam(ProtoDefSymbol defId, Resolvable specializationValue, Resolvable defaultValue){
-		super(defId);
+	public TemplateAliasParam(DefSymbol defName, Resolvable specializationValue, Resolvable defaultValue){
+		super(defName);
 		this.specializationValue = parentize(specializationValue);
 		this.defaultValue = parentize(defaultValue);
 	}
@@ -39,15 +40,20 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, specializationValue);
 		acceptVisitor(visitor, defaultValue);
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new TemplateAliasParam(clone(defName), clone(specializationValue), clone(defaultValue));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("alias ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" : ", specializationValue);
 		cp.append(" = ", defaultValue);
 	}
@@ -72,7 +78,7 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable argument) {
-		return new AliasElement(defname, argument);
+		return new AliasElement(defName, argument);
 	}
 	
 }

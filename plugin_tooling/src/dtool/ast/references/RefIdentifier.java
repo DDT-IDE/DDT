@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
@@ -22,6 +23,11 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.REF_IDENTIFIER;
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefIdentifier(identifier);
 	}
 	
 	@Override

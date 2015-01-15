@@ -12,6 +12,7 @@ package dtool.ast.references;
 
 import static dtool.util.NewUtils.assertInstance;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -33,8 +34,8 @@ public class RefQualified extends CommonQualifiedReference {
 	public RefQualified(IQualifierNode qualifier, int dotOffset, RefIdentifier qualifiedId) {
 		super(assertNotNull(qualifiedId));
 		this.qualifier = parentize(assertInstance(qualifier, Resolvable.class));
-		this.dotOffset = dotOffset;
 		this.isExpressionQualifier = isExpressionQualifier(qualifier);
+		this.dotOffset = dotOffset;
 	}
 	
 	@Override
@@ -46,6 +47,11 @@ public class RefQualified extends CommonQualifiedReference {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, qualifier);
 		acceptVisitor(visitor, qualifiedId);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefQualified(clone((IQualifierNode) qualifier), dotOffset, clone(qualifiedId));
 	}
 	
 	@Override

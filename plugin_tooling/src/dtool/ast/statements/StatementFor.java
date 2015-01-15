@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -40,6 +41,11 @@ public class StatementFor extends Statement {
 		acceptVisitor(visitor, condition);
 		acceptVisitor(visitor, increment);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementFor(clone(init), clone(condition), clone(increment), clone(body));
 	}
 	
 	@Override

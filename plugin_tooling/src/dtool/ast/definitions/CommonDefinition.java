@@ -31,7 +31,7 @@ public abstract class CommonDefinition extends DefUnit implements IDeclaration {
 	protected int extendedStartPos = -1;
 	protected int defAttributesBitMask;
 	
-	public CommonDefinition(Token[] comments, ProtoDefSymbol defId) {
+	public CommonDefinition(Token[] comments, DefSymbol defId) {
 		super(defId);
 		this.comments = comments;
 		this.defAttributesBitMask = 0;

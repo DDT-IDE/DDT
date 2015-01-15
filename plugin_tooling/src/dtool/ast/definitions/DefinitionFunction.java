@@ -10,8 +10,10 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -34,11 +36,11 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	
 	public final Reference retType;
 	
-	public DefinitionFunction(Token[] comments, Reference retType, ProtoDefSymbol defId,
-		ArrayView<ITemplateParameter> tplParams, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
+	public DefinitionFunction(Token[] comments, Reference retType, DefSymbol defName,
+		NodeVector<ITemplateParameter> tplParams, NodeVector<IFunctionParameter> fnParams,
+		NodeVector<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody)
 	{
-		super(comments, defId, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		super(comments, defName, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
 		this.retType = parentize(retType);
 	}
 	
@@ -51,6 +53,12 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, retType);
 		visitChildren_common(visitor);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DefinitionFunction(comments, clone(retType), clone(defName), clone(tplParams), clone(fnParams), 
+			clone(fnAttributes), clone(tplConstraint), clone(fnBody));
 	}
 	
 	@Override

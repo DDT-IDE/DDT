@@ -11,6 +11,7 @@
 package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -32,7 +33,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	protected final DefinitionTemplate template;
 	
 	public TemplateInstance(DefinitionTemplate template, Indexable<INamedElementNode> tplArguments) {
-		super(assertNotNull(template).defname.createCopy());
+		super(assertNotNull(template).defName.createCopy());
 		this.template = template;
 		this.tplArguments = tplArguments;
 		
@@ -49,6 +50,12 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		// TODO: need to clone template
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		// This may not be necessary.
+		return new TemplateInstance(template, tplArguments);
 	}
 	
 	@Override

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -21,7 +22,7 @@ import dtool.ast.references.Reference;
 public class ExpCast extends Expression {
 	
 	public final Reference castTypeRef;
-	public final Resolvable exp;
+	public final Expression exp;
 	
 	public ExpCast(Reference castType, Expression exp) {
 		this.castTypeRef = parentize(castType);
@@ -37,6 +38,11 @@ public class ExpCast extends Expression {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, castTypeRef);
 		acceptVisitor(visitor, exp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpCast(clone(castTypeRef), clone(exp));
 	}
 	
 	@Override

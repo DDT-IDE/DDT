@@ -11,9 +11,10 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -23,10 +24,10 @@ import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public class InitializerArray extends Expression implements IInitializer {
 	
-	public final NodeListView<ArrayInitEntry> entries;
+	public final NodeVector<ArrayInitEntry> entries;
 	
-	public InitializerArray(NodeListView<ArrayInitEntry> indexes) {
-		this.entries = parentize(assertNotNull(indexes));
+	public InitializerArray(NodeVector<ArrayInitEntry> entries) {
+		this.entries = parentize(assertNotNull(entries));
 	}
 	
 	@Override
@@ -40,11 +41,17 @@ public class InitializerArray extends Expression implements IInitializer {
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new InitializerArray(clone(entries));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNodeList("[", entries, ", ", "]");
 	}
 	
 	public static class ArrayInitEntry extends ASTNode {
+		
 		public final Expression index;
 		public final IInitializer value;
 		
@@ -62,6 +69,11 @@ public class InitializerArray extends Expression implements IInitializer {
 		public void visitChildren(IASTVisitor visitor) {
 			acceptVisitor(visitor, index);
 			acceptVisitor(visitor, value);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new ArrayInitEntry(clone(index), clone(value));
 		}
 		
 		@Override

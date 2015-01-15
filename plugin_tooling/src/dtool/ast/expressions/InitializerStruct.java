@@ -11,19 +11,20 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.references.RefIdentifier;
 
 public class InitializerStruct extends Initializer {
 	
-	public final NodeListView<StructInitEntry> entries;
+	public final NodeVector<StructInitEntry> entries;
 	
-	public InitializerStruct(NodeListView<StructInitEntry> indexes) {
-		this.entries = parentize(indexes);
+	public InitializerStruct(NodeVector<StructInitEntry> entries) {
+		this.entries = parentize(entries);
 	}
 	
 	@Override
@@ -37,11 +38,17 @@ public class InitializerStruct extends Initializer {
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new InitializerStruct(clone(entries));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendNodeList("{", entries, ", ", "}");
 	}
 	
 	public static class StructInitEntry extends ASTNode {
+		
 		public final RefIdentifier member;
 		public final IInitializer value;
 		
@@ -59,6 +66,11 @@ public class InitializerStruct extends Initializer {
 		public void visitChildren(IASTVisitor visitor) {
 			acceptVisitor(visitor, member);
 			acceptVisitor(visitor, value);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new StructInitEntry(clone(member), clone(value));
 		}
 		
 		@Override

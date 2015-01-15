@@ -11,11 +11,11 @@
 package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -30,9 +30,9 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 	public final Expression specializationValue;
 	public final Expression defaultValue;
 	
-	public TemplateValueParam(Reference type, ProtoDefSymbol defId, Expression specializationValue, 
+	public TemplateValueParam(Reference type, DefSymbol defName, Expression specializationValue, 
 		Expression defaultValue) {
-		super(defId);
+		super(defName);
 		this.type = parentize(assertNotNull(type));
 		this.specializationValue = parentize(specializationValue);
 		this.defaultValue = parentize(defaultValue);
@@ -46,15 +46,20 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, specializationValue);
 		acceptVisitor(visitor, defaultValue);
 	}
 	
 	@Override
+	protected CommonASTNode doCloneTree() {
+		return new TemplateValueParam(clone(type), clone(defName), clone(specializationValue), clone(defaultValue));
+	}
+	
+	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 		cp.append(" : ", specializationValue);
 		cp.append(" = ", defaultValue);
 	}
@@ -80,7 +85,7 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable argument) {
-		return new AliasElement(defname, null); // TODO: correct instantiation
+		return new AliasElement(defName, null); // TODO: correct instantiation
 	}
 	
 }

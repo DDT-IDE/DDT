@@ -11,6 +11,7 @@
 package dtool.ast.references;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -31,6 +32,11 @@ public class RefPrimitive extends NamedReference {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefPrimitive(primitive);
 	}
 	
 	@Override

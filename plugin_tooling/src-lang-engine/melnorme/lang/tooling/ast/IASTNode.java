@@ -36,4 +36,7 @@ public interface IASTNode extends ISourceElement, IVisitable<IASTVisitor>, ILang
 	/** Returns the node's children. */
 	public IASTNode[] getChildren();
 	
+	/** Clone this node, and all the sub-node in its sub-tree. */
+	CommonASTNode cloneTree();
+	
 }

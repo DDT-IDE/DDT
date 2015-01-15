@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -37,6 +38,11 @@ public class DeclarationDebugVersionSpec extends ASTNode implements IDeclaration
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, value);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new DeclarationDebugVersionSpec(isDebug, clone(value));
 	}
 	
 	@Override

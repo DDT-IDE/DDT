@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -17,7 +18,7 @@ import dtool.ast.definitions.Symbol;
 
 public class StatementBreak extends Statement {
 	
-	public Symbol id;
+	public final Symbol id;
 	
 	public StatementBreak(Symbol id) {
 		this.id = parentize(id);
@@ -31,6 +32,11 @@ public class StatementBreak extends Statement {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, id);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementBreak(clone(id));
 	}
 	
 	@Override

@@ -11,6 +11,7 @@
 package dtool.ast.statements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -19,6 +20,7 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
@@ -27,8 +29,8 @@ public class SimpleVariableDef extends DefUnit implements IConcreteNamedElement 
 	
 	public final Reference type;
 	
-	public SimpleVariableDef(Reference type, ProtoDefSymbol defId) {
-		super(defId);
+	public SimpleVariableDef(Reference type, DefSymbol defName) {
+		super(defName);
 		this.type = parentize(assertNotNull(type));
 	}
 	
@@ -40,13 +42,18 @@ public class SimpleVariableDef extends DefUnit implements IConcreteNamedElement 
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new SimpleVariableDef(clone(type), clone(defName));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
-		cp.append(defname);
+		cp.append(defName);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
@@ -101,7 +101,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			consumeLookAhead(DeeTokens.ASSIGN);
 			
 			RefModule refModule = parseRefModule();
-			fragment = parse.conclude(new ImportAlias(aliasId, refModule));
+			fragment = parse.conclude(new ImportAlias(aliasId.createDefId(), refModule));
 		} else {
 			RefModule refModule = parseRefModule();
 			fragment = conclude(srOf(refModule, new ImportContent(refModule)));
@@ -153,7 +153,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 			ParseHelper parse = new ParseHelper(defId.getStartPos());
 			
 			RefImportSelection refImportSelection = parseRefImportSelection();
-			return parse.conclude(new ImportSelectiveAlias(defId, refImportSelection));
+			return parse.conclude(new ImportSelectiveAlias(defId.createDefId(), refImportSelection));
 		} else {
 			return parseRefImportSelection();
 		}
@@ -203,7 +203,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 	protected DeclList parseDeclList(DeeTokens bodyListTerminator) {
 		ParseHelper parse = new ParseHelper(getSourcePosition());
 		
-		ArrayView<ASTNode> declDefs = thisParser().parseDeclarations(bodyListTerminator, false);
+		NodeVector<ASTNode> declDefs = thisParser().parseDeclarations(bodyListTerminator, false);
 		advanceSubChannelTokens();
 		return parse.conclude(new DeclList(declDefs));
 	}
@@ -293,7 +293,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		ParseHelper parse = new ParseHelper();
 		
 		Symbol pragmaId = null;
-		NodeListView<Expression> expList = null;
+		NodeVector<Expression> expList = null;
 		
 		parsing: {
 			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
@@ -345,7 +345,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		ParseHelper parse = new ParseHelper();
 		
 		Reference baseRef = null;
-		NodeListView<Expression> args = null;
+		NodeVector<Expression> args = null;
 		
 		if(lookAhead() == DeeTokens.IDENTIFIER && DeeTokenSemantics.isPredefinedAttribId(lookAheadElement())) {
 			BaseLexElement traitsId = consumeLookAhead(DeeTokens.IDENTIFIER);

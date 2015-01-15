@@ -288,8 +288,8 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 			int archetypeMask) {
 		elemInfo.name = defUnit.getName();
 		elemInfo.declarationStart = defUnit.getStartPos();
-		elemInfo.nameSourceStart = defUnit.defname.getStartPos();
-		elemInfo.nameSourceEnd = defUnit.defname.getEndPos() - 1;
+		elemInfo.nameSourceStart = defUnit.defName.getStartPos();
+		elemInfo.nameSourceEnd = defUnit.defName.getEndPos() - 1;
 		
 		elemInfo.modifiers = DefElementFlagsUtil.elementFlagsForNamedElement(defUnit);
 		assertTrue((archetypeMask & DefElementFlagConstants.FLAGMASK_KIND) == archetypeMask);

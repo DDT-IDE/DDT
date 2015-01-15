@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -23,8 +24,8 @@ import dtool.engine.analysis.templates.AliasElement;
 
 public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
 	
-	public TemplateTupleParam(ProtoDefSymbol defId) {
-		super(defId);
+	public TemplateTupleParam(DefSymbol defName) {
+		super(defName);
 	}
 	
 	@Override
@@ -34,12 +35,17 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new TemplateTupleParam(clone(defName));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(defname);
+		cp.append(defName);
 		cp.append("...");
 	}
 	
@@ -65,7 +71,7 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable argument) {
-		return new AliasElement(defname, null);  // TODO: correct instantiation
+		return new AliasElement(defName, null);  // TODO: correct instantiation
 	}
 	
 }

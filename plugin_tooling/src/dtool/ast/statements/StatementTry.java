@@ -11,18 +11,19 @@
 package dtool.ast.statements;
 
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 
 public class StatementTry extends Statement {
 	
 	public final IStatement body;
-	public final ArrayView<CatchClause> catches;
+	public final NodeVector<CatchClause> catches;
 	public final IStatement finallyBody;
 	
-	public StatementTry(IStatement body, ArrayView<CatchClause> catches, IStatement finallyBody) {
+	public StatementTry(IStatement body, NodeVector<CatchClause> catches, IStatement finallyBody) {
 		this.body = parentize(body);
 		this.catches = parentize(catches);
 		this.finallyBody = parentize(finallyBody);
@@ -38,6 +39,11 @@ public class StatementTry extends Statement {
 		acceptVisitor(visitor, body);
 		acceptVisitor(visitor, catches);
 		acceptVisitor(visitor, finallyBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementTry(clone(body), clone(catches), clone(finallyBody));
 	}
 	
 	@Override

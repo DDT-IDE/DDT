@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -37,6 +38,11 @@ public class StatementSwitch extends Statement {
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementSwitch(isFinal, clone(exp), clone(body));
 	}
 	
 	@Override

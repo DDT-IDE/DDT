@@ -10,22 +10,23 @@
  *******************************************************************************/
 package dtool.ast.expressions;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.references.Reference;
 
 public class ExpNewAnonClass extends Expression {
 	
-	public final ArrayView<Expression> allocArgs;
-	public final ArrayView<Expression> args;
-	public final ArrayView<Reference> baseClasses;
+	public final NodeVector<Expression> allocArgs;
+	public final NodeVector<Expression> args;
+	public final NodeVector<Reference> baseClasses;
 	public final DeclBlock declBody;
 	
-	public ExpNewAnonClass(ArrayView<Expression> allocArgs, ArrayView<Expression> args,
-			ArrayView<Reference> baseClasses, DeclBlock declBody) {
+	public ExpNewAnonClass(NodeVector<Expression> allocArgs, NodeVector<Expression> args, 
+			NodeVector<Reference> baseClasses, DeclBlock declBody) {
 		this.allocArgs = parentize(allocArgs);
 		this.args = parentize(args);
 		this.baseClasses = parentize(baseClasses);
@@ -43,6 +44,11 @@ public class ExpNewAnonClass extends Expression {
 		acceptVisitor(visitor, args);
 		acceptVisitor(visitor, baseClasses);
 		acceptVisitor(visitor, declBody);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpNewAnonClass(clone(allocArgs), clone(args), clone(baseClasses), clone(declBody));
 	}
 	
 	@Override

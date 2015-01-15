@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -19,6 +20,7 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import dtool.ast.declarations.DeclarationImport.IImportFragment;
+import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefModule;
@@ -27,9 +29,9 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 		
 	public final RefModule moduleRef;
 	
-	public ImportAlias(ProtoDefSymbol defId, RefModule refModule) {
+	public ImportAlias(DefSymbol defId, RefModule moduleRef) {
 		super(defId);
-		this.moduleRef = parentize(refModule);
+		this.moduleRef = parentize(moduleRef);
 	}
 	
 	@Override
@@ -39,8 +41,13 @@ public class ImportAlias extends DefUnit implements IImportFragment {
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, moduleRef);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ImportAlias(clone(defName), clone(moduleRef));
 	}
 	
 	@Override

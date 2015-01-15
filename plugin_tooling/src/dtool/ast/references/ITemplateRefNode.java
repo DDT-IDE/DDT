@@ -11,7 +11,8 @@
 package dtool.ast.references;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.engine.resolver.IReference;
 
 /** Marker interface for nodes that can appear as template references in template instance. 
  * Must be a {@link Reference}.*/
-public interface ITemplateRefNode extends IASTNode { }
+public interface ITemplateRefNode extends IASTNode, IReference { }

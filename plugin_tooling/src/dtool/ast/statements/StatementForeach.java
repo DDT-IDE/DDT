@@ -10,22 +10,23 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.expressions.Expression;
 
 public class StatementForeach extends Statement implements IScopeElement {
 	
 	public final boolean isForeachReverse;
-	public final ArrayView<ForeachVariableDef> varParams;
+	public final NodeVector<ForeachVariableDef> varParams;
 	public final Expression iterable;
 	public final IStatement body;
 	
-	public StatementForeach(boolean isForeachReverse, ArrayView<ForeachVariableDef> varParams, Expression iterable,
+	public StatementForeach(boolean isForeachReverse, NodeVector<ForeachVariableDef> varParams, Expression iterable,
 			IStatement body) {
 		this.varParams = parentize(varParams);
 		this.iterable = parentize(iterable);
@@ -43,6 +44,11 @@ public class StatementForeach extends Statement implements IScopeElement {
 		acceptVisitor(visitor, varParams);
 		acceptVisitor(visitor, iterable);
 		acceptVisitor(visitor, body);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new StatementForeach(isForeachReverse, clone(varParams), clone(iterable), clone(body));
 	}
 	
 	@Override

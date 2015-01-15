@@ -11,8 +11,10 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
@@ -26,13 +28,13 @@ public class ExpFunctionLiteral extends Expression {
 	
 	public final Boolean isFunctionKeyword;
 	public final Reference retType;
-	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<IFunctionAttribute> fnAttributes;
+	public final NodeVector<IFunctionParameter> fnParams;
+	public final NodeVector<IFunctionAttribute> fnAttributes;
 	public final IFunctionBody fnBody;
 	public final Expression bodyExpression;
 	
-	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, ArrayView<IFunctionParameter> fnParams,
-		ArrayView<IFunctionAttribute> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
+	public ExpFunctionLiteral(Boolean isFunctionKeyword, Reference retType, NodeVector<IFunctionParameter> fnParams,
+			NodeVector<IFunctionAttribute> fnAttributes, IFunctionBody fnBody, Expression bodyExpression) {
 		this.isFunctionKeyword = isFunctionKeyword;
 		this.retType = parentize(retType);
 		this.fnParams = parentize(fnParams);
@@ -58,6 +60,12 @@ public class ExpFunctionLiteral extends Expression {
 		acceptVisitor(visitor, fnAttributes);
 		acceptVisitor(visitor, fnBody);
 		acceptVisitor(visitor, bodyExpression);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpFunctionLiteral(isFunctionKeyword, clone(retType), clone(fnParams), clone(fnAttributes), 
+			clone(fnBody), clone(bodyExpression));
 	}
 	
 	@Override

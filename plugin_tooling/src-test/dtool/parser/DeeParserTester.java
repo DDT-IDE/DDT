@@ -164,6 +164,8 @@ public class DeeParserTester extends CommonTestUtils {
 		// Check consistency of source ranges (no overlapping ranges)
 		if(mainNode != null) {
 			ASTSourceRangeChecker.checkConsistency(mainNode);
+			
+			ASTCloneTests.testCloning(mainNode);
 		}
 		
 		runAdditionalTests(result, parsedSource);
@@ -464,7 +466,7 @@ public class DeeParserTester extends CommonTestUtils {
 			} else {
 				assertTrue(comments[0].getStartPos() == extendedStartPos);
 				int ddocEnd = comments[comments.length-1].getEndPos();
-				assertTrue(ddocEnd < defUnit.defname.getStartPos() || ddocEnd == extendedEndPos);
+				assertTrue(ddocEnd < defUnit.defName.getStartPos() || ddocEnd == extendedEndPos);
 			}
 		}
 		
@@ -490,7 +492,7 @@ public class DeeParserTester extends CommonTestUtils {
 		for (ASTNode child : result.node.getChildren()) {
 			DefUnit defUnit = getDefunitFromExtendedDefinition(child);
 			if(defUnit != null) {
-				if(defUnit.defname.name.equals(defUnitName)) {
+				if(defUnit.defName.name.equals(defUnitName)) {
 					assertTrue(targetDefUnit == null); // check that there is only one defunit with that name
 					targetDefUnit = defUnit;
 				}

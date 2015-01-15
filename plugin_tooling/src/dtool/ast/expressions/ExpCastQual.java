@@ -12,6 +12,7 @@ package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -59,6 +60,11 @@ public class ExpCastQual extends Expression {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, exp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpCastQual(castQualifier, clone(exp));
 	}
 	
 	@Override

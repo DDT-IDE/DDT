@@ -10,15 +10,16 @@
  *******************************************************************************/
 package dtool.ast.statements;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.misc.IteratorUtil;
 
 public class BlockStatementUnscoped extends CommonStatementList implements INonScopedContainer {
 	
-	public BlockStatementUnscoped(ArrayView<IStatement> nodes) {
+	public BlockStatementUnscoped(NodeVector<IStatement> nodes) {
 		super(nodes);
 	}
 	
@@ -29,6 +30,11 @@ public class BlockStatementUnscoped extends CommonStatementList implements INonS
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.BLOCK_STATEMENT_UNSCOPED;
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return statements == null ? new BlockStatementUnscoped() : new BlockStatementUnscoped(clone(statements));
 	}
 	
 	@Override

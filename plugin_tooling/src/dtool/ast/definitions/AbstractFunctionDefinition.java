@@ -14,6 +14,7 @@ package dtool.ast.definitions;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
@@ -28,14 +29,15 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	implements ICallableElement, IScopeElement, ITemplatableElement
 {
 	
-	public final ArrayView<ITemplateParameter> tplParams;
-	public final ArrayView<IFunctionParameter> fnParams;
-	public final ArrayView<IFunctionAttribute> fnAttributes;
+	public final NodeVector<ITemplateParameter> tplParams;
+	public final NodeVector<IFunctionParameter> fnParams;
+	public final NodeVector<IFunctionAttribute> fnAttributes;
 	public final Expression tplConstraint;
 	public final IFunctionBody fnBody;
 	
-	public AbstractFunctionDefinition(Token[] comments, ProtoDefSymbol defId, ArrayView<ITemplateParameter> tplParams,
-		ArrayView<IFunctionParameter> fnParams, ArrayView<IFunctionAttribute> fnAttributes, Expression tplConstraint,
+	public AbstractFunctionDefinition(Token[] comments, DefSymbol defId, NodeVector<ITemplateParameter> tplParams,
+			NodeVector<IFunctionParameter> fnParams, NodeVector<IFunctionAttribute> fnAttributes, 
+			Expression tplConstraint,
 		IFunctionBody fnBody) {
 		super(comments, defId);
 		
@@ -53,7 +55,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	public static ArrayView<IFunctionParameter> NO_PARAMS = new ArrayView<>(new IFunctionParameter[0]);
 	
 	protected void visitChildren_common(IASTVisitor visitor) {
-		acceptVisitor(visitor, defname);
+		acceptVisitor(visitor, defName);
 		acceptVisitor(visitor, tplParams);
 		acceptVisitor(visitor, fnParams);
 		acceptVisitor(visitor, fnAttributes);
@@ -67,7 +69,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	}
 	
 	public void toStringAsCode_fromDefId(ASTCodePrinter cp) {
-		cp.append(defname);
+		cp.append(defName);
 		cp.appendList("(", tplParams, ",", ") ");
 		cp.appendList("(", getParams_asNodes(), ",", ") ");
 		cp.appendList(fnAttributes, " ", true);

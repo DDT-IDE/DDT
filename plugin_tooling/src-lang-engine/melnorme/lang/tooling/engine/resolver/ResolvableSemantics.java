@@ -35,6 +35,10 @@ public abstract class ResolvableSemantics extends ElementSemantics<ReferenceResu
 		return getElementResolution();
 	}
 	
+	public final INamedElement resolveTargetElement_() {
+		return getElementResolution().result;
+	}
+	
 	@Override
 	protected final ReferenceResult createLoopResolution() {
 		// TODO: test this path

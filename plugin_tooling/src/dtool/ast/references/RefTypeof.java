@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -20,15 +21,31 @@ import dtool.ast.expressions.Expression;
 
 public class RefTypeof extends Reference implements IQualifierNode {
 	
-	public final Expression expression;
+	public final Expression exp;
 	
 	public RefTypeof(Expression exp) {
-		this.expression = parentize(exp);
+		this.exp = parentize(exp);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.REF_TYPEOF;
+	}
+	
+	@Override
+	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, exp);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefTypeof(clone(exp));
+	}
+	
+	@Override
+	public void toStringAsCode(ASTCodePrinter cp) {
+		cp.append("typeof");
+		cp.append("(", exp, ")");
 	}
 	
 	public static class ExpRefReturn extends Expression {
@@ -45,21 +62,15 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		}
 		
 		@Override
+		protected CommonASTNode doCloneTree() {
+			return new ExpRefReturn();
+		}
+		
+		@Override
 		public void toStringAsCode(ASTCodePrinter cp) {
 			cp.append("return");
 		}
 		
-	}
-	
-	@Override
-	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, expression);
-	}
-	
-	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("typeof");
-		cp.append("(", expression, ")");
 	}
 	
 	/* -----------------  ----------------- */
@@ -70,7 +81,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {
-				return expression.resolveTypeOfUnderlyingValue(context).originalType;
+				return exp.resolveTypeOfUnderlyingValue(context).originalType;
 			}
 			
 		};

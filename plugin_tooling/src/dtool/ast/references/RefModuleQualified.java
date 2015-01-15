@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.references;
 
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -33,6 +34,11 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, qualifiedId);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new RefModuleQualified(clone(qualifiedId));
 	}
 	
 	@Override

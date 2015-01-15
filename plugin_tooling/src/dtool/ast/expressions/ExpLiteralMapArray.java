@@ -11,17 +11,18 @@
 package dtool.ast.expressions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast.util.NodeListView;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 
 public class ExpLiteralMapArray extends Expression {
 	
-	public final NodeListView<MapArrayLiteralKeyValue> entries;
+	public final NodeVector<MapArrayLiteralKeyValue> entries;
 	
-	public ExpLiteralMapArray(NodeListView<MapArrayLiteralKeyValue> entries) {
+	public ExpLiteralMapArray(NodeVector<MapArrayLiteralKeyValue> entries) {
 		this.entries = parentize(assertNotNull(entries));
 	}
 	
@@ -33,6 +34,11 @@ public class ExpLiteralMapArray extends Expression {
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, entries);
+	}
+	
+	@Override
+	protected CommonASTNode doCloneTree() {
+		return new ExpLiteralMapArray(clone(entries));
 	}
 	
 	@Override
@@ -59,6 +65,11 @@ public class ExpLiteralMapArray extends Expression {
 		public void visitChildren(IASTVisitor visitor) {
 			acceptVisitor(visitor, key);
 			acceptVisitor(visitor, value);
+		}
+		
+		@Override
+		protected CommonASTNode doCloneTree() {
+			return new MapArrayLiteralKeyValue(clone(key), clone(value));
 		}
 		
 		@Override
