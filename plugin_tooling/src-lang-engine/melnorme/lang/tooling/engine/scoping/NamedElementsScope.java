@@ -19,7 +19,7 @@ public class NamedElementsScope implements IScopeElement {
 	protected final Indexable<? extends INamedElement> members;
 	
 	public NamedElementsScope(INamedElement... member) {
-		this.members = new ArrayList2<>(member); 
+		this(new ArrayList2<>(member)); 
 	}
 	
 	public NamedElementsScope(ArrayList2<? extends INamedElement> members) {

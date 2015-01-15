@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Arrays;
@@ -47,7 +48,6 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		// TODO DDOC
 		public DeePrimitiveType(String name) {
 			super(name, null);
-			/*FIXME: BUG here*/
 		}
 		
 		public DeePrimitiveType(String name, ElementDoc doc) {
@@ -210,7 +210,13 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		cfloat_type,
 		cdouble_type,
 		creal_type
-	);
+	) { 
+		{
+			for (INamedElement namedElement : members) {
+				assertTrue(namedElement.isCompleted());
+			}
+		}
+	};
 	
 	public static final ModuleQualifiedReference OBJECT_CLASS_REF = new ModuleQualifiedReference("object", "Object");
 	

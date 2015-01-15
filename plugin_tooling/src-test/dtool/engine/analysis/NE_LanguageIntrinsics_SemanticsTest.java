@@ -29,6 +29,10 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 		test_resolveElement_Type(pickedNative(D2_063_intrinsics.dynArrayType));
 		test_resolveElement_Type(pickedNative(D2_063_intrinsics.staticArrayType));
 		
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.bool_type));
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.byte_type));
+		test_resolveElement_Type(pickedNative(D2_063_intrinsics.float_type));
+		
 		// TODO: test the intrinsic properties as well
 	}
 	
