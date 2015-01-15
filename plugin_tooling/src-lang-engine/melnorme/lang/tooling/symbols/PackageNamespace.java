@@ -12,9 +12,6 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
@@ -24,6 +21,7 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -75,8 +73,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		return namedElementsTable;
 	}
 	
-	/* FIXME: return type */
-	public Collection<INamedElement> getContainedElements() {
+	public Collection2<INamedElement> getContainedElements() {
 		return namedElementsTable.getElements();
 	}
 	

@@ -12,12 +12,13 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
+import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.HashMap2;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.ModuleProxy;
 
@@ -29,7 +30,7 @@ import dtool.engine.analysis.ModuleProxy;
  */
 public class SymbolTable {
 	
-	protected final HashMap<String, INamedElement> map = new HashMap<>();
+	protected final HashMap2<String, INamedElement> map = new HashMap2<>();
 	
 	public HashMap<String,INamedElement> getMap() {
 		return map;
@@ -39,8 +40,8 @@ public class SymbolTable {
 		return map.entrySet();
 	}
 	
-	public Collection<INamedElement> getElements() {
-		return map.values();
+	public Collection2<INamedElement> getElements() {
+		return map.getValuesView();
 	}
 	
 	public void addSymbols(SymbolTable symbolTable) {
@@ -54,10 +55,6 @@ public class SymbolTable {
 	}
 	
 	public void addSymbol(INamedElement newElement) {
-		doAddSymbol(newElement);
-	}
-	
-	protected void doAddSymbol(INamedElement newElement) {
 		String name = newElement.getNameInRegularNamespace();
 		
 		INamedElement existingNamedElement = map.get(name);
@@ -134,7 +131,7 @@ public class SymbolTable {
 					overloadedNamedElement.setCompleted();
 				}
 				
-				doAddSymbol(matchedElement);
+				addSymbol(matchedElement);
 			}
 		}
 		

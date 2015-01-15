@@ -39,8 +39,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	protected final LinkedList<INamedElement> resultElements;
 	protected final LinkedList<INamedElement> resultStdLibElements = CollectionUtil.createLinkedList();
 	
-	public DefUnitResultsChecker(Collection<? extends INamedElement> resultDefUnits) {
-		/* FIXME: add range support: */
+	public DefUnitResultsChecker(Iterable<? extends INamedElement> resultDefUnits) {
 		this.resultElements = CollectionUtil.createLinkedList(resultDefUnits);
 	}
 	

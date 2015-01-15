@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
@@ -23,6 +22,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
@@ -102,7 +102,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		}
 		
 		// TODO need to refactor use of OverloadedNamedElement
-		Collection<INamedElement> namedElements = Reference.resolveResultToCollection(resolveResult);
+		Collection2<INamedElement> namedElements = Reference.resolveResultToCollection(resolveResult);
 		
 		List<FindDefinitionResultEntry> results = new ArrayList<>();
 		for (INamedElement namedElement : namedElements) {

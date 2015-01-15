@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.ast.references;
 
-import java.util.Collection;
-
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -19,6 +17,7 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import dtool.ast.expressions.Resolvable;
 
 /**
@@ -43,11 +42,11 @@ public abstract class Reference extends Resolvable implements IReference {
 	}
 	
 	@Deprecated
-	public final Collection<INamedElement> findTargetDefElements(ISemanticContext context) {
+	public final Collection2<INamedElement> findTargetDefElements(ISemanticContext context) {
 		return resolveResultToCollection(resolveTargetElement(context));
 	}
 	
-	public static Collection<INamedElement> resolveResultToCollection(INamedElement result) {
+	public static Collection2<INamedElement> resolveResultToCollection(INamedElement result) {
 		if(result instanceof OverloadedNamedElement) {
 			OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) result;
 			return overloadedNamedElement.getOverloadedElements();

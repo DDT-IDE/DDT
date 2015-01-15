@@ -13,7 +13,6 @@ package dtool.engine.analysis;
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -28,7 +27,7 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "$/char");
 		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "$/char");
 		
-		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), ErrorElement.NOT_FOUND__Name + ":NotFound");
+		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), expectNotFound("NotFound"));
 		
 		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "$/int");
 		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "$/int");

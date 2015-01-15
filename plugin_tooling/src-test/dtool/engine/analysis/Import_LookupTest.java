@@ -261,7 +261,7 @@ public class Import_LookupTest extends CommonLookupTest {
 			namedElementChecker("int PackFoobar_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.foobar; ", "pack.foobar.pack"),  
-			namedElementChecker(null)
+			namedElementChecker(expectNotFound("pack"))
 		);
 		
 
@@ -279,7 +279,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		));
 		
 
-		test_public_imports();
+		test_public_imports$();
 	}
 	
 	protected void doNamespaceLookupTest(ResolvedModule resolvedModule, String offsetMarker, 
@@ -300,7 +300,7 @@ public class Import_LookupTest extends CommonLookupTest {
 	
 	/* -----------------  ----------------- */
 	
-	public void test_public_imports() throws Exception {
+	public void test_public_imports$() throws Exception {
 		
 		// Check test sample file is correct for subsequent tests
 		String FOO_PRIVATE_XXX = "foo_private__xxx";
@@ -311,7 +311,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		String PUBLIC_IMPORT = "import pack.public_import; import pack.zzz.non_existant";
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "xxx"), namedElementChecker("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT, FOO_PRIVATE_XXX), namedElementChecker(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT, FOO_PRIVATE_XXX), notfoundChecker(FOO_PRIVATE_XXX));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import]", "module[pack.foo]", 
@@ -323,19 +323,19 @@ public class Import_LookupTest extends CommonLookupTest {
 		// -> note this behavior is not according to DMD, but is it according to spec? 
 		// Should be, if not, ugly spec behavior
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.xxx"), 
-			namedElementChecker(null));
+			notfoundChecker("xxx"));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import." + FOO_PRIVATE_XXX), 
-			namedElementChecker(null));
+			notfoundChecker(FOO_PRIVATE_XXX));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT, "pack.public_import.pack"), 
-			namedElementChecker(null));
+			notfoundChecker("pack"));
 		
 		testLookup(parseModule_WithRef("class Xpto { import pack.foo; }", "Xpto.pack"), 
-			namedElementChecker(null));
+			notfoundChecker("pack"));
 		
 		
 		String PUBLIC_IMPORT2 = "import pack.public_import2; import pack.zzz.non_existant";
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "xxx"), namedElementChecker("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), namedElementChecker(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, FOO_PRIVATE_XXX), notfoundChecker(FOO_PRIVATE_XXX));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT2, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import2]", "module[pack.foo]", 
@@ -346,7 +346,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		String PUBLIC_IMPORT_INDIRECT = "import pack.public_import_x; import pack.zzz.non_existant";
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "xxx"), namedElementChecker("PackFoo xxx;"));
-		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), namedElementChecker(null));
+		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, FOO_PRIVATE_XXX), notfoundChecker(FOO_PRIVATE_XXX));
 		testLookup(parseModule_WithRef(PUBLIC_IMPORT_INDIRECT, "pack"),  
 			checkIsPackageNamespace(array(
 				"module[pack.public_import_x]", 

@@ -147,8 +147,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		assertNotNull(members);
 		this.compilationUnitPath = compilationUnitPath;
 		
-		INamedElement topLevelElement = createTopLevelElement();
-		this.topLevelScope = new NamedElementsScope(topLevelElement);
+		this.topLevelScope = createTopLevelScope();
 	}
 	
 	@Override
@@ -227,6 +226,10 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	
 	protected final NamedElementsScope topLevelScope;
 	
+	protected NamedElementsScope createTopLevelScope() {
+		INamedElement topLevelElement = createTopLevelElement();
+		return new NamedElementsScope(topLevelElement);
+	}
 	protected INamedElement createTopLevelElement() {
 		if(md == null || md.packages.length == 0 || md.packages[0] == "") {
 			return this;

@@ -1,12 +1,12 @@
 package mmrnmhrm.core.search;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -54,7 +54,7 @@ public class DeeFocusedNodeMatcher extends AbstractNodePatternMatcher {
 			return;
 		
 		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver);
+		Collection2<INamedElement> defUnits = ref.findTargetDefElements(moduleResolver);
 		if(defUnits == null)
 			return;
 		

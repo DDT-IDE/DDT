@@ -42,7 +42,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 			namedElementChecker("int PackFoobar_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member;", "PackFoobar_member2"),  
-			namedElementChecker(null)
+			namedElementChecker(expectNotFound("PackFoobar_member2"))
 		);
 		
 		testLookup(parseModule_WithRef("import pack.foobar : PackFoobar_member; void PackFoobar_member;", 
@@ -53,7 +53,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 		
 		// Test static import bit of import selective
 		testLookup(parseModule_WithRef("import pack.foo : NotFound;", "pack"),  
-			namedElementChecker(null)
+			namedElementChecker(expectNotFound("pack"))
 		);
 		
 		// Vs. public imports
@@ -61,7 +61,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 			namedElementChecker("int PackFoo_member;")
 		);
 		testLookup(parseModule_WithRef("import pack.public_import : foo_private__xxx;", "foo_private__xxx"),  
-			namedElementChecker(null)
+			namedElementChecker(expectNotFound("foo_private__xxx"))
 		);
 		
 		testLookup(parseModule_WithRef("import pack.public_import : pack;", "pack"),  
@@ -79,7 +79,7 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 			namedElementChecker("xxx = PackFoo_member")
 		);
 		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member;", "PackFoo_member"),  
-			namedElementChecker(null)
+			namedElementChecker(expectNotFound("PackFoo_member"))
 		);
 		// Test conflict
 		testLookup(parseModule_WithRef("import pack.foo : xxx = PackFoo_member; void xxx;", 

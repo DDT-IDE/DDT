@@ -10,14 +10,22 @@
  *******************************************************************************/
 package melnorme.utilbox.collections;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.RandomAccess;
 
 /**
- * interface for a read-only view of a random access collection
+ * Alternative interface to {@link Collection}, that prevents modifications
  */
-public interface Indexable<E> extends Collection2<E>, RandomAccess {
+public interface Collection2<E> extends Iterable<E>, RandomAccess {
 	
-	/** @return the element at given index. */
-	E get(int index);
+	@Override
+	Iterator<E> iterator();
+	
+	/** @return the number of elements in this collection */
+	int size();
+	
+	/** @return <tt>true</tt> if this collection contains no elements */
+	boolean isEmpty();
 	
 }

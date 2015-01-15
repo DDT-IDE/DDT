@@ -12,10 +12,6 @@ package melnorme.lang.tooling.engine;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-import java.util.HashSet;
-
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -23,6 +19,8 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.collections.HashSet2;
 import dtool.ast.definitions.EArcheType;
 
 /**
@@ -32,14 +30,14 @@ import dtool.ast.definitions.EArcheType;
  */
 public class OverloadedNamedElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
-	protected final HashSet<INamedElement> elements; /* FIXME: HashSet2 */
+	protected final HashSet2<INamedElement> elements;
 	protected final EArcheType archeType;
 	protected final INamedElement firstElement;
 	
 	public OverloadedNamedElement(INamedElement firstElement) {
 		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement, false);
 		this.firstElement = firstElement;
-		this.elements = new HashSet<>();
+		this.elements = new HashSet2<>();
 		elements.add(firstElement);
 		this.archeType = EArcheType.Error;
 	}
@@ -74,8 +72,7 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 		return null;
 	}
 	
-	public Collection<INamedElement> getOverloadedElements() {
-		/* FIXME: return type */
+	public Collection2<INamedElement> getOverloadedElements() {
 		return elements;
 	}
 	

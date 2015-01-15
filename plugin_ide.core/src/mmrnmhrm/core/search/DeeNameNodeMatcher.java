@@ -1,11 +1,11 @@
 package mmrnmhrm.core.search;
 
 import java.nio.file.Path;
-import java.util.Collection;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -66,7 +66,7 @@ final class DeeNameNodeMatcher extends AbstractNodePatternMatcher {
 		if(patternMatcherHelper.matchesName(simpleName, node.getCoreReferenceName().toCharArray())) {
 			
 			ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<INamedElement> defUnits = node.findTargetDefElements(mr);
+			Collection2<INamedElement> defUnits = node.findTargetDefElements(mr);
 			
 			int matched = 0;
 			int notMatched = 0;

@@ -213,7 +213,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		return expectedResults;
 	}
 	
-	protected final void checkResults(Collection<INamedElement> resultDefUnitsOriginal, String[] expectedResults) {
+	protected final void checkResults(Iterable<INamedElement> resultDefUnitsOriginal, String[] expectedResults) {
 		boolean ignoreNativeResults = true;
 		for (String expectedResult : expectedResults) {
 			if(expectedResult.startsWith("/")) {
@@ -224,7 +224,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 		checkResults(resultDefUnitsOriginal, expectedResults, true, ignoreNativeResults, ignoreStdLibObject, false);
 	}
 	
-	public void checkResults(Collection<INamedElement> resultElementsOriginal, String[] expectedResults,
+	public void checkResults(Iterable<INamedElement> resultElementsOriginal, String[] expectedResults,
 		boolean ignoreDummyResults, boolean ignoreNativeResults, boolean ignoreStdLibObject, 
 		boolean ignoreMissingModuleProxies) {
 		
@@ -260,7 +260,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	
 	/** Run these extra functions to test that they don't crash.
 	 * TODO: Ideally we would also check the results of these functions, but it's too much work for now. */
-	public void precheckOriginalResults(Collection<INamedElement> resultElementsOriginal) {
+	public void precheckOriginalResults(Iterable<INamedElement> resultElementsOriginal) {
 		for (INamedElement elem : resultElementsOriginal) {
 			elem.getExtendedName();
 			elem.getModuleFullName();
@@ -272,7 +272,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	}
 	
 	@SuppressWarnings("unused")
-	public void removeDefUnitsFromExpected(Collection<INamedElement> resultElements) {
+	public void removeDefUnitsFromExpected(LinkedList<INamedElement> resultElements) {
 	}
 	
 	public void prepRefSearchTest_________(MetadataEntry mde) {

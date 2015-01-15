@@ -12,12 +12,10 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -58,7 +56,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected static Object[] elementToStringArray(Collection<INamedElement> overloadedElements) {
+	protected static Object[] elementToStringArray(Collection2<INamedElement> overloadedElements) {
 		Object[] results = ArrayUtil.map(overloadedElements, new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement namedElement) {

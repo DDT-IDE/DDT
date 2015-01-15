@@ -14,12 +14,12 @@ import static dtool.engine.operations.FindDefinitionOperation.FIND_DEF_Reference
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.List;
 
-import dtool.ast.references.Reference;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
+import dtool.ast.references.Reference;
 
 public class FindDefinitionResult {
 	
@@ -27,7 +27,7 @@ public class FindDefinitionResult {
 	public final List<FindDefinitionResultEntry> results;
 	
 	// Optional extra info:
-	public final Collection<INamedElement> resultsRaw; // Can be null
+	public final Collection2<INamedElement> resultsRaw; // Can be null
 	public final Reference pickedReference;
 	
 	public FindDefinitionResult(String errorMessage) {
@@ -42,7 +42,7 @@ public class FindDefinitionResult {
 	}
 	
 	public FindDefinitionResult(List<FindDefinitionResultEntry> results, Reference pickReference,
-			Collection<INamedElement> resultsRaw) {
+			Collection2<INamedElement> resultsRaw) {
 		this.errorMessage = null;
 		this.results = results;
 		this.resultsRaw = resultsRaw;

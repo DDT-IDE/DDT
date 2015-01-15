@@ -1,12 +1,12 @@
 package mmrnmhrm.core.search;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 
 import org.eclipse.dltk.core.ISourceModule;
@@ -42,7 +42,7 @@ public class DeeDefPatternLocator extends AbstractNodePatternMatcher {
 				return true;
 			
 			ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-			Collection<INamedElement> defUnits = ref.findTargetDefElements(mr);
+			Collection2<INamedElement> defUnits = ref.findTargetDefElements(mr);
 			if(defUnits == null)
 				return true;
 			for (Iterator<INamedElement> iter = defUnits.iterator(); iter.hasNext();) {

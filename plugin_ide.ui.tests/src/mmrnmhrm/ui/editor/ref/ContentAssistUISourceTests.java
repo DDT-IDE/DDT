@@ -6,9 +6,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.util.swt.SWTTestUtils;
@@ -122,7 +122,7 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void precheckOriginalResults(Collection<INamedElement> resultDefElementsOriginal) {
+	public void precheckOriginalResults(Iterable<INamedElement> resultDefElementsOriginal) {
 		for (INamedElement defElement : resultDefElementsOriginal) {
 			TextUI.getLabelForHoverSignature(defElement);
 			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
@@ -141,8 +141,8 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	}
 	
 	@Override
-	public void removeDefUnitsFromExpected(Collection<INamedElement> resultDefUnits) {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+	public void removeDefUnitsFromExpected(LinkedList<INamedElement> resultDefUnits) {
+		for (ListIterator<INamedElement> iterator = resultDefUnits.listIterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
 			if(defElement.getArcheType() == EArcheType.Module) {

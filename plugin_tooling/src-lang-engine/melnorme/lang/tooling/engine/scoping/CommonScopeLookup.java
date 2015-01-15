@@ -14,7 +14,6 @@ package melnorme.lang.tooling.engine.scoping;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,6 +26,7 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.lang.tooling.symbols.SymbolTable;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -66,7 +66,7 @@ public abstract class CommonScopeLookup {
 		return matches;
 	}
 	
-	public Collection<INamedElement> getMatchedElements() {
+	public Collection2<INamedElement> getMatchedElements() {
 		return matches.getElements();
 	}
 	

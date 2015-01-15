@@ -12,7 +12,6 @@ package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.INamedElementNode;
@@ -20,6 +19,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
 import mmrnmhrm.core.search.SourceModuleFinder;
@@ -77,7 +77,7 @@ public class DeeSelectionEngine extends ScriptSelectionEngine {
 		Reference ref = (Reference) node;
 		
 		ISemanticContext moduleResolver = DToolClient_Bad.getResolverFor(filePath);
-		Collection<INamedElement> defElements = ref.findTargetDefElements(moduleResolver);
+		Collection2<INamedElement> defElements = ref.findTargetDefElements(moduleResolver);
 		// We assume namespace Parent is the same
 		if(defElements == null) {
 			return new IModelElement[0];

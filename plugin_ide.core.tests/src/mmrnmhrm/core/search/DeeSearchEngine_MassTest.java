@@ -6,7 +6,6 @@ import static melnorme.utilbox.core.CoreUtil.downCast;
 import static mmrnmhrm.core.search.DeeSearchEngineTestUtils.getSourceModule;
 
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -14,6 +13,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.Pair;
 import mmrnmhrm.core.engine_client.DToolClient_Bad;
 import mmrnmhrm.core.model_elements.DeeModelEngine;
@@ -80,7 +80,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					}
 					
 					ISemanticContext mr = DToolClient_Bad.getResolverFor(filePath);
-					Collection<INamedElement> resolvedElements = ref.findTargetDefElements(mr);
+					Collection2<INamedElement> resolvedElements = ref.findTargetDefElements(mr);
 					if(resolvedElements == null || resolvedElements.isEmpty()) {
 						return;
 					}

@@ -24,6 +24,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
@@ -224,6 +225,14 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		} else {
 			return namedElement.toString();
 		}
+	}
+	
+	public static Predicate<INamedElement> notfoundChecker(final String name) {
+		return namedElementChecker(expectNotFound(name));
+	}
+	
+	public static  String expectNotFound(String name) {
+		return NotFoundErrorElement.NOT_FOUND__Name + ":" + name;
 	}
 	
 }

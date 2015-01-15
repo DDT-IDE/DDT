@@ -12,17 +12,15 @@ package melnorme.lang.tooling.engine.completion;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.Collection;
-
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 
 public class CompletionSearchResult {
 	
 	public final ECompletionResultStatus resultCode;
 	public final PrefixSearchOptions searchOptions;
 	public final int replaceLength;
-	public final Collection<INamedElement> results;
+	public final Collection2<INamedElement> results;
 	
 	public CompletionSearchResult(ECompletionResultStatus resultCode) {
 		assertTrue(resultCode != ECompletionResultStatus.RESULT_OK);
@@ -32,14 +30,14 @@ public class CompletionSearchResult {
 		this.searchOptions = null;
 	}
 	
-	public CompletionSearchResult(PrefixSearchOptions searchOptions, Collection<INamedElement> results) {
+	public CompletionSearchResult(PrefixSearchOptions searchOptions, Collection2<INamedElement> results) {
 		this.resultCode = ECompletionResultStatus.RESULT_OK;
 		this.searchOptions = assertNotNull(searchOptions);
 		this.replaceLength = searchOptions.rplLen;
 		this.results = results;
 	}
 	
-	public Collection<INamedElement> getResults() {
+	public Collection2<INamedElement> getResults() {
 		return results;
 	}
 	

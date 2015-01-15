@@ -60,7 +60,6 @@ public class ArrayView<E> implements Indexable<E> {
 		return array[index];
 	}
 	
-	@Override
 	public final boolean contains(Object o) {
 		return ArrayUtil.contains(array, o);
 	}
