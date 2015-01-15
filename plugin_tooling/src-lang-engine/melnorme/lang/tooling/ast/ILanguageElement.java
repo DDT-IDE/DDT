@@ -45,11 +45,13 @@ public interface ILanguageElement {
 	public Path getSemanticContainerKey();
 	
 	
+	/**
+	 * Evaluate the node's contributions to its parent scope.
+	 * Results should be placed in given scopeRes. 
+	 */
 	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, 
-			boolean isSequentialLookup, boolean publicImportsOnly);
+			boolean publicImportsOnly);
 	
-	
-	/* ----------------- Semantic resolution: ----------------- */
 	
 	/**
 	 * Create the semantics object for this element. 
@@ -58,7 +60,6 @@ public interface ILanguageElement {
 	 * Note that only the semantic context should be calling this class.
 	 */
 	public ElementSemantics<?> createSemantics(PickedElement<?> pickedElement);
-	
 	/**
 	 * Should perform exactly this: <code>parentContext.getSemanticsEntry(this)</code>
 	 * @return the semantics object. Should be the same on every call. Non-null.

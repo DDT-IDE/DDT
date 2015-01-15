@@ -143,7 +143,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 				def.setProtection(protection);
 			} else if(descendantNode instanceof DeclarationImport && protection == EProtection.PUBLIC) {
 				DeclarationImport declImport = (DeclarationImport) descendantNode;
-				declImport.isTransitive = true;
+				declImport.isPublicImport = true;
 			} else if(descendantNode instanceof INonScopedContainer) {
 				applyProtectionAttributes(protection, (INonScopedContainer) descendantNode);
 			}

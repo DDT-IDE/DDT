@@ -80,8 +80,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	
 	public void addElement(INamedElement newElement) {
 		assertTrue(newElement.getNameInRegularNamespace().equals(firstElement.getNameInRegularNamespace()));
-		// FIXME: re enable this test. Will require import selections to be aliases
-		//assertAreEqual(newElement.getModulePath(), firstElement.getModulePath());
 		
 		elements.add(newElement);
 	}

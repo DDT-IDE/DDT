@@ -25,6 +25,7 @@ public class ASTCloneTests {
 		assertTrue(clonedNode.getParent() == null);
 		assertTrue(clonedNode.getClass() ==  node.getClass());
 		
+		// Check that clone is correct
 		assertEquals(clonedNode.toStringAsCode(), node.toStringAsCode());
 		assertEquals(clonedNode.isParsedStatus(), false);
 	}

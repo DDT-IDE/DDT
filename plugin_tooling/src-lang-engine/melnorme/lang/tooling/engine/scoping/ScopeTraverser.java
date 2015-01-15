@@ -62,7 +62,7 @@ public class ScopeTraverser {
 				scopeResolution.visitNamedElement(namedElement);
 			}
 			
-			doEvaluateNode(scopeResolution, isSequentialLookup, isSecondaryScope, node);
+			doEvaluateNode(scopeResolution, isSecondaryScope, node);
 			
 			if(node instanceof INonScopedContainer) {
 				INonScopedContainer container = ((INonScopedContainer) node);
@@ -73,9 +73,9 @@ public class ScopeTraverser {
 		}
 	}
 	
-	protected void doEvaluateNode(ScopeNameResolution scopeResolution, boolean isSequentialLookup,
-			boolean isSecondaryScope, ILanguageElement node) {
-		node.evaluateForScopeLookup(scopeResolution, isSecondaryScope, isSequentialLookup, scopeAsImport);
+	protected void doEvaluateNode(ScopeNameResolution scopeResolution, boolean isSecondaryScope, 
+			ILanguageElement node) {
+		node.evaluateForScopeLookup(scopeResolution, isSecondaryScope, scopeAsImport);
 	}
 	
 	@SuppressWarnings("unused")

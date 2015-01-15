@@ -34,12 +34,12 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	public final NodeVector<IImportFragment> imports;
 	public final boolean isStatic;
-	public boolean isTransitive; // aka public imports
+	public boolean isPublicImport; // aka public imports
 	
 	public DeclarationImport(boolean isStatic, NodeVector<IImportFragment> imports) {
 		this.imports = parentize(imports);
 		this.isStatic = isStatic;
-		this.isTransitive = false; // TODO, should be determined by surrounding analysis
+		this.isPublicImport = false; // TODO, should be determined by surrounding analysis
 	}
 	
 	public final ArrayView<ASTNode> imports_asNodes() {
@@ -86,9 +86,9 @@ public class DeclarationImport extends ASTNode implements INonScopedContainer, I
 	
 	@Override
 	public void evaluateForScopeLookup(ScopeNameResolution scopeRes, boolean isSecondaryScope, 
-			boolean isSequentialLookup, boolean scopeAsImport) {
+			boolean publicImportsOnly) {
 		
-		if(scopeAsImport && !isTransitive)
+		if(publicImportsOnly && !isPublicImport)
 			return; // Don't consider private contributions
 		
 		for (IImportFragment impFrag : imports) {

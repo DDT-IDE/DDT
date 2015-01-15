@@ -29,14 +29,14 @@ public class MembersScopeElement implements IScopeElement {
 	public ScopeTraverser getScopeTraverser() {
 		return new ScopeTraverser(membersIterable, true, true) {
 			@Override
-			protected void doEvaluateNode(ScopeNameResolution scopeResolution, boolean isSequentialLookup,
-					boolean isSecondaryScope, ILanguageElement node) {
+			protected void doEvaluateNode(ScopeNameResolution scopeResolution, boolean isSecondaryScope, 
+					ILanguageElement node) {
 				
 				if(node instanceof DeclarationImport) {
 					return;  // Ignore imports when scope is a used as a members scope
 				}
 				
-				super.doEvaluateNode(scopeResolution, isSequentialLookup, isSecondaryScope, node);
+				super.doEvaluateNode(scopeResolution, isSecondaryScope, node);
 			}
 			
 			@Override
