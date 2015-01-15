@@ -17,12 +17,11 @@ import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-/* FIXME: rename */
-public abstract class ResolvableSemantics extends ElementSemantics<ReferenceResult> {
+public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResult> {
 	
 	private final IReference reference;
 	
-	public ResolvableSemantics(IReference reference, PickedElement<?> pickedElement) {
+	public ReferenceSemantics(IReference reference, PickedElement<?> pickedElement) {
 		super(pickedElement);
 		assertTrue(pickedElement.element == reference);
 		this.reference = reference;
@@ -62,7 +61,7 @@ public abstract class ResolvableSemantics extends ElementSemantics<ReferenceResu
 	protected abstract INamedElement doResolveTargetElement();
 	
 	
-	public abstract static class TypeReferenceSemantics extends ResolvableSemantics {
+	public abstract static class TypeReferenceSemantics extends ReferenceSemantics {
 		
 		public TypeReferenceSemantics(IReference reference, PickedElement<?> pickedElement) {
 			super(reference, pickedElement);

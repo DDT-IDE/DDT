@@ -12,7 +12,7 @@ package dtool.engine.analysis.templates;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -21,7 +21,7 @@ import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
 
-public class RefTemplateInstanceSemantics extends ResolvableSemantics {
+public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	
 	protected final RefTemplateInstance refTemplateInstance;
 	

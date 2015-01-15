@@ -14,7 +14,7 @@ import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -42,12 +42,12 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return (ResolvableSemantics) super.getSemantics(parentContext);
+	public ReferenceSemantics getSemantics(ISemanticContext parentContext) {
+		return (ReferenceSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	public ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ResolvableSemantics(this, pickedElement) {
+	public ReferenceSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ReferenceSemantics(this, pickedElement) {
 			
 			@Override
 			public INamedElement doResolveTargetElement() {

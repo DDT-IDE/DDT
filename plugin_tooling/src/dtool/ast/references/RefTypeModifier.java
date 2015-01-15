@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.parser.DeeTokens;
 
@@ -75,8 +75,8 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ResolvableSemantics(this, pickedElement) {
+	protected ReferenceSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new ReferenceSemantics(this, pickedElement) {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {

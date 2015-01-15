@@ -20,7 +20,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 public interface IReference extends ILanguageElement, IResolvable {
 	
 	@Override
-	public ResolvableSemantics getSemantics(ISemanticContext parentContext);
+	public ReferenceSemantics getSemantics(ISemanticContext parentContext);
 	
 	@Override
 	public String toStringAsCode();

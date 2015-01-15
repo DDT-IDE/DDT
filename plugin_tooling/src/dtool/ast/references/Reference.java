@@ -16,7 +16,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import dtool.ast.expressions.Resolvable;
@@ -27,11 +27,11 @@ import dtool.ast.expressions.Resolvable;
 public abstract class Reference extends Resolvable implements IReference {
 	
 	@Override
-	public ResolvableSemantics getSemantics(ISemanticContext parentContext) {
-		return (ResolvableSemantics) super.getSemantics(parentContext);
+	public ReferenceSemantics getSemantics(ISemanticContext parentContext) {
+		return (ReferenceSemantics) super.getSemantics(parentContext);
 	}
 	@Override
-	protected abstract ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement);
+	protected abstract ReferenceSemantics doCreateSemantics(PickedElement<?> pickedElement);
 	
 	public final INamedElement resolveTargetElement(ISemanticContext context) {
 		return getSemantics(context).resolveTargetElement().result;

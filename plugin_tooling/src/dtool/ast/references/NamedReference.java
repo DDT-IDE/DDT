@@ -13,7 +13,7 @@ package dtool.ast.references;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
-import melnorme.lang.tooling.engine.resolver.ResolvableSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 
@@ -45,7 +45,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 		return new NamedReferenceSemantics(this, pickedElement);
 	}
 	
-	public class NamedReferenceSemantics extends ResolvableSemantics {
+	public class NamedReferenceSemantics extends ReferenceSemantics {
 		
 		protected NamedReferenceSemantics(IReference reference, PickedElement<?> pickedElement) {
 			super(reference, pickedElement);
