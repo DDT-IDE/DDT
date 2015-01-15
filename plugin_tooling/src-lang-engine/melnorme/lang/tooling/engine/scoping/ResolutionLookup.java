@@ -17,8 +17,8 @@ import java.util.Set;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.utilbox.misc.CollectionUtil;
-import dtool.engine.analysis.PackageNamespace;
 
 /**
  * A scope name lookup for symbols/names that exactly match a given name.
@@ -53,8 +53,14 @@ public class ResolutionLookup extends CommonScopeLookup {
 	}
 	
 	/** @return the matched element. Can be null. */
+	@Deprecated /* FIXME: bug here and in CompletionSearch. */
 	public INamedElement getMatchedElement() {
 		return matches.getMap().get(searchName);
+	}
+	
+	public INamedElement completeAndGetMatchedElement() {
+		completeSearch();
+		return getMatchedElement();
 	}
 	
 }

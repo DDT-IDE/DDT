@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 
 import org.junit.Test;
 

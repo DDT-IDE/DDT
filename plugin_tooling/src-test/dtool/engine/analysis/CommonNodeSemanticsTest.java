@@ -29,7 +29,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.Location;
-import dtool.ast.definitions.Module;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
@@ -103,20 +102,6 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		} catch (CommonException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-	}
-	
-	protected static Module parseSource(String source) {
-		return parseModule_(source).getModuleNode();
-	}
-	
-	protected static ASTNode parseSourceAndPickNode(String source, int offset) {
-		Module module = parseSource(source);
-		return ASTNodeFinder.findElement(module, offset);
-	}
-	
-	public static <T extends ILanguageElement> T parseSourceAndFindNode(String source, int offset, Class<T> klass) {
-		ASTNode node = parseSourceAndPickNode(source, offset);
-		return NodeElementUtil.getMatchingParent(node, klass);
 	}
 	
 	protected static <T extends ILanguageElement> T findNode(ResolvedModule moduleRes, int offset, Class<T> klass) {

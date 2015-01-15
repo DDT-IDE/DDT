@@ -17,6 +17,7 @@ import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
+/* FIXME: rename */
 public abstract class ResolvableSemantics extends ElementSemantics<ReferenceResult> {
 	
 	private final IReference reference;

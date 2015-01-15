@@ -17,7 +17,6 @@ import java.util.Collection;
 
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.core.fntypes.Predicate;
@@ -53,21 +52,9 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	}
 	
 	public static INamedElement getReferenceResolvedElement(ResolvedModule resolvedModule, String offsetMarker) {
-		ResolutionLookup lookup = doResolutionLookup(resolvedModule, offsetMarker);
-		return lookup.getMatchedElement();
-	}
-	
-	protected static ResolutionLookup doResolutionLookup(ResolvedModule resolvedModule, String offsetMarker) {
 		PickedElement<NamedReference> pick = pickElement(resolvedModule, offsetMarker, NamedReference.class);
-		return doResolutionLookup(pick);
+		return pick.element.getSemantics(pick.context).resolveTargetElement_();
 	}
-	
-	protected static ResolutionLookup doResolutionLookup(PickedElement<NamedReference> pick) {
-		NamedReference pickedNode = pick.element;
-		return pickedNode.getSemantics(pick.context).doResolutionLookup();
-	}
-	
-	
 	
 	/* -----------------  ----------------- */
 	

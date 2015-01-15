@@ -41,7 +41,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
 			ILanguageElement owner) {
-		super(getEffectiveModuleName(fullModuleName, useFullName), null, owner);
+		super(getEffectiveModuleName(fullModuleName, useFullName), null, owner, true);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;

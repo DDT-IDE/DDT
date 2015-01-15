@@ -12,8 +12,8 @@ public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	
 	protected final ElementDoc doc;
 	
-	public IntrinsicNamedElement(String name, ElementDoc doc) {
-		super(name, null, null);
+	public IntrinsicNamedElement(String name, ElementDoc doc, boolean isCompleted) {
+		super(name, null, null, isCompleted);
 		this.doc = doc;
 	}
 	

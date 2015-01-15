@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
 
 public class ElementResolution<E extends ILanguageElement> {
@@ -18,6 +19,7 @@ public class ElementResolution<E extends ILanguageElement> {
 	
 	public ElementResolution(E result) {
 		this.result = result; // TODO make not null?
+		assertTrue(result == null || result.isCompleted());
 	}
 	
 }

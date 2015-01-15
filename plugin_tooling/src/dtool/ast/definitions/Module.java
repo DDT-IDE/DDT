@@ -34,9 +34,9 @@ import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.IImportableUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.references.RefModule;
-import dtool.engine.analysis.PackageNamespace;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.Token;
@@ -232,7 +232,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			return this;
 		} else {
 			String[] packNames = md.packages;
-			return PackageNamespace.createNamespaceFragments(packNames, this, this);
+			return PackageNamespace.createNamespaceElement(packNames, this, this);
 		}
 	}
 	

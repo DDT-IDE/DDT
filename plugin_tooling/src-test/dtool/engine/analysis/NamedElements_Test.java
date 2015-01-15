@@ -110,7 +110,6 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 			StandardLibraryResolution stdLib = getDefaultStdLibContext();
 			
 			visitConcrete(pickedElement(D2_063_intrinsics.bool_type, stdLib));
-			visitConcrete(pickedElement(D2_063_intrinsics.object_type, stdLib));
 			
 			visitConcrete(pickedElement(new IntrinsicProperty("max", D2_063_intrinsics.int_type, null), stdLib));
 			visitConcrete(pickedElement(new IntrinsicProperty2("max", new RefIdentifier("blah"), null), stdLib));

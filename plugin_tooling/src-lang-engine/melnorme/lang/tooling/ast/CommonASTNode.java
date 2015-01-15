@@ -58,6 +58,11 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return parent;
 	}
 	
+	@Override
+	public boolean isCompleted() {
+		return isPostParseStatus();
+	}
+	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
 	@Override
 	public final void setParent(ASTNode parent) {

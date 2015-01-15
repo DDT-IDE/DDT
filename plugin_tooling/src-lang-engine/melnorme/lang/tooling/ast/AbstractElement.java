@@ -10,15 +10,19 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 
 public abstract class AbstractElement extends CommonLanguageElement {
 	
 	protected final ILanguageElement ownerElement; // can be null
 	protected final ILanguageElement lexicalParent; // can be null
+	private boolean isCompleted = false;
 	
-	public AbstractElement(ILanguageElement ownerElement, ILanguageElement lexicalParent) {
+	public AbstractElement(ILanguageElement ownerElement, ILanguageElement lexicalParent, boolean isCompleted) {
 		this.ownerElement = ownerElement;
 		this.lexicalParent = lexicalParent;
+		this.isCompleted = isCompleted;
 	}
 	
 	@Override
@@ -29,6 +33,17 @@ public abstract class AbstractElement extends CommonLanguageElement {
 	@Override
 	public ILanguageElement getOwnerElement() {
 		return ownerElement;
+	}
+	
+	public void setCompleted() {
+		assertTrue(isCompleted == false);
+		/* FIXME: BUG here, need to visit children */
+		isCompleted = true;
+	}
+	
+	@Override
+	public boolean isCompleted() {
+		return isCompleted;
 	}
 	
 }

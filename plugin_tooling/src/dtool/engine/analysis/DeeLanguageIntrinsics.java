@@ -47,6 +47,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		// TODO DDOC
 		public DeePrimitiveType(String name) {
 			super(name, null);
+			/*FIXME: BUG here*/
 		}
 		
 		public DeePrimitiveType(String name, ElementDoc doc) {
@@ -94,7 +95,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		public void createMembers(IntrinsicNamedElement... members) {
+		public void doCreateMembers(IntrinsicNamedElement... members) {
 			ArrayList2<IntrinsicNamedElement> arrayList = new ArrayList2<>();
 			
 			arrayList.addElements(members);
@@ -226,6 +227,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		
 		public IntrinsicTypePointer() {
 			super(POINTER_NAME, null);
+			createMembers();
 		}
 		
 	}
@@ -291,8 +293,6 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 	}
-	
-	public final IntrinsicTypeDefUnit object_type = new DeeIntrinsicType("___", null) { };
 	
 	public NamedElementsScope createObjectPropertiesScope(INamedElement type) {
 		

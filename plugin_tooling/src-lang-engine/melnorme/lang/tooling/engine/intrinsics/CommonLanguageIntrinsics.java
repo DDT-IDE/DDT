@@ -30,7 +30,7 @@ public interface CommonLanguageIntrinsics {
 		protected NamedElementsScope membersScope;
 		
 		public IntrinsicTypeDefUnit(String name, ElementDoc doc) {
-			super(name, doc);
+			super(name, doc, false);
 		}
 		
 		public NamedElementsScope getMembersScope() {
@@ -42,7 +42,12 @@ public interface CommonLanguageIntrinsics {
 			return "intrinsic_type#" + getName();
 		}
 		
-		public abstract void createMembers(IntrinsicNamedElement... members);
+		public final void createMembers(IntrinsicNamedElement... members) {
+			doCreateMembers(members);
+			setCompleted();
+		}
+		
+		public abstract void doCreateMembers(IntrinsicNamedElement... members);
 		
 		@Override
 		public TypeSemantics doCreateSemantics(PickedElement<?> pickedElement) {
@@ -54,7 +59,7 @@ public interface CommonLanguageIntrinsics {
 	public abstract class AbstractIntrinsicProperty extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
 		public AbstractIntrinsicProperty(String name, ElementDoc doc) {
-			super(name, doc);
+			super(name, doc, true);
 		}
 		
 		@Override

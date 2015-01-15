@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.views;
 
-import static dtool.engine.analysis.PackageNamespace.createNamespaceFragments;
+import static melnorme.lang.tooling.symbols.PackageNamespace.createNamespaceElement;
 import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -36,10 +36,10 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		checkLabel(new ModuleProxy("pack.sub.mod", null, null), "pack.sub.mod", "mod");
 		
 		
-		checkLabel(createNamespaceFragments(array("pack"), new ModuleProxy("modA", null, null), null), 
+		checkLabel(createNamespaceElement(array("pack"), new ModuleProxy("modA", null, null), null), 
 			"pack", "pack");
 
-		checkLabel(createNamespaceFragments(array("pack", "sub"), new ModuleProxy("modA", null, null), null), 
+		checkLabel(createNamespaceElement(array("pack", "sub"), new ModuleProxy("modA", null, null), null), 
 			"pack", "pack");
 		
 		

@@ -53,7 +53,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	protected final ElementDoc doc;
 	
 	public ErrorElement(String name, ILanguageElement lexicalParent, ILanguageElement ownerElement, ElementDoc doc) {
-		super(name, lexicalParent, ownerElement);
+		super(name, lexicalParent, ownerElement, true);
 		this.doc = doc;
 	}
 	

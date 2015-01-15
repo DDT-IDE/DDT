@@ -70,6 +70,8 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 
 		// ---------- selective alias
 		test_SelectiveAlias$();
+		
+		test_PackageNamespaceModificatioBug();
 	}
 	
 	protected void test_SelectiveAlias$() {
@@ -85,6 +87,12 @@ public class Import_Selective_Alias_LookupTest extends CommonLookupTest {
 			checkNameConflict("xxx = PackFoo_member", "void xxx;")
 		);
 		
+	}
+	
+	protected void test_PackageNamespaceModificatioBug() {
+		testLookup(parseModule_WithRef("import pack2.public_import : pack; import pack.target;", "pack"),  
+			checkIsPackageNamespace(array("module[pack.foo]", "module[pack.target]"))
+		);
 	}
 	
 }

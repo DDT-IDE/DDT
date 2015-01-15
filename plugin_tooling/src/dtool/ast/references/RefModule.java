@@ -23,9 +23,9 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.engine.analysis.ModuleProxy;
-import dtool.engine.analysis.PackageNamespace;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 
@@ -101,7 +101,7 @@ public class RefModule extends NamedReference {
 	/* -----------------  ----------------- */
 	
 	// TODO: we could cache this result in semantic resolution
-	public INamedElement getNamespaceFragment(ISemanticContext context) {
+	public INamedElement createNamespaceFragment(ISemanticContext context) {
 		if(getPackageNames().length == 0) {
 			return resolveTargetElement(context);
 		}
@@ -109,8 +109,8 @@ public class RefModule extends NamedReference {
 		if(isMissingCoreReference()) {
 			return null;
 		} else {
-			INamedElement moduleElem = getModuleProxy(context);
-			return PackageNamespace.createNamespaceFragments(getPackageNames(), moduleElem, this); 
+			INamedElement moduleElem = new ModuleProxy(getRefModuleFullyQualifiedName(), context, false, this);
+			return PackageNamespace.createNamespaceElement(getPackageNames(), moduleElem, this);
 		}
 	}
 	
@@ -124,10 +124,6 @@ public class RefModule extends NamedReference {
 			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.context, true, this));
 		}
 		search.getMatchesTable().addSymbols(scopeResolution.getNames());
-	}
-	
-	public ModuleProxy getModuleProxy(ISemanticContext mr) {
-		return new ModuleProxy(getRefModuleFullyQualifiedName(), mr, false, RefModule.this);
 	}
 	
 }

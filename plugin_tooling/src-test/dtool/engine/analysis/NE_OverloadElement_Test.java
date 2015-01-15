@@ -18,17 +18,16 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 public class NE_OverloadElement_Test extends NamedElement_CommonTest {
 	
+	protected PickedElement<INamedElement> pickedElementFromResolution(String source) {
+		ResolvedModule parsedModule = parseModule_(source);
+		INamedElement element = NameLookup_ScopeTest.getReferenceResolvedElement(parsedModule, "/*M*/");
+		return new PickedElement<>(element, parsedModule.getSemanticContext());
+	}
+	
 	@Override
 	public void test_resolveElement________() throws Exception {
 		test_resolveElement(
 			pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), null, "#NotAValue:_tests.xxx");
-	}
-	
-	protected PickedElement<INamedElement> pickedElementFromResolution(String source) {
-		ResolvedModule parsedModule = parseModule_(source);
-		INamedElement element = NameLookup_ScopeTest.getReferenceResolvedElement(parsedModule, "/*M*/");
-		PickedElement<INamedElement> pe = new PickedElement<>(element, parsedModule.getSemanticContext());
-		return pe;
 	}
 	
 	/* -----------------  ----------------- */

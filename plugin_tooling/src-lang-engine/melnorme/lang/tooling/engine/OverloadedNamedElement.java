@@ -32,12 +32,12 @@ import dtool.ast.definitions.EArcheType;
  */
 public class OverloadedNamedElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
-	protected final HashSet<INamedElement> elements;
+	protected final HashSet<INamedElement> elements; /* FIXME: HashSet2 */
 	protected final EArcheType archeType;
 	protected final INamedElement firstElement;
 	
 	public OverloadedNamedElement(INamedElement firstElement) {
-		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement);
+		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement, false);
 		this.firstElement = firstElement;
 		this.elements = new HashSet<>();
 		elements.add(firstElement);
@@ -75,12 +75,13 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	}
 	
 	public Collection<INamedElement> getOverloadedElements() {
+		/* FIXME: return type */
 		return elements;
 	}
 	
 	public void addElement(INamedElement newElement) {
+		assertTrue(isCompleted() == false);
 		assertTrue(newElement.getNameInRegularNamespace().equals(firstElement.getNameInRegularNamespace()));
-		
 		elements.add(newElement);
 	}
 	

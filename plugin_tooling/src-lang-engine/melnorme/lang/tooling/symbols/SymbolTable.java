@@ -20,7 +20,6 @@ import java.util.Set;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import dtool.ast.definitions.EArcheType;
 import dtool.engine.analysis.ModuleProxy;
-import dtool.engine.analysis.PackageNamespace;
 
 /**
  * A symbol table (map of named elements).
@@ -48,7 +47,7 @@ public class SymbolTable {
 		addSymbols(symbolTable.map.values());
 	}
 	
-	public void addSymbols(Collection<INamedElement> values) {
+	public void addSymbols(Iterable<INamedElement> values) {
 		for (INamedElement namedElement : values) {
 			addSymbol(namedElement);
 		}
@@ -66,7 +65,12 @@ public class SymbolTable {
 		if(existingNamedElement instanceof PackageNamespace && newElement instanceof PackageNamespace) {
 			PackageNamespace existingNamespace = (PackageNamespace) existingNamedElement;
 			PackageNamespace newNamespace = (PackageNamespace) newElement;
-			existingNamespace.getNamespace().addSymbols(newNamespace.getContainedElements());
+			
+			if(existingNamespace.isCompleted()) {
+				existingNamespace = existingNamespace.doCloneTree(newNamespace /*FIXME: BUG here owner*/);
+				map.put(name, existingNamespace);
+			}
+			existingNamespace.getNamespaceForModification().addSymbols(newNamespace.getContainedElements());
 		} else {
 			addEntryToMap(name, newElement);
 		}
@@ -75,7 +79,7 @@ public class SymbolTable {
 	protected void addEntryToMap(String name, INamedElement newElement) {
 		INamedElement existingEntry = map.get(name);
 		if(existingEntry == null) {
-			map.put(name, newElement);
+			doAddEntryToMap(name, newElement);
 		} else {
 			// An entry already exists
 			
@@ -96,7 +100,7 @@ public class SymbolTable {
 			} else {
 				// Give priority to ModuleProxy element (note: this isn't entirely like DMD behavior
 				if(newElement instanceof ModuleProxy && existingEntry instanceof PackageNamespace) {
-					map.put(name, newElement);
+					doAddEntryToMap(name, newElement);
 					return;
 				}
 				if(newElement instanceof PackageNamespace && existingEntry instanceof ModuleProxy) {
@@ -104,16 +108,20 @@ public class SymbolTable {
 				}
 				
 				overloadElement = new OverloadedNamedElement(existingEntry);
-				map.put(name, overloadElement);
+				doAddEntryToMap(name, overloadElement);
 			}
 			
 			overloadElement.addElement(newElement);
 		}
 	}
 	
-	public HashMap<String,INamedElement> addVisibleSymbols(SymbolTable importedNames) {
+	public void doAddEntryToMap(String name, INamedElement newElement) {
+		map.put(name, newElement);
+	}
+	
+	public void addVisibleSymbols(SymbolTable symbolTable) {
 		
-		for (Entry<String, INamedElement> nameEntry : importedNames.getEntries()) {
+		for (Entry<String, INamedElement> nameEntry : symbolTable.getEntries()) {
 			String matchedName = nameEntry.getKey();
 			INamedElement matchedElement = nameEntry.getValue();
 			
@@ -121,11 +129,16 @@ public class SymbolTable {
 			if(existingSymbol == null || 
 					(existingSymbol instanceof PackageNamespace && matchedElement instanceof PackageNamespace)) {
 				
+				if(matchedElement instanceof OverloadedNamedElement) {
+					OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) matchedElement;
+					overloadedNamedElement.setCompleted();
+				}
+				
 				doAddSymbol(matchedElement);
 			}
 		}
-		return map;
 		
+		symbolTable.map.clear(); // symbolTable can no longer be used
 	}
 	
 }

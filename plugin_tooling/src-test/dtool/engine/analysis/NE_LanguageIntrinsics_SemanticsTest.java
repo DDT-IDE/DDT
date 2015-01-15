@@ -14,11 +14,11 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.expressions.Expression;
-import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 
 public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
@@ -85,7 +85,7 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 	}
 	
 	protected static void testExpressionResolution_expSource(String expSource, String... expectedResults) {
-		Expression exp = new DeeTestsChecksParser(expSource).parseExpression().getNode();
+		PickedElement<Expression> exp = parseElement("auto _ = " + expSource + "/*M*/", "/*M*/", Expression.class);
 		testExpressionResolution_(exp, expectedResults);
 	}
 	

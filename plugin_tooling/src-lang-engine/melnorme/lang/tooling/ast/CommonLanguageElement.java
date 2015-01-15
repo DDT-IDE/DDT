@@ -50,6 +50,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@Override
 	public ElementSemantics<?> getSemantics(ISemanticContext parentContext) {
+		assertTrue(isCompleted());
 		ISemanticContext context = getContextForThisElement(parentContext);
 		return context.getSemanticsEntry(this);
 	}

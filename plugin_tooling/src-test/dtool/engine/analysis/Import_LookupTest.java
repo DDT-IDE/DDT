@@ -20,6 +20,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.utilbox.core.fntypes.Predicate;
 
 import org.junit.Test;
@@ -381,7 +382,7 @@ public class Import_LookupTest extends CommonLookupTest {
 			public boolean evaluate(INamedElement matchedElement) {
 				PackageNamespace packageNameSpace = assertInstance(matchedElement, PackageNamespace.class);
 				assertEqualSet(
-					hashSet(elementToStringArray(packageNameSpace.getNamespace().getElements())), 
+					hashSet(elementToStringArray(packageNameSpace.getContainedElements())), 
 					hashSet(expectedResults)
 				);
 				

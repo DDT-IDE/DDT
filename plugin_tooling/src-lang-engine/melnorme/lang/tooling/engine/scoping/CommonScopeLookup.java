@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine.scoping;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,18 +25,18 @@ import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.references.RefModule;
 
 public abstract class CommonScopeLookup {
+	
+	public final ISemanticContext context;
 	
 	/** The offset of the reference. 
 	 * Used to check availability in statement scopes. */
 	public final int refOffset;
-	/** Module Resolver */
-	public final ISemanticContext context;
 	
 	protected final SymbolTable matches = new SymbolTable();
 	
@@ -44,6 +45,8 @@ public abstract class CommonScopeLookup {
 	
 	/** Named elements for which evaluateInMembersScope() has been called for. */
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
+	
+	boolean isCompleted = false;
 	
 	
 	public CommonScopeLookup(int refOffset, ISemanticContext context) { 
@@ -66,6 +69,24 @@ public abstract class CommonScopeLookup {
 	public Collection<INamedElement> getMatchedElements() {
 		return matches.getElements();
 	}
+	
+	public void completeSearch() {
+		if(isCompleted)
+			return;
+		
+		for (INamedElement namedElement : matches.getElements()) {
+			if(namedElement instanceof PackageNamespace) {
+				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
+				if(!packageNamespace.isCompleted()) {
+					packageNamespace.setCompleted();
+				}
+			}
+		}
+		
+		isCompleted = true;
+	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public String toString() {
@@ -127,7 +148,7 @@ public abstract class CommonScopeLookup {
 		
 		if(resolvedElementsForMemberScopes.contains(concreteElement))
 			return;
-		
+		assertTrue(concreteElement.isCompleted());
 		resolvedElementsForMemberScopes.add(concreteElement);
 		
 		concreteElement.resolveSearchInMembersScope(this);
@@ -209,16 +230,9 @@ public abstract class CommonScopeLookup {
 			if(!getLookup().matchesName(name)) {
 				return;
 			}
-			// XXX: what about if namedElement is an error?
-			
 			assertNotNull(namedElement);
 			
 			names.addSymbol(namedElement);
-		}
-		
-		public void addImportNameElement(RefModule refModule) {
-			INamedElement namedElement = refModule.getNamespaceFragment(getContext());
-			visitNamedElement(namedElement);
 		}
 		
 	}

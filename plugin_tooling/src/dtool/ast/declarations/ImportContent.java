@@ -97,11 +97,8 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	public static void resolveStaticImport(ScopeNameResolution scopeRes, RefModule refModule) {
-		scopeRes.addImportNameElement(refModule);
-	}
-	
-	public INamedElement getNamespaceFragment(ISemanticContext context) {
-		return moduleRef.getNamespaceFragment(context);
+		INamedElement namedElement = refModule.createNamespaceFragment(scopeRes.getContext());
+		scopeRes.visitNamedElement(namedElement);
 	}
 	
 	public static void resolveContentImport(ImportContent impContent, ScopeNameResolution scopeRes) {

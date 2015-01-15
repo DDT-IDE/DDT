@@ -13,9 +13,9 @@ package dtool.engine.analysis;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ResolutionLookup;
 import melnorme.utilbox.collections.ArrayList2;
@@ -24,13 +24,16 @@ import org.junit.Test;
 
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.references.NamedReference;
 
 public class NameLookup_ScopeTest extends CommonLookupTest {
 	
 	@Test
 	public void testShadowing() throws Exception { testShadowing$(); }
 	public void testShadowing$() throws Exception {
-		ResolutionLookup lookup = doResolutionLookup("void xxx; class Blah { int xxx = xxx/*M*/; } ", "xxx/*M*/");
+		PickedElement<NamedReference> pick = parseElement(
+			"void xxx; class Blah { int xxx = xxx/*M*/; } ", "xxx/*M*/", NamedReference.class);
+		ResolutionLookup lookup = pick.element.getSemantics(pick.context).doResolutionLookup();
 		
 		resultsChecker(lookup).checkResults(array(
 			"_tests/Blah.xxx"
@@ -43,10 +46,6 @@ public class NameLookup_ScopeTest extends CommonLookupTest {
 		
 		IScopeElement searchedScope = new ArrayList2<>(searchedScopes).get(0);
 		assertTrue(((DeclBlock) searchedScope).getParent() instanceof DefinitionClass);
-	}
-	
-	protected ResolutionLookup doResolutionLookup(String source, String offsetMarker) throws ExecutionException {
-		return doResolutionLookup(parseModule_(source), offsetMarker);
 	}
 	
 	protected static final String DEFAULT_MARKER = "/*MARKER*/";

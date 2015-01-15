@@ -21,8 +21,9 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	
 	protected final String name;
 	
-	public AbstractNamedElement(String name, ILanguageElement lexicalParent, ILanguageElement ownerElement) {
-		super(ownerElement, lexicalParent);
+	public AbstractNamedElement(String name, ILanguageElement lexicalParent, ILanguageElement ownerElement,
+			 boolean isCompleted) {
+		super(ownerElement, lexicalParent, isCompleted);
 		this.name = name;
 	}
 	

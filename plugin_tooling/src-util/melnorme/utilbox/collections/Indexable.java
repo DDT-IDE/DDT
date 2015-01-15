@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.RandomAccess;
 
 /**
- * interface for a read-only view random access collection
+ * interface for a read-only view of a random access collection
  */
 public interface Indexable<E> extends Iterable<E>, RandomAccess {
 	

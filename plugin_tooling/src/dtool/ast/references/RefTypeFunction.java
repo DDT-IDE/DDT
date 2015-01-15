@@ -92,6 +92,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 	public static class IntrinsicFunctionType extends DeeIntrinsicType {
 		public IntrinsicFunctionType() {
 			DeeLanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
+			/*FIXME: BUG here*/
 		}
 	}
 	

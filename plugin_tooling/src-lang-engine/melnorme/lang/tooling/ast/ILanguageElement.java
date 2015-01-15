@@ -30,6 +30,11 @@ public interface ILanguageElement {
 	/** @return the parent element of this element. null if it is the top element of the tree. */
 	ILanguageElement getLexicalParent();
 	
+	/** @return whether the construction/setup of this element is complete, and therefore the element
+	 * is ready for semantic analysis. Only when this is true should semantic operations be performed.
+	 * After an element is completed, it should be immutable, at least with data affecting semantics.*/
+	boolean isCompleted();
+	
 	/** 
 	 * @return true if this is an element predefined by the language. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).

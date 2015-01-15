@@ -29,7 +29,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 	public final String elementName;
 	
 	public ModuleQualifiedReference(String moduleFullName, String elementName) {
-		super(null, null);
+		super(null, null, true);
 		this.moduleFullName = moduleFullName;
 		this.elementName = elementName;
 	}
@@ -48,20 +48,20 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 	@Override
 	public ResolvableSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ResolvableSemantics(this, pickedElement) {
-		
-		@Override
-		public INamedElement doResolveTargetElement() {
-			INamedElement module = CommonScopeLookup.resolveModule(context, getResolvable(), moduleFullName);
-			if(module == null) 
-				return null;
-			IConcreteNamedElement moduleConcrete = module.resolveConcreteElement(context);
 			
-			ResolutionLookup search = new ResolutionLookup(elementName, -1, context);
-			search.evaluateInMembersScope(moduleConcrete);
-			return search.getMatchedElement();
-		}
-		
-	};
+			@Override
+			public INamedElement doResolveTargetElement() {
+				INamedElement module = CommonScopeLookup.resolveModule(context, getResolvable(), moduleFullName);
+				if(module == null) 
+					return null;
+				IConcreteNamedElement moduleConcrete = module.resolveConcreteElement(context);
+				
+				ResolutionLookup search = new ResolutionLookup(elementName, -1, context);
+				search.evaluateInMembersScope(moduleConcrete);
+				return search.completeAndGetMatchedElement();
+			}
+			
+		};
 	}
 	
 }

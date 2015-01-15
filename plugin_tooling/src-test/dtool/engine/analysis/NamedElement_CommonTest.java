@@ -10,13 +10,11 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.StringUtil.emptyAsNull;
 
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.context.EmptySemanticResolution;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -39,10 +37,6 @@ import dtool.ast.expressions.Expression;
 public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	protected final String ERROR_NotAValue = NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
-	
-	protected INamedElement parseNamedElement_(String source) {
-		return parseSourceAndFindNode(source, getMarkerIndex(source), INamedElement.class);
-	}
 	
 	protected PickedElement<INamedElement> parseNamedElement(String source) {
 		return parseElement(source, getMarkerIndex(source), INamedElement.class);
@@ -174,13 +168,12 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	protected static void testExpressionResolution(String source, String... expectedResults)
 			throws ExecutionException {
-		Expression exp = parseSourceAndFindNode(source, source.indexOf("/*X*/"), Expression.class);
-		assertNotNull(exp);
-		testExpressionResolution_(exp, expectedResults);
+		PickedElement<Expression> expPick = parseElement(source, "/*X*/", Expression.class);
+		testExpressionResolution_(expPick, expectedResults);
 	}
-	protected static void testExpressionResolution_(Expression exp, String... expectedResults) {
-		ISemanticContext context = new EmptySemanticResolution();
-		INamedElement expType = exp.resolveTypeOfUnderlyingValue(context).originalType;
+	protected static void testExpressionResolution_(PickedElement<Expression> expPick, String... expectedResults) {
+		ISemanticContext context = expPick.context;
+		INamedElement expType = expPick.element.resolveTypeOfUnderlyingValue(context).originalType;
 		
 		test_resolveSearchInMembersScope(picked2(expType, context), expectedResults);
 	}
