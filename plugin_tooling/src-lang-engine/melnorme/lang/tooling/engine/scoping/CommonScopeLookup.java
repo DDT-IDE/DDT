@@ -46,8 +46,6 @@ public abstract class CommonScopeLookup {
 	/** Named elements for which evaluateInMembersScope() has been called for. */
 	protected final HashSet<INamedElement> resolvedElementsForMemberScopes = new HashSet<>(4);;
 	
-	boolean isCompleted = false;
-	
 	
 	public CommonScopeLookup(int refOffset, ISemanticContext context) { 
 		this.refOffset = refOffset;
@@ -62,18 +60,16 @@ public abstract class CommonScopeLookup {
 		return searchedScopes;
 	}
 	
-	public SymbolTable getMatchesTable() {
-		return matches;
+	public void addSymbolsToMatches(SymbolTable symbolTable) {
+		matches.addSymbols(symbolTable);
 	}
 	
 	public Collection2<INamedElement> getMatchedElements() {
+		completeSearchMatches();
 		return matches.getElements();
 	}
 	
-	public void completeSearch() {
-		if(isCompleted)
-			return;
-		
+	public void completeSearchMatches() {
 		for (INamedElement namedElement : matches.getElements()) {
 			if(namedElement instanceof PackageNamespace) {
 				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
@@ -82,8 +78,6 @@ public abstract class CommonScopeLookup {
 				}
 			}
 		}
-		
-		isCompleted = true;
 	}
 	
 	/* -----------------  ----------------- */
@@ -94,7 +88,7 @@ public abstract class CommonScopeLookup {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(getMatchedElements(), "\n", new Function<INamedElement, String>() {
+		return StringUtil.iterToString(matches.getElements(), "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return obj.getFullyQualifiedName();

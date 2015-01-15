@@ -123,7 +123,7 @@ public class RefModule extends NamedReference {
 		for (String moduleFQName : matchedModules) {
 			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.context, true, this));
 		}
-		search.getMatchesTable().addSymbols(scopeResolution.getNames());
+		search.addSymbolsToMatches(scopeResolution.getNames());
 	}
 	
 }

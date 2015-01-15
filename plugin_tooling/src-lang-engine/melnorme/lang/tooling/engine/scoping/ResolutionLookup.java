@@ -44,7 +44,7 @@ public class ResolutionLookup extends CommonScopeLookup {
 	
 	@Override
 	public boolean isFinished() {
-		return getMatchedElement() != null && !(getMatchedElement() instanceof PackageNamespace);
+		return doGetMatchedElement() != null && !(doGetMatchedElement() instanceof PackageNamespace);
 	}
 	
 	@Override
@@ -52,15 +52,15 @@ public class ResolutionLookup extends CommonScopeLookup {
 		return searchName.equals(defName);
 	}
 	
-	/** @return the matched element. Can be null. */
-	@Deprecated /* FIXME: bug here and in CompletionSearch. */
-	public INamedElement getMatchedElement() {
+	protected INamedElement doGetMatchedElement() {
 		return matches.getMap().get(searchName);
 	}
 	
-	public INamedElement completeAndGetMatchedElement() {
-		completeSearch();
-		return getMatchedElement();
+	/** Complete the search and return the matched element. After this, the search a 
+	 * @return the matched element. Can be null. */
+	public INamedElement getMatchedElement() {
+		completeSearchMatches();
+		return doGetMatchedElement();
 	}
 	
 }

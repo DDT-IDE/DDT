@@ -57,7 +57,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 				return null;
 			}
 			ResolutionLookup search = doResolutionLookup();
-			return search.completeAndGetMatchedElement();
+			return search.getMatchedElement();
 		}
 		
 		public ResolutionLookup doResolutionLookup() {
@@ -68,7 +68,7 @@ public abstract class NamedReference extends Reference implements IQualifierNode
 			int startPos = hasSourceRangeInfo() ? getStartPos() : -1;
 			ResolutionLookup search = new ResolutionLookup(getCoreReferenceName(), startPos, context);
 			performNameLookup(search);
-			search.completeSearch();
+			search.completeSearchMatches();
 			return search;
 		}
 	}
