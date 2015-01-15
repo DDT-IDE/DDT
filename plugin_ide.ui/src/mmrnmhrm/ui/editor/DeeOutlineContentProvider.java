@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.util.swt.jface.ElementContentProvider;
+import mmrnmhrm.ui.views.NodeElementContentProvider;
 
 import org.eclipse.jface.viewers.Viewer;
 
@@ -26,7 +26,7 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.Module;
 import dtool.ast.definitions.Module.DeclarationModule;
 
-public class DeeOutlineContentProvider extends ElementContentProvider {
+public class DeeOutlineContentProvider extends NodeElementContentProvider {
 	
 	
 	@Override
