@@ -13,7 +13,7 @@ package melnorme.lang.tooling.ast;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementSemantics;
+import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 
@@ -64,12 +64,12 @@ public interface ILanguageElement {
 	 * Subclasses should reimplement when applicable.
 	 * Note that only the semantic context should be calling this class.
 	 */
-	public ElementSemantics<?> createSemantics(PickedElement<?> pickedElement);
+	public IElementSemanticData createSemantics(PickedElement<?> pickedElement);
 	/**
 	 * Should perform exactly this: <code>parentContext.getSemanticsEntry(this)</code>
 	 * @return the semantics object. Should be the same on every call. Non-null.
 	 */
-	public ElementSemantics<?> getSemantics(ISemanticContext parentContext);
+	public IElementSemanticData getSemantics(ISemanticContext parentContext);
 	
 	/**
 	 * @return the context where this element is directly contained in.

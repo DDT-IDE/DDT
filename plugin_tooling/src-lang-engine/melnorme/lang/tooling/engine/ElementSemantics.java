@@ -28,7 +28,7 @@ import melnorme.lang.tooling.engine.LoopDetector.ResolutionLoopException;
  * This class uses the {@link #hashCode()} and {@link #equals()} of Object, such that each instance of 
  * this class can be seperately inserted in a {@link Map}. 
  */
-public abstract class ElementSemantics<ER> {
+public abstract class ElementSemantics<ER> implements IElementSemanticData {
 	
 	protected final ISemanticContext context;
 	

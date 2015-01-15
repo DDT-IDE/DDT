@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
@@ -39,7 +40,7 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		ModuleProxy moduleProxy = assertCast(pickedElement.element, ModuleProxy.class);
 		
 		moduleProxy.resolveUnderlyingNode();
-		assertTrue(moduleProxy.getSemantics(pickedElement.context).isResolved());
+		assertTrue(((NamedElementSemantics) moduleProxy.getSemantics(pickedElement.context)).isResolved());
 		
 		test_resolveElement(pickedElement, "target", ERROR_IS_NOT_A_VALUE + ":target");
 	}

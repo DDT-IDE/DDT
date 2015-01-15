@@ -15,7 +15,7 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.ast_actual.INamedElementExtensions;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
 
@@ -67,7 +67,7 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	public ElementDoc resolveDDoc();
 	
 	@Override
-	public NamedElementSemantics getSemantics(ISemanticContext parentContext);
+	public INamedElementSemanticData getSemantics(ISemanticContext parentContext);
 	
 	/**
 	 * If this element is an alias to some other element, resolve all of them until the non-alias element

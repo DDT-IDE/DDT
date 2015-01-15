@@ -17,7 +17,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementSemantics;
+import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -49,7 +49,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ElementSemantics<?> getSemantics(ISemanticContext parentContext) {
+	public IElementSemanticData getSemantics(ISemanticContext parentContext) {
 		assertTrue(isCompleted());
 		ISemanticContext context = getContextForThisElement(parentContext);
 		return context.getSemanticsEntry(this);
@@ -61,13 +61,13 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public ElementSemantics<?> createSemantics(PickedElement<?> pickedElement) {
+	public IElementSemanticData createSemantics(PickedElement<?> pickedElement) {
 		assertTrue(pickedElement.element == this); // Note this precondition!
 		return doCreateSemantics(pickedElement);
 	}
 	
 	@SuppressWarnings("unused")
-	protected ElementSemantics<?> doCreateSemantics(PickedElement<?> pickedElement) {
+	protected IElementSemanticData doCreateSemantics(PickedElement<?> pickedElement) {
 		throw assertFail(); // Not valid unless re-implemented.
 	}
 	

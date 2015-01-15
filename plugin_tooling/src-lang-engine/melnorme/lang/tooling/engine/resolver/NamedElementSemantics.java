@@ -21,7 +21,9 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class NamedElementSemantics extends ElementSemantics<ConcreteElementResult> {
+public abstract class NamedElementSemantics extends ElementSemantics<ConcreteElementResult> 
+	implements INamedElementSemanticData 
+{
 	
 	protected final INamedElement element; 
 	
@@ -31,6 +33,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		this.element = assertNotNull(element);
 	}
 	
+	@Override
 	public ConcreteElementResult resolveConcreteElement() {
 		return getElementResolution();
 	}
@@ -54,8 +57,10 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		return namedElement.resolveConcreteElement(context);
 	}
 	
+	@Override
 	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	
+	@Override
 	public abstract INamedElement resolveTypeForValueContext();
 	
 	/* -----------------  ----------------- */

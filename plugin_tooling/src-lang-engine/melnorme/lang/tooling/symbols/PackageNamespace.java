@@ -17,7 +17,7 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
@@ -121,7 +121,7 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected final NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	protected final INamedElementSemanticData doCreateSemantics(PickedElement<?> pickedElement) {
 		return new ConcreteElementSemantics(this, pickedElement) {
 			
 			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);

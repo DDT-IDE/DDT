@@ -15,7 +15,7 @@ import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAVa
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
@@ -86,7 +86,7 @@ public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
 	
 	protected void testResolveEffectiveType(String source, String expectedResult) {
 		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
-		NamedElementSemantics nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
+		INamedElementSemanticData nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		
 		namedElementChecker(expectedResult).evaluate(effectiveType);
