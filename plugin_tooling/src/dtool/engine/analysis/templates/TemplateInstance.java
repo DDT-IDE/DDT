@@ -23,6 +23,8 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
+import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.Indexable;
@@ -32,15 +34,14 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.RefTemplateInstance;
 
-public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
+public class TemplateInstance extends DefUnit implements IConcreteNamedElement, IScopeElement {
 	
-	protected final RefTemplateInstance templateRef;
-	protected final ISemanticContext context;
-	protected final DefinitionTemplate templateDef;
+	public final RefTemplateInstance templateRef;
+	public final ISemanticContext context;
+	public final DefinitionTemplate templateDef;
 	
-	protected final DeclBlock body;
-	
-	protected final Indexable<INamedElementNode> tplArguments;
+	public final Indexable<INamedElementNode> tplArguments;
+	public final DeclBlock body;
 	
 	public TemplateInstance(RefTemplateInstance templateRef, ISemanticContext context, 
 			DefinitionTemplate templateDef, Indexable<INamedElementNode> tplArguments) {
@@ -48,16 +49,21 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 		this.templateRef = assertNotNull(templateRef);
 		this.context = context;
 		this.templateDef = assertNotNull(templateDef);
-		this.tplArguments = assertNotNull(tplArguments);
 		
-		body = parentize(clone(templateDef.decls));
+		this.tplArguments = parentize(assertNotNull(tplArguments));
+		this.body = parentize(clone(templateDef.decls));
 		
 		setSourceRange(templateDef.getSourceRange());
 		setParsedStatus();
+		completeLocalAnalysisOnNodeTree();
+		
+		setParent(templateDef);
 	}
 	
 	@Override
 	public void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defName);
+		acceptVisitor(visitor, tplArguments);
 		acceptVisitor(visitor, body);
 	}
 	
@@ -113,8 +119,8 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
-		return context;
+	public ScopeTraverser getScopeTraverser() {
+		return new ScopeTraverser(tplArguments, true);
 	}
 	
 	@Override

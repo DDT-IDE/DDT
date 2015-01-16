@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -44,25 +45,25 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public DefUnitResultsChecker removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives) {
-		removeIgnoredDefUnits(resultElements, ignoreDummyResults, ignorePrimitives, false);
+		removeIgnoredElements(resultElements, ignoreDummyResults, ignorePrimitives, false);
 		return this;
 	}
 	
-	public void removeIgnoredDefUnits(boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
-		removeIgnoredDefUnits(resultElements, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
+	public void removeIgnoredElements(boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
+		removeIgnoredElements(resultElements, ignoreDummyResults, ignorePrimitives, ignoreIntrinsics);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
+	public static void removeIgnoredElements(LinkedList<INamedElement> resultDefUnits, 
 			boolean ignoreDummyResults, boolean ignorePrimitives) {
-		removeIgnoredDefUnits(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
+		removeIgnoredElements(resultDefUnits, ignoreDummyResults, ignorePrimitives, false);
 	}
 	
-	public static void removeIgnoredDefUnits(LinkedList<INamedElement> resultDefUnits, 
-		boolean ignoreDummyResults, boolean ignorePrimitives, boolean ignoreIntrinsics) {
-		for (Iterator<INamedElement> iterator = resultDefUnits.iterator(); iterator.hasNext(); ) {
+	public static void removeIgnoredElements(LinkedList<INamedElement> resultDefUnits, 
+		boolean ignoreDummy, boolean ignorePrimitives, boolean ignoreIntrinsics) {
+		for (Iterator<INamedElement> iterator = resultDefUnits.listIterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
-			if(ignoreDummyResults && 
+			if(ignoreDummy && 
 				(defElement.getName().equals("_dummy") || defElement.getName().endsWith("_ignore"))) {
 				iterator.remove();
 			} else if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
@@ -76,16 +77,23 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public DefUnitResultsChecker removeStdLibObjectDefUnits() {
-		for (Iterator<INamedElement> iterator = resultElements.iterator(); iterator.hasNext(); ) {
+		resultStdLibElements.addAll(removeStdLibObjectElements(resultElements));
+		return this;
+	}
+	
+	public static LinkedList<INamedElement> removeStdLibObjectElements(LinkedList<INamedElement> elements) {
+		LinkedList<INamedElement> removedElements = CollectionUtil.createLinkedList();
+		
+		for (Iterator<INamedElement> iterator = elements.listIterator(); iterator.hasNext(); ) {
 			INamedElement namedElement = iterator.next();
 			
 			String moduleName = namedElement.getModuleFullName();
 			if(areEqual(moduleName, "object")) {
 				iterator.remove();
-				resultStdLibElements.add(namedElement);
+				removedElements.add(namedElement);
 			}
 		}
-		return this;
+		return removedElements;
 	}
 	
 	public void simpleCheckResults(String... expectedResults) {
@@ -95,6 +103,12 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public void checkResults(String[] expectedResults) {
+		checkResults(expectedResults, null);
+	}
+	
+	public void checkDefaultResults(String[] expectedResults) {
+		removeStdLibObjectDefUnits();
+		removeIgnoredElements(true, true, false);
 		checkResults(expectedResults, null);
 	}
 	
@@ -183,6 +197,65 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 			}
 		}
 		assertFail();
+	}
+	
+	public void checkNamedElements(String... expectedResults) {
+		
+		removeStdLibObjectElements(resultElements);
+		removeIgnoredElements(resultElements, true, true, true);
+		
+		@SuppressWarnings("unused")
+		String resultsString = StringUtil.toString(resultElements, "\n", new Function<INamedElement, String>() {
+			@Override
+			public String evaluate(INamedElement obj) {
+				if(obj instanceof SourceElement) {
+					return NamedElementUtil.getElementTypedLabel(obj, true);
+				}
+				return obj.toString();
+			}
+		});
+		
+		for(String expectedLabel : expectedResults) {
+			if(removedNamedElement(expectedLabel)) {
+				continue;
+			}
+			assertFail("Not found: " + expectedLabel);
+		}
+	}
+	
+	protected boolean removedNamedElement(String expectedLabel) {
+		for (Iterator<INamedElement> iterator = resultElements.listIterator(); iterator.hasNext(); ) {
+			INamedElement namedElement = iterator.next();
+			if(matchesLabel(namedElement, expectedLabel)) {
+				iterator.remove();
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean matchesLabel(INamedElement element, String expectedLabel) {
+		if(expectedLabel == null) {
+			return (element == null);
+		}
+		assertNotNull(element);
+		
+		String elementLabel;
+		if(expectedLabel.startsWith("$")) {
+			elementLabel = "$" + NamedElementUtil.getElementTypedLabel(element, true);
+		} else {
+			elementLabel = namedElementToString(element);
+		}
+		return areEqual(elementLabel, expectedLabel);
+	}
+	
+	public static String namedElementToString(INamedElement namedElement) {
+		if(namedElement instanceof SourceElement) {
+			SourceElement sourceElement = (SourceElement) namedElement;
+			return sourceElement.toStringAsCode();
+		} else {
+			return namedElement.toString();
+		}
 	}
 	
 }

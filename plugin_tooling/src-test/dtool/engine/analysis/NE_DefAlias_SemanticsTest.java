@@ -20,24 +20,24 @@ public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	@Override
 	public void test_resolveElement________() throws Exception {
 		// Test alias to var
-		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "intVar", "$/int");
-		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "intVar", "$/int");
+		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "int intVar;", "$/int");
+		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "int intVar;", "$/int");
 
 		// broken variant
 		String NOT_FOUND__target = NOT_FOUND__Name + ":target";
-		test_resolveElement(parseNamedElement("alias target XXX; "), NOT_FOUND__Name, NOT_FOUND__target);
-		test_resolveElement(parseNamedElement("alias XXX = target; "), NOT_FOUND__Name, NOT_FOUND__target);
+		test_resolveElement(parseNamedElement("alias target XXX; "), NOT_FOUND__target, NOT_FOUND__target);
+		test_resolveElement(parseNamedElement("alias XXX = target; "), NOT_FOUND__target, NOT_FOUND__target);
 		
-		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = target"), NOT_FOUND__Name, 
+		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = target"), NOT_FOUND__target, 
 			NOT_FOUND__target);
 		
 		/* FIXME: do syntax error element */
-		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name, NOT_FOUND__Name+":");
+		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name+":", NOT_FOUND__Name+":");
 		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name);
 		
 		// Test alias to type
-		test_resolveElement(parseNamedElement("alias int XXX; "), "int", ERROR_IS_NOT_A_VALUE+":int");
-		test_resolveElement(parseNamedElement("alias XXX = int; "), "int", ERROR_IS_NOT_A_VALUE+":int");
+		test_resolveElement(parseNamedElement("alias int XXX; "), "$/int", expectNotAValue("int"));
+		test_resolveElement(parseNamedElement("alias XXX = int; "), "$/int", expectNotAValue("int"));
 	}
 	
 	/* -----------------  ----------------- */

@@ -52,7 +52,7 @@ public class CompareDefUnits extends CommonDToolTest {
 		//new DefUnitResultsChecker(originalResults).simpleCheckResults(expectedProposalsArr);
 		
 		LinkedList<INamedElement> results = new LinkedList<>(originalResults);
-		DefUnitResultsChecker.removeIgnoredDefUnits(results, false, true);
+		DefUnitResultsChecker.removeIgnoredElements(results, false, true);
 		
 		HashSet<String> expectedProposals = hashSet(expectedProposalsArr);
 		HashSet<String> resultProposals = hashSet(strmap(results, fnDefUnitToStringAsElement(0)));

@@ -88,7 +88,7 @@ public abstract class CommonScopeLookup {
 	}
 	
 	public String toString_matches() {
-		return StringUtil.iterToString(matches.getElements(), "\n", new Function<INamedElement, String>() {
+		return StringUtil.toString(matches.getElements(), "\n", new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement obj) {
 				return obj.getFullyQualifiedName();

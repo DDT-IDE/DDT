@@ -48,7 +48,7 @@ public class NE_Module_Test extends NamedElement_CommonTest {
 		
 		assertTrue(((NamedElementSemantics) moduleProxy.getSemantics(pickedElement.context)).isResolved());
 		
-		test_resolveElement(pickedElement, "target", expectNotAValue("target"));
+		test_resolveElement(pickedElement, "$target/", expectNotAValue("target"));
 	}
 	
 	protected void testPackageNamespace() throws ExecutionException {

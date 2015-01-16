@@ -22,6 +22,7 @@ import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
+import dtool.engine.tests.DefUnitResultsChecker;
 
 
 public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
@@ -60,7 +61,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		Object[] results = ArrayUtil.map(overloadedElements, new Function<INamedElement, String>() {
 			@Override
 			public String evaluate(INamedElement namedElement) {
-				return namedElementToString(namedElement);
+				return DefUnitResultsChecker.namedElementToString(namedElement);
 			}
 		});
 		return results;

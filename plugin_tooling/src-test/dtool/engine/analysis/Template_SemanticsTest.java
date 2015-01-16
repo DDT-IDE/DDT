@@ -11,22 +11,52 @@
 package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Collection2;
 
 import org.junit.Test;
 
+import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.TemplateInstance;
+import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.parser.SourceEquivalenceChecker;
 
 
-public class Template_SemanticsTest extends CommonNodeSemanticsTest {
+public class Template_SemanticsTest extends NamedElement_CommonTest {
+	
+	public static void checkNamedElements(Collection2<INamedElement> originalElements, String... expectedResults) {
+		new DefUnitResultsChecker(originalElements).checkNamedElements(expectedResults);
+	}
 	
 	protected static <T extends Reference> INamedElement resolveTarget(PickedElement<T> ref) {
 		return ref.element.resolveTargetElement(ref.context);
+	}
+	
+	protected static INamedElement resolveTarget(Reference ref, PickedElement<?> other) {
+		return ref.resolveTargetElement(other.context);
+	}
+	
+	protected static String expectNotAValue(INamedElement namedElement) {
+		return expectNotAValue(namedElement.getFullyQualifiedName());
+	}
+	
+	protected CompletionScopeLookup allElementsSearch(TemplateInstance tplInstance) {
+		return new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.context, "");
+	}
+	
+	@Override
+	public void test_resolveElement________() throws Exception {
+	}
+	
+	@Override
+	public void test_resolveSearchInMembersScope________() throws Exception {
 	}
 	
 	/* -----------------  ----------------- */
@@ -50,12 +80,17 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	public void testTemplateInstantiation$() throws Exception {
 
 		PickedElement<RefTemplateInstance> tplRef = parseElement(
-			TPL_DEF_A + "Tpl!(int)/*M*/ ref1", "/*M*/", RefTemplateInstance.class);
+			TPL_DEF_A + "Tpl!(int)/*M*/ _dummy", "/*M*/", RefTemplateInstance.class);
 		
 		TemplateInstance tplInstance = assertCast(resolveTarget(tplRef), TemplateInstance.class);
+		DefinitionTemplate templateDef = tplInstance.templateDef;
 		
+		assertTrue(tplInstance.getLexicalParent() != null);
+		assertTrue(areEqual(tplInstance.getNameSourceRangeOrNull(), templateDef.getNameSourceRangeOrNull()));
 		assertTrue(tplInstance.isCompleted());
-		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context);
+//		assertTrue(tplInstance.getOwnerElement() == tplInstance.templateDef.getParent());
+		assertTrue(tplInstance.getSemanticContainerKey() == templateDef.getSemanticContainerKey());
+		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context); /*FIXME: BUG here*/
 		ASTSourceRangeChecker.checkConsistency(tplInstance);
 		
 		namedElementChecker("$_tests/Tpl!(int)").evaluate(tplInstance);
@@ -64,12 +99,19 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 			"Tpl!(int){ @TYPE1 = int; }{ TYPE1 foo; }");
 		
 		PickedElement<TemplateInstance> tplInstancePick = picked(tplInstance, tplRef.context);
-		NamedElement_CommonTest.test_resolveElement(tplInstancePick, null, 
-			expectNotAValue(tplInstance.getFullyQualifiedName()));
+		ISemanticContext context = tplInstancePick.context;
 		
-		NamedElement_CommonTest.test_resolveSearchInMembersScope(tplInstancePick,
-			"foo");
+		test_resolveElement(tplInstancePick, null, expectNotAValue(tplInstance));
+		test_resolveSearchInMembersScope(tplInstancePick, "foo");
 		
+		CompletionScopeLookup search = allElementsSearch(tplInstance);
+		tplInstance.performNameLookup(search);
+		checkNamedElements(search.getMatchedElements(), array("@TYPE1 = int;", "$_tests/", "$_tests/Tpl"));
+		
+		Reference ref = NodeFinderByString.find(tplInstance, Reference.class, "TYPE1");
+		INamedElement typeAlias = resolveTarget(ref, tplInstancePick);
+		
+		test_resolveElement(picked(typeAlias, context), "$/int", expectNotAValue(typeAlias));
 	}
-
+	
 }

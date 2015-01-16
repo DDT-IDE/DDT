@@ -81,7 +81,7 @@ public class StaticIfExpIs extends Expression {
 	}
 	
 	@Override
-	public void doNodeLocalAnalysis() {
+	public void doCompleteNodeAnalysis() {
 		if(!(getParent() instanceof DeclarationStaticIf)) {
 			// TODO add error
 		}

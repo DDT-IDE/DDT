@@ -143,7 +143,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		assertTrue(opResult.getReplaceLength() == replaceLength);
 		
 		DefUnitResultsChecker checker = new DefUnitResultsChecker(opResult.results);
-		checker.removeIgnoredDefUnits(true, false, false);
+		checker.removeIgnoredElements(true, false, false);
 		checker.removeStdLibObjectDefUnits();
 		checker.checkResults(expectedResults);
 	}

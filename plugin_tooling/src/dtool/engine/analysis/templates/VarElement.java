@@ -26,7 +26,7 @@ import dtool.ast.references.Reference;
 
 public class VarElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
-	public final Reference type;
+	public final Reference type; // non-children element
 	
 	public VarElement(DefSymbol defname, Resolvable type) {
 		super(defname);
@@ -42,7 +42,7 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
+	public void visitChildren_rest(IASTVisitor visitor) {
 	}
 	
 	@Override

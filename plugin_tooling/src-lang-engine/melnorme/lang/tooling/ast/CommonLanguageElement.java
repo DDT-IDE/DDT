@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
@@ -89,6 +90,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@Override
 	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
+		assertNotNull(parentContext);
 		if(isLanguageIntrinsic()) {
 			return parentContext.getContainingBundleResolution(true, null);
 		}

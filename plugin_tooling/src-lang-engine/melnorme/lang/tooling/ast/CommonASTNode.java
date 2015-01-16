@@ -159,6 +159,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	public final CommonASTNode cloneTree() {
 		final ASTNode clonedNode = (ASTNode) doCloneTree();
 		
+		assertTrue(hasSourceRangeInfo()); // This assertion might not be necessary, we could clone without range info.
 		clonedNode.setSourceRange(getStartPos(), this.getLength());
 		clonedNode.setParsedStatus();
 		
@@ -279,17 +280,17 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/* =============== Analysis and semantics =============== */
 	
-	public static void doSimpleAnalysisOnTree(ASTNode treeNode) {
-		treeNode.accept(CompleteNodeVisitor.instance);
+	public final void completeLocalAnalysisOnNodeTree() {
+		accept(CompleteNodeVisitor.instance);
 	}
 	
-	public final void completeNodeAnalysis() {
+	protected final void completeNodeAnalysis() {
 		assertTrue(isParsedStatus());
-		doNodeLocalAnalysis();
+		doCompleteNodeAnalysis();
 		getDataAtParsedPhase().setLocallyAnalysedData(asNode());
 	}
 	
-	protected void doNodeLocalAnalysis() {
+	protected void doCompleteNodeAnalysis() {
 		// Default implementation: do nothing
 	}
 	

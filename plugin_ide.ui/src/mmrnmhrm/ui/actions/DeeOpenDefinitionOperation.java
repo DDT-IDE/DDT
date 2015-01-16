@@ -109,7 +109,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperationExt {
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {
-		return StringUtil.iterToString(nodes, sep, new Function<FindDefinitionResultEntry, String>() {
+		return StringUtil.toString(nodes, sep, new Function<FindDefinitionResultEntry, String>() {
 			@Override
 			public String evaluate(FindDefinitionResultEntry obj) {
 				return obj.extendedName;

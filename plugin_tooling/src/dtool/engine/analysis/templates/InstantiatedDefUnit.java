@@ -11,14 +11,19 @@
 package dtool.engine.analysis.templates;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 
 public abstract class InstantiatedDefUnit extends DefUnit {
 	
-	public InstantiatedDefUnit(DefSymbol defname) {
-		super(defname.createCopy());
+	public InstantiatedDefUnit(DefSymbol defName) {
+		super(defName.createCopy());
+		assertTrue(defName.isCompleted());
+		setSourceRange(defName.getSourceRange());
+		setParsedStatus();
 	}
 	
 	@Override
@@ -28,5 +33,12 @@ public abstract class InstantiatedDefUnit extends DefUnit {
 	}
 	
 	public abstract void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp);
+	
+	@Override
+	public final void visitChildren(IASTVisitor visitor) {
+		acceptVisitor(visitor, defName);
+	}
+	
+	public abstract void visitChildren_rest(IASTVisitor visitor);
 	
 }

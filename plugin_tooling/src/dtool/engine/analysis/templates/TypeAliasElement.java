@@ -26,7 +26,7 @@ import dtool.ast.references.Reference;
 
 public class TypeAliasElement extends InstantiatedDefUnit {
 	
-	public final Reference target;
+	public final Reference target; // non-children member
 	
 	public TypeAliasElement(DefSymbol defName, Resolvable target) {
 		super(defName);
@@ -41,7 +41,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
+	public void visitChildren_rest(IASTVisitor visitor) {
 	}
 	
 	@Override

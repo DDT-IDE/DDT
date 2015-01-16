@@ -12,7 +12,6 @@ package dtool.ast.definitions;
 
 import static dtool.util.NewUtils.assertCast;
 import melnorme.lang.tooling.ast.CommonASTNode;
-import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -48,19 +47,13 @@ public class DefSymbol extends Symbol {
 		return new DefSymbol(name);
 	}
 	
+	public DefSymbol createCopy() {
+		return (DefSymbol) cloneTree();
+	}
+	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(name);
-	}
-	
-	public DefSymbol createCopy() {
-		DefSymbol defname = this;
-		DefSymbol defSymbol = new DefSymbol(defname.name);
-		SourceRange sourceRangeOrNull = defname.getSourceRangeOrNull();
-		if(sourceRangeOrNull != null) {
-			defSymbol.setSourceRange(sourceRangeOrNull);
-		}
-		return defSymbol;
 	}
 	
 }

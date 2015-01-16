@@ -97,7 +97,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected static void test_resolveConcreteElement(PickedElement<? extends INamedElement> pickedElement, 
-			String aliasTarget) {
+			String concreteTargetLabel) {
 		final ISemanticContext context = pickedElement.context;
 		final INamedElement namedElement = pickedElement.element;
 		
@@ -119,12 +119,11 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			assertTrue(notFoundError.getParentNamespace() == null);
 		}
 		
-		if(aliasTarget == null) {
+		if(concreteTargetLabel == null) {
 			// non-alias elements relsolve to themselves
 			assertTrue(concreteElement == namedElement);
 		} else {
-			assertTrue(concreteElement != null);
-			assertTrue(concreteElement.getName().equals(aliasTarget));
+			namedElementChecker(concreteTargetLabel).evaluate(concreteElement);
 		}
 	}
 	

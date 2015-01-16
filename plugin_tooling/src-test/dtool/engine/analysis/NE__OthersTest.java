@@ -125,7 +125,7 @@ public class NE__OthersTest extends NamedElement_CommonTest {
 		protected void visitAliases() {
 			/* ----------------- aliases ----------------- */
 			
-			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"));
+			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"), "int target;");
 		}
 	}
 	

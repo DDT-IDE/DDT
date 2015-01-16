@@ -17,14 +17,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.ASTNodeFinder;
+import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
-import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -37,7 +37,7 @@ import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.tests.DefUnitResultsChecker;
-import dtool.engine.util.NamedElementUtil;
+import dtool.parser.SourceEquivalenceChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
@@ -200,32 +200,10 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return new Predicate<INamedElement>() {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
-				if(expectedLabel == null) {
-					assertTrue(matchedElement == null);
-					return true;
-				}
-				assertNotNull(matchedElement);
-				
-				String elementLabel;
-				if(expectedLabel.startsWith("$")) {
-					elementLabel = "$" + NamedElementUtil.getElementTypedLabel(matchedElement, true);
-				} else {
-					elementLabel = namedElementToString(matchedElement);
-				}
-				assertAreEqual(elementLabel, expectedLabel);
-				
+				assertTrue(DefUnitResultsChecker.matchesLabel(matchedElement, expectedLabel));
 				return true;
 			}
 		};
-	}
-	
-	protected static String namedElementToString(INamedElement namedElement) {
-		if(namedElement instanceof SourceElement) {
-			SourceElement sourceElement = (SourceElement) namedElement;
-			return sourceElement.toStringAsCode();
-		} else {
-			return namedElement.toString();
-		}
 	}
 	
 	public static Predicate<INamedElement> notfoundChecker(final String name) {
@@ -240,4 +218,38 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		return NotAValueErrorElement.ERROR_IS_NOT_A_VALUE + ":" + name;
 	}
 	
+	/* -----------------  ----------------- */
+	
+	public static class NodeFinderByString extends ASTVisitor {
+		
+		@SuppressWarnings("unchecked")
+		public static <T extends ASTNode> T find(ASTNode node, Class<T> klass, String toStringAsCode) {
+			NodeFinderByString nodeFinder = new NodeFinderByString(klass, toStringAsCode);
+			node.accept(nodeFinder);
+			return (T) nodeFinder.result;
+		}
+		
+		protected final Class<? extends ASTNode> klass;
+		protected final String toStringAsCode;
+		
+		public ASTNode result;
+
+		public NodeFinderByString(Class<? extends ASTNode> klass, String toStringAsCode) {
+			this.klass = klass;
+			this.toStringAsCode = toStringAsCode;
+		}
+
+		@Override
+		public boolean preVisit(ASTNode node) {
+			if(klass.isInstance(node)) {
+				
+				if(toStringAsCode == null || SourceEquivalenceChecker.check(node.toStringAsCode(), toStringAsCode)) {
+					result = node;
+				}
+			}
+			return result == null;
+		}
+		
+	}
+
 }
