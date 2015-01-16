@@ -94,6 +94,10 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 			DeeLanguageIntrinsics.D2_063_intrinsics.super("<funtion>", null);
 			createMembers();
 		}
+		
+		@Override
+		protected void doSetCompleted() {
+		}
 	}
 	
 }

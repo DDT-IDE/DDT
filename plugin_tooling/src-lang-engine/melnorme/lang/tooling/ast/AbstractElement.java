@@ -37,9 +37,11 @@ public abstract class AbstractElement extends CommonLanguageElement {
 	
 	public void setCompleted() {
 		assertTrue(isCompleted == false);
-		/* FIXME: BUG here, need to visit children */
+		doSetCompleted();
 		isCompleted = true;
 	}
+	
+	protected abstract void doSetCompleted();
 	
 	@Override
 	public boolean isCompleted() {

@@ -43,6 +43,11 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	}
 	
 	@Override
+	protected void doSetCompleted() {
+		doCheckCompleted(elements);
+	}
+	
+	@Override
 	public String getNameInRegularNamespace() {
 		return firstElement.getNameInRegularNamespace();
 	}

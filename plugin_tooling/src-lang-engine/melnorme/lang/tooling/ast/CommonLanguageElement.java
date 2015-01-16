@@ -15,12 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
-import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.PackageNamespace;
+import melnorme.utilbox.collections.Collection2;
 
 
 public abstract class CommonLanguageElement implements ILanguageElement {
@@ -32,10 +32,6 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	public abstract ILanguageElement getLexicalParent();
 	public abstract ILanguageElement getOwnerElement();
 	
-	public INamedElement getParentNamespace() {
-		return NodeElementUtil.getOuterNamedElement(this);
-	}
-	
 	@Override
 	public boolean isLanguageIntrinsic() {
 		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
@@ -44,6 +40,26 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	@Override
 	public Path getSemanticContainerKey() {
 		return getOwnerElement() == null ? null : getOwnerElement().getSemanticContainerKey();
+	}
+	
+	/* -----------------  ----------------- */
+
+	public static boolean isCompleted(ILanguageElement element) {
+		return element == null || element.isCompleted();
+	}
+	
+	public static void doCheckCompleted(ILanguageElement element) {
+		if(element instanceof PackageNamespace) {
+			// PackageNamespace cannot be setCompleted early, so set it completed now
+			((PackageNamespace) element).setCompleted();
+		}
+		assertTrue(element.isCompleted());
+	}
+	
+	public static void doCheckCompleted(Collection2<? extends ILanguageElement> elements) {
+		for (ILanguageElement element : elements) {
+			doCheckCompleted(element);
+		}
 	}
 	
 	/* -----------------  ----------------- */

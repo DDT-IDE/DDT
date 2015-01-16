@@ -67,7 +67,7 @@ public class SymbolTable {
 				existingNamespace = existingNamespace.doCloneTree();
 				map.put(name, existingNamespace);
 			}
-			existingNamespace.getNamespaceForModification().addSymbols(newNamespace.getContainedElements());
+			existingNamespace.getNamespaceForModification().addSymbols(newNamespace.getNamespaceElements());
 		} else {
 			addEntryToMap(name, newElement);
 		}

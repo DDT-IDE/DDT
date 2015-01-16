@@ -12,6 +12,7 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -72,7 +73,7 @@ public interface CommonLanguageIntrinsics {
 			return "intrinsic_property#" + getName();
 		}
 		
-		protected abstract INamedElement resolveType(ISemanticContext mr);
+		protected abstract INamedElement resolveType(ISemanticContext context);
 		
 		@Override
 		public VarSemantics doCreateSemantics(PickedElement<?> pickedElement) {
@@ -103,7 +104,12 @@ public interface CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected INamedElement resolveType(ISemanticContext mr) {
+		protected void doSetCompleted() {
+			 assertTrue(isCompleted(type));
+		}
+		
+		@Override
+		protected INamedElement resolveType(ISemanticContext context) {
 			return type;
 		}
 		
@@ -120,6 +126,11 @@ public interface CommonLanguageIntrinsics {
 		public IntrinsicProperty2(String name, IReference typeRef, ElementDoc doc) {
 			super(name, doc);
 			this.typeRef = assertNotNull(typeRef);
+		}
+		
+		@Override
+		protected void doSetCompleted() {
+			 assertTrue(isCompleted(typeRef));
 		}
 		
 		@Override

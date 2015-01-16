@@ -382,7 +382,7 @@ public class Import_LookupTest extends CommonLookupTest {
 			public boolean evaluate(INamedElement matchedElement) {
 				PackageNamespace packageNameSpace = assertInstance(matchedElement, PackageNamespace.class);
 				assertEqualSet(
-					hashSet(elementToStringArray(packageNameSpace.getContainedElements())), 
+					hashSet(elementToStringArray(packageNameSpace.getNamespaceElements())), 
 					hashSet(expectedResults)
 				);
 				

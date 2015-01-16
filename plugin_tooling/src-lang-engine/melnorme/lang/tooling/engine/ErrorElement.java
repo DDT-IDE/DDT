@@ -58,6 +58,10 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	}
 	
 	@Override
+	protected void doSetCompleted() {
+	}
+	
+	@Override
 	public String getNameInRegularNamespace() {
 		return null;
 	}

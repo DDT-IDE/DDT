@@ -54,6 +54,10 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 			super(name, doc);
 		}
 		
+		@Override
+		protected void doSetCompleted() {
+		}
+		
 	}
 	
 	public final DeePrimitiveType void_type = new DeePrimitiveType("void");
@@ -236,6 +240,10 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 			createMembers();
 		}
 		
+		@Override
+		protected void doSetCompleted() {
+		}
+		
 	}
 	
 	public class IntrinsicDynArray extends DeeIntrinsicType {
@@ -264,6 +272,10 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 					parseDDoc("Reverses in place the order of the elements in the array. Returns the array.")), 
 				new IntrinsicProperty("sort", this, 
 					parseDDoc("Sorts in place the order of the elements in the array. Returns the array.")));
+		}
+		
+		@Override
+		protected void doSetCompleted() {
 		}
 		
 	}
@@ -296,6 +308,10 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 					parseDDoc("Reverses in place the order of the elements in the array. Returns the array.")), 
 				new IntrinsicProperty("sort", this, 
 					parseDDoc("Sorts in place the order of the elements in the array. Returns the array.")));
+		}
+		
+		@Override
+		protected void doSetCompleted() {
 		}
 		
 	}

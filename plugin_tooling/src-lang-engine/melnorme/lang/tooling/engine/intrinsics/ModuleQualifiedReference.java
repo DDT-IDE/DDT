@@ -39,6 +39,10 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 		return moduleFullName + "." + elementName;
 	}
 	
+	@Override
+	protected void doSetCompleted() {
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

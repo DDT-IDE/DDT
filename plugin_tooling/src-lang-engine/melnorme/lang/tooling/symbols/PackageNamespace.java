@@ -73,7 +73,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 		return namedElementsTable;
 	}
 	
-	public Collection2<INamedElement> getContainedElements() {
+	public Collection2<INamedElement> getNamespaceElements() {
 		return namedElementsTable.getElements();
 	}
 	
@@ -118,10 +118,15 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 		return "PNamespace[" + getFullyQualifiedName() + "]";
 	}
 	
+	@Override
+	protected void doSetCompleted() {
+		doCheckCompleted(getNamespaceElements());
+	}
+	
 	/* -----------------  ----------------- */
 	
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
-		return IteratorUtil.iterable(namedElementsTable.getElements());
+		return IteratorUtil.iterable(getNamespaceElements());
 	}
 	
 	@Override

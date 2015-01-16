@@ -12,6 +12,7 @@ package melnorme.lang.tooling.symbols;
 
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
@@ -25,6 +26,11 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 			 boolean isCompleted) {
 		super(ownerElement, lexicalParent, isCompleted);
 		this.name = name;
+	}
+	
+	@Override
+	public INamedElement getParentNamespace() {
+		return NodeElementUtil.getOuterNamedElement(this);
 	}
 	
 	@Override

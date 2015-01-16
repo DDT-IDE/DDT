@@ -52,6 +52,10 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
+	protected void doSetCompleted() {
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
 	}
