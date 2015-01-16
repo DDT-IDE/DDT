@@ -39,11 +39,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.engine.analysis.ModuleProxy;
-import dtool.parser.CommonTemplatedSourceBasedTest;
 import dtool.parser.DeeParserSourceTests;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
+import dtool.tests.CommonTemplatedSourceBasedTest;
 import dtool.tests.DToolTestResources;
 
 public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBasedTest {

@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import melnorme.lang.tooling.ast.CommonLanguageElement;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.utils.EntryMap;
@@ -68,11 +67,6 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	/* ----------------- NodeSemantics ----------------- */
 	
-	@Override
-	public ISemanticContext findSemanticContext(ILanguageElement element) {
-		return this; // subclasses must reimplement, if appropriate
-	}
-	
 	protected final SemanticsMap semanticsMap = new SemanticsMap();
 	
 	public class SemanticsMap extends EntryMap<CommonLanguageElement, IElementSemanticData> {
@@ -90,7 +84,7 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 	
 	@Override
 	public final IElementSemanticData getSemanticsEntry(CommonLanguageElement element) {
-		assertTrue(findSemanticContext(element) == this);
+		assertTrue(element.getElementSemanticContext(this) == this);
 		return semanticsMap.getEntry(element);
 	}
 	

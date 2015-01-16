@@ -45,7 +45,6 @@ import dtool.ast.definitions.AbstractFunctionDefinition;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DeclarationEnum;
 import dtool.ast.definitions.DeclarationMixin;
-import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionAggregate.IAggregateBody;

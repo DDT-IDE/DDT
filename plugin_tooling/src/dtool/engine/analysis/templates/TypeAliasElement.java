@@ -51,7 +51,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	
 	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
-		cp.append(defName);
+		cp.append("@", defName);
 		cp.append(" = ", target);
 	}
 	

@@ -23,9 +23,8 @@ public abstract class InstantiatedDefUnit extends DefUnit {
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("【");
 		toStringAsCode_instantiatedDefUnit(cp);
-		cp.append("】");
+		cp.append(";");
 	}
 	
 	public abstract void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp);

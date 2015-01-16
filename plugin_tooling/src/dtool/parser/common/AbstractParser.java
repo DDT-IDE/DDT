@@ -25,8 +25,8 @@ import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.parser.DeeTokens;
+import dtool.parser.ProtoDefSymbol;
 import dtool.parser.common.LexElement.MissingLexElement;
 
 /**

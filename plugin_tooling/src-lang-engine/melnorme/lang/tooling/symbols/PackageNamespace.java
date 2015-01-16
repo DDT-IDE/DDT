@@ -99,7 +99,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	public String getModuleFullName() {
+	public INamedElement getModuleElement() {
 		return null;
 	}
 	

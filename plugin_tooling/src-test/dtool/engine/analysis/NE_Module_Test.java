@@ -23,6 +23,7 @@ import melnorme.lang.tooling.symbols.PackageNamespace;
 
 import org.junit.Test;
 
+import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
@@ -42,10 +43,12 @@ public class NE_Module_Test extends NamedElement_CommonTest {
 			"import target; auto _ = target;", "target;");
 		ModuleProxy moduleProxy = assertCast(pickedElement.element, ModuleProxy.class);
 		
-		moduleProxy.resolveUnderlyingNode();
+		assertTrue(moduleProxy.getModuleElement() == moduleProxy);
+		assertCast(moduleProxy.resolveUnderlyingNode(), Module.class);
+		
 		assertTrue(((NamedElementSemantics) moduleProxy.getSemantics(pickedElement.context)).isResolved());
 		
-		test_resolveElement(pickedElement, "target", ERROR_IS_NOT_A_VALUE + ":target");
+		test_resolveElement(pickedElement, "target", expectNotAValue("target"));
 	}
 	
 	protected void testPackageNamespace() throws ExecutionException {

@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import dtool.tests.CommonParameterizedTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
 

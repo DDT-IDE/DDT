@@ -163,12 +163,16 @@ public class DeeParserTester extends CommonTestUtils {
 		
 		// Check consistency of source ranges (no overlapping ranges)
 		if(mainNode != null) {
-			ASTSourceRangeChecker.checkConsistency(mainNode);
-			
-			ASTCloneTests.testCloning(mainNode);
+			testNodeContracts(mainNode);
 		}
 		
 		runAdditionalTests(result, parsedSource);
+	}
+	
+	public static void testNodeContracts(ASTNode mainNode) {
+		ASTSourceRangeChecker.checkConsistency(mainNode);
+		
+		ASTCloneTests.testCloning(mainNode);
 	}
 	
 	public String checkParsedSource(final String expectedRemainingSource, final DeeTestsChecksParser deeParser) {

@@ -32,8 +32,9 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	
 	@Override
 	public INamedElement doResolveTargetElement() {
-		INamedElement resolvedTemplate = this.refTemplateInstance.tplRef.getSemantics(context).resolveTargetElement_();
-		if(false) {
+		INamedElement resolvedTemplate = refTemplateInstance.tplRef.getSemantics(context).resolveTargetElement_();
+		if(true) {
+			/* FIXME: TODO */
 			return createTemplateInstance(resolvedTemplate);
 		} else {
 			return resolvedTemplate;
@@ -60,10 +61,9 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return null;
 	}
 	
-	protected TemplateInstance createTemplateInstance(DefinitionTemplate template, 
-			RefTemplateInstance refTplInstance) {
+	protected TemplateInstance createTemplateInstance(DefinitionTemplate template, RefTemplateInstance templateRef) {
 		
-		Indexable<Resolvable> tplArgs = refTplInstance.getEffectiveArguments();
+		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
 		
 		int paramSize = template.getITemplateParameters().size();
 		if(paramSize != tplArgs.size()) {
@@ -78,7 +78,12 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			instantiatedArgs.add(tplParameter.createTemplateArgument(tplArgs.get(ix)));
 		}
 		
-		return new TemplateInstance(template, instantiatedArgs);
+		return complete(new TemplateInstance(templateRef, context, template, instantiatedArgs));
+	}
+	
+	protected TemplateInstance complete(TemplateInstance templateInstance) {
+		templateInstance.completeNodeAnalysis();
+		return templateInstance;
 	}
 	
 }

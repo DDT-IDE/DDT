@@ -56,18 +56,23 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
+	public String toString() {
+		return "module["+getModuleFullName()+"]";
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Module;
 	}
 	
 	@Override
-	public String getModuleFullName() {
-		return fullModuleName;
+	public INamedElement getModuleElement() {
+		return this;
 	}
 	
 	@Override
-	public String toString() {
-		return "module["+getModuleFullName()+"]";
+	public String getModuleFullName() {
+		return fullModuleName;
 	}
 	
 	@Override
@@ -105,7 +110,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public ISemanticContext getContextForThisElement(ISemanticContext parentContext) {
+	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
 		return context;
 	}
 	

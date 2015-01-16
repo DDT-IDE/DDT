@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -85,6 +86,11 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 		
 		ParsedModule parsedModule = parsedModules.get(moduleName);
 		return parsedModule == null ? null : parsedModule.module;
+	}
+	
+	@Override
+	public ISemanticContext getContainingBundleResolution(boolean isStdLib, Location modulePath) {
+		return this;
 	}
 	
 }

@@ -72,8 +72,8 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	}
 	
 	@Override
-	public String getModuleFullName() {
-		return getName();
+	public INamedElement getModuleElement() {
+		return null;
 	}
 	
 	@Override

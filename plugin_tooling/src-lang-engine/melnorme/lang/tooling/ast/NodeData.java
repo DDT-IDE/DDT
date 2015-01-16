@@ -171,4 +171,22 @@ public abstract class NodeData {
 		
 	}
 	
+	/* ----------------- util ----------------- */
+	
+	public static final class CompleteNodeVisitor extends ASTVisitor {
+		
+		public static final CompleteNodeVisitor instance = new CompleteNodeVisitor();
+		
+		@Override
+		public boolean preVisit(ASTNode node) {
+			return true;
+		}
+		
+		@Override
+		public void postVisit(ASTNode node) {
+			node.completeNodeAnalysis();
+		}
+		
+	}
+	
 }

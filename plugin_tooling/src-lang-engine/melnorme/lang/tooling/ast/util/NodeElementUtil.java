@@ -47,11 +47,11 @@ public class NodeElementUtil {
 	}
 	
 	public static INamedElement getOuterNamedElement(ILanguageElement node) {
-		return getNamedElementParent(node.getLexicalParent());
+		return getNearestNamedElement(node.getLexicalParent());
 	}
 	
 	/** An optimized version of {@link #getMatchingParent(ILanguageElement, Class)}) for klass=INamedElement */
-	public static INamedElement getNamedElementParent(ILanguageElement node) {
+	public static INamedElement getNearestNamedElement(ILanguageElement node) {
 		while(true) {
 			if(node == null) {
 				return null;

@@ -28,6 +28,7 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.parser.common.AbstractLexerTest.TokenChecker;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import dtool.tests.CommonTemplatedSourceBasedTest;
 
 @RunWith(Parameterized.class)
 public class DeeLexerSourceTests extends CommonTemplatedSourceBasedTest {

@@ -10,65 +10,30 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.context.EmptySemanticResolution;
-import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.ScopeSemantics;
+import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.DefSymbol;
-import dtool.ast.definitions.DefinitionVariable;
-import dtool.ast.references.RefIdentifier;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
-import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.TemplateInstance;
-import dtool.engine.analysis.templates.VarElement;
+import dtool.parser.SourceEquivalenceChecker;
 
 
 public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	
-	public static CompletionScopeLookup resolveAllMembers(ResolvedModule module, Reference tplRef) {
-		ISemanticContext context = module.getSemanticContext();
-		CompletionScopeLookup search = allElementsSearch(module);
-		INamedElement tplInstance_ = tplRef.getSemantics(context).resolveTargetElement().getSingleResult();
-		TemplateInstance tplInstance = assertCast(tplInstance_, TemplateInstance.class);
-		search.evaluateInMembersScope(tplInstance);
-		return search;
-	}
-	
-	protected static CompletionScopeLookup allElementsSearch(ResolvedModule module) {
-		return new CompletionScopeLookup(-1, module.getSemanticContext(), "");
-	}
-	
-	public static INamedElement findElement(String elementName, CommonScopeLookup search) {
-		INamedElement foundMatch = null;
-		
-		for (INamedElement match : search.getMatchedElements()) {
-			if(match.getName().equals(elementName)) {
-				assertTrue(foundMatch == null);
-				foundMatch = match;
-			}
-		}
-		return foundMatch;
+	protected static <T extends Reference> INamedElement resolveTarget(PickedElement<T> ref) {
+		return ref.element.resolveTargetElement(ref.context);
 	}
 	
 	/* -----------------  ----------------- */
-	
-	protected Reference getSampleType(ResolvedModule rm, String elementName) throws ModuleSourceException {
-		INamedElement element = ScopeSemantics.findElement(rm.getModuleNode(), elementName);
-		assertNotNull(element);
-		return assertCast(element, DefinitionVariable.class).type;
-	}
-	
+		
 	protected static final String TPL_DEF_A = "template Tpl("
 			+ "TYPE1"
-			+ ") { int x; };";
+			+ ") { TYPE1 foo; }";
 	
 	protected static final String TPL_DEF_B = "template Tpl("
 			+ "TYPE1 : int = bar, "
@@ -83,43 +48,28 @@ public class Template_SemanticsTest extends CommonNodeSemanticsTest {
 	@Test
 	public void testTemplateInstantiation() throws Exception { testTemplateInstantiation$(); }
 	public void testTemplateInstantiation$() throws Exception {
-		ResolvedModule module = parseModule(TPL_DEF_A + "Tpl!(int) ref1;");
-		Reference tplRef = getSampleType(module, "ref1");
-		
-		
-		if(true)
-			return; // TODO: finish these tests
-		
-		CommonScopeLookup search = resolveAllMembers(module, tplRef);
-		
-		INamedElement tplArg = findElement("TYPE1", search);
-		assertTrue(resolveEffectiveType(tplArg).getName().equals("int"));
-		
-		
-		// TODO test template instantiated elements using NamedElements_Test
-		
-		VarElement varInstance = new VarElement(new DefSymbol("blah"), new RefIdentifier("foo"));
-//		visitConcrete(syntheticElement(varInstance, getDefaultTestsModule()));
-		
-//		varInstance,
-//		templateInstance,
-		
-//		TemplateInstance templateInstance = new TemplateInstance((DefinitionTemplate) getDefUnit("template xxx(T){}"), 
-//		new ArrayList2<INamedElementNode>(
-//			new TypeAliasElement(new DefSymbol("blah"), parseSourceAndFindNode("int z;", 0, RefPrimitive.class))
-//		)
-//	);
 
-//		AliasElement aliasElement = sampleModule(
-//			new AliasElement(new DefSymbol("xxx"), new RefIdentifier("target")));
-//			aliasElement,
+		PickedElement<RefTemplateInstance> tplRef = parseElement(
+			TPL_DEF_A + "Tpl!(int)/*M*/ ref1", "/*M*/", RefTemplateInstance.class);
 		
+		TemplateInstance tplInstance = assertCast(resolveTarget(tplRef), TemplateInstance.class);
+		
+		assertTrue(tplInstance.isCompleted());
+		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context);
+		ASTSourceRangeChecker.checkConsistency(tplInstance);
+		
+		namedElementChecker("$_tests/Tpl!(int)").evaluate(tplInstance);
+		
+		SourceEquivalenceChecker.assertCheck(tplInstance.toStringAsCode(), 
+			"Tpl!(int){ @TYPE1 = int; }{ TYPE1 foo; }");
+		
+		PickedElement<TemplateInstance> tplInstancePick = picked(tplInstance, tplRef.context);
+		NamedElement_CommonTest.test_resolveElement(tplInstancePick, null, 
+			expectNotAValue(tplInstance.getFullyQualifiedName()));
+		
+		NamedElement_CommonTest.test_resolveSearchInMembersScope(tplInstancePick,
+			"foo");
+		
+	}
 
-	}
-	
-	protected INamedElement resolveEffectiveType(INamedElement tplArg) {
-		EmptySemanticResolution sr = new EmptySemanticResolution();
-		return tplArg.resolveConcreteElement(sr);
-	}
-	
 }

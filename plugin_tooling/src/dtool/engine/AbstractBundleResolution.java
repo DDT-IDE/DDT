@@ -20,11 +20,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.misc.Location;
@@ -119,7 +117,15 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 	}
 	
 	/** @return the bundle resolution that directly contains given modulePath, or null if none does. */
-	public AbstractBundleResolution getContainingBundleResolution(final Location modulePath) {
+	@Override
+	public AbstractBundleResolution getContainingBundleResolution(boolean isStdLib, final Location modulePath) {
+		if(isStdLib) {
+			return getStdLibResolution();
+		}
+		if(modulePath == null) {
+			return null;
+		}
+		
 		return new BundleResolutionVisitor<AbstractBundleResolution, RuntimeException>() {
 			@Override
 			protected void visit(AbstractBundleResolution bundleResolution) {
@@ -216,22 +222,6 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 			}
 			return resolvedModule;
 		}
-	}
-	
-	/* ----------------- NodeSemantics ----------------- */
-	
-	@Override
-	public ISemanticContext findSemanticContext(ILanguageElement element) {
-		if(element.isLanguageIntrinsic()) {
-			return getStdLibResolution();
-		}
-		
-		Location loc = Location.createValidOrNull(element.getSemanticContainerKey());
-		if(loc == null) {
-			return null;
-		}
-		
-		return getContainingBundleResolution(loc);
 	}
 	
 }

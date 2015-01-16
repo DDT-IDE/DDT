@@ -12,7 +12,7 @@ package melnorme.lang.tooling.context;
 
 import java.util.Collections;
 
-import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.utilbox.misc.Location;
 import dtool.engine.AbstractBundleResolution;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.StandardLibraryResolution;
@@ -36,12 +36,12 @@ public class EmptySemanticResolution extends AbstractBundleResolution {
 	}
 	
 	@Override
-	public ISemanticContext findSemanticContext(ILanguageElement element) {
-		ISemanticContext semanticContext = super.findSemanticContext(element);
-		if(semanticContext == null) {
+	public AbstractBundleResolution getContainingBundleResolution(boolean isStdLib, Location modulePath) {
+		AbstractBundleResolution context = super.getContainingBundleResolution(isStdLib, modulePath);
+		if(context == null) {
 			return this;
 		}
-		return semanticContext;
+		return context;
 	}
 	
 }

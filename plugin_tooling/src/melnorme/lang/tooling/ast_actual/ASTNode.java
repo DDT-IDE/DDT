@@ -10,7 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast_actual;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import dtool.ast.definitions.Module;
@@ -23,12 +22,6 @@ public abstract class ASTNode extends CommonASTNode {
 	public abstract ASTNodeTypes getNodeType();
 	
 	/* ------------------------------------------------------------ */
-	
-	public String getModuleFullName() {
-		/* This must be overriden by synthetic defUnits */
-		Module moduleNode = assertNotNull(getModuleNode_());
-		return moduleNode.getFullyQualifiedName();
-	}
 	
 	public final Module getModuleNode_() {
 		return (Module) getModuleNode();

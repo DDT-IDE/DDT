@@ -73,7 +73,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	@Override
-	public void doNodeSimpleAnalysis() {
+	public void doNodeLocalAnalysis() {
 		assertTrue(getDeclarationImport() != null);
 	}
 	

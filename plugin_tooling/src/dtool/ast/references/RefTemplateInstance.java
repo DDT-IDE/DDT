@@ -11,6 +11,7 @@
 package dtool.ast.references;
 
 import static dtool.util.NewUtils.exactlyOneIsNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.tooling.ast.CommonASTNode;
@@ -68,11 +69,17 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		}
 	}
 	
+	public String normalizedArgsToString() {
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.appendList("!(", getEffectiveArguments(), ",", ")");
+		return cp.getPrintedSource();
+	};
+	
 	public Indexable<Resolvable> getEffectiveArguments() {
 		if(isSingleArgSyntax()) {
 			return ArrayView.create(array(tplSingleArg));
 		} else {
-			return tplArgs;
+			return assertNotNull(tplArgs);
 		}
 	}
 	
@@ -81,6 +88,6 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 	@Override
 	protected RefTemplateInstanceSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new RefTemplateInstanceSemantics(this, pickedElement);
-	};
+	}
 	
 }

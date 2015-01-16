@@ -21,7 +21,6 @@ import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.declarations.IncompleteDeclarator;
-import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.expressions.ExpMixinString;

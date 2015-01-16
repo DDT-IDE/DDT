@@ -71,6 +71,7 @@ public class NameLookup_ErrorsTest extends CommonNodeSemanticsTest {
 	protected void checkResultNotFound(INamedElement result) {
 		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__Name));
 		assertTrue(result.getNameInRegularNamespace() == null);
+		assertTrue(result.getModuleFullName() == null);
 	}
 	
 	protected void testModuleParseException() {

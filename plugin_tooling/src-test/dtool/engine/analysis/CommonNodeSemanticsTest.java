@@ -25,6 +25,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
@@ -207,7 +208,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 				
 				String elementLabel;
 				if(expectedLabel.startsWith("$")) {
-					elementLabel = "$" + NamedElementUtil.getElementTypedLabel(matchedElement);
+					elementLabel = "$" + NamedElementUtil.getElementTypedLabel(matchedElement, true);
 				} else {
 					elementLabel = namedElementToString(matchedElement);
 				}
@@ -233,6 +234,10 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	public static  String expectNotFound(String name) {
 		return NotFoundErrorElement.NOT_FOUND__Name + ":" + name;
+	}
+	
+	public static String expectNotAValue(String name) {
+		return NotAValueErrorElement.ERROR_IS_NOT_A_VALUE + ":" + name;
 	}
 	
 }

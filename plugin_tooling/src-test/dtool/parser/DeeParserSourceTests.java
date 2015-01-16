@@ -46,6 +46,7 @@ import dtool.parser.common.LexElementSource;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
+import dtool.tests.CommonTemplatedSourceBasedTest;
 import dtool.tests.utils.SimpleParser;
 import dtool.util.NewUtils;
 

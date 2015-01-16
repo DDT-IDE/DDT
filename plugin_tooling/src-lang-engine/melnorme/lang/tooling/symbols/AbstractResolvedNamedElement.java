@@ -43,7 +43,7 @@ public abstract class AbstractResolvedNamedElement extends AbstractNamedElement 
 	protected abstract INamedElementSemanticData doGetSemantics();
 	
 	@Override
-	public ISemanticContext getContextForThisElement(ISemanticContext parentContext) {
+	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
 		return parentContext; // We might change this API to null, so far this code only runs for tests.
 	}
 	

@@ -12,6 +12,7 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.NodeData.CompleteNodeVisitor;
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
@@ -158,7 +159,16 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	public final CommonASTNode cloneTree() {
 		final ASTNode clonedNode = (ASTNode) doCloneTree();
 		
-		assertTrue(clonedNode.getClass() == this.getClass());
+		clonedNode.setSourceRange(getStartPos(), this.getLength());
+		clonedNode.setParsedStatus();
+		
+		assertNotNull(clonedNode);
+		assertTrue(clonedNode != this);
+		assertTrue(clonedNode.getParent() == null);
+		assertTrue(clonedNode.getClass() ==  this.getClass());
+		assertTrue(clonedNode.isParsedStatus());
+		assertTrue(clonedNode.isCompleted() == false);
+		
 		return clonedNode;
 	}
 	
@@ -270,31 +280,17 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	/* =============== Analysis and semantics =============== */
 	
 	public static void doSimpleAnalysisOnTree(ASTNode treeNode) {
-		ASTVisitor childrenVisitor = new LocalAnalysisVisitor();
-		treeNode.accept(childrenVisitor);
+		treeNode.accept(CompleteNodeVisitor.instance);
 	}
 	
-	protected static final class LocalAnalysisVisitor extends ASTVisitor {
-		@Override
-		public boolean preVisit(ASTNode node) {
-			node.doNodeSimpleAnalysis();
-			return true;
-		}
-		
-		@Override
-		public void postVisit(ASTNode node) {
-			node.endNodeSimpleAnalysis();
-		}
-	}
-	
-	
-	public void doNodeSimpleAnalysis() {
+	public final void completeNodeAnalysis() {
 		assertTrue(isParsedStatus());
-		// Default implementation: do nothing
+		doNodeLocalAnalysis();
+		getDataAtParsedPhase().setLocallyAnalysedData(asNode());
 	}
 	
-	public void endNodeSimpleAnalysis() {
-		getDataAtParsedPhase().setLocallyAnalysedData(asNode());
+	protected void doNodeLocalAnalysis() {
+		// Default implementation: do nothing
 	}
 	
 	public boolean isPostParseStatus() {

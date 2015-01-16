@@ -25,7 +25,7 @@ public class PickedElement<E extends ILanguageElement> {
 	public final ISemanticContext context;
 	
 	public PickedElement(E element, ISemanticContext context) {
-		assertTrue(element.getContextForThisElement(context) == context);
+		assertTrue(element.getElementSemanticContext(context) == context);
 		this.element = element;
 		this.context = context;
 	}

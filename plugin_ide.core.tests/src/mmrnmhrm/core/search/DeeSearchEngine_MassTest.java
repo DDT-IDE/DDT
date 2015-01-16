@@ -142,7 +142,7 @@ public class DeeSearchEngine_MassTest extends DeeSearchEngine_Test {
 					for (Reference pair : expectedReferences) {
 						Reference reference = pair;
 						
-						String refModuleName = reference.getModuleNode_().getModuleFullName();
+						String refModuleName = reference.getModuleElement().getModuleFullName();
 						
 						IModelElement modelElement = downCast(referenceMatch.getElement());
 						ISourceModule matchSrcModule = DeeSearchEngineTestUtils.getSourceModule(modelElement);

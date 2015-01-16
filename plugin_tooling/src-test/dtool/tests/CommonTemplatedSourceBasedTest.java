@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.parser;
+package dtool.tests;
 
 
 import static dtool.tests.DToolTestResources.getTestResourceFile;
@@ -38,8 +38,6 @@ import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor;
 import dtool.sourcegen.TemplatedSourceProcessorCommonTest.TestsTemplatedSourceProcessor;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
-import dtool.tests.DToolTests;
-import dtool.tests.DeeFileBasedTest;
 import dtool.util.NewUtils;
 
 @RunWith(Parameterized.class)

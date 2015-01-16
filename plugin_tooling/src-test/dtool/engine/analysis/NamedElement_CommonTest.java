@@ -69,7 +69,8 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			String expectedTypeForValueContext) {
 		final INamedElement namedElement = pickedElement.element;
 		
-		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getSemanticContainerKey() != null);
+		assertTrue(namedElement.isLanguageIntrinsic() || namedElement.getSemanticContainerKey() != null
+				|| namedElement.getElementSemanticContext(null) != null);
 		
 		if(emptyAsNull(namedElement.getModuleFullName()) == null) {
 			assertTrue(namedElement.getParentNamespace() == null);
@@ -100,7 +101,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		final ISemanticContext context = pickedElement.context;
 		final INamedElement namedElement = pickedElement.element;
 		
-		assertTrue(context == namedElement.getContextForThisElement(context));
+		assertTrue(context == namedElement.getElementSemanticContext(context));
 		
 		checkIsSameResolution(
 			namedElement.getSemantics(context).resolveConcreteElement(),
@@ -179,7 +180,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected static PickedElement<INamedElement> picked2(INamedElement namedElement, ISemanticContext context) {
-		return picked(namedElement, namedElement.getContextForThisElement(context));
+		return picked(namedElement, namedElement.getElementSemanticContext(context));
 	}
 	
 }

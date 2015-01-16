@@ -178,6 +178,16 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
+	public INamedElement getModuleElement() {
+		return this;
+	}
+	
+	@Override
+	public String getModuleFullName() {
+		return getFullyQualifiedName();
+	}
+	
+	@Override
 	public String getFullyQualifiedName() {
 		ASTCodePrinter cp = new ASTCodePrinter();
 		if(md != null) {
@@ -185,11 +195,6 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 		}
 		cp.append(getName());
 		return cp.toString();
-	}
-	
-	@Override
-	public String getModuleFullName() {
-		return getFullyQualifiedName();
 	}
 	
 	public String[] getDeclaredPackages() {

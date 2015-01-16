@@ -30,6 +30,11 @@ public interface ILanguageElement {
 	/** @return the parent element of this element. null if it is the top element of the tree. */
 	ILanguageElement getLexicalParent();
 	
+	/** @return the fully qualified name of the module this element belongs to. 
+	 * Can be null if element is not contained in a module. */
+	public String getModuleFullName();
+	
+	
 	/** @return whether the construction/setup of this element is complete, and therefore the element
 	 * is ready for semantic analysis. Only when this is true should semantic operations be performed.
 	 * After an element is completed, it should be immutable, at least with data affecting semantics.*/
@@ -74,6 +79,6 @@ public interface ILanguageElement {
 	/**
 	 * @return the context where this element is directly contained in.
 	 */
-	public ISemanticContext getContextForThisElement(ISemanticContext parentContext);
+	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext);
 	
 }

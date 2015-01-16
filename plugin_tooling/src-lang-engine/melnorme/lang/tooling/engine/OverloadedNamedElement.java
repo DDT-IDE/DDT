@@ -47,6 +47,13 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 		doCheckCompleted(elements);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	@Override
+	public EArcheType getArcheType() {
+		return archeType;
+	}
+	
 	@Override
 	public String getNameInRegularNamespace() {
 		return firstElement.getNameInRegularNamespace();
@@ -60,11 +67,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	@Override
 	public String getModuleFullName() {
 		return firstElement.getModuleFullName();
-	}
-	
-	@Override
-	public EArcheType getArcheType() {
-		return archeType;
 	}
 	
 	@Override

@@ -31,7 +31,7 @@ public final class StringUtil {
 	
 	/** @return a String produced from the given coll with the given separator String, 
 	 * using the elements's toString() method. */
-	public static String collToString(Collection<?> coll, String separator) {
+	public static String collToString(Iterable<?> coll, String separator) {
 		return iterToString(coll, separator, null);
 	}
 	

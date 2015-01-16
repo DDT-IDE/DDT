@@ -23,7 +23,6 @@ import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.CStyleVarArgsParameter;
-import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.IFunctionParameter.FnParameterAttributes;

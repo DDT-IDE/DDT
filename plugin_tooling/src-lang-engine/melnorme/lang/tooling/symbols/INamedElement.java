@@ -44,10 +44,6 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	/** @return The fully qualified name of this element. Not null. */
 	public String getFullyQualifiedName();
 	
-	/** @return the fully qualified name of the module this element belongs to. 
-	 * Can be null if element is not contained in a module. */
-	public String getModuleFullName();
-	
 	
 	/** @return the {@link INamedElement} of the nearest enclosing namespace.
 	 * For modules and packages, and certain other special elements, that is null. */

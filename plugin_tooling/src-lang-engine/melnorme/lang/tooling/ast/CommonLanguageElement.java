@@ -15,12 +15,16 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.misc.Location;
+import dtool.ast.definitions.EArcheType;
 
 
 public abstract class CommonLanguageElement implements ILanguageElement {
@@ -32,14 +36,22 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	public abstract ILanguageElement getLexicalParent();
 	public abstract ILanguageElement getOwnerElement();
 	
-	@Override
-	public boolean isLanguageIntrinsic() {
-		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
-	}
 	
 	@Override
-	public Path getSemanticContainerKey() {
-		return getOwnerElement() == null ? null : getOwnerElement().getSemanticContainerKey();
+	public String getModuleFullName() {
+		INamedElement module = getModuleElement();
+		return module == null ? null : module.getFullyQualifiedName();
+	}
+	
+	public INamedElement getModuleElement() {
+		INamedElement namedElement = NodeElementUtil.getNearestNamedElement(this);
+		while(namedElement != null) {
+			if(namedElement.getArcheType() == EArcheType.Module) {
+				return namedElement;
+			}
+			namedElement = NodeElementUtil.getOuterNamedElement(namedElement);
+		}
+		return null;
 	}
 	
 	/* -----------------  ----------------- */
@@ -67,13 +79,32 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	@Override
 	public IElementSemanticData getSemantics(ISemanticContext parentContext) {
 		assertTrue(isCompleted());
-		ISemanticContext context = getContextForThisElement(parentContext);
+		return doGetSemantics(parentContext);
+	}
+	
+	public IElementSemanticData doGetSemantics(ISemanticContext parentContext) {
+		ISemanticContext context = getElementSemanticContext(parentContext);
 		return context.getSemanticsEntry(this);
 	}
 	
 	@Override
-	public ISemanticContext getContextForThisElement(ISemanticContext parentContext) {
-		return parentContext.findSemanticContext(this);
+	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
+		if(isLanguageIntrinsic()) {
+			return parentContext.getContainingBundleResolution(true, null);
+		}
+		
+		Location loc = Location.createValidOrNull(this.getSemanticContainerKey());
+		return parentContext.getContainingBundleResolution(false, loc);
+	}
+	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
+	}
+	
+	@Override
+	public Path getSemanticContainerKey() {
+		return getOwnerElement() == null ? null : getOwnerElement().getSemanticContainerKey();
 	}
 	
 	@Override

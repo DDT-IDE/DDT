@@ -26,7 +26,6 @@ import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
 import dtool.ast.definitions.CStyleRootRef;
-import dtool.ast.definitions.DefUnit.ProtoDefSymbol;
 import dtool.ast.definitions.IFunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.ITemplateParameter;

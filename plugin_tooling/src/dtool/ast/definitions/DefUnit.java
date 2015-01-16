@@ -13,7 +13,6 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -26,47 +25,13 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import descent.core.ddoc.DeeDocAccessor;
 import dtool.parser.DeeTokenSemantics;
+import dtool.parser.ProtoDefSymbol;
 import dtool.parser.common.Token;
 
 /**
  * Abstract class for all AST elements that define a new named entity.
  */
 public abstract class DefUnit extends ASTNode implements INamedElementNode {
-	
-	public static class ProtoDefSymbol {
-		public final String name;
-		public final SourceRange nameSourceRange;
-		public final ParserError error;
-		
-		public ProtoDefSymbol(String name, SourceRange nameSourceRange, ParserError error) {
-			this.name = name;
-			this.nameSourceRange = nameSourceRange;
-			this.error = error;
-		}
-
-		public boolean isMissing() {
-			return error != null;
-		}
-		
-		public int getStartPos() {
-			return nameSourceRange.getStartPos();
-		}
-		
-		public DefSymbol createDefId() {
-			ProtoDefSymbol defIdTuple = this;
-			DefSymbol defId = new DefSymbol(defIdTuple.name);
-			if(defIdTuple.nameSourceRange != null) {
-				defId.setSourceRange(defIdTuple.nameSourceRange);
-			}
-			if(defIdTuple.error == null) {
-				defId.setParsedStatus();
-			} else {
-				defId.setParsedStatusWithErrors(defIdTuple.error);
-			}
-			return defId;
-		}
-		
-	}
 	
 	public final DefSymbol defName; // It may happen that this is not a child of DefUnit
 	
