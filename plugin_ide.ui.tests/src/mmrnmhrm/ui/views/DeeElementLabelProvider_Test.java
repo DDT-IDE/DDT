@@ -36,10 +36,10 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		checkLabel(new ModuleProxy("pack.sub.mod", null, null), "pack.sub.mod", "mod");
 		
 		
-		checkLabel(createNamespaceElement(array("pack"), new ModuleProxy("modA", null, null), null), 
+		checkLabel(createNamespaceElement(array("pack"), new ModuleProxy("modA", null, null)), 
 			"pack", "pack");
 
-		checkLabel(createNamespaceElement(array("pack", "sub"), new ModuleProxy("modA", null, null), null), 
+		checkLabel(createNamespaceElement(array("pack", "sub"), new ModuleProxy("modA", null, null)), 
 			"pack", "pack");
 		
 		
