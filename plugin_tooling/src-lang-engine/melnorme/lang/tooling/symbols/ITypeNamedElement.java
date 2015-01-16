@@ -16,6 +16,4 @@ package melnorme.lang.tooling.symbols;
  */
 public interface ITypeNamedElement extends IConcreteNamedElement {
 	
-	/* FIXME: BUG here: need to make sure all type Elements implement this. */
-	
 }

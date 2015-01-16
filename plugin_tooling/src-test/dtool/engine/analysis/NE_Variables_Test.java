@@ -20,7 +20,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.junit.Test;
 
-public class NE_DefVariable_SemanticsTest extends NamedElement_CommonTest {
+public class NE_Variables_Test extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {

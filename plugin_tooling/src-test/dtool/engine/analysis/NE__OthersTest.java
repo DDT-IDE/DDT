@@ -27,7 +27,8 @@ import dtool.ast.references.RefIdentifier;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;
 
-public class NamedElements_Test extends NamedElement_CommonTest {
+// TODO: remove this class, create specific tests for each remaining NamedElement.
+public class NE__OthersTest extends NamedElement_CommonTest {
 	
 	/* ----------------- helpers to create elements ----------------- */
 	
@@ -88,18 +89,9 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 		
 		public void visitElements() throws Exception {
 			
-			visitConcrete(parseDefUnit("int xxx;"));
-			visitConcrete(parseDefUnit("int z, xxx;"));
-			visitConcrete(parseDefUnit("auto xxx = 2;"));
-			visitConcrete(parseDefUnit("enum Enum { xxx = 1 }"));
-			visitConcrete(parseDefUnit("enum xxx = 1;"));
-			
 			visitConcrete(parseDefUnit("void func() {  if(int xxx) { }  }"));
 			visitConcrete(parseDefUnit("void func(int xxx) {   }"));
 			
-			
-			visitConcrete(parseDefUnit("Enum xxx { }"));
-			visitConcrete(parseDefUnit("module xxx;")); /*FIXME: BUG here, module name mismatch. */
 			
 			visitConcrete(parseDefUnit("static this() { }", "this"));
 			
@@ -132,10 +124,6 @@ public class NamedElements_Test extends NamedElement_CommonTest {
 		
 		protected void visitAliases() {
 			/* ----------------- aliases ----------------- */
-			
-			
-			visitAliasElement(parseDefUnit("import xxx = target;"));
-			visitAliasElement(parseDefUnit("import blah : xxx = target;"));
 			
 			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"));
 		}

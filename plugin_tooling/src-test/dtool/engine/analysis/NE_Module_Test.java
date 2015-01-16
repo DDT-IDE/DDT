@@ -26,10 +26,13 @@ import org.junit.Test;
 import dtool.ast.references.NamedReference;
 import dtool.engine.ResolvedModule;
 
-public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
+public class NE_Module_Test extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_resolveElement________() throws Exception {
+		test_resolveConcreteElement(parseNamedElement("module xxx;"), null);
+		test_resolveConcreteElement(parseNamedElement("module pack.xxx;"), null);
+		
 		testModuleProxy();
 		testPackageNamespace();
 	}
@@ -51,32 +54,6 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 		assertTrue(pickedElement.element instanceof PackageNamespace);
 		
 		test_resolveElement(pickedElement, null, ERROR_IS_NOT_A_VALUE + ":xxx");
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Test
-	public void testModuleSyntheticUnits() throws Exception { testModuleSyntheticUnits$(); }
-	public void testModuleSyntheticUnits$() throws Exception {
-		
-		testModuleSyntheticUnit____("module foo;", "foo");
-		testModuleSyntheticUnit____("", "_tests");
-		
-		testModuleSyntheticUnit____("module pack.foo;", "pack.foo");
-		testModuleSyntheticUnit____("module pack.subpack.foo;", "pack.subpack.foo");
-	}
-	
-	protected void testModuleSyntheticUnit____(String preSource, String elemName) {
-		ResolvedModule resolvedModule = parseModule_(
-			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
-		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
-		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
-		assertTrue(pickA.element != pickB.element);
-		
-		ReferenceResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
-		ReferenceResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
-		
-		assertTrue(resultA.result == resultB.result);
 	}
 	
 	@Override
@@ -104,6 +81,32 @@ public class NE_ModuleSynthetics_Test extends NamedElement_CommonTest {
 			"foo"
 		);
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Test
+	public void testModuleSyntheticUnits() throws Exception { testModuleSyntheticUnits$(); }
+	public void testModuleSyntheticUnits$() throws Exception {
+		
+		testModuleSyntheticUnit____("module foo;", "foo");
+		testModuleSyntheticUnit____("", "_tests");
+		
+		testModuleSyntheticUnit____("module pack.foo;", "pack.foo");
+		testModuleSyntheticUnit____("module pack.subpack.foo;", "pack.subpack.foo");
+	}
+	
+	protected void testModuleSyntheticUnit____(String preSource, String elemName) {
+		ResolvedModule resolvedModule = parseModule_(
+			preSource + "; int _dummy = " + elemName + "/*A*/ ~ " + elemName + "/*B*/;");
+		PickedElement<NamedReference> pickA = pickElement(resolvedModule, elemName + "/*A*/", NamedReference.class);
+		PickedElement<NamedReference> pickB = pickElement(resolvedModule, elemName + "/*B*/", NamedReference.class);
+		assertTrue(pickA.element != pickB.element);
+		
+		ReferenceResult resultA = Resolvables_SemanticsTest.testResolveElement(pickA);
+		ReferenceResult resultB = Resolvables_SemanticsTest.testResolveElement(pickB);
+		
+		assertTrue(resultA.result == resultB.result);
 	}
 	
 }
