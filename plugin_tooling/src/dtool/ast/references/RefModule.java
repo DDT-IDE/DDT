@@ -110,7 +110,7 @@ public class RefModule extends NamedReference {
 			return null;
 		} else {
 			INamedElement moduleElem = new ModuleProxy(getRefModuleFullyQualifiedName(), context, false, this);
-			return PackageNamespace.createNamespaceElement(getPackageNames(), moduleElem, this);
+			return PackageNamespace.createNamespaceElement(getPackageNames(), moduleElem);
 		}
 	}
 	

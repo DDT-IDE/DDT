@@ -15,9 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
@@ -30,25 +30,23 @@ import dtool.ast.definitions.EArcheType;
 /**
  * A package namespace, parented on a given scope, implicitly created from import statements.
  */
-public class PackageNamespace extends AbstractNamedElement implements IScopeElement, IConcreteNamedElement {
+public class PackageNamespace extends AbstractResolvedNamedElement implements IScopeElement, IConcreteNamedElement {
 	
-	public static PackageNamespace createNamespaceElement(String[] packages, INamedElement module, 
-			ILanguageElement container) {
+	public static PackageNamespace createNamespaceElement(String[] packages, INamedElement module) {
 		String defName = packages[0];
 		packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-		return createNamespaceFragments(defName, packages, module, container);
+		return createNamespaceFragments(defName, packages, module);
 	}
 	
-	public static PackageNamespace createNamespaceFragments(String fqName, String[] packages, INamedElement module, 
-			ILanguageElement container) {
+	public static PackageNamespace createNamespaceFragments(String fqName, String[] packages, INamedElement module) {
 		if(packages.length == 0) {
-			return new PackageNamespace(fqName, container, module);
+			return new PackageNamespace(fqName, module);
 		} else {
 			String childDefName = packages[0];
 			String childFqName = fqName + "." + childDefName;
 			packages = ArrayUtil.copyOfRange(packages, 1, packages.length);
-			PackageNamespace subPackage = createNamespaceFragments(childFqName, packages, module, container);
-			return new PackageNamespace(fqName, container, subPackage);
+			PackageNamespace subPackage = createNamespaceFragments(childFqName, packages, module);
+			return new PackageNamespace(fqName, subPackage);
 		}
 	}
 	
@@ -57,13 +55,15 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	protected final String fqName;
 	protected final SymbolTable namedElementsTable;
 	
-	public PackageNamespace(String fqName, ILanguageElement owner, INamedElement firstMember) {
-		this(fqName, owner, new SymbolTable());
+	protected PackageNamespaceSemantics packageNamespaceSemantics;
+	
+	public PackageNamespace(String fqName, INamedElement firstMember) {
+		this(fqName, new SymbolTable());
 		namedElementsTable.addSymbol(assertNotNull(firstMember));
 	}
 	
-	protected PackageNamespace(String fqName, ILanguageElement owner, SymbolTable namedElementsTable) {
-		super(StringUtil.substringAfterLastMatch(fqName, "."), null, owner, false);
+	protected PackageNamespace(String fqName, SymbolTable namedElementsTable) {
+		super(StringUtil.substringAfterLastMatch(fqName, "."), null, false);
 		this.fqName = fqName;
 		this.namedElementsTable = assertNotNull(namedElementsTable);
 	}
@@ -77,10 +77,10 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 		return namedElementsTable.getElements();
 	}
 	
-	public PackageNamespace doCloneTree(ILanguageElement owner) {
+	public PackageNamespace doCloneTree() {
 		SymbolTable newSymbolTable = new SymbolTable();
 		newSymbolTable.addSymbols(namedElementsTable);
-		return new PackageNamespace(fqName, owner, newSymbolTable);
+		return new PackageNamespace(fqName, newSymbolTable);
 	}
 	
 	@Override
@@ -120,27 +120,6 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	
 	/* -----------------  ----------------- */
 	
-	@Override
-	protected final INamedElementSemanticData doCreateSemantics(PickedElement<?> pickedElement) {
-		return new ConcreteElementSemantics(this, pickedElement) {
-			
-			protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(element);
-			
-			@Override
-			public INamedElement resolveTypeForValueContext() {
-				return notAValueErrorElement;
-			};
-			
-			@Override
-			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				search.evaluateScope(PackageNamespace.this);
-			}
-			
-		};
-	}
-	
-	/* -----------------  ----------------- */
-	
 	public Iterable<? extends ILanguageElement> getScopeNodeList() {
 		return IteratorUtil.iterable(namedElementsTable.getElements());
 	}
@@ -148,6 +127,41 @@ public class PackageNamespace extends AbstractNamedElement implements IScopeElem
 	@Override
 	public ScopeTraverser getScopeTraverser() {
 		return new ScopeTraverser(getScopeNodeList(), true);
+	}
+	
+	@Override
+	public void setCompleted() {
+		super.setCompleted();
+		this.packageNamespaceSemantics = new PackageNamespaceSemantics();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected INamedElementSemanticData doGetSemantics() {
+		return packageNamespaceSemantics;
+	}
+	
+	public class PackageNamespaceSemantics implements INamedElementSemanticData {
+		
+		protected final NotAValueErrorElement notAValueErrorElement = new NotAValueErrorElement(PackageNamespace.this);
+		protected final ConcreteElementResult concreteResult = new ConcreteElementResult(PackageNamespace.this);
+		
+		@Override
+		public INamedElement resolveTypeForValueContext() {
+			return notAValueErrorElement;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
+			search.evaluateScope(PackageNamespace.this);
+		}
+		
+		@Override
+		public ConcreteElementResult resolveConcreteElement() {
+			return concreteResult;
+		}
+		
 	}
 	
 }

@@ -64,7 +64,7 @@ public class SymbolTable {
 			PackageNamespace newNamespace = (PackageNamespace) newElement;
 			
 			if(existingNamespace.isCompleted()) {
-				existingNamespace = existingNamespace.doCloneTree(newNamespace /*FIXME: BUG here owner*/);
+				existingNamespace = existingNamespace.doCloneTree();
 				map.put(name, existingNamespace);
 			}
 			existingNamespace.getNamespaceForModification().addSymbols(newNamespace.getContainedElements());

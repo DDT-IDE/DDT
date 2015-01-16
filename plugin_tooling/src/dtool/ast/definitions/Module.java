@@ -235,7 +235,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 			return this;
 		} else {
 			String[] packNames = md.packages;
-			return PackageNamespace.createNamespaceElement(packNames, this, this);
+			return PackageNamespace.createNamespaceElement(packNames, this);
 		}
 	}
 	

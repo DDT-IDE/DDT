@@ -100,7 +100,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		final ISemanticContext context = pickedElement.context;
 		final INamedElement namedElement = pickedElement.element;
 		
-		assertTrue(context == context.findSemanticContext(namedElement));
+		assertTrue(context == namedElement.getContextForThisElement(context));
 		
 		checkIsSameResolution(
 			namedElement.getSemantics(context).resolveConcreteElement(),
