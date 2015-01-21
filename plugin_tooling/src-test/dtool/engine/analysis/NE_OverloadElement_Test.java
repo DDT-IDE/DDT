@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import dtool.engine.ResolvedModule;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.engine.ResolvedModule;
 
 
 
@@ -25,19 +25,9 @@ public class NE_OverloadElement_Test extends NamedElement_CommonTest {
 	}
 	
 	@Override
-	public void test_resolveElement________() throws Exception {
-		test_resolveElement(
-			pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), null, "#NotAValue:_tests.xxx");
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		
-		test_resolveSearchInMembersScope(
-			pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "));
-		
+	public void test_NamedElement________() throws Exception {
+		test_NamedElement(pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), 
+			null, "#NotAValue:_tests.xxx", strings());
 	}
 	
 }

@@ -151,6 +151,12 @@ public class CommonTestUtils {
 	}
 	
 	@SafeVarargs
+	public static String[] strings(String... elems) {
+		return elems;
+	}
+	
+	
+	@SafeVarargs
 	public static <T> List<T> list(T... elems) {
 		return Arrays.asList(elems);
 	}

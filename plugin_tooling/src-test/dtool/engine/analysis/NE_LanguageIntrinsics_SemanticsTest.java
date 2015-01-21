@@ -22,22 +22,6 @@ import dtool.ast.expressions.Expression;
 
 public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest {
 	
-	@Override
-	public void test_resolveElement________() throws Exception {
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.float_type));
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.pointerType));
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.dynArrayType));
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.staticArrayType));
-		
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.bool_type));
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.byte_type));
-		test_resolveElement_Type(pickedNative(D2_063_intrinsics.float_type));
-		
-		// TODO: test the intrinsic properties as well
-	}
-	
-	/* ----------------- ----------------- */
-	
 	public static final String[] PRIMITIVE_TYPES = array(
 		"/bool", 
 		"/byte", "/ubyte", "/short", "/ushort", "/int", "/uint", "/long", "/ulong", 
@@ -46,6 +30,8 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 		"/void", 
 		"/ifloat", "/idouble", "/ireal", "/cfloat", "/cdouble", "/creal"
 	);
+	
+	/* ----------------- ----------------- */
 	
 	protected static final String[] INT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"max", "min"
@@ -69,28 +55,32 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 	}
 	
 	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.bool_type), COMMON_PROPERTIES);
+	public void test_NamedElement________() throws Exception {
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.bool_type), COMMON_PROPERTIES);
 		testExpressionResolution_expSource("true", COMMON_PROPERTIES);
 		
-		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.int_type), INT_PROPERTIES);
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.byte_type), INT_PROPERTIES);
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.int_type), INT_PROPERTIES);
 		testExpressionResolution_expSource("123", INT_PROPERTIES);
 		
 		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.char_type), INT_PROPERTIES);
 		testExpressionResolution_expSource("'c'", INT_PROPERTIES);
 		
-		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.float_type), FLOAT_PROPERTIES);
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.float_type), FLOAT_PROPERTIES);
 		testExpressionResolution_expSource("123.123", FLOAT_PROPERTIES);
 		testExpressionResolution_expSource("123.123f", FLOAT_PROPERTIES);
+				
 		
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.pointerType), null /* TODO */);
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.dynArrayType), DYN_ARRAY_PROPERTIES);
+		test_NamedElement_Type(pickedNative(D2_063_intrinsics.staticArrayType), STATIC_ARRAY_PROPERTIES);
 		
-		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.dynArrayType), DYN_ARRAY_PROPERTIES);
-		test_resolveSearchInMembersScope(pickedNative(D2_063_intrinsics.staticArrayType), STATIC_ARRAY_PROPERTIES);
+		// TODO: test the intrinsic properties as well
 	}
 	
 	protected static void testExpressionResolution_expSource(String expSource, String... expectedResults) {
 		PickedElement<Expression> exp = parseElement("auto _ = " + expSource + "/*M*/", "/*M*/", Expression.class);
-		testExpressionResolution_(exp, expectedResults);
+		testExpressionResolution(exp, expectedResults);
 	}
 	
 }

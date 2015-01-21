@@ -12,7 +12,6 @@ package dtool.engine.analysis;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
-import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
@@ -23,15 +22,21 @@ import org.junit.Test;
 public class NE_Variables_Test extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveElement________() throws Exception {
-		test_resolveElement_Concrete(parseNamedElement("char xxx;"), "$/char");
-		test_resolveElement_Concrete(parseNamedElement("char z, xxx;"), "$/char");
+	public void test_NamedElement________() throws Exception {
+		test_NamedElement_Concrete(parseNamedElement("char xxx;"), "$/char", INT_PROPERTIES);
+		test_NamedElement_Concrete(parseNamedElement("char z, xxx;"), "$/char", INT_PROPERTIES);
 		
-		test_resolveElement_Concrete(parseNamedElement("NotFound xxx;"), expectNotFound("NotFound"));
+		test_NamedElement_Concrete(parseNamedElement("NotFound xxx;"), expectNotFound("NotFound"), NO_MEMBERS);
 		
-		test_resolveElement_Concrete(parseNamedElement("auto xxx = 123;"), "$/int");
-		test_resolveElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "$/int");
-		test_resolveElement_Concrete(parseNamedElement("enum xxx = 123;"), "$/int");
+		test_NamedElement_Concrete(parseNamedElement("auto xxx = true;"), "$/bool", COMMON_PROPERTIES);
+		test_NamedElement_Concrete(parseNamedElement("auto xxx = 123;"), "$/int", INT_PROPERTIES);
+		test_NamedElement_Concrete(parseNamedElement("auto z, xxx = 123;"), "$/int", INT_PROPERTIES);
+		test_NamedElement_Concrete(parseNamedElement("enum xxx = 123;"), "$/int", INT_PROPERTIES);
+		
+
+		test_NamedElement_Concrete(parseNamedElement("auto xxx = ; "), "#InvalidExp", NO_MEMBERS);
+		test_NamedElement_Concrete(parseNamedElement("auto xxx = missing; "), expectNotFound("missing"), NO_MEMBERS);
+
 	}
 	
 	protected static final String SOURCE_PREFIX1 = "module mod; class Foo {}; Foo foovar;\n";
@@ -90,20 +95,6 @@ public class NE_Variables_Test extends NamedElement_CommonTest {
 		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
 		
 		namedElementChecker(expectedResult).evaluate(effectiveType);
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		defVar_testResolveSearchInMembers("auto xxx = true; ", COMMON_PROPERTIES);
-		defVar_testResolveSearchInMembers("auto xxx = 123; ", concat(COMMON_PROPERTIES, INT_PROPERTIES));
-		defVar_testResolveSearchInMembers("auto xxx = ; ");
-		defVar_testResolveSearchInMembers("auto xxx = notFOUND; ");
-	}
-	
-	protected void defVar_testResolveSearchInMembers(String source, String... expectedResults) {
-		test_resolveSearchInMembersScope(parseNamedElement(source), expectedResults);
 	}
 	
 }

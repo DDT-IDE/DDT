@@ -10,57 +10,52 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import org.junit.Test;
 
 public class NE_DefAggregate_SemanticsTest extends NamedElement_CommonTest {
 	
-	@Override
-	public void test_resolveElement________() throws Exception {
-		
-		test_resolveElement_Type(parseTypeElement("class XXX {} "));
-		test_resolveElement_Type(parseTypeElement("interface XXX {} "));
-		test_resolveElement_Type(parseTypeElement("struct XXX {} "));
-		test_resolveElement_Type(parseTypeElement("union XXX {} "));
-		
-		test_resolveElement_Type(parseTypeElement("enum XXX {} "));
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		
-		test_resolveSearchInMembersScope(parseNamedElement("struct Foo { int x, y; }"),
-			COMMON_PROPERTIES,
-			"x", "y");
-		
-		test_resolveSearchInMembersScope(parseNamedElement("class Foo { int x; }"), 
-			OBJECT_PROPERTIES,
-			"x");
-		
-		// TODO: test hierarchy scopes more:
-		test_resolveSearchInMembersScope(
-			parseNamedElement("class Bar { int a; } class Foo : Bar { int x; }"),
-			OBJECT_PROPERTIES,
-			"x",
-			"a");
-	}
-	
 	protected static final String[] OBJECT_PROPERTIES = ArrayUtil.concat(COMMON_PROPERTIES,
 		"classinfo"
 	);
 	
+	@Override
+	public void test_NamedElement________() throws Exception {
+		
+		test_NamedElement_Type(parseTypeElement("struct XXX { int x, y; } "), 
+			concat(COMMON_PROPERTIES, "x", "y"));
+		test_NamedElement_Type(parseTypeElement("union XXX { int x, y; } "), 
+			concat(COMMON_PROPERTIES, "x", "y"));
+		
+		test_NamedElement_Type(parseTypeElement("class XXX { int x; } "), 
+			concat(OBJECT_PROPERTIES, "x"));
+		test_NamedElement_Type(parseTypeElement("interface XXX { int x; } "), 
+			concat(OBJECT_PROPERTIES, "x"));
+		
+		test_NamedElement_Type(parseTypeElement("enum XXX { A, B = 2} "), 
+			concat(COMMON_PROPERTIES, "A", "B"));
+		
+		
+		// TODO: test hierarchy scopes more:
+		test_resolveSearchInMembersScope(
+			parseNamedElement("class Bar { int barMember; } class Foo : Bar { int x; }"),
+			concat(OBJECT_PROPERTIES, "x", "barMember"));
+
+	}
+	
+	/* -----------------  ----------------- */
+	
 	@Test
 	public void testCompletionSearch() throws Exception { testCompletionSearch$(); }
 	public void testCompletionSearch$() throws Exception {
-		testExpressionResolution("class Foo {} ; Foo foo; auto _ = foo/*X*/;", OBJECT_PROPERTIES);
-		testExpressionResolution("interface Foo {} ; Foo foo; auto _ = foo/*X*/;", OBJECT_PROPERTIES);
-		testExpressionResolution("struct Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
-		testExpressionResolution("union Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
+		testExpressionResolution(parseExp("class Foo {} ; Foo foo; auto _ = foo/*M*/;"), OBJECT_PROPERTIES);
+		testExpressionResolution(parseExp("interface Foo {} ; Foo foo; auto _ = foo/*M*/;"), OBJECT_PROPERTIES);
+		testExpressionResolution(parseExp("struct Foo {} ; Foo foo; auto _ = foo/*M*/;"), COMMON_PROPERTIES);
+		testExpressionResolution(parseExp("union Foo {} ; Foo foo; auto _ = foo/*M*/;"), COMMON_PROPERTIES);
 		
-		testExpressionResolution("enum Foo {} ; Foo foo; auto _ = foo/*X*/;", COMMON_PROPERTIES);
+		testExpressionResolution(parseExp("enum Foo {} ; Foo foo; auto _ = foo/*M*/;"), COMMON_PROPERTIES);
 	}
 	
 }

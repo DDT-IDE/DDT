@@ -10,47 +10,42 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.lang.tooling.engine.ErrorElement.NOT_FOUND__Name;
-import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 
 
 
 public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 	
 	@Override
-	public void test_resolveElement________() throws Exception {
+	public void test_NamedElement________() throws Exception {
 		// Test alias to var
-		test_resolveElement(parseNamedElement("int intVar; alias intVar XXX; "), "int intVar;", "$/int");
-		test_resolveElement(parseNamedElement("int intVar; alias XXX = intVar; "), "int intVar;", "$/int");
+		test_NamedElement_Alias(parseNamedElement("int intVar; alias intVar XXX; "), 
+			"int intVar;", "$/int", INT_PROPERTIES);
+		test_NamedElement_Alias(parseNamedElement("int intVar; alias XXX = intVar; "), 
+			"int intVar;", "$/int", INT_PROPERTIES);
 
 		// broken variant
 		String NOT_FOUND__target = NOT_FOUND__Name + ":target";
-		test_resolveElement(parseNamedElement("alias target XXX; "), NOT_FOUND__target, NOT_FOUND__target);
-		test_resolveElement(parseNamedElement("alias XXX = target; "), NOT_FOUND__target, NOT_FOUND__target);
+		test_NamedElement_Alias(parseNamedElement("alias target XXX; "), 
+			NOT_FOUND__target, NOT_FOUND__target, NO_MEMBERS);
+		test_NamedElement_Alias(parseNamedElement("alias XXX = target; "), 
+			NOT_FOUND__target, NOT_FOUND__target, NO_MEMBERS);
 		
-		test_resolveElement(parseNamedElement("alias XXX = zzz; alias zzz = target"), NOT_FOUND__target, 
-			NOT_FOUND__target);
+		test_NamedElement_Alias(parseNamedElement("alias XXX = zzz; alias zzz = target"), 
+			NOT_FOUND__target, NOT_FOUND__target, NO_MEMBERS);
 		
 		/* FIXME: do syntax error element */
-		test_resolveElement(parseNamedElement("alias XXX = "), NOT_FOUND__Name+":", NOT_FOUND__Name+":");
-		test_resolveElement(parseNamedElement("alias XXX"), NOT_FOUND__Name, NOT_FOUND__Name);
+		test_NamedElement_Alias(parseNamedElement("alias XXX = "), 
+			NOT_FOUND__Name+":", NOT_FOUND__Name+":", NO_MEMBERS);
+		test_NamedElement_Alias(parseNamedElement("alias XXX"), 
+			NOT_FOUND__Name, NOT_FOUND__Name, NO_MEMBERS);
 		
 		// Test alias to type
-		test_resolveElement(parseNamedElement("alias int XXX; "), "$/int", expectNotAValue("int"));
-		test_resolveElement(parseNamedElement("alias XXX = int; "), "$/int", expectNotAValue("int"));
-	}
-	
-	/* -----------------  ----------------- */
-	
-	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		
-		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias intVar XXX; "), 
-			NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
-		
-		// TODO: more tests for this functionality
-		test_resolveSearchInMembersScope(parseNamedElement("int intVar; alias XXX = intVar; "), 
-			NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+		test_NamedElement_Alias(parseNamedElement("alias int XXX; "), 
+			"$/int", expectNotAValue("int"), INT_PROPERTIES);
+		test_NamedElement_Alias(parseNamedElement("alias XXX = int; "), 
+			"$/int", expectNotAValue("int"), INT_PROPERTIES);
 	}
 	
 }

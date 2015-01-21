@@ -132,7 +132,7 @@ public class NE__OthersTest extends NamedElement_CommonTest {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void test_resolveElement________() throws Exception {
+	public void test_NamedElement________() throws Exception {
 		new NamedElementVisitor() {
 			@Override
 			protected void doVisit(PickedElement<INamedElement> pickedElement, String aliasTarget) {
@@ -141,11 +141,6 @@ public class NE__OthersTest extends NamedElement_CommonTest {
 			}
 		}.visitElements();
 		
-	}
-	
-	@Override
-	public void test_resolveSearchInMembersScope________() throws Exception {
-		// TODO can't be done in a generic way, so individual test classes will need to be created.
 	}
 	
 }

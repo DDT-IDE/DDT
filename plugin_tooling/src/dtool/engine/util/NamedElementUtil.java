@@ -47,16 +47,13 @@ public class NamedElementUtil {
 		
 		INamedElement parentNamespace = namedElement.getParentNamespace();
 		
-		if(namedElement.getArcheType().isError()) {
-			assertFail();
-//			assertTrue(parentNamespace == null);
-//			return "!!" + namedElement.getName();
+		String qualification = "";
+		if(parentNamespace != null) {
+			String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
+			String parentQualifedName = getElementTypeLabelBase(parentNamespace, useExtendedName);
+			qualification = parentQualifedName + sep;
 		}
 		
-		assertNotNull(parentNamespace);
-		String sep = parentNamespace.getArcheType() == EArcheType.Module  ? "" : ".";
-		String parentQualifedName = getElementTypeLabelBase(parentNamespace, useExtendedName);
-		String qualification = parentQualifedName + sep;
 		return qualification + (useExtendedName ? namedElement.getExtendedName() : namedElement.getName());
 	}
 	

@@ -113,6 +113,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public void checkResults(String[] expectedResults, Map<String, MetadataEntry> markers) {
+		assertNotNull(expectedResults);
 		HashSet<String> expectedResultsDeduplicated = hashSet(expectedResults);
 		
 		for (String expectedTarget : expectedResultsDeduplicated) {
