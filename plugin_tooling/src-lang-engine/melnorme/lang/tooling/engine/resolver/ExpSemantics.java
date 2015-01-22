@@ -44,7 +44,7 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 		TypeReferenceResult result = doCreateExpResolution();
 		
 		if(result == null) {
-			return concreteTypeResult(new ErrorElement("#InvalidExp", null, resolvable, null));
+			return concreteTypeResult(new ErrorElement("#InvalidExp", resolvable, null));
 		}
 		
 		return result;

@@ -81,7 +81,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		}
 		
 		public NotAValueErrorElement(ILanguageElement owner, INamedElement invalidElement) {
-			super(ERROR_IS_NOT_A_VALUE, null, owner, 
+			super(ERROR_IS_NOT_A_VALUE, owner, 
 				quoteDoc("Element does not have a value: " + invalidElement.getFullyQualifiedName()));
 			this.invalidElement = invalidElement;
 		}

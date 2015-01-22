@@ -108,7 +108,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 				return new NotATypeErrorElement(reference, targetType);
 			}
 		} else {
-			return new ErrorElement(ERROR__TPL_ARG__NotAType, null, target, null);
+			return new ErrorElement(ERROR__TPL_ARG__NotAType, target, null);
 		}
 	}
 	

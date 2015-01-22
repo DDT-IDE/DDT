@@ -31,7 +31,6 @@ import dtool.ast.definitions.EArcheType;
 public class OverloadedNamedElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
 	protected final HashSet2<INamedElement> elements;
-	protected final EArcheType archeType;
 	protected final INamedElement firstElement;
 	
 	public OverloadedNamedElement(INamedElement firstElement) {
@@ -39,7 +38,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 		this.firstElement = firstElement;
 		this.elements = new HashSet2<>();
 		elements.add(firstElement);
-		this.archeType = EArcheType.Error;
 	}
 	
 	@Override
@@ -51,7 +49,7 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	
 	@Override
 	public EArcheType getArcheType() {
-		return archeType;
+		return EArcheType.Error;
 	}
 	
 	@Override

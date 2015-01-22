@@ -108,7 +108,8 @@ public abstract class CommonScopeLookup {
 		try {
 			return context.findModule(moduleName);
 		} catch (ModuleSourceException pse) {
-			return new ErrorElement(moduleName.getFullNameAsString(), null, refElement, null);
+			return new ErrorElement(moduleName.getLastSegment(), refElement, 
+				ErrorElement.quoteDoc(pse.toString()));
 		}
 	}
 	

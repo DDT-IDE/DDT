@@ -43,21 +43,20 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	}
 	
 	// Error for unsupported functionality
-	public static ErrorElement newUnsupportedError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(UNSUPPORTED__Name, null, parent, doc);
+	public static ErrorElement newUnsupportedError(ILanguageElement owner, ElementDoc doc) {
+		return new ErrorElement(UNSUPPORTED__Name, owner, doc);
 	}
 	
-	public static ErrorElement newLoopError(ILanguageElement parent, ElementDoc doc) {
-		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, null, parent, doc);
+	public static ErrorElement newLoopError(ILanguageElement owner, ElementDoc doc) {
+		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, owner, doc);
 	}
 	
 	/* -----------------  ----------------- */
 	
 	protected final ElementDoc doc;
 	
-	// TODO: make this constructor protected
-	public ErrorElement(String name, ILanguageElement lexicalParent, ILanguageElement ownerElement, ElementDoc doc) {
-		super(name, lexicalParent, ownerElement, true);
+	public ErrorElement(String name, ILanguageElement ownerElement, ElementDoc doc) {
+		super(name, null, ownerElement, true);
 		assertNotNull(ownerElement);
 		this.doc = doc;
 	}
@@ -137,7 +136,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		public static final String SYNTAX_ERROR__Name = ERROR_PREFIX + "SyntaxError";
 		
 		public SyntaxErrorElement(ILanguageElement ownerElement, ElementDoc doc) {
-			super(SYNTAX_ERROR__Name, null, ownerElement, doc);
+			super(SYNTAX_ERROR__Name, ownerElement, doc);
 		}
 		
 		@Override
@@ -156,7 +155,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		protected final IResolvable reference;
 		
 		public NotFoundErrorElement(IReference reference) {
-			super(NOT_FOUND__Name, null, reference, 
+			super(NOT_FOUND__Name, reference, 
 				quoteDoc("Could not resolve reference: " + reference.toStringAsCode()));
 			this.reference = reference;
 		}
@@ -186,7 +185,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		public final IConcreteNamedElement invalidElement;
 		
 		public NotATypeErrorElement(IReference owner, IConcreteNamedElement invalidElement) {
-			super(ERROR_IS_NOT_A_TYPE, null, owner, 
+			super(ERROR_IS_NOT_A_TYPE, owner, 
 				quoteDoc("Element is not a type: " + invalidElement.getFullyQualifiedName()));
 			this.invalidElement = invalidElement;
 		}
