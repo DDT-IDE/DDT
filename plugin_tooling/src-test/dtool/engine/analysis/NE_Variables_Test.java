@@ -12,7 +12,7 @@ package dtool.engine.analysis;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
 import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
-import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -67,13 +67,13 @@ public class NE_Variables_Test extends NamedElement_CommonTest {
 		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx;",
 			"auto z, xxx;"
-		), NotFoundErrorElement.NOT_FOUND__Name);
+		), SyntaxErrorElement.SYNTAX_ERROR__Name);
 		
 		testMultiple_ResolveEffectiveType2(array(
 			"auto xxx = ref_not_found;",
 			"auto z = 1, xxx = ref_not_found;",
 			"enum xxx = ref_not_found;"
-		), NotFoundErrorElement.NOT_FOUND__Name + ":ref_not_found");
+		), expectNotFound("ref_not_found"));
 		
 		testMultiple_ResolveEffectiveType2(array(
 			SOURCE_PREFIX1+"auto xxx = foovar;",

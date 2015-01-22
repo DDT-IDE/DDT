@@ -40,7 +40,11 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	@Override
 	protected final ConcreteElementResult createResolution() {
-		return new ConcreteElementResult(doResolveConcreteElement());
+		IConcreteNamedElement concreteElement = doResolveConcreteElement();
+		if(concreteElement == null) {
+			concreteElement = ErrorElement.newUnsupportedError(element, null);
+		}
+		return new ConcreteElementResult(concreteElement);
 	}
 	
 	@Override
@@ -48,6 +52,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		return new ConcreteElementResult(ErrorElement.newLoopError(element, null));
 	}
 	
+	/** @return null for unsupported element. */
 	protected abstract IConcreteNamedElement doResolveConcreteElement();
 	
 	protected IConcreteNamedElement resolveConcreteElement(INamedElement namedElement) {

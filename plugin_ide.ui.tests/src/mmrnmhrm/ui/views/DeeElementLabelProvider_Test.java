@@ -18,6 +18,7 @@ import mmrnmhrm.ui.CommonDeeUITest;
 
 import org.junit.Test;
 
+import dtool.ast.references.RefModule;
 import dtool.ddoc.TextUI;
 import dtool.engine.analysis.CommonNodeSemanticsTest;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
@@ -29,17 +30,17 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		checkLabel(new ModuleProxy("foo", null, null), "foo", "foo");
+		checkLabel(new ModuleProxy("foo", null, getMockRefModule()), "foo", "foo");
 		
-		checkLabel(new ModuleProxy("pack.mod", null, null), "pack.mod", "mod");
+		checkLabel(new ModuleProxy("pack.mod", null, getMockRefModule()), "pack.mod", "mod");
 		
-		checkLabel(new ModuleProxy("pack.sub.mod", null, null), "pack.sub.mod", "mod");
+		checkLabel(new ModuleProxy("pack.sub.mod", null, getMockRefModule()), "pack.sub.mod", "mod");
 		
 		
-		checkLabel(createNamespaceElement(array("pack"), new ModuleProxy("modA", null, null)), 
+		checkLabel(createNamespaceElement(array("pack"), new ModuleProxy("modA", null, getMockRefModule())), 
 			"pack", "pack");
 
-		checkLabel(createNamespaceElement(array("pack", "sub"), new ModuleProxy("modA", null, null)), 
+		checkLabel(createNamespaceElement(array("pack", "sub"), new ModuleProxy("modA", null, getMockRefModule())), 
 			"pack", "pack");
 		
 		
@@ -53,7 +54,10 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		checkLabel(CommonNodeSemanticsTest.parseElement("alias xxx = ;", "xx", INamedElement.class).element, 
 			"xxx", 
 			"xxx -> ? - _tests");
-		
+	}
+	
+	protected RefModule getMockRefModule() {
+		return CommonNodeSemanticsTest.parseElement("import foo/*M*/;", RefModule.class).element;
 	}
 	
 	protected void checkLabel(INamedElement defElement, String hoverSignatureLabel, String contentAssistPopupLabel) {

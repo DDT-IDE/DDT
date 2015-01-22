@@ -10,11 +10,12 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -24,6 +25,7 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.references.RefModule;
 
 /**
  * This class is an alias to an actual module element.
@@ -32,16 +34,18 @@ import dtool.ast.definitions.EArcheType;
  */
 public class ModuleProxy extends AbstractNamedElement {
 	
+	protected final RefModule refModule; // non-child
 	protected final ISemanticContext context;
 	protected final String fullModuleName;
 	
-	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, ILanguageElement owner) {
+	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, RefModule owner) {
 		this(fullModuleName, moduleResolver, false, owner);
 	}
 	
 	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
-			ILanguageElement owner) {
-		super(getEffectiveModuleName(fullModuleName, useFullName), null, owner, true);
+			RefModule refModule) {
+		super(getEffectiveModuleName(fullModuleName, useFullName), null, refModule, true);
+		this.refModule = assertNotNull(refModule);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;
@@ -53,6 +57,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	protected void doSetCompleted() {
+		assertTrue(refModule.isCompleted());
 	}
 	
 	@Override
@@ -123,8 +128,13 @@ public class ModuleProxy extends AbstractNamedElement {
 			}
 			
 			@Override
-			protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-				return CommonScopeLookup.resolveModule(context, ModuleProxy.this, getModuleFullName());
+			protected IConcreteNamedElement resolveAliasTarget_nonNull() {
+				IConcreteNamedElement result = 
+						CommonScopeLookup.resolveModule(context, ModuleProxy.this, getModuleFullName());
+				if(result == null) {
+					return new ErrorElement.NotFoundErrorElement(refModule);
+				}
+				return result;
 			}
 			
 		};

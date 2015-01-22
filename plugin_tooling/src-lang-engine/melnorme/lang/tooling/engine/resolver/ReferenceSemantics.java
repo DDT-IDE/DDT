@@ -15,6 +15,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResult> {
@@ -31,10 +32,12 @@ public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResul
 		return reference;
 	}
 	
+	/** @return non-null. */
 	public final ReferenceResult resolveTargetElement() {
 		return getElementResolution();
 	}
 	
+	/** @return non-null. */
 	public final INamedElement resolveTargetElement_() {
 		return getElementResolution().result;
 	}
@@ -69,11 +72,24 @@ public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResul
 		
 	}
 	
+	/* -----------------  ----------------- */
+	
 	public static INamedElement resolveReference(ISemanticContext context, IReference reference) {
 		if(reference == null) {
 			return null;
 		}
 		return reference.getSemantics(context).resolveTargetElement().result;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static IConcreteNamedElement resolveConcreteElement(IReference reference, ISemanticContext parentContext) {
+		if(reference == null) {
+			return null;
+		}
+		INamedElement refTarget = reference.getSemantics(parentContext).resolveTargetElement_();
+		
+		return refTarget.getSemantics(parentContext).resolveConcreteElement().result;
 	}
 	
 }

@@ -36,6 +36,10 @@ public class RefTemplateInstance extends Reference implements IQualifierNode, IT
 		assertTrue(exactlyOneIsNull(tplSingleArg, tplArgs));
 		this.tplSingleArg = parentize(tplSingleArg);
 		this.tplArgs = parentize(tplArgs);
+		
+		for (Resolvable arg : getEffectiveArguments()) {
+			assertNotNull(arg);
+		}
 	}
 	
 	public boolean isSingleArgSyntax() {

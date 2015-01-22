@@ -19,6 +19,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -69,7 +70,7 @@ public class NameLookup_ErrorsTest extends CommonNodeSemanticsTest {
 	}
 	
 	protected void checkResultNotFound(INamedElement result) {
-		assertTrue(result.getName().equals(ErrorElement.NOT_FOUND__Name));
+		assertTrue(result.getName().equals(NotFoundErrorElement.NOT_FOUND__Name));
 		assertTrue(result.getNameInRegularNamespace() == null);
 		assertTrue(result.getModuleFullName() == null);
 	}

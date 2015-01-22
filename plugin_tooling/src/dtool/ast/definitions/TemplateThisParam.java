@@ -14,6 +14,7 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
@@ -66,7 +67,7 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	}
 	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable resolvable) {
+	public AliasElement createTemplateArgument(Resolvable resolvable, ISemanticContext tplRefContext) {
 		return new AliasElement(defName, null); // TODO: correct instantiation
 	}
 	

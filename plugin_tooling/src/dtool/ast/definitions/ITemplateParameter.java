@@ -12,11 +12,12 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.context.ISemanticContext;
 import dtool.ast.expressions.Resolvable;
 
 
 public interface ITemplateParameter extends IASTNode {
 	
-	INamedElementNode createTemplateArgument(Resolvable argument);
+	INamedElementNode createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext);
 	
 }

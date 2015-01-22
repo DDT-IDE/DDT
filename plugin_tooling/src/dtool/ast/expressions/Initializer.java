@@ -26,7 +26,7 @@ public abstract class Initializer extends ASTNode implements IInitializer {
 	@Override
 	public TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context) {
 		// TODO resolveTypeOfUnderlyingValue for subclasses
-		return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(this, null));
+		return ExpSemantics.concreteTypeResult(ErrorElement.newUnsupportedError(this, null));
 	}
 	
 }

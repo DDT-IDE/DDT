@@ -14,6 +14,7 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -71,13 +72,13 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		return new TODO_NamedElementSemantics(this, pickedElement) {
 			@Override
 			protected IConcreteNamedElement doResolveConcreteElement() {
-				return ErrorElement.newNotFoundError(element, null);
+				return ErrorElement.newUnsupportedError(element, null);
 			}
 		};
 	}
 	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable argument) {
+	public AliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
 		return new AliasElement(defName, argument);
 	}
 	

@@ -22,9 +22,9 @@ import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ElementResolution;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -176,7 +176,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
 	/* ----------------- Helper to test caching ----------------- */
 	
-	protected static void checkIsSameResolution(ElementResolution<?> resA, ElementResolution<?> resOther) {
+	protected static void checkIsSameResolution(ConcreteElementResult resA, ConcreteElementResult resOther) {
 		assertTrue(resA == resOther);
 	}
 	

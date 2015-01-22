@@ -10,12 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import dtool.ast.references.NamedReference;
 
 public abstract class AliasSemantics extends NamedElementSemantics {
 	
@@ -25,17 +26,14 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	
 	@Override
 	protected IConcreteNamedElement doResolveConcreteElement() {
-		IConcreteNamedElement result = resolveAliasTarget(context);
-		return result != null ?
-				result :
-				ErrorElement.newNotFoundError(element, null);
+		return resolveAliasTarget_nonNull();
 	}
 	
 	protected IConcreteNamedElement getResolvedConcreteElement() {
 		return getElementResolution().result;
 	}
 	
-	protected abstract IConcreteNamedElement resolveAliasTarget(ISemanticContext context);
+	protected abstract IConcreteNamedElement resolveAliasTarget_nonNull();
 	
 	@Override
 	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
@@ -56,19 +54,27 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		}
 		
 		@Override
-		protected IConcreteNamedElement resolveAliasTarget(ISemanticContext context) {
-			return resolveAliasTarget(getAliasTarget());
+		protected IConcreteNamedElement resolveAliasTarget_nonNull() {
+			IReference aliasTarget = getAliasTarget();
+			if(isSyntaxError(aliasTarget)) {
+				return new SyntaxErrorElement(element, ErrorElement.quoteDoc("Missing reference."));
+			}
+			
+			return ReferenceSemantics.resolveConcreteElement(aliasTarget, context);
+		}
+		
+		protected static boolean isSyntaxError(IReference aliasTarget) {
+			if(aliasTarget == null)
+				return true;
+			
+			if(aliasTarget instanceof NamedReference) {
+				NamedReference namedReference = (NamedReference) aliasTarget;
+				return namedReference.isMissingCoreReference();
+			}
+			return false;
 		}
 		
 		protected abstract IReference getAliasTarget();
-		
-		protected IConcreteNamedElement resolveAliasTarget(IReference aliasTarget) {
-			if(aliasTarget == null) {
-				return null;
-			}
-			INamedElement namedElement = aliasTarget.getSemantics(context).resolveTargetElement().getSingleResult();
-			return resolveConcreteElement(namedElement);
-		}
 		
 	}
 	

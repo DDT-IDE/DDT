@@ -50,11 +50,11 @@ public class Expression_SemanticsTest extends CommonNodeSemanticsTest {
 			namedElementChecker("$object/string"));
 		
 		testExpResolve(parseElement("NotFoundFoo foo; auto xxx = foo; auto _ = xxx/*M*/;", ExpReference.class), 
-			namedElementChecker("#NotFound:NotFoundFoo"));
+			namedElementChecker(expectNotFound("NotFoundFoo")));
 		testExpResolve(parseElement("auto _ = xxx/*M*/;", ExpReference.class), 
-			namedElementChecker("#NotFound:xxx"));
+			namedElementChecker(expectNotFound("xxx")));
 		testExpResolve(parseElement("auto _ = (xxx)/*M*/;", ExpParentheses.class), 
-			namedElementChecker("#NotFound:xxx"));
+			namedElementChecker(expectNotFound("xxx")));
 		
 		testExpResolve(parseElement("auto _ = string/*M*/;", IInitializer.class), 
 			namedElementChecker(ERROR_IS_NOT_A_VALUE + ":" + IntrinsicDynArray.DYNAMIC_ARRAY_NAME));

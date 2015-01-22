@@ -14,6 +14,7 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
@@ -70,7 +71,7 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 	}
 	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable argument) {
+	public AliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
 		return new AliasElement(defName, null);  // TODO: correct instantiation
 	}
 	

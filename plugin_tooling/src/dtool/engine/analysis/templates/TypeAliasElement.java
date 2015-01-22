@@ -10,29 +10,27 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IReference;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
+import dtool.engine.util.NamedElementUtil;
 
 public class TypeAliasElement extends InstantiatedDefUnit {
 	
-	public final Reference target; // non-children member
+	public final ITypeNamedElement target; // non-children member
 	
-	public TypeAliasElement(DefSymbol defName, Resolvable target) {
+	public TypeAliasElement(DefSymbol defName, ITypeNamedElement concreteTarget) {
 		super(defName);
-		this.target = (target instanceof Reference) ? 
-				(Reference) target :  
-				null; // TODO: error element
+		this.target = assertNotNull(concreteTarget);
 	}
 	
 	@Override
@@ -46,13 +44,14 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new TypeAliasElement(clone(defName), clone(target));
+		return new TypeAliasElement(clone(defName), target);
 	}
 	
 	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
 		cp.append("@", defName);
-		cp.append(" = ", target);
+		cp.append(" = ");
+		cp.append(NamedElementUtil.getElementTypedLabel(target, true));
 	}
 	
 	@Override
@@ -63,16 +62,18 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new TypeAliasSemantics(this, pickedElement) {
-		
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement() {
-				return super.doResolveConcreteElement(); // TODO write test case
-			}
+	public AliasSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+		return new AliasSemantics(this, pickedElement) {
+			
+			protected final NotAValueErrorElement notAValueError = new NotAValueErrorElement(TypeAliasElement.this);
 			
 			@Override
-			protected IReference getAliasTarget() {
+			public INamedElement resolveTypeForValueContext() {
+				return notAValueError;
+			};
+			
+			@Override
+			protected IConcreteNamedElement resolveAliasTarget_nonNull() {
 				return target;
 			}
 			

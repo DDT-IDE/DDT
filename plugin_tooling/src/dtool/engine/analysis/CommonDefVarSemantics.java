@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
@@ -37,7 +38,7 @@ public class CommonDefVarSemantics extends VarSemantics {
 			return initializer.resolveTypeOfUnderlyingValue(context).originalType;
 		}
 		
-		return ErrorElement.newNotFoundError(varDef, null);
+		return new SyntaxErrorElement(varDef, ErrorElement.quoteDoc("Missing initializer."));
 	}
 	
 	@Override

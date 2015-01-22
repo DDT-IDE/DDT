@@ -14,12 +14,14 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
+import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 import dtool.engine.analysis.templates.TypeAliasElement;
 
 public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
@@ -75,8 +77,8 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 	}
 	
 	@Override
-	public TypeAliasElement createTemplateArgument(Resolvable resolvable) {
-		return new TypeAliasElement(defName, resolvable);
+	public TypeAliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
+		return new TypeAliasElement(defName, RefTemplateInstanceSemantics.resolveTargetType(argument, tplRefContext));
 	}
 	
 }

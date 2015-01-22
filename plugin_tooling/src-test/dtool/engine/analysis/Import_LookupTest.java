@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -38,7 +39,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		return parseElement(source, marker, NamedReference.class);
 	}
 	
-	protected void testRefModule(PickedElement<RefModule> refModuleElement, String fqn) {
+	protected void testRefModule(PickedElement<RefModule> refModuleElement, String fqn, boolean isNotFound) {
 		ReferenceResult resolution = testResolveElement(refModuleElement);
 		
 		INamedElement result = resolution.result;
@@ -50,9 +51,9 @@ public class Import_LookupTest extends CommonLookupTest {
 		
 		IConcreteNamedElement moduleTarget = result.resolveConcreteElement(refModuleElement.context);
 		
-		if(fqn.equals(Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker)) {
+		if(isNotFound) {
 			assertTrue(moduleTarget instanceof ErrorElement);
-			assertTrue(moduleTarget.getFullyQualifiedName().equals(ErrorElement.NOT_FOUND__Name));
+			assertTrue(moduleTarget.getFullyQualifiedName().equals(NotFoundErrorElement.NOT_FOUND__Name));
 		} else {
 			assertTrue(moduleTarget instanceof Module);
 			assertTrue(moduleTarget.getFullyQualifiedName().equals(fqn));
@@ -65,7 +66,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		INamedElement result = resolution.result;
 		assertTrue(result.getFullyQualifiedName().equals(fqn));
 		
-		if(fqn == ErrorElement.NOT_FOUND__Name) {
+		if(fqn == NotFoundErrorElement.NOT_FOUND__Name) {
 			return;
 		}
 		
@@ -80,11 +81,10 @@ public class Import_LookupTest extends CommonLookupTest {
 	public void testResolveOfDirectRef() throws Exception { testResolveOfDirectRef$(); }
 	public void testResolveOfDirectRef$() throws Exception {
 		
-		testRefModule(parseElement("import target;", "target", RefModule.class), "target");
-		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target");
+		testRefModule(parseElement("import target;", "target", RefModule.class), "target", false);
+		testRefModule(parseElement("import pack.target;", "pack.target", RefModule.class), "pack.target", false);
 		
-		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), 
-			Resolvables_SemanticsTest.NOT_FOUND_SpecialMarker);
+		testRefModule(parseElement("import not_found;", "not_found", RefModule.class), "not_found", true);
 		
 		// Test package refs.
 		testPackageRef(parseRef("import pack.target; auto x = pack;", "pack;"), "pack");

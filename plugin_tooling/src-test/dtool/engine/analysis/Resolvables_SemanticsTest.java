@@ -13,7 +13,7 @@ package dtool.engine.analysis;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.resolver.IReference;
@@ -49,8 +49,9 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 		if(namedRef instanceof RefModule) {
 			RefModule refModule = (RefModule) refElement.element;
 			expectedName = refModule.getRefModuleFullyQualifiedName();
-		} else if(areEqual(expectedName, NOT_FOUND_SpecialMarker)) {
-			expectedName = ErrorElement.NOT_FOUND__Name;
+		} 
+		else if(areEqual(expectedName, NOT_FOUND_SpecialMarker)) {
+			expectedName = NotFoundErrorElement.NOT_FOUND__Name;
 		}
 		
 		return testResolveElement(refElement, expectedName);
@@ -79,11 +80,11 @@ public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	public void testResolveRef() throws Exception { testResolveRef$(); }
 	public void testResolveRef$() throws Exception {
 		
-		testResolveElement(parseElement("int ref_int;", "int", RefPrimitive.class));
+		testResolveElement(parseElement("int/*M*/ ref_int;", RefPrimitive.class));
 		
-		testResolveElement(parseElement("class target { }; target bar;", "target bar", RefIdentifier.class));
-		
-		testResolveElement(parseElement("not_found foo;", "not_found", RefIdentifier.class));
+		testResolveElement(parseElement("class target { }; target/*M*/ bar;", RefIdentifier.class));
+		testResolveElement(parseElement("not_found/*M*/ foo;", RefIdentifier.class),
+			NotFoundErrorElement.NOT_FOUND__Name);
 		
 		testResolveElement(new PickedElement<IReference>(
 				new ModuleQualifiedReference("object", "TypeInfo_Class"), 

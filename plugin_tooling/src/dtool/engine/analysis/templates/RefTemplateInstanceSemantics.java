@@ -10,16 +10,23 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.Reference;
 
 public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	
@@ -75,10 +82,34 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		for (int ix = 0; ix < paramSize; ix++) {
 			ITemplateParameter tplParameter = templateDef.tplParams.get(ix);
 			
-			instantiatedArgs.add(tplParameter.createTemplateArgument(tplArgs.get(ix)));
+			Resolvable argument = tplArgs.get(ix);
+			assertNotNull(argument);
+			instantiatedArgs.add(tplParameter.createTemplateArgument(argument, context));
 		}
 		
 		return new TemplateInstance(templateRef, context, templateDef, instantiatedArgs);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static final String ERROR__TPL_ARG__NotAType = ErrorElement.ERROR_PREFIX + "TemplateArgumentIsNotAType";
+	
+	public static ITypeNamedElement resolveTargetType(Resolvable target, ISemanticContext parentContext) {
+		assertNotNull(target);
+		
+		if(target instanceof Reference) {
+			Reference reference = (Reference) target;
+			
+			IConcreteNamedElement targetType = resolveConcreteElement(reference, parentContext);
+			
+			if(targetType instanceof ITypeNamedElement) {
+				return (ITypeNamedElement) targetType;
+			} else {
+				return new NotATypeErrorElement(reference, targetType);
+			}
+		} else {
+			return new ErrorElement(ERROR__TPL_ARG__NotAType, null, target, null);
+		}
 	}
 	
 }

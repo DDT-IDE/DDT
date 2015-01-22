@@ -10,17 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.engine.ElementResolution;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public class ReferenceResult extends ElementResolution<INamedElement> {
+public class ReferenceResult {
+	
+	public final INamedElement result; // non-null
 	
 	public ReferenceResult(INamedElement result) {
-		super(result);
-	}
-	
-	public INamedElement getSingleResult() {
-		return result;
+		this.result = result;
+		assertTrue(result != null && result.isCompleted());
 	}
 	
 }

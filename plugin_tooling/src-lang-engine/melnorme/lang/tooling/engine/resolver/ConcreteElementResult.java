@@ -10,13 +10,18 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
-import melnorme.lang.tooling.engine.ElementResolution;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 
-public class ConcreteElementResult extends ElementResolution<IConcreteNamedElement> {
+public class ConcreteElementResult {
+	
+	public final IConcreteNamedElement result;
 	
 	public ConcreteElementResult(IConcreteNamedElement result) {
-		super(result);
+		this.result = result;
+		assertNotNull(result);
+		assertTrue(result.isCompleted());
 	}
 	
 }
