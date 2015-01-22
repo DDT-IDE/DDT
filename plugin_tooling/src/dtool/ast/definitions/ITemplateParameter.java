@@ -11,8 +11,11 @@
 package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import dtool.ast.expressions.Resolvable;
 
 
@@ -20,4 +23,14 @@ public interface ITemplateParameter extends IASTNode {
 	
 	INamedElementNode createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext);
 	
+	public static class NotInstantiatedErrorElement extends ErrorElement {
+		
+		public static final String NAME = ERROR_PREFIX + "NotInstantiated";
+		
+		public NotInstantiatedErrorElement(ILanguageElement ownerElement, ElementDoc doc) {
+			super(NAME, ownerElement, doc);
+		}
+		
+	}
+
 }

@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
@@ -26,6 +27,7 @@ import melnorme.utilbox.collections.Collection2;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefinitionTemplate;
+import dtool.ast.definitions.ITemplateParameter.NotInstantiatedErrorElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
@@ -36,6 +38,39 @@ import dtool.parser.SourceEquivalenceChecker;
 
 
 public class Template_SemanticsTest extends NamedElement_CommonTest {
+	
+	@Test
+	public void test_UninstantiatedTemplate() throws Exception { test_UninstantiatedTemplate$(); }
+	public void test_UninstantiatedTemplate$() throws Exception {
+		test_NamedElement_Concrete(parseElement("template xxx/*M*/() { int foo; } ", INamedElement.class), 
+			expectNotAValue("xxx"), array("foo") );
+		
+		
+		test_NamedElement_Concrete(parseElement("template Tpl(int xxx/*M*/) { int foo; } ", INamedElement.class), 
+			"$/int", NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+		
+
+		test_NamedElement_Alias(parseElement("template Tpl(xxx/*M*/) { int foo; } ", INamedElement.class), 
+			ErrorElement.UNSUPPORTED__Name, expectNotAValue("xxx"), NO_MEMBERS);
+		test_NamedElement_Alias(parseElement("template Tpl(xxx/*M*/ : int) { int foo; } ", INamedElement.class), 
+			"$/int", expectNotAValue("xxx"), NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES);
+		
+		
+		test_NamedElement_Alias(parseElement("template Tpl(alias xxx/*M*/) { int foo; } ", INamedElement.class), 
+			NotInstantiatedErrorElement.NAME, NotInstantiatedErrorElement.NAME, NO_MEMBERS);
+		
+		
+		test_NamedElement_Alias(parseElement("template Tpl(this xxx/*M*/) { int foo; } ", INamedElement.class), 
+			NotInstantiatedErrorElement.NAME, NotInstantiatedErrorElement.NAME, NO_MEMBERS);
+		
+		test_NamedElement_Concrete(parseElement("template Tpl(xxx/*M*/...) { int foo; } ", INamedElement.class), 
+			expectNotAValue("xxx"), NO_MEMBERS);
+		
+	}
+	
+	/* -----------------  ----------------- */ 
+	
+	
 	
 	public static void checkNamedElements(Collection2<INamedElement> originalElements, String... expectedResults) {
 		new DefUnitResultsChecker(originalElements).checkNamedElements(expectedResults);
@@ -53,16 +88,6 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.context, "");
 	}
 	
-	@Override
-	public void test_NamedElement________() throws Exception {
-	}
-	
-	/* -----------------  ----------------- */
-		
-	protected static final String TPL_DEF_A = "template Tpl("
-			+ "TYPE1"
-			+ ") { TYPE1 foo; }";
-	
 	protected PickedElement<INamedElement> findTplParamInstance(PickedElement<TemplateInstance> tplInstancePick, 
 		String toStringAsCode) {
 		Reference ref = NodeFinderByString.find(tplInstancePick.element, Reference.class, toStringAsCode);
@@ -70,8 +95,17 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return picked(typeAlias, tplInstancePick.context);
 	}
 	
-	@Test
-	public void testTemplateInstantiation() throws Exception { testTemplateInstantiation$(); }
+	/* -----------------  ----------------- */
+	
+	@Override
+	public void test_NamedElement________() throws Exception {
+		testTemplateInstantiation$();
+	}
+		
+	protected static final String TPL_DEF_A = "template Tpl("
+			+ "TYPE1"
+			+ ") { TYPE1 foo; }";
+	
 	public void testTemplateInstantiation$() throws Exception {
 		
 		PickedElement<TemplateInstance> tplInstancePick = testTemplateInstantiation_____(

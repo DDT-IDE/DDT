@@ -15,10 +15,13 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
@@ -69,6 +72,17 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new TypeAliasSemantics(this, pickedElement) {
+			
+			@Override
+			protected IConcreteNamedElement resolveAliasTarget_nonNull() {
+				IReference aliasTarget = getAliasTarget();
+				if(isSyntaxError(aliasTarget)) {
+					return ErrorElement.newUnsupportedError(element, null);
+				}
+				
+				return ReferenceSemantics.resolveConcreteElement(aliasTarget, context);
+			}
+			
 			@Override
 			protected IReference getAliasTarget() {
 				return specializationType;

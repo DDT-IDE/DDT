@@ -57,7 +57,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	/* -----------------  ----------------- */
 	
 	protected static String expectNotAValue(INamedElement namedElement) {
-		return expectNotAValue(namedElement.getFullyQualifiedName());
+		return expectNotAValue(namedElement.getExtendedName());
 	}
 	
 	protected static PickedElement<INamedElement> picked2(INamedElement namedElement, ISemanticContext context) {

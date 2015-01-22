@@ -88,7 +88,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 		
 		@Override
 		public String getExtendedName() {
-			return getName() + ":" + invalidElement.getFullyQualifiedName();
+			return getName() + ":" + invalidElement.getExtendedName();
 		}
 		
 		@Override

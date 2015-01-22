@@ -18,8 +18,9 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 
@@ -68,13 +69,32 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		 // Need template instance
-		return new TODO_NamedElementSemantics(this, pickedElement) {
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement() {
-				return ErrorElement.newUnsupportedError(element, null);
-			}
-		};
+		return new TemplateAliasParamSemantics(this, pickedElement);
+	}
+	
+	public static class TemplateAliasParamSemantics extends NamedElementSemantics {
+		
+		protected final ErrorElement error;
+		
+		public TemplateAliasParamSemantics(INamedElement element, PickedElement<?> pickedElement) {
+			super(element, pickedElement);
+			this.error = new NotInstantiatedErrorElement(element, null);
+		}
+		
+		@Override
+		protected IConcreteNamedElement doResolveConcreteElement() {
+			return error;
+		}
+		
+		@Override
+		public void resolveSearchInMembersScope(CommonScopeLookup search) {
+			 // Do nothing
+		}
+		
+		@Override
+		public INamedElement resolveTypeForValueContext() {
+			return error;
+		}
 	}
 	
 	@Override

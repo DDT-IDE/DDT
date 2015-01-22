@@ -63,7 +63,6 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				// TODO return intrinsic universal
 				return;
 			}
 			

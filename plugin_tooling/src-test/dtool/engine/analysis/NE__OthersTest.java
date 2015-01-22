@@ -100,32 +100,14 @@ public class NE__OthersTest extends NamedElement_CommonTest {
 			
 			StandardLibraryResolution stdLib = getDefaultStdLibContext();
 			
-			visitConcrete(pickedElement(D2_063_intrinsics.bool_type, stdLib));
-			
 			visitConcrete(pickedElement(new IntrinsicProperty("max", D2_063_intrinsics.int_type, null), stdLib));
 			visitConcrete(pickedElement(new IntrinsicProperty2("max", new RefIdentifier("blah"), null), stdLib));
 			
-			
-			visitConcrete(parseDefUnit("template xxx() { }"));
-			visitConcrete(parseDefUnit("template blah(int xxx) { }"));
-			/*FIXME: BUG here TODO*/
-//			visitAliasElement(parseDefUnit("template blah(xxx) { }"), NotFoundErrorElement.NOT_FOUND__Name);
-//			visitAliasElement(parseDefUnit("template blah(alias xxx) { }"), NotFoundErrorElement.NOT_FOUND__Name);
-			visitConcrete(parseDefUnit("template blah(this xxx) { }"));
-			
 			visitConcrete(parseDefUnit("mixin blah xxx;"));
-			visitConcrete(parseDefUnit("template blah(xxx...) { }"));
 			
-			// A few derived elements.
-			
-			visitAliases();
-			
-		}
-		
-		protected void visitAliases() {
-			/* ----------------- aliases ----------------- */
 			
 			visitAliasElement(parseDefUnit("int target;  static if(is(target xxx)) { }"), "int target;");
+			
 		}
 	}
 	

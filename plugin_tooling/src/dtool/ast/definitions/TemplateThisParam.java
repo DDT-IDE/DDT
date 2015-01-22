@@ -17,8 +17,8 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import dtool.ast.definitions.TemplateAliasParam.TemplateAliasParamSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 
@@ -57,13 +57,7 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		// Need template instance 
-		return new TODO_NamedElementSemantics(this, pickedElement) {
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement() {
-				return TemplateThisParam.this;
-			}
-		};
+		return new TemplateAliasParamSemantics(this, pickedElement);
 	}
 	
 	@Override

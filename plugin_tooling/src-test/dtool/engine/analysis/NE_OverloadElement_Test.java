@@ -27,7 +27,7 @@ public class NE_OverloadElement_Test extends NamedElement_CommonTest {
 	@Override
 	public void test_NamedElement________() throws Exception {
 		test_NamedElement(pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), 
-			null, "#NotAValue:_tests.xxx", strings());
+			null, expectNotAValue("xxx"), strings());
 	}
 	
 }

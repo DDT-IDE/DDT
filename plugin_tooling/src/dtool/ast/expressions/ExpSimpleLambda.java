@@ -14,9 +14,13 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TODO_NamedElementSemantics;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
@@ -57,7 +61,7 @@ public class ExpSimpleLambda extends Expression {
 		cp.append(bodyExpression);
 	}
 	
-	public static class SimpleLambdaDefUnit extends DefUnit {
+	public static class SimpleLambdaDefUnit extends DefUnit implements IConcreteNamedElement {
 		
 		public SimpleLambdaDefUnit(DefSymbol defName) {
 			super(defName);
@@ -92,7 +96,20 @@ public class ExpSimpleLambda extends Expression {
 		
 		@Override
 		protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new TODO_NamedElementSemantics(this, pickedElement); // TODO
+			return new ConcreteElementSemantics(this, pickedElement) {
+				
+				@Override
+				public void resolveSearchInMembersScope(CommonScopeLookup search) {
+					 // Do nothing
+				}
+				
+				@Override
+				public INamedElement resolveTypeForValueContext() {
+					// It would have to be deduced from the exp context.
+					return ErrorElement.newUnsupportedError(element, null);
+				}
+				
+			};
 		}
 		
 	}
