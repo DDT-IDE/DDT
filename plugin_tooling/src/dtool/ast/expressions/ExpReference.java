@@ -60,7 +60,7 @@ public class ExpReference extends Expression {
 			
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return resolveTypeOfExpressionReference(ref);
+				return resolveTypeOfExpressionReference(ref, context);
 			}
 			
 		};

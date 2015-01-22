@@ -24,7 +24,7 @@ import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 public abstract class Initializer extends ASTNode implements IInitializer {
 	
 	@Override
-	public TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context) {
+	public TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context) {
 		// TODO resolveTypeOfUnderlyingValue for subclasses
 		return ExpSemantics.concreteTypeResult(ErrorElement.newUnsupportedError(this, null));
 	}

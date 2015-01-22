@@ -10,28 +10,32 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.IReference;
+import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
+import melnorme.lang.tooling.engine.resolver.CommonVarSemantics;
+import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 
-public class AliasElement extends InstantiatedDefUnit {
+public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
-	public final Reference target; // non-children member
+	public final Resolvable targetValue; // non-children member
 	
-	public AliasElement(DefSymbol defName, Resolvable target) {
+	public AliasElement(DefSymbol defName, Resolvable targetValue) {
 		super(defName);
-		this.target = (target instanceof Reference) ? 
-				(Reference) target :  
-				null; // TODO: error element
+		this.targetValue = assertNotNull(targetValue);
 	}
 	
 	@Override
@@ -45,29 +49,40 @@ public class AliasElement extends InstantiatedDefUnit {
 	
 	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
-		cp.append("alias ", defName);
-		cp.append(" = ", target);
+		cp.append("@value_alias ", defName);
+		cp.append(" = ", targetValue);
 	}
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new AliasElement(clone(defName), clone(target));
+		return new AliasElement(clone(defName), targetValue);
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Alias;
+		return EArcheType.Variable;
 	}
 	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new RefAliasSemantics(this, pickedElement) {
+		return new CommonVarSemantics(this, pickedElement) {
+			
 			@Override
-			protected IReference getAliasTarget() {
-				return target;
-			}
+			public INamedElement resolveTypeForValueContext() {
+				if(targetValue instanceof Expression) {
+					Expression expression = (Expression) targetValue;
+					return expression.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+				} else {
+					final Reference reference = (Reference) targetValue;
+					TypeReferenceResult result = ExpSemantics.resolveTypeOfExpressionReference(reference, context);
+					if(result == null) {
+						return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(reference)).originalType; 
+					}
+					return result.originalType;
+				}
+			} 
 		};
 	}
 	

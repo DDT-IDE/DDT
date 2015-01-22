@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -63,14 +64,15 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 	 * Resolve a reference that should point to a var element 
 	 * (or a similar element that has an expression value).
 	 */
-	public TypeReferenceResult resolveTypeOfExpressionReference(IReference reference) {
+	public static TypeReferenceResult resolveTypeOfExpressionReference(IReference reference, 
+			ISemanticContext parentContext) {
 		if(reference == null) {
 			return null;
 		}
-		INamedElement expElement = reference.getSemantics(context).resolveTargetElement().result;
+		INamedElement expElement = reference.getSemantics(parentContext).resolveTargetElement_();
 		
-		INamedElement originalType = expElement.resolveTypeForValueContext(context);
-		return concreteTypeResult(reference, originalType);
+		INamedElement originalType = expElement.resolveTypeForValueContext(parentContext);
+		return concreteTypeResult(reference, originalType, parentContext);
 	}
 	
 	/**
@@ -81,15 +83,16 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 			return null;
 		}
 		INamedElement originalType = reference.getSemantics(context).resolveTargetElement().result;
-		return concreteTypeResult(reference, originalType);
+		return concreteTypeResult(reference, originalType, context);
 	}
 	
-	protected TypeReferenceResult concreteTypeResult(IReference reference, INamedElement originalType) {
+	protected static TypeReferenceResult concreteTypeResult(IReference reference, INamedElement originalType,
+			ISemanticContext parentContext) {
 		if(originalType == null) {
 			return concreteTypeResult(ErrorElement.newNotFoundError(reference));
 		}
 		
-		IConcreteNamedElement concreteResult = originalType.resolveConcreteElement(context);
+		IConcreteNamedElement concreteResult = originalType.resolveConcreteElement(parentContext);
 		
 		ITypeNamedElement concreteType;
 		if(concreteResult instanceof ITypeNamedElement) {

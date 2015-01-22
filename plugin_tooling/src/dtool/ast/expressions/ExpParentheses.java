@@ -63,10 +63,10 @@ public class ExpParentheses extends Expression {
 				Resolvable parensExp = ExpParentheses.this.resolvable;
 				if(parensExp instanceof Reference) {
 					Reference refRoot = (Reference) parensExp;
-					return resolveTypeOfExpressionReference(refRoot);
+					return resolveTypeOfExpressionReference(refRoot, context);
 				} else {
 					Expression expRoot = (Expression) parensExp;
-					return expRoot.resolveTypeOfUnderlyingValue(context);
+					return expRoot.resolveTypeOfUnderlyingValue_nonNull(context);
 				}
 			}
 			

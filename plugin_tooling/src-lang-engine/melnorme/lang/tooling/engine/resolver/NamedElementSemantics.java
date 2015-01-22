@@ -66,7 +66,7 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	public abstract void resolveSearchInMembersScope(CommonScopeLookup search);
 	
 	@Override
-	public abstract INamedElement resolveTypeForValueContext();
+	public abstract INamedElement resolveTypeForValueContext(); /* FIXME: should be ITypedNamedElement */
 	
 	/* -----------------  ----------------- */
 	

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
@@ -35,10 +35,10 @@ public class CommonDefVarSemantics extends VarSemantics {
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();
 		if(initializer != null) {
-			return initializer.resolveTypeOfUnderlyingValue(context).originalType;
+			return initializer.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
 		}
 		
-		return new SyntaxErrorElement(varDef, ErrorElement.quoteDoc("Missing initializer."));
+		return new SyntaxErrorElement(varDef, ErrorElement.quoteDoc("Missing initializer or type."));
 	}
 	
 	@Override

@@ -185,7 +185,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	// TODO: need to refactor/review this
 	public static void testExpressionResolution(PickedElement<Expression> expPick, String... expectedResults) {
 		ISemanticContext context = expPick.context;
-		INamedElement expType = expPick.element.resolveTypeOfUnderlyingValue(context).originalType;
+		INamedElement expType = expPick.element.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
 		
 		test_resolveSearchInMembersScope(picked2(expType, context), expectedResults);
 	}

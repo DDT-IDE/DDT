@@ -121,8 +121,11 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		checkNamedElements(search.getMatchedElements(), array("@TYPE1 = /int;", "$_tests/", "$_tests/Tpl"));
 		
 		
-		test_TypeParam();
+		test_TypeParam$();
 		test_VarParam$();
+		test_AliasParam$();
+		test_ThisParam$();
+		test_TupleParam$();
 		
 	}
 	
@@ -214,12 +217,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			);
 			
 			// Test name parameter, to var (and alias)
-			testTemplateArgumentInstantiation(templateSource + "int aVar;", "Tpl!(aVar)",
+			testTemplateArgumentInstantiation(templateSource + "char aVar;", "Tpl!(aVar)",
 				varArg_toStringAsCode,
 				varArg_concreteTarget,
 				varArg_type
 			);
-			testTemplateArgumentInstantiation(templateSource + "int aVar; alias aVarAlias = aVar", "Tpl!(aVarAlias)",
+			testTemplateArgumentInstantiation(templateSource + "char aVar; alias aVarAlias = aVar", "Tpl!(aVarAlias)",
 				varArgAlias_toStringAsCode,
 				varArgAlias_concreteTarget,
 				varArgAlias_type
@@ -264,7 +267,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return tplInstancePick;
 	}
 	
-	protected void test_TypeParam() {
+	protected void test_TypeParam$() {
 		new TemplateParamTester() {
 			{
 				templateSource = "template Tpl(ARG) { ARG foo; }";
@@ -293,6 +296,8 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 				
 			}
 		}.test_TplParameter$();
+		
+		// TODO: test specializations and overloads
 	}
 	
 	protected void test_VarParam$() {
@@ -326,6 +331,47 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 				
 			}
 		}.test_TplParameter$();
+	}
+	
+	protected void test_AliasParam$() {
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(alias ARG) { auto foo = ARG; }";
+				
+				intArg_toStringAsCode = "@value_alias ARG = int;";
+				intArg_concreteTarget = intArg_toStringAsCode;
+				intArg_type = expectNotAValue("int");
+				
+				intArgAlias_toStringAsCode = "@value_alias ARG = intAlias;";
+				intArgAlias_concreteTarget = intArgAlias_toStringAsCode;
+				intArgAlias_type = expectNotAValue("int");
+				
+				
+				varArg_toStringAsCode = "@value_alias ARG = aVar;";
+				varArg_concreteTarget = varArg_toStringAsCode;
+				varArg_type = "$/char";
+				varArgAlias_toStringAsCode = "@value_alias ARG = aVarAlias;";
+				varArgAlias_concreteTarget = varArgAlias_toStringAsCode;
+				varArgAlias_type = "$/char";
+				
+				missingArg_ToStringAsCode = "@value_alias ARG = missing;";
+				missingArg_concreteTarget = missingArg_ToStringAsCode;
+				missingArg_type = expectNotFound("missing");
+				
+				numberArg_ToStringAsCode = "@value_alias ARG = 123;";
+				numberArg_concreteTarget = numberArg_ToStringAsCode;
+				numberArg_type = "$/int";
+				
+			}
+		}.test_TplParameter$();
+	}
+	
+	protected void test_TupleParam$() {
+		 
+	}
+	
+	protected void test_ThisParam$() {
+		 
 	}
 	
 	/* -----------------  ----------------- */

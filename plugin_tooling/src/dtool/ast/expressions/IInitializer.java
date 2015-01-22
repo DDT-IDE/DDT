@@ -16,6 +16,6 @@ import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 
 public interface IInitializer extends IASTNode {
 	
-	TypeReferenceResult resolveTypeOfUnderlyingValue(ISemanticContext context);
+	TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context);
 	
 }

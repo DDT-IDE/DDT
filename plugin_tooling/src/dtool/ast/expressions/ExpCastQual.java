@@ -84,7 +84,7 @@ public class ExpCastQual extends Expression {
 			public TypeReferenceResult doCreateExpResolution() {
 				if(exp == null) 
 					return null;
-				TypeReferenceResult baseExpType = exp.resolveTypeOfUnderlyingValue(context);
+				TypeReferenceResult baseExpType = exp.resolveTypeOfUnderlyingValue_nonNull(context);
 				// TODO: should modify baseExpType with modifiers
 				return baseExpType;
 			}

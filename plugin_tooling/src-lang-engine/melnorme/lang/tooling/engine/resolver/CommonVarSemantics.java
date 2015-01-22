@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,23 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public abstract class VarSemantics extends CommonVarSemantics {
+public abstract class CommonVarSemantics extends ConcreteElementSemantics {
 	
-	public VarSemantics(IConcreteNamedElement element, PickedElement<?> pickedElement) {
-		super(element, pickedElement);
+	public CommonVarSemantics(IConcreteNamedElement concreteElement, PickedElement<?> pickedElement) {
+		super(concreteElement, pickedElement);
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext() {
-		IReference declaredType = getTypeReference();
-		if(declaredType != null) {
-			return declaredType.getSemantics(context).resolveTargetElement().result;
-		}
-		return null;
+	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
+		/* FIXME: should be ITypeNamedElement */
+		INamedElement effectiveType = resolveTypeForValueContext();
+		search.evaluateInMembersScope(resolveConcreteElement(effectiveType));
 	}
-	
-	protected abstract IReference getTypeReference();
 	
 }
