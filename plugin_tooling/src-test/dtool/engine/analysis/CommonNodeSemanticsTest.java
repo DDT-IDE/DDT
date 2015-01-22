@@ -206,6 +206,10 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		};
 	}
 	
+	public static void checkElementLabel(INamedElement namedElement, String expectedLabel) {
+		assertTrue(DefUnitResultsChecker.matchesLabel(namedElement, expectedLabel));
+	}
+	
 	public static Predicate<INamedElement> notfoundChecker(final String name) {
 		return namedElementChecker(expectNotFound(name));
 	}

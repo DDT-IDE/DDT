@@ -114,7 +114,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 	
 	public static void test_NamedElement_NonValue(PickedElement<? extends INamedElement> pickedElement, 
 			String aliasTarget, String[] expectedMembers) {
-		test_NamedElement(pickedElement, aliasTarget, new NotAValueErrorElement(pickedElement.element).toString(), 
+		test_NamedElement(pickedElement, aliasTarget, expectNotAValue(pickedElement.element.getName()), 
 			expectedMembers);
 	}
 	
@@ -145,7 +145,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			// non-alias elements relsolve to themselves
 			assertTrue(concreteElement == namedElement);
 		} else {
-			namedElementChecker(concreteTargetLabel).evaluate(concreteElement);
+			checkElementLabel(concreteElement, concreteTargetLabel);
 		}
 	}
 	
@@ -159,7 +159,7 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		// Test caching
 		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
 		
-		namedElementChecker(expectedTypeName).evaluate(resolvedType);
+		checkElementLabel(resolvedType, expectedTypeName);
 	}
 	
 	/* -----------------  ----------------- */

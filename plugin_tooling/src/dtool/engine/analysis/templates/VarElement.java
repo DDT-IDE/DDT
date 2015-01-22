@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -27,13 +28,12 @@ import dtool.ast.references.Reference;
 public class VarElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
 	public final Reference type; // non-children element
+	public final Resolvable value; // non-children element
 	
-	public VarElement(DefSymbol defname, Resolvable type) {
+	public VarElement(DefSymbol defname, Reference type, Resolvable value) {
 		super(defname);
-		/*FIXME: BUG here NPE/parenting*/
-		this.type = (type instanceof Reference) ? 
-				(Reference) type :  
-				null; // TODO: error element
+		this.type = type;
+		this.value = assertNotNull(value);
 	}
 	
 	@Override
@@ -47,13 +47,14 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new VarElement(clone(defName), clone(type));
+		return new VarElement(clone(defName), type, value);
 	}
 	
 	@Override
 	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
+		cp.append("@ ", type, " ");
 		cp.append(defName);
-		cp.append(" : ", type);
+		cp.append(" = ", value);
 	}
 	
 	@Override

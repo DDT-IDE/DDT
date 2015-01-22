@@ -23,7 +23,7 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
-import dtool.engine.analysis.templates.AliasElement;
+import dtool.engine.analysis.templates.VarElement;
 
 public class TemplateValueParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
 	
@@ -85,8 +85,8 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 	}
 	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new AliasElement(defName, null); // TODO: correct instantiation
+	public VarElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
+		return new VarElement(defName, type, argument);
 	}
 	
 }

@@ -21,6 +21,11 @@ import dtool.ast.expressions.Resolvable;
 
 public interface ITemplateParameter extends IASTNode {
 	
+	/** 
+	 * Create template argument element. 
+	 * @param argument non-null.
+	 * @param tplRefContext non-null.
+	 */
 	INamedElementNode createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext);
 	
 	public static class NotInstantiatedErrorElement extends ErrorElement {

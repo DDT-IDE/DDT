@@ -88,7 +88,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.context, "");
 	}
 	
-	protected PickedElement<INamedElement> findTplParamInstance(PickedElement<TemplateInstance> tplInstancePick, 
+	protected static PickedElement<INamedElement> findTplParamInstance(PickedElement<TemplateInstance> tplInstancePick, 
 		String toStringAsCode) {
 		Reference ref = NodeFinderByString.find(tplInstancePick.element, Reference.class, toStringAsCode);
 		INamedElement typeAlias = resolveTarget(ref, tplInstancePick);
@@ -120,12 +120,14 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		tplInstancePick.element.performNameLookup(search);
 		checkNamedElements(search.getMatchedElements(), array("@TYPE1 = /int;", "$_tests/", "$_tests/Tpl"));
 		
-		test_TypeParam$();
+		
+		test_TypeParam();
+		test_VarParam$();
 		
 	}
 	
-	protected PickedElement<TemplateInstance> testTemplateInstantiation_____(String source, String expectedLabel,
-			String expectedToStringAsCode, String[] expectedMembers) {
+	protected static PickedElement<TemplateInstance> testTemplateInstantiation_____(String source, 
+		String expectedLabel, String expectedToStringAsCode, String[] expectedMembers) {
 		PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
 		
 		TemplateInstance tplInstance = assertCast(resolveTarget(tplRef), TemplateInstance.class);
@@ -139,8 +141,10 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		assertTrue(tplInstance.getSemanticContainerKey() == templateDef.getSemanticContainerKey());
 		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context); /*FIXME: BUG here*/
 		
-		String elementLabel = NamedElementUtil.getElementTypedLabel(tplInstance, true);
-		assertAreEqual(expectedLabel, elementLabel);
+		if(expectedLabel != null) {
+			String elementLabel = NamedElementUtil.getElementTypedLabel(tplInstance, true);
+			assertAreEqual(expectedLabel, elementLabel);
+		}
 		
 		checkSourceEquivalence(expectedToStringAsCode, tplInstance);
 		
@@ -155,12 +159,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return tplInstancePick;
 	}
 
-	protected void checkSourceEquivalence(String expectedToStringAsCode, ASTNode node) {
+	protected static void checkSourceEquivalence(String expectedToStringAsCode, ASTNode node) {
 		if(expectedToStringAsCode != null) {
 			String nodeToStringAsCode = node.toStringAsCode();
 			
+			nodeToStringAsCode = nodeToStringAsCode.replaceAll(Pattern.quote("#"), "@");
 			expectedToStringAsCode = expectedToStringAsCode.replaceAll(Pattern.quote("#"), "@");
-			nodeToStringAsCode = expectedToStringAsCode.replaceAll(Pattern.quote("#"), "@");
 			
 			SourceEquivalenceChecker.assertCheck(nodeToStringAsCode, expectedToStringAsCode);
 		}
@@ -168,66 +172,161 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected void test_TypeParam$() {
-		PickedElement<TemplateInstance> tplInstancePick;
+	protected static class TemplateParamTester {
+	
+		protected String templateSource;
 		
-		tplInstancePick = testTemplateInstantiation_____(
-			TPL_DEF_A + "Tpl!(int)/*M*/ _dummy", 
-			
-			"_tests/Tpl!(int)", 
-			"Tpl!(int){ @TYPE1 = /int; }{ TYPE1 foo; }",
-			array("foo")
-		);
-		test_NamedElement_NonValue(findTplParamInstance(tplInstancePick, "TYPE1"), "$/int", null);
-		
-		// Test alias is same template instance
-		tplInstancePick = testTemplateInstantiation_____(
-			TPL_DEF_A + "alias intAlias = int; Tpl!(intAlias)/*M*/ _dummy", 
-			
-			"_tests/Tpl!(intAlias)", 
-			"Tpl!(intAlias){ @TYPE1 = /int; }{ TYPE1 foo; }",
-			array("foo")
-		);
-		test_NamedElement_NonValue(findTplParamInstance(tplInstancePick, "TYPE1"), "$/int", null);
-		
-		
-		// --- Test invalid parameter
-		tplInstancePick = testTemplateInstantiation_____(
-			TPL_DEF_A + "Tpl!(123)/*M*/ _dummy", 
-			
-			"_tests/Tpl!(123)", 
-			"Tpl!(123){ @TYPE1 = " + RefTemplateInstanceSemantics.ERROR__TPL_ARG__NotAType + " ; }{ TYPE1 foo; }",
-			array("foo")
-		);
-		
-		tplInstancePick = testTemplateInstantiation_____(
-			TPL_DEF_A + "int someVar; Tpl!(someVar)/*M*/ _dummy", 
-			
-			"_tests/Tpl!(someVar)", 
-			"Tpl!(someVar){ @TYPE1 = " + NotATypeErrorElement.errorName("someVar") + " ; }{ TYPE1 foo; }",
-			array("foo")
-		);
+		protected String intArg_toStringAsCode;
+		protected String intArg_concreteTarget;
+		protected String intArg_type;
+		protected String intArgAlias_toStringAsCode;
+		protected String intArgAlias_concreteTarget;
+		protected String intArgAlias_type;
 
 		
-//		tplInstancePick = testTemplateInstantiation_____(
-//			TPL_DEF_A + "Tpl!()/*M*/ _dummy", 
-//			
-//			"_tests/Tpl!()", 
-//			"Tpl!(){ @TYPE1 = int; }{ TYPE1 foo; }",
-//			array("foo")
-//		);
-		tplInstancePick = testTemplateInstantiation_____(
-			TPL_DEF_A + "Tpl!(missing)/*M*/ _dummy", 
-			
-			"_tests/Tpl!(missing)", 
-			"Tpl!(missing){ @TYPE1 = " + expectNotFound("missing") + " ; }{ TYPE1 foo; }",
-			array("foo")
-		);
+		protected String varArg_toStringAsCode;
+		protected String varArg_concreteTarget;
+		protected String varArg_type;
+		protected String varArgAlias_toStringAsCode;
+		protected String varArgAlias_concreteTarget;
+		protected String varArgAlias_type;
 		
-		test_NamedElement_NonValue(findTplParamInstance(tplInstancePick, "TYPE1"), expectNotFound("missing"), null);
+		protected String missingArg_ToStringAsCode;
+		protected String missingArg_concreteTarget;
+		protected String missingArg_type;
+		
+		protected String numberArg_ToStringAsCode;
+		protected String numberArg_concreteTarget;
+		protected String numberArg_type;
+		
+		protected void test_TplParameter$() {
+			
+			// test type ref parameter (and alias)
+			testTemplateArgumentInstantiation(templateSource, "Tpl!(int)",
+				intArg_toStringAsCode, 
+				intArg_concreteTarget, 
+				intArg_type
+			);
+			testTemplateArgumentInstantiation(templateSource + "alias intAlias = int;", "Tpl!(intAlias)",
+				intArgAlias_toStringAsCode,
+				intArgAlias_concreteTarget, 
+				intArgAlias_type
+			);
+			
+			// Test name parameter, to var (and alias)
+			testTemplateArgumentInstantiation(templateSource + "int aVar;", "Tpl!(aVar)",
+				varArg_toStringAsCode,
+				varArg_concreteTarget,
+				varArg_type
+			);
+			testTemplateArgumentInstantiation(templateSource + "int aVar; alias aVarAlias = aVar", "Tpl!(aVarAlias)",
+				varArgAlias_toStringAsCode,
+				varArgAlias_concreteTarget,
+				varArgAlias_type
+			);
+			
+			
+			testTemplateArgumentInstantiation(templateSource,  "Tpl!(missing)", 
+				missingArg_ToStringAsCode,
+				missingArg_concreteTarget,
+				missingArg_type
+			);
+			
+			
+			// Test number parameter
+			testTemplateArgumentInstantiation(templateSource, "Tpl!(123)",
+				numberArg_ToStringAsCode,
+				numberArg_concreteTarget,
+				numberArg_type
+			);
+			
+		}
 	}
 	
+	protected static PickedElement<TemplateInstance> testTemplateArgumentInstantiation(String baseSource, 
+		String expectedExtendedName, String expectedToStringAsCode, String argConcreteTarget, String argType) {
+		
+		String source = baseSource + "; " + expectedExtendedName + "/*M*/ _dummy;"; 
+		PickedElement<TemplateInstance> tplInstancePick = testTemplateInstantiation_____(
+			source,
+			
+			DEFAULT_ModuleName + "/" + expectedExtendedName,
+			null,
+			null
+		);
+		
+		PickedElement<INamedElement> tplArgInstance = findTplParamInstance(tplInstancePick, "ARG");
+		
+		checkSourceEquivalence(expectedToStringAsCode, (ASTNode) tplArgInstance.element);
+		
+		test_NamedElement(tplArgInstance, argConcreteTarget, argType, null);
+		
+		return tplInstancePick;
+	}
 	
+	protected void test_TypeParam() {
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(ARG) { ARG foo; }";
+				
+				intArg_toStringAsCode = "@ARG = /int;";
+				intArg_concreteTarget = "$/int";
+				intArg_type = expectNotAValue("ARG");
+				intArgAlias_toStringAsCode = intArg_toStringAsCode;
+				intArgAlias_concreteTarget = intArg_concreteTarget;
+				intArgAlias_type = intArg_type;
+				
+				varArg_toStringAsCode = "@ARG = " + NotATypeErrorElement.errorName("aVar") + " ;";
+				varArg_concreteTarget = NotATypeErrorElement.errorName("aVar");
+				varArg_type = expectNotAValue("ARG");
+				varArgAlias_toStringAsCode = varArg_toStringAsCode;
+				varArgAlias_concreteTarget = varArg_concreteTarget;
+				varArgAlias_type = varArg_type;
+				
+				missingArg_ToStringAsCode = "@ARG = " + expectNotFound("missing") + ";";
+				missingArg_concreteTarget = expectNotFound("missing");
+				missingArg_type = expectNotAValue("ARG");
+				
+				numberArg_ToStringAsCode = "@ARG = " + RefTemplateInstanceSemantics.ERROR__TPL_ARG__NotAType + ";";
+				numberArg_concreteTarget = RefTemplateInstanceSemantics.ERROR__TPL_ARG__NotAType;
+				numberArg_type = expectNotAValue("ARG");
+				
+			}
+		}.test_TplParameter$();
+	}
+	
+	protected void test_VarParam$() {
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(int ARG) { ARG foo; }";
+				
+				intArg_toStringAsCode = "@ int ARG = int;";
+				intArg_concreteTarget = intArg_toStringAsCode;
+				intArg_type = "$/int";
+				
+				intArgAlias_toStringAsCode = "@ int ARG = intAlias;";
+				intArgAlias_concreteTarget = intArgAlias_toStringAsCode;
+				intArgAlias_type = "$/int";
+				
+				
+				varArg_toStringAsCode = "@ int ARG = aVar;";
+				varArg_concreteTarget = varArg_toStringAsCode;
+				varArg_type = "$/int";
+				varArgAlias_toStringAsCode = "@ int ARG = aVarAlias;";
+				varArgAlias_concreteTarget = varArgAlias_toStringAsCode;
+				varArgAlias_type = "$/int";
+				
+				missingArg_ToStringAsCode = "@ int ARG = missing;";
+				missingArg_concreteTarget = missingArg_ToStringAsCode;
+				missingArg_type = "$/int";
+				
+				numberArg_ToStringAsCode = "@ int ARG = 123;";
+				numberArg_concreteTarget = numberArg_ToStringAsCode;
+				numberArg_type = "$/int";
+				
+			}
+		}.test_TplParameter$();
+	}
 	
 	/* -----------------  ----------------- */
 	
