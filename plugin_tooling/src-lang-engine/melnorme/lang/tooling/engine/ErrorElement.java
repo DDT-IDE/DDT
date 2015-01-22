@@ -33,7 +33,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		return DeeLanguageIntrinsics.parseDDoc(string);
 	}
 	
-	public static final String ERROR_PREFIX = "%"; /* FIXME: */
+	public static final String ERROR_PREFIX = "#";
 	
 	public static final String UNSUPPORTED__Name = ERROR_PREFIX + "Unsupported";
 	public static final String LOOP_ERROR_ELEMENT__Name = ERROR_PREFIX + "LoopError";
@@ -139,11 +139,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 			super(SYNTAX_ERROR__Name, ownerElement, doc);
 		}
 		
-		@Override
-		public String toString() {
-			return getExtendedName();
-		}
-		
 	}
 	
 	/* -----------------  ----------------- */
@@ -162,11 +157,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		
 		@Override
 		public String getExtendedName() {
-			return errorName(reference.toStringAsCode());
-		}
-		
-		@Override
-		public String toString() {
 			return errorName(reference.toStringAsCode());
 		}
 		
@@ -198,11 +188,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		@Override
 		public String getFullyQualifiedName() {
 			return errorName(invalidElement.getFullyQualifiedName());
-		}
-		
-		@Override
-		public String toString() {
-			return getExtendedName();
 		}
 		
 		public static String errorName(String nameSuffix) {

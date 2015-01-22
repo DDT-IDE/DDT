@@ -12,7 +12,11 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import java.util.regex.Pattern;
+
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
@@ -104,9 +108,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		String elementLabel = NamedElementUtil.getElementTypedLabel(tplInstance, true);
 		assertAreEqual(expectedLabel, elementLabel);
 		
-		if(expectedToStringAsCode != null) {
-			SourceEquivalenceChecker.assertCheck(tplInstance.toStringAsCode(), expectedToStringAsCode);
-		}
+		checkSourceEquivalence(expectedToStringAsCode, tplInstance);
 		
 		ASTSourceRangeChecker.checkConsistency(tplInstance);
 		
@@ -117,6 +119,17 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		);
 		
 		return tplInstancePick;
+	}
+
+	protected void checkSourceEquivalence(String expectedToStringAsCode, ASTNode node) {
+		if(expectedToStringAsCode != null) {
+			String nodeToStringAsCode = node.toStringAsCode();
+			
+			expectedToStringAsCode = expectedToStringAsCode.replaceAll(Pattern.quote("#"), "@");
+			nodeToStringAsCode = expectedToStringAsCode.replaceAll(Pattern.quote("#"), "@");
+			
+			SourceEquivalenceChecker.assertCheck(nodeToStringAsCode, expectedToStringAsCode);
+		}
 	}
 	
 	/* -----------------  ----------------- */
