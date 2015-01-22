@@ -172,7 +172,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		
 		public static final String ERROR_IS_NOT_A_TYPE = ERROR_PREFIX + "NotAType";
 		
-		public final IConcreteNamedElement invalidElement;
+		public final INamedElement invalidElement;
 		
 		public NotATypeErrorElement(IReference owner, IConcreteNamedElement invalidElement) {
 			super(ERROR_IS_NOT_A_TYPE, owner, 

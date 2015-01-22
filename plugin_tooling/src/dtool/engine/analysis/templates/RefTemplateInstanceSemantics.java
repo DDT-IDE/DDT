@@ -48,12 +48,12 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		}
 	}
 	
-	protected TemplateInstance createTemplateInstance(INamedElement resolvedTemplate) {
+	protected INamedElement createTemplateInstance(INamedElement resolvedTemplate) {
 		RefTemplateInstance refTplInstance = this.refTemplateInstance;
 		
 		// TODO: find best match for template overload
 			
-		TemplateInstance templateInstance = null;
+		INamedElement templateInstance = null;
 		
 		if(resolvedTemplate instanceof DefinitionTemplate) {
 			DefinitionTemplate template = (DefinitionTemplate) resolvedTemplate;
@@ -68,7 +68,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return null;
 	}
 	
-	protected TemplateInstance createTemplateInstance(DefinitionTemplate templateDef, RefTemplateInstance templateRef) {
+	protected INamedElement createTemplateInstance(DefinitionTemplate templateDef, RefTemplateInstance templateRef) {
 		
 		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
 		
@@ -84,7 +84,13 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			
 			Resolvable argument = tplArgs.get(ix);
 			assertNotNull(argument);
-			instantiatedArgs.add(tplParameter.createTemplateArgument(argument, context));
+			INamedElementNode templateArgument = tplParameter.createTemplateArgument(argument, context);
+			
+			if(templateArgument == null) {
+				return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);
+			}
+			
+			instantiatedArgs.add(templateArgument);
 		}
 		
 		return new TemplateInstance(templateRef, context, templateDef, instantiatedArgs);
@@ -93,6 +99,9 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	/* -----------------  ----------------- */
 	
 	public static final String ERROR__TPL_ARG__NotAType = ErrorElement.ERROR_PREFIX + "TemplateArgumentIsNotAType";
+	public static final String ERROR__TPL_REF_MATCHED_NONE = ErrorElement.ERROR_PREFIX + 
+			"InstantiationDidNotMatchAnyTemplate";
+	
 	
 	public static ITypeNamedElement resolveTargetType(Resolvable target, ISemanticContext parentContext) {
 		assertNotNull(target);

@@ -62,7 +62,7 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	
 	@Override
 	public AliasElement createTemplateArgument(Resolvable resolvable, ISemanticContext tplRefContext) {
-		return new AliasElement(defName, null); // TODO: correct instantiation
+		return null;
 	}
 	
 }

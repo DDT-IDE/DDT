@@ -22,9 +22,11 @@ import dtool.ast.expressions.Resolvable;
 public interface ITemplateParameter extends IASTNode {
 	
 	/** 
-	 * Create template argument element. 
+	 * Create template argument element for given argument 
 	 * @param argument non-null.
 	 * @param tplRefContext non-null.
+	 * 
+	 * @return the created tamplate argument, or null if the given argument is not applicable to the parameter.
 	 */
 	INamedElementNode createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext);
 	

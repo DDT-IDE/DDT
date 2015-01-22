@@ -30,6 +30,7 @@ import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.ITemplateParameter.NotInstantiatedErrorElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
+import dtool.engine.analysis.templates.InstantiatedDefUnit;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 import dtool.engine.analysis.templates.TemplateInstance;
 import dtool.engine.tests.DefUnitResultsChecker;
@@ -132,8 +133,9 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	protected static PickedElement<TemplateInstance> testTemplateInstantiation_____(String source, 
 		String expectedLabel, String expectedToStringAsCode, String[] expectedMembers) {
 		PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
+		INamedElement tplRefTarget = resolveTarget(tplRef);
 		
-		TemplateInstance tplInstance = assertCast(resolveTarget(tplRef), TemplateInstance.class);
+		TemplateInstance tplInstance = assertCast(tplRefTarget, TemplateInstance.class);
 		PickedElement<TemplateInstance> tplInstancePick = picked(tplInstance, tplRef.context);
 		
 		DefinitionTemplate templateDef = tplInstance.templateDef;
@@ -247,9 +249,18 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	}
 	
 	protected static PickedElement<TemplateInstance> testTemplateArgumentInstantiation(String baseSource, 
-		String expectedExtendedName, String expectedToStringAsCode, String argConcreteTarget, String argType) {
+		String expectedExtendedName, String argExpectedToStringAsCode, String argConcreteTarget, String argType) {
 		
-		String source = baseSource + "; " + expectedExtendedName + "/*M*/ _dummy;"; 
+		String source = baseSource + "; " + expectedExtendedName + "/*M*/ _dummy;";
+		
+		if(argExpectedToStringAsCode == null) {
+			PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
+			INamedElement tplRefTarget = resolveTarget(tplRef);
+			
+			checkElementLabel(tplRefTarget, RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE);
+			return null;
+		}
+		
 		PickedElement<TemplateInstance> tplInstancePick = testTemplateInstantiation_____(
 			source,
 			
@@ -260,7 +271,8 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		PickedElement<INamedElement> tplArgInstance = findTplParamInstance(tplInstancePick, "ARG");
 		
-		checkSourceEquivalence(expectedToStringAsCode, (ASTNode) tplArgInstance.element);
+		assertTrue(tplArgInstance.element instanceof InstantiatedDefUnit);
+		checkSourceEquivalence(argExpectedToStringAsCode, (ASTNode) tplArgInstance.element);
 		
 		test_NamedElement(tplArgInstance, argConcreteTarget, argType, null);
 		
@@ -367,23 +379,61 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	}
 	
 	protected void test_TupleParam$() {
-		 
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(ARG...) { auto foo = ARG; }";
+				
+				intArg_toStringAsCode = "@ ARG... = (int);";
+				intArg_concreteTarget = intArg_toStringAsCode;
+				intArg_type = expectNotAValue("ARG");
+				
+				intArgAlias_toStringAsCode = "@ ARG... = (intAlias);";
+				intArgAlias_concreteTarget = intArgAlias_toStringAsCode;
+				intArgAlias_type = expectNotAValue("ARG");
+				
+				
+				varArg_toStringAsCode = "@ ARG... = (aVar);";
+				varArg_concreteTarget = varArg_toStringAsCode;
+				varArg_type = expectNotAValue("ARG");
+				varArgAlias_toStringAsCode = "@ ARG... = (aVarAlias);";
+				varArgAlias_concreteTarget = varArgAlias_toStringAsCode;
+				varArgAlias_type = expectNotAValue("ARG");
+				
+				missingArg_ToStringAsCode = "@ ARG... = (missing);";
+				missingArg_concreteTarget = missingArg_ToStringAsCode;
+				missingArg_type = expectNotAValue("ARG");
+				
+				numberArg_ToStringAsCode = "@ ARG... = (123);";
+				numberArg_concreteTarget = numberArg_ToStringAsCode;
+				numberArg_type = expectNotAValue("ARG");
+				
+			}
+		}.test_TplParameter$();
+		
+		// TODO Tuple with multiple sizes
 	}
 	
 	protected void test_ThisParam$() {
-		 
+		// ThisParameter can only be correctly instantiated with templated functions, using IFTI
+		// (implicit Function Template Instantiation
+		
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(this ARG){ auto foo = ARG; }";
+				
+				intArg_toStringAsCode = null;
+				intArgAlias_toStringAsCode = null;
+				
+				varArg_toStringAsCode = null;
+				varArgAlias_toStringAsCode = null;
+				
+				missingArg_ToStringAsCode = null;
+				
+				numberArg_ToStringAsCode = null;
+			}
+		}.test_TplParameter$();
 	}
 	
 	/* -----------------  ----------------- */
-	
-	protected static final String TPL_DEF_B = "template Tpl("
-			+ "TYPE1 : int = bar, "
-			+ "TYPE2 = ambigB, "
-			+ "int VAR1 : 10 = 1,"
-			+ "alias ALIAS1 : 12 + 2 = foo,"
-			+ "alias ALIAS2 : int = 2,"
-			+ "TUPLE ..., "
-			+ "this THIS"
-			+ ") { int x; };";
 	
 }

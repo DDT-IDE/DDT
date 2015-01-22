@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,72 +8,67 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.ast.definitions;
+package dtool.engine.analysis.templates;
 
-import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import dtool.ast.definitions.DefSymbol;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.expressions.Resolvable;
-import dtool.engine.analysis.templates.TupleElement;
 
-public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
+public class TupleElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
-	public TemplateTupleParam(DefSymbol defName) {
-		super(defName);
+	public final NodeVector<Resolvable> values; // non-children element
+	
+	public TupleElement(DefSymbol defname, NodeVector<Resolvable> values) {
+		super(defname);
+		this.values = assertNotNull(values);
 	}
 	
 	@Override
 	public ASTNodeTypes getNodeType() {
-		return ASTNodeTypes.TEMPLATE_TUPLE_PARAM;
+		return ASTNodeTypes.TEMPLATE_TYPE_PARAM__INSTANCE;
 	}
 	
 	@Override
-	public void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defName);
+	public void visitChildren_rest(IASTVisitor visitor) {
 	}
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new TemplateTupleParam(clone(defName));
+		return new TupleElement(clone(defName), values);
 	}
 	
 	@Override
-	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append(defName);
-		cp.append("...");
+	public void toStringAsCode_instantiatedDefUnit(ASTCodePrinter cp) {
+		cp.append("@ ", defName, "... = ");
+		cp.appendList("(", values, ",", ")");
 	}
 	
 	@Override
 	public EArcheType getArcheType() {
-		return EArcheType.Tuple;
+		return EArcheType.Template;
 	}
 	
-	/* -----------------  ----------------- */
 	
 	@Override
-	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new NonValueConcreteElementSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
-				return;
+				// Do nothing;
 			}
-			
 		};
-	}
-	
-	@Override
-	public TupleElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new TupleElement(defName, new NodeVector<>(array(argument)));
 	}
 	
 }
