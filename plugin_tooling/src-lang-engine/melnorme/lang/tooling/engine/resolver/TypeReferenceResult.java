@@ -18,6 +18,10 @@ public class TypeReferenceResult {
 	public final INamedElement originalType;
 	public final ITypeNamedElement concreteType;
 	
+	public TypeReferenceResult(ITypeNamedElement concreteType) {
+		this(concreteType, concreteType);
+	}
+	
 	public TypeReferenceResult(INamedElement originalType, ITypeNamedElement concreteType) {
 		this.originalType = originalType;
 		this.concreteType = concreteType;

@@ -113,7 +113,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext() {
+		public INamedElement getTypeForValueContext_do() {
 			// TODO implicit function call
 			return null;
 		}
@@ -140,7 +140,7 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext() {
+		public INamedElement getTypeForValueContext_do() {
 			return function; // Not entirely, we need to extract the function type.
 		}
 	}

@@ -67,9 +67,4 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 		getSemantics(search.context).resolveSearchInMembersScope(search);
 	}
 	
-	@Override
-	public final INamedElement resolveTypeForValueContext(ISemanticContext context) {
-		return getSemantics(context).resolveTypeForValueContext();
-	}
-	
 }

@@ -28,9 +28,9 @@ public class CommonDefVarSemantics extends VarSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext() {
+	public INamedElement getTypeForValueContext_do() {
 		if(getTypeReference() != null) {
-			return super.resolveTypeForValueContext();
+			return super.getTypeForValueContext_do();
 		}
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();

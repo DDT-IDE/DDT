@@ -66,7 +66,7 @@ public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedE
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new CommonVarSemantics(this, pickedElement) {
 			@Override
-			public INamedElement resolveTypeForValueContext() {
+			public INamedElement getTypeForValueContext_do() {
 				return ResolvableUtil.resolveTypeOfExpression(targetValue, context);
 			}
 		};

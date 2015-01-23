@@ -91,7 +91,7 @@ public class InitializerArray extends Expression implements IInitializer {
 			
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return concreteTypeResult(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+				return new TypeReferenceResult(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 			}
 			
 		};

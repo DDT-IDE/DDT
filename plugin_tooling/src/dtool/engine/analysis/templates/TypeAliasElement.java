@@ -69,7 +69,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 			protected final NotAValueErrorElement notAValueError = new NotAValueErrorElement(TypeAliasElement.this);
 			
 			@Override
-			public INamedElement resolveTypeForValueContext() {
+			public INamedElement getTypeForValueContext_do() {
 				return notAValueError;
 			};
 			

@@ -85,7 +85,7 @@ public interface CommonLanguageIntrinsics {
 			return new VarSemantics(this, pickedElement) {
 				
 				@Override
-				public INamedElement resolveTypeForValueContext() {
+				public INamedElement getTypeForValueContext_do() {
 					return resolveType(context);
 				};
 				

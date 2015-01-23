@@ -97,7 +97,7 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext() {
+		public INamedElement getTypeForValueContext_do() {
 			return error;
 		}
 	}

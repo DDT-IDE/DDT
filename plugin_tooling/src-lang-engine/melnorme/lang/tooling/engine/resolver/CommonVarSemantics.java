@@ -24,8 +24,7 @@ public abstract class CommonVarSemantics extends ConcreteElementSemantics {
 	
 	@Override
 	public final void resolveSearchInMembersScope(CommonScopeLookup search) {
-		/* FIXME: should be ITypeNamedElement */
-		INamedElement effectiveType = resolveTypeForValueContext();
+		INamedElement effectiveType = getTypeForValueContext();
 		search.evaluateInMembersScope(resolveConcreteElement(effectiveType));
 	}
 	

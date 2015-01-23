@@ -14,8 +14,8 @@ package melnorme.lang.tooling.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -114,25 +114,13 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new NamedElementSemantics(this, pickedElement) {
-			
-			protected final NotAValueErrorElement notAValueError = 
-					new NotAValueErrorElement(OverloadedNamedElement.this);
-			
-			@Override
-			protected IConcreteNamedElement doResolveConcreteElement() {
-				return OverloadedNamedElement.this;
-			}
+		return new NonValueConcreteElementSemantics(this, pickedElement) {
 			
 			@Override
 			public void resolveSearchInMembersScope(CommonScopeLookup search) {
 				// Do nothing.
 			}
 			
-			@Override
-			public INamedElement resolveTypeForValueContext() {
-				return notAValueError;
-			}
 		};
 	}
 	

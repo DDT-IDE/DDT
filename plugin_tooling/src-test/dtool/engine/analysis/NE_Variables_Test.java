@@ -91,7 +91,7 @@ public class NE_Variables_Test extends NamedElement_CommonTest {
 	protected void testResolveEffectiveType(String source, String expectedResult) {
 		PickedElement<INamedElement> pickedElement = parseNamedElement(source);
 		INamedElementSemanticData nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
-		INamedElement effectiveType = nodeSemantics.resolveTypeForValueContext();
+		INamedElement effectiveType = nodeSemantics.getTypeForValueContext();
 		
 		namedElementChecker(expectedResult).evaluate(effectiveType);
 	}

@@ -67,7 +67,7 @@ public class ExpThis extends Expression {
 				if(definitionClass == null) {
 					return null;
 				}
-				return concreteTypeResult(definitionClass);
+				return new TypeReferenceResult(definitionClass);
 			}
 			
 		};

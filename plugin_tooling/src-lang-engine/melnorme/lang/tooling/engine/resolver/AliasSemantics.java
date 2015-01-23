@@ -42,15 +42,15 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext() {
-		return getResolvedConcreteElement().resolveTypeForValueContext(context);
+	public INamedElement getTypeForValueContext_do() {
+		return getResolvedConcreteElement().getSemantics(context).getTypeForValueContext();
 	}
 	
 	/* -----------------  ----------------- */
 	
-	public abstract static class RefAliasSemantics extends AliasSemantics {
+	public abstract static class RefBasedAliasSemantics extends AliasSemantics {
 
-		public RefAliasSemantics(INamedElement element, PickedElement<?> pickedElement) {
+		public RefBasedAliasSemantics(INamedElement element, PickedElement<?> pickedElement) {
 			super(element, pickedElement);
 		}
 		
@@ -79,7 +79,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		
 	}
 	
-	public abstract static class TypeAliasSemantics extends RefAliasSemantics {
+	public abstract static class TypeAliasSemantics extends RefBasedAliasSemantics {
 		
 		protected final NotAValueErrorElement notAValueError;
 		
@@ -89,7 +89,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 		}
 		
 		@Override
-		public INamedElement resolveTypeForValueContext() {
+		public INamedElement getTypeForValueContext_do() {
 			return notAValueError;
 		};
 		

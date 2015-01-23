@@ -56,7 +56,7 @@ public class ExpLiteralChar extends Expression {
 			
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return concreteTypeResult(DeeLanguageIntrinsics.D2_063_intrinsics.char_type);
+				return new TypeReferenceResult(DeeLanguageIntrinsics.D2_063_intrinsics.char_type);
 			}
 			
 		};

@@ -154,10 +154,10 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 		INamedElement namedElement = pickedElement.element;
 		pickedElement.context._resetSemantics();
 		
-		INamedElement resolvedType = namedElement.resolveTypeForValueContext(pickedElement.context);
+		INamedElement resolvedType = namedElement.getSemantics(pickedElement.context).getTypeForValueContext();
 		
 		// Test caching
-		assertTrue(resolvedType == namedElement.resolveTypeForValueContext(pickedElement.context)); 
+		assertTrue(resolvedType == namedElement.getSemantics(pickedElement.context).getTypeForValueContext()); 
 		
 		checkElementLabel(resolvedType, expectedTypeName);
 	}

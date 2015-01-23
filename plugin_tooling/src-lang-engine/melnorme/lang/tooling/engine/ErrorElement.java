@@ -192,7 +192,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 			MembersScopeElement emptyMembers = new MembersScopeElement(new ArrayList<ILanguageElement>());
 			return new TypeSemantics(this, pickedElement, emptyMembers) {
 				@Override
-				public INamedElement resolveTypeForValueContext() {
+				public INamedElement getTypeForValueContext_do() {
 					return Invalid_TypeErrorElement.this;
 				}
 			};
@@ -220,7 +220,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		
 	}
 	
-	public static class NotAValueErrorElement extends Invalid_ErrorElement {
+	public static class NotAValueErrorElement extends Invalid_TypeErrorElement {
 		
 		public static final String ERROR_IS_NOT_A_VALUE = "#NotAValue";
 		
@@ -233,15 +233,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 				quoteDoc("Element does not have a value: " + invalidElement.getFullyQualifiedName()));
 		}
 		
-		@Override
-		public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new ErrorNamedElementSemantics(this, pickedElement) {
-				@Override
-				public INamedElement resolveTypeForValueContext() {
-					return NotAValueErrorElement.this;
-				}
-			};
-		}
 	}
 	
 	/* -----------------  ----------------- */

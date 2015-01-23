@@ -78,11 +78,4 @@ public interface INamedElement extends ILanguageElement, INamedElementExtensions
 	 */
 	public void resolveSearchInMembersScope(CommonScopeLookup search);
 	
-	/** 
-	 * Return the type of this defElement, when it is referenced as a value/expression.
-	 * This is only valid of def elements such as variable definitions, which can be referenced 
-	 * in expressions and have an associated type, but are not types themselves.
-	 */
-	public INamedElement resolveTypeForValueContext(ISemanticContext context);
-	
 }

@@ -38,7 +38,6 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 	
 	@Override
 	public TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context) {
-		/* FIXME: need to review this: */
 		return getSemantics(context).resolveTypeOfUnderlyingValue();
 	}
 	

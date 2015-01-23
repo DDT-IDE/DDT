@@ -53,7 +53,7 @@ public class ExpLiteralBool extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return concreteTypeResult(DeeLanguageIntrinsics.D2_063_intrinsics.bool_type);
+				return new TypeReferenceResult(DeeLanguageIntrinsics.D2_063_intrinsics.bool_type);
 			}
 		};
 	}

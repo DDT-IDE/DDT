@@ -81,7 +81,7 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {
-				return ResolvableUtil.resolveReference(context, ref);
+				return ResolvableUtil.resolveReference(ref, context);
 			}
 			
 		};

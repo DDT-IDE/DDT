@@ -13,7 +13,6 @@ package dtool.ast.expressions;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 
 /**
@@ -26,7 +25,7 @@ public abstract class Initializer extends ASTNode implements IInitializer {
 	@Override
 	public TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context) {
 		// TODO resolveTypeOfUnderlyingValue for subclasses
-		return ExpSemantics.concreteTypeResult(ErrorElement.newUnsupportedError(this, null));
+		return new TypeReferenceResult(ErrorElement.newUnsupportedError(this, null));
 	}
 	
 }

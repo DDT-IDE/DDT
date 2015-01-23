@@ -22,7 +22,7 @@ import dtool.ast.expressions.Resolvable;
 
 public class ResolvableUtil {
 
-	public static INamedElement resolveReference(ISemanticContext context, IReference reference) {
+	public static INamedElement resolveReference(IReference reference, ISemanticContext context) {
 		if(reference == null) {
 			return null;
 		}
@@ -71,7 +71,7 @@ public class ResolvableUtil {
 	protected static TypeReferenceResult concreteTypeResult(IReference reference, INamedElement originalType,
 			ISemanticContext parentContext) {
 		if(originalType == null) {
-			return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(reference));
+			return new TypeReferenceResult(ErrorElement.newNotFoundError(reference));
 		}
 		
 		ITypeNamedElement concreteType = resolveTargeType(reference, originalType, parentContext);
@@ -99,7 +99,7 @@ public class ResolvableUtil {
 			final IReference reference = (IReference) resolvable;
 			TypeReferenceResult result = resolveTypeOfExpressionReference(reference, parentContext);
 			if(result == null) {
-				return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(reference)).concreteType; 
+				return new TypeReferenceResult(ErrorElement.newNotFoundError(reference)).concreteType; 
 			}
 			return result.concreteType;
 		}
@@ -115,8 +115,7 @@ public class ResolvableUtil {
 			return null;
 		}
 		INamedElement expElement = reference.getSemantics(parentContext).resolveTargetElement_();
-		
-		INamedElement originalType = expElement.resolveTypeForValueContext(parentContext);
+		INamedElement originalType = expElement.getSemantics(parentContext).getTypeForValueContext();
 		return concreteTypeResult(reference, originalType, parentContext);
 	}
 	

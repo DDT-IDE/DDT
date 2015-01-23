@@ -19,7 +19,13 @@ public interface INamedElementSemanticData extends IElementSemanticData {
 	
 	public ConcreteElementResult resolveConcreteElement();
 	
-	public INamedElement resolveTypeForValueContext(); /* FIXME: can be null? */
+	/** 
+	 * Return the type of this defElement, when it is referenced as a value/expression.
+	 * This is only valid of def elements such as variable definitions, which can be referenced 
+	 * in expressions and have an associated type, but are not types themselves.
+	 * @return non-null.
+	 */
+	public INamedElement getTypeForValueContext();
 	
 	public void resolveSearchInMembersScope(CommonScopeLookup search);
 	

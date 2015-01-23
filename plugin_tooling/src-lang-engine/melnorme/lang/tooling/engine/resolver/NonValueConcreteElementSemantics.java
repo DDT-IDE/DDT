@@ -18,7 +18,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 
 public abstract class NonValueConcreteElementSemantics extends ConcreteElementSemantics {
 	
-	protected final NotAValueErrorElement notAValueError;
+	protected final INamedElement notAValueError;
 	
 	public NonValueConcreteElementSemantics(IConcreteNamedElement concreteElement, PickedElement<?> pickedElement) {
 		super(concreteElement, pickedElement);
@@ -26,7 +26,7 @@ public abstract class NonValueConcreteElementSemantics extends ConcreteElementSe
 	}
 	
 	@Override
-	public /*final*/ INamedElement resolveTypeForValueContext() {
+	public /*final*/ INamedElement getTypeForValueContext_do() {
 		return notAValueError;
 	}
 	

@@ -15,7 +15,6 @@ import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.Invalid_TypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.symbols.ITypeNamedElement;
 
 public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult> {
 	
@@ -35,7 +34,7 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 	@Override
 	protected final TypeReferenceResult createLoopResolution() {
 		// TODO: test this path
-		return concreteTypeResult(ErrorElement.newLoopError(resolvable, null));
+		return new TypeReferenceResult(ErrorElement.newLoopError(resolvable, null));
 	}
 	
 	@Override
@@ -43,14 +42,10 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 		TypeReferenceResult result = doCreateExpResolution();
 		
 		if(result == null) {
-			return concreteTypeResult(new Invalid_TypeErrorElement("#InvalidExp", resolvable, null, null));
+			return new TypeReferenceResult(new Invalid_TypeErrorElement("#InvalidExp", resolvable, null, null));
 		}
 		
 		return result;
-	}
-	
-	public static TypeReferenceResult concreteTypeResult(ITypeNamedElement typeElement) {
-		return new TypeReferenceResult(typeElement, typeElement);
 	}
 	
 	public abstract TypeReferenceResult doCreateExpResolution();

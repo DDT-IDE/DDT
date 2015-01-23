@@ -56,7 +56,7 @@ public class ExpLiteralInteger extends Expression {
 		
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return concreteTypeResult(DeeLanguageIntrinsics.D2_063_intrinsics.int_type);
+				return new TypeReferenceResult(DeeLanguageIntrinsics.D2_063_intrinsics.int_type);
 			}
 			
 		};

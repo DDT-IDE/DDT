@@ -77,7 +77,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 			}
 			
 			@Override
-			public INamedElement resolveTypeForValueContext() {
+			public INamedElement getTypeForValueContext_do() {
 				return null;
 			}
 			

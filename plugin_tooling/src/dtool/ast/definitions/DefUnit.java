@@ -135,9 +135,4 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 		getSemantics(search.context).resolveSearchInMembersScope(search);
 	}
 	
-	@Override
-	public final INamedElement resolveTypeForValueContext(ISemanticContext context) {
-		return getSemantics(context).resolveTypeForValueContext();
-	}
-	
 }

@@ -16,7 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefAliasSemantics;
+import melnorme.lang.tooling.engine.resolver.AliasSemantics.RefBasedAliasSemantics;
 import dtool.ast.declarations.ImportSelective.IImportSelectiveSelection;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
@@ -65,7 +65,7 @@ public class ImportSelectiveAlias extends DefUnit implements IImportSelectiveSel
 	
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-		return new RefAliasSemantics(this, pickedElement) {
+		return new RefBasedAliasSemantics(this, pickedElement) {
 			@Override
 			protected Reference getAliasTarget() {
 				return target;

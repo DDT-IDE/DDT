@@ -14,7 +14,6 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -104,9 +103,9 @@ public class ExpSimpleLambda extends Expression {
 				}
 				
 				@Override
-				public INamedElement resolveTypeForValueContext() {
+				public INamedElement getTypeForValueContext_do() {
 					// It would have to be deduced from the exp context.
-					return ErrorElement.newUnsupportedError(element, null);
+					return null;
 				}
 				
 			};

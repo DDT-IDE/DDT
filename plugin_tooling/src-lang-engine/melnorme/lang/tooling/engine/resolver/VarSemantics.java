@@ -21,12 +21,12 @@ public abstract class VarSemantics extends CommonVarSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext() {
+	public INamedElement getTypeForValueContext_do() {
 		IReference declaredType = getTypeReference();
-		if(declaredType != null) {
-			return declaredType.getSemantics(context).resolveTargetElement().result;
+		if(declaredType == null) {
+			return null;
 		}
-		return null;
+		return ResolvableUtil.resolveReference(declaredType, context);
 	}
 	
 	protected abstract IReference getTypeReference();

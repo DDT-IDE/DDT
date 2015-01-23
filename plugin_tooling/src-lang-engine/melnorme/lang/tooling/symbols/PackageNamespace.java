@@ -153,7 +153,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 		protected final ConcreteElementResult concreteResult = new ConcreteElementResult(PackageNamespace.this);
 		
 		@Override
-		public INamedElement resolveTypeForValueContext() {
+		public INamedElement getTypeForValueContext() {
 			return notAValueErrorElement;
 		}
 		

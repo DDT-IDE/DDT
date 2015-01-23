@@ -10,23 +10,20 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
-import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefinitionTemplate;
 
-public final class DefTemplateSemantics extends ConcreteElementSemantics {
+public final class DefTemplateSemantics extends NonValueConcreteElementSemantics {
 	
 	protected final DefinitionTemplate defTemplate;
-	protected final NotAValueErrorElement notAValueErrorElement;
 	
 	public DefTemplateSemantics(DefinitionTemplate defTemplate, PickedElement<?> pickedElement) {
 		super(defTemplate, pickedElement);
 		this.defTemplate = defTemplate;
-		this.notAValueErrorElement = new NotAValueErrorElement(defTemplate);
 	}
 	
 	@Override
@@ -41,10 +38,11 @@ public final class DefTemplateSemantics extends ConcreteElementSemantics {
 	}
 	
 	@Override
-	public INamedElement resolveTypeForValueContext() {
+	public INamedElement getTypeForValueContext_do() {
 		if(defTemplate.wrapper) {
 			// TODO: go straight to members of wrapped definition
 		}
-		return notAValueErrorElement;
+		return super.getTypeForValueContext_do();
 	}
+	
 }

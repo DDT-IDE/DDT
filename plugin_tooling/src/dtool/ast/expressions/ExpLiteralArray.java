@@ -55,7 +55,7 @@ public class ExpLiteralArray extends Expression {
 		return new ExpSemantics(this, pickedElement) {
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				return concreteTypeResult(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
+				return new TypeReferenceResult(DeeLanguageIntrinsics.D2_063_intrinsics.dynArrayType);
 			}
 		};
 	}

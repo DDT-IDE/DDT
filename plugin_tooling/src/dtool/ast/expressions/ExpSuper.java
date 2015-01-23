@@ -60,7 +60,7 @@ public class ExpSuper extends Expression {
 				
 				INamedElement superClass = definitionClass.getSemantics(context).resolveSuperClass(context);
 				if(superClass instanceof ITypeNamedElement) {
-					return concreteTypeResult((ITypeNamedElement) superClass);
+					return new TypeReferenceResult((ITypeNamedElement) superClass);
 				}
 				return null;
 			}
