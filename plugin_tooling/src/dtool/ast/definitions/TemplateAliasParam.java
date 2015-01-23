@@ -19,7 +19,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -113,7 +113,7 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		
 		@Override
 		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
-			ITypeNamedElement resolvedTyped = TypeSemantics.resolveTypeOfExpression(tplArg, context);
+			ITypeNamedElement resolvedTyped = ResolvableUtil.resolveTypeOfExpression(tplArg, context);
 			if(resolvedTyped.getArcheType() == EArcheType.Error) {
 				return TplMatchLevel.NONE;
 			}

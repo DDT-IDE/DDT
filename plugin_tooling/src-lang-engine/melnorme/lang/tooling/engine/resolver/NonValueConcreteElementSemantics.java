@@ -11,6 +11,7 @@
 package melnorme.lang.tooling.engine.resolver;
 
 
+import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -25,7 +26,7 @@ public abstract class NonValueConcreteElementSemantics extends ConcreteElementSe
 	}
 	
 	@Override
-	public final INamedElement resolveTypeForValueContext() {
+	public /*final*/ INamedElement resolveTypeForValueContext() {
 		return notAValueError;
 	}
 	

@@ -36,9 +36,9 @@ public class NE_DefAlias_SemanticsTest extends NamedElement_CommonTest {
 			NOT_FOUND__target, NOT_FOUND__target, NO_MEMBERS);
 		
 		test_NamedElement_Alias(parseNamedElement("alias XXX = "), 
-			SyntaxErrorElement.SYNTAX_ERROR__Name, SyntaxErrorElement.SYNTAX_ERROR__Name, NO_MEMBERS);
+			SyntaxErrorElement.SYNTAX_ERROR__Name, expectNotAValue(SyntaxErrorElement.SYNTAX_ERROR__Name), NO_MEMBERS);
 		test_NamedElement_Alias(parseNamedElement("alias XXX"), 
-			SyntaxErrorElement.SYNTAX_ERROR__Name, SyntaxErrorElement.SYNTAX_ERROR__Name, NO_MEMBERS);
+			SyntaxErrorElement.SYNTAX_ERROR__Name, expectNotAValue(SyntaxErrorElement.SYNTAX_ERROR__Name), NO_MEMBERS);
 		
 		// Test alias to type
 		test_NamedElement_Alias(parseNamedElement("alias int XXX; "), 

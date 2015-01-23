@@ -11,7 +11,6 @@
 package dtool.engine.analysis;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.INT_PROPERTIES;
-import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
@@ -61,7 +60,7 @@ public class NE_Variables_Test extends NamedElement_CommonTest {
 			"auto xxx = int;",
 			"auto z, xxx = int;",
 			"enum xxx = int;"
-		), ERROR_IS_NOT_A_VALUE + ":int");
+		), expectNotAValue("int"));
 		
 
 		testMultiple_ResolveEffectiveType2(array(

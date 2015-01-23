@@ -19,8 +19,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
@@ -100,16 +99,15 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 		
 		@Override
 		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
-			ITypeNamedElement argType = TypeSemantics.resolveTypeOfExpression(tplArg, context);
+			ITypeNamedElement argType = ResolvableUtil.resolveTypeOfExpression(tplArg, context);
 			if(argType.getArcheType() == EArcheType.Error) {
 				return TplMatchLevel.NONE;
 			}
 			
-			ITypeNamedElement paramType = ReferenceSemantics.resolveTargetType(type, context);
-			/* FIXME: use isCompatibleType */
-			if(argType == paramType) {
+			ITypeNamedElement paramType = ResolvableUtil.resolveTargetType(type, context);
+			if(argType.getSemantics(context).isCompatibleWith(paramType)) {
 				return TplMatchLevel.VALUE;
-			} 
+			}
 			
 			return TplMatchLevel.NONE;
 		}

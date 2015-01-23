@@ -10,6 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.SyntaxErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -60,7 +61,7 @@ public abstract class AliasSemantics extends NamedElementSemantics {
 				return new SyntaxErrorElement(element, ErrorElement.quoteDoc("Missing reference."));
 			}
 			
-			return ReferenceSemantics.resolveConcreteElement(aliasTarget, context);
+			return ResolvableUtil.resolveConcreteElement(aliasTarget, context);
 		}
 		
 		protected static boolean isSyntaxError(IReference aliasTarget) {

@@ -13,7 +13,6 @@ package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -67,47 +66,5 @@ public abstract class NamedElementSemantics extends ElementSemantics<ConcreteEle
 	
 	@Override
 	public abstract INamedElement resolveTypeForValueContext(); /* FIXME: should be ITypedNamedElement */
-	
-	/* -----------------  ----------------- */
-	
-	public static class NotAValueErrorElement extends ErrorElement {
-		
-		public static final String ERROR_IS_NOT_A_VALUE = "#NotAValue";
-		
-		public final INamedElement invalidElement;
-		
-		public NotAValueErrorElement(INamedElement invalidElement) {
-			this(invalidElement, invalidElement); 
-		}
-		
-		public NotAValueErrorElement(ILanguageElement owner, INamedElement invalidElement) {
-			super(ERROR_IS_NOT_A_VALUE, owner, 
-				quoteDoc("Element does not have a value: " + invalidElement.getFullyQualifiedName()));
-			this.invalidElement = invalidElement;
-		}
-		
-		@Override
-		public String getExtendedName() {
-			return getName() + ":" + invalidElement.getExtendedName();
-		}
-		
-		@Override
-		public String toString() {
-			return getExtendedName();
-		}
-		
-		/* -----------------  ----------------- */
-		
-		@Override
-		public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new ErrorElement.ErrorNamedElementSemantics(this, pickedElement) {
-				@Override
-				public INamedElement resolveTypeForValueContext() {
-					// Do nothing.
-					return null;
-				}
-			};
-		}
-	}
 	
 }

@@ -11,14 +11,14 @@ auto _dummy = func2().#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto _dummy = func3().#REFSEARCH¤【member1▪member2▪#@CLASS_PROPERTIES】;
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
-struct OpCallabled {
+struct OpCallable {
 	int foo;
 	
 	int opCall() { }
 }
-OpCallabled var;
+OpCallable var;
 int varX;
 
-auto _dummy = OpCallabled().#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
+auto _dummy = OpCallable().#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto _dummy =         var().#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto _dummy = varX().#REFSEARCH¤【】;

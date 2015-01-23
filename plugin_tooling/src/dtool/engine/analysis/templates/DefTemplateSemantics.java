@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis.templates;
 
+import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;

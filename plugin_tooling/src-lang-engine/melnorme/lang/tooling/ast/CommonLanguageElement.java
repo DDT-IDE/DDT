@@ -110,7 +110,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public IElementSemanticData createSemantics(PickedElement<?> pickedElement) {
+	public final IElementSemanticData createSemantics(PickedElement<?> pickedElement) {
 		assertTrue(pickedElement.element == this); // Note this precondition!
 		return doCreateSemantics(pickedElement);
 	}

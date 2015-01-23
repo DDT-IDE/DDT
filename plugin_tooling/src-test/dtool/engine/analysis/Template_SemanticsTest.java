@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;

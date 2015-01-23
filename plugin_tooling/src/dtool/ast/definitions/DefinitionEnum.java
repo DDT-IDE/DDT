@@ -19,6 +19,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
@@ -142,6 +143,10 @@ public class DefinitionEnum extends CommonDefinition
 	
 	/* -----------------  ----------------- */
 	
+	@Override
+	public TypeSemantics getSemantics(ISemanticContext parentContext) {
+		return (TypeSemantics) super.getSemantics(parentContext);
+	}
 	@Override
 	protected NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		MembersScopeElement membersScopeElement = new MembersScopeElement(body == null ? null : body.nodeList);

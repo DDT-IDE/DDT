@@ -18,6 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.references.Reference;
@@ -63,7 +64,7 @@ public class ExpParentheses extends Expression {
 				Resolvable parensExp = ExpParentheses.this.resolvable;
 				if(parensExp instanceof Reference) {
 					Reference refRoot = (Reference) parensExp;
-					return resolveTypeOfExpressionReference(refRoot, context);
+					return ResolvableUtil.resolveTypeOfExpressionReference(refRoot, context);
 				} else {
 					Expression expRoot = (Expression) parensExp;
 					return expRoot.resolveTypeOfUnderlyingValue_nonNull(context);

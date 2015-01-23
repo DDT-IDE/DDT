@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
@@ -82,6 +83,10 @@ public abstract class DefinitionAggregate extends CommonDefinition
 	
 	/* ----------------- ----------------- */
 	
+	@Override
+	public AggregateSemantics getSemantics(ISemanticContext parentContext) {
+		return (AggregateSemantics) super.getSemantics(parentContext);
+	}
 	@Override
 	protected AggregateSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new AggregateSemantics(this, pickedElement,

@@ -19,9 +19,11 @@ import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.InvalidRefErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.Invalid_TypeErrorElement;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
@@ -175,9 +177,9 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		
 		if(target instanceof Reference) {
 			Reference reference = (Reference) target;
-			return ReferenceSemantics.resolveTargetType(reference, parentContext);
+			return ResolvableUtil.resolveTargetType(reference, parentContext);
 		} else {
-			return new ErrorElement(ERROR__TPL_ARG__NotAType, target, null);
+			return new Invalid_TypeErrorElement(ERROR__TPL_ARG__NotAType, target, null, null);
 		}
 	}
 	

@@ -11,22 +11,28 @@
 package melnorme.lang.tooling.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.ArrayList;
+
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.engine.resolver.ConcreteElementSemantics;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.IResolvable;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.MembersScopeElement;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
-public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement, ITypeNamedElement {
+public class ErrorElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
 	public static ElementDoc quoteDoc(String string) {
 		// TODO: need to quote ddoc macros that might occur in string:
@@ -38,17 +44,17 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	public static final String UNSUPPORTED__Name = ERROR_PREFIX + "Unsupported";
 	public static final String LOOP_ERROR_ELEMENT__Name = ERROR_PREFIX + "LoopError";
 	
-	public static ErrorElement newNotFoundError(IReference reference) {
+	public static NotFoundErrorElement newNotFoundError(IReference reference) {
 		return new NotFoundErrorElement(reference);
 	}
 	
 	// Error for unsupported functionality
-	public static ErrorElement newUnsupportedError(ILanguageElement owner, ElementDoc doc) {
-		return new ErrorElement(UNSUPPORTED__Name, owner, doc);
+	public static Invalid_TypeErrorElement newUnsupportedError(ILanguageElement owner, ElementDoc doc) {
+		return new Invalid_TypeErrorElement(UNSUPPORTED__Name, owner, null, doc);
 	}
 	
-	public static ErrorElement newLoopError(ILanguageElement owner, ElementDoc doc) {
-		return new ErrorElement(LOOP_ERROR_ELEMENT__Name, owner, doc);
+	public static Invalid_TypeErrorElement newLoopError(ILanguageElement owner, ElementDoc doc) {
+		return new Invalid_TypeErrorElement(LOOP_ERROR_ELEMENT__Name, owner, null, doc);
 	}
 	
 	/* -----------------  ----------------- */
@@ -112,7 +118,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		return new ErrorNamedElementSemantics(this, pickedElement);
 	}
 	
-	public static class ErrorNamedElementSemantics extends ConcreteElementSemantics {
+	public static class ErrorNamedElementSemantics extends NonValueConcreteElementSemantics {
 		
 		public ErrorNamedElementSemantics(IConcreteNamedElement element, PickedElement<?> pickedElement) {
 			super(element, pickedElement);
@@ -123,10 +129,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 			// Do nothing.
 		}
 		
-		@Override
-		public INamedElement resolveTypeForValueContext() {
-			return element;
-		}
 	}
 	
 	/* -----------------  ----------------- */
@@ -141,16 +143,117 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 		
 	}
 	
+	public static class Invalid_ErrorElement extends ErrorElement {
+		
+		public final INamedElement invalidElement;
+		
+		public Invalid_ErrorElement(String name, ILanguageElement ownerElement, INamedElement invalidElement, 
+				ElementDoc doc) {
+			super(name, ownerElement, doc);
+			this.invalidElement = invalidElement; // can be null
+		}
+		
+		@Override
+		public String getExtendedName() {
+			return getName() + (invalidElement != null ? ":" + invalidElement.getExtendedName() : "");
+		}
+		
+		@Override
+		public String getFullyQualifiedName() {
+			return getName() + (invalidElement != null ? ":" + invalidElement.getFullyQualifiedName() : "");
+		}
+		
+	}
+	
+	public static class InvalidRefErrorElement extends Invalid_ErrorElement {
+		
+		public InvalidRefErrorElement(String name, IResolvable ownerElement, INamedElement invalidElement, 
+				ElementDoc doc) {
+			super(name, ownerElement, invalidElement, doc);
+		}
+		
+	}
+	
 	/* -----------------  ----------------- */
 	
-	public static class NotFoundErrorElement extends ErrorElement {
+	public static class Invalid_TypeErrorElement extends Invalid_ErrorElement implements ITypeNamedElement {
+		
+		public Invalid_TypeErrorElement(String name, ILanguageElement ownerElement, INamedElement invalidElement,
+				ElementDoc doc) {
+			super(name, ownerElement, invalidElement, doc);
+		}
+		
+		@Override
+		public TypeSemantics getSemantics(ISemanticContext parentContext) {
+			return (TypeSemantics) super.getSemantics(parentContext);
+		}
+		@Override
+		public TypeSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			MembersScopeElement emptyMembers = new MembersScopeElement(new ArrayList<ILanguageElement>());
+			return new TypeSemantics(this, pickedElement, emptyMembers) {
+				@Override
+				public INamedElement resolveTypeForValueContext() {
+					return Invalid_TypeErrorElement.this;
+				}
+			};
+		}
+		
+	}
+	
+	public static class NotATypeErrorElement extends Invalid_TypeErrorElement {
+		
+		public static final String ERROR_IS_NOT_A_TYPE = ERROR_PREFIX + "NotAType";
+		
+		public NotATypeErrorElement(IResolvable resolvable) {
+			super(ERROR_IS_NOT_A_TYPE, resolvable, null,
+				quoteDoc("Element is not a type: " + resolvable.toStringAsCode()));
+		}
+		
+		public NotATypeErrorElement(IResolvable owner, IConcreteNamedElement invalidElement) {
+			super(ERROR_IS_NOT_A_TYPE, owner, invalidElement,
+				quoteDoc("Element is not a type: " + invalidElement.getExtendedName()));
+		}
+		
+		public static String errorName(String nameSuffix) {
+			return ERROR_IS_NOT_A_TYPE + ":" + nameSuffix;
+		}
+		
+	}
+	
+	public static class NotAValueErrorElement extends Invalid_ErrorElement {
+		
+		public static final String ERROR_IS_NOT_A_VALUE = "#NotAValue";
+		
+		public NotAValueErrorElement(INamedElement invalidElement) {
+			this(invalidElement, invalidElement); 
+		}
+			
+		public NotAValueErrorElement(ILanguageElement owner, INamedElement invalidElement) {
+			super(ERROR_IS_NOT_A_VALUE, owner, invalidElement,  
+				quoteDoc("Element does not have a value: " + invalidElement.getFullyQualifiedName()));
+		}
+		
+		@Override
+		public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
+			return new ErrorNamedElementSemantics(this, pickedElement) {
+				@Override
+				public INamedElement resolveTypeForValueContext() {
+					return NotAValueErrorElement.this;
+				}
+			};
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class NotFoundErrorElement extends Invalid_TypeErrorElement {
 		
 		public static final String NOT_FOUND__Name = ERROR_PREFIX + "NotFound";
 		
 		protected final IResolvable reference;
 		
 		public NotFoundErrorElement(IReference reference) {
-			super(NOT_FOUND__Name, reference, 
+			super(NOT_FOUND__Name, reference, null, 
 				quoteDoc("Could not resolve reference: " + reference.toStringAsCode()));
 			this.reference = reference;
 		}
@@ -164,57 +267,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 			return NOT_FOUND__Name + ":" + nameSuffix;
 		}
 		
-	}
-	
-	/* -----------------  ----------------- */
-	
-	public static class InvalidRefErrorElement extends ErrorElement {
-		
-		public final INamedElement invalidTarget;
-		
-		public InvalidRefErrorElement(String name, IReference ownerElement, INamedElement invalidElement, 
-				ElementDoc doc) {
-			super(name, ownerElement, doc);
-			this.invalidTarget = invalidElement;
-		}
-		
-		@Override
-		public String getExtendedName() {
-			return getName() + ":" + invalidTarget.getExtendedName();
-		}
-		
-		@Override
-		public String getFullyQualifiedName() {
-			return getName() + ":" + invalidTarget.getFullyQualifiedName();
-		}
-		
-	}
-	
-	public static class NotATypeErrorElement extends InvalidRefErrorElement {
-		
-		public static final String ERROR_IS_NOT_A_TYPE = ERROR_PREFIX + "NotAType";
-		
-		public NotATypeErrorElement(IReference owner, IConcreteNamedElement invalidElement) {
-			super(ERROR_IS_NOT_A_TYPE, owner, invalidElement,
-				quoteDoc("Element is not a type: " + invalidElement.getFullyQualifiedName()));
-		}
-		
-		public static String errorName(String nameSuffix) {
-			return ERROR_IS_NOT_A_TYPE + ":" + nameSuffix;
-		}
-		
-		/* -----------------  ----------------- */
-		
-		@Override
-		public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
-			return new ErrorElement.ErrorNamedElementSemantics(this, pickedElement) {
-				@Override
-				public INamedElement resolveTypeForValueContext() {
-					// Do nothing.
-					return null;
-				}
-			};
-		}
 	}
 	
 }

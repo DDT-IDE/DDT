@@ -18,7 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.CommonVarSemantics;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
@@ -67,7 +67,7 @@ public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedE
 		return new CommonVarSemantics(this, pickedElement) {
 			@Override
 			public INamedElement resolveTypeForValueContext() {
-				return TypeSemantics.resolveTypeOfExpression(targetValue, context);
+				return ResolvableUtil.resolveTypeOfExpression(targetValue, context);
 			}
 		};
 	}

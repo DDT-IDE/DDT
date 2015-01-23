@@ -21,7 +21,7 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.AliasSemantics.TypeAliasSemantics;
 import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.expressions.Resolvable;
@@ -83,7 +83,7 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 					return ErrorElement.newUnsupportedError(element, null);
 				}
 				
-				return ReferenceSemantics.resolveConcreteElement(aliasTarget, context);
+				return ResolvableUtil.resolveConcreteElement(aliasTarget, context);
 			}
 			
 			@Override
@@ -114,9 +114,8 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 				return TplMatchLevel.TYPE;
 			}
 			
-			ITypeNamedElement specType = RefTemplateInstanceSemantics.resolveTargetType(specializationType, context);
-			// FIXME: not entirely accurate, needed to check superTypes
-			if(specType == targetType) {
+			ITypeNamedElement specType = ResolvableUtil.resolveTargetType(specializationType, context);
+			if(targetType.getSemantics(context).isCompatibleWith(specType)) {
 				return TplMatchLevel.TYPE_SPECIALIZED;
 			}
 			

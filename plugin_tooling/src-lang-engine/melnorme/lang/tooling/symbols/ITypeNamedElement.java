@@ -10,14 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
+
 
 /**
  * Marker interface for non-alias INamedElements that can be used to declare variables.
  */
 public interface ITypeNamedElement extends IConcreteNamedElement {
 	
-	/* FIXME: TODO */
-//	@Override
-//	public TypeSemantics getSemantics(ISemanticContext parentContext);
+	@Override
+	public TypeSemantics getSemantics(ISemanticContext parentContext);
 	
 }

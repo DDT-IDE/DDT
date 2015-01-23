@@ -11,12 +11,10 @@
 package melnorme.lang.tooling.engine.resolver;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.Invalid_TypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 
 public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult> {
@@ -45,7 +43,7 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 		TypeReferenceResult result = doCreateExpResolution();
 		
 		if(result == null) {
-			return concreteTypeResult(new ErrorElement("#InvalidExp", resolvable, null));
+			return concreteTypeResult(new Invalid_TypeErrorElement("#InvalidExp", resolvable, null, null));
 		}
 		
 		return result;
@@ -60,47 +58,8 @@ public abstract class ExpSemantics extends ElementSemantics<TypeReferenceResult>
 	
 	/* -----------------  ----------------- */
 	
-	/**
-	 * Resolve a reference that should point to a var element 
-	 * (or a similar element that has an expression value).
-	 */
-	public static TypeReferenceResult resolveTypeOfExpressionReference(IReference reference, 
-			ISemanticContext parentContext) {
-		if(reference == null) {
-			return null;
-		}
-		INamedElement expElement = reference.getSemantics(parentContext).resolveTargetElement_();
-		
-		INamedElement originalType = expElement.resolveTypeForValueContext(parentContext);
-		return concreteTypeResult(reference, originalType, parentContext);
-	}
-	
-	/**
-	 * Resolve a reference that should point to a type element.
-	 */
 	public TypeReferenceResult resolveTypeReference(IReference reference) {
-		if(reference == null) {
-			return null;
-		}
-		INamedElement originalType = reference.getSemantics(context).resolveTargetElement().result;
-		return concreteTypeResult(reference, originalType, context);
-	}
-	
-	protected static TypeReferenceResult concreteTypeResult(IReference reference, INamedElement originalType,
-			ISemanticContext parentContext) {
-		if(originalType == null) {
-			return concreteTypeResult(ErrorElement.newNotFoundError(reference));
-		}
-		
-		IConcreteNamedElement concreteResult = originalType.resolveConcreteElement(parentContext);
-		
-		ITypeNamedElement concreteType;
-		if(concreteResult instanceof ITypeNamedElement) {
-			concreteType = (ITypeNamedElement) concreteResult;
-		} else {
-			concreteType = new NamedElementSemantics.NotAValueErrorElement(reference, concreteResult);
-		}
-		return new TypeReferenceResult(originalType, concreteType);
+		return ResolvableUtil.resolveTypeReference2(reference, context);
 	}
 	
 }

@@ -17,6 +17,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.parser.DeeTokens;
 
@@ -80,7 +81,7 @@ public class RefTypeModifier extends Reference implements IQualifierNode {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {
-				return resolveReference(context, ref);
+				return ResolvableUtil.resolveReference(context, ref);
 			}
 			
 		};

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
-import static melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.concurrent.ExecutionException;
@@ -69,7 +68,7 @@ public class NE_Module_Test extends NamedElement_CommonTest {
 			"import xxx.foo; auto _ = xxx;", "xxx;");
 		assertTrue(pickedElement.element instanceof PackageNamespace);
 		
-		test_NamedElement(pickedElement, null, ERROR_IS_NOT_A_VALUE + ":xxx", array("xxx.foo/"));
+		test_NamedElement(pickedElement, null, expectNotAValue("xxx"), array("xxx.foo/"));
 	}
 	
 	/* -----------------  ----------------- */

@@ -50,6 +50,11 @@ public interface CommonLanguageIntrinsics {
 		
 		public abstract void doCreateMembers(IntrinsicNamedElement... members);
 		
+		
+		@Override
+		public TypeSemantics getSemantics(ISemanticContext parentContext) {
+			return (TypeSemantics) super.getSemantics(parentContext);
+		}
 		@Override
 		public TypeSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 			return new TypeSemantics(this, pickedElement, membersScope);

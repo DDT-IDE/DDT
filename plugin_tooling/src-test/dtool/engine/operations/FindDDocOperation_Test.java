@@ -14,9 +14,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics.NotAValueErrorElement;
-
 import org.junit.Test;
+
+import dtool.engine.analysis.CommonNodeSemanticsTest;
 
 public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 	
@@ -63,7 +63,7 @@ public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 			"", "int"
 		);
 		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "auto aNotAValue"), 
-			"", NotAValueErrorElement.ERROR_IS_NOT_A_VALUE + ":int"
+			"", CommonNodeSemanticsTest.expectNotAValue("int")
 		);
 		testFindDefinition(DDOC_TESTER_FilePath, indexOf(DDOC_TESTER_Contents, "auto aError"), 
 			"", "Error: Could not resolve auto initializer"
