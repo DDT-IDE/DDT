@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ListIterator;
 
 import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.InvalidRefErrorElement;
@@ -27,6 +26,7 @@ import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
@@ -78,18 +78,18 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return instantiateTemplate(templates);
 	}
 	
-	protected INamedElement instantiateTemplate(ArrayList2<DefinitionTemplate> templates) {
+	protected INamedElement instantiateTemplate(final ArrayList2<DefinitionTemplate> originalTemplates) {
 		
 		Indexable<Resolvable> tplArgs = refTemplateInstance.getEffectiveArguments();
 		
-		ArrayList2<DefinitionTemplate> matchingTemplates = templates;
+		ArrayList2<DefinitionTemplate> matchingTemplates = originalTemplates;
 		
 		for (int ix = 0; ix < tplArgs.size(); ix++) {
 			TplMatchLevel matchLevel = TplMatchLevel.NONE;
 			
-			Resolvable tplArg = tplArgs.get(0); /*FIXME: BUG here*/
+			Resolvable tplArg = tplArgs.get(ix);
 			
-			templates = matchingTemplates;
+			ArrayList2<DefinitionTemplate> templates = matchingTemplates;
 			matchingTemplates = new ArrayList2<>();
 			
 			for (ListIterator<DefinitionTemplate> iterator = templates.listIterator(); iterator.hasNext(); ) {
@@ -125,7 +125,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	}
 	
 	protected TplMatchLevel getMatchLevel(int argIndex, DefinitionTemplate defTemplate, Resolvable tplArg) {
-		NodeVector<ITemplateParameter> tplParams = defTemplate.tplParams;
+		ArrayView<ITemplateParameter> tplParams = defTemplate.getEffectiveParameters();
 		
 		if(tplParams.size() <= argIndex) {
 			return TplMatchLevel.NONE; /*FIXME: BUG here for tuples */
@@ -140,7 +140,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		
 		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
 		
-		int paramSize = templateDef.getITemplateParameters().size();
+		int paramSize = templateDef.getEffectiveParameters().size();
 		if(paramSize != tplArgs.size()) {
 			return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);
 		}

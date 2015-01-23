@@ -82,7 +82,7 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement, 
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(getExtendedName());
-		cp.appendList("{", tplArguments, ",", "}");
+		cp.appendList("{", tplArguments, " ", "}");
 		cp.append(body);
 	}
 	

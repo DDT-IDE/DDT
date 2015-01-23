@@ -99,7 +99,7 @@ public class DefinitionTemplate extends CommonDefinition
 		}
 	}
 	
-	public ArrayView<ITemplateParameter> getITemplateParameters() {
+	public ArrayView<ITemplateParameter> getEffectiveParameters() {
 		return nonNull(tplParams);
 	}
 	
