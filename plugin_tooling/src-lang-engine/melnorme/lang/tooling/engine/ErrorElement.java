@@ -168,26 +168,35 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	
 	/* -----------------  ----------------- */
 	
-	public static class NotATypeErrorElement extends ErrorElement {
+	public static class InvalidRefErrorElement extends ErrorElement {
 		
-		public static final String ERROR_IS_NOT_A_TYPE = ERROR_PREFIX + "NotAType";
+		public final INamedElement invalidTarget;
 		
-		public final INamedElement invalidElement;
-		
-		public NotATypeErrorElement(IReference owner, IConcreteNamedElement invalidElement) {
-			super(ERROR_IS_NOT_A_TYPE, owner, 
-				quoteDoc("Element is not a type: " + invalidElement.getFullyQualifiedName()));
-			this.invalidElement = invalidElement;
+		public InvalidRefErrorElement(String name, IReference ownerElement, INamedElement invalidElement, 
+				ElementDoc doc) {
+			super(name, ownerElement, doc);
+			this.invalidTarget = invalidElement;
 		}
 		
 		@Override
 		public String getExtendedName() {
-			return errorName(invalidElement.getExtendedName());
+			return getName() + ":" + invalidTarget.getExtendedName();
 		}
 		
 		@Override
 		public String getFullyQualifiedName() {
-			return errorName(invalidElement.getFullyQualifiedName());
+			return getName() + ":" + invalidTarget.getFullyQualifiedName();
+		}
+		
+	}
+	
+	public static class NotATypeErrorElement extends InvalidRefErrorElement {
+		
+		public static final String ERROR_IS_NOT_A_TYPE = ERROR_PREFIX + "NotAType";
+		
+		public NotATypeErrorElement(IReference owner, IConcreteNamedElement invalidElement) {
+			super(ERROR_IS_NOT_A_TYPE, owner, invalidElement,
+				quoteDoc("Element is not a type: " + invalidElement.getFullyQualifiedName()));
 		}
 		
 		public static String errorName(String nameSuffix) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.engine.analysis;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.engine.ResolvedModule;
@@ -26,8 +27,14 @@ public class NE_OverloadElement_Test extends NamedElement_CommonTest {
 	
 	@Override
 	public void test_NamedElement________() throws Exception {
-		test_NamedElement(pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; "), 
-			null, expectNotAValue("xxx"), strings());
+		PickedElement<INamedElement> pick = pickedElementFromResolution("void xxx; int xxx; auto _ = xxx/*M*/; ");
+		test_NamedElement(pick, null, expectNotAValue("xxx"), strings());
+		
+		INamedElement overloadElement = pick.element;
+		assertTrue(overloadElement.getName().equals("xxx"));
+		assertTrue(overloadElement.getExtendedName().equals("xxx"));
+		
+		checkElementLabel(overloadElement, "#NameConflict[void xxx;| int xxx;]");
 	}
 	
 }

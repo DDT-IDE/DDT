@@ -15,11 +15,11 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 
-public interface INamedElementSemanticData extends IElementSemanticData{
+public interface INamedElementSemanticData extends IElementSemanticData {
 	
 	public ConcreteElementResult resolveConcreteElement();
 	
-	public INamedElement resolveTypeForValueContext();
+	public INamedElement resolveTypeForValueContext(); /* FIXME: can be null? */
 	
 	public void resolveSearchInMembersScope(CommonScopeLookup search);
 	

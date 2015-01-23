@@ -19,9 +19,10 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
-import melnorme.utilbox.collections.HashSet2;
 import dtool.ast.definitions.EArcheType;
+import dtool.engine.util.NamedElementUtil;
 
 /**
  * An overloaded named element aggregates several elements with the same name in the same scope.
@@ -30,13 +31,15 @@ import dtool.ast.definitions.EArcheType;
  */
 public class OverloadedNamedElement extends AbstractNamedElement implements IConcreteNamedElement {
 	
-	protected final HashSet2<INamedElement> elements;
+	public static final String ERROR_NAME = ErrorElement.ERROR_PREFIX + "NameConflict";
+	
+	protected final ArrayList2<INamedElement> elements;
 	protected final INamedElement firstElement;
 	
 	public OverloadedNamedElement(INamedElement firstElement) {
 		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement, false);
 		this.firstElement = firstElement;
-		this.elements = new HashSet2<>();
+		this.elements = new ArrayList2<>();
 		elements.add(firstElement);
 	}
 	
@@ -87,6 +90,25 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 		elements.add(newElement);
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(ERROR_NAME);
+		sb.append("[");
+		
+		boolean first = true;
+		for (INamedElement namedElement : getOverloadedElements()) {
+			if(first) {
+				first = false;
+			} else {
+				sb.append("| ");
+			}
+			sb.append(NamedElementUtil.namedElementToString(namedElement));
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override
@@ -111,11 +133,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 				return notAValueError;
 			}
 		};
-	}
-	
-	@Override
-	public String toString() {
-		return "NameConflict["+getName()+"]";
 	}
 	
 }

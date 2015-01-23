@@ -10,8 +10,7 @@
  *******************************************************************************/
 package dtool.engine.util;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
 
@@ -58,5 +57,14 @@ public class NamedElementUtil {
 	}
 	
 	public static String NATIVES_ROOT = "/";
+	
+	public static String namedElementToString(INamedElement namedElement) {
+		if(namedElement instanceof SourceElement) {
+			SourceElement sourceElement = (SourceElement) namedElement;
+			return sourceElement.toStringAsCode();
+		} else {
+			return namedElement.toString();
+		}
+	}
 	
 }

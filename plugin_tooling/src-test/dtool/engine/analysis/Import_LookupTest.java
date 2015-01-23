@@ -30,7 +30,7 @@ import dtool.ast.definitions.Module;
 import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
 import dtool.engine.ResolvedModule;
-import dtool.engine.tests.DefUnitResultsChecker;
+import dtool.engine.util.NamedElementUtil;
 
 
 public class Import_LookupTest extends CommonLookupTest {
@@ -293,7 +293,7 @@ public class Import_LookupTest extends CommonLookupTest {
 			@Override
 			public boolean evaluate(INamedElement matchedElement) {
 				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
-				assertTrue(DefUnitResultsChecker.namedElementToString(moduleProxy).equals(expectedToString));
+				assertTrue(NamedElementUtil.namedElementToString(moduleProxy).equals(expectedToString));
 				return true;
 			}
 		};

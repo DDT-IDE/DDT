@@ -245,18 +245,9 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		if(expectedLabel.startsWith("$")) {
 			elementLabel = "$" + NamedElementUtil.getElementTypedLabel(element, true);
 		} else {
-			elementLabel = namedElementToString(element);
+			elementLabel = NamedElementUtil.namedElementToString(element);
 		}
 		return areEqual(elementLabel, expectedLabel);
-	}
-	
-	public static String namedElementToString(INamedElement namedElement) {
-		if(namedElement instanceof SourceElement) {
-			SourceElement sourceElement = (SourceElement) namedElement;
-			return sourceElement.toStringAsCode();
-		} else {
-			return namedElement.toString();
-		}
 	}
 	
 }

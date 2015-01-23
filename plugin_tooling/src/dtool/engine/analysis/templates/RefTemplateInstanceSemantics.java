@@ -11,10 +11,15 @@
 package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import java.util.LinkedList;
+
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.InvalidRefErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
@@ -23,6 +28,7 @@ import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefinitionTemplate;
+import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
@@ -55,17 +61,38 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			
 		INamedElement templateInstance = null;
 		
+		final LinkedList<DefinitionTemplate> templates = new LinkedList<>();
+		
 		if(resolvedTemplate instanceof DefinitionTemplate) {
-			DefinitionTemplate template = (DefinitionTemplate) resolvedTemplate;
+			DefinitionTemplate defTemplate = (DefinitionTemplate) resolvedTemplate;
+			templates.add(defTemplate);
+		} else if(resolvedTemplate instanceof OverloadedNamedElement) {
+			OverloadedNamedElement overload = (OverloadedNamedElement) resolvedTemplate;
+			for (INamedElement overloadElement : overload.getOverloadedElements()) {
+				if(overloadElement instanceof DefinitionTemplate) {
+					DefinitionTemplate defTemplate = (DefinitionTemplate) overloadElement;
+					templates.add(defTemplate);
+				} else {
+					return overload;
+				}
+			}
+		} else {
+			if(resolvedTemplate.getArcheType() == EArcheType.Error) {
+				return resolvedTemplate;
+			}
+			return new InvalidRefErrorElement(ERROR__NotATemplate, refTemplateInstance, resolvedTemplate, null);	
+		}
+		
+		for (DefinitionTemplate defTemplate : templates) {
 			
-			templateInstance = createTemplateInstance(template, refTplInstance);
+			templateInstance = createTemplateInstance(defTemplate, refTplInstance);
 			
 			if(templateInstance != null) {
 				return templateInstance;
 			}
 		}
 		
-		return null;
+		return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, refTemplateInstance, null);
 	}
 	
 	protected INamedElement createTemplateInstance(DefinitionTemplate templateDef, RefTemplateInstance templateRef) {
@@ -74,7 +101,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		
 		int paramSize = templateDef.getITemplateParameters().size();
 		if(paramSize != tplArgs.size()) {
-			return null;
+			return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);
 		}
 		
 		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();
@@ -98,10 +125,10 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	
 	/* -----------------  ----------------- */
 	
+	public static final String ERROR__NotATemplate = ErrorElement.ERROR_PREFIX + "NotATemplate";
 	public static final String ERROR__TPL_ARG__NotAType = ErrorElement.ERROR_PREFIX + "TemplateArgumentIsNotAType";
-	public static final String ERROR__TPL_REF_MATCHED_NONE = ErrorElement.ERROR_PREFIX + 
+	public static final String ERROR__TPL_REF_MATCHED_NONE = ErrorElement.ERROR_PREFIX +
 			"InstantiationDidNotMatchAnyTemplate";
-	
 	
 	public static ITypeNamedElement resolveTargetType(Resolvable target, ISemanticContext parentContext) {
 		assertNotNull(target);
