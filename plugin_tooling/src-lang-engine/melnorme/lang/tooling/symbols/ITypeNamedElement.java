@@ -16,4 +16,8 @@ package melnorme.lang.tooling.symbols;
  */
 public interface ITypeNamedElement extends IConcreteNamedElement {
 	
+	/* FIXME: TODO */
+//	@Override
+//	public TypeSemantics getSemantics(ISemanticContext parentContext);
+	
 }

@@ -13,6 +13,7 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -23,6 +24,7 @@ import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.expressions.Resolvable;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 import dtool.engine.analysis.templates.TupleElement;
 
 public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
@@ -71,9 +73,24 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 		};
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public TupleElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new TupleElement(defName, new NodeVector<>(array(argument)));
+	public TemplateParameterAnalyser getParameterAnalyser() {
+		return templateParameterAnalyser;
 	}
+	
+	protected final TemplateParameterAnalyser templateParameterAnalyser = new TemplateParameterAnalyser() {
+		
+		@Override
+		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			return TplMatchLevel.TUPLE;
+		}
+		
+		@Override
+		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+			return new TupleElement(defName, new NodeVector<>(array(tplArg)));
+		}
+	};
 	
 }

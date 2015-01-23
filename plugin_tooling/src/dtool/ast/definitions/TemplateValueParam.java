@@ -13,16 +13,21 @@ package dtool.ast.definitions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 import dtool.engine.analysis.templates.VarElement;
 
 public class TemplateValueParam extends DefUnit implements IConcreteNamedElement, ITemplateParameter {
@@ -84,9 +89,35 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 		};
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public VarElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new VarElement(defName, type, argument);
+	public TemplateParameterAnalyser getParameterAnalyser() {
+		return templateParameterAnalyser;
 	}
+	
+	protected final TemplateParameterAnalyser templateParameterAnalyser = new TemplateParameterAnalyser() {
+		
+		@Override
+		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			ITypeNamedElement argType = TypeSemantics.resolveTypeOfExpression(tplArg, context);
+			if(argType.getArcheType() == EArcheType.Error) {
+				return TplMatchLevel.NONE;
+			}
+			
+			ITypeNamedElement paramType = ReferenceSemantics.resolveTargetType(type, context);
+			/* FIXME: use isCompatibleType */
+			if(argType == paramType) {
+				return TplMatchLevel.VALUE;
+			} 
+			
+			return TplMatchLevel.NONE;
+		}
+		
+		@Override
+		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+			return new VarElement(defName, type, tplArg);
+		}
+	};
 	
 }

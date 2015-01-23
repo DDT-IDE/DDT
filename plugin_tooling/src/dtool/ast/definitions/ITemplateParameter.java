@@ -10,34 +10,13 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.ast.INamedElementNode;
-import melnorme.lang.tooling.ast_actual.ElementDoc;
-import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.ErrorElement;
-import dtool.ast.expressions.Resolvable;
 
 
 public interface ITemplateParameter extends IASTNode {
 	
-	/** 
-	 * Create template argument element for given argument 
-	 * @param argument non-null.
-	 * @param tplRefContext non-null.
-	 * 
-	 * @return the created tamplate argument, or null if the given argument is not applicable to the parameter.
-	 */
-	INamedElementNode createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext);
+	/** @return non-null */
+	public TemplateParameterAnalyser getParameterAnalyser();
 	
-	public static class NotInstantiatedErrorElement extends ErrorElement {
-		
-		public static final String NAME = ERROR_PREFIX + "NotInstantiated";
-		
-		public NotInstantiatedErrorElement(ILanguageElement ownerElement, ElementDoc doc) {
-			super(NAME, ownerElement, doc);
-		}
-		
-	}
-
 }

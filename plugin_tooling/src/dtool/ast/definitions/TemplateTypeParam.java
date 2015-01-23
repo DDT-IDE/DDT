@@ -12,6 +12,7 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -22,9 +23,11 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 import dtool.engine.analysis.templates.TypeAliasElement;
 
 public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
@@ -90,9 +93,41 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 		};
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public TypeAliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new TypeAliasElement(defName, RefTemplateInstanceSemantics.resolveTargetType(argument, tplRefContext));
+	public TemplateParameterAnalyser getParameterAnalyser() {
+		return templateParameterAnalyser;
 	}
+	
+	protected final TemplateParameterAnalyser templateParameterAnalyser = new TemplateParameterAnalyser() {
+		
+		@Override
+		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			ITypeNamedElement targetType = RefTemplateInstanceSemantics.resolveTargetTypeOfArg(tplArg, context);
+			
+			if(targetType.getArcheType() == EArcheType.Error) {
+				return TplMatchLevel.NONE;
+			}
+			
+			if(specializationType == null) {
+				return TplMatchLevel.TYPE;
+			}
+			
+			ITypeNamedElement specType = RefTemplateInstanceSemantics.resolveTargetType(specializationType, context);
+			// FIXME: not entirely accurate, needed to check superTypes
+			if(specType == targetType) {
+				return TplMatchLevel.TYPE_SPECIALIZED;
+			}
+			
+			return TplMatchLevel.NONE;
+		}
+		
+		@Override
+		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+			ITypeNamedElement argTarget = RefTemplateInstanceSemantics.resolveTargetTypeOfArg(tplArg, tplRefContext);
+			return new TypeAliasElement(defName, argTarget);
+		}
+	};
 	
 }

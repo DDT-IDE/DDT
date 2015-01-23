@@ -10,10 +10,16 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.resolver;
 
+import melnorme.lang.tooling.context.ISemanticContext;
+import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
+import dtool.ast.expressions.Expression;
+import dtool.ast.expressions.Resolvable;
+import dtool.ast.references.Reference;
 
 public class TypeSemantics extends NonValueConcreteElementSemantics {
 	
@@ -36,6 +42,20 @@ public class TypeSemantics extends NonValueConcreteElementSemantics {
 	
 	public IScopeElement getMembersScope() {
 		return membersScope;
+	}
+	
+	public static ITypeNamedElement resolveTypeOfExpression(Resolvable resolvable, ISemanticContext parentContext) {
+		if(resolvable instanceof Expression) {
+			Expression expression = (Expression) resolvable;
+			return expression.resolveTypeOfUnderlyingValue_nonNull(parentContext).concreteType;
+		} else {
+			final Reference reference = (Reference) resolvable;
+			TypeReferenceResult result = ExpSemantics.resolveTypeOfExpressionReference(reference, parentContext);
+			if(result == null) {
+				return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(reference)).concreteType; 
+			}
+			return result.concreteType;
+		}
 	}
 	
 }

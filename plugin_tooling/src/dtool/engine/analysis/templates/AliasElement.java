@@ -15,19 +15,16 @@ import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.resolver.ExpSemantics;
-import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
-import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.engine.resolver.CommonVarSemantics;
+import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.EArcheType;
-import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
-import dtool.ast.references.Reference;
+
 
 public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedElement {
 	
@@ -68,21 +65,10 @@ public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedE
 	@Override
 	public NamedElementSemantics doCreateSemantics(PickedElement<?> pickedElement) {
 		return new CommonVarSemantics(this, pickedElement) {
-			
 			@Override
 			public INamedElement resolveTypeForValueContext() {
-				if(targetValue instanceof Expression) {
-					Expression expression = (Expression) targetValue;
-					return expression.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
-				} else {
-					final Reference reference = (Reference) targetValue;
-					TypeReferenceResult result = ExpSemantics.resolveTypeOfExpressionReference(reference, context);
-					if(result == null) {
-						return ExpSemantics.concreteTypeResult(ErrorElement.newNotFoundError(reference)).originalType; 
-					}
-					return result.originalType;
-				}
-			} 
+				return TypeSemantics.resolveTypeOfExpression(targetValue, context);
+			}
 		};
 	}
 	

@@ -12,6 +12,7 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -20,7 +21,7 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import dtool.ast.definitions.TemplateAliasParam.TemplateAliasParamSemantics;
 import dtool.ast.expressions.Resolvable;
-import dtool.engine.analysis.templates.AliasElement;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 
 public class TemplateThisParam extends DefUnit implements ITemplateParameter, IConcreteNamedElement {
 	
@@ -61,8 +62,21 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 	}
 	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable resolvable, ISemanticContext tplRefContext) {
-		return null;
+	public TemplateParameterAnalyser getParameterAnalyser() {
+		return templateParameterAnalyser;
 	}
+	
+	protected final TemplateParameterAnalyser templateParameterAnalyser = new TemplateParameterAnalyser() {
+		
+		@Override
+		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			return TplMatchLevel.NONE; // Template this doesn't match directly.
+		}
+		
+		@Override
+		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+			return null; 
+		}
+	};
 	
 }

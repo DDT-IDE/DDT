@@ -12,17 +12,22 @@ package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
+import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser.NotInstantiatedErrorElement;
 
 public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 	
@@ -97,9 +102,29 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		}
 	}
 	
+	/* -----------------  ----------------- */
+	
 	@Override
-	public AliasElement createTemplateArgument(Resolvable argument, ISemanticContext tplRefContext) {
-		return new AliasElement(defName, argument);
+	public TemplateParameterAnalyser getParameterAnalyser() {
+		return templateParameterAnalyser;
 	}
+	
+	protected final TemplateParameterAnalyser templateParameterAnalyser = new TemplateParameterAnalyser() {
+		
+		@Override
+		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			ITypeNamedElement resolvedTyped = TypeSemantics.resolveTypeOfExpression(tplArg, context);
+			if(resolvedTyped.getArcheType() == EArcheType.Error) {
+				return TplMatchLevel.NONE;
+			}
+			
+			return TplMatchLevel.ALIAS;
+		}
+		
+		@Override
+		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+			return new AliasElement(defName, tplArg);
+		}
+	};
 	
 }

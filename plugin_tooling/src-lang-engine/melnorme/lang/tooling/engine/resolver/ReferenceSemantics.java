@@ -14,9 +14,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ElementSemantics;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.ErrorElement.NotATypeErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.symbols.ITypeNamedElement;
 
 public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResult> {
 	
@@ -81,7 +83,7 @@ public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResul
 		return reference.getSemantics(context).resolveTargetElement().result;
 	}
 	
-	/* -----------------  ----------------- */
+	/* ----------------- some helper methods ----------------- */
 	
 	public static IConcreteNamedElement resolveConcreteElement(IReference reference, ISemanticContext parentContext) {
 		if(reference == null) {
@@ -90,6 +92,16 @@ public abstract class ReferenceSemantics extends ElementSemantics<ReferenceResul
 		INamedElement refTarget = reference.getSemantics(parentContext).resolveTargetElement_();
 		
 		return refTarget.getSemantics(parentContext).resolveConcreteElement().result;
+	}
+	
+	public static ITypeNamedElement resolveTargetType(IReference reference, ISemanticContext parentContext) {
+		IConcreteNamedElement targetType = resolveConcreteElement(reference, parentContext);
+		
+		if(targetType instanceof ITypeNamedElement) {
+			return (ITypeNamedElement) targetType;
+		} else {
+			return new NotATypeErrorElement(reference, targetType);
+		}
 	}
 	
 }

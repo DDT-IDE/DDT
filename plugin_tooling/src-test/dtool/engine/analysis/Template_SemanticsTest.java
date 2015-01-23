@@ -28,12 +28,12 @@ import melnorme.utilbox.collections.Collection2;
 import org.junit.Test;
 
 import dtool.ast.definitions.DefinitionTemplate;
-import dtool.ast.definitions.ITemplateParameter.NotInstantiatedErrorElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.InstantiatedDefUnit;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 import dtool.engine.analysis.templates.TemplateInstance;
+import dtool.engine.analysis.templates.TemplateParameterAnalyser.NotInstantiatedErrorElement;
 import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.engine.util.NamedElementUtil;
 import dtool.parser.SourceEquivalenceChecker;
@@ -138,8 +138,8 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		test_ThisParam$();
 		test_TupleParam$();
 		
-//		testParamOverloads$();
-//		test_TemplateOverloads$();
+		testParamOverloads$();
+		test_TemplateOverloads$();
 	}
 	
 	protected static PickedElement<TemplateInstance> testTemplateInstantiation(String baseSource,
@@ -250,12 +250,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			);
 			
 			// Test name parameter, to var (and alias)
-			testTemplateArgumentInstantiation(templateSource + "char aVar;", "Tpl!(aVar)",
+			testTemplateArgumentInstantiation(templateSource + "int aVar;", "Tpl!(aVar)",
 				varArg_toStringAsCode,
 				varArg_concreteTarget,
 				varArg_type
 			);
-			testTemplateArgumentInstantiation(templateSource + "char aVar; alias aVarAlias = aVar", "Tpl!(aVarAlias)",
+			testTemplateArgumentInstantiation(templateSource + "int aVar; alias aVarAlias = aVar", "Tpl!(aVarAlias)",
 				varArgAlias_toStringAsCode,
 				varArgAlias_concreteTarget,
 				varArgAlias_type
@@ -314,20 +314,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 				intArgAlias_concreteTarget = intArg_concreteTarget;
 				intArgAlias_type = intArg_type;
 				
-				varArg_toStringAsCode = "@ARG = " + NotATypeErrorElement.errorName("aVar") + " ;";
-				varArg_concreteTarget = NotATypeErrorElement.errorName("aVar");
-				varArg_type = expectNotAValue("ARG");
-				varArgAlias_toStringAsCode = varArg_toStringAsCode;
-				varArgAlias_concreteTarget = varArg_concreteTarget;
-				varArgAlias_type = varArg_type;
+				varArg_toStringAsCode = null;
+				varArgAlias_toStringAsCode = null;
 				
-				missingArg_ToStringAsCode = "@ARG = " + expectNotFound("missing") + ";";
-				missingArg_concreteTarget = expectNotFound("missing");
-				missingArg_type = expectNotAValue("ARG");
+				missingArg_ToStringAsCode = null;
 				
-				numberArg_ToStringAsCode = "@ARG = " + RefTemplateInstanceSemantics.ERROR__TPL_ARG__NotAType + ";";
-				numberArg_concreteTarget = RefTemplateInstanceSemantics.ERROR__TPL_ARG__NotAType;
-				numberArg_type = expectNotAValue("ARG");
+				numberArg_ToStringAsCode = null;
 				
 			}
 		}.test_TplParameter$();
@@ -339,14 +331,9 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			{
 				templateSource = "template Tpl(int ARG) { ARG foo; }";
 				
-				intArg_toStringAsCode = "@ int ARG = int;";
-				intArg_concreteTarget = intArg_toStringAsCode;
-				intArg_type = "$/int";
 				
-				intArgAlias_toStringAsCode = "@ int ARG = intAlias;";
-				intArgAlias_concreteTarget = intArgAlias_toStringAsCode;
-				intArgAlias_type = "$/int";
-				
+				intArg_toStringAsCode = null;
+				intArgAlias_toStringAsCode = null;
 				
 				varArg_toStringAsCode = "@ int ARG = aVar;";
 				varArg_concreteTarget = varArg_toStringAsCode;
@@ -355,14 +342,30 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 				varArgAlias_concreteTarget = varArgAlias_toStringAsCode;
 				varArgAlias_type = "$/int";
 				
-				missingArg_ToStringAsCode = "@ int ARG = missing;";
-				missingArg_concreteTarget = missingArg_ToStringAsCode;
-				missingArg_type = "$/int";
+				missingArg_ToStringAsCode = null;
 				
 				numberArg_ToStringAsCode = "@ int ARG = 123;";
 				numberArg_concreteTarget = numberArg_ToStringAsCode;
 				numberArg_type = "$/int";
 				
+			}
+		}.test_TplParameter$();
+		
+		
+		new TemplateParamTester() {
+			{
+				templateSource = "template Tpl(bool ARG) { ARG foo; }";
+				
+				
+				intArg_toStringAsCode = null;
+				intArgAlias_toStringAsCode = null;
+				
+				varArg_toStringAsCode = null;
+				varArgAlias_toStringAsCode = null;
+				
+				missingArg_ToStringAsCode = null;
+				
+				numberArg_ToStringAsCode = null;
 			}
 		}.test_TplParameter$();
 	}
@@ -372,25 +375,18 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			{
 				templateSource = "template Tpl(alias ARG) { auto foo = ARG; }";
 				
-				intArg_toStringAsCode = "@value_alias ARG = int;";
-				intArg_concreteTarget = intArg_toStringAsCode;
-				intArg_type = expectNotAValue("int");
-				
-				intArgAlias_toStringAsCode = "@value_alias ARG = intAlias;";
-				intArgAlias_concreteTarget = intArgAlias_toStringAsCode;
-				intArgAlias_type = expectNotAValue("int");
+				intArg_toStringAsCode = null;
+				intArgAlias_toStringAsCode = null;
 				
 				
 				varArg_toStringAsCode = "@value_alias ARG = aVar;";
 				varArg_concreteTarget = varArg_toStringAsCode;
-				varArg_type = "$/char";
+				varArg_type = "$/int";
 				varArgAlias_toStringAsCode = "@value_alias ARG = aVarAlias;";
 				varArgAlias_concreteTarget = varArgAlias_toStringAsCode;
-				varArgAlias_type = "$/char";
+				varArgAlias_type = "$/int";
 				
-				missingArg_ToStringAsCode = "@value_alias ARG = missing;";
-				missingArg_concreteTarget = missingArg_ToStringAsCode;
-				missingArg_type = expectNotFound("missing");
+				missingArg_ToStringAsCode = null;
 				
 				numberArg_ToStringAsCode = "@value_alias ARG = 123;";
 				numberArg_concreteTarget = numberArg_ToStringAsCode;
@@ -477,15 +473,15 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		// Multiple template matches should be an error, but match first tpl
 		testTemplateInstantiation(TPL_T + TPL_T, "Tpl!(int)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void Tint; }"
+			"Tpl!(int){ @ARG = /int; }{ void T; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint, "Tpl!(bool)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void T; }"
+			"Tpl!(bool){ @ARG = /bool; }{ void T; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_Tbool, "Tpl!(int)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void tint; }"
+			"Tpl!(int){ @ARG = /int; }{ void Tint; }"
 		);
 		// Match none:
 		testTemplateInstantiation(TPL_Tint + TPL_Tbool, "Tpl!(float)", 
@@ -502,11 +498,11 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_VALUEint + TPL_ALIAS, "Tpl!(123)", 
 			
-			"Tpl!(int){ @int ARG = 123; }{ void valueInt; }"
+			"Tpl!(123){ @int ARG = 123; }{ void valueInt; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_VALUEint + TPL_ALIAS, "Tpl!(true)", 
 			
-			"Tpl!(true){ @int ARG = true; }{ void tAlias; }"
+			"Tpl!(true){ @value_alias ARG = true; }{ void tAlias; }"
 		);
 		
 		
