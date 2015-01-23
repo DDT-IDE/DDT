@@ -36,14 +36,22 @@ public abstract class Expression extends Resolvable implements IQualifierNode, I
 		};
 	}
 	
-	@Override
+	public INamedElement resolveTypeOfUnderlyingValue_(ISemanticContext context) {
+		return resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+	}
+	
 	public TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context) {
 		return getSemantics(context).resolveTypeOfUnderlyingValue();
 	}
 	
 	@Override
+	public INamedElement getTypeOfInitializer(ISemanticContext context) {
+		return getSemantics(context).resolveTypeOfUnderlyingValue().originalType;
+	}
+	
+	@Override
 	public INamedElement resolveAsQualifiedRefRoot(ISemanticContext context) {
-		return resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+		return resolveTypeOfUnderlyingValue_(context);
 	}
 	
 }

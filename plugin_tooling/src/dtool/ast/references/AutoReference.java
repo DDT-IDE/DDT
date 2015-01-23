@@ -69,7 +69,7 @@ public final class AutoReference extends Reference {
 			public INamedElement doResolveTargetElement() {
 				IInitializer initializer = getParent_().getDeclaredInitializer();
 				if(initializer != null) {
-					return initializer.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+					return initializer.getTypeOfInitializer(context);
 				}
 				return null;
 			}

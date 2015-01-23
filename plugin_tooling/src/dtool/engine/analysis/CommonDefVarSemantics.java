@@ -35,7 +35,7 @@ public class CommonDefVarSemantics extends VarSemantics {
 		
 		IInitializer initializer = varDef.getDeclaredInitializer();
 		if(initializer != null) {
-			return initializer.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+			return initializer.getTypeOfInitializer(context);
 		}
 		
 		return new SyntaxErrorElement(varDef, ErrorElement.quoteDoc("Missing initializer or type."));

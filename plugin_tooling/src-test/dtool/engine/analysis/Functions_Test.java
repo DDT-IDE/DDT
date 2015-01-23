@@ -39,7 +39,7 @@ public class Functions_Test extends CommonNodeSemanticsTest {
 		pe.context._resetSemantics();
 		
 		IInitializer element = pe.element;
-		INamedElement typeOfUnderlyingValue = element.resolveTypeOfUnderlyingValue_nonNull(pe.context).originalType;
+		INamedElement typeOfUnderlyingValue = element.getTypeOfInitializer(pe.context);
 		checker.evaluate(typeOfUnderlyingValue);
 	}
 	

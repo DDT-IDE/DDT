@@ -81,7 +81,7 @@ public class RefTypeof extends Reference implements IQualifierNode {
 		
 			@Override
 			public INamedElement doResolveTargetElement() {
-				return exp.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+				return exp.resolveTypeOfUnderlyingValue_(context);
 			}
 			
 		};

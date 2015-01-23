@@ -64,7 +64,7 @@ public class ExpCall extends Expression {
 		
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				INamedElement calleeElem = callee.resolveTypeOfUnderlyingValue_nonNull(context).originalType;
+				INamedElement calleeElem = callee.resolveTypeOfUnderlyingValue_(context);
 				if(calleeElem == null)
 					return null;
 				

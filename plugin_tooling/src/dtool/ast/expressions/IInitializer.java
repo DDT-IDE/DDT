@@ -12,10 +12,10 @@ package dtool.ast.expressions;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 public interface IInitializer extends IASTNode {
 	
-	TypeReferenceResult resolveTypeOfUnderlyingValue_nonNull(ISemanticContext context);
+	INamedElement getTypeOfInitializer(ISemanticContext context);
 	
 }

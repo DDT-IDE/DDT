@@ -99,7 +99,7 @@ public class ResolvableUtil {
 			final IReference reference = (IReference) resolvable;
 			TypeReferenceResult result = resolveTypeOfExpressionReference(reference, parentContext);
 			if(result == null) {
-				return new TypeReferenceResult(ErrorElement.newNotFoundError(reference)).concreteType; 
+				return ErrorElement.newNotFoundError(reference); 
 			}
 			return result.concreteType;
 		}
@@ -115,8 +115,8 @@ public class ResolvableUtil {
 			return null;
 		}
 		INamedElement expElement = reference.getSemantics(parentContext).resolveTargetElement_();
-		INamedElement originalType = expElement.getSemantics(parentContext).getTypeForValueContext();
-		return concreteTypeResult(reference, originalType, parentContext);
+		INamedElement type = expElement.getSemantics(parentContext).getTypeForValueContext();
+		return concreteTypeResult(reference, type, parentContext);
 	}
 	
 }
