@@ -24,6 +24,7 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.AliasElement;
 import dtool.engine.analysis.templates.TemplateParameterAnalyser;
@@ -113,6 +114,8 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		
 		@Override
 		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			tplArg = tplArg == null ? defaultValue : tplArg;
+			
 			ITypeNamedElement resolvedTyped = ResolvableUtil.resolveTypeOfExpression(tplArg, context);
 			if(resolvedTyped.getArcheType() == EArcheType.Error) {
 				return TplMatchLevel.NONE;
@@ -122,9 +125,11 @@ public class TemplateAliasParam extends DefUnit implements ITemplateParameter {
 		}
 		
 		@Override
-		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
-			return new AliasElement(defName, tplArg);
+		public INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+				ISemanticContext tplRefContext) {
+			return new AliasElement(defName, getArgument(tplArgs, argIndex, defaultValue));
 		}
+		
 	};
 	
 }

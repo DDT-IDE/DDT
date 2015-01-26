@@ -15,6 +15,8 @@ import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.utilbox.collections.Indexable;
+import dtool.ast.expressions.MissingExpression;
 import dtool.ast.expressions.Resolvable;
 
 public abstract class TemplateParameterAnalyser {
@@ -41,13 +43,26 @@ public abstract class TemplateParameterAnalyser {
 	
 	/** 
 	 * Create template argument element for given argument 
-	 * @param tplArg non-null.
+	 * @param tplArgs non-null
 	 * @param tplRefContext non-null.
-	 * 
 	 * @return the created tamplate argument, or null if the given argument is not applicable to the parameter.
 	 */
-	public abstract INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext);
+	public abstract INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+			ISemanticContext tplRefContext);
 	
+	
+	protected Resolvable getArgument(Indexable<Resolvable> tplArgs, int argIndex, Resolvable defaultValue) {
+		Resolvable result = argIndex < tplArgs.size() ? tplArgs.get(argIndex) : defaultValue;
+		
+		if(result == null) {
+			// This shouldn't happen, but protected against a NPE just in case.
+			MissingExpression missingExpression = new MissingExpression();
+			missingExpression.setSourceRange(0, 0);
+			missingExpression.setParsedStatus().completeLocalAnalysisOnNodeTree();
+			return missingExpression;
+		}
+		return result;
+	}
 	
 	public static class NotInstantiatedErrorElement extends ErrorElement {
 		

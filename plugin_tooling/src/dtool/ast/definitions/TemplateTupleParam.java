@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
-import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.INamedElementNode;
@@ -23,6 +22,8 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.TemplateParameterAnalyser;
 import dtool.engine.analysis.templates.TupleElement;
@@ -88,8 +89,17 @@ public class TemplateTupleParam extends DefUnit implements IConcreteNamedElement
 		}
 		
 		@Override
-		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
-			return new TupleElement(defName, new NodeVector<>(array(tplArg)));
+		public INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+				ISemanticContext tplRefContext) {
+			
+			// Consume all available arguments.
+			ArrayList2<Resolvable> tupleArgs = new ArrayList2<>();
+			for (int ix = argIndex; ix < tplArgs.size(); ix++) {
+				tupleArgs.add(tplArgs.get(ix));
+			}
+			
+			NodeVector<Resolvable> tupleArg = new NodeVector<>(tupleArgs.toArray(Resolvable.class));
+			return new TupleElement(defName, tupleArg);
 		}
 	};
 	

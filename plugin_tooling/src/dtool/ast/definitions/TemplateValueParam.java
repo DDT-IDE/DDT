@@ -23,6 +23,7 @@ import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
@@ -113,8 +114,9 @@ public class TemplateValueParam extends DefUnit implements IConcreteNamedElement
 		}
 		
 		@Override
-		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
-			return new VarElement(defName, type, tplArg);
+		public INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+				ISemanticContext tplRefContext) {
+			return new VarElement(defName, type, getArgument(tplArgs, argIndex, null));
 		}
 	};
 	

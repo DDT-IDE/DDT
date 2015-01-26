@@ -220,8 +220,9 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return (ParsedNodeData) data;
 	}
 	
-	public void setParsedStatus() {
+	public CommonASTNode setParsedStatus() {
 		getDataAtCreatedPhase().setParsed(asNode());
+		return this;
 	}
 	
 	public void setParsedStatusWithErrors(ParserError... errors) {

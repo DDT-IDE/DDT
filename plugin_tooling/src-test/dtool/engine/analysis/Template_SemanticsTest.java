@@ -333,6 +333,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			}
 		}.test_TplParameter$();
 		
+		
+		// Test default param
+		testTemplateInstantiation("template Tpl(ARG = int) { ARG foo; }", "Tpl!()", 
+			
+			"Tpl!(){ @ARG = /int; }{ ARG foo; }"
+		);
 	}
 	
 	protected void test_VarParam$() {
@@ -403,6 +409,14 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 				
 			}
 		}.test_TplParameter$();
+		
+		
+		// Test default param
+		testTemplateInstantiation("template Tpl(alias ARG = 123) {  }", "Tpl!()", 
+			
+			"Tpl!(){ @value_alias ARG = 123; }{  }"
+		);
+		
 	}
 	
 	protected void test_TupleParam$() {
@@ -437,7 +451,17 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			}
 		}.test_TplParameter$();
 		
-		// TODO Tuple with multiple sizes
+		
+		// Test tuple with multiple sizes
+		testTemplateInstantiation("template Tpl(ARG...) {  }", "Tpl!()", 
+			
+			"Tpl!(){ @ ARG... = (); }{  }"
+		);
+		
+		testTemplateInstantiation("template Tpl(ARG...) {  }", "Tpl!(int,123)", 
+			
+			"Tpl!(int, 123){ @ ARG... = (int,123); }{  }"
+		);
 	}
 	
 	protected void test_ThisParam$() {
@@ -524,64 +548,86 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	
 	protected void test_TemplateOverloads$() {
 		
-		// Test wrong number of parameters:
+		/* ----------------- Test wrong number of arguments ----------------- */
 		
-		final String TPL_DEF_A = "template Tpl() { int A; }";
+		final String TPL_DEF_0P = "template Tpl() { int A; }";
 		
-		testTemplateInstantiation(TPL_DEF_A, "Tpl!()", 
+		testTemplateInstantiation(TPL_DEF_0P, "Tpl!()", 
 			"Tpl!(){  }{ int A; }"
 		);
-		testTemplateInstantiation(TPL_DEF_A, "Tpl!(int)", 
+		testTemplateInstantiation(TPL_DEF_0P, "Tpl!(int)", 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
 		);
-		testTemplateInstantiation(TPL_DEF_A, "Tpl!(int, 123)", 
-			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
-		);
-		
-		
-		final String TPL_DEF_B = "template Tpl(ARG) { int B; }";
-		
-		testTemplateInstantiation(TPL_DEF_B, "Tpl!()", 
-			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
-		);
-		testTemplateInstantiation(TPL_DEF_B, "Tpl!(int, 123)", 
+		testTemplateInstantiation(TPL_DEF_0P, "Tpl!(int, 123)", 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
 		);
 		
-		final String TPL_DEF_C = "template Tpl(ARG, ARG = bool) { int C; }";
 		
-		testTemplateInstantiation(TPL_DEF_C, "Tpl!()", 
+		final String TPL_DEF_1P = "template Tpl(ARG) { int B; }";
+		
+		testTemplateInstantiation(TPL_DEF_1P, "Tpl!()", 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
 		);
-		testTemplateInstantiation(TPL_DEF_C, "Tpl!(int, int, int)", 
+		testTemplateInstantiation(TPL_DEF_1P, "Tpl!(int, 123)", 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
 		);
-		testTemplateInstantiation(TPL_DEF_C, "Tpl!(int,char)", 
+		
+		final String TPL_DEF_1P_plus = "template Tpl(ARG, ARG = bool) { int C; }";
+		
+		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!()", 
+			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
+		);
+		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!(int, int, int)", 
+			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
+		);
+		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!(int,char)", 
 			"Tpl!(int, char){ @ARG = /int; @ARG = /char; }{ int C; }"
 		);
-//		testTemplateInstantiation(TPL_DEF_C, "Tpl!(char)", 
-//			"Tpl!(char) { } { int C; }" 
-//		);
-//
-		// Test overloads
-		
-		testTemplateInstantiation(TPL_DEF_A + TPL_DEF_B, "Tpl!(int)", 
-			"Tpl!(int){ @ARG = /int; }{ int B; }"
+		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!(char)", 
+			"Tpl!(char) { @ARG = /char; @ARG = /bool; } { int C; }" 
 		);
-		testTemplateInstantiation(TPL_DEF_A + TPL_DEF_B, "Tpl!()", 
+		
+		/* ----------------- test param number overloads ----------------- */
+		
+		testTemplateInstantiation(TPL_DEF_0P + TPL_DEF_1P, "Tpl!()", 
 			"Tpl!(){  }{ int A; }"
 		);
-
+		testTemplateInstantiation(TPL_DEF_0P + TPL_DEF_1P, "Tpl!(int)", 
+			"Tpl!(int){ @ARG = /int; }{ int B; }"
+		);
 		
-		/* -----------------  ----------------- */
+		testTemplateInstantiation(
+			"template Tpl(T, int NUM) { int A; } " +
+			"template Tpl(T, T2) { int B; } "	, 
+			"Tpl!(int,123)", 
+			
+			"Tpl!(int,123){ @T = /int; @ int NUM = 123; }{ int A; }"
+		);
 		
-//		testTemplateInstantiation(
-//			"template Tpl(T, int NUM) { int A; } " +
-//			"template Tpl(T, T2) { int B; } "	, 
-//			
-//			"Tpl!(int,123)", 
-//			"Tpl!(int,123){ @T = /int; @ int NUM = 123; }{ int A; }"
-//		);
+		
+		// Matches multiples
+		testTemplateInstantiation(TPL_DEF_1P_plus + TPL_DEF_1P, "Tpl!(char)", 
+			"Tpl!(char) { @ARG = /char; @ARG = /bool; } { int C; }" 
+		);
+		
+		
+		/* ----------------- vs tuples ----------------- */
+		
+		final String TPL_DEF_1P_Tuple = "template Tpl(ARG1, ARGT...) { int ARG1_Tuple; }";
+		
+		testTemplateInstantiation(TPL_DEF_1P_Tuple, "Tpl!()", 
+			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE // Not enough arguments 
+		);
+		
+		testTemplateInstantiation(TPL_DEF_1P_Tuple + TPL_DEF_0P, "Tpl!(int)", 
+			"Tpl!(int){ @ ARG1 = /int; @ ARGT... = (); }{ int ARG1_Tuple; }"
+		);
+		testTemplateInstantiation(TPL_DEF_1P_Tuple + TPL_DEF_0P + TPL_DEF_1P, "Tpl!(int)", 
+			null
+		);
+		testTemplateInstantiation(TPL_DEF_1P_Tuple + TPL_DEF_0P + TPL_DEF_1P_plus , "Tpl!(int)", 
+			null
+		);
 		
 	}
 	

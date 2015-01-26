@@ -32,8 +32,8 @@ public class VarElement extends InstantiatedDefUnit implements IConcreteNamedEle
 	
 	public VarElement(DefSymbol defname, Reference type, Resolvable value) {
 		super(defname);
-		this.type = type;
-		this.value = assertNotNull(value);
+		this.type = checkCompleted(type);
+		this.value = assertNotNull(checkCompleted(value));
 	}
 	
 	@Override

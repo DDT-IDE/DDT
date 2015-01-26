@@ -41,7 +41,7 @@ public class DefinitionTemplate extends CommonDefinition
 {
 	
 	public final boolean isMixin;
-	public final NodeVector<ITemplateParameter> tplParams;
+	protected final NodeVector<ITemplateParameter> tplParams;
 	public final Expression tplConstraint;
 	public final DeclBlock decls;
 	

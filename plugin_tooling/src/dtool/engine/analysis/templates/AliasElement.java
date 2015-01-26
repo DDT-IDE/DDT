@@ -32,7 +32,7 @@ public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedE
 	
 	public AliasElement(DefSymbol defName, Resolvable targetValue) {
 		super(defName);
-		this.targetValue = assertNotNull(targetValue);
+		this.targetValue = assertNotNull(checkCompleted(targetValue));
 	}
 	
 	@Override

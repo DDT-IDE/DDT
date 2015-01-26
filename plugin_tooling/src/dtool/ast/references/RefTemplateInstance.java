@@ -28,8 +28,8 @@ import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 public class RefTemplateInstance extends Reference implements IQualifierNode, ITemplateRefNode {
 	
 	public final ITemplateRefNode tplRef;
-	public final Resolvable tplSingleArg;
-	public final NodeVector<Resolvable> tplArgs;
+	protected final Resolvable tplSingleArg;
+	protected final NodeVector<Resolvable> tplArgs;
 	
 	public RefTemplateInstance(ITemplateRefNode tplRef, Resolvable tplSingleArg, NodeVector<Resolvable> tplArgs) {
 		this.tplRef = parentize(tplRef);

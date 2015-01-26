@@ -11,6 +11,7 @@
 package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
@@ -52,6 +53,8 @@ public class TemplateInstance extends DefUnit implements IConcreteNamedElement, 
 		
 		this.tplArguments = parentize(assertNotNull(tplArguments));
 		this.body = parentize(clone(templateDef.decls));
+		
+		assertTrue(tplArguments.size() == templateDef.getEffectiveParameters().size());
 		
 		setSourceRange(templateDef.getSourceRange());
 		setParsedStatus();

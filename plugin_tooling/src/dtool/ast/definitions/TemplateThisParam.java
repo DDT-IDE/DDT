@@ -19,6 +19,7 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.TemplateAliasParam.TemplateAliasParamSemantics;
 import dtool.ast.expressions.Resolvable;
 import dtool.engine.analysis.templates.TemplateParameterAnalyser;
@@ -70,11 +71,12 @@ public class TemplateThisParam extends DefUnit implements ITemplateParameter, IC
 		
 		@Override
 		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
-			return TplMatchLevel.NONE; // Template this doesn't match directly.
+			return TplMatchLevel.NONE; // TemplateThisParam doesn't match directly.
 		}
 		
 		@Override
-		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+		public INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+				ISemanticContext tplRefContext) {
 			return null; 
 		}
 	};

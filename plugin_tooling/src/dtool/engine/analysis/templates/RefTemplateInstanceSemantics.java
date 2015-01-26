@@ -31,6 +31,7 @@ import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplateParameter;
+import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
@@ -84,10 +85,12 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		
 		ArrayList2<DefinitionTemplate> matchingTemplates = originalTemplates;
 		
-		for (int ix = 0; ix < tplArgs.size(); ix++) {
-			TplMatchLevel matchLevel = TplMatchLevel.NONE;
+		int tplArgsSize = tplArgs.size();
+		for (int ix = 0; ix < tplArgsSize; ix++) {
 			
 			Resolvable tplArg = tplArgs.get(ix);
+			
+			TplMatchLevel matchLevel = TplMatchLevel.NONE;
 			
 			ArrayList2<DefinitionTemplate> templates = matchingTemplates;
 			matchingTemplates = new ArrayList2<>();
@@ -95,7 +98,7 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			for (ListIterator<DefinitionTemplate> iterator = templates.listIterator(); iterator.hasNext(); ) {
 				DefinitionTemplate defTemplate = iterator.next();
 				
-				TplMatchLevel newMatchLevel = getMatchLevel(ix, defTemplate, tplArg);
+				TplMatchLevel newMatchLevel = getMatchLevel(defTemplate, ix, tplArg, context);
 				
 				if(newMatchLevel == TplMatchLevel.NONE) {
 					continue;
@@ -111,6 +114,17 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			
 		}
 		
+		
+		ArrayList2<DefinitionTemplate> templates = matchingTemplates;
+		matchingTemplates = new ArrayList2<>();
+		
+		// Match remaining templates against default args.
+		for (DefinitionTemplate defTemplate : templates) {
+			if(canMatchRemainingParameters(tplArgsSize, defTemplate)) {
+				matchingTemplates.add(defTemplate);
+			}
+		}
+		
 		if(matchingTemplates.size() == 0) {
 			return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, refTemplateInstance, null);
 		} else if(matchingTemplates.size() > 1) {
@@ -119,41 +133,57 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		}
 		
 		DefinitionTemplate defTemplate = matchingTemplates.get(0);
-			
+		
 		return createTemplateInstance(defTemplate);
 		
 	}
 	
-	protected TplMatchLevel getMatchLevel(int argIndex, DefinitionTemplate defTemplate, Resolvable tplArg) {
+	protected boolean canMatchRemainingParameters(int tplArgsSize, DefinitionTemplate defTemplate) {
+		for (int ix = tplArgsSize; ix < defTemplate.getEffectiveParameters().size(); ix++) {
+			
+			TplMatchLevel newMatchLevel = getMatchLevel(defTemplate, ix, null, context);
+			
+			if(newMatchLevel == TplMatchLevel.NONE) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	protected static TplMatchLevel getMatchLevel(DefinitionTemplate defTemplate, int paramIndex, Resolvable tplArg, 
+			ISemanticContext context) {
 		ArrayView<ITemplateParameter> tplParams = defTemplate.getEffectiveParameters();
 		
-		if(tplParams.size() <= argIndex) {
-			return TplMatchLevel.NONE; /*FIXME: BUG here for tuples */
+		if(tplParams.size() <= paramIndex) {
+			
+			if(tplParams.size() > 0) {
+				ITemplateParameter lastParam = tplParams.get(tplParams.size()-1);
+				if(lastParam instanceof TemplateTupleParam) {
+					return TplMatchLevel.TUPLE;
+				}
+			}
+			
+			return TplMatchLevel.NONE; 
 		}
 		
-		ITemplateParameter tplParam = tplParams.get(argIndex);
+		ITemplateParameter tplParam = tplParams.get(paramIndex);
 		return tplParam.getParameterAnalyser().getMatchPriority(tplArg, context);
 	}
-
+	
 	protected INamedElement createTemplateInstance(DefinitionTemplate templateDef) {
 		RefTemplateInstance templateRef = refTemplateInstance;
 		
 		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
 		
 		int paramSize = templateDef.getEffectiveParameters().size();
-		if(paramSize != tplArgs.size()) {
-			return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);
-		}
 		
 		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();
 		
 		for (int ix = 0; ix < paramSize; ix++) {
-			ITemplateParameter tplParameter = templateDef.tplParams.get(ix);
+			ITemplateParameter tplParameter = templateDef.getEffectiveParameters().get(ix);
 			
-			Resolvable argument = tplArgs.get(ix);
-			assertNotNull(argument);
 			INamedElementNode templateArgument = tplParameter.getParameterAnalyser().createTemplateArgument(
-				argument, context);
+				tplArgs, ix, context);
 			
 			if(templateArgument == null) {
 				return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);

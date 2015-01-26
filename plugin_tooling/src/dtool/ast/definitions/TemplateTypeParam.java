@@ -24,6 +24,7 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.ResolvableUtil;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.expressions.Resolvable;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
@@ -104,6 +105,11 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 		
 		@Override
 		public TplMatchLevel getMatchPriority(Resolvable tplArg, ISemanticContext context) {
+			tplArg = tplArg == null ? defaultType : tplArg;
+			
+			if(tplArg == null) {
+				return TplMatchLevel.NONE;
+			}
 			ITypeNamedElement targetType = RefTemplateInstanceSemantics.resolveTargetTypeOfArg(tplArg, context);
 			
 			if(targetType.getArcheType() == EArcheType.Error) {
@@ -123,7 +129,9 @@ public class TemplateTypeParam extends DefUnit implements ITemplateParameter {
 		}
 		
 		@Override
-		public INamedElementNode createTemplateArgument(Resolvable tplArg, ISemanticContext tplRefContext) {
+		public INamedElementNode createTemplateArgument(Indexable<Resolvable> tplArgs, int argIndex, 
+				ISemanticContext tplRefContext) {
+			Resolvable tplArg = getArgument(tplArgs, argIndex, defaultType);
 			ITypeNamedElement argTarget = RefTemplateInstanceSemantics.resolveTargetTypeOfArg(tplArg, tplRefContext);
 			return new TypeAliasElement(defName, argTarget);
 		}
