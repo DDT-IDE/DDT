@@ -11,18 +11,18 @@
 package dtool.ast.definitions;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
-import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.parser.common.Token;
 
 /**
  * A definition of an interface aggregate. 
  */
-public class DefinitionInterface extends DefinitionClass {
+public class DefinitionInterface extends DefinitionClass_Common {
 	
 	public DefinitionInterface(Token[] comments, DefSymbol defId, NodeVector<ITemplateParameter> tplParams,
 		Expression tplConstraint, NodeVector<Reference> baseClasses, boolean baseClassesAfterConstraint, 
@@ -34,11 +34,6 @@ public class DefinitionInterface extends DefinitionClass {
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.DEFINITION_INTERFACE;
-	}
-	
-	@Override
-	public void visitChildren(IASTVisitor visitor) {
-		acceptNodeChildren(visitor);
 	}
 	
 	@Override
@@ -55,6 +50,20 @@ public class DefinitionInterface extends DefinitionClass {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Interface;
+	}
+	
+	@Override
+	public DefinitionInterface cloneTemplateElement(final RefTemplateInstance templateRef) {
+		return setParsedFromOther(
+			new DefinitionInterface(comments, clone(defName), null, null, 
+				clone(baseClasses), baseClassesAfterConstraint, clone(aggrBody)) {
+			
+				@Override
+				public String getExtendedName() {
+					return getName() + templateRef.normalizedArgsToString();
+				}
+			
+			}, this);
 	}
 	
 }

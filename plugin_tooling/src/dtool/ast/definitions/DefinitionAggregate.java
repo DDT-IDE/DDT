@@ -75,6 +75,11 @@ public abstract class DefinitionAggregate extends CommonDefinition
 		return tplParams != null;
 	}
 	
+	@Override
+	public NodeVector<ITemplateParameter> getTemplateParameters() {
+		return tplParams;
+	}
+	
 	public ArrayView<ASTNode> getAggregateMembers() {
 		return (aggrBody instanceof DeclBlock) ? 
 				((DeclBlock) aggrBody).nodes :

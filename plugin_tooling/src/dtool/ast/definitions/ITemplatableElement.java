@@ -10,11 +10,22 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import dtool.ast.references.RefTemplateInstance;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.util.NodeVector;
+
 /**
  * Interface for elements that can have template parameters.
  */
-public interface ITemplatableElement {
+public interface ITemplatableElement extends ILanguageElement, IASTNode {
 	
 	boolean isTemplated();
+	
+	/** @return non-null if {@link #isTemplated()} == true. */
+	NodeVector<ITemplateParameter> getTemplateParameters();
+	
+	// XXX: the implementations of this method could probably be improved, coded in a more elegant way.
+	DefUnit cloneTemplateElement(RefTemplateInstance templateRef);
 	
 }

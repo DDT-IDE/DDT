@@ -32,6 +32,7 @@ import dtool.ast.definitions.DefinitionClass;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
+import dtool.ast.definitions.DefinitionClass_Common;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -338,7 +339,7 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	protected static final String OBJECT = "Object";
 	protected static final String[] OBJECT_SUPER_CLASS_LIST = new String[] { OBJECT };
 	
-	protected static String[] processSuperClassNames(DefinitionClass defClass, boolean isInterface) {
+	protected static String[] processSuperClassNames(DefinitionClass_Common defClass, boolean isInterface) {
 		if(defClass.getName().equals("Object"))
 			return DeeSourceElementProvider.EMPTY_STRING;
 		

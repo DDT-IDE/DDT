@@ -12,7 +12,6 @@ package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.tooling.ast.CommonASTNode;
-import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -38,10 +37,6 @@ public class AliasElement extends InstantiatedDefUnit implements IConcreteNamedE
 	@Override
 	public ASTNodeTypes getNodeType() {
 		return ASTNodeTypes.TEMPLATE_ALIAS_PARAM__INSTANCE;
-	}
-	
-	@Override
-	public void visitChildren_rest(IASTVisitor visitor) {
 	}
 	
 	@Override

@@ -18,13 +18,14 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
 
+/**
+ * Instantiated element, usually for template params.
+ */
 public abstract class InstantiatedDefUnit extends DefUnit {
 	
 	public InstantiatedDefUnit(DefSymbol defName) {
 		super(defName.createCopy());
 		assertTrue(defName.isCompleted());
-		setSourceRange(defName.getSourceRange());
-		setParsedStatus();
 	}
 	
 	@Override
@@ -37,10 +38,14 @@ public abstract class InstantiatedDefUnit extends DefUnit {
 	
 	@Override
 	public final void visitChildren(IASTVisitor visitor) {
-		acceptVisitor(visitor, defName);
+		// We dont visit defName as child, because the source range is not consistent with the parent
+		//acceptVisitor(visitor, defName);
 	}
 	
-	public abstract void visitChildren_rest(IASTVisitor visitor);
+	@SuppressWarnings("unused")
+	public final void visitChildren_rest(IASTVisitor visitor) {
+		
+	}
 	
 	
 	/* -----------------  ----------------- */

@@ -16,6 +16,7 @@ import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.parser.common.Token;
 
 /**
@@ -51,6 +52,19 @@ public class DefinitionStruct extends DefinitionAggregate {
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Struct;
+	}
+	
+	@Override
+	public DefUnit cloneTemplateElement(final RefTemplateInstance templateRef) {
+		return setParsedFromOther(
+			new DefinitionStruct(comments, clone(defName), null, null, clone(aggrBody)) {
+			
+			@Override
+			public String getExtendedName() {
+				return getName() + templateRef.normalizedArgsToString();
+			}
+			
+		}, this);
 	}
 	
 }

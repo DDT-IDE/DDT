@@ -26,7 +26,8 @@ import melnorme.utilbox.collections.Collection2;
 
 import org.junit.Test;
 
-import dtool.ast.definitions.DefinitionTemplate;
+import dtool.ast.definitions.DefUnit;
+import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.templates.InstantiatedDefUnit;
@@ -89,11 +90,11 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.context, "");
 	}
 	
-	protected static PickedElement<INamedElement> findTplParamInstance(PickedElement<TemplateInstance> tplInstancePick, 
+	protected static PickedElement<INamedElement> findTplParamInstance(TemplateInstance tplInstance, 
 		String toStringAsCode) {
-		Reference ref = NodeFinderByString.find(tplInstancePick.element, Reference.class, toStringAsCode);
-		INamedElement typeAlias = resolveTarget(ref, tplInstancePick);
-		return picked(typeAlias, tplInstancePick.context);
+		Reference ref = NodeFinderByString.find(tplInstance, Reference.class, toStringAsCode);
+		INamedElement typeAlias = resolveTarget(ref, picked(tplInstance, tplInstance.context));
+		return picked(typeAlias, tplInstance.context);
 	}
 	
 	/* -----------------  ----------------- */
@@ -118,21 +119,21 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		final String TPL_DEF_SAMPLE = "template Tpl(TYPE1) { TYPE1 foo; }";
 		
-		PickedElement<TemplateInstance> tplInstancePick = doTestTemplateInstantiation_____(
+		TemplateInstance tplInstance = doTestTemplateInstantiation_____(
 			TPL_DEF_SAMPLE + "Tpl!(int)/*M*/ _dummy", 
 			
 			"_tests/Tpl!(int)", 
-			"Tpl!(int){ @TYPE1 = /int; }{ TYPE1 foo; }",
+			"@{ @TYPE1 = /int; } template Tpl { TYPE1 foo; }",
 			array("foo")
 		);
 		
-		CompletionScopeLookup search = allElementsSearch(tplInstancePick.element);
-		tplInstancePick.element.performNameLookup(search);
+		CompletionScopeLookup search = allElementsSearch(tplInstance);
+		tplInstance.performNameLookup(search);
 		checkNamedElements(search.getMatchedElements(), array("@TYPE1 = /int;", "$_tests/", "$_tests/Tpl"));
 		
 		// Some error cases
 		testTemplateInstantiation("template Tpl { }; ", "Tpl!()", 
-			"Tpl!() { }"
+			"@{ } template Tpl "
 		);
 		testTemplateInstantiation("template Tpl { }; ", "Tpl!(int)", // An extra parameters 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
@@ -147,11 +148,29 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		test_ThisParam$();
 		test_TupleParam$();
 		
-		testParamOverloads$();
+		// Test template-like aggregates:
+		
+		testTemplateInstantiation("class Tpl() { int bar; }; ", "Tpl!()", 
+			"@{ } class Tpl { int bar; }"
+		);
+		testTemplateInstantiation("struct Tpl(T) { int foo; }; ", "Tpl!(int)", 
+			"@{ @ T = /int;} struct Tpl { int foo;}"
+		);
+		
+		
+		testParamKindOverloads$();
 		test_TemplateOverloads$();
+		
+		// Overload with different kinds of template entities
+		testTemplateInstantiation(
+			"class Tpl() { int bar; }; " + "template Tpl(T) { int foo; }; ", 
+			
+			"Tpl!()", 
+			"@{ } class Tpl { int bar; }"
+		);
 	}
 	
-	protected static PickedElement<TemplateInstance> testTemplateInstantiation(String baseSource,
+	protected static TemplateInstance testTemplateInstantiation(String baseSource,
 		String tplRef, String tplExpectedToStringAsCode) {
 		String source = baseSource + "; " + tplRef + "/*M*/ _dummy;";
 		
@@ -164,7 +183,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		);
 	}
 	
-	protected static PickedElement<TemplateInstance> doTestTemplateInstantiation_____(String source, 
+	protected static TemplateInstance doTestTemplateInstantiation_____(String source, 
 		String expectedLabel, String expectedToStringAsCode, String[] expectedMembers) {
 		PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
 		INamedElement tplRefTarget = resolveTarget(tplRef);
@@ -175,19 +194,20 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			return null;
 		}
 		
-		TemplateInstance tplInstance = assertCast(tplRefTarget, TemplateInstance.class);
-		PickedElement<TemplateInstance> tplInstancePick = picked(tplInstance, tplRef.context);
+		DefUnit instantiatedElement = assertCast(tplRefTarget, DefUnit.class);
+		TemplateInstance tplInstance = assertCast(instantiatedElement.getLexicalParent(), TemplateInstance.class);
 		
-		DefinitionTemplate templateDef = tplInstance.templateDef;
+		ITemplatableElement templateDef = tplInstance.templateDef;
 				
 		assertTrue(tplInstance.getLexicalParent() != null);
-		assertTrue(areEqual(tplInstance.getNameSourceRangeOrNull(), templateDef.getNameSourceRangeOrNull()));
+		assertTrue(areEqual(instantiatedElement.getNameSourceRangeOrNull(), 
+			((DefUnit) templateDef).getNameSourceRangeOrNull()));
 //		assertTrue(tplInstance.getOwnerElement() == tplInstance.templateDef.getParent());
 		assertTrue(tplInstance.getSemanticContainerKey() == templateDef.getSemanticContainerKey());
 		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context); /*FIXME: BUG here*/
 		
 		if(expectedLabel != null) {
-			String elementLabel = NamedElementUtil.getElementTypedLabel(tplInstance, true);
+			String elementLabel = NamedElementUtil.getElementTypedLabel(instantiatedElement, true);
 			assertAreEqual(expectedLabel, elementLabel);
 		}
 		
@@ -195,13 +215,13 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		ASTSourceRangeChecker.checkConsistency(tplInstance);
 		
-		test_NamedElement(tplInstancePick, 
+		test_NamedElement(picked(tplInstance.instantiatedElement, tplRef.context), 
 			null, 
-			expectNotAValue(tplInstance),
+			expectNotAValue(tplInstance.instantiatedElement),
 			expectedMembers
 		);
 		
-		return tplInstancePick;
+		return tplInstance;
 	}
 
 	protected static void checkSourceEquivalence(String expectedToStringAsCode, ASTNode node) {
@@ -288,26 +308,23 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		}
 	}
 	
-	protected static PickedElement<TemplateInstance> testTemplateArgumentInstantiation(String baseSource, 
+	protected static void testTemplateArgumentInstantiation(String baseSource, 
 		String tplRef, String argExpectedToStringAsCode, String argConcreteTarget, String argType) {
 		
 		if(argExpectedToStringAsCode == null) {
 			testTemplateInstantiation(baseSource, 
 				tplRef, RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE);
-			return null;
+			return;
 		}
 		
-		PickedElement<TemplateInstance> tplInstancePick = testTemplateInstantiation(baseSource,
-			tplRef, null);
+		TemplateInstance tplInstance = testTemplateInstantiation(baseSource, tplRef, null);
 		
-		PickedElement<INamedElement> tplArgInstance = findTplParamInstance(tplInstancePick, "ARG");
+		PickedElement<INamedElement> tplArgInstance = findTplParamInstance(tplInstance, "ARG");
 		
 		assertTrue(tplArgInstance.element instanceof InstantiatedDefUnit);
 		checkSourceEquivalence(argExpectedToStringAsCode, (ASTNode) tplArgInstance.element);
 		
 		test_NamedElement(tplArgInstance, argConcreteTarget, argType, null);
-		
-		return tplInstancePick;
 	}
 	
 	
@@ -337,7 +354,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		// Test default param
 		testTemplateInstantiation("template Tpl(ARG = int) { ARG foo; }", "Tpl!()", 
 			
-			"Tpl!(){ @ARG = /int; }{ ARG foo; }"
+			"@{ @ARG = /int; } template Tpl { ARG foo; }"
 		);
 	}
 	
@@ -414,7 +431,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		// Test default param
 		testTemplateInstantiation("template Tpl(alias ARG = 123) {  }", "Tpl!()", 
 			
-			"Tpl!(){ @value_alias ARG = 123; }{  }"
+			"@{ @value_alias ARG = 123; } template Tpl{  }"
 		);
 		
 	}
@@ -455,12 +472,12 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		// Test tuple with multiple sizes
 		testTemplateInstantiation("template Tpl(ARG...) {  }", "Tpl!()", 
 			
-			"Tpl!(){ @ ARG... = (); }{  }"
+			"@{ @ ARG... = (); } template Tpl{  }"
 		);
 		
 		testTemplateInstantiation("template Tpl(ARG...) {  }", "Tpl!(int,123)", 
 			
-			"Tpl!(int, 123){ @ ARG... = (int,123); }{  }"
+			"@{ @ ARG... = (int,123); } template Tpl{  }"
 		);
 	}
 	
@@ -487,7 +504,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	
 	/* -----------------  ----------------- */
 	
-	protected void testParamOverloads$() {
+	protected void testParamKindOverloads$() {
 		
 		String TPL_T = "template Tpl(ARG) { void T; }";
 		String TPL_Tint = "template Tpl(ARG : int)  { void Tint; }";
@@ -501,20 +518,20 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		testTemplateInstantiation(TPL_T + TPL_Tint, "Tpl!(int)",
 			
-			"Tpl!(int){ @ARG = /int; }{ void Tint; }"
+			"@{ @ARG = /int; } template Tpl{ void Tint; }"
 		);
 		// Multiple template matches should be an error, but match first tpl
 		testTemplateInstantiation(TPL_T + TPL_T, "Tpl!(int)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void T; }"
+			"@{ @ARG = /int; } template Tpl{ void T; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint, "Tpl!(bool)", 
 			
-			"Tpl!(bool){ @ARG = /bool; }{ void T; }"
+			"@{ @ARG = /bool; } template Tpl{ void T; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_Tbool, "Tpl!(int)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void Tint; }"
+			"@{ @ARG = /int; } template Tpl{ void Tint; }"
 		);
 		// Match none:
 		testTemplateInstantiation(TPL_Tint + TPL_Tbool, "Tpl!(float)", 
@@ -531,18 +548,18 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_VALUEint + TPL_ALIAS, "Tpl!(123)", 
 			
-			"Tpl!(123){ @int ARG = 123; }{ void valueInt; }"
+			"@{ @int ARG = 123; } template Tpl { void valueInt; }"
 		);
 		testTemplateInstantiation(TPL_T + TPL_Tint + TPL_VALUEint + TPL_ALIAS, "Tpl!(true)", 
 			
-			"Tpl!(true){ @value_alias ARG = true; }{ void tAlias; }"
+			"@{ @value_alias ARG = true; } template Tpl { void tAlias; }"
 		);
 		
 		
 		testTemplateInstantiation(
 			TPL_T + TPL_Tint + TPL_VALUEint + TPL_TUPLE, "Tpl!(int)", 
 			
-			"Tpl!(int){ @ARG = /int; }{ void Tint; }"
+			"@{ @ARG = /int; } template Tpl { void Tint; }"
 		);
 	}
 	
@@ -553,7 +570,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		final String TPL_DEF_0P = "template Tpl() { int A; }";
 		
 		testTemplateInstantiation(TPL_DEF_0P, "Tpl!()", 
-			"Tpl!(){  }{ int A; }"
+			"@{  } template Tpl { int A; }"
 		);
 		testTemplateInstantiation(TPL_DEF_0P, "Tpl!(int)", 
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
@@ -581,33 +598,33 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			RefTemplateInstanceSemantics.ERROR__TPL_REF_MATCHED_NONE
 		);
 		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!(int,char)", 
-			"Tpl!(int, char){ @ARG = /int; @ARG = /char; }{ int C; }"
+			"@{ @ARG = /int; @ARG = /char; } template Tpl { int C; }"
 		);
 		testTemplateInstantiation(TPL_DEF_1P_plus, "Tpl!(char)", 
-			"Tpl!(char) { @ARG = /char; @ARG = /bool; } { int C; }" 
+			"@ { @ARG = /char; @ARG = /bool; } template Tpl { int C; }" 
 		);
 		
 		/* ----------------- test param number overloads ----------------- */
 		
 		testTemplateInstantiation(TPL_DEF_0P + TPL_DEF_1P, "Tpl!()", 
-			"Tpl!(){  }{ int A; }"
+			"@{  } template Tpl { int A; }"
 		);
 		testTemplateInstantiation(TPL_DEF_0P + TPL_DEF_1P, "Tpl!(int)", 
-			"Tpl!(int){ @ARG = /int; }{ int B; }"
+			"@{ @ARG = /int; } template Tpl { int B; }"
 		);
 		
 		testTemplateInstantiation(
-			"template Tpl(T, int NUM) { int A; } " +
+			"class Tpl(T, int NUM) { int A; } " +
 			"template Tpl(T, T2) { int B; } "	, 
 			"Tpl!(int,123)", 
 			
-			"Tpl!(int,123){ @T = /int; @ int NUM = 123; }{ int A; }"
+			"@{ @T = /int; @ int NUM = 123; } class Tpl { int A; }"
 		);
 		
 		
 		// Matches multiples
 		testTemplateInstantiation(TPL_DEF_1P_plus + TPL_DEF_1P, "Tpl!(char)", 
-			"Tpl!(char) { @ARG = /char; @ARG = /bool; } { int C; }" 
+			"@{ @ARG = /char; @ARG = /bool; } template Tpl { int C; }" 
 		);
 		
 		
@@ -620,7 +637,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		);
 		
 		testTemplateInstantiation(TPL_DEF_1P_Tuple + TPL_DEF_0P, "Tpl!(int)", 
-			"Tpl!(int){ @ ARG1 = /int; @ ARGT... = (); }{ int ARG1_Tuple; }"
+			"@{ @ ARG1 = /int; @ ARGT... = (); } template Tpl { int ARG1_Tuple; }"
 		);
 		testTemplateInstantiation(TPL_DEF_1P_Tuple + TPL_DEF_0P + TPL_DEF_1P, "Tpl!(int)", 
 			null

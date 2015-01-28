@@ -11,10 +11,9 @@
 package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.util.ListIterator;
-
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.INamedElementNode;
+import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.ErrorElement.InvalidRefErrorElement;
@@ -28,8 +27,8 @@ import melnorme.lang.tooling.symbols.ITypeNamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.collections.Indexable;
-import dtool.ast.definitions.DefinitionTemplate;
 import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.ast.definitions.TemplateTupleParam;
 import dtool.ast.expressions.Resolvable;
@@ -54,16 +53,16 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 	protected INamedElement createTemplateInstance() {
 		INamedElement resolvedTemplate = refTemplateInstance.tplRef.getSemantics(context).resolveTargetElement_();
 		
-		final ArrayList2<DefinitionTemplate> templates = new ArrayList2<>();
+		final ArrayList2<ITemplatableElement> templates = new ArrayList2<>();
 		
-		if(resolvedTemplate instanceof DefinitionTemplate) {
-			DefinitionTemplate defTemplate = (DefinitionTemplate) resolvedTemplate;
+		if(isTemplate(resolvedTemplate)) {
+			ITemplatableElement defTemplate = (ITemplatableElement) resolvedTemplate;
 			templates.add(defTemplate);
 		} else if(resolvedTemplate instanceof OverloadedNamedElement) {
 			OverloadedNamedElement overload = (OverloadedNamedElement) resolvedTemplate;
 			for (INamedElement overloadElement : overload.getOverloadedElements()) {
-				if(overloadElement instanceof DefinitionTemplate) {
-					DefinitionTemplate defTemplate = (DefinitionTemplate) overloadElement;
+				if(isTemplate(overloadElement)) {
+					ITemplatableElement defTemplate = (ITemplatableElement) overloadElement;
 					templates.add(defTemplate);
 				} else {
 					return overload;
@@ -79,11 +78,19 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return instantiateTemplate(templates);
 	}
 	
-	protected INamedElement instantiateTemplate(final ArrayList2<DefinitionTemplate> originalTemplates) {
+	protected static boolean isTemplate(INamedElement resolvedTemplate) {
+		if(resolvedTemplate instanceof ITemplatableElement) {
+			ITemplatableElement templatableElement = (ITemplatableElement) resolvedTemplate;
+			return templatableElement.isTemplated();
+		}
+		return false;
+	}
+	
+	protected INamedElement instantiateTemplate(final ArrayList2<ITemplatableElement> originalTemplates) {
 		
 		Indexable<Resolvable> tplArgs = refTemplateInstance.getEffectiveArguments();
 		
-		ArrayList2<DefinitionTemplate> matchingTemplates = originalTemplates;
+		ArrayList2<ITemplatableElement> matchingTemplates = originalTemplates;
 		
 		int tplArgsSize = tplArgs.size();
 		for (int ix = 0; ix < tplArgsSize; ix++) {
@@ -92,17 +99,17 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			
 			TplMatchLevel matchLevel = TplMatchLevel.NONE;
 			
-			ArrayList2<DefinitionTemplate> templates = matchingTemplates;
+			ArrayList2<ITemplatableElement> templates = matchingTemplates;
 			matchingTemplates = new ArrayList2<>();
 			
-			for (ListIterator<DefinitionTemplate> iterator = templates.listIterator(); iterator.hasNext(); ) {
-				DefinitionTemplate defTemplate = iterator.next();
+			for (ITemplatableElement defTemplate : templates) {
+				if(defTemplate.isTemplated() == false) 
+					continue;
 				
 				TplMatchLevel newMatchLevel = getMatchLevel(defTemplate, ix, tplArg, context);
 				
-				if(newMatchLevel == TplMatchLevel.NONE) {
+				if(newMatchLevel == TplMatchLevel.NONE)
 					continue;
-				}
 				
 				if(newMatchLevel.isHigherPriority(matchLevel)) {
 					matchLevel = newMatchLevel;
@@ -115,11 +122,11 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		}
 		
 		
-		ArrayList2<DefinitionTemplate> templates = matchingTemplates;
+		ArrayList2<ITemplatableElement> templates = matchingTemplates;
 		matchingTemplates = new ArrayList2<>();
 		
 		// Match remaining templates against default args.
-		for (DefinitionTemplate defTemplate : templates) {
+		for (ITemplatableElement defTemplate : templates) {
 			if(canMatchRemainingParameters(tplArgsSize, defTemplate)) {
 				matchingTemplates.add(defTemplate);
 			}
@@ -132,14 +139,19 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 			// we ignore this error and just use the first match as the effective match.
 		}
 		
-		DefinitionTemplate defTemplate = matchingTemplates.get(0);
+		ITemplatableElement defTemplate = matchingTemplates.get(0);
 		
-		return createTemplateInstance(defTemplate);
+		TemplateInstance templateInstance = createTemplateInstance(defTemplate);
+		if(templateInstance == null) {
+			return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, refTemplateInstance, null);
+		}
+		return templateInstance.instantiatedElement;
 		
 	}
 	
-	protected boolean canMatchRemainingParameters(int tplArgsSize, DefinitionTemplate defTemplate) {
-		for (int ix = tplArgsSize; ix < defTemplate.getEffectiveParameters().size(); ix++) {
+	protected boolean canMatchRemainingParameters(int tplArgsSize, ITemplatableElement defTemplate) {
+		
+		for (int ix = tplArgsSize; ix < defTemplate.getTemplateParameters().size(); ix++) {
 			
 			TplMatchLevel newMatchLevel = getMatchLevel(defTemplate, ix, null, context);
 			
@@ -150,9 +162,10 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return true;
 	}
 	
-	protected static TplMatchLevel getMatchLevel(DefinitionTemplate defTemplate, int paramIndex, Resolvable tplArg, 
+	protected static TplMatchLevel getMatchLevel(ITemplatableElement defTemplate, int paramIndex, Resolvable tplArg, 
 			ISemanticContext context) {
-		ArrayView<ITemplateParameter> tplParams = defTemplate.getEffectiveParameters();
+		assertTrue(defTemplate.isTemplated());
+		ArrayView<ITemplateParameter> tplParams = defTemplate.getTemplateParameters();
 		
 		if(tplParams.size() <= paramIndex) {
 			
@@ -170,23 +183,24 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		return tplParam.getParameterAnalyser().getMatchPriority(tplArg, context);
 	}
 	
-	protected INamedElement createTemplateInstance(DefinitionTemplate templateDef) {
+	protected TemplateInstance createTemplateInstance(ITemplatableElement templateDef) {
 		RefTemplateInstance templateRef = refTemplateInstance;
 		
 		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
+		NodeVector<ITemplateParameter> templateParams = templateDef.getTemplateParameters();
 		
-		int paramSize = templateDef.getEffectiveParameters().size();
+		int paramSize = templateParams.size();
 		
 		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();
 		
 		for (int ix = 0; ix < paramSize; ix++) {
-			ITemplateParameter tplParameter = templateDef.getEffectiveParameters().get(ix);
+			ITemplateParameter tplParameter = templateParams.get(ix);
 			
 			INamedElementNode templateArgument = tplParameter.getParameterAnalyser().createTemplateArgument(
 				tplArgs, ix, context);
 			
 			if(templateArgument == null) {
-				return new ErrorElement(ERROR__TPL_REF_MATCHED_NONE, templateRef, null);
+				return null;
 			}
 			
 			instantiatedArgs.add(templateArgument);

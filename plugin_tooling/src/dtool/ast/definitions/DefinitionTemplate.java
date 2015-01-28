@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
@@ -21,11 +22,11 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
 import dtool.ast.expressions.MissingParenthesesExpression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IStatement;
 import dtool.engine.analysis.templates.DefTemplateSemantics;
 import dtool.parser.common.Token;
@@ -99,10 +100,6 @@ public class DefinitionTemplate extends CommonDefinition
 		}
 	}
 	
-	public ArrayView<ITemplateParameter> getEffectiveParameters() {
-		return nonNull(tplParams);
-	}
-	
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Template;
@@ -111,6 +108,39 @@ public class DefinitionTemplate extends CommonDefinition
 	@Override
 	public boolean isTemplated() {
 		return true;
+	}
+	
+	@Override
+	public NodeVector<ITemplateParameter> getTemplateParameters() {
+		return getEffectiveParameters();
+	}
+	
+	public NodeVector<ITemplateParameter> getEffectiveParameters() {
+		return NodeVector.nullAsEmpty(tplParams);
+	}
+	
+	@Override
+	public DefUnit cloneTemplateElement(RefTemplateInstance templateRef) {
+		return setParsedFromOther(
+			new DefinitionTemplate_Instantiated(templateRef, comments, isMixin, clone(defName), clone(decls)), 
+			this);
+	}
+	
+	public static class DefinitionTemplate_Instantiated extends DefinitionTemplate {
+		
+		protected final RefTemplateInstance templateRef;
+		
+		public DefinitionTemplate_Instantiated(RefTemplateInstance templateRef, Token[] comments, boolean isMixin, 
+				DefSymbol defName, DeclBlock decls) {
+			super(comments, isMixin, defName, null, null, decls);
+			this.templateRef = assertNotNull(templateRef);
+		}
+		
+		@Override
+		public String getExtendedName() {
+			return getName() + templateRef.normalizedArgsToString();
+		}
+		
 	}
 	
 	/* -----------------  ----------------- */

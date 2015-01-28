@@ -59,6 +59,7 @@ import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
+import dtool.ast.definitions.DefinitionClass_Common;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -1406,7 +1407,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parseDefinition_ClassOrInterface(defStartInfo).upcastTypeParam();
 	}
 	
-	protected NodeResult<? extends DefinitionClass> parseDefinition_ClassOrInterface(
+	protected NodeResult<? extends DefinitionClass_Common> parseDefinition_ClassOrInterface(
 		DefinitionStartInfo defStartInfo) {
 		
 		AggregateDefinitionParse adp = new AggregateDefinitionParse(defStartInfo);

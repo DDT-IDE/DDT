@@ -32,10 +32,6 @@ public class NodeVector<E extends IASTNode> extends ArrayView<E> {
 		this.hasEndingSeparator = hasEndingSeparator;
 	}
 	
-	public static <T extends IASTNode> NodeVector<T> castTypeParameter(NodeVector<?> nodeVector) {
-		return CoreUtil.<NodeVector<T>>blindCast(nodeVector);
-	}
-	
 	public NodeVector<E> cloneTree() {
 		E[] newArray = ArrayUtil.createWithSameComponentType(array.length, array); 
 		
@@ -50,5 +46,17 @@ public class NodeVector<E extends IASTNode> extends ArrayView<E> {
 	protected E cloneNode(E node) {
 		return node == null ? null : (E) node.cloneTree();
 	}
+	
+	/* -----------------  ----------------- */
+	
+	public static <T extends IASTNode> NodeVector<T> castTypeParameter(NodeVector<?> nodeVector) {
+		return CoreUtil.<NodeVector<T>>blindCast(nodeVector);
+	}
+	
+	public static <T extends IASTNode> NodeVector<T > nullAsEmpty(NodeVector<T> vector) {
+		return vector != null ? vector : NodeVector.<T>castTypeParameter(EMPTY_NODEVIEW);
+	}
+	
+	public static final NodeVector<?> EMPTY_NODEVIEW = new NodeVector<>(new IASTNode[0]);
 	
 }

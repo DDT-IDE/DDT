@@ -22,6 +22,7 @@ import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.IteratorUtil;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
 
@@ -80,6 +81,16 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	@Override
 	public boolean isTemplated() {
 		return tplParams != null;
+	}
+	
+	@Override
+	public NodeVector<ITemplateParameter> getTemplateParameters() {
+		return tplParams;
+	}
+	
+	@Override
+	public DefUnit cloneTemplateElement(RefTemplateInstance templateRef) {
+		return clone(this); /*FIXME: BUG here*/
 	}
 	
 	/* -----------------  ----------------- */
