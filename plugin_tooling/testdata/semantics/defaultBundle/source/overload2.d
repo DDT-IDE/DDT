@@ -1,0 +1,3 @@
+
+bool xxx;
+int xxx; 

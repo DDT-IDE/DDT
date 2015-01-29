@@ -179,15 +179,17 @@ public abstract class CommonScopeLookup {
 			return null;
 		searchedScopes.add(scope);
 		
-		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
-		return doResolveScopeSymbols(scopeTraverser);
+		return doResolveScopeSymbols(scope);
 	}
 	
-	protected SymbolTable doResolveScopeSymbols(ScopeTraverser scopeTraverser) {
-		SymbolTable names = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, false);
+	protected SymbolTable doResolveScopeSymbols(IScopeElement scope) {
+		ScopeTraverser scopeTraverser = scope.getScopeTraverser();
 		
+		SymbolTable names = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, false);
 		SymbolTable importedNames = scopeTraverser.evaluateScope(new ScopeNameResolution(this), refOffset, true);
 		names.addVisibleSymbols(importedNames);
+		
+		names.setCompleted();
 		return names;
 	}
 	

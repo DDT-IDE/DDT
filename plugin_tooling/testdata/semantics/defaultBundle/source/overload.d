@@ -1,0 +1,3 @@
+
+void xxx;
+int xxx; 

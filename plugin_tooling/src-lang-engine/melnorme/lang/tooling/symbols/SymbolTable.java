@@ -94,19 +94,23 @@ public class SymbolTable {
 			
 			if(existingEntry instanceof OverloadedNamedElement) {
 				overloadElement = (OverloadedNamedElement) existingEntry;
-			} else {
-				// Give priority to ModuleProxy element (note: this isn't entirely like DMD behavior
-				if(newElement instanceof ModuleProxy && existingEntry instanceof PackageNamespace) {
-					doAddEntryToMap(name, newElement);
+				if(!overloadElement.isCompleted()) {
+					overloadElement.addElement(newElement);
 					return;
 				}
-				if(newElement instanceof PackageNamespace && existingEntry instanceof ModuleProxy) {
-					return;
-				}
-				
-				overloadElement = new OverloadedNamedElement(existingEntry);
-				doAddEntryToMap(name, overloadElement);
 			}
+			
+			// Give priority to ModuleProxy element (note: this isn't entirely like DMD behavior
+			if(newElement instanceof ModuleProxy && existingEntry instanceof PackageNamespace) {
+				doAddEntryToMap(name, newElement);
+				return;
+			}
+			if(newElement instanceof PackageNamespace && existingEntry instanceof ModuleProxy) {
+				return;
+			}
+			
+			overloadElement = new OverloadedNamedElement(existingEntry);
+			doAddEntryToMap(name, overloadElement);
 			
 			overloadElement.addElement(newElement);
 		}
@@ -116,9 +120,9 @@ public class SymbolTable {
 		map.put(name, newElement);
 	}
 	
-	public void addVisibleSymbols(SymbolTable symbolTable) {
+	public void addVisibleSymbols(SymbolTable otherSymbolTable) {
 		
-		for (Entry<String, INamedElement> nameEntry : symbolTable.getEntries()) {
+		for (Entry<String, INamedElement> nameEntry : otherSymbolTable.getEntries()) {
 			String matchedName = nameEntry.getKey();
 			INamedElement matchedElement = nameEntry.getValue();
 			
@@ -126,16 +130,23 @@ public class SymbolTable {
 			if(existingSymbol == null || 
 					(existingSymbol instanceof PackageNamespace && matchedElement instanceof PackageNamespace)) {
 				
-				if(matchedElement instanceof OverloadedNamedElement) {
-					OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) matchedElement;
-					overloadedNamedElement.setCompleted(); /*FIXME: BUG here*/
-				}
-				
 				addSymbol(matchedElement);
 			}
 		}
 		
-		symbolTable.map.clear(); // symbolTable can no longer be used
+		otherSymbolTable.map.clear(); // otherSymbolTable can no longer be used
+	}
+	
+	public void setCompleted() {
+		for (INamedElement namedElement : map.getValuesView()) {
+			if(namedElement instanceof OverloadedNamedElement) {
+				OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) namedElement;
+				
+				if(!overloadedNamedElement.isCompleted()) {
+					overloadedNamedElement.setCompleted();
+				}
+			}
+		}
 	}
 	
 }

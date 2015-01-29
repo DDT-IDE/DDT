@@ -84,6 +84,12 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
+	protected void doSetCompleted() {
+		namedElementsTable.setCompleted();
+		doCheckCompleted(getNamespaceElements());
+	}
+	
+	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Package;
 	}
@@ -116,11 +122,6 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	@Override
 	public String toString() {
 		return "PNamespace[" + getFullyQualifiedName() + "]";
-	}
-	
-	@Override
-	protected void doSetCompleted() {
-		doCheckCompleted(getNamespaceElements());
 	}
 	
 	/* -----------------  ----------------- */
