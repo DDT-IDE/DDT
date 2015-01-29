@@ -13,11 +13,10 @@ package melnorme.lang.ide.core.utils;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-
+import melnorme.lang.ide.core.LangCore;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -78,6 +77,11 @@ public class ResourceUtils {
 	
 	public static void writeStringToFile(IFile file, String contents, Charset charset) throws CoreException {
 		writeToFile(file, new ByteArrayInputStream(contents.getBytes(charset)));
+	}
+	
+	public static void createFolder(IFolder folder, boolean force, IProgressMonitor monitor) 
+			throws CoreException {
+		createFolder(folder, force, true, monitor);
 	}
 	
 	public static void createFolder(IFolder folder, boolean force, boolean local, IProgressMonitor monitor) 
@@ -145,13 +149,12 @@ public class ResourceUtils {
 		}
 	}
 	
-	public static File getLocation(IProject project) {
-		if(project == null)
-			return null;
+	public static java.nio.file.Path getProjectLocation(IProject project) throws CoreException {
 		IPath location = project.getLocation();
-		if(location == null)
-			return null;
-		return location.toFile();
+		if(location == null) {
+			throw LangCore.createCoreException("Invalid project location: " + project.getLocationURI(), null);
+		}
+		return location.toFile().toPath();
 	}
 	
 }
