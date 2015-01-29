@@ -313,7 +313,7 @@ public class SemanticManager {
 		BundlePath bundlePath = BundlePath.findBundleForPath(filePath);
 		
 		if(compilerInstall == null) {
-			compilerInstall =  MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
+			compilerInstall = MissingStandardLibraryResolution.NULL_COMPILER_INSTALL;
 		}
 		ManifestUpdateOptions options = new ManifestUpdateOptions(dubPath);
 		

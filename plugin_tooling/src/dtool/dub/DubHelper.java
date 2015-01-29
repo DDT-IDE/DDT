@@ -73,6 +73,11 @@ public class DubHelper {
 	public static DubBundleDescription parseDubDescribe(BundlePath bundlePath, ExternalProcessResult processResult) {
 		String describeOutput = processResult.stdout.toString(StringUtil.UTF8);
 		
+		if(processResult.exitValue != 0) {
+			/*FIXME: BUG here*/
+//			assertFail();
+		}
+		
 		// Trim leading characters. 
 		// They shouldn't be there, but sometimes dub outputs non JSON text if downloading packages
 		describeOutput = StringUtil.substringFromMatch('{', describeOutput);

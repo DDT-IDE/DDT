@@ -1,0 +1,6 @@
+{
+	"name": "tpl_sample_1",
+	"dependencies": {
+	},
+	"targetPath": ".dub"
+}

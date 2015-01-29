@@ -189,6 +189,8 @@ public class RefTemplateInstanceSemantics extends ReferenceSemantics {
 		Indexable<Resolvable> tplArgs = templateRef.getEffectiveArguments();
 		NodeVector<ITemplateParameter> templateParams = templateDef.getTemplateParameters();
 		
+		// TODO: cache for template instance
+		
 		int paramSize = templateParams.size();
 		
 		ArrayList2<INamedElementNode> instantiatedArgs = new ArrayList2<>();

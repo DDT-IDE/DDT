@@ -31,18 +31,18 @@ import dtool.ast.references.RefTemplateInstance;
 public class TemplateInstance extends ASTNode implements IScopeElement {
 	
 	public final RefTemplateInstance templateRef;
-	public final ISemanticContext context;
+	public final ISemanticContext refContext;
 	public final ITemplatableElement templateDef;
 	
 	public final Indexable<INamedElementNode> tplArguments;
 	
 	public final DefUnit instantiatedElement;
 	
-	public TemplateInstance(RefTemplateInstance templateRef, ISemanticContext context, 
+	public TemplateInstance(RefTemplateInstance templateRef, ISemanticContext refContext, 
 			ITemplatableElement templateDef, Indexable<INamedElementNode> tplArguments) {
 		super();
 		this.templateRef = assertNotNull(templateRef);
-		this.context = context;
+		this.refContext = refContext;
 		this.templateDef = assertNotNull(templateDef);
 		assertTrue(templateDef instanceof ASTNode);
 		

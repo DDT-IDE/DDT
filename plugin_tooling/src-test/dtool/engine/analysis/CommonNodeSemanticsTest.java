@@ -41,9 +41,9 @@ import dtool.parser.SourceEquivalenceChecker;
 
 public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	
-	protected static final String DEFAULT_ModuleName = "_tests";
-	
 	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	
+	protected static final String DEFAULT_ModuleName = "_tests";
 	public static final Location DEFAULT_TestsBundle_Source = loc(DEFAULT_TestsBundle, "source");
 	public static final BundlePath TESTER_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "tester");
 	
@@ -85,9 +85,9 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 		// make sure we reparse, even if source is the same. 
 		defaultSemMgr.getParseCache().discardEntry(filePath);
 		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filePath, source);
-		ResolvedModule result = getDefaultTestsModule();
-		assertTrue(result.getSource().equals(source));
-		return result;
+		ResolvedModule updatedModule = getUpdatedModule(Location.create_fromValid(filePath));
+		assertTrue(updatedModule.getSource().equals(source));
+		return updatedModule;
 	}
 	
 	protected static ResolvedModule parseModule_(String source) {

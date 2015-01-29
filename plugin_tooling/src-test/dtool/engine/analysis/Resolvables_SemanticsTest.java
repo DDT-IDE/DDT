@@ -34,7 +34,6 @@ import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {
 	
 	public final BundlePath LIB_FOO = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_foo");
-	public final BundlePath LIB_TPL = bundlePath(SEMANTICS_TEST_BUNDLES, "lib_tpl");
 	
 	protected static final String NOT_FOUND_SpecialMarker = "not_found";
 	

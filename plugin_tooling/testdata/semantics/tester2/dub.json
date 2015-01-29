@@ -1,7 +1,8 @@
 {
-	"name": "lib_tpl",
+	"name": "tester2",
 	"dependencies": {
 		"lib_foo" : "~master",
+		"tpl_sample_1" : "~master"
 	},
 	"targetPath": ".dub"
 }

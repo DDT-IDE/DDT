@@ -13,6 +13,7 @@ package dtool.engine.analysis;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
+import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
@@ -30,6 +31,8 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
+import dtool.dub.BundlePath;
+import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.InstantiatedDefUnit;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
 import dtool.engine.analysis.templates.TemplateInstance;
@@ -86,15 +89,11 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return ref.resolveTargetElement(other.context);
 	}
 	
-	protected CompletionScopeLookup allElementsSearch(TemplateInstance tplInstance) {
-		return new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.context, "");
-	}
-	
 	protected static PickedElement<INamedElement> findTplParamInstance(TemplateInstance tplInstance, 
 		String toStringAsCode) {
 		Reference ref = NodeFinderByString.find(tplInstance, Reference.class, toStringAsCode);
-		INamedElement typeAlias = resolveTarget(ref, picked(tplInstance, tplInstance.context));
-		return picked(typeAlias, tplInstance.context);
+		INamedElement typeAlias = resolveTarget(ref, picked(tplInstance, tplInstance.refContext));
+		return picked(typeAlias, tplInstance.refContext);
 	}
 	
 	/* -----------------  ----------------- */
@@ -119,7 +118,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		final String TPL_DEF_SAMPLE = "template Tpl(TYPE1) { TYPE1 foo; }";
 		
-		TemplateInstance tplInstance = doTestTemplateInstantiation_____(
+		TemplateInstance tplInstance = doTestTemplateInstantiation(
 			TPL_DEF_SAMPLE + "Tpl!(int)/*M*/ _dummy", 
 			
 			DEFAULT_ModuleName + "/Tpl!(int)", 
@@ -128,7 +127,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			array("foo")
 		);
 		
-		CompletionScopeLookup search = allElementsSearch(tplInstance);
+		CompletionScopeLookup search = new CompletionScopeLookup(tplInstance.getStartPos(), tplInstance.refContext, "");
 		tplInstance.performNameLookup(search);
 		checkNamedElements(search.getMatchedElements(), array("@TYPE1 = /int;", "$_tests/", "$_tests/Tpl"));
 		
@@ -159,7 +158,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		);
 		
 		
-		doTestTemplateInstantiation_____(
+		doTestTemplateInstantiation(
 			sourcePlusRef("bool Tpl(T) (T myParam) { return myParam; }; ", "Tpl!(int)"),
 			
 			DEFAULT_ModuleName + "/" + "Tpl!(int)(T myParam)",
@@ -170,20 +169,13 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		testParamKindOverloads$();
 		test_TemplateOverloads$();
-		
-		// Overload with different kinds of template entities
-		testTemplateInstantiation(
-			"class Tpl() { int bar; }; " + "template Tpl(T) { int foo; }; ", 
-			
-			"Tpl!()", 
-			"@{ } class Tpl { int bar; }"
-		);
+		test_templateContextAndCaching$();
 	}
 	
 	protected static TemplateInstance testTemplateInstantiation(String baseSource,
 		String tplRef, String tplExpectedToStringAsCode) {
 		
-		return doTestTemplateInstantiation_____(
+		return doTestTemplateInstantiation(
 			sourcePlusRef(baseSource, tplRef),
 			
 			DEFAULT_ModuleName + "/" + tplRef,
@@ -197,9 +189,16 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		return baseSource + "; " + tplRef + "/*M*/ _dummy;";
 	}
 	
-	protected static TemplateInstance doTestTemplateInstantiation_____(String source, 
+	protected static TemplateInstance doTestTemplateInstantiation(String source, 
 		String expectedLabel, String expectedToStringAsCode, String expectedTypeLabel, String[] expectedMembers) {
 		PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
+		return doTestTemplateInstantiation_____(tplRef, expectedLabel, expectedToStringAsCode,
+			expectedTypeLabel, expectedMembers);
+	}
+	
+	protected static TemplateInstance doTestTemplateInstantiation_____(PickedElement<RefTemplateInstance> tplRef,
+			String expectedLabel, String expectedToStringAsCode, String expectedTypeLabel,
+			String[] expectedMembers) {
 		INamedElement tplRefTarget = resolveTarget(tplRef);
 		
 		if(expectedToStringAsCode != null &&
@@ -218,7 +217,9 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			((DefUnit) templateDef).getNameSourceRangeOrNull()));
 //		assertTrue(tplInstance.getOwnerElement() == tplInstance.templateDef.getParent());
 		assertTrue(tplInstance.getSemanticContainerKey() == templateDef.getSemanticContainerKey());
-		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == tplRef.context); /*FIXME: BUG here*/
+		assertTrue(tplInstance.refContext == tplRef.context);
+		assertTrue(tplInstance.getElementSemanticContext(tplRef.context) == 
+				templateDef.getElementSemanticContext(tplRef.context));
 		
 		if(expectedLabel != null) {
 			String elementLabel = NamedElementUtil.getElementTypedLabel(instantiatedElement, true);
@@ -229,7 +230,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		ASTSourceRangeChecker.checkConsistency(tplInstance);
 		
-		test_NamedElement(picked(tplInstance.instantiatedElement, tplRef.context), 
+		test_NamedElement(picked2(tplInstance.instantiatedElement, tplRef.context), 
 			null, 
 			expectedTypeLabel,
 			expectedMembers
@@ -660,6 +661,38 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 			null
 		);
 		
+		
+		/* -----------------  ----------------- */
+		
+		// Overload with different kinds of template entities
+		testTemplateInstantiation(
+			"class Tpl() { int bar; }; " + "template Tpl(T) { int foo; }; ", 
+			
+			"Tpl!()", 
+			"@{ } class Tpl { int bar; }"
+		);
+
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static final BundlePath DEFAULT_TestsBundle = bundlePath(SEMANTICS_TEST_BUNDLES, "defaultBundle");
+	protected static final Path TESTER2 = loc(SEMANTICS_TEST_BUNDLES, "tester2/source/_tester.d").path;
+	
+	protected void test_templateContextAndCaching$() {
+		
+		ResolvedModule resModule = parseModule_(
+			"import lib_foo.mod; import tpl_sampleA;  " + "Tpl_A!(Foo)/*M*/ _dummy;", 
+			TESTER2);
+		
+		doTestTemplateInstantiation_____(pickElement(resModule, "/*M*/", RefTemplateInstance.class),
+			
+			"tpl_sampleA/" + "Tpl_A!(Foo)", 
+			"@{ @ TYPE = lib_foo.mod/Foo; } template Tpl_A { TYPE foo; }",
+			expectNotAValue("Tpl_A!(Foo)"), 
+			null);
+			
+		// TODO: implement and test caching
 	}
 	
 }
