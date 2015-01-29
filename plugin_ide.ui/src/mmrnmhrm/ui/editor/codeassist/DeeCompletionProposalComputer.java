@@ -16,12 +16,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
@@ -136,18 +135,14 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 			
 			Future<CompletionSearchResult> future = completionExecutor.submit(new Callable<CompletionSearchResult>() {
 				@Override
-				public CompletionSearchResult call() throws Exception {
+				public CompletionSearchResult call() throws CoreException {
 					return DToolClient.getDefault().doCodeCompletion(
 						filePath, offset, DeeCompletionOperation.compilerPathOverride);
 				}
 			});
 			
 			try {
-				return future.get(5, TimeUnit.SECONDS);
-			} catch (InterruptedException | ExecutionException e) {
-				throw LangCore.createCoreException("Error performing Content Assist.", e);
-			} catch (TimeoutException e) {
-				throw LangCore.createCoreException("Timeout performing Content Assist.", e);
+				return EclipseUtils.getFutureResult(future, 5, TimeUnit.SECONDS, "Content Assist");
 			} finally {
 				completionExecutor.shutdown();
 			}
