@@ -29,7 +29,6 @@ import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StreamUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTest;
-import melnorme.utilbox.tests.CommonTestExt;
 import melnorme.utilbox.tests.TestsWorkingDir;
 
 import org.eclipse.core.resources.IFile;
@@ -110,8 +109,8 @@ public abstract class CommonCoreTest extends CommonTest {
 		Location instanceLocation = Platform.getInstanceLocation();
 		try {
 			URI uri = instanceLocation.getURL().toURI();
-			String workingDirPath = new File(uri).getAbsolutePath();
-			TestsWorkingDir.initWorkingDir(workingDirPath);
+			Path workingDirPath = new File(uri).toPath().toAbsolutePath().resolve("TestsWD");
+			TestsWorkingDir.initWorkingDir(workingDirPath.toString());
 		} catch (URISyntaxException e) {
 			throw assertFail();
 		}
