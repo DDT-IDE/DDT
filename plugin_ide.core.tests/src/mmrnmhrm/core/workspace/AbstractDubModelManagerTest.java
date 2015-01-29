@@ -294,7 +294,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			assertTrue(depChildren.size() > 0);
 			IDubElement removed = depChildren.remove(0);
 			DubErrorElement dubErrorElement = assertCast(removed, DubErrorElement.class);
-			assertTrue(dubErrorElement.errorDescription.startsWith(expMainBundle.errorMsgStart));
+			assertTrue(dubErrorElement.errorDescription.contains(expMainBundle.errorMsgStart));
 		}
 	}
 	
