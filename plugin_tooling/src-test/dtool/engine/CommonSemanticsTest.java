@@ -32,10 +32,10 @@ import dtool.tests.MockCompilerInstalls;
 
 public class CommonSemanticsTest extends CommonDToolTest {
 	
-	public static final Location BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("semanticModel");
+	public static final Location BUNDLEMODEL_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("bundleModel");
 	public static final Location SEMANTICS_TEST_BUNDLES = DToolTestResources.getTestResourceLoc("semantics");
 	
-	public static final Location SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDir("SemModel");
+	public static final Location SMTEST_WORKING_DIR_BUNDLES = TestsWorkingDir.getWorkingDir("BundleModelWD");
 	
 	/* -----------------  ----------------- */
 	
