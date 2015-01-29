@@ -192,12 +192,17 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			assertTrue(e.getCause() instanceof IOException);
 		}
 		
+		ResolvedManifest manifest = null;
 		try {
-			// TODO: cleanup these casts.
-			DubBundleResolution bundleRes = (DubBundleResolution) sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
-			assertTrue(bundleRes != null && bundleRes.dubBundle.hasErrors());
-		} catch (CommonException e) {
+			manifest = sm.getUpdatedManifest(bundleKey(ERROR_BUNDLE__MISSING_DEP));
+			assertTrue(manifest != null && manifest.bundle.hasErrors());
+			assertTrue(manifest.bundle.error.getMessage().contains("dub returned non-zero"));
+			
+			sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
 			throw assertFail();
+		} catch (CommonException ce) {
+			assertTrue(ce.getMessage().equals(SemanticManager.ERROR_UNRESOLVED_DUB_MANIFEST));
+			assertTrue(ce.getCause().getMessage().contains(manifest.bundle.error.getMessage()));
 		}
 	}
 	

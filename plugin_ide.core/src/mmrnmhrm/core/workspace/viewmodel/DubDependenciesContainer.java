@@ -46,7 +46,7 @@ public class DubDependenciesContainer extends CommonDubElement<IProject> {
 			}
 		}
 		if(bundleInfo.getError() != null) {
-			newChildren.add(new DubErrorElement(this, bundleInfo.getError().getMessage()));
+			newChildren.add(new DubErrorElement(this, bundleInfo.getError().getExtendedMessage()));
 		}
 		return ArrayUtil.createFrom(newChildren, IDubElement.class);
 	}

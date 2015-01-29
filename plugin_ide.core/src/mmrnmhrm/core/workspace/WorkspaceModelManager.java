@@ -353,7 +353,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 					
 					if(unresolvedDescription.hasErrors() != false) {
 						DubBundleException error = unresolvedDescription.getError();
-						setDubErrorMarker(project, error.getMessage(), error.getCause());
+						setDubErrorMarker(project, error);
 						return; // only run dub describe if unresolved description had no errors
 					}
 					
@@ -384,22 +384,33 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		}
 	}
 	
-	protected void setDubErrorMarker(IProject project, String message, Throwable exception) throws CoreException {
-		IMarker dubMarker = project.createMarker(WorkspaceModelManager.DUB_PROBLEM_ID);
-		String messageExtra = exception == null ? "" : exception.getMessage();
-		dubMarker.setAttribute(IMarker.MESSAGE, message + messageExtra);
-		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+	protected void setDubErrorMarker(IProject project, DubBundleException error) throws CoreException {
+		setDubErrorMarker(project, error.getExtendedMessage());
 	}
 	
+	protected void setDubErrorMarker(IProject project, String message) throws CoreException {
+		IMarker dubMarker = project.createMarker(WorkspaceModelManager.DUB_PROBLEM_ID);
+		dubMarker.setAttribute(IMarker.MESSAGE, message);
+		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+	}
 	
 	@Override
 	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		try {
 			resolveProjectOperation(monitor);
-		} catch (CoreException ce) {
+		} catch (final CoreException ce) {
 			try {
-				setProjectDubError(project, ce.getMessage(), ce.getCause());
+				EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
+					@Override
+					public void run(IProgressMonitor monitor) throws CoreException {
+						if(project.exists() == false) {
+							return;
+						}
+						setProjectDubError(project, ce);
+					}
+				}, null, 0, monitor);
+				
 			} catch (CoreException e) {
 				logInternalError(ce);
 			}
@@ -428,12 +439,10 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			project, array(dubPath, "describe"), pm);
 		ExternalProcessResult processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
 		
-		int exitValue = processHelper.exitValue;
-		if(exitValue != 0) {
-			throw LangCore.createCoreException("dub returned non-zero status: " + exitValue, null);
-		}
-		
 		final DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(bundlePath, processHelper);
+		if(bundleDesc.hasErrors()) {
+			throw LangCore.createCoreException("Error resolving bundle: ", bundleDesc.getError());
+		}
 		
 		EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
@@ -441,28 +450,25 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 				if(project.exists() == false) {
 					return;
 				}
+				assertTrue(!bundleDesc.hasErrors());
 				
-				if(bundleDesc.hasErrors()) {
-					setProjectDubError(project, "Error parsing description:", bundleDesc.getError());
-				} else {
-					workspaceModelManager.addProjectInfo(project, bundleDesc);
-					updateBuildpath(project, bundleDesc);
-				}
+				workspaceModelManager.addProjectInfo(project, bundleDesc);
+				updateBuildpath(project, bundleDesc);
 			}
 		}, null, 0, pm);
 		
 		return null;
 	}
 	
-	protected void setProjectDubError(IProject project, String message, Throwable exception) throws CoreException {
+	protected void setProjectDubError(IProject project, CoreException ce) throws CoreException {
 		
-		DubBundleException dubError = new DubBundleException(message, exception);
+		DubBundleException dubError = new DubBundleException(ce.getMessage(), ce.getCause());
 		
 		DubBundle main = unresolvedDescription.getMainBundle();
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
 		workspaceModelManager.model.addProjectInfo(project, bundleDesc, unresolvedProjectInfo.compilerInstall);
 		
-		setDubErrorMarker(project, message, exception);
+		setDubErrorMarker(project, dubError);
 	}
 	
 }

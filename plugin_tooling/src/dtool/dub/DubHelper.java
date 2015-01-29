@@ -17,6 +17,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import dtool.dub.DubBundle.DubBundleException;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.ICallable;
@@ -73,9 +74,10 @@ public class DubHelper {
 	public static DubBundleDescription parseDubDescribe(BundlePath bundlePath, ExternalProcessResult processResult) {
 		String describeOutput = processResult.stdout.toString(StringUtil.UTF8);
 		
-		if(processResult.exitValue != 0) {
-			/*FIXME: BUG here*/
-//			assertFail();
+		int exitValue = processResult.exitValue;
+		if(exitValue != 0) {
+			DubBundleException error = new DubBundleException("dub returned non-zero status: " + exitValue);
+			return new DubBundleDescription(new DubBundle(bundlePath, DubBundleDescription.BUNDLE_NAME_ERROR, error));
 		}
 		
 		// Trim leading characters. 

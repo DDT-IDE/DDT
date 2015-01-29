@@ -26,6 +26,8 @@ import dtool.dub.DubBundle.DubDependecyRef;
  */
 public class DubBundleDescription {
 	
+	public static final String BUNDLE_NAME_ERROR = "<error_undefined>";
+	
 	protected final boolean isResolved;
 	protected final DubBundle mainDubBundle;
 	protected final DubBundle[] bundleDependencies; //not null

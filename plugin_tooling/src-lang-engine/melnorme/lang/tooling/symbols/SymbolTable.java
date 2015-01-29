@@ -128,7 +128,7 @@ public class SymbolTable {
 				
 				if(matchedElement instanceof OverloadedNamedElement) {
 					OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) matchedElement;
-					overloadedNamedElement.setCompleted();
+					overloadedNamedElement.setCompleted(); /*FIXME: BUG here*/
 				}
 				
 				addSymbol(matchedElement);

@@ -202,6 +202,10 @@ public class DubBundle {
 			return super.getMessage();
 		}
 		
+		public String getExtendedMessage() {
+			return getMessage() + (getCause() == null ? "" : getCause().getMessage());
+		}
+		
 	}
 	
 	/* ----------------- utilities ----------------- */

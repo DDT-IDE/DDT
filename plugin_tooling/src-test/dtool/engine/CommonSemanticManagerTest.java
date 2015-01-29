@@ -54,6 +54,8 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	@BeforeClass
 	public static void initDubRepositoriesPath() {
+		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); // cleanup stale entries
+		
 		CommonDubTest.dubAddPath(BUNDLEMODEL_TEST_BUNDLES);
 	}
 	
@@ -157,7 +159,6 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			boolean manifestStale = checkIsManifestStale(resKey.bundleKey);
 			ResolvedManifest previousManifest = getStoredManifest(resKey.bundleKey);
 			
-			// TODO: cleanup this cast
 			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey, options);
 			assertEquals(bundleResolution.resKey, resKey);
 			

@@ -47,7 +47,7 @@ public class DubDescribeParser extends CommonDubParser {
 		if(bundles == null || bundles.size() == 0) {
 			
 			if(bundleName == null) {
-				bundleName = "<error_undefined>";
+				bundleName = DubBundleDescription.BUNDLE_NAME_ERROR;
 			}
 			putError(ERROR_PACKAGES_IS_EMPTY);
 			return new DubBundleDescription(new DubBundle(bundlePath, bundleName, dubError));

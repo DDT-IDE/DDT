@@ -227,6 +227,8 @@ public class SemanticManager {
 	
 	/* ----------------- Semantic Resolution registry ----------------- */
 	
+	public static final String ERROR_UNRESOLVED_DUB_MANIFEST = "Unresolved dub manifest: ";
+	
 	public BundleResolution getStoredResolution(ResolutionKey resKey) {
 		BundleResolutionEntry info = resolutionsManager.getEntry(resKey);
 		return info != null ? info.getSemanticResolution() : null;
@@ -261,6 +263,10 @@ public class SemanticManager {
 				ManifestUpdateOptions options) throws CommonException {
 			ResolvedManifest manifest = manifestManager.getUpdatedManifest(resKey.bundleKey, options);
 			StandardLibraryResolution stdLibResolution = getUpdatedStdLibResolution(resKey.compilerInstall);
+			
+			if(manifest.bundle.hasErrors()) {
+				throw new CommonException(ERROR_UNRESOLVED_DUB_MANIFEST, manifest.bundle.error);
+			}
 			
 			BundleResolution bundleRes = new DubBundleResolution(SemanticManager.this, manifest, stdLibResolution);
 			
