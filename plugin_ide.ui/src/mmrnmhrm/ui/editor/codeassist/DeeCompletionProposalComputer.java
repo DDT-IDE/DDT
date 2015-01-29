@@ -26,8 +26,6 @@ import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import melnorme.utilbox.misc.PathUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 
@@ -83,17 +81,7 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 				throw LangCore.createCoreException("Error, no editor available for operation.", null);
 			}
 			
-			String filePath = EditorUtils.getFilePathFromEditorInput(editor.getEditorInput()).toString();
-			if (filePath == null) {
-				throw LangCore.createCoreException("Error: Could not determine file path for editor.", null);
-			}
-			
-			Path fileLocation;
-			try {
-				fileLocation = PathUtil.createPath(filePath);
-			} catch (InvalidPathExceptionX e) {
-				throw LangCore.createCoreException("Invalid editor path.", e);
-			}
+			Path fileLocation = EditorUtils.getLocationFromEditor(editor.getEditorInput());
 			
 			return doComputeCompletionProposals(offset, fileLocation, viewer.getDocument());
 		} catch (CoreException ce) {
@@ -106,7 +94,6 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 			return Collections.EMPTY_LIST;
 		}
 	}
-	
 	
 	protected List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
 			IDocument document) throws CoreException {
