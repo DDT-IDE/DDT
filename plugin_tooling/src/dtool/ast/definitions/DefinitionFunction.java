@@ -23,6 +23,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
 import dtool.ast.statements.IFunctionBody;
 import dtool.ast.statements.IStatement;
@@ -70,6 +71,20 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Function;
+	}
+	
+	@Override
+	public DefUnit cloneTemplateElement(final RefTemplateInstance templateRef) {
+		return setParsedFromOther(
+			new DefinitionFunction(comments, clone(retType), clone(defName), null, clone(fnParams), 
+				clone(fnAttributes), null, clone(fnBody)) {
+				
+				@Override
+				public String getExtendedName() {
+					return getName() + templateRef.normalizedArgsToString() + toStringParametersForSignature();
+				}
+			}
+			,this);
 	}
 	
 	@Override

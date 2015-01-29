@@ -23,6 +23,7 @@ import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.statements.IFunctionBody;
 import dtool.parser.common.Token;
 
@@ -32,6 +33,7 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 			NodeVector<ITemplateParameter> tplParams, NodeVector<IFunctionParameter> fnParams, 
 			NodeVector<IFunctionAttribute> fnAttributes, Expression tplConstraint, IFunctionBody fnBody) {
 		super(comments, defName, tplParams, fnParams, fnAttributes, tplConstraint, fnBody);
+		// In practice it's not possible to parse a templated constructor 
 	}
 	
 	@Override
@@ -63,6 +65,14 @@ public class DefinitionConstructor extends AbstractFunctionDefinition implements
 	@Override
 	public String getNameInRegularNamespace() {
 		return null;
+	}
+	
+	@Override
+	public DefUnit cloneTemplateElement(RefTemplateInstance templateRef) {
+		return setParsedFromOther(
+			new DefinitionConstructor(comments, clone(defName), null, clone(fnParams), 
+				clone(fnAttributes), null, clone(fnBody)), 
+			this);
 	}
 	
 	/* -----------------  ----------------- */

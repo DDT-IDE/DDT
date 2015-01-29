@@ -122,8 +122,9 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		TemplateInstance tplInstance = doTestTemplateInstantiation_____(
 			TPL_DEF_SAMPLE + "Tpl!(int)/*M*/ _dummy", 
 			
-			"_tests/Tpl!(int)", 
+			DEFAULT_ModuleName + "/Tpl!(int)", 
 			"@{ @TYPE1 = /int; } template Tpl { TYPE1 foo; }",
+			expectNotAValue("Tpl!(int)"), 
 			array("foo")
 		);
 		
@@ -158,6 +159,15 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		);
 		
 		
+		doTestTemplateInstantiation_____(
+			sourcePlusRef("bool Tpl(T) (T myParam) { return myParam; }; ", "Tpl!(int)"),
+			
+			DEFAULT_ModuleName + "/" + "Tpl!(int)(T myParam)",
+			"@{ @ T = /int; } bool Tpl(T myParam) { return myParam; }",
+			"$" + DEFAULT_ModuleName + "/Tpl!(int)(T myParam)" /* this should be changed at some point*/,
+			null
+		);
+		
 		testParamKindOverloads$();
 		test_TemplateOverloads$();
 		
@@ -172,19 +182,23 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	
 	protected static TemplateInstance testTemplateInstantiation(String baseSource,
 		String tplRef, String tplExpectedToStringAsCode) {
-		String source = baseSource + "; " + tplRef + "/*M*/ _dummy;";
 		
 		return doTestTemplateInstantiation_____(
-			source,
+			sourcePlusRef(baseSource, tplRef),
 			
 			DEFAULT_ModuleName + "/" + tplRef,
 			tplExpectedToStringAsCode,
+			expectNotAValue(tplRef), 
 			null
 		);
 	}
 	
+	protected static String sourcePlusRef(String baseSource, String tplRef) {
+		return baseSource + "; " + tplRef + "/*M*/ _dummy;";
+	}
+	
 	protected static TemplateInstance doTestTemplateInstantiation_____(String source, 
-		String expectedLabel, String expectedToStringAsCode, String[] expectedMembers) {
+		String expectedLabel, String expectedToStringAsCode, String expectedTypeLabel, String[] expectedMembers) {
 		PickedElement<RefTemplateInstance> tplRef = parseElement(source, "/*M*/", RefTemplateInstance.class);
 		INamedElement tplRefTarget = resolveTarget(tplRef);
 		
@@ -217,13 +231,13 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 		
 		test_NamedElement(picked(tplInstance.instantiatedElement, tplRef.context), 
 			null, 
-			expectNotAValue(tplInstance.instantiatedElement),
+			expectedTypeLabel,
 			expectedMembers
 		);
 		
 		return tplInstance;
 	}
-
+	
 	protected static void checkSourceEquivalence(String expectedToStringAsCode, ASTNode node) {
 		if(expectedToStringAsCode != null) {
 			String nodeToStringAsCode = node.toStringAsCode();
