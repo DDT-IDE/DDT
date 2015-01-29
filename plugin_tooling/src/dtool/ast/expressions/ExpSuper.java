@@ -19,7 +19,7 @@ import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.ITypeNamedElement;
-import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionClass_Common;
 
 public class ExpSuper extends Expression {
 	
@@ -53,7 +53,7 @@ public class ExpSuper extends Expression {
 		
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				DefinitionClass definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
+				DefinitionClass_Common definitionClass = ExpThis.getClassNodeParent(ExpSuper.this);
 				if(definitionClass == null) {
 					return null;
 				}

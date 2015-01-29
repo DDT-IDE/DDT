@@ -121,7 +121,7 @@ public abstract class DefinitionClass_Common extends DefinitionAggregate {
 				if(baseClass.getArcheType() == EArcheType.Interface) {
 					continue;
 				}
-				if(baseClass instanceof DefinitionClass) {
+				if(baseClass.getArcheType() == EArcheType.Class) {
 					return baseClass;
 				}
 			}
@@ -146,8 +146,8 @@ public abstract class DefinitionClass_Common extends DefinitionAggregate {
 				if(baseClassElem == null)
 					continue;
 				
-				if(baseClassElem instanceof DefinitionClass) {
-					DefinitionClass baseClassDef = (DefinitionClass) baseClassElem;
+				if(baseClassElem instanceof DefinitionClass_Common) {
+					DefinitionClass_Common baseClassDef = (DefinitionClass_Common) baseClassElem;
 					search.evaluateScope(baseClassDef.getSemantics(context).getMembersScope());
 				}
 			}

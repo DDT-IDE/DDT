@@ -18,7 +18,7 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ExpSemantics;
 import melnorme.lang.tooling.engine.resolver.TypeReferenceResult;
-import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionClass_Common;
 
 public class ExpThis extends Expression {
 	
@@ -44,11 +44,11 @@ public class ExpThis extends Expression {
 		cp.append("this");
 	}
 	
-	public static DefinitionClass getClassNodeParent(ASTNode node) {
+	public static DefinitionClass_Common getClassNodeParent(ASTNode node) {
 		do {
 			node = node.getParent();
-			if(node instanceof DefinitionClass) {
-				DefinitionClass definitionClass = (DefinitionClass) node;
+			if(node instanceof DefinitionClass_Common) {
+				DefinitionClass_Common definitionClass = (DefinitionClass_Common) node;
 				return definitionClass;
 			}
 		} while(node != null);
@@ -63,7 +63,7 @@ public class ExpThis extends Expression {
 		
 			@Override
 			public TypeReferenceResult doCreateExpResolution() {
-				DefinitionClass definitionClass = getClassNodeParent(ExpThis.this);
+				DefinitionClass_Common definitionClass = getClassNodeParent(ExpThis.this);
 				if(definitionClass == null) {
 					return null;
 				}
