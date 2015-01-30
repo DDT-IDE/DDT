@@ -3,6 +3,7 @@
 ### DDT 0.11.x
  * Fixed: added loop detection for known loop scenarios during semantic engine analysis.
  * Fixed: Error parsing UDAS as function attributes (example: `int foo() @blah { }`) .
+ * Fixed #92: Error parsing `extern(C++)`.
  * Fixed: removed parser errors about types being used in expressions. 
    * Fixes false errors occurring in valid code such as `auto x = int(223)`;
  * Support for basic template instantiation in semantic engine.

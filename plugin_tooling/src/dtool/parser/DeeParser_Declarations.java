@@ -247,7 +247,7 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 				}
 				
 				if(linkageStr.equals(Linkage.CPP.name)) {
-					return parseAttribCppLinkage_fromLinkaged(parse, linkageStr);
+					return parseAttribCppLinkage_fromLinkage(parse, linkageStr);
 				}
 				
 				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
@@ -257,9 +257,9 @@ public abstract class DeeParser_Declarations extends DeeParser_Parameters {
 		return parse.resultConclude(new AttribLinkage(linkageStr));
 	}
 	
-	protected NodeResult<AttribCppLinkage> parseAttribCppLinkage_fromLinkaged(ParseHelper parse, String linkageStr) {
+	protected NodeResult<AttribCppLinkage> parseAttribCppLinkage_fromLinkage(ParseHelper parse, String linkageStr) {
 		Reference typeRef = null;
-		if(parse.consumeExpected(DeeTokens.COMMA)) {
+		if(parse.consumeOptional(DeeTokens.COMMA)) {
 			typeRef = parseTypeReference_ToMissing().node;
 		}
 		parse.consumeRequired(DeeTokens.CLOSE_PARENS);

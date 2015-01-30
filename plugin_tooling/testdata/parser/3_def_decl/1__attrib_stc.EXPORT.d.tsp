@@ -53,6 +53,7 @@
  ►#?STRUCTURE_EXPECTED!【extern (Xpto #error(BAD_LINKAGE_ID) )● AttribLinkage】●
  ►#?STRUCTURE_EXPECTED!【extern(#error(BAD_LINKAGE_ID))● AttribLinkage】●
  
+ ►#?STRUCTURE_EXPECTED!【extern(C++)● AttribCppLinkage()】●
  ►#?STRUCTURE_EXPECTED!【extern(C++, foo.bar)● AttribCppLinkage(RefQualified(RefIdentifier RefIdentifier))】●
  ►#?STRUCTURE_EXPECTED!【extern(C++, foo.#@NO_ID)● AttribCppLinkage(RefQualified(RefIdentifier #@NO_ID))】●
  ►#?STRUCTURE_EXPECTED!【extern(C++, #@NO_TYPEREF)● AttribCppLinkage(#@NO_TYPEREF)】●

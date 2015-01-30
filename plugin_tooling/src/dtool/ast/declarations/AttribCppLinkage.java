@@ -43,8 +43,8 @@ public class AttribCppLinkage extends AttribLinkage {
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append("extern");
 		if(linkageName != null) {
-			cp.appendStrings("(", linkageName, ",");
-			cp.append(qualifiedId);
+			cp.appendStrings("(", linkageName);
+			cp.append(",", qualifiedId);
 			cp.append(")");
 		}
 	}
