@@ -20,8 +20,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.CoreTaskAgent;
-import melnorme.lang.ide.core.utils.DefaultProjectResourceListener;
+import melnorme.lang.ide.core.bundlemodel.BundleModelManager;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -30,7 +29,6 @@ import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -40,19 +38,15 @@ import mmrnmhrm.core.engine_client.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask.SearchAndAddCompilersOnPathJob;
 import mmrnmhrm.core.workspace.WorkspaceModelManager.WorkspaceModelManagerTask;
 
-import org.dsource.ddt.ide.core.DeeNature;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
@@ -72,23 +66,16 @@ import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
  * Updates a {@link WorkspaceModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class WorkspaceModelManager {
+public class WorkspaceModelManager extends BundleModelManager {
 	
-	protected static SimpleLogger log = new SimpleLogger(Platform.inDebugMode());
-	
-	/* ----------------------------------- */
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
 	protected final WorkspaceModel model;
-	protected final DubProjectModelResourceListener listener = new DubProjectModelResourceListener();
-	protected final ITaskAgent modelAgent = new CoreTaskAgent(getClass().getSimpleName());
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
 	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
-	protected boolean started = false;
-
 	public WorkspaceModelManager(WorkspaceModel model) {
 		this.model = model;
 	}
@@ -101,37 +88,13 @@ public class WorkspaceModelManager {
 		return compilerSearchJob;
 	}
 	
-	public void startManager() {
-		log.print("==> Starting: " + getClass().getSimpleName());
-		assertTrue(started == false); // start only once
-		started = true;
-		
-		// Run heavyweight initialization in executor thread.
-		// This is necessary so that we avoid running the initialization during plugin initialization.
-		// Otherwise there could be problems because initialization is heavyweight code:
-		// it requests workspace locks (which may not be available) and issues workspace deltas
-		modelAgent.submit(new Runnable() {
-			@Override
-			public void run() {
-				initializeModelManager();
-			}
-		});
-	}
-	
-	public void shutdownManager() {
-		// It is possible to shutdown the manager without having it started.
-		
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(listener);
-		// shutdown model manager agent first, since model agent uses dub process agent
-		modelAgent.shutdownNow();
+	@Override
+	protected void doShutdown() {
+		super.doShutdown();
 		dubProcessManager.shutdownNow();
-		try {
-			modelAgent.awaitTermination();
-		} catch (InterruptedException e) {
-			DeeCore.logInternalError(e);
-		}
 	}
 	
+	@Override
 	protected void initializeModelManager() {
 		// First of all, search for compilers on the path
 		compilerSearchJob.schedule();
@@ -141,34 +104,24 @@ public class WorkspaceModelManager {
 			// continue, we should still run rest of initialization
 		}
 		
-		try {
-			EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
-				@Override
-				public void run(IProgressMonitor monitor) {
-					EclipseUtils.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
-					initializeProjectsInfo(monitor);
-				}
-			}, null);
-		} catch (CoreException ce) {
-			DeeCore.logStatus(ce);
-			// This really should not happen, but still try to recover by registering listener.
-			EclipseUtils.getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
-		}
+		super.initializeModelManager();
 	}
 	
-	protected void initializeProjectsInfo(@SuppressWarnings("unused") IProgressMonitor monitor) {
-		try {
-			IProject[] deeProjects = EclipseUtils.getOpenedProjects(DeeNature.NATURE_ID);
-			for (IProject project : deeProjects) {
-				if(projectHasDubManifestFile(project)) {
-					beginProjectDescribeUpdate(project);
-				}
+	@Override
+	protected void initializeProjectsInfo(IProgressMonitor monitor) {
+		
+		IProject[] projects = EclipseUtils.getWorkspaceRoot().getProjects();
+		for (IProject project : projects) {
+			if(isEligibleForBundleModelWatch(project) && projectHasBundleManifest(project)) {
+				beginProjectDescribeUpdate(project);
 			}
-			queueUpdateAllProjectsBuildpath(null);
-			
-		} catch (CoreException ce) {
-			DeeCore.logStatus(ce.getStatus());
 		}
+		queueUpdateAllProjectsBuildpath(null);
+	}
+	
+	@Override
+	public DubBundleDescription getBundleInfo(IProject project) {
+		return model.getBundleInfo(project);
 	}
 	
 	protected static final Path DUB_BUNDLE_MANIFEST_FILE = new Path(BundlePath.DUB_MANIFEST_FILENAME);
@@ -181,67 +134,31 @@ public class WorkspaceModelManager {
 		return false;
 	}
 	
-	protected final class DubProjectModelResourceListener extends DefaultProjectResourceListener {
-		
-		@Override
-		protected void processProjectDelta(IResourceDelta projectDelta) {
-			IProject project = (IProject) projectDelta.getResource();
-			
-			DubBundleDescription existingProjectModel = model.getBundleInfo(project);
-			
-			if(projectDelta.getKind() == IResourceDelta.REMOVED || !DeeNature.isAccessible(project, true)) {
-				if(existingProjectModel == null) {
-					return; // Nothing to remove, might not have been a DUB model project.
-				}
-				dubProjectRemoved(project);
-				return;
-			}
-			
-			switch(projectDelta.getKind()) {
-			case IResourceDelta.ADDED:
-				if(projectHasDubManifestFile(project)) {
-					dubProjectAdded(project);
-				}
-				break;
-			case IResourceDelta.CHANGED:
-				if((projectDelta.getFlags() & IResourceDelta.DESCRIPTION) != 0) {
-					// It might be the case that project wasn't a DUB model project before, and now is.
-					if(existingProjectModel == null) {
-						// Then it's true, project has become DUB model project.
-						if(projectHasDubManifestFile(project)) {
-							dubProjectAdded(project);
-						}
-						return;
-					}
-				}
-				IResourceDelta[] resourceDeltas = projectDelta.getAffectedChildren();
-				if(resourceDeltas == null)
-					break;
-				for (IResourceDelta resourceDelta : resourceDeltas) {
-					if(resourceDelta.getResource().getType() == IResource.FILE && 
-							resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_MANIFEST_FILE)) {
-						if(resourceDelta.getResource().getType() == IResource.FILE) {
-							dubManifestFileChanged(project);
-						}
-					}
-				}
-				break;
-			}
-		}
-		
+	@Override
+	public boolean projectHasBundleManifest(IProject project) {
+		return projectHasDubManifestFile(project);
 	}
 	
-	protected void dubProjectAdded(IProject project) {
+	@Override
+	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
+		return resourceDelta.getResource().getType() == IResource.FILE &&
+				resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_MANIFEST_FILE);
+	}
+	
+	@Override
+	protected void bundleProjectAdded(IProject project) {
 		beginProjectDescribeUpdate(project);
 		queueUpdateAllProjectsBuildpath(project);
 	}
 	
-	protected void dubProjectRemoved(IProject project) {
+	@Override
+	protected void bundleProjectRemoved(IProject project) {
 		removeProjectModel(project);
 		queueUpdateAllProjectsBuildpath(project);
 	}
 	
-	protected void dubManifestFileChanged(final IProject project) {
+	@Override
+	protected void bundleManifestFileChanged(final IProject project) {
 		beginProjectDescribeUpdate(project);
 		// TODO: bug here, we should recalculate manifest for all files, not just buildpath
 		queueUpdateAllProjectsBuildpath(project); // We do this because project might have changed name

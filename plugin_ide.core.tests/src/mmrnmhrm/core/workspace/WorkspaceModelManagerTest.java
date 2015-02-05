@@ -34,7 +34,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		
-		dmm.modelAgent.submit(new Callable<Void>() {
+		dmm.getModelAgent().submit(new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
 				latch.countDown();
