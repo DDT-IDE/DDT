@@ -36,7 +36,7 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine_client.DubProcessManager;
 import mmrnmhrm.core.engine_client.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask.SearchAndAddCompilersOnPathJob;
-import mmrnmhrm.core.workspace.WorkspaceModelManager.WorkspaceModelManagerTask;
+import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -63,20 +63,20 @@ import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 
 /**
- * Updates a {@link WorkspaceModel} when resource changes occur, using 'dub describe'.
+ * Updates a {@link DubWorkspaceModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class WorkspaceModelManager extends BundleModelManager {
+public class DubModelManager extends BundleModelManager {
 	
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
-	protected final WorkspaceModel model;
+	protected final DubWorkspaceModel model;
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
 	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
-	public WorkspaceModelManager(WorkspaceModel model) {
+	public DubModelManager(DubWorkspaceModel model) {
 		this.model = model;
 	}
 	
@@ -219,13 +219,13 @@ public class WorkspaceModelManager extends BundleModelManager {
 	
 	protected abstract class WorkspaceModelManagerTask implements Runnable {
 		
-		protected final WorkspaceModelManager workspaceModelManager;
+		protected final DubModelManager workspaceModelManager;
 		
 		public WorkspaceModelManagerTask() {
-			this.workspaceModelManager = WorkspaceModelManager.this;
+			this.workspaceModelManager = DubModelManager.this;
 		}
 		
-		protected WorkspaceModel getModel() {
+		protected DubWorkspaceModel getModel() {
 			return model;
 		}
 		
@@ -244,7 +244,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	protected final ProjectInfo unresolvedProjectInfo;
 	protected final  DubBundleDescription unresolvedDescription;
 	
-	protected ProjectModelDubDescribeTask(WorkspaceModelManager dubModelManager, IProject project, 
+	protected ProjectModelDubDescribeTask(DubModelManager dubModelManager, IProject project, 
 			ProjectInfo unresolvedProjectInfo) {
 		super(dubModelManager);
 		this.project = project;
@@ -295,7 +295,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected void deleteDubMarkers(IProject project) throws CoreException {
-		IMarker[] markers = WorkspaceModelManager.getDubErrorMarkers(project);
+		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
 		for (IMarker marker : markers) {
 			marker.delete();
 		}
@@ -306,7 +306,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected void setDubErrorMarker(IProject project, String message) throws CoreException {
-		IMarker dubMarker = project.createMarker(WorkspaceModelManager.DUB_PROBLEM_ID);
+		IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
 		dubMarker.setAttribute(IMarker.MESSAGE, message);
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
@@ -392,7 +392,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 
 abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 	
-	protected ProjectUpdateBuildpathTask(WorkspaceModelManager dubModelManager) {
+	protected ProjectUpdateBuildpathTask(DubModelManager dubModelManager) {
 		dubModelManager.super();
 	}
 	
@@ -480,7 +480,7 @@ class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
 	
 	protected IProject changedProject;
 
-	protected UpdateAllProjectsBuildpathTask(WorkspaceModelManager modelManager, IProject changedProject) {
+	protected UpdateAllProjectsBuildpathTask(DubModelManager modelManager, IProject changedProject) {
 		super(modelManager);
 		this.changedProject = changedProject;
 	}

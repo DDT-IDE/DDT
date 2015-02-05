@@ -25,13 +25,13 @@ import org.eclipse.core.resources.IProject;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 
-public class WorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> implements IWorkspaceModel {
+public class DubWorkspaceModel extends ListenerListHelper<IWorkspaceModelListener> implements IWorkspaceModel {
 	
-	protected final SimpleLogger log = WorkspaceModelManager.log;
+	protected final SimpleLogger log = DubModelManager.log;
 	
 	protected final HashMap<String, ProjectInfo> projectInfos = new HashMap<>();
 	
-	public WorkspaceModel() {
+	public DubWorkspaceModel() {
 	}
 	
 	@Override

@@ -150,9 +150,9 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		DeeCore.getWorkspaceModelManager().syncPendingUpdates();
 	}
 	
-	protected static final WorkspaceModel model = getModelManager().model;
+	protected static final DubWorkspaceModel model = getModelManager().model;
 	
-	protected static WorkspaceModelManager getModelManager() {
+	protected static DubModelManager getModelManager() {
 		return DeeCore.getWorkspaceModelManager();
 	}
 	
@@ -217,7 +217,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	/* ----------------- result checking code ----------------- */
 	
 	protected IMarker getDubErrorMarker(IProject project) throws CoreException {
-		IMarker[] markers = WorkspaceModelManager.getDubErrorMarkers(project);
+		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
 		if(markers.length == 0)
 			return null;
 		
@@ -242,7 +242,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		
 		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
 		
-		IMarker[] dubErrorMarkers = WorkspaceModelManager.getDubErrorMarkers(project);
+		IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 		assertTrue(dubErrorMarkers.length == 0);
 	}
 	

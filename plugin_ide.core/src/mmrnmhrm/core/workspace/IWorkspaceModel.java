@@ -18,7 +18,7 @@ import dtool.dub.DubBundleDescription;
 
 /**
  * DUB model. Holds information about DUB bundles, for the projects in the workspace.
- * Designed to be managed concurrently by some other code (see {@link WorkspaceModelManager}).
+ * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
  * Can notify listeners of updates. 
  */
 public interface IWorkspaceModel {

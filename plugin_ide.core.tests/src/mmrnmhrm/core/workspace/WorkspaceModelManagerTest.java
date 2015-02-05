@@ -30,7 +30,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		WorkspaceModelManager dmm = new WorkspaceModelManager(new WorkspaceModel()); 
+		DubModelManager dmm = new DubModelManager(new DubWorkspaceModel()); 
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		

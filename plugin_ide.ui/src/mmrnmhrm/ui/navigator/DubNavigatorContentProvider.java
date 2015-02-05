@@ -10,7 +10,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
 import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
 import mmrnmhrm.core.workspace.ProjectInfo;
-import mmrnmhrm.core.workspace.WorkspaceModel;
+import mmrnmhrm.core.workspace.DubWorkspaceModel;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -36,7 +36,7 @@ import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
-	public static WorkspaceModel getWorkspaceModel() {
+	public static DubWorkspaceModel getWorkspaceModel() {
 		return DeeCore.getWorkspaceModel();
 	}
 	
