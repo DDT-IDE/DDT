@@ -8,6 +8,7 @@
    * Fixes false errors occurring in valid code such as `auto x = int(223)`;
  * Support for basic template instantiation in semantic engine.
  * Better error reporting for `dub describe` failures.
+ * Minor improvements to the New Project wizard.
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.

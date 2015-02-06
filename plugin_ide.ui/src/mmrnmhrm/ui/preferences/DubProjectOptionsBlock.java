@@ -34,6 +34,11 @@ public class DubProjectOptionsBlock extends AbstractComponentExt {
 	}
 	
 	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
 	protected void createContents(Composite topControl) {
 		dubBuildExtraOptions.createComponent(topControl,
 			GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT).create());

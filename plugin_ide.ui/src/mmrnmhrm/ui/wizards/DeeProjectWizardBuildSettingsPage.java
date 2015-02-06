@@ -1,8 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.wizards;
 
 import mmrnmhrm.ui.preferences.DubProjectOptionsBlock;
 
-import org.eclipse.dltk.ui.wizards.IProjectWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
@@ -27,19 +36,10 @@ public class DeeProjectWizardBuildSettingsPage extends WizardPage {
 	
 	@Override
 	public void setVisible(boolean visible) {
-		if(visible) {
-			deeNewProjectWizard.pageChanged(this);
-		}
-		
 		if (visible) {
-			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getCreatedElement().getProject());
+			prjBuildOptionsBlock.initializeFrom(deeNewProjectWizard.getProject());
 		}
 		super.setVisible(visible);
-	}
-	
-	@Override
-	public IProjectWizard getWizard() {
-		return deeNewProjectWizard;
 	}
 	
 	public boolean performOk() {

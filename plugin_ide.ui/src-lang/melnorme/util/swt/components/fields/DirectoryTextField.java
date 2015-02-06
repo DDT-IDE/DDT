@@ -8,26 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.wizards;
+package melnorme.util.swt.components.fields;
 
-import melnorme.lang.ide.ui.dialogs.LangProjectWizardTest;
-import mmrnmhrm.core.DeeCore;
+import org.eclipse.swt.widgets.DirectoryDialog;
 
-import org.junit.After;
-
-
-public class DeeProjectWizardTest extends LangProjectWizardTest {
+public class DirectoryTextField extends ButtonTextField {
 	
-	@Override
-	protected DeeProjectWizard createNewProjectWizard() {
-		return new DeeProjectWizard();
+	public DirectoryTextField(String label, String buttonlabel) {
+		super(label, buttonlabel);
 	}
 	
 	@Override
-	@After
-	public void tearDown() throws Exception {
-		DeeCore.getWorkspaceModelManager().syncPendingUpdates(); // ensure DUB process finished
-		super.tearDown();
+	protected String getNewValueFromButtonSelection() {
+		DirectoryDialog dialog = new DirectoryDialog(button.getShell());
+		if(!getFieldValue().isEmpty()) {
+			dialog.setFilterPath(getFieldValue());
+		}
+		return dialog.open();
 	}
 	
 }

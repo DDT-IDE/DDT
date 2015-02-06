@@ -105,8 +105,8 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperationExt {
 			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
 		}
 		
-		EditorUtils.openEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, openNewEditorMode, 
-			sourceRange);
+		EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, 
+			openNewEditorMode, sourceRange);
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {
