@@ -2,24 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-   <extension
-       point="org.eclipse.dltk.ui.language">
-      <language
-          class="mmrnmhrm.ui.DeeUILanguageToolkit"
-          nature="org.dsource.ddt.ide.core.nature"
-          priority="0"/>
-   </extension>
-   
-	<extension
-		 id="DeeDocumentSetupParticipant"
-		 name="D Document Setup Participant"
-		 point="org.eclipse.core.filebuffers.documentSetup">
-		  <participant
-			class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
-			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-		</participant>
-	</extension>
-	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
 		<image
 			icon="icons/ovr16/d-dark_ovr.gif"
@@ -36,23 +18,36 @@
 		</perspective>
 	</extension>
 	
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
+		<showInPart id="org.eclipse.ui.navigator.ProjectExplorer" />
+		</perspectiveExtension>
+	</extension>
+	
    <extension
-         point="org.eclipse.ui.newWizards">
-      <category
-            id="org.dsource.ddt.ide.category"
-            name="%LangWizardsCategory.name"/>
-      <wizard
-            category="org.dsource.ddt.ide.category"
-            class="mmrnmhrm.ui.wizards.DeeProjectWizard"
-            finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
-            icon="icons/action16e/newprj_wiz.gif"
-            id="org.dsource.ddt.ide.ui.wizards.deeProjectWizard"
-            name="%NewProjectWizard.name"
-            preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
-            project="true">
-      </wizard>
+       point="org.eclipse.dltk.ui.language">
+      <language
+          class="mmrnmhrm.ui.DeeUILanguageToolkit"
+          nature="org.dsource.ddt.ide.core.nature"
+          priority="0"/>
    </extension>
    
+	
+	<!-- ============ EDITOR ============= -->
+	
+	<extension
+		 id="DeeDocumentSetupParticipant"
+		 name="D Document Setup Participant"
+		 point="org.eclipse.core.filebuffers.documentSetup">
+		  <participant
+			class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
+			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
+		</participant>
+	</extension>
+	
+	
+	<!-- ============ Other (TODO cleanup) ============= -->
+	
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
@@ -210,6 +205,25 @@
 			targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
 		</hyperlinkDetector>
 	</extension>
+	
+	<!-- ============ wizards ============= -->
+	
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id="org.dsource.ddt.ide.category"
+			name="%LangWizardsCategory.name"/>
+		<wizard
+			category="org.dsource.ddt.ide.category"
+			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
+			icon="icons/action16e/newprj_wiz.gif"
+			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
+			name="%NewProjectWizard.name"
+			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
+			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
+			project="true">
+		</wizard>
+	</extension>
+	
 	
    <!-- ============ other extensions ============= -->
    
@@ -445,14 +459,7 @@
          <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
       </actionSetPartAssociation>
    </extension>
-   
-   <extension point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension targetID="org.dsource.ddt.ide.ui.DeePerspective">
-         <showInPart id="org.eclipse.ui.navigator.ProjectExplorer">
-         </showInPart>
-         <actionSet id="org.dsource.ddt.ide.ui.DeeActionSet" />
-      </perspectiveExtension>
-   </extension>
+	
 	
 	<!-- ============ Launch ============= -->
 	
