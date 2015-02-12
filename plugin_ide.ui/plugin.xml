@@ -94,7 +94,7 @@
 		</page>
 		<page
 			category="org.dsource.ddt.ide.ui.preferences.Editor"
-			class="mmrnmhrm.ui.preferences.pages.DeeEditorSmartTypingPreferencePage"
+			class="mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage"
 			id="org.dsource.ddt.ide.ui.preferences.Editor.typing"
 			name="%LangEditorTypingPreferencePage.name">
 		</page>

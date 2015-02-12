@@ -12,27 +12,21 @@ package mmrnmhrm.ui.preferences.pages;
 
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
-import melnorme.lang.ide.ui.preferences.LangEditorSmartTypingConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.LangEditorTypingConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 
-public class DeeEditorSmartTypingPreferencePage extends AbstractPreferencesComponentPrefPage {
+public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor.typing";
 	
-	public DeeEditorSmartTypingPreferencePage() {
+	public DeeEditorTypingPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
-	protected void setDescription() {
-		setDescription(null);
-	}
-	
-	@Override
-	protected IPreferencesBlock createPreferencesComponent() {
-		return new LangEditorSmartTypingConfigurationBlock(this);
+	protected LangEditorTypingConfigurationBlock createPreferencesComponent() {
+		return new LangEditorTypingConfigurationBlock(this);
 	}
 	
 	@Override

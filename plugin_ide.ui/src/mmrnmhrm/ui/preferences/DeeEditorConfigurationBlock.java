@@ -13,16 +13,16 @@ package mmrnmhrm.ui.preferences;
 import melnorme.lang.ide.ui.preferences.EditorAppearanceColorsComponent.EditorColorItem;
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class DeeEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public DeeEditorConfigurationBlock(PreferencePage mainPreferencePage) {
+	public DeeEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	

@@ -11,12 +11,11 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.preferences.AbstractPreferencesComponentPrefPage;
-import melnorme.lang.ide.ui.preferences.IPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
-public class DeeSourceColoringPreferencePage extends AbstractPreferencesComponentPrefPage {
+public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage_Old {
 	
 	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.editor.SourceColoring";
 	
@@ -25,17 +24,12 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesComponen
 	}
 	
 	@Override
-	protected void setDescription() {
-		setDescription(null);
-	}
-	
-	@Override
 	protected String getHelpId() {
 		return null;
 	}
 	
 	@Override
-	protected IPreferencesBlock createPreferencesComponent() {
+	protected DeeSourceColoringConfigurationBlock createPreferencesComponent() {
 		return new DeeSourceColoringConfigurationBlock(getPreferenceStore());
 	}
 	
