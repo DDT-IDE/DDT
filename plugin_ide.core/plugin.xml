@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-
-   <extension
-         id="nature"
-         name="Dee nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run class="org.dsource.ddt.ide.core.DeeNature"/>
-      </runtime>
-   </extension>
-   
+	
+	<extension point="org.eclipse.core.resources.natures"
+		id="nature"
+		name="Dee nature">
+		<runtime>
+			<run class="org.dsource.ddt.ide.core.DeeNature"/>
+		</runtime>
+	</extension>
+	
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
@@ -117,16 +116,16 @@
             id="org.dsource.ddt.ide.core.DubContainer">
       </buildpathContainerInitializer>
    </extension>
-   <extension
-         id="DubBuilder"
-         name="DUB Build"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run class="mmrnmhrm.core.build.DubProjectBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
+	
+	<extension point="org.eclipse.core.resources.builders"
+		id="DubBuilder"
+		name="DUB Build">
+		<builder>
+			<run class="mmrnmhrm.core.build.DubProjectBuilder" />
+		</builder>
+	</extension>
+	
+    <extension
          id="DubProblem"
          name="%DUBProblem"
          point="org.eclipse.core.resources.markers">
