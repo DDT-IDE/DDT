@@ -85,8 +85,6 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageHandle DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
 		ISharedImages.IMG_OBJS_ERROR_TSK);
 	
-	public static final ImageHandle DUB_PROCESS = createManaged(T_OBJ_DUB, "DubProcess.png");
-	
 	/* ------------------------------------------- */
 	
 	public static final ImageDescriptor OPEN_DEF_DESC = createUnmanaged(T_ACTIONS, "gotodef.gif");

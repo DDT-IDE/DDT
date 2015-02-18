@@ -13,18 +13,17 @@ package mmrnmhrm.ui.launch;
 import java.io.IOException;
 
 import melnorme.lang.ide.core.utils.process.IStartProcessListener;
-import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleListener;
+import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
 import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
 import mmrnmhrm.core.engine_client.IDubProcessListener;
-import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;
 
-public class DubCommandsConsoleListener extends AbstractToolsConsoleListener implements IDubProcessListener {
+public class DubCommandsConsoleListener extends AbstractToolsConsoleHandler implements IDubProcessListener {
 	
 	public DubCommandsConsoleListener() {
 	}
@@ -34,17 +33,11 @@ public class DubCommandsConsoleListener extends AbstractToolsConsoleListener imp
 		return DeeUIMessages.DUB_CONSOLE_NAME + getProjectNameSuffix(project);
 	}
 	
-	@Override
-	protected ToolsConsole createConsole(String name) {
-		return new DubCommandsConsole(name);
-	}
-	
-	public static class DubCommandsConsole extends ToolsConsole {
-		
-		public DubCommandsConsole(String name) {
-			super(name, DeeImages.DUB_PROCESS.getDescriptor());
+	protected String getProjectNameSuffix(IProject project) {
+		if(project == null) {
+			return " (Global)";
 		}
-		
+		return " ["+ project.getName() +"]";
 	}
 	
 	@Override
