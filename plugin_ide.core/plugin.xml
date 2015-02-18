@@ -10,20 +10,7 @@
 		</runtime>
 	</extension>
 	
-   <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-      <content-type
-            base-type="org.eclipse.core.runtime.text"
-            default-charset="UTF-8"
-            file-extensions="d, di, dh"
-            id="org.dsource.ddt.ide.core.content.dsource"
-            name="D Source"
-            priority="high">
-      </content-type>
-   </extension>
-   
-   <extension
-         point="org.eclipse.core.expressions.definitions">
+	<extension point="org.eclipse.core.expressions.definitions">
          <!-- Deprecate this in favor of isDeeProject -->
       <definition id="org.dsource.ddt.ide.core.expressions.isDeeNature">
          <adapt type="org.eclipse.core.resources.IProject">
@@ -61,8 +48,31 @@
 				</test>
 			</and>
 		</definition>
-		
 	</extension>
+	
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            default-charset="UTF-8"
+            file-extensions="d, di, dh"
+            id="org.dsource.ddt.ide.core.content.dsource"
+            name="D Source"
+            priority="high">
+      </content-type>
+   </extension>
+   
+	
+	<!-- ============ BUILDER/PROBLEMS ============= -->
+	
+	<extension point="org.eclipse.core.resources.builders"
+		id="DubBuilder"
+		name="DUB Build">
+		<builder>
+			<run class="mmrnmhrm.core.build.DubProjectBuilder" />
+		</builder>
+	</extension>
+	
    <extension
          point="org.eclipse.dltk.core.language">
       <language
@@ -116,15 +126,6 @@
             id="org.dsource.ddt.ide.core.DubContainer">
       </buildpathContainerInitializer>
    </extension>
-	
-	<extension point="org.eclipse.core.resources.builders"
-		id="DubBuilder"
-		name="DUB Build">
-		<builder>
-			<run class="mmrnmhrm.core.build.DubProjectBuilder" />
-		</builder>
-	</extension>
-	
     <extension
          id="DubProblem"
          name="%DUBProblem"
