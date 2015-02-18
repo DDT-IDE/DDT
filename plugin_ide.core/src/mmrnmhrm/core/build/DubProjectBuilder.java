@@ -19,7 +19,6 @@ import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -42,11 +41,6 @@ public class DubProjectBuilder extends LangProjectBuilder {
 		@Override
 		protected String getSDKExecutable_append() {
 			return "bin/dub"; 
-		}
-		
-		@Override
-		protected String getSDKExecutableErrorMessage(Location exeLocation) {
-			return "Foo executable not found."; /* FIXME: */
 		}
 	}
 	
