@@ -141,7 +141,7 @@
    </extension>
    <extension
          id="DubBuildProblem_DeeSourceProblem"
-         name="%DeeProblem"
+         name="%ProblemMarker_Name"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <super type="org.dsource.ddt.ide.core.DubBuildProblem"/>

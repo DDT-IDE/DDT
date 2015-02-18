@@ -14,9 +14,12 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
+import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -35,10 +38,28 @@ import dtool.dub.DubBuildOutputParser;
 
 public class DubProjectBuilder extends LangProjectBuilder {
 	
+	public static class DeeSDKLocationValidator extends SDKLocationValidator {
+		@Override
+		protected String getSDKExecutable_append() {
+			return "bin/dub"; 
+		}
+		
+		@Override
+		protected String getSDKExecutableErrorMessage(Location exeLocation) {
+			return "Foo executable not found."; /* FIXME: */
+		}
+	}
+	
 	public static final String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
 	
 	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
 	public static final String DEE_PROBLEM_ID = DUB_BUILD_PROBLEM_ID + "_DeeSourceProblem";
+	
+	
+	@Override
+	protected LocationValidator getSDKLocationValidator() {
+		return new DeeSDKLocationValidator(); // Not actually used at the moment.
+	}
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
