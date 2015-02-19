@@ -23,7 +23,7 @@ import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.lang.tooling.data.StatusException;
-import melnorme.lang.tooling.ops.ToolSourceError;
+import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.lang.utils.ProcessUtils;
 import melnorme.utilbox.collections.ArrayList2;
 
@@ -130,10 +130,12 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	}
 	
 	protected ProcessBuilder createSDKProcessBuilder(String... sdkOptions) throws CoreException {
+		Path projectLocation = ResourceUtils.getProjectLocation(getProject());
+		
 		ArrayList2<String> commandLine = new ArrayList2<>();
 		commandLine.add(getSDKToolPath());
 		commandLine.addElements(sdkOptions);
-		return ProcessUtils.createProcessBuilder(commandLine, null);
+		return ProcessUtils.createProcessBuilder(commandLine, projectLocation.toFile());
 	}
 	
 	protected String getSDKToolPath() throws CoreException {
@@ -149,10 +151,10 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 	
 	/* ----------------- Problem markers handling ----------------- */
 	
-	protected void addErrorMarkers(ArrayList2<ToolSourceError> buildErrors, Path rootPath) throws CoreException {
+	protected void addErrorMarkers(Iterable<ToolSourceMessage> buildErrors, Path rootPath) throws CoreException {
 		assertTrue(rootPath.isAbsolute());
 		
-		for (ToolSourceError buildError : buildErrors) {
+		for (ToolSourceMessage buildError : buildErrors) {
 			Path path = buildError.getFilePath();
 			path = rootPath.resolve(path); // Absolute paths will remain unchanged.
 			path = path.normalize();
@@ -169,11 +171,11 @@ public abstract class LangProjectBuilder extends IncrementalProjectBuilder {
 		
 	}
 	
-	protected void addErrorMarker(IResource resource, ToolSourceError buildError) throws CoreException {
+	protected void addErrorMarker(IResource resource, ToolSourceMessage buildError) throws CoreException {
 		IMarker dubMarker = resource.createMarker(getBuildProblemId());
 		
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
-		dubMarker.setAttribute(IMarker.MESSAGE, buildError.getErrorMessage());
+		dubMarker.setAttribute(IMarker.MESSAGE, buildError.getMessage());
 		
 		int line = buildError.getFileLineNumber();
 		if(line >= 0) {
