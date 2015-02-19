@@ -13,6 +13,7 @@ package mmrnmhrm.core.build;
 import java.util.ArrayList;
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
@@ -44,11 +45,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 		}
 	}
 	
-	public static final String BUILDER_ID = DeeCore.PLUGIN_ID + ".DubBuilder";
-	
 	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
-	public static final String DEE_PROBLEM_ID = DUB_BUILD_PROBLEM_ID + "_DeeSourceProblem";
-	
 	
 	@Override
 	protected LocationValidator getSDKLocationValidator() {
@@ -147,7 +144,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 			return;
 		}
 		
-		IMarker dubMarker = resource.createMarker(DEE_PROBLEM_ID);
+		IMarker dubMarker = resource.createMarker(LangCore_Actual.BUILD_PROBLEM_ID);
 		
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		dubMarker.setAttribute(IMarker.MESSAGE, errorMsg);
