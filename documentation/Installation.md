@@ -1,7 +1,7 @@
 ## Installation
 
 #### Requirements: 
- * Eclipse 4.3 (Kepler) or later.
+ * Eclipse 4.4 (Luna) or later.
  * A **1.7** Java VM or later. Otherwise DDT will silently fail to start.
  * A [DUB](http://code.dlang.org/about) installation and at least one D compiler. GDB for debugging.
 
