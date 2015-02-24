@@ -10,10 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import mmrnmhrm.core.DeeCoreMessages;
+
 
 public interface PreferencesMessages_Actual {
 	
 	public static String ROOT_SDKGroup_Label = "DUB:";
-	public static String ROOT_SDKGroup_path_Label = "DUB path:";
+	public static String ROOT_SDKGroup_path_Label = DeeCoreMessages.DUB_PATH_Label;
 	
 }

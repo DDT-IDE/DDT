@@ -12,6 +12,9 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.util.swt.components.fields.ButtonTextField;
+import melnorme.util.swt.components.fields.FileTextField;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.build.DubProjectBuilder.DubLocationValidator;
 
@@ -30,7 +33,18 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	
 	@Override
 	protected LangSDKConfigBlock createLangSDKConfigBlock() {
-		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
+		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock() {
+			
+			@Override
+			protected LanguageSDKLocationGroup createSDKLocationGroup() {
+				return new LanguageSDKLocationGroup() {
+					@Override
+					protected ButtonTextField createSdkLocationField() {
+						return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
+					}
+				};
+			}
+		};
 		
 		connectStringField(DeeCorePreferences.PREF_DUB_PATH.key, langSDKConfigBlock.getLocationField(), 
 			getSDKValidator());

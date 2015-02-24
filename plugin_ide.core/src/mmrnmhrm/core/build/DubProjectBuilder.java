@@ -20,6 +20,10 @@ import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.ValidationMessages;
+import melnorme.lang.utils.SearchPathForExecutable;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
@@ -44,21 +48,40 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	public static class DubLocationValidator extends SDKLocationValidator {
 		
 		public DubLocationValidator() {
-			super("DUB location:");
-		}
-		
-		@Override
-		protected String getSDKExecutable_append() {
-			return ""; 
+			super(DeeCoreMessages.DUB_PATH_Label);
+			directoryOnly = false;
+			fileOnly = true;
 		}
 		
 		@Override
 		protected Location validatePath(Path path) throws ValidationException {
 			if(!path.isAbsolute() && path.getNameCount() == 1) {
+				String pathEnvExe = path.toString();
+				
+				try {
+					new SearchPathForExecutable(pathEnvExe).checkIsFound();
+				} catch (CommonException e) {
+					throw createException(StatusLevel.WARNING, e.getMessage());
+				}
 				return null; // special case allowed
 			}
 			
 			return super.validatePath(path);
+		}
+		
+		@Override
+		protected ValidationException error_NotAbsolute(Path path) throws ValidationException {
+			return createException(StatusLevel.ERROR, ValidationMessages.Location_NotAbsoluteNorSingle(path));
+		}
+		
+		@Override
+		protected Location getSDKExecutableLocation(Location location) {
+			return location;
+		}
+		
+		@Override
+		protected String getSDKExecutable_append() {
+			return ""; 
 		}
 		
 	}

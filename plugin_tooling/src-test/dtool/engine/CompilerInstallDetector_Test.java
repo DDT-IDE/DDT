@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.utils.SearchPathEnvOperation;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
@@ -26,7 +27,6 @@ import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.tests.CommonDToolTest;
-import dtool.util.SearchPathEnvOperation;
 
 public class CompilerInstallDetector_Test extends CommonDToolTest {
 	

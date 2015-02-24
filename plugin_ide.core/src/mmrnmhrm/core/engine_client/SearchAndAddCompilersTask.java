@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.utils.SearchPathEnvOperation;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 import mmrnmhrm.core.DeeCore;
@@ -30,8 +31,6 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.InterpreterStandin;
 import org.eclipse.dltk.launching.ScriptRuntime;
-
-import dtool.util.SearchPathEnvOperation;
 
 public class SearchAndAddCompilersTask extends SearchPathEnvOperation {
 	

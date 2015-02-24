@@ -13,9 +13,9 @@ package dtool.engine.compiler_installs;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.utils.SearchPathEnvOperation;
 import melnorme.utilbox.misc.Location;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
-import dtool.util.SearchPathEnvOperation;
 
 public abstract class SearchCompilersOnPathOperation extends SearchPathEnvOperation {
 	
