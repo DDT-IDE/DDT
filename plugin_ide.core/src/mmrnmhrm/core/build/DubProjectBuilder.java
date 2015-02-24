@@ -39,6 +39,11 @@ import dtool.dub.DubBuildOutputParser;
 public class DubProjectBuilder extends LangProjectBuilder {
 	
 	public static class DeeSDKLocationValidator extends SDKLocationValidator {
+		
+		public DeeSDKLocationValidator() {
+			super("DUB location:");
+		}
+		
 		@Override
 		protected String getSDKExecutable_append() {
 			return "bin/dub"; 
