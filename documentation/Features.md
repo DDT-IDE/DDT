@@ -42,13 +42,11 @@
 |----|
 
 #### Debugging functionality. 
-Fully featured GDB debugger support (reusing Eclipse CDT's GDB integration)
+Fully featured GDB debugger support (uses Eclipse CDT's GDB integration)
   * Stop/resume program execution. Listing program threads and stack frame contents.
   * Setting breakpoints, watchpoints (breakpoint on data/variables), tracepoints. Breakpoint conditions.
   * Stack variables inspection view. Expression watch and view. Disassembly view.
   * Non-stop mode (for supported GBDs). Reverse debugging (for supported GDB targets).
-  * Most of Eclipse CDT is now a requirement for DDT (for the debugging feature). 
 
 | [![sample_debug1](screenshots/thumbs/sample_debug1.png)](screenshots/sample_debug1.png?raw=true)<br/>`Execution stopped on a conditional breakpoint` | [![sample_debug2](screenshots/thumbs/sample_debug2.png)](screenshots/sample_debug2.png?raw=true)<br/>`Variables for current stack frame` |
 |----|----|
-
