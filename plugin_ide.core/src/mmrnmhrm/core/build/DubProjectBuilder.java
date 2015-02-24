@@ -14,12 +14,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.LocationValidator;
+import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.lang.utils.SearchPathForExecutable;
@@ -108,9 +109,19 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
+	protected String getSDKToolPath() throws CoreException {
+		String pathString = DeeCorePreferences.getEffectiveDubPath();
+		try {
+			getSDKLocationValidator().getValidatedField(pathString);
+			return pathString;
+		} catch (StatusException se) {
+			throw LangCore.createCoreException(se);
+		}
+	}
+	
+	@Override
 	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
 			throws CoreException {
-		SDKPreferences.SDK_PATH.set(DeeCorePreferences.getEffectiveDubPath());
 		
 		String validatedDubPath = getSDKToolPath();
 		
