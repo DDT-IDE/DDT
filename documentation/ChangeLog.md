@@ -9,6 +9,7 @@
  * Support for basic template instantiation in semantic engine.
  * Better error reporting for `dub describe` failures.
  * Minor improvements to the New Project wizard.
+ * Moved DUB preference page to root pref page (TODO: update docs)
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.

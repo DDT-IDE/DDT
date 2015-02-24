@@ -17,7 +17,7 @@ import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
 public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPrefPage_Old {
 	
-	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.editor.SourceColoring";
+	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.SourceColoring";
 	
 	public DeeSourceColoringPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());

@@ -18,7 +18,7 @@ import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
 public class DeeEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
-	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor";
+	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".PreferencePages.Editor";
 	
 	public DeeEditorPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());

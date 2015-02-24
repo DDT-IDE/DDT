@@ -10,16 +10,19 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.bundlemodel.SDKPreferences;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.operations.SDKLocationValidator;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.LocationValidator;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -38,23 +41,33 @@ import dtool.dub.DubBuildOutputParser;
 
 public class DubProjectBuilder extends LangProjectBuilder {
 	
-	public static class DeeSDKLocationValidator extends SDKLocationValidator {
+	public static class DubLocationValidator extends SDKLocationValidator {
 		
-		public DeeSDKLocationValidator() {
+		public DubLocationValidator() {
 			super("DUB location:");
 		}
 		
 		@Override
 		protected String getSDKExecutable_append() {
-			return "bin/dub"; 
+			return ""; 
 		}
+		
+		@Override
+		protected Location validatePath(Path path) throws ValidationException {
+			if(!path.isAbsolute() && path.getNameCount() == 1) {
+				return null; // special case allowed
+			}
+			
+			return super.validatePath(path);
+		}
+		
 	}
 	
 	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
 	
 	@Override
 	protected LocationValidator getSDKLocationValidator() {
-		return new DeeSDKLocationValidator(); // Not actually used at the moment.
+		return new DubLocationValidator(); // Not actually used at the moment.
 	}
 	
 	@Override
@@ -74,10 +87,12 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	@Override
 	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
 			throws CoreException {
-		String dubPath = DeeCorePreferences.getEffectiveDubPath();
+		SDKPreferences.SDK_PATH.set(DeeCorePreferences.getEffectiveDubPath());
+		
+		String validatedDubPath = getSDKToolPath();
 		
 		ArrayList<String> commands = new ArrayList<String>();
-		commands.add(dubPath);
+		commands.add(validatedDubPath);
 		commands.add("build");
 		
 		if(kind == FULL_BUILD) {

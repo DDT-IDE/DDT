@@ -15,7 +15,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	
 	private static final String DEE_TEMPLATE_PREFPAGE_TITLE = "Code Templates";
 	
-	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".preferences.editor.CodeTemplates";
+	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.CodeTemplates";
 	
 	@Override
 	public void setTitle(String title) {

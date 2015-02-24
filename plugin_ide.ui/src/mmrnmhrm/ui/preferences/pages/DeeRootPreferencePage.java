@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,35 +10,37 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import mmrnmhrm.ui.DeeUIPlugin;
-
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-
+import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
+import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
+import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.build.DubProjectBuilder.DubLocationValidator;
 
 /**
- * The root preference page for DDT 
+ * The root preference page for D
  */
-public class DeeRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage{
+public class DeeRootPreferencePage extends LangRootPreferencePage {
 	
 	public DeeRootPreferencePage() {
-		setPreferenceStore(DeeUIPlugin.getPrefStore());
-		setDescription("General DDT preferences");
 	}
 	
 	@Override
-	public void init(IWorkbench workbench) {
-		// Nothing to do
+	protected String getHelpId() {
+		return null;
 	}
 	
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite content = new Composite(parent, SWT.NONE);
-		return content;
+	protected LangSDKConfigBlock createLangSDKConfigBlock() {
+		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock();
+		
+		connectStringField(DeeCorePreferences.PREF_DUB_PATH.key, langSDKConfigBlock.getLocationField(), 
+			getSDKValidator());
+		
+		return langSDKConfigBlock;
+	}
+	
+	@Override
+	protected DubLocationValidator getSDKValidator() {
+		return new DubLocationValidator();
 	}
 	
 }

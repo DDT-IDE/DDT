@@ -18,7 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
+import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.build.DubProjectBuilder.DubLocationValidator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -133,6 +136,11 @@ class DeeProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	public DeeProjectWizardFirstPage() {
 		setTitle(WizardMessages.LangNewProject_Page1_pageTitle);
 		setDescription(WizardMessages.LangNewProject_Page1_pageDescription);
+	}
+	
+	@Override
+	protected void validatePreferences() throws ValidationException {
+		 new DubLocationValidator().getValidatedField(DeeCorePreferences.PREF_DUB_PATH.get());
 	}
 	
 }

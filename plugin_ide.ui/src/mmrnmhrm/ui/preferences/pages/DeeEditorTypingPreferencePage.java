@@ -18,7 +18,7 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 
 public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
-	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".preferences.Editor.typing";
+	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + "PreferencePages.Editor.Typing";
 	
 	public DeeEditorTypingPreferencePage() {
 		super(LangUIPlugin.getInstance().getPreferenceStore());
