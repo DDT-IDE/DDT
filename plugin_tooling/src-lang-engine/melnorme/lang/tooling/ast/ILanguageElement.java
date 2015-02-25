@@ -50,10 +50,12 @@ public interface ILanguageElement {
 	public Path getSemanticContainerKey();
 	
 	
-	/** @return whether the construction/setup of this element is complete, and therefore the element
+	/**
+	 * @return whether the construction/setup of this element is complete, and therefore the element
 	 * is ready for semantic analysis. Only when this is true should semantic operations be performed.
-	 * After an element is completed, it should be immutable, at least with data affecting semantics.*/
-	boolean isCompleted();
+	 * After an element is ready, it should be immutable, at least with regards to the data affecting semantics. 
+	 */
+	boolean isSemanticReady();
 	
 	/**
 	 * Evaluate the node's contributions to its parent scope.

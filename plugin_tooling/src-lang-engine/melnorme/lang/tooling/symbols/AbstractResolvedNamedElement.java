@@ -31,7 +31,7 @@ public abstract class AbstractResolvedNamedElement extends AbstractNamedElement 
 	
 	@Override
 	public INamedElementSemanticData getSemantics(ISemanticContext parentContext) {
-		assertTrue(isCompleted());
+		assertTrue(isSemanticReady());
 		return doGetSemantics();
 	}
 	

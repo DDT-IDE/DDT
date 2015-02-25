@@ -209,13 +209,13 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		assertTrue(clonedNode.getLexicalParent() == null);
 		assertTrue(clonedNode.getClass() ==  this.getClass());
 		assertTrue(clonedNode.isParsedStatus());
-		assertTrue(clonedNode.isCompleted() == false);
+		assertTrue(clonedNode.isSemanticReady() == false);
 		
 		return clonedNode;
 	}
 	
 	protected static <T extends CommonASTNode> T setParsedFromOther(T node, T otherNode) {
-		assertTrue(node.isCompleted() == false);
+		assertTrue(node.isSemanticReady() == false);
 		// This assertion might not be necessary, we could clone without range info.
 		assertTrue(otherNode.hasSourceRangeInfo()); 
 		node.setSourceRange(otherNode.getStartPos(), otherNode.getLength());
@@ -317,7 +317,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	@Override
-	public boolean isCompleted() {
+	public boolean isSemanticReady() {
 		return isPostParseStatus();
 	}
 	

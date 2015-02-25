@@ -22,11 +22,10 @@ import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
-import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.EArcheType;
 
@@ -46,6 +45,8 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
 	}
 	
+	/* ----------------- INamedElement utils ----------------- */
+	
 	@Override
 	public String getModuleFullName() {
 		INamedElement module = getModuleElement();
@@ -63,31 +64,38 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 		return null;
 	}
 	
-	/* -----------------  ----------------- */
-
-	public static boolean isCompleted(ILanguageElement element) {
-		return element == null || element.isCompleted();
+	/* ----------------- semanticReady utils ----------------- */
+	
+	@Override
+	public abstract boolean isSemanticReady();
+	
+	protected static <T extends ILanguageElement> T checkIsSemanticReady(T element) {
+		assertTrue(element == null || element.isSemanticReady());
+		return element;
 	}
 	
-	public static void doCheckCompleted(ILanguageElement element) {
-		if(element instanceof PackageNamespace) {
-			// PackageNamespace cannot be setCompleted early, so set it completed now
-			((PackageNamespace) element).setCompleted();
+	public static <T extends Iterable<? extends ILanguageElement>> T checkAreSemanticReady(T elements, 
+			boolean readyPackageNamespace) {
+		
+		for(ILanguageElement element : elements) {
+			if(readyPackageNamespace && element instanceof PackageNamespace) {
+				// PackageNamespace cannot be setCompleted early, so set it completed now
+				((PackageNamespace) element).setSemanticReady();
+			}
+			checkIsSemanticReady(element);
 		}
-		assertTrue(element.isCompleted());
+		return elements;
 	}
 	
-	public static void doCheckCompleted(Collection2<? extends ILanguageElement> elements) {
-		for (ILanguageElement element : elements) {
-			doCheckCompleted(element);
-		}
+	protected static <T extends Iterable<? extends ILanguageElement>> T checkAllSemanticReady(T elements) {
+		return checkAreSemanticReady(elements, false);
 	}
 	
 	/* -----------------  ----------------- */
 	
 	@Override
 	public IElementSemanticData getSemantics(ISemanticContext parentContext) {
-		assertTrue(isCompleted());
+		assertTrue(isSemanticReady());
 		return doGetSemantics(parentContext);
 	}
 	
@@ -125,15 +133,18 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	/* ----------------- name lookup ----------------- */
 	
-	/** 
+	/**
 	 * Perform a name lookup starting in this node.
 	 * The exact mechanism in which the name lookup will be performed will depend on the node, 
 	 * but the most common (and default) scenario is to perform a lexical lookup.
 	 */
-	/* FIXME: make final*/
-	public void performNameLookup(CommonScopeLookup lookup) {
-		assertTrue(isCompleted());
+	public final void performNameLookup(CommonScopeLookup lookup) {
+		assertTrue(isSemanticReady());
 		
+		doPerformNameLookup(lookup);
+	}
+	
+	protected void doPerformNameLookup(CommonScopeLookup lookup) {
 		assertTrue(lookup.isSequentialLookup());
 		assertTrue(lookup.refOffset >= 0);
 		

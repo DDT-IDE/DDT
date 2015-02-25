@@ -217,7 +217,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	) { 
 		{
 			for (INamedElement namedElement : members) {
-				assertTrue(namedElement.isCompleted());
+				assertTrue(namedElement.isSemanticReady());
 			}
 		}
 	};

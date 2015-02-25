@@ -117,13 +117,13 @@ public class RefModule extends NamedReference {
 	/* -----------------  ----------------- */
 	
 	@Override
-	public void performNameLookup(CommonScopeLookup search) {
-		ScopeNameResolution scopeResolution = new ScopeNameResolution(search);
-		Set<String> matchedModules = search.findMatchingModules();
+	public void doPerformNameLookup(CommonScopeLookup lookup) {
+		ScopeNameResolution scopeResolution = new ScopeNameResolution(lookup);
+		Set<String> matchedModules = lookup.findMatchingModules();
 		for (String moduleFQName : matchedModules) {
-			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, search.context, true, this));
+			scopeResolution.visitNamedElement(new ModuleProxy(moduleFQName, lookup.context, true, this));
 		}
-		search.addSymbolsToMatches(scopeResolution.getNames());
+		lookup.addSymbolsToMatches(scopeResolution.getNames());
 	}
 	
 }

@@ -63,7 +63,7 @@ public class SymbolTable {
 			PackageNamespace existingNamespace = (PackageNamespace) existingNamedElement;
 			PackageNamespace newNamespace = (PackageNamespace) newElement;
 			
-			if(existingNamespace.isCompleted()) {
+			if(existingNamespace.isSemanticReady()) {
 				existingNamespace = existingNamespace.doCloneTree();
 				map.put(name, existingNamespace);
 			}
@@ -94,7 +94,7 @@ public class SymbolTable {
 			
 			if(existingEntry instanceof OverloadedNamedElement) {
 				overloadElement = (OverloadedNamedElement) existingEntry;
-				if(!overloadElement.isCompleted()) {
+				if(!overloadElement.isSemanticReady()) {
 					overloadElement.addElement(newElement);
 					return;
 				}
@@ -142,8 +142,8 @@ public class SymbolTable {
 			if(namedElement instanceof OverloadedNamedElement) {
 				OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) namedElement;
 				
-				if(!overloadedNamedElement.isCompleted()) {
-					overloadedNamedElement.setCompleted();
+				if(!overloadedNamedElement.isSemanticReady()) {
+					overloadedNamedElement.setSemanticReady();
 				}
 			}
 		}

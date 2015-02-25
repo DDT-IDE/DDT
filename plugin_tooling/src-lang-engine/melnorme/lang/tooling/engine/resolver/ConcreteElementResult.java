@@ -21,7 +21,7 @@ public class ConcreteElementResult {
 	public ConcreteElementResult(IConcreteNamedElement result) {
 		this.result = result;
 		assertNotNull(result);
-		assertTrue(result.isCompleted());
+		assertTrue(result.isSemanticReady());
 	}
 	
 }

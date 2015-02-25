@@ -69,7 +69,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	public SymbolTable getNamespaceForModification() {
-		assertTrue(isCompleted() == false);
+		assertTrue(isSemanticReady() == false);
 		return namedElementsTable;
 	}
 	
@@ -86,7 +86,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	@Override
 	protected void doSetCompleted() {
 		namedElementsTable.setCompleted();
-		doCheckCompleted(getNamespaceElements());
+		checkAreSemanticReady(getNamespaceElements(), true);
 	}
 	
 	@Override
@@ -136,8 +136,8 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	public void setCompleted() {
-		super.setCompleted();
+	public void setSemanticReady() {
+		super.setSemanticReady();
 		this.packageNamespaceSemantics = new PackageNamespaceSemantics();
 	}
 	

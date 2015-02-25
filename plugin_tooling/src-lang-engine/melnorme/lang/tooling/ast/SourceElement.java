@@ -79,7 +79,7 @@ public abstract class SourceElement extends CommonLanguageElement implements ISo
 		assertTrue(!hasSourceRangeInfo()); // Can only be set once
 		assertTrue(startPos >= 0);
 		assertTrue(endPos >= startPos);
-		assertTrue(!isCompleted());
+		assertTrue(!isSemanticReady());
 		this.sourceStart = startPos;
 		this.sourceEnd = endPos;
 	}

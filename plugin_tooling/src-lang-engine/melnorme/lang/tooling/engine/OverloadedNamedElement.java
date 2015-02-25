@@ -46,7 +46,7 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	
 	@Override
 	protected void doSetCompleted() {
-		doCheckCompleted(elements);
+		checkAreSemanticReady(elements, true);
 	}
 	
 	/* -----------------  ----------------- */
@@ -86,7 +86,7 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	}
 	
 	public void addElement(INamedElement newElement) {
-		assertTrue(isCompleted() == false);
+		assertTrue(isSemanticReady() == false);
 		assertTrue(newElement.getNameInRegularNamespace().equals(firstElement.getNameInRegularNamespace()));
 		elements.add(newElement);
 	}

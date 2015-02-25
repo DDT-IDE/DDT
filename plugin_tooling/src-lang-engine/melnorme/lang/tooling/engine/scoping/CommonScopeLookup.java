@@ -73,8 +73,8 @@ public abstract class CommonScopeLookup {
 		for (INamedElement namedElement : matches.getElements()) {
 			if(namedElement instanceof PackageNamespace) {
 				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
-				if(!packageNamespace.isCompleted()) {
-					packageNamespace.setCompleted();
+				if(!packageNamespace.isSemanticReady()) {
+					packageNamespace.setSemanticReady();
 				}
 			}
 		}
@@ -143,7 +143,7 @@ public abstract class CommonScopeLookup {
 		
 		if(resolvedElementsForMemberScopes.contains(concreteElement))
 			return;
-		assertTrue(concreteElement.isCompleted());
+		assertTrue(concreteElement.isSemanticReady());
 		resolvedElementsForMemberScopes.add(concreteElement);
 		
 		concreteElement.resolveSearchInMembersScope(this);

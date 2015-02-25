@@ -57,7 +57,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	@Override
 	protected void doSetCompleted() {
-		assertTrue(refModule.isCompleted());
+		assertTrue(refModule.isSemanticReady());
 	}
 	
 	@Override

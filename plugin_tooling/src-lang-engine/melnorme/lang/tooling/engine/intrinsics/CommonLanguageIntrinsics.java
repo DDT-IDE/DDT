@@ -45,7 +45,7 @@ public interface CommonLanguageIntrinsics {
 		
 		public final void createMembers(IntrinsicNamedElement... members) {
 			doCreateMembers(members);
-			setCompleted();
+			setSemanticReady();
 		}
 		
 		public abstract void doCreateMembers(IntrinsicNamedElement... members);
@@ -110,7 +110,7 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetCompleted() {
-			 assertTrue(isCompleted(type));
+			 assertTrue(type.isSemanticReady());
 		}
 		
 		@Override
@@ -135,7 +135,7 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetCompleted() {
-			 assertTrue(isCompleted(typeRef));
+			 assertTrue(typeRef.isSemanticReady());
 		}
 		
 		@Override

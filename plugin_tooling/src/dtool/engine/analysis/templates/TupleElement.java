@@ -30,7 +30,7 @@ public class TupleElement extends InstantiatedDefUnit implements IConcreteNamedE
 	
 	public TupleElement(DefSymbol defname, NodeVector<Resolvable> values) {
 		super(defname);
-		this.values = assertNotNull(checkAllCompleted(values));
+		this.values = assertNotNull(checkAllSemanticReady(values));
 	}
 	
 	@Override

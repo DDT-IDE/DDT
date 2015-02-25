@@ -31,13 +31,13 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	}
 	
 	@Override
-	public void performNameLookup(CommonScopeLookup search) {
+	public void doPerformNameLookup(CommonScopeLookup lookup) {
 		// Check if we are rooted in the lexical scope, or in a qualification reference
 		CommonQualifiedReference qualificationRef = getQualificationReference();
 		if(qualificationRef != null) {
-			qualificationRef.performQualifiedRefSearch(search);
+			qualificationRef.performQualifiedRefSearch(lookup);
 		} else {
-			super.performNameLookup(search);
+			super.doPerformNameLookup(lookup);
 		}
 	}
 	

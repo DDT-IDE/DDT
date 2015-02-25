@@ -30,7 +30,7 @@ public class TypeAliasElement extends InstantiatedDefUnit {
 	
 	public TypeAliasElement(DefSymbol defName, ITypeNamedElement concreteTarget) {
 		super(defName);
-		this.target = assertNotNull(checkCompleted(concreteTarget));
+		this.target = assertNotNull(checkIsSemanticReady(concreteTarget));
 	}
 	
 	@Override

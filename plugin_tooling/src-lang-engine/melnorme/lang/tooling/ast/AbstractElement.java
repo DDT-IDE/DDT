@@ -35,7 +35,7 @@ public abstract class AbstractElement extends CommonLanguageElement {
 		return ownerElement;
 	}
 	
-	public void setCompleted() {
+	public void setSemanticReady() {
 		assertTrue(isCompleted == false);
 		doSetCompleted();
 		isCompleted = true;
@@ -44,7 +44,7 @@ public abstract class AbstractElement extends CommonLanguageElement {
 	protected abstract void doSetCompleted();
 	
 	@Override
-	public boolean isCompleted() {
+	public boolean isSemanticReady() {
 		return isCompleted;
 	}
 	

@@ -13,7 +13,6 @@ package dtool.engine.analysis.templates;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.IASTVisitor;
-import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.DefUnit;
@@ -25,7 +24,7 @@ public abstract class InstantiatedDefUnit extends DefUnit {
 	
 	public InstantiatedDefUnit(DefSymbol defName) {
 		super(defName.createCopy());
-		assertTrue(defName.isCompleted());
+		assertTrue(defName.isSemanticReady());
 	}
 	
 	@Override
@@ -45,21 +44,6 @@ public abstract class InstantiatedDefUnit extends DefUnit {
 	@SuppressWarnings("unused")
 	public final void visitChildren_rest(IASTVisitor visitor) {
 		
-	}
-	
-	
-	/* -----------------  ----------------- */
-	
-	protected static <T extends ILanguageElement> T checkCompleted(T node) {
-		assertTrue(node == null || node.isCompleted());
-		return node;
-	}
-	
-	protected static <T extends Iterable<? extends ILanguageElement>> T checkAllCompleted(T elements) {
-		for (ILanguageElement element : elements) {
-			checkCompleted(element);
-		}
-		return elements;
 	}
 	
 }

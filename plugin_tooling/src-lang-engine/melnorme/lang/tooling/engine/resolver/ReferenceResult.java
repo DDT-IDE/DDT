@@ -19,7 +19,7 @@ public class ReferenceResult {
 	
 	public ReferenceResult(INamedElement result) {
 		this.result = result;
-		assertTrue(result != null && result.isCompleted());
+		assertTrue(result != null && result.isSemanticReady());
 	}
 	
 }
