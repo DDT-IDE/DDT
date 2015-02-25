@@ -27,7 +27,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	public static final ASTNode[] NO_ELEMENTS = new ASTNode[0]; 
 	
 	/** AST node parent, null if the node is the tree root. */
-	protected ASTNode parent = null;
+	protected CommonLanguageElement parent = null;
 	/** Custom field to store various kinds of data */
 	private NodeData data = NodeData.CREATED_STATUS; 
 	
@@ -41,11 +41,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	/* ------------------------  Parent and children visitor ------------------------ */
-	
-	/* FIXME: need to review this method, subside with getLexicalParent */
-	public final ASTNode getParent() {
-		return parent;
-	}
 	
 	@Override
 	public CommonLanguageElement getLexicalParent() {
@@ -70,7 +65,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
 	@Override
-	public final void setParent(ASTNode parent) {
+	public final void setParent(CommonLanguageElement parent) {
 		assertTrue(parent != null);
 		assertTrue(this.parent == null);
 		this.parent = parent;

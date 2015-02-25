@@ -12,6 +12,7 @@ package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.CommonASTNode;
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -39,7 +40,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	@Override
-	protected ASTNode getParent_Concrete() {
+	protected CommonLanguageElement getParent_Concrete() {
 		assertTrue(parent instanceof DeclarationImport || parent instanceof ImportSelective);
 		return parent;
 	}

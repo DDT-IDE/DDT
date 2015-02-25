@@ -14,6 +14,7 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.CommonASTNode;
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast.util.NodeVector;
@@ -80,7 +81,7 @@ public class DefinitionEnum extends CommonDefinition
 		}
 		
 		@Override
-		protected ASTNode getParent_Concrete() {
+		protected CommonLanguageElement getParent_Concrete() {
 			assertTrue(parent instanceof DeclarationEnum || parent instanceof DefinitionEnum);
 			return parent;
 		}

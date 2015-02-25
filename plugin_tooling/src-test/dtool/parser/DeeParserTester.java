@@ -192,7 +192,7 @@ public class DeeParserTester extends CommonTestUtils {
 	/* ============= Structure Checkers ============= */
 	
 	public static void checkBasicStructureContracts(ASTNode parsedNode) {
-		assertTrue(parsedNode.getParent() == null);
+		assertTrue(parsedNode.getLexicalParent() == null);
 		parsedNode.accept(new ASTVisitor() {
 			ASTNode parent = null;
 			ASTNode lastVisitedNode = null;
@@ -200,7 +200,7 @@ public class DeeParserTester extends CommonTestUtils {
 			@Override
 			public boolean preVisit(ASTNode node) {
 				assertTrue(node.isPostParseStatus());
-				assertTrue(node.getParent() == parent);
+				assertTrue(node.getLexicalParent() == parent);
 				parent = node;
 				lastVisitedNode = node;
 				return true;
@@ -209,7 +209,7 @@ public class DeeParserTester extends CommonTestUtils {
 			@Override
 			public void postVisit(ASTNode node) {
 				assertTrue(node.hasChildren() == (node != lastVisitedNode));
-				parent = node.getParent();
+				parent = (ASTNode) node.getLexicalParent();
 			}
 		});
 	}

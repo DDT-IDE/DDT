@@ -66,7 +66,7 @@ public class DeeSearchEngineTestUtils {
 	
 	public static ArrayList<Integer> getNodeTreePath(ASTNode node) {
 
-		ASTNode parent = node.getParent();
+		ASTNode parent = (ASTNode) node.getLexicalParent();
 		if(parent == null) {
 			return new ArrayList<Integer>();
 		}

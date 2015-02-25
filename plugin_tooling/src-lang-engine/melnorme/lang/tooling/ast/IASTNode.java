@@ -24,7 +24,7 @@ public interface IASTNode extends ISourceElement, IVisitable<IASTVisitor>, ILang
 	@Override
 	public CommonLanguageElement getLexicalParent();
 	
-	public void setParent(ASTNode newParent);
+	public void setParent(CommonLanguageElement newParent);
 	
 	/**
 	 * Returns whether this element has one or more immediate children. This is

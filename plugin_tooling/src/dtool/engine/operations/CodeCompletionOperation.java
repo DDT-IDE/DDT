@@ -89,25 +89,27 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		}
 		
 		Module module = parseResult.getModuleNode();
-		ASTNode nodeAtOffset = new ASTNodeFinderExtension(module, offset, true).match;
-		assertTrue(nodeAtOffset.getSourceRange().contains(offset));
+		ASTNode pickedNode = new ASTNodeFinderExtension(module, offset, true).match;
+		assertTrue(pickedNode.getSourceRange().contains(offset));
 		
-		if(nodeAtOffset instanceof CommonQualifiedReference) {
-			CommonQualifiedReference namedRef = (CommonQualifiedReference) nodeAtOffset;
+		CommonLanguageElement elementAtOffset = pickedNode;
+		
+		if(elementAtOffset instanceof CommonQualifiedReference) {
+			CommonQualifiedReference namedRef = (CommonQualifiedReference) elementAtOffset;
 			assertTrue(nameToken == null);
 			
 			if(offset <= namedRef.getDotOffset()) {
-				nodeAtOffset = namedRef.getParent();
+				elementAtOffset = namedRef.getLexicalParent();
 			}
 			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
-		} else if(nodeAtOffset instanceof RefModule) {
-			RefModule refModule = (RefModule) nodeAtOffset;
+			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
+		} else if(elementAtOffset instanceof RefModule) {
+			RefModule refModule = (RefModule) elementAtOffset;
 			// RefModule has a specialized way to setup prefix len things
 			
 			String source = parseResult.source;
 			PrefixSearchOptions searchOptions = codeCompletionRefModule(offset, tokenAtOffsetRight, source, refModule);
-			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
+			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
 		} 
 		
 		if(nameToken != null) {
@@ -127,7 +129,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			
 		} else {
 			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, nodeAtOffset, searchOptions);
+			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
 		}
 		
 	}

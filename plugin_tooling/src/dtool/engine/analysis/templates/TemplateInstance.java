@@ -62,7 +62,7 @@ public class TemplateInstance extends ASTNode implements IScopeElement {
 		
 		completeLocalAnalysisOnNodeTree();
 		
-		setParent(templateDef.asNode().getParent());
+		setParent(templateDef.asNode().getLexicalParent());
 	}
 	
 	@Override
