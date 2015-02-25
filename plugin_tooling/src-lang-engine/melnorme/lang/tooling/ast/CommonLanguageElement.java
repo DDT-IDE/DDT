@@ -41,8 +41,8 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	public abstract ILanguageElement getOwnerElement();
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
+	public boolean isBuiltinElement() {
+		return getOwnerElement() == null ? true : getOwnerElement().isBuiltinElement();
 	}
 	
 	/* ----------------- INamedElement utils ----------------- */
@@ -107,7 +107,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	@Override
 	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
 		assertNotNull(parentContext);
-		if(isLanguageIntrinsic()) {
+		if(isBuiltinElement()) {
 			return parentContext.getContainingBundleResolution(true, null);
 		}
 		

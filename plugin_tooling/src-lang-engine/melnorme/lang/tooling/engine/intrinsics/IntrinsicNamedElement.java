@@ -6,8 +6,9 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 
 /**
- * Base class for intrinsic elements. See {@link #isLanguageIntrinsic()} 
+ * Base class for builtin elements. See {@link #isBuiltinElement()}
  */
+/* FIXME: refactor this */
 public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 	
 	protected final ElementDoc doc;

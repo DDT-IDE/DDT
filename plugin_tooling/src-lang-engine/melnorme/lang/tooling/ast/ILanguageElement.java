@@ -36,12 +36,14 @@ public interface ILanguageElement {
 	
 	
 	/** 
-	 * @return true if this is an element predefined by the language. 
+	 * @return true if this is a builtin/predefined language element, in other words,
+	 * not created from source code nor source elements.  
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).
-	 * This is a special case for in which the elements do not have a containing module path, 
+	 * 
+	 * This is a special case for in which the elements do not have a containing module, 
 	 * and {@link #getSemanticContainerKey()}  is null. 
 	 */
-	public boolean isLanguageIntrinsic();
+	public boolean isBuiltinElement();
 	/**
 	 * @return the path of the module from where this element was created.
 	 * This is used to find which semantic context to use for the semantic element.

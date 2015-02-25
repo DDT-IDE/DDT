@@ -118,7 +118,7 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 			
 			results.add(new FindDefinitionResultEntry(
 				namedElement.getExtendedName(),
-				namedElement.isLanguageIntrinsic(), 
+				namedElement.isBuiltinElement(), 
 				compilationUnitPath,
 				sourceRange));
 		}

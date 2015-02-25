@@ -59,7 +59,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 	}
 	
 	public static void removeIgnoredElements(LinkedList<INamedElement> resultDefUnits, 
-		boolean ignoreDummy, boolean ignorePrimitives, boolean ignoreIntrinsics) {
+		boolean ignoreDummy, boolean ignorePrimitives, boolean ignoreInstrinsics) {
 		for (Iterator<INamedElement> iterator = resultDefUnits.listIterator(); iterator.hasNext(); ) {
 			INamedElement defElement = iterator.next();
 			
@@ -68,7 +68,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 				iterator.remove();
 			} else if(ignorePrimitives && defElement instanceof IPrimitiveDefUnit) {
 				iterator.remove();
-			} else if(ignoreIntrinsics && defElement.isLanguageIntrinsic()) {
+			} else if(ignoreInstrinsics && defElement.isBuiltinElement()) {
 				iterator.remove();
 			} else if(defElement instanceof ErrorElement) {
 				iterator.remove();

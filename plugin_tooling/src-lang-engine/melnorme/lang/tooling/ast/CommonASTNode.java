@@ -62,7 +62,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
+	public boolean isBuiltinElement() {
 		return false;
 	}
 	

@@ -40,7 +40,7 @@ public class NamedElementUtil {
 			return namedElement.getModuleFullName() + "/";
 		}
 		
-		if(namedElement.isLanguageIntrinsic()) { 
+		if(namedElement.isBuiltinElement()) { 
 			return NATIVES_ROOT + namedElement.getName();
 		}
 		

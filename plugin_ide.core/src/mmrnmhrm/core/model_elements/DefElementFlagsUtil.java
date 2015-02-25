@@ -78,7 +78,7 @@ public class DefElementFlagsUtil {
 			modifiers |= getCommonDefinitionModifiersInfo(commonDefinition);
 		}
 		
-		if(defElement.isLanguageIntrinsic()) {
+		if(defElement.isBuiltinElement()) {
 			modifiers |= DefElementFlagConstants.FLAG_NATIVE;
 		}
 		
