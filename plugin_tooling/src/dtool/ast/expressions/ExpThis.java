@@ -12,6 +12,7 @@ package dtool.ast.expressions;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -44,14 +45,15 @@ public class ExpThis extends Expression {
 		cp.append("this");
 	}
 	
-	public static DefinitionClass_Common getClassNodeParent(ASTNode node) {
+	public static DefinitionClass_Common getClassNodeParent(ASTNode originaParent) {
+		ILanguageElement parent = originaParent;
 		do {
-			node = node.getParent();
-			if(node instanceof DefinitionClass_Common) {
-				DefinitionClass_Common definitionClass = (DefinitionClass_Common) node;
+			parent = parent.getLexicalParent();
+			if(parent instanceof DefinitionClass_Common) {
+				DefinitionClass_Common definitionClass = (DefinitionClass_Common) parent;
 				return definitionClass;
 			}
-		} while(node != null);
+		} while(parent != null);
 		return null;
 	}
 	

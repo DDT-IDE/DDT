@@ -13,8 +13,8 @@ package dtool.ast.references;
 import static melnorme.utilbox.core.CoreUtil.assertCast;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.ReferenceSemantics;
@@ -36,13 +36,13 @@ public final class AutoReference extends Reference {
 	}
 	
 	@Override
-	protected ASTNode getParent_Concrete() {
-		assertCast(getParent(), IVarDefinitionLike.class);
+	protected ILanguageElement getParent_Concrete() {
+		assertCast(getLexicalParent(), IVarDefinitionLike.class);
 		return super.getParent_Concrete();
 	}
 	
 	public IVarDefinitionLike getParent_() {
-		return assertCast(getParent(), IVarDefinitionLike.class);
+		return assertCast(getLexicalParent(), IVarDefinitionLike.class);
 	}
 	
 	@Override

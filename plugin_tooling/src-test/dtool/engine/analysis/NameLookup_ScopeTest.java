@@ -45,7 +45,7 @@ public class NameLookup_ScopeTest extends CommonLookupTest {
 		assertTrue(searchedScopes.size() == 1);
 		
 		IScopeElement searchedScope = new ArrayList2<>(searchedScopes).get(0);
-		assertTrue(((DeclBlock) searchedScope).getParent() instanceof DefinitionClass);
+		assertTrue(((DeclBlock) searchedScope).getLexicalParent() instanceof DefinitionClass);
 	}
 	
 	protected static final String DEFAULT_MARKER = "/*MARKER*/";

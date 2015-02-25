@@ -22,7 +22,7 @@ public interface IASTNode extends ISourceElement, IVisitable<IASTVisitor>, ILang
 	
 	/** Returns the parent of this node, or <code>null</code> if none. */
 	@Override
-	public ILanguageElement getLexicalParent();
+	public CommonLanguageElement getLexicalParent();
 	
 	public void setParent(ASTNode newParent);
 	

@@ -20,8 +20,6 @@ import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
-import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.utilbox.collections.ArrayView;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {
@@ -50,7 +48,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	@Override
-	public ILanguageElement getLexicalParent() {
+	public CommonLanguageElement getLexicalParent() {
 		return parent;
 	}
 	
@@ -86,11 +84,11 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		getParent_Concrete();
 	}
 	
-	/** Same as {@link #getParent()}, but allows classes to cast to a more specific parent. */
+	/** Same as {@link #getLexicalParent()}, but allows classes to cast to a more specific parent. */
 	// Is this extra method really needed instead of just defining getParent as non-final?
 	// Would the casts make a different in performance?
-	protected ASTNode getParent_Concrete() {
-		return getParent();
+	protected ILanguageElement getParent_Concrete() {
+		return getLexicalParent();
 	}
 	
 	public void detachFromParent() {
@@ -208,7 +206,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		
 		assertNotNull(clonedNode);
 		assertTrue(clonedNode != this);
-		assertTrue(clonedNode.getParent() == null);
+		assertTrue(clonedNode.getLexicalParent() == null);
 		assertTrue(clonedNode.getClass() ==  this.getClass());
 		assertTrue(clonedNode.isParsedStatus());
 		assertTrue(clonedNode.isCompleted() == false);
@@ -321,40 +319,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	@Override
 	public boolean isCompleted() {
 		return isPostParseStatus();
-	}
-	
-	
-	/* ----------------- Lexical lookup ----------------- */
-	
-	/** 
-	 * Perform a name lookup starting in this node.
-	 * The exact mechanism in which the name lookup will be performed will depend on the node, 
-	 * but the most common (and default) scenario is to perform a lexical lookup.
-	 * */
-	public void performNameLookup(CommonScopeLookup lookup) {
-		assertTrue(lookup.isSequentialLookup());
-		assertTrue(lookup.refOffset >= 0);
-		
-		lookup.evaluateScope(ASTNode.getPrimitivesScope());
-		if(lookup.isFinished())
-			return;
-		
-		doPerformNameLookupInLexicalScope(lookup);
-	}
-	
-	protected final void doPerformNameLookupInLexicalScope(CommonScopeLookup lookup) {
-		if(this instanceof IScopeElement) {
-			IScopeElement scope = (IScopeElement) this;
-			lookup.evaluateScope(scope);
-		}
-		
-		if(lookup.isFinished())
-			return;
-		
-		ASTNode parent = getParent();
-		if(parent != null) {
-			parent.doPerformNameLookupInLexicalScope(lookup);
-		}
 	}
 	
 }

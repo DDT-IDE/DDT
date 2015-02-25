@@ -90,7 +90,7 @@ public class DefinitionEnumVar extends ASTNode implements IDeclaration, IStateme
 		
 		@Override
 		public DefinitionEnumVar getParent_Concrete() {
-			return assertCast(getParent(), DefinitionEnumVar.class);
+			return assertCast(getLexicalParent(), DefinitionEnumVar.class);
 		}
 		
 		@Override

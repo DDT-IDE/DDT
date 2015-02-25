@@ -13,8 +13,8 @@ package dtool.ast.definitions;
 import static dtool.util.NewUtils.assertCast;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
@@ -76,7 +76,7 @@ public class EnumMember extends DefUnit implements IVarDefinitionLike {
 	
 	public Reference getEnumParentType() {
 		EnumBody enumBody = getParent_Concrete();
-		ASTNode parentEnum = enumBody.getParent();
+		ILanguageElement parentEnum = enumBody.getLexicalParent();
 		if(parentEnum instanceof DeclarationEnum) {
 			DeclarationEnum declarationEnum = (DeclarationEnum) parentEnum;
 			return declarationEnum.type; 

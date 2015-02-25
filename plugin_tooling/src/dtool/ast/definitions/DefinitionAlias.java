@@ -91,7 +91,7 @@ public class DefinitionAlias extends ASTNode implements IDeclaration, IStatement
 		
 		@Override
 		public DefinitionAlias getParent_Concrete() {
-			return assertCast(getParent(), DefinitionAlias.class);
+			return assertCast(getLexicalParent(), DefinitionAlias.class);
 		}
 		
 		@Override

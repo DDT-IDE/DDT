@@ -13,7 +13,7 @@ package melnorme.lang.tooling.symbols;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
@@ -25,7 +25,7 @@ import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
  */
 public abstract class AbstractResolvedNamedElement extends AbstractNamedElement {
 	
-	public AbstractResolvedNamedElement(String name, ILanguageElement lexicalParent, boolean isCompleted) {
+	public AbstractResolvedNamedElement(String name, CommonLanguageElement lexicalParent, boolean isCompleted) {
 		super(name, lexicalParent, null, isCompleted);
 	}
 	

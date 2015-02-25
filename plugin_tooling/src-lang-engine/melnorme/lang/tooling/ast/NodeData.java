@@ -69,7 +69,7 @@ public abstract class NodeData {
 			node.visitDirectChildren(new ASTDirectChildrenVisitor() {
 				@Override
 				protected void geneticChildrenVisit(ASTNode child) {
-					assertTrue(child.getParent() == node);
+					assertTrue(child.getLexicalParent() == node);
 					assertTrue(child.isParsedStatus());
 				}
 			});

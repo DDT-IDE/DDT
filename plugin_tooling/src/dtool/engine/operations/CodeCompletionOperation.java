@@ -16,6 +16,7 @@ import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -174,10 +175,10 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return searchOptions;
 	}
 	
-	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, ASTNode node,
-			PrefixSearchOptions searchOptions) {
+	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, 
+			CommonLanguageElement element, PrefixSearchOptions searchOptions) {
 		CompletionScopeLookup search = new CompletionScopeLookup(offset, mr, searchOptions.searchPrefix);
-		node.performNameLookup(search);
+		element.performNameLookup(search);
 		return new CompletionSearchResult(searchOptions, search.getMatchedElements());
 	}
 	

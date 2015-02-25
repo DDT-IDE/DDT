@@ -42,8 +42,8 @@ public class RefIdentifier extends CommonRefIdentifier implements ITemplateRefNo
 	}
 	
 	protected CommonQualifiedReference getQualificationReference() {
-		if(getParent() instanceof CommonQualifiedReference) {
-			CommonQualifiedReference parent = (CommonQualifiedReference) getParent();
+		if(getLexicalParent() instanceof CommonQualifiedReference) {
+			CommonQualifiedReference parent = (CommonQualifiedReference) getLexicalParent();
 			if(parent.getQualifiedName() == this) {
 				return parent;
 			}

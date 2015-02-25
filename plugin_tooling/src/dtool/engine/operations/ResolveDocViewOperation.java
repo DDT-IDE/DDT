@@ -58,8 +58,8 @@ public class ResolveDocViewOperation extends AbstractDToolOperation {
 		} else if(pickedNode instanceof AttribBasic) {
 			AttribBasic attribBasic = (AttribBasic) pickedNode;
 			if(attribBasic.attribKind == AttributeKinds.AUTO) {
-				if(attribBasic.getParent() instanceof DeclarationAttrib) {
-					DeclarationAttrib declAttrib = (DeclarationAttrib) attribBasic.getParent();
+				if(attribBasic.getLexicalParent() instanceof DeclarationAttrib) {
+					DeclarationAttrib declAttrib = (DeclarationAttrib) attribBasic.getLexicalParent();
 					return getDDocHTMLViewForAuto(mr, declAttrib);
 				}
 			}

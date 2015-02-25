@@ -17,9 +17,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
+import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
+import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolution;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
@@ -34,9 +37,14 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public abstract ILanguageElement getLexicalParent();
+	public abstract CommonLanguageElement getLexicalParent();
+	
 	public abstract ILanguageElement getOwnerElement();
 	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
+	}
 	
 	@Override
 	public String getModuleFullName() {
@@ -100,11 +108,6 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	}
 	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return getOwnerElement() == null ? true : getOwnerElement().isLanguageIntrinsic();
-	}
-	
-	@Override
 	public Path getSemanticContainerKey() {
 		return getOwnerElement() == null ? null : getOwnerElement().getSemanticContainerKey();
 	}
@@ -118,6 +121,42 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	@SuppressWarnings("unused")
 	protected IElementSemanticData doCreateSemantics(PickedElement<?> pickedElement) {
 		throw assertFail(); // Not valid unless re-implemented.
+	}
+	
+	/* ----------------- name lookup ----------------- */
+	
+	/** 
+	 * Perform a name lookup starting in this node.
+	 * The exact mechanism in which the name lookup will be performed will depend on the node, 
+	 * but the most common (and default) scenario is to perform a lexical lookup.
+	 */
+	/* FIXME: make final*/
+	public void performNameLookup(CommonScopeLookup lookup) {
+		assertTrue(isCompleted());
+		
+		assertTrue(lookup.isSequentialLookup());
+		assertTrue(lookup.refOffset >= 0);
+		
+		lookup.evaluateScope(ASTNode.getPrimitivesScope());
+		if(lookup.isFinished())
+			return;
+		
+		doPerformNameLookupInLexicalScope(lookup);
+	}
+	
+	protected final void doPerformNameLookupInLexicalScope(CommonScopeLookup lookup) {
+		if(this instanceof IScopeElement) {
+			IScopeElement scope = (IScopeElement) this;
+			lookup.evaluateScope(scope);
+		}
+		
+		if(lookup.isFinished())
+			return;
+		
+		CommonLanguageElement parent = getLexicalParent();
+		if(parent != null) {
+			parent.doPerformNameLookupInLexicalScope(lookup);
+		}
 	}
 	
 	@Override

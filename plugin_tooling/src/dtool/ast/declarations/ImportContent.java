@@ -13,6 +13,7 @@ package dtool.ast.declarations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
@@ -44,7 +45,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	public DeclarationImport getDeclarationImport() {
-		ASTNode parent = super.getParent();
+		ILanguageElement parent = super.getLexicalParent();
 		if(parent instanceof DeclarationImport) {
 			return (DeclarationImport) parent;
 		} else {

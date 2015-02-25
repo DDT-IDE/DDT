@@ -16,17 +16,17 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 public abstract class AbstractElement extends CommonLanguageElement {
 	
 	protected final ILanguageElement ownerElement; // can be null
-	protected final ILanguageElement lexicalParent; // can be null
+	protected final CommonLanguageElement lexicalParent; // can be null
 	private boolean isCompleted = false;
 	
-	public AbstractElement(ILanguageElement ownerElement, ILanguageElement lexicalParent, boolean isCompleted) {
+	public AbstractElement(ILanguageElement ownerElement, CommonLanguageElement lexicalParent, boolean isCompleted) {
 		this.ownerElement = ownerElement;
 		this.lexicalParent = lexicalParent;
 		this.isCompleted = isCompleted;
 	}
 	
 	@Override
-	public ILanguageElement getLexicalParent() {
+	public CommonLanguageElement getLexicalParent() {
 		return lexicalParent;
 	}
 	

@@ -12,6 +12,7 @@ package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.core.model_elements.DefElementFlagsUtil.getCommonDefinitionModifiersInfo;
+import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTSwitchVisitor;
 import melnorme.utilbox.collections.ArrayView;
@@ -444,9 +445,9 @@ public final class DeeSourceElementProvider extends ASTSwitchVisitor {
 	public boolean visit(NamedReference elem) {
 		Reference topReference = elem;
 		
-		ASTNode parent = topReference.getParent();
+		ILanguageElement parent = topReference.getLexicalParent();
 		if(parent instanceof ExpReference) {
-			parent = parent.getParent();
+			parent = parent.getLexicalParent();
 		}
 		if(parent instanceof ExpCall) {
 			ExpCall expCall = (ExpCall) parent;
