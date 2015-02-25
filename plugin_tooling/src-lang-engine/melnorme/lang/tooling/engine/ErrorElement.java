@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.resolver.IReference;
@@ -59,12 +58,9 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	
 	/* -----------------  ----------------- */
 	
-	protected final ElementDoc doc;
-	
 	public ErrorElement(String name, ILanguageElement ownerElement, ElementDoc doc) {
-		super(name, null, ownerElement, true);
+		super(name, null, ownerElement, doc, true);
 		assertNotNull(ownerElement);
-		this.doc = doc;
 	}
 	
 	@Override
@@ -94,16 +90,6 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	@Override
 	public EArcheType getArcheType() {
 		return EArcheType.Error;
-	}
-	
-	@Override
-	public INamedElementNode resolveUnderlyingNode() {
-		return null;
-	}
-	
-	@Override
-	public ElementDoc resolveDDoc() {
-		return doc;
 	}
 	
 	@Override

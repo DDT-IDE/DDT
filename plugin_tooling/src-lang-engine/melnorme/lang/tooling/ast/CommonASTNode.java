@@ -26,12 +26,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	public static final ASTNode[] NO_ELEMENTS = new ASTNode[0]; 
 	
-	/** AST node parent, null if the node is the tree root. */
-	protected CommonLanguageElement parent = null;
-	/** Custom field to store various kinds of data */
-	private NodeData data = NodeData.CREATED_STATUS; 
-	
-	
 	public CommonASTNode() {
 	}
 	
@@ -61,72 +55,7 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return false;
 	}
 	
-	/* ------------------------------------------------------------ */
-	
-	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
-	@Override
-	public final void setParent(CommonLanguageElement parent) {
-		assertTrue(parent != null);
-		assertTrue(this.parent == null);
-		this.parent = parent;
-		checkNewParent();
-	}
-	
-	protected void checkNewParent() {
-		// Default implementation: do nothing
-		// subclasses can implement to check a contract relating to their parent 
-		// (usually, to ensure the parent is of a certain class)
-		getParent_Concrete();
-	}
-	
-	/** Same as {@link #getLexicalParent()}, but allows classes to cast to a more specific parent. */
-	// Is this extra method really needed instead of just defining getParent as non-final?
-	// Would the casts make a different in performance?
-	protected ILanguageElement getParent_Concrete() {
-		return getLexicalParent();
-	}
-	
-	public void detachFromParent() {
-		assertNotNull(this.parent);
-		CommonASTNode parent_ = (CommonASTNode) this.parent;
-		parent_.data = null; // Note, parent becomes an invalid node after this.
-		this.parent = null;
-	}
-	
 	/* ===============  Children  =============== */
-	
-	/* ----------------- Parenting utils ----------------- */
-	
-	public static <T> ArrayView<T> nonNull(ArrayView<T> arrayView) {
-		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
-	}
-	
-	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends IASTNode> T parentize(T node) {
-		if (node != null) {
-			node.setParent(asNode());
-		}
-		return node;
-	}
-	
-	/** Set the parent of the given collection to the receiver. @return collection */
-	protected final <C extends Iterable<? extends IASTNode>> C parentize(C collection) {
-		parentizeCollection(collection, false, asNode());
-		return collection;
-	}
-	
-	public static void parentizeCollection(Iterable<? extends IASTNode> coll, boolean allowNulls, ASTNode parent) {
-		if (coll == null) {
-			return;
-		}
-		for (IASTNode node : coll) {
-			if(node != null) {
-				node.setParent(parent);
-			} else {
-				assertTrue(allowNulls);
-			}
-		}
-	}
 	
 	/* ----------------- Visitor ----------------- */
 	
@@ -189,6 +118,40 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		}
 	}
 	
+	/* ----------------- childen parenting utils ----------------- */
+	
+	public static <T> ArrayView<T> nonNull(ArrayView<T> arrayView) {
+		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
+	}
+	
+	/** Set the parent of the given node to the receiver. @return node */
+	protected <T extends ILanguageElement> T parentize(T node) {
+		if (node != null) {
+			node.setParent(asNode());
+		}
+		return node;
+	}
+	
+	/** Set the parent of the given collection to the receiver. @return collection */
+	protected final <C extends Iterable<? extends ILanguageElement>> C parentize(C collection) {
+		parentizeCollection(collection, false, asNode());
+		return collection;
+	}
+	
+	public static void parentizeCollection(Iterable<? extends ILanguageElement> coll, boolean allowNulls, 
+			CommonLanguageElement parent) {
+		if (coll == null) {
+			return;
+		}
+		for (ILanguageElement node : coll) {
+			if(node != null) {
+				node.setParent(parent);
+			} else {
+				assertTrue(allowNulls);
+			}
+		}
+	}
+	
 	/* ----------------- cloning ----------------- */
 	
 	@Override
@@ -235,34 +198,10 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/* ------------------------  Node data ------------------------  */
 	
-	public final NodeData getData() {
-		return assertNotNull(data);
-	}
-	
-	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
-	public final void setData(NodeData data) {
-		assertNotNull(data);
-		this.data = data;
-	}
-	
-	/** Removes the data of this node. Can only remove data if node is in parsed status. 
-	 * @return the previous data. */
-	public NodeData resetData() {
-		assertTrue(isParsedStatus()); // can only remove data if node is in parsed status
-		NodeData oldData = data;
-		this.data = NodeData.CREATED_STATUS;
-		return oldData;
-	}
-	
 	protected CreatedStatusNodeData getDataAtCreatedPhase() {
-		assertTrue(data == NodeData.CREATED_STATUS); 
+		assertTrue(getData() == NodeData.CREATED_STATUS); 
 		//return (ParsedNodeData) this.data;
 		return NodeData.CREATED_STATUS;
-	}
-	
-	protected ParsedNodeData getDataAtParsedPhase() {
-		assertTrue(data.isParsedStatus()); 
-		return (ParsedNodeData) data;
 	}
 	
 	public CommonASTNode setParsedStatus() {
@@ -278,6 +217,28 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return getData().isParsedStatus();
 	}
 	
+	/* =============== Analysis and semantics =============== */
+	
+	public final void completeLocalAnalysisOnNodeTree() {
+		accept(CompleteNodeVisitor.instance);
+	}
+	
+	protected final void completeNodeAnalysis() {
+		assertTrue(isParsedStatus());
+		doCompleteNodeAnalysis();
+		ParsedNodeData parsedNodeData = (ParsedNodeData) getData();
+		parsedNodeData.setLocallyAnalysedData(asNode());
+	}
+	
+	protected void doCompleteNodeAnalysis() {
+		// Default implementation: do nothing
+	}
+	
+	@Override
+	public boolean isSemanticReady() {
+		return getData().isLocallyAnalyzedStatus();
+	}
+	
 	/* =============== STRING FUNCTIONS =============== */
 	
 	@Override
@@ -289,31 +250,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		sb.append(toStringAsCode());
 		sb.append("\n");
 		return sb.toString(); 
-	}
-	
-	/* =============== Analysis and semantics =============== */
-	
-	public final void completeLocalAnalysisOnNodeTree() {
-		accept(CompleteNodeVisitor.instance);
-	}
-	
-	protected final void completeNodeAnalysis() {
-		assertTrue(isParsedStatus());
-		doCompleteNodeAnalysis();
-		getDataAtParsedPhase().setLocallyAnalysedData(asNode());
-	}
-	
-	protected void doCompleteNodeAnalysis() {
-		// Default implementation: do nothing
-	}
-	
-	public boolean isPostParseStatus() {
-		return getData().isLocallyAnalyzedStatus();
-	}
-	
-	@Override
-	public boolean isSemanticReady() {
-		return isPostParseStatus();
 	}
 	
 }

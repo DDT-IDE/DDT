@@ -17,7 +17,6 @@ import java.util.Arrays;
 
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics;
-import melnorme.lang.tooling.engine.intrinsics.IntrinsicNamedElement;
 import melnorme.lang.tooling.engine.intrinsics.ModuleQualifiedReference;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -92,7 +91,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	public final ModuleQualifiedReference string_type = new ModuleQualifiedReference("object", "string");
 	
 	
-	public abstract class DeeIntrinsicType extends IntrinsicTypeDefUnit implements ITypeNamedElement {
+	public abstract class DeeIntrinsicType extends BuiltinTypeElement implements ITypeNamedElement {
 		
 		public DeeIntrinsicType(String name, ElementDoc doc) {
 			super(name, doc);

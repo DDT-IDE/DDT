@@ -20,18 +20,32 @@ import melnorme.lang.tooling.engine.resolver.IReference;
 import melnorme.lang.tooling.engine.resolver.TypeSemantics;
 import melnorme.lang.tooling.engine.resolver.VarSemantics;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
+import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import dtool.ast.definitions.EArcheType;
 
 public interface CommonLanguageIntrinsics {
+	
+	public abstract class IntrinsicNamedElement extends AbstractNamedElement {
+		
+		public IntrinsicNamedElement(String name, ElementDoc doc, boolean isCompleted) {
+			super(name, null, null, doc, isCompleted);
+		}
+		
+	}
 
-	public abstract class IntrinsicTypeDefUnit extends IntrinsicNamedElement implements IConcreteNamedElement {
+	public abstract class BuiltinTypeElement extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
 		protected NamedElementsScope membersScope;
 		
-		public IntrinsicTypeDefUnit(String name, ElementDoc doc) {
+		public BuiltinTypeElement(String name, ElementDoc doc) {
 			super(name, doc, false);
+		}
+		
+		@Override
+		public EArcheType getArcheType() {
+			return EArcheType.Struct;
 		}
 		
 		public NamedElementsScope getMembersScope() {

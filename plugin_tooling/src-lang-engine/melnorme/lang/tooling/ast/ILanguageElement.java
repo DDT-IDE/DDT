@@ -28,7 +28,9 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolutio
 public interface ILanguageElement {
 	
 	/** @return the parent element of this element. null if it is the top element of the tree. */
-	CommonLanguageElement getLexicalParent();
+	public CommonLanguageElement getLexicalParent();
+	
+	public void setParent(CommonLanguageElement newParent);
 	
 	/** @return the fully qualified name of the module this element belongs to. 
 	 * Can be null if element is not contained in a module. */

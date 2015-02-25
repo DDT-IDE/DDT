@@ -12,6 +12,7 @@ package dtool.ast.definitions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
@@ -79,12 +80,7 @@ public abstract class DefUnit extends ASTNode implements INamedElementNode {
 	
 	@Override
 	public String getFullyQualifiedName() {
-		INamedElement parentNamespace = getParentNamespace();
-		if(parentNamespace == null) {
-			return getName();
-		} else {
-			return parentNamespace.getFullyQualifiedName() + "." + getName();
-		}
+		return CommonLanguageElement.getFullyQualifiedName(this);
 	}
 	
 	@Override

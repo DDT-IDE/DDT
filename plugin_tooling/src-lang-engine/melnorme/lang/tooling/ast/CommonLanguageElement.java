@@ -31,17 +31,77 @@ import dtool.ast.definitions.EArcheType;
 
 public abstract class CommonLanguageElement implements ILanguageElement {
 	
+	/** AST node parent, null if the node is the tree root. */
+	protected CommonLanguageElement parent = null;
+	/** Custom field to store various kinds of data */
+	private NodeData data = NodeData.CREATED_STATUS; 
+	
 	public CommonLanguageElement() {
 	}
 	
+	/* ----------------- lexical parent ----------------- */
+	
 	@Override
 	public abstract CommonLanguageElement getLexicalParent();
+	
+	
+	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
+	@Override
+	public final void setParent(CommonLanguageElement parent) {
+		assertTrue(parent != null);
+		assertTrue(this.parent == null);
+		this.parent = parent;
+		checkNewParent();
+	}
+	
+	protected void checkNewParent() {
+		// Default implementation: do nothing
+		// subclasses can implement to check a contract relating to their parent 
+		// (usually, to ensure the parent is of a certain class)
+		getParent_Concrete();
+	}
+	
+	/** Same as {@link #getLexicalParent()}, but allows classes to cast to a more specific parent. */
+	// Is this extra method really needed instead of just defining getParent as non-final?
+	// Would the casts make a different in performance?
+	protected ILanguageElement getParent_Concrete() {
+		return getLexicalParent();
+	}
+	
+	public void detachFromParent_disposeParent() {
+		assertNotNull(parent);
+		parent.data = null; // Dispose parent, parent becomes an invalid node.
+		parent = null;
+	}
+	
+	/* ----------------- owner element ----------------- */
 	
 	public abstract ILanguageElement getOwnerElement();
 	
 	@Override
 	public boolean isBuiltinElement() {
 		return getOwnerElement() == null ? true : getOwnerElement().isBuiltinElement();
+	}
+	
+	/* ------------------------  Node data ------------------------  */
+	
+	public final NodeData getData() {
+		return assertNotNull(data);
+	}
+	
+	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
+	public final void setData(NodeData data) {
+		assertNotNull(data);
+		assertTrue(!isSemanticReady()); // can only change data if node has not been made ready
+		this.data = data;
+	}
+	
+	/** Removes the data of this node. Can only remove data if node is in parsed status. 
+	 * @return the previous data. */
+	public NodeData resetData() {
+		NodeData oldData = getData();
+		setData(NodeData.CREATED_STATUS);
+		return oldData;
 	}
 	
 	/* ----------------- INamedElement utils ----------------- */
@@ -63,7 +123,16 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 		return null;
 	}
 	
-	/* ----------------- semanticReady utils ----------------- */
+	public static String getFullyQualifiedName(INamedElement namedElement) {
+		INamedElement parentNamespace = namedElement.getParentNamespace();
+		if(parentNamespace == null) {
+			return namedElement.getName();
+		} else {
+			return parentNamespace.getFullyQualifiedName() + "." + namedElement.getName();
+		}
+	}
+	
+	/* ----------------- isSemanticReady utils ----------------- */
 	
 	@Override
 	public abstract boolean isSemanticReady();

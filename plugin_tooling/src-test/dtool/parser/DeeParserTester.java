@@ -199,7 +199,7 @@ public class DeeParserTester extends CommonTestUtils {
 			
 			@Override
 			public boolean preVisit(ASTNode node) {
-				assertTrue(node.isPostParseStatus());
+				assertTrue(node.isSemanticReady());
 				assertTrue(node.getLexicalParent() == parent);
 				parent = node;
 				lastVisitedNode = node;

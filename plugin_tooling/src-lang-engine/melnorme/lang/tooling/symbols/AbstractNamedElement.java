@@ -13,7 +13,9 @@ package melnorme.lang.tooling.symbols;
 import melnorme.lang.tooling.ast.AbstractElement;
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
+import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
+import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
@@ -22,11 +24,23 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 public abstract class AbstractNamedElement extends AbstractElement implements INamedElement {
 	
 	protected final String name;
+	protected final ElementDoc doc;
 	
 	public AbstractNamedElement(String name, CommonLanguageElement lexicalParent, ILanguageElement ownerElement,
-			 boolean isCompleted) {
+			boolean isCompleted) {
+		this(name, lexicalParent, ownerElement, null, isCompleted);
+	}
+	
+	public AbstractNamedElement(String name, CommonLanguageElement lexicalParent, ILanguageElement ownerElement,
+			ElementDoc doc, boolean isCompleted) {
 		super(ownerElement, lexicalParent, isCompleted);
 		this.name = name;
+		this.doc = doc;
+	}
+	
+	@Override
+	public ElementDoc resolveDDoc() {
+		return doc;
 	}
 	
 	@Override
@@ -47,6 +61,16 @@ public abstract class AbstractNamedElement extends AbstractElement implements IN
 	@Override
 	public String getNameInRegularNamespace() {
 		return getName();
+	}
+	
+	@Override
+	public String getFullyQualifiedName() {
+		return CommonLanguageElement.getFullyQualifiedName(this);
+	}
+	
+	@Override
+	public INamedElementNode resolveUnderlyingNode() {
+		return null;
 	}
 	
 	/* ----------------- ----------------- */

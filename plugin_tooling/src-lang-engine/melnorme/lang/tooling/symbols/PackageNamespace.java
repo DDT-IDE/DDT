@@ -110,11 +110,6 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	public INamedElementNode resolveUnderlyingNode() {
-		return null;
-	}
-	
-	@Override
 	public ElementDoc resolveDDoc() {
 		return null;
 	}

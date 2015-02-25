@@ -231,7 +231,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 				// If not, then this could have been parsed as an expression, retry with expression rule.
 				
 				ExpMixinString expMixinString = declarationMixinString.exp;
-				expMixinString.detachFromParent();
+				expMixinString.detachFromParent_disposeParent();
 				
 				// TODO: perhaps we could add a precise check for whether expMixinString
 				// was consumed sucessfully or had rule broken

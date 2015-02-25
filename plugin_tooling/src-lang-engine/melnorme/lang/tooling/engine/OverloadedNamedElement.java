@@ -12,7 +12,6 @@ package melnorme.lang.tooling.engine;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.resolver.NonValueConcreteElementSemantics;
@@ -69,11 +68,6 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	@Override
 	public String getModuleFullName() {
 		return firstElement.getModuleFullName();
-	}
-	
-	@Override
-	public INamedElementNode resolveUnderlyingNode() {
-		return null;
 	}
 	
 	@Override

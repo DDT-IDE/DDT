@@ -15,7 +15,7 @@ import static dtool.engine.analysis.DeeLanguageIntrinsics.D2_063_intrinsics;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IntrinsicTypeDefUnit;
+import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.BuiltinTypeElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.expressions.Expression;
@@ -46,7 +46,7 @@ public class NE_LanguageIntrinsics_SemanticsTest extends NamedElement_CommonTest
 		ArrayUtil.createFrom(getMemberNames2(D2_063_intrinsics.staticArrayType), String.class)
 	);
 	
-	public static ArrayList<String> getMemberNames2(IntrinsicTypeDefUnit intrinsicDefUnit) {
+	public static ArrayList<String> getMemberNames2(BuiltinTypeElement intrinsicDefUnit) {
 		ArrayList<String> names = new ArrayList<>();
 		for (INamedElement defUnit : intrinsicDefUnit.getMembersScope().getMembersIterable()) {
 			names.add(defUnit.getName());
