@@ -20,9 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.IModuleNode;
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.misc.Location;
@@ -62,11 +64,11 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		visitor.visit(this);
 	}
 	
-	public abstract class BundleResolutionVisitor<ELEM, EXC extends Exception> {
+	public abstract class BundleResolutionVisitor<RESULT, EXC extends Exception> {
 		
-		public ELEM result;
+		public RESULT result;
 		
-		public ELEM findResult(AbstractBundleResolution bundleRes) throws EXC {
+		public RESULT findResult(AbstractBundleResolution bundleRes) throws EXC {
 			bundleRes.visitBundleResolutions(this);
 			return result;
 		}
@@ -116,20 +118,20 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		}.findResult(this);
 	}
 	
-	/** @return the bundle resolution that directly contains given modulePath, or null if none does. */
+	
+	/** @return the bundle resolution that directly contains given element, or null if none does. */
 	@Override
-	public AbstractBundleResolution getContainingBundleResolution(boolean isStdLib, final Location modulePath) {
-		if(isStdLib) {
+	public ISemanticContext getContainingSemanticContext(final CommonLanguageElement languageElement) {
+		if(languageElement.isBuiltinElement()) {
 			return getStdLibResolution();
 		}
-		if(modulePath == null) {
-			return null;
-		}
+		
+		final Location modulePath = Location.createValidOrNull(languageElement.getSemanticContainerKey());
 		
 		return new BundleResolutionVisitor<AbstractBundleResolution, RuntimeException>() {
 			@Override
 			protected void visit(AbstractBundleResolution bundleResolution) {
-				if(bundleResolution.bundleContainsModule(modulePath)) {
+				if(bundleResolution.bundleContainsElement(languageElement, modulePath)) {
 					result = bundleResolution;
 				}
 			}
@@ -188,7 +190,7 @@ public abstract class AbstractBundleResolution extends AbstractSemanticContext {
 		}
 	}
 	
-	protected ResolvedModule getBundleResolvedModule(String moduleFullName) throws ModuleSourceException {
+	protected final ResolvedModule getBundleResolvedModule(String moduleFullName) throws ModuleSourceException {
 		return getBundleResolvedModule(new ModuleFullName(moduleFullName));
 	}
 	

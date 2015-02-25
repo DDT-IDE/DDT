@@ -26,7 +26,6 @@ import melnorme.lang.tooling.engine.scoping.CommonScopeLookup.ScopeNameResolutio
 import melnorme.lang.tooling.engine.scoping.IScopeElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
-import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.EArcheType;
 
 
@@ -107,12 +106,7 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	@Override
 	public ISemanticContext getElementSemanticContext(ISemanticContext parentContext) {
 		assertNotNull(parentContext);
-		if(isBuiltinElement()) {
-			return parentContext.getContainingBundleResolution(true, null);
-		}
-		
-		Location loc = Location.createValidOrNull(this.getSemanticContainerKey());
-		return parentContext.getContainingBundleResolution(false, loc);
+		return parentContext.getContainingSemanticContext(this);
 	}
 	
 	@Override

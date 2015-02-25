@@ -15,7 +15,6 @@ import java.util.Set;
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.engine.IElementSemanticData;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
-import melnorme.utilbox.misc.Location;
 
 /** 
  * An interface for a service that given module names knows how to find parsed Module's in an 
@@ -35,7 +34,7 @@ public interface ISemanticContext {
 	IConcreteNamedElement findModule(ModuleFullName moduleName) throws ModuleSourceException;
 	
 	
-	ISemanticContext getContainingBundleResolution(boolean isStdLib, Location modulePath);
+	ISemanticContext getContainingSemanticContext(CommonLanguageElement languageElement);
 	
 	/**
 	 * @return The element semantics for the given element.

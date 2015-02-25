@@ -12,6 +12,7 @@ package dtool.engine;
 
 import java.util.List;
 
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.utilbox.misc.Location;
@@ -87,15 +88,15 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 	 */
 	public static class MissingStandardLibraryResolution extends StandardLibraryResolution {
 		
+		protected final ResolvedModule fakeObjectModule;
 		
 		public MissingStandardLibraryResolution(SemanticManager manager) {
 			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(
 				NULL_COMPILER_INSTALL_PATH_objectPath));
 			
-			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, 
-				NULL_COMPILER_INSTALL_PATH_objectPath.path);
-			ResolvedModule resolvedModule = new ResolvedModule(parsedModule, this);
-			resolvedModules.put(NULL_COMPILER_INSTALL_PATH_objectPath, resolvedModule);
+			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, "object");
+			fakeObjectModule = new ResolvedModule(parsedModule, this);
+			resolvedModules.put(NULL_COMPILER_INSTALL_PATH_objectPath, fakeObjectModule);
 		}
 		
 		@Override
@@ -105,6 +106,14 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		
 		@Override
 		public synchronized boolean checkIsModuleContentsStale() {
+			return false;
+		}
+		
+		@Override
+		public boolean bundleContainsElement(CommonLanguageElement languageElement, Location path) {
+			if(languageElement.getModuleElement() == fakeObjectModule.getModuleNode()) {
+				return true;
+			}
 			return false;
 		}
 		

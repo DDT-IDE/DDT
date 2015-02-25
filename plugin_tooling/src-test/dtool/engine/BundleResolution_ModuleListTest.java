@@ -10,7 +10,6 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.engine.StandardLibraryResolution.NULL_COMPILER_INSTALL_PATH;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_BaseLocation;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
@@ -172,13 +171,10 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		assertTrue(fallBackStdLibResolution.checkIsModuleContentsStale() == false);
 		assertTrue(fallBackStdLibResolution.checkIsModuleListStale() == false);
 		
-		// FIXME: re enable this test
-//		ResolvedModule objectModule = testFindResolvedModule(sr, "object", null);
-//		// Ensure it's null because file doesn't actually exists
-//		assertTrue(objectModule.getModuleNode().compilationUnitPath == null); 
+		ResolvedModule objectModule = testFindResolvedModule(sr, "object", null);
+		assertAreEqual(objectModule.getModuleNode().compilationUnitPath, null); 
 		
-		BundleResolution bundleRes = sm.getStoredResolution(BASIC_LIB_NullCompilerInstall);
-		testFindResolvedModule(bundleRes, "object", NULL_COMPILER_INSTALL_PATH.resolve_fromValid("object.di"));
+		assertTrue(sr == sm.getStoredResolution(BASIC_LIB_NullCompilerInstall));
 		
 		assertEqualSet(sr.findModules(""), hashSet(
 			"basic_lib_pack.foo",

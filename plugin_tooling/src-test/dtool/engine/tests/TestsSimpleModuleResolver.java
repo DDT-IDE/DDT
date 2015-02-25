@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.context.AbstractSemanticContext;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ISemanticContext;
@@ -89,7 +90,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	}
 	
 	@Override
-	public ISemanticContext getContainingBundleResolution(boolean isStdLib, Location modulePath) {
+	public ISemanticContext getContainingSemanticContext(CommonLanguageElement languageElement) {
 		return this;
 	}
 	

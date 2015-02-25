@@ -41,8 +41,13 @@ public abstract class AbstractSemanticContext implements ISemanticContext {
 		return bundleModules.moduleFiles;
 	}
 	
-	public boolean bundleContainsModule(Location path) {
-		return bundleModules.moduleFiles.contains(path);
+	public boolean bundleContainsModule(Location modulePath) {
+		return bundleModules.moduleFiles.contains(modulePath);
+	}
+	
+	@SuppressWarnings("unused")
+	public boolean bundleContainsElement(CommonLanguageElement languageElement, Location modulePath) {
+		return bundleContainsModule(modulePath);
 	}
 	
 	/** @return the absolute path of a module contained in this bundle resolution, or null if not found. */

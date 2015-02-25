@@ -278,7 +278,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		Location modulePath = resolvedModule == null ? null : resolvedModule.getModulePath();
 		assertAreEqual(modulePath, expectedPath);
 		
-		assertTrue(bundleContext.findResolvedModule(modulePath) == resolvedModule);
+		if(modulePath != null) {
+			assertTrue(bundleContext.findResolvedModule(modulePath) == resolvedModule);
+		}
 		Module moduleNode = resolvedModule == null ? null : resolvedModule.getModuleNode();
 		assertAreEqual(bundleContext.findModuleNode(moduleFullName), moduleNode);
 		
