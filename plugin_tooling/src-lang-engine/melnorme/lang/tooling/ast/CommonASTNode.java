@@ -59,10 +59,16 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return parent;
 	}
 	
-	@Override
-	public boolean isCompleted() {
-		return isPostParseStatus();
+	public final IModuleNode getModuleNode() {
+		return NodeElementUtil.getMatchingParent(this, IModuleNode.class);
 	}
+	
+	@Override
+	public boolean isLanguageIntrinsic() {
+		return false;
+	}
+	
+	/* ------------------------------------------------------------ */
 	
 	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
 	@Override
@@ -93,6 +99,43 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		parent_.data = null; // Note, parent becomes an invalid node after this.
 		this.parent = null;
 	}
+	
+	/* ===============  Children  =============== */
+	
+	/* ----------------- Parenting utils ----------------- */
+	
+	public static <T> ArrayView<T> nonNull(ArrayView<T> arrayView) {
+		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
+	}
+	
+	/** Set the parent of the given node to the receiver. @return node */
+	protected <T extends IASTNode> T parentize(T node) {
+		if (node != null) {
+			node.setParent(asNode());
+		}
+		return node;
+	}
+	
+	/** Set the parent of the given collection to the receiver. @return collection */
+	protected final <C extends Iterable<? extends IASTNode>> C parentize(C collection) {
+		parentizeCollection(collection, false, asNode());
+		return collection;
+	}
+	
+	public static void parentizeCollection(Iterable<? extends IASTNode> coll, boolean allowNulls, ASTNode parent) {
+		if (coll == null) {
+			return;
+		}
+		for (IASTNode node : coll) {
+			if(node != null) {
+				node.setParent(parent);
+			} else {
+				assertTrue(allowNulls);
+			}
+		}
+	}
+	
+	/* ----------------- Visitor ----------------- */
 	
 	/** Accept a visitor into this node. */
 	@Override
@@ -255,39 +298,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return sb.toString(); 
 	}
 	
-	/* =============== Parenting utils =============== */
-	
-	public static <T> ArrayView<T> nonNull(ArrayView<T> arrayView) {
-		return arrayView != null ? arrayView : ArrayView.EMPTY_ARRAYVIEW.<T>upcastTypeParameter();
-	}
-	
-	/** Set the parent of the given node to the receiver. @return node */
-	protected <T extends IASTNode> T parentize(T node) {
-		if (node != null) {
-			node.setParent(asNode());
-		}
-		return node;
-	}
-	
-	/** Set the parent of the given collection to the receiver. @return collection */
-	protected final <C extends Iterable<? extends IASTNode>> C parentize(C collection) {
-		parentizeCollection(collection, false, asNode());
-		return collection;
-	}
-	
-	public static void parentizeCollection(Iterable<? extends IASTNode> coll, boolean allowNulls, ASTNode parent) {
-		if (coll == null) {
-			return;
-		}
-		for (IASTNode node : coll) {
-			if(node != null) {
-				node.setParent(parent);
-			} else {
-				assertTrue(allowNulls);
-			}
-		}
-	}
-	
 	/* =============== Analysis and semantics =============== */
 	
 	public final void completeLocalAnalysisOnNodeTree() {
@@ -308,16 +318,11 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 		return getData().isLocallyAnalyzedStatus();
 	}
 	
-	/* ------------------------------------------------------------ */
-	
-	public final IModuleNode getModuleNode() {
-		return NodeElementUtil.getMatchingParent(this, IModuleNode.class);
-	}
-	
 	@Override
-	public boolean isLanguageIntrinsic() {
-		return false;
+	public boolean isCompleted() {
+		return isPostParseStatus();
 	}
+	
 	
 	/* ----------------- Lexical lookup ----------------- */
 	

@@ -12,7 +12,6 @@ package melnorme.lang.tooling.ast_actual;
 
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
-import dtool.ast.definitions.Module;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 
 public abstract class ASTNode extends CommonASTNode {
@@ -22,10 +21,6 @@ public abstract class ASTNode extends CommonASTNode {
 	public abstract ASTNodeTypes getNodeType();
 	
 	/* ------------------------------------------------------------ */
-	
-	public final Module getModuleNode_() {
-		return (Module) getModuleNode();
-	}
 	
 	public static NamedElementsScope getPrimitivesScope() {
 		return DeeLanguageIntrinsics.D2_063_intrinsics.primitivesScope;

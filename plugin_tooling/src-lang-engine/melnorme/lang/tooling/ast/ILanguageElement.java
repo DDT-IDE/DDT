@@ -44,7 +44,7 @@ public interface ILanguageElement {
 	 * @return true if this is an element predefined by the language. 
 	 * (example: primitives such as int, void, or native types like arrays, pointer types).
 	 * This is a special case for in which the elements do not have a containing module path, 
-	 * and {@link #getSemanticContainerKey() is null}. 
+	 * and {@link #getSemanticContainerKey()}  is null. 
 	 */
 	public boolean isLanguageIntrinsic();
 	/**
