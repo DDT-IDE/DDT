@@ -12,10 +12,6 @@ package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
 
-import melnorme.lang.tooling.context.EmptySemanticResolution;
-import melnorme.lang.tooling.context.ISemanticContext;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
@@ -28,24 +24,6 @@ import org.eclipse.dltk.core.ISourceModule;
  * Problematic API that needs to be replaced eventually
  */
 public class DToolClient_Bad {
-	
-	@Deprecated
-	public static ISemanticContext getResolverFor(Path filePath) {
-		try {
-			return getResolverFor(Location.create(filePath));
-		} catch (InvalidPathExceptionX e) {
-			return new EmptySemanticResolution();
-		}
-	}
-	
-	@Deprecated
-	public static ISemanticContext getResolverFor(Location filePath) {
-		try {
-			return DToolClient.getDefault().getResolvedModule(filePath).getSemanticContext();
-		} catch (CommonException e) {
-			return new EmptySemanticResolution();
-		}
-	}
 	
 	@Deprecated
 	public static Path getFilePath(ISourceModule input) throws CoreException {

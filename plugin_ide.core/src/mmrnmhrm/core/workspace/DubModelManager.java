@@ -28,7 +28,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -51,7 +50,6 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.launching.ScriptRuntime;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
@@ -401,79 +399,18 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 		
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
-		entries.add(DLTKCore.newContainerEntry(ScriptRuntime.newDefaultInterpreterContainerPath()));
-		entries.add(DLTKCore.newContainerEntry(new Path(DubDependenciesBuildpathContainer.CONTAINER_PATH_ID)));
-		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
 			IPath path2 = projectElement.getPath().append(srcFolder.toString());
 			entries.add(DLTKCore.newSourceEntry(path2));
 		}
 		
 		try {
-			IBuildpathEntry[] bpEntriesFromDeps = getBuildpathEntriesFromDeps(bundleDesc);
-			updateDubBuildpathContainer(projectElement, bpEntriesFromDeps);
 			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
 		} catch (ModelException me) {
 			logInternalError(me);
 		}
 	}
 	
-	protected void updateDubBuildpathContainer(IScriptProject projectElement, IBuildpathEntry[] entries) 
-			throws ModelException {
-		DubDependenciesBuildpathContainer dubContainer = new DubDependenciesBuildpathContainer(projectElement, entries);
-		DLTKCore.setBuildpathContainer(DubDependenciesBuildpathContainer.CONTAINER_PATH, array(projectElement), 
-			array(dubContainer), null);
-	}
-	
-	protected IBuildpathEntry[] getBuildpathEntriesFromDeps(DubBundleDescription bundleDesc) {
-		ArrayList<IBuildpathEntry> depEntries = new ArrayList<>();
-		for (DubBundle depBundle : bundleDesc.getBundleDependencies()) {
-			BundlePath bundlePath = depBundle.getBundlePath();
-			if(depBundle.hasErrors() || bundlePath == null) {
-				continue;
-			}
-			IProject workspaceProject = findProjectForBundle(depBundle);
-			if(workspaceProject != null) {
-				depEntries.add(DLTKCore.newProjectEntry(workspaceProject.getFullPath(), true));
-			} else {
-				for (java.nio.file.Path srcFolder : depBundle.getEffectiveSourceFolders()) {
-					
-					Location srcFolderAbsolute = bundlePath.resolve(srcFolder);
-					depEntries.add(
-						DubDependenciesBuildpathContainer.createDubBuildpathEntry(
-							EclipseUtils.epath(srcFolderAbsolute)));
-				}
-			}
-		}
-		
-		return ArrayUtil.createFrom(depEntries, IBuildpathEntry.class);
-	}
-	
-	protected IProject findProjectForBundle(DubBundle depBundle) {
-		return findProjectForBundleLocation(depBundle.getLocationPath());
-	}
-	
-	protected IProject findProjectForBundleLocation(java.nio.file.Path location) {
-		if(location == null) {
-			return null;
-		}
-		
-		// BM: There is a minor race condition here that will cause a temporary inconsistent state.
-		// TODO: to avoid that we should maintain a mapping of location->project in Dub Model.
-		IProject[] deeProjects;
-		try {
-			deeProjects = EclipseUtils.getOpenedProjects(DeeCore.NATURE_ID);
-		} catch (CoreException e) {
-			return null;
-		}
-		for (IProject project : deeProjects) {
-			if(project.getLocation().toFile().toPath().equals(location) && getModel().getBundleInfo(project) != null) {
-				return project;
-			}
-		}
-		
-		return null;
-	}
 }
 
 class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {

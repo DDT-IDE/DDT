@@ -135,6 +135,7 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 			}
 			
 		} finally {
+			/* FIXME: don't discard working copy */
 			DToolClient.getDefault().discardServerWorkingCopy(filePath);
 		}
 	}

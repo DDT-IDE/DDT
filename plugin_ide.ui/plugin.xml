@@ -291,20 +291,6 @@
    </extension>
    
    <extension
-         point="org.eclipse.search.searchPages">
-      <page
-            canSearchEnclosingProjects="true"
-            class="mmrnmhrm.ui.search.DeeSearchPage"
-            enabled="true"
-            extensions="d,di,dh:90"
-            icon="icons/action16e/d_search.png"
-            id="org.dsource.ddt.ide.ui.DeeSearchPage"
-            label="%LangSearchPage.label"
-            showScopeSection="true"
-            sizeHint="460,160">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <category
             id="org.dsource.ddt.ide.ui"
@@ -348,13 +334,6 @@
        name="%OpenTypeInHierarchyAction.name">
       </command>
 
-      <command
-       categoryId="org.dsource.ddt.ide.ui.commands.category1"
-       defaultHandler="mmrnmhrm.ui.actions.DeeOpenSearchPageHandler"
-       description="%OpenLangSearchPageAction.tooltip"
-       id="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
-       name="%OpenLangSearchPageAction.name">
-      </command>
 <!--
       <command
             categoryId="org.dsource.ddt.ide.ui.commands.category1"
@@ -384,12 +363,6 @@
             contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+H">
-      </key>
-      <key
-            commandId="org.eclipse.dltk.ui.edit.text.script.search.references.in.workspace"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+G">
       </key>
    </extension>
    
@@ -431,16 +404,6 @@
                id="org.eclipse.search.menu">
             <groupMarker name="dialogGroup"/>
          </menu>
-
-         <action
-               class="mmrnmhrm.ui.actions.DeeOpenSearchPageAction"
-               definitionId="org.dsource.ddt.ide.ui.commands.openDeeSearchPage"
-               icon="icons/action16e/d_search.png"
-               id="org.dsource.ddt.ide.ui.actions.deeOpenSearchPage"
-               label="%OpenLangSearchPageAction.label"
-               menubarPath="org.eclipse.search.menu/dialogGroup"
-               tooltip="%OpenLangSearchPageAction.tooltip">
-         </action>
 
       </actionSet>
    </extension>

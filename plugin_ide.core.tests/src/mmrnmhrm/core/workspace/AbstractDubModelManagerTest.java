@@ -14,7 +14,6 @@ package mmrnmhrm.core.workspace;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer.isDubBuildpathEntry;
 
 import java.nio.file.Path;
 import java.util.Collection;
@@ -26,7 +25,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.IteratorUtil;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
@@ -236,11 +234,10 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		expMainBundle.checkBundleDescription(dubBundle, true);
 		testDubContainer(project, expMainBundle);
 
-		DubBundleChecker[] deps = expMainBundle.expectedDeps;
 		IScriptProject dubProject = DLTKCore.create(project);
 		checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 		
-		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders, deps);
+		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders);
 		
 		IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 		assertTrue(dubErrorMarkers.length == 0);
@@ -320,7 +317,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			}
 			
 			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
-				assertTrue(entryPath.toString() .equals(DubDependenciesBuildpathContainer.CONTAINER_PATH_ID));
+				assertFail();
 				continue;
 			}
 			
@@ -335,22 +332,17 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		assertTrue(sourcePaths.isEmpty());
 	}
 	
-	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, Path[] srcFolders, 
-			DubBundleChecker[] deps) throws ModelException {
+	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, Path[] srcFolders) throws ModelException {
 		HashSet<Path> sourcePaths = hashSet(srcFolders);
 		
 		LinkedList<IBuildpathEntry> buildpathToVerify = CollectionUtil.createLinkedList(buildpath);
-		
-		for (DubBundleChecker bundleDep : deps) {
-			verifyAndRemoveDepBuildpathEntries(bundleDep, buildpathToVerify);
-		}
 		
 		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
 			IBuildpathEntry bpEntry = iter.next();
 			
 			IPath entryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
 			
-			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY && !isDubBuildpathEntry(bpEntry)) {
+			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY) {
 				String entryPathStr = entryPath.toString();
 				assertTrue(
 						entryPathStr.endsWith("druntime/import") || 
@@ -371,59 +363,6 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		// Ensure we matched every entry
 		assertTrue(sourcePaths.isEmpty());
 		assertTrue(buildpathToVerify.isEmpty());
-	}
-	
-	protected static void verifyAndRemoveDepBuildpathEntries(DubBundleChecker bundleDep,
-			LinkedList<IBuildpathEntry> buildpathToVerify) {
-		if(bundleDep instanceof ProjDepChecker) {
-			ProjDepChecker projDepChecker = (ProjDepChecker) bundleDep;
-			removeDepProjBPEntry(projDepChecker.project, buildpathToVerify);
-		} else {
-			for (Path srcFolderPath : IteratorUtil.iterable(bundleDep.sourceFolders)) {
-				Location srcFolderAbsolutePath = bundleDep.location.resolve(srcFolderPath);
-				removeDepBuildpathEntry(buildpathToVerify, srcFolderAbsolutePath);
-			}
-		}
-	}
-	
-	protected static void removeDepProjBPEntry(IProject project, LinkedList<IBuildpathEntry> buildpathToVerify) {
-		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
-			IBuildpathEntry bpEntry = iter.next();
-			IPath bpEntryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
-			
-			if(bpEntryPath.equals(project.getFullPath())) {
-				assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_PROJECT);
-				iter.remove();
-				return;
-			}
-		}
-		assertFail(); // Must find match
-	}
-	
-	protected static void removeDepBuildpathEntry(LinkedList<IBuildpathEntry> buildpathToVerify,
-			Location srcFolderAbsolutePath) {
-		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
-			IBuildpathEntry bpEntry = iter.next();
-			
-			IPath bpEntryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
-			if(bpEntryPath.toFile().toPath().equals(srcFolderAbsolutePath.path)) {
-				assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY);
-				iter.remove();
-				return;
-			}
-		}
-		assertFail(); // Must find match
-	}
-	
-	public static class ProjDepChecker extends DubBundleChecker {
-		
-		protected IProject project;
-		
-		public ProjDepChecker(IProject project, String bundleName) {
-			super(loc(project), bundleName);
-			this.project = project;
-		}
-		
 	}
 	
 }

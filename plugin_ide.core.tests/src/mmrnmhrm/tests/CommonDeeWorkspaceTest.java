@@ -1,7 +1,6 @@
 package mmrnmhrm.tests;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.Location;
@@ -100,6 +99,7 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 		return createAndOpenDeeProject(name, overwrite, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
 	
+	/* FIXME: remove install types */
 	public static IScriptProject setupStandardDeeProject(IProject project) throws CoreException {
 		return setupStandardDeeProject(project, DMDInstallType.INSTALLTYPE_ID, MOCK_DMD2_INSTALL_NAME);
 	}
@@ -112,42 +112,27 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 	
 	public static IScriptProject setupStandardDeeProject(final IProject project, String installTypeId,
 			String installId) throws CoreException {
-		final String libraryBuildpathEntry = installTypeId + "/" + installId;
 		EnvironmentManager.setEnvironmentId(project, null, false);
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				setupDeeProject(project, libraryBuildpathEntry);
+				setupDeeProject(project);
 			}
 		}, null);
 		IScriptProject scriptProject = DLTKCore.create(project);
 //		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 //		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
 		
-		checkInstall(scriptProject, installTypeId, installId);
 		return scriptProject;
 	}
 	
-	public static void checkInstall(IScriptProject project, String installTypeId, String installId) 
-			throws CoreException {
-		IInterpreterInstall install = ScriptRuntime.getInterpreterInstall(project);
-		assertNotNull(install);
-		assertTrue(install.getInterpreterInstallType().getId().endsWith(installTypeId));
-		assertTrue(install.getId().startsWith(installId));
-	}
-	
-	
-	public static void setupDeeProject(IProject project, String libraryEntry) throws CoreException {
+	public static void setupDeeProject(IProject project) throws CoreException {
 		IScriptProject dltkProj = DLTKCore.create(project);
 		assertTrue(!dltkProj.exists());
 		setupLangProject(project);
 		assertTrue(dltkProj.exists());
 		
-		IBuildpathEntry entry = DLTKCore.newContainerEntry(
-			ScriptRuntime.newDefaultInterpreterContainerPath().append(libraryEntry)		
-		);
-		dltkProj.setRawBuildpath(new IBuildpathEntry[] {entry}, null);
-		assertNotNull(ScriptRuntime.getInterpreterInstall(dltkProj));
+		dltkProj.setRawBuildpath(new IBuildpathEntry[] {}, null);
 	}
 	
 }

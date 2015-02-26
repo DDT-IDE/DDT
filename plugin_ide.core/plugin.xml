@@ -111,21 +111,6 @@
       <interpreterInstallType class="mmrnmhrm.core.compiler_installs.GenericInstallType"
             id="org.dsource.ddt.ide.core.launching.GenericInstallType" />
    </extension>
-   <extension
-         point="org.eclipse.dltk.launching.interpreterContainerExtension">
-      <interpreterContainerExtension
-            class="mmrnmhrm.core.compiler_installs.DeeInterpreterContainerExtension"
-            nature="org.dsource.ddt.ide.core.nature"
-            priority="0">
-      </interpreterContainerExtension>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.buildpathContainerInitializer">
-      <buildpathContainerInitializer
-            class="mmrnmhrm.core.workspace.DubDependenciesBuildpathContainer$DubBPContainerInitializer"
-            id="org.dsource.ddt.ide.core.DubContainer">
-      </buildpathContainerInitializer>
-   </extension>
     <extension
          id="DubProblem"
          name="%DUBProblem"
@@ -148,35 +133,6 @@
       <super type="org.dsource.ddt.ide.core.DubBuildProblem"/>
       <persistent value="true"/>
    </extension>
-   <extension
-         name="TODO"
-         point="org.eclipse.dltk.core.selectionEngine">
-      <selectionEngine
-            class="mmrnmhrm.core.engine_client.DeeSelectionEngine"
-            nature="org.dsource.ddt.ide.core.nature"
-            priority="0">
-      </selectionEngine>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.search">
-      <searchFactory
-            class="mmrnmhrm.core.search.DeeSearchFactory"
-            nature="org.dsource.ddt.ide.core.nature">
-      </searchFactory>
-      <matchLocator
-            class="mmrnmhrm.core.search.DeeMatchLocator"
-            nature="org.dsource.ddt.ide.core.nature">
-      </matchLocator>
-   </extension>
-   <!--
-   <extension
-         point="org.eclipse.dltk.core.builder">
-      <builder
-            class="mmrnmhrm.core.build.DeeDLTKScriptBuilder"
-            nature="org.dsource.ddt.ide.core.nature">
-      </builder>
-   </extension>
-   -->
    
 	
 	<!-- ============ Launch configuration type ============= -->

@@ -32,7 +32,6 @@ Export-Package: melnorme.lang.ide.core,
  mmrnmhrm.core.engine_client,
  mmrnmhrm.core.launch,
  mmrnmhrm.core.model_elements,
- mmrnmhrm.core.search,
  mmrnmhrm.core.workspace,
  mmrnmhrm.core.workspace.viewmodel,
  org.dsource.ddt.ide.core

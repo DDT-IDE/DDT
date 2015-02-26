@@ -41,10 +41,6 @@ public abstract class Reference extends Resolvable implements IReference {
 		return resolveTargetElement(context);
 	}
 	
-	@Deprecated
-	public final Collection2<INamedElement> findTargetDefElements(ISemanticContext context) {
-		return resolveResultToCollection(resolveTargetElement(context));
-	}
 	
 	public static Collection2<INamedElement> resolveResultToCollection(INamedElement result) {
 		if(result instanceof OverloadedNamedElement) {

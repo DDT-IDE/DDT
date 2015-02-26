@@ -12,7 +12,6 @@ package org.dsource.ddt.lang.ui.editor;
 
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import mmrnmhrm.org.eclipse.dltk.ui.actions.ReferencesSearchGroup;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IMenuManager;
@@ -21,7 +20,6 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.IShowInTargetList;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
@@ -42,20 +40,14 @@ public abstract class ScriptEditorExtension extends ScriptEditor_Actions {
 	
 	protected abstract String getPartitioningToConnect();
 	
-	protected ActionGroup fReferencesGroup;
-	
 	@Override
 	protected void createActions() {
 		super.createActions();
-		
-		fReferencesGroup = new ReferencesSearchGroup(this, this.getLanguageToolkit());
 	}
 	
 	@Override
 	public void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
-		
-		fReferencesGroup.fillContextMenu(menu);
 	}
 	
 	// Prevent showing Script Explorer in "Show In"

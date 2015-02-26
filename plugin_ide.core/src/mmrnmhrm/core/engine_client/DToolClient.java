@@ -245,11 +245,6 @@ public class DToolClient {
 	
 	/* ----------------- Engine client requests ----------------- */
 	
-	/* FIXME: review this code. */
-	@Deprecated
-	public ResolvedModule getResolvedModule(Location filePath) throws CommonException {
-		return dtoolServer.getUpdatedResolvedModule(filePath, DeeCorePreferences.getEffectiveDubPath());
-	}
 	
 	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws CoreException {

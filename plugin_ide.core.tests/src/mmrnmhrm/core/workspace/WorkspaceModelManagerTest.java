@@ -202,7 +202,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
 				rawDeps("dub_lib"), 
-				new ProjDepChecker(libProject, "dub_lib")
+				new DubBundleChecker(loc(libProject), "dub_lib")
 			));
 		
 		libProject.delete(true, null);
