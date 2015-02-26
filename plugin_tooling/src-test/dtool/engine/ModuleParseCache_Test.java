@@ -104,7 +104,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		assertEquals(parsedModule.source, SOURCE1);
 		
 		// Test caching
-		assertTrue(mpc.getEntry(CU_PATH).isWorkingCopy == false);
+		assertTrue(mpc.getEntry(CU_PATH).isWorkingCopy() == false);
 		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
 		assertTrue(mpc.getParsedModule(CU_PATH) == parsedModule);
 		
@@ -200,7 +200,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	
 	protected ParsedModule setWorkingCopySourceAndParse(Path filePath, String source) {
 		ParsedModule parsedModule = mpc.setWorkingCopyAndGetParsedModule(filePath, source);
-		assertTrue(mpc.getEntry(filePath).isWorkingCopy);
+		assertTrue(mpc.getEntry(filePath).isWorkingCopy());
 		return parsedModule;
 	}
 	
