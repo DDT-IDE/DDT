@@ -133,10 +133,6 @@ public class DeeModelElement_Test extends CommonDeeWorkspaceTest implements ITes
 		}.visitAll();
 		
 		assertTrue(topLevelElement.getMethod("OtherFunction").exists());
-		// TODO: need to re-enable this test, but need to complete search engine tests first
-		if(false) {
-			assertTrue(topLevelElement.getMethod("OtherFunction").getChildren().length == 0);
-		}
 	}
 	
 	protected void checkElementExists(ISourceModule sourceModule, IMember element, EArcheType archeType, 

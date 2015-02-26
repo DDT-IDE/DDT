@@ -45,14 +45,14 @@ public class MockCompilerInstalls {
 		} catch (IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
-		DMD_CompilerInstall = assertNotNull(
-			DToolServer.getCompilerInstallForPath(DEFAULT_DMD_INSTALL_EXE_PATH));
+		DMD_CompilerInstall = assertNotNull(DToolServer.getCompilerInstallForPath(DEFAULT_DMD_INSTALL_EXE_PATH));
 	}
 	
 	protected static void setupMockCompilerInstalls() throws IOException {
 		FileUtil.deleteDir(MOCK_COMPILERS_PATH);
 		MiscFileUtils.copyDirContentsIntoDirectory(
-			DToolTestResources.getTestResourceFile(RESOURCE_CompilerInstalls).toPath(), MOCK_COMPILERS_PATH.path);
+			DToolTestResources.getTestResourceLoc(RESOURCE_CompilerInstalls), 
+			MOCK_COMPILERS_PATH);
 	}
 	
 }

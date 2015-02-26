@@ -34,7 +34,6 @@ import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine_client.DubProcessManager;
 import mmrnmhrm.core.engine_client.DubProcessManager.DubCompositeOperation;
-import mmrnmhrm.core.engine_client.SearchAndAddCompilersTask.SearchAndAddCompilersOnPathJob;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
 import org.eclipse.core.resources.IMarker;
@@ -72,7 +71,7 @@ public class DubModelManager extends BundleModelManager {
 	protected final DubWorkspaceModel model;
 	protected final DubProcessManager dubProcessManager = new DubProcessManager();
 	
-	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
+//	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
 	public DubModelManager(DubWorkspaceModel model) {
 		this.model = model;
@@ -82,9 +81,9 @@ public class DubModelManager extends BundleModelManager {
 		return dubProcessManager;
 	}
 	
-	public SearchAndAddCompilersOnPathJob getCompilersSearchJob() {
-		return compilerSearchJob;
-	}
+//	public SearchAndAddCompilersOnPathJob getCompilersSearchJob() {
+//		return compilerSearchJob;
+//	}
 	
 	@Override
 	protected void doShutdown() {
@@ -94,13 +93,13 @@ public class DubModelManager extends BundleModelManager {
 	
 	@Override
 	protected void initializeModelManager() {
-		// First of all, search for compilers on the path
-		compilerSearchJob.schedule();
-		try {
-			compilerSearchJob.join();
-		} catch (InterruptedException ie) {
-			// continue, we should still run rest of initialization
-		}
+//		// First of all, search for compilers on the path
+//		compilerSearchJob.schedule();
+//		try {
+//			compilerSearchJob.join();
+//		} catch (InterruptedException ie) {
+//			// continue, we should still run rest of initialization
+//		}
 		
 		super.initializeModelManager();
 	}
