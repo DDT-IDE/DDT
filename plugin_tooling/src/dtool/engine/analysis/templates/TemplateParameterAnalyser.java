@@ -58,7 +58,7 @@ public abstract class TemplateParameterAnalyser {
 			// This shouldn't happen, but protected against a NPE just in case.
 			MissingExpression missingExpression = new MissingExpression();
 			missingExpression.setSourceRange(0, 0);
-			missingExpression.setParsedStatus().completeLocalAnalysisOnNodeTree();
+			missingExpression.setParsedStatus().setElementReady();
 			return missingExpression;
 		}
 		return result;

@@ -81,7 +81,7 @@ public class StaticIfExpIs extends Expression {
 	}
 	
 	@Override
-	public void doCompleteNodeAnalysis() {
+	public void setSemanticReady_afterChildren_do() {
 		if(!(getLexicalParent() instanceof DeclarationStaticIf)) {
 			// TODO add error
 		}

@@ -37,14 +37,14 @@ public class OverloadedNamedElement extends AbstractNamedElement implements ICon
 	protected final INamedElement firstElement;
 	
 	public OverloadedNamedElement(INamedElement firstElement) {
-		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement, false);
+		super(firstElement.getName(), firstElement.getLexicalParent(), firstElement);
 		this.firstElement = firstElement;
 		this.elements = new ArrayList2<>();
 		elements.add(firstElement);
 	}
 	
 	@Override
-	protected void doSetCompleted() {
+	protected void doSetElementSemanticReady() {
 		checkAreSemanticReady(elements, true);
 	}
 	

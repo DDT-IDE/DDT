@@ -117,7 +117,7 @@ public class DeeParser
 		assertTrue(enabled);
 		ASTNode node = nodeResult.node;
 		if(node != null) {
-			node.completeLocalAnalysisOnNodeTree();
+			node.setElementReady();
 		}
 		
 		List<ParserError> errors = initErrors(lexerErrors, node);

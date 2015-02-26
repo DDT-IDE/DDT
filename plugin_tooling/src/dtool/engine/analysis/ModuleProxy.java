@@ -44,11 +44,12 @@ public class ModuleProxy extends AbstractNamedElement {
 	
 	public ModuleProxy(String fullModuleName, ISemanticContext moduleResolver, boolean useFullName, 
 			RefModule refModule) {
-		super(getEffectiveModuleName(fullModuleName, useFullName), null, refModule, true);
+		super(getEffectiveModuleName(fullModuleName, useFullName), null, refModule);
 		this.refModule = assertNotNull(refModule);
 		assertTrue(getName().trim().isEmpty() == false);
 		this.fullModuleName = fullModuleName;
 		this.context = moduleResolver;
+		setElementReady();
 	}
 	
 	protected static String getEffectiveModuleName(String fullModuleName, boolean usefullName) {
@@ -56,7 +57,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	protected void doSetCompleted() {
+	protected void doSetElementSemanticReady() {
 		assertTrue(refModule.isSemanticReady());
 	}
 	

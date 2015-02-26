@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.symbols;
 
-import melnorme.lang.tooling.ast.AbstractElement;
+import melnorme.lang.tooling.ast.NonSourceElement;
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.ILanguageElement;
 import melnorme.lang.tooling.ast.INamedElementNode;
@@ -21,19 +21,18 @@ import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 
-public abstract class AbstractNamedElement extends AbstractElement implements INamedElement {
+public abstract class AbstractNamedElement extends NonSourceElement implements INamedElement {
 	
 	protected final String name;
 	protected final ElementDoc doc;
 	
-	public AbstractNamedElement(String name, CommonLanguageElement lexicalParent, ILanguageElement ownerElement,
-			boolean isCompleted) {
-		this(name, lexicalParent, ownerElement, null, isCompleted);
+	public AbstractNamedElement(String name, CommonLanguageElement lexicalParent, ILanguageElement ownerElement) {
+		this(name, lexicalParent, ownerElement, null);
 	}
 	
 	public AbstractNamedElement(String name, CommonLanguageElement lexicalParent, ILanguageElement ownerElement,
-			ElementDoc doc, boolean isCompleted) {
-		super(ownerElement, lexicalParent, isCompleted);
+			ElementDoc doc) {
+		super(ownerElement, lexicalParent);
 		this.name = name;
 		this.doc = doc;
 	}

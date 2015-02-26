@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.NodeData.CompleteNodeVisitor;
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
-import melnorme.lang.tooling.ast.NodeData.ParsedNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
@@ -35,11 +34,6 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	}
 	
 	/* ------------------------  Parent and children visitor ------------------------ */
-	
-	@Override
-	public CommonLanguageElement getLexicalParent() {
-		return parent;
-	}
 	
 	@Override
 	public ILanguageElement getOwnerElement() {
@@ -219,24 +213,20 @@ public abstract class CommonASTNode extends SourceElement implements IASTNode {
 	
 	/* =============== Analysis and semantics =============== */
 	
-	public final void completeLocalAnalysisOnNodeTree() {
+	@Override
+	protected final void doSetElementSemanticReady() {
 		accept(CompleteNodeVisitor.instance);
 	}
 	
-	protected final void completeNodeAnalysis() {
+	protected final void setSemanticReady_afterChildren() {
 		assertTrue(isParsedStatus());
-		doCompleteNodeAnalysis();
-		ParsedNodeData parsedNodeData = (ParsedNodeData) getData();
-		parsedNodeData.setLocallyAnalysedData(asNode());
+		// Assert: children are already semanticReady
+		setSemanticReady_afterChildren_do();
+		getData().setSemanticReady(this);
 	}
 	
-	protected void doCompleteNodeAnalysis() {
+	protected void setSemanticReady_afterChildren_do() {
 		// Default implementation: do nothing
-	}
-	
-	@Override
-	public boolean isSemanticReady() {
-		return getData().isLocallyAnalyzedStatus();
 	}
 	
 	/* =============== STRING FUNCTIONS =============== */

@@ -59,12 +59,13 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	/* -----------------  ----------------- */
 	
 	public ErrorElement(String name, ILanguageElement ownerElement, ElementDoc doc) {
-		super(name, null, ownerElement, doc, true);
+		super(name, null, ownerElement, doc);
 		assertNotNull(ownerElement);
+		setElementReady();
 	}
 	
 	@Override
-	protected void doSetCompleted() {
+	protected void doSetElementSemanticReady() {
 	}
 	
 	@Override

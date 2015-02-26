@@ -54,7 +54,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected void doSetCompleted() {
+		protected void doSetElementSemanticReady() {
 		}
 		
 	}
@@ -240,7 +240,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected void doSetCompleted() {
+		protected void doSetElementSemanticReady() {
 		}
 		
 	}
@@ -274,7 +274,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected void doSetCompleted() {
+		protected void doSetElementSemanticReady() {
 		}
 		
 	}
@@ -310,7 +310,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 		}
 		
 		@Override
-		protected void doSetCompleted() {
+		protected void doSetElementSemanticReady() {
 		}
 		
 	}

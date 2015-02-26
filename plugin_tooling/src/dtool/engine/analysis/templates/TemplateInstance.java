@@ -60,7 +60,7 @@ public class TemplateInstance extends ASTNode implements IScopeElement {
 		this.instantiatedElement = parentize(templateDef.cloneTemplateElement(templateRef));
 		setParsedFromOther(this, templateDef.asNode());
 		
-		completeLocalAnalysisOnNodeTree();
+		setElementReady();
 		
 		setParent(templateDef.asNode().getLexicalParent());
 	}

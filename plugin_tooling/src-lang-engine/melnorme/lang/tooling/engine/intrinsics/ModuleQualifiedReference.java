@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.tooling.engine.intrinsics;
 
-import melnorme.lang.tooling.ast.AbstractElement;
+import melnorme.lang.tooling.ast.NonSourceElement;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.engine.resolver.IReference;
@@ -23,15 +23,16 @@ import melnorme.lang.tooling.symbols.INamedElement;
 /**
  * Helper reference class.
  */
-public class ModuleQualifiedReference extends AbstractElement implements IReference {
+public class ModuleQualifiedReference extends NonSourceElement implements IReference {
 	
 	public final String moduleFullName;
 	public final String elementName;
 	
 	public ModuleQualifiedReference(String moduleFullName, String elementName) {
-		super(null, null, true);
+		super(null, null);
 		this.moduleFullName = moduleFullName;
 		this.elementName = elementName;
+		setElementReady();
 	}
 	
 	@Override
@@ -40,7 +41,7 @@ public class ModuleQualifiedReference extends AbstractElement implements IRefere
 	}
 	
 	@Override
-	protected void doSetCompleted() {
+	protected void doSetElementSemanticReady() {
 	}
 	
 	/* -----------------  ----------------- */

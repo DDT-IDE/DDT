@@ -31,26 +31,63 @@ import dtool.ast.definitions.EArcheType;
 
 public abstract class CommonLanguageElement implements ILanguageElement {
 	
-	/** AST node parent, null if the node is the tree root. */
-	protected CommonLanguageElement parent = null;
 	/** Custom field to store various kinds of data */
 	private NodeData data = NodeData.CREATED_STATUS; 
+	/** AST node parent, null if the node is the tree root. */
+	protected CommonLanguageElement parent = null;
 	
 	public CommonLanguageElement() {
 	}
 	
+	/* ------------------------  Node data/status ------------------------  */
+	
+	@Override
+	public final boolean isSemanticReady() {
+		return getData().isSemanticReadyStatus();
+	}
+	
+	public final NodeData getData() {
+		return assertNotNull(data);
+	}
+	
+	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
+	public final void setData(NodeData data) {
+		assertNotNull(data);
+		assertTrue(!isSemanticReady()); // can only change data if node has not been made ready
+		this.data = data;
+	}
+	
+	/** Removes the data of this node. Can only remove data if node is in parsed status. 
+	 * @return the previous data. */
+	public NodeData resetData() {
+		NodeData oldData = getData();
+		setData(NodeData.CREATED_STATUS);
+		return oldData;
+	}
+	
+	public void setElementReady() {
+		assertTrue(isSemanticReady() == false);
+		doSetElementSemanticReady();
+		getData().setSemanticReady(this);
+	}
+	
+	protected abstract void doSetElementSemanticReady();
+	
 	/* ----------------- lexical parent ----------------- */
 	
 	@Override
-	public abstract CommonLanguageElement getLexicalParent();
+	public CommonLanguageElement getLexicalParent() {
+		return parent;
+	}	
 	
-	
-	/** Set the parent of this node. Cannot be null. Cannot set parent twice without explicitly detaching. */
+	/** Set the parent of this element. Cannot set parent twice without explicitly detaching. */
 	@Override
-	public final void setParent(CommonLanguageElement parent) {
-		assertTrue(parent != null);
+	public final void setParent(CommonLanguageElement newParent) {
 		assertTrue(this.parent == null);
-		this.parent = parent;
+		if(isSemanticReady()) {
+			assertTrue(newParent.isSemanticReady());
+		}
+		this.parent = newParent;
 		checkNewParent();
 	}
 	
@@ -83,25 +120,28 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 		return getOwnerElement() == null ? true : getOwnerElement().isBuiltinElement();
 	}
 	
-	/* ------------------------  Node data ------------------------  */
+	/* ----------------- isSemanticReady utils ----------------- */
 	
-	public final NodeData getData() {
-		return assertNotNull(data);
+	protected static <T extends ILanguageElement> T checkIsSemanticReady(T element) {
+		assertTrue(element == null || element.isSemanticReady());
+		return element;
 	}
 	
-	/** Set the data of this node. Cannot be null. Cannot set data twice without explicitly resetting */
-	public final void setData(NodeData data) {
-		assertNotNull(data);
-		assertTrue(!isSemanticReady()); // can only change data if node has not been made ready
-		this.data = data;
+	public static <T extends Iterable<? extends ILanguageElement>> T checkAreSemanticReady(T elements, 
+			boolean readyPackageNamespace) {
+		
+		for(ILanguageElement element : elements) {
+			if(readyPackageNamespace && element instanceof PackageNamespace) {
+				// PackageNamespace cannot be setCompleted early, so set it completed now
+				((PackageNamespace) element).setElementReady();
+			}
+			checkIsSemanticReady(element);
+		}
+		return elements;
 	}
 	
-	/** Removes the data of this node. Can only remove data if node is in parsed status. 
-	 * @return the previous data. */
-	public NodeData resetData() {
-		NodeData oldData = getData();
-		setData(NodeData.CREATED_STATUS);
-		return oldData;
+	protected static <T extends Iterable<? extends ILanguageElement>> T checkAllSemanticReady(T elements) {
+		return checkAreSemanticReady(elements, false);
 	}
 	
 	/* ----------------- INamedElement utils ----------------- */
@@ -130,33 +170,6 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 		} else {
 			return parentNamespace.getFullyQualifiedName() + "." + namedElement.getName();
 		}
-	}
-	
-	/* ----------------- isSemanticReady utils ----------------- */
-	
-	@Override
-	public abstract boolean isSemanticReady();
-	
-	protected static <T extends ILanguageElement> T checkIsSemanticReady(T element) {
-		assertTrue(element == null || element.isSemanticReady());
-		return element;
-	}
-	
-	public static <T extends Iterable<? extends ILanguageElement>> T checkAreSemanticReady(T elements, 
-			boolean readyPackageNamespace) {
-		
-		for(ILanguageElement element : elements) {
-			if(readyPackageNamespace && element instanceof PackageNamespace) {
-				// PackageNamespace cannot be setCompleted early, so set it completed now
-				((PackageNamespace) element).setSemanticReady();
-			}
-			checkIsSemanticReady(element);
-		}
-		return elements;
-	}
-	
-	protected static <T extends Iterable<? extends ILanguageElement>> T checkAllSemanticReady(T elements) {
-		return checkAreSemanticReady(elements, false);
 	}
 	
 	/* -----------------  ----------------- */

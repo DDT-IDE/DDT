@@ -74,7 +74,7 @@ public abstract class CommonScopeLookup {
 			if(namedElement instanceof PackageNamespace) {
 				PackageNamespace packageNamespace = (PackageNamespace) namedElement;
 				if(!packageNamespace.isSemanticReady()) {
-					packageNamespace.setSemanticReady();
+					packageNamespace.setElementReady();
 				}
 			}
 		}

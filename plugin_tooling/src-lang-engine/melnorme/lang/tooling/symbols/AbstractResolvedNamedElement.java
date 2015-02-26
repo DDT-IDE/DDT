@@ -25,8 +25,8 @@ import melnorme.lang.tooling.engine.resolver.INamedElementSemanticData;
  */
 public abstract class AbstractResolvedNamedElement extends AbstractNamedElement {
 	
-	public AbstractResolvedNamedElement(String name, CommonLanguageElement lexicalParent, boolean isCompleted) {
-		super(name, lexicalParent, null, isCompleted);
+	public AbstractResolvedNamedElement(String name, CommonLanguageElement lexicalParent) {
+		super(name, lexicalParent, null);
 	}
 	
 	@Override

@@ -25,13 +25,15 @@ public abstract class NodeData {
 	
 	public abstract boolean isParsedStatus();
 	
-	public abstract boolean isLocallyAnalyzedStatus();
-	
 	public abstract Collection<ParserError> getNodeErrors();
 	
 	public boolean hasErrors() {
 		return getNodeErrors().size() > 0;
 	}
+	
+	public abstract boolean isSemanticReadyStatus();
+	
+	public abstract void setSemanticReady(CommonLanguageElement node);
 	
 	public static CreatedStatusNodeData CREATED_STATUS = new CreatedStatusNodeData() {
 		
@@ -51,7 +53,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public boolean isLocallyAnalyzedStatus() {
+		public boolean isSemanticReadyStatus() {
 			return false;
 		};
 		
@@ -82,6 +84,11 @@ public abstract class NodeData {
 			assertTrue(node.hasSourceRangeInfo());
 		}
 		
+		@Override
+		public void setSemanticReady(CommonLanguageElement node) {
+			node.setData(DEFAULT_LOCALLY_ANALYZED_STATUS);
+		}
+		
 	}
 	
 	public static NodeData DEFAULT_PARSED_STATUS = new ParsedNodeData();
@@ -96,7 +103,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public boolean isLocallyAnalyzedStatus() {
+		public boolean isSemanticReadyStatus() {
 			return false;
 		}
 		
@@ -110,7 +117,8 @@ public abstract class NodeData {
 			return "(PARSED)";
 		}
 		
-		public void setLocallyAnalysedData(ASTNode node) {
+		@Override
+		public void setSemanticReady(CommonLanguageElement node) {
 			if(this == DEFAULT_PARSED_STATUS) {
 				// Reuse instance to avoid unnecessary allocations
 				node.setData(DEFAULT_LOCALLY_ANALYZED_STATUS);
@@ -155,7 +163,7 @@ public abstract class NodeData {
 		}
 		
 		@Override
-		public boolean isLocallyAnalyzedStatus() {
+		public boolean isSemanticReadyStatus() {
 			return true;
 		}
 		
@@ -167,6 +175,12 @@ public abstract class NodeData {
 		@Override
 		public String toString() {
 			return "(ANALYSED)";
+		}
+		
+		@Override
+		public void setSemanticReady(CommonLanguageElement node) {
+			// Do nothing
+			assertTrue(node.getData() == this);
 		}
 		
 	}
@@ -184,7 +198,7 @@ public abstract class NodeData {
 		
 		@Override
 		public void postVisit(ASTNode node) {
-			node.completeNodeAnalysis();
+			node.setSemanticReady_afterChildren();
 		}
 		
 	}

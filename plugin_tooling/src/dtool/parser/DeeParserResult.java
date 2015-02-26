@@ -38,7 +38,7 @@ public class DeeParserResult extends LexerResult {
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;
 		this.errors = Collections.unmodifiableList(errors);
-		assertTrue(node == null || node.getData().isLocallyAnalyzedStatus());
+		assertTrue(node == null || node.isSemanticReady());
 	}
 	
 	public boolean hasSyntaxErrors() {

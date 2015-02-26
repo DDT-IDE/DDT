@@ -12,7 +12,6 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -29,8 +28,8 @@ public interface CommonLanguageIntrinsics {
 	
 	public abstract class IntrinsicNamedElement extends AbstractNamedElement {
 		
-		public IntrinsicNamedElement(String name, ElementDoc doc, boolean isCompleted) {
-			super(name, null, null, doc, isCompleted);
+		public IntrinsicNamedElement(String name, ElementDoc doc) {
+			super(name, null, null, doc);
 		}
 		
 	}
@@ -40,7 +39,7 @@ public interface CommonLanguageIntrinsics {
 		protected NamedElementsScope membersScope;
 		
 		public BuiltinTypeElement(String name, ElementDoc doc) {
-			super(name, doc, false);
+			super(name, doc);
 		}
 		
 		@Override
@@ -59,7 +58,7 @@ public interface CommonLanguageIntrinsics {
 		
 		public final void createMembers(IntrinsicNamedElement... members) {
 			doCreateMembers(members);
-			setSemanticReady();
+			setElementReady();
 		}
 		
 		public abstract void doCreateMembers(IntrinsicNamedElement... members);
@@ -79,7 +78,7 @@ public interface CommonLanguageIntrinsics {
 	public abstract class AbstractIntrinsicProperty extends IntrinsicNamedElement implements IConcreteNamedElement {
 		
 		public AbstractIntrinsicProperty(String name, ElementDoc doc) {
-			super(name, doc, true);
+			super(name, doc);
 		}
 		
 		@Override
@@ -120,11 +119,12 @@ public interface CommonLanguageIntrinsics {
 		public IntrinsicProperty(String name, INamedElement type, ElementDoc doc) {
 			super(name, doc);
 			this.type = assertNotNull(type);
+			setElementReady();
 		}
 		
 		@Override
-		protected void doSetCompleted() {
-			 assertTrue(type.isSemanticReady());
+		protected void doSetElementSemanticReady() {
+//			 assertTrue(type.isSemanticReady()); /* FIXME: */
 		}
 		
 		@Override
@@ -145,11 +145,12 @@ public interface CommonLanguageIntrinsics {
 		public IntrinsicProperty2(String name, IReference typeRef, ElementDoc doc) {
 			super(name, doc);
 			this.typeRef = assertNotNull(typeRef);
+			setElementReady();
 		}
 		
 		@Override
-		protected void doSetCompleted() {
-			 assertTrue(typeRef.isSemanticReady());
+		protected void doSetElementSemanticReady() {
+//			 assertTrue(typeRef.isSemanticReady()); /* FIXME: */
 		}
 		
 		@Override

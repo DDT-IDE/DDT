@@ -96,7 +96,7 @@ public class RefTypeFunction extends CommonNativeTypeReference {
 		}
 		
 		@Override
-		protected void doSetCompleted() {
+		protected void doSetElementSemanticReady() {
 		}
 	}
 	

@@ -13,7 +13,6 @@ package melnorme.lang.tooling.symbols;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.ILanguageElement;
-import melnorme.lang.tooling.ast.INamedElementNode;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement;
 import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
@@ -63,7 +62,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	protected PackageNamespace(String fqName, SymbolTable namedElementsTable) {
-		super(StringUtil.substringAfterLastMatch(fqName, "."), null, false);
+		super(StringUtil.substringAfterLastMatch(fqName, "."), null);
 		this.fqName = fqName;
 		this.namedElementsTable = assertNotNull(namedElementsTable);
 	}
@@ -84,7 +83,7 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	protected void doSetCompleted() {
+	protected void doSetElementSemanticReady() {
 		namedElementsTable.setCompleted();
 		checkAreSemanticReady(getNamespaceElements(), true);
 	}
@@ -131,8 +130,8 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	public void setSemanticReady() {
-		super.setSemanticReady();
+	public void setElementReady() {
+		super.setElementReady();
 		this.packageNamespaceSemantics = new PackageNamespaceSemantics();
 	}
 	

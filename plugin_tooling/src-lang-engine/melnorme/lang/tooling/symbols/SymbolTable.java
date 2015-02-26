@@ -143,7 +143,7 @@ public class SymbolTable {
 				OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) namedElement;
 				
 				if(!overloadedNamedElement.isSemanticReady()) {
-					overloadedNamedElement.setSemanticReady();
+					overloadedNamedElement.setElementReady();
 				}
 			}
 		}

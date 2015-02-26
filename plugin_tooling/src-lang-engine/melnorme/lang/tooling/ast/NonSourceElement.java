@@ -10,24 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 
-public abstract class AbstractElement extends CommonLanguageElement {
+public abstract class NonSourceElement extends CommonLanguageElement {
 	
 	protected final ILanguageElement ownerElement; // can be null
-	protected final CommonLanguageElement lexicalParent; // can be null
-	private boolean isCompleted = false;
 	
-	public AbstractElement(ILanguageElement ownerElement, CommonLanguageElement lexicalParent, boolean isCompleted) {
+	public NonSourceElement(ILanguageElement ownerElement, CommonLanguageElement lexicalParent) {
 		this.ownerElement = ownerElement;
-		this.lexicalParent = lexicalParent;
-		this.isCompleted = isCompleted;
-	}
-	
-	@Override
-	public CommonLanguageElement getLexicalParent() {
-		return lexicalParent;
+		setParent(lexicalParent);
 	}
 	
 	@Override
@@ -35,17 +26,7 @@ public abstract class AbstractElement extends CommonLanguageElement {
 		return ownerElement;
 	}
 	
-	public void setSemanticReady() {
-		assertTrue(isCompleted == false);
-		doSetCompleted();
-		isCompleted = true;
-	}
-	
-	protected abstract void doSetCompleted();
-	
 	@Override
-	public boolean isSemanticReady() {
-		return isCompleted;
-	}
+	protected abstract void doSetElementSemanticReady();
 	
 }

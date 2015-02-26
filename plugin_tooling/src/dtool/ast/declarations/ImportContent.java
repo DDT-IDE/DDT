@@ -75,7 +75,7 @@ public class ImportContent extends ASTNode implements IImportFragment {
 	}
 	
 	@Override
-	public void doCompleteNodeAnalysis() {
+	public void setSemanticReady_afterChildren_do() {
 		assertTrue(getDeclarationImport() != null);
 	}
 	
