@@ -12,6 +12,7 @@
  * Moved DUB preference page to root pref page (TODO: update docs)
  * Removed search functionality (was broken and not well adapted to D semantics).
    * Recommend re-create project.
+ * Fixed #94: Weird tooltip of file location (when Open Definition goes to a file outside the workspace).
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.
