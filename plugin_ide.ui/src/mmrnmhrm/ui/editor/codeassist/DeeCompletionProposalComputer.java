@@ -15,17 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 
@@ -98,7 +93,8 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 	protected List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
 			IDocument document) throws CoreException {
 		
-		CompletionSearchResult completionResult = performCompletionOperation(filePath, offset, document.get());
+		CompletionSearchResult completionResult = DToolClient.performCompletionOperation(
+			filePath, offset, document.get(), 5000);
 		
 		ArrayList2<CompletionProposal> proposals = new DeeCompletionOperation().
 				completionResultAdapt(completionResult, offset);
@@ -111,33 +107,6 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 		}
 		
 		return completionProposals;
-	}
-	
-	protected CompletionSearchResult performCompletionOperation(final Path filePath, final int offset, String source)
-			throws CoreException {
-		try {
-			DToolClient.getDefault().updateWorkingCopyIfInconsistent2(filePath, source);
-			
-			ExecutorTaskAgent completionExecutor = new ExecutorTaskAgent("CompletionExecutor");
-			
-			Future<CompletionSearchResult> future = completionExecutor.submit(new Callable<CompletionSearchResult>() {
-				@Override
-				public CompletionSearchResult call() throws CoreException {
-					return DToolClient.getDefault().doCodeCompletion(
-						filePath, offset, DeeCompletionOperation.compilerPathOverride);
-				}
-			});
-			
-			try {
-				return EclipseUtils.getFutureResult(future, 5, TimeUnit.SECONDS, "Content Assist");
-			} finally {
-				completionExecutor.shutdown();
-			}
-			
-		} finally {
-			/* FIXME: don't discard working copy */
-			DToolClient.getDefault().discardServerWorkingCopy(filePath);
-		}
 	}
 	
 }

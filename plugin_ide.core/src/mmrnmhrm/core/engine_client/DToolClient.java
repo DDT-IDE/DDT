@@ -13,9 +13,14 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
@@ -35,7 +40,6 @@ import org.eclipse.dltk.core.ModelException;
 
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
-import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -240,6 +244,34 @@ public class DToolClient {
 			if(!sourceModule.isWorkingCopy()) {
 				discardServerWorkingCopy(filePath);
 			}
+		}
+	}
+	
+	/* FIXME: make consistent with above */
+	public static CompletionSearchResult performCompletionOperation(final Path filePath, final int offset, 
+			String source, int timeoutMillis) throws CoreException {
+		try {
+			getDefault().updateWorkingCopyIfInconsistent2(filePath, source);
+			
+			ExecutorTaskAgent completionExecutor = new ExecutorTaskAgent("CompletionExecutor");
+			
+			Future<CompletionSearchResult> future = completionExecutor.submit(new Callable<CompletionSearchResult>() {
+				@Override
+				public CompletionSearchResult call() throws CoreException {
+					return getDefault().doCodeCompletion(
+						filePath, offset, DeeCompletionOperation.compilerPathOverride);
+				}
+			});
+			
+			try {
+				return EclipseUtils.getFutureResult(future, timeoutMillis, TimeUnit.MILLISECONDS, "Content Assist");
+			} finally {
+				completionExecutor.shutdown();
+			}
+			
+		} finally {
+			/* FIXME: don't discard working copy */
+			getDefault().discardServerWorkingCopy(filePath);
 		}
 	}
 	
