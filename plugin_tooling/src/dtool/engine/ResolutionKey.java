@@ -12,10 +12,8 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.nio.file.Path;
-
 import melnorme.utilbox.misc.HashcodeUtil;
+import melnorme.utilbox.misc.Location;
 import dtool.engine.compiler_installs.CompilerInstall;
 
 public final class ResolutionKey {
@@ -28,8 +26,8 @@ public final class ResolutionKey {
 		this.compilerInstall = assertNotNull(compilerInstall);
 	}
 	
-	public Path getPath() {
-		return bundleKey.bundlePath.getPath();
+	public Location getBundleLocation() {
+		return bundleKey.getBundleLocation().getLocation();
 	}
 	
 	@Override

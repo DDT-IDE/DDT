@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
@@ -70,7 +71,7 @@ public class DubManifestParser extends CommonDubParser {
 	}
 	
 	protected void parseFromLocation(BundlePath bundlePath) throws DubBundleException {
-		File jsonLocation = bundlePath.getManifestFilePath().toFile();
+		File jsonLocation = bundlePath.getManifestLocation().toFile();
 		
 		try {
 			source = readStringFromFile(jsonLocation);
@@ -101,7 +102,7 @@ public class DubManifestParser extends CommonDubParser {
 		if(sourceFolders != null) {
 			effectiveSourceFolders = createPaths(sourceFolders);
 		} else if(searchImplicitSourceFolders && bundlePath != null) {
-			effectiveSourceFolders = searchImplicitSrcFolders(bundlePath.getPath());
+			effectiveSourceFolders = searchImplicitSrcFolders(bundlePath.getLocation());
 		} else {
 			effectiveSourceFolders = null;
 		}
@@ -128,7 +129,7 @@ public class DubManifestParser extends CommonDubParser {
 		return ArrayUtil.createFrom(pathArray, Path.class);
 	}
 	
-	protected Path[] searchImplicitSrcFolders(Path location) {
+	protected Path[] searchImplicitSrcFolders(Location location) {
 		if(location == null) {
 			return new Path[0];
 		}

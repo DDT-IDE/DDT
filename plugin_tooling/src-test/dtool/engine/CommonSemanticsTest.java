@@ -13,9 +13,6 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.BundlePath;
@@ -64,10 +61,6 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	
 	public static final CompilerInstall DEFAULT_TestsCompilerInstall = MockCompilerInstalls.DMD_CompilerInstall;
 	
-	public static BundleKey bundleKey(Path basePath, String subpackageName) {
-		return new BundleKey(BundlePath.create(basePath), subpackageName);
-	}
-	
 	public static Location loc(BundlePath bundlePath, String other) {
 		return bundlePath.resolve(path(other));
 	}
@@ -79,19 +72,15 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	/* -----------------  ----------------- */
 	
 	protected BundleKey bundleKey(BundlePath bundlePath) {
-		return bundleKey(bundlePath.getPath(), null);
-	}
-	
-	public ResolutionKey resKey(Path basePath, String subpackageName) {
-		return resKey(bundleKey(basePath, subpackageName));
-	}
-	
-	public ResolutionKey resKey(Path basePath) {
-		return resKey(BundlePath.create(basePath));
+		return new BundleKey(bundlePath);
 	}
 	
 	public ResolutionKey resKey(BundlePath bundlePath) {
 		return resKey(new BundleKey(bundlePath));
+	}
+	
+	public ResolutionKey resKey(BundlePath bundlePath, String subpackageName) {
+		return resKey(new BundleKey(bundlePath, subpackageName));
 	}
 	
 	public ResolutionKey resKey(BundlePath bundlePath, Location compilerPath) {

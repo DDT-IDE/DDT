@@ -92,10 +92,6 @@ public class DubBundle {
 		return bundlePath;
 	}
 	
-	public Path getLocationPath() {
-		return bundlePath == null ? null : bundlePath.getPath();
-	}
-	
 	public Location getLocation() {
 		return bundlePath == null ? null : bundlePath.location;
 	}

@@ -235,20 +235,20 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		
 		sm.getUpdatedResolution(SP_TEST);
-		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_x"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_b"), StaleState.CURRENT);
-		checkStaleStatus(resKey(SP_TEST.getPath(), "doesn't exists"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST, "sub_x"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST, "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST, "sub_b"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST, "doesn't exists"), StaleState.MANIFEST_STALE);
 		
 		sm.getUpdatedResolution(SP_FOO);
 		
 		___initSemanticManager();
-		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.MANIFEST_STALE);
+		checkStaleStatus(resKey(SP_TEST, "sub_a"), StaleState.MANIFEST_STALE);
 		BundleResolution bundleRes;
 		bundleRes = sm.getUpdatedResolution(SP_FOO2);
 		assertTrue(bundleRes.getDirectDependencies().size() == 1);
 		
-		checkStaleStatus(resKey(SP_TEST.getPath(), "sub_a"), StaleState.CURRENT);
+		checkStaleStatus(resKey(SP_TEST, "sub_a"), StaleState.CURRENT);
 	}
 	
 	/* ----------------- module updates ----------------- */

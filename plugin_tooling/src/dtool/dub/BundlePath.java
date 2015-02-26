@@ -89,14 +89,6 @@ public class BundlePath {
 		return getLocation().resolve(BundlePath.DUB_MANIFEST_Path);
 	}
 	
-	/* FIXME: reduces uses of Path, use Location instead. */
-	public Path getPath() {
-		return location.path;
-	}
-	public Path getManifestFilePath() {
-		return getPath().resolve(DUB_MANIFEST_FILENAME);
-	}
-	
 	public Location resolve(Path other) {
 		return location.resolve(other);
 	}
@@ -114,7 +106,7 @@ public class BundlePath {
 			return null;
 		}
 		BundlePath bundlePath = create(path);
-		if(bundlePath != null && bundlePath.getManifestFilePath().toFile().exists()) {
+		if(bundlePath != null && bundlePath.getManifestLocation().toFile().exists()) {
 			return bundlePath;
 		}
 		return findBundleForPath(path.getParent());

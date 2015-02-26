@@ -196,7 +196,7 @@ public class CommonDubTest extends CommonDToolTest {
 		String[] command = ArrayUtil.prepend(testsDubPath(), arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
 		if(bundlePath != null) {
-			pb.directory(bundlePath.getPath().toFile());
+			pb.directory(bundlePath.getLocation().toFile());
 		}
 		
 		return new ExternalProcessHelper(pb);
