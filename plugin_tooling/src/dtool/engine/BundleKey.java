@@ -12,9 +12,6 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
-
-import java.nio.file.Path;
-
 import melnorme.utilbox.misc.HashcodeUtil;
 import dtool.dub.BundlePath;
 
@@ -32,8 +29,8 @@ public final class BundleKey {
 		this.subPackageSuffix = subPackageSuffix;
 	}
 	
-	public Path getPath() {
-		return bundlePath.getPath();
+	public BundlePath getBundleLocation() {
+		return bundlePath;
 	}
 	
 	@Override

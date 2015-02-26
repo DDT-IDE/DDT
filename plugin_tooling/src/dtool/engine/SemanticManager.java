@@ -111,7 +111,7 @@ public class SemanticManager {
 		
 		@Override
 		protected FileCachingEntry<ResolvedManifest> doCreateEntry(BundleKey bundleKey) {
-			return new FileCachingEntry<>(bundleKey.getPath());
+			return new FileCachingEntry<>(bundleKey.getBundleLocation().getManifestLocation());
 		}
 		
 		public ResolvedManifest getEntryManifest(BundleKey bundleKey) {

@@ -17,19 +17,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 
+import melnorme.utilbox.misc.Location;
+
 /**
  * An entry caching some value, derived from a file as input. 
  * Keeps tracks of file and value timestamps, to see if current value is stale or not with regards to the file input.
  */
 public class FileCachingEntry<VALUE> {
 	
-	protected final Path filePath;
+	protected final Location fileLocation;
 	
 	protected volatile VALUE value;
 	protected volatile FileTime valueTimeStamp;
 	
-	public FileCachingEntry(Path path) {
-		this.filePath = path;
+	public FileCachingEntry(Location location) {
+		this.fileLocation = location;
+	}
+	
+	public Location getFileLocation() {
+		return fileLocation;
+	}
+	
+	public Path getFilePath() {
+		return fileLocation.getPath();
 	}
 	
 	public VALUE getValue() {
@@ -47,12 +57,12 @@ public class FileCachingEntry<VALUE> {
 	public synchronized boolean isStale() {
 		FileTime lastModifiedTime;
 		try {
-			lastModifiedTime = Files.getLastModifiedTime(filePath);
+			lastModifiedTime = Files.getLastModifiedTime(getFilePath());
 		} catch (IOException e) {
 			return true;
 		}
 		
-		if(valueTimeStamp == null || valueTimeStamp.toMillis() < lastModifiedTime.toMillis()) {
+		if(valueTimeStamp == null || valueTimeStamp.toMillis() != lastModifiedTime.toMillis()) {
 			return true;
 		}
 		return false;
@@ -67,7 +77,7 @@ public class FileCachingEntry<VALUE> {
 		
 		FileTime newValueTimeStamp;
 		try {
-			newValueTimeStamp = Files.getLastModifiedTime(filePath);
+			newValueTimeStamp = Files.getLastModifiedTime(getFilePath());
 		} catch (IOException e) {
 			newValueTimeStamp = FileTime.fromMillis(0);
 		}

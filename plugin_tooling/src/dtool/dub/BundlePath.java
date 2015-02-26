@@ -27,6 +27,7 @@ import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 public class BundlePath {
 	
 	public static final String DUB_MANIFEST_FILENAME = "dub.json";
+	public static final Path DUB_MANIFEST_Path = MiscUtil.createValidPath(DUB_MANIFEST_FILENAME);
 	
 	public static BundlePath create(String pathStr) {
 		try {
@@ -80,10 +81,18 @@ public class BundlePath {
 		return location.hashCode();
 	}
 	
+	public Location getLocation() {
+		return location;
+	}
+	
+	public Location getManifestLocation() {
+		return getLocation().resolve(BundlePath.DUB_MANIFEST_Path);
+	}
+	
+	/* FIXME: reduces uses of Path, use Location instead. */
 	public Path getPath() {
 		return location.path;
 	}
-	
 	public Path getManifestFilePath() {
 		return getPath().resolve(DUB_MANIFEST_FILENAME);
 	}

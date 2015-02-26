@@ -198,7 +198,7 @@ public class ModuleParseCache {
 		
 		protected synchronized ParsedModule getParsedModuleIfNotStale(boolean attemptSourceRefresh) {
 			if(!isStale()) {
-				return parsedModule;		
+				return parsedModule;
 			}
 			
 			if(attemptSourceRefresh) {

@@ -110,6 +110,18 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		sm.getUpdatedManifest(bundleKey(SMTEST));
 		checkStaleStatus(SMTEST, StaleState.NO_BUNDLE_RESOLUTION);
 		
+		{
+			FileCachingEntry<ResolvedManifest> entry = sm.manifestManager.infos.getEntry(bundleKey(BASIC_LIB));
+			assertTrue(entry.isStale() == false);
+			
+			// This actually tests for a regression
+			Location manifestFilePath = BASIC_LIB.getLocation().resolve_fromValid(BundlePath.DUB_MANIFEST_FILENAME);
+			assertTrue(entry.getFileLocation().equals(manifestFilePath));
+			
+			makeManifestFileStale(manifestFilePath);
+			assertTrue(entry.isStale() == true);
+		}
+		
 		// Test update resolution over current manifests
 		getUpdatedResolution(BASIC_LIB);
 		checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
@@ -168,6 +180,11 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		checkChanged(BASIC_LIB, true);
 		checkStaleStatus(BASIC_LIB, StaleState.CURRENT);
 		checkStaleStatus(SMTEST, StaleState.DEP_STALE);
+	}
+	
+	public void makeManifestFileStale(Location fileLoc) throws IOException {
+		String contents = readStringFromFile(fileLoc);
+		writeToFileAndUpdateMTime(fileLoc, contents + "  ", true);
 	}
 	
 	protected void invalidateBundleManifest(BundlePath bundlePath) {
