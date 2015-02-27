@@ -21,6 +21,7 @@ import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.lang.tooling.ops.FileCachingEntry;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
@@ -34,7 +35,6 @@ import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.engine.util.CachingRegistry;
-import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 class BundleResolutionEntry {

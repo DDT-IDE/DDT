@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.ops.FileCachingEntry;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
@@ -36,7 +37,6 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.util.FileCachingEntry;
 import dtool.parser.DeeParserResult.ParsedModule;
 
 public class SemanticManager_Test extends CommonSemanticManagerTest {
@@ -102,6 +102,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public void testManifestUpdates$() throws Exception {
 		prepSMTestsWorkingDir();
 		___initSemanticManager();
+		
+		checkStaleStatus(BASIC_LIB, StaleState.MANIFEST_STALE);
 		
 		// Test manifest only updates
 		sm.getUpdatedManifest(bundleKey(BASIC_LIB));

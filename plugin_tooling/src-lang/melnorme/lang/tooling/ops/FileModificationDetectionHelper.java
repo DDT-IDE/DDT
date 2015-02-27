@@ -16,13 +16,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 
 import melnorme.utilbox.misc.Location;
 
 public class FileModificationDetectionHelper {
 	
 	protected final Location fileLocation;
-	private BasicFileAttributes sourceFileSyncAttributes;
+	protected BasicFileAttributes fileSyncAttributes;
 	
 	public FileModificationDetectionHelper(Location fileLocation) {
 		this.fileLocation = assertNotNull(fileLocation);
@@ -33,11 +34,11 @@ public class FileModificationDetectionHelper {
 	}
 	
 	public void markRead() throws IOException {
-		sourceFileSyncAttributes = Files.readAttributes(getFilePath(), BasicFileAttributes.class);
+		fileSyncAttributes = Files.readAttributes(getFilePath(), BasicFileAttributes.class);
 	}
 	
 	public void markStale() {
-		sourceFileSyncAttributes = null;
+		fileSyncAttributes = null;
 	}
 	
 	public boolean isModifiedSinceLastRead() {
@@ -48,14 +49,23 @@ public class FileModificationDetectionHelper {
 			return true;
 		}
 		
-		return hasBeenModified(sourceFileSyncAttributes, newAttributes);
+		return hasBeenModified(fileSyncAttributes, newAttributes);
 	}
 	
 	protected boolean hasBeenModified(BasicFileAttributes originalAttributes, BasicFileAttributes newAttributes) {
+		if(newAttributes.lastModifiedTime().toMillis() > System.currentTimeMillis()) {
+			handleWarning_ModifiedTimeInTheFuture(newAttributes.lastModifiedTime());
+		}
+		
 		return 
 				originalAttributes == null ||
 				originalAttributes.lastModifiedTime().toMillis() != newAttributes.lastModifiedTime().toMillis() ||
 				originalAttributes.size() != newAttributes.size();
+	}
+	
+	@SuppressWarnings("unused")
+	protected void handleWarning_ModifiedTimeInTheFuture(FileTime lastModifiedTime) {
+		// Default behavior, ignore
 	}
 	
 }
