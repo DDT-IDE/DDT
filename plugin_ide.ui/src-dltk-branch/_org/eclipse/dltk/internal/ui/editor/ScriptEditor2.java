@@ -53,7 +53,6 @@ import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
-import org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUILanguageManager;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
@@ -137,6 +136,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
+import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 
 public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
