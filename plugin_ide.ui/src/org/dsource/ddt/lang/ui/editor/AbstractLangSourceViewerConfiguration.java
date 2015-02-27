@@ -27,7 +27,7 @@ import org.eclipse.cdt.internal.ui.text.TokenStore;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.cdt.ui.text.ITokenStore;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
+import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;

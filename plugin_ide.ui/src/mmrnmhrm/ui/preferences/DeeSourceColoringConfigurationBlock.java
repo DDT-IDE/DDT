@@ -69,6 +69,7 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	@Override
 	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
 			int styles, IPreferenceStore store) {
+		/* FIXME: review this code*/
 		ScriptSourceViewer sourceViewer = new ScriptSourceViewer(parent, null, null,
 			showAnnotationsOverview, styles, store);
 		DeeSimpleSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store, null);

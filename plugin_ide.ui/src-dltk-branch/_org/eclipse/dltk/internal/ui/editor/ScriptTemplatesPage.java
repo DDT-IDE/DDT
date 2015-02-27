@@ -14,16 +14,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import mmrnmhrm.ui.DeeUILanguageToolkit;
+import mmrnmhrm.ui.DeeUIPlugin;
+import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
+import mmrnmhrm.ui.text.DeeTextTools;
+
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
-import org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
+import org.eclipse.dltk.internal.ui.preferences_.ScriptSourcePreviewerUpdater;
 import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.dltk.ui.DLTKUILanguageManager;
-import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
-import org.eclipse.dltk.ui.preferences.EditTemplateDialog;
+import org.eclipse.dltk.ui.preferences_.EditTemplateDialog;
 import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.text.templates.TemplateVariableProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -58,7 +59,8 @@ import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
  * 
  * @since 3.0
  */
-public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
+/* FIXME: DLTK: review this class*/
+public class ScriptTemplatesPage extends AbstractTemplatesPage {
 
 	private final TemplateVariableProcessor fTemplateProcessor;
 	private final ScriptEditor2 fScriptEditor;
@@ -70,7 +72,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	 * @param scriptEditor
 	 *            the java editor
 	 */
-	public ScriptTemplatesPage2(ScriptEditor2 scriptEditor,
+	public ScriptTemplatesPage(ScriptEditor2 scriptEditor,
 			ITemplateAccess templateAccess) {
 		super(scriptEditor, scriptEditor.getSourceViewer_());
 		fScriptEditor = scriptEditor;
@@ -183,14 +185,13 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	@Override
 	protected SourceViewer createPatternViewer(Composite parent) {
 		IDocument document = new Document();
-		ScriptTextTools tools = fScriptEditor.getTextTools();
+		DeeTextTools tools = DeeUIPlugin.getDefault().getTextTools();
 		tools.setupDocumentPartitioner(document);
 		IPreferenceStore store = uiToolkit().getCombinedPreferenceStore();
 		ScriptSourceViewer viewer = new ScriptSourceViewer(parent, null, null,
 				false, SWT.V_SCROLL | SWT.H_SCROLL, store);
 
-		ScriptSourceViewerConfiguration configuration = uiToolkit()
-				.createSourceViewerConfiguration();
+		DeeSourceViewerConfiguration configuration = uiToolkit().createSourceViewerConfiguration2();
 		viewer.configure(configuration);
 		viewer.setEditable(false);
 		viewer.setDocument(document);
@@ -224,9 +225,8 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 		return null;
 	}
 
-	protected IDLTKUILanguageToolkit uiToolkit() {
-		return DLTKUILanguageManager.getLanguageToolkit(fScriptEditor
-				.getLanguageToolkit());
+	protected DeeUILanguageToolkit uiToolkit() {
+		return DeeUILanguageToolkit.getDefault();
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	 * @param viewer
 	 *            the viewer
 	 */
-	private void endCompoundChange(ISourceViewer viewer) {
+	protected void endCompoundChange(ISourceViewer viewer) {
 		if (viewer instanceof ITextViewerExtension)
 			((ITextViewerExtension) viewer).getRewriteTarget()
 					.endCompoundChange();
@@ -277,7 +277,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	 * @param viewer
 	 *            the viewer
 	 */
-	private void beginCompoundChange(ISourceViewer viewer) {
+	protected void beginCompoundChange(ISourceViewer viewer) {
 		if (viewer instanceof ITextViewerExtension)
 			((ITextViewerExtension) viewer).getRewriteTarget()
 					.beginCompoundChange();
@@ -318,7 +318,7 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	 *            the character
 	 * @return <code>true</code> if the character is part of a template name
 	 */
-	private boolean isTemplateNamePart(char ch) {
+	protected boolean isTemplateNamePart(char ch) {
 		return !Character.isWhitespace(ch) && ch != '(' && ch != ')'
 				&& ch != '{' && ch != '}' && ch != ';';
 	}
@@ -360,9 +360,8 @@ public class ScriptTemplatesPage2 extends AbstractTemplatesPage {
 	@Override
 	protected String[] getContextTypeIds(IDocument document, int offset) {
 		final Set<String> ids = new HashSet<String>();
-		@SuppressWarnings("unchecked")
-		final Iterator<TemplateContextType> i = getContextTypeRegistry()
-				.contextTypes();
+		
+		final Iterator<TemplateContextType> i = getContextTypeRegistry().contextTypes();
 		while (i.hasNext()) {
 			ids.add(i.next().getId());
 		}

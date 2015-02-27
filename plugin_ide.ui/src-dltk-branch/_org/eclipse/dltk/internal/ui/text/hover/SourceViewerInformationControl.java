@@ -10,6 +10,8 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.text.hover;
 
+import mmrnmhrm.ui.DeeUILanguageToolkit;
+
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ui.DLTKUILanguageManager;
@@ -225,7 +227,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	protected void createViewer(int style, Composite composite) {
 		fViewer = new ScriptSourceViewer(composite, null, null, false, style,
 				fToolkit.getPreferenceStore());
-		fViewer.configure(fToolkit.createSourceViewerConfiguration());
+		fViewer.configure(DeeUILanguageToolkit.getDefault().createSourceViewerConfiguration2());
 	}
 
 	private void initializeColors() {

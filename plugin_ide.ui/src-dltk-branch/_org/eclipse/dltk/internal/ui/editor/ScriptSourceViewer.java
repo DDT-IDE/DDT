@@ -16,7 +16,7 @@ package _org.eclipse.dltk.internal.ui.editor;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
+import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
@@ -198,9 +198,8 @@ public class ScriptSourceViewer extends ProjectionViewer implements
 			if (fStructurePresenter != null)
 				fStructurePresenter.install(this);
 
-//			fHierarchyPresenter = dltkSVCconfiguration.getHierarchyPresenter(
-//					this, true);
-			dltkSVCconfiguration.getHierarchyPresenter(null, true);
+			fHierarchyPresenter = dltkSVCconfiguration.getHierarchyPresenter(this, true);
+			
 			if (fHierarchyPresenter != null)
 				fHierarchyPresenter.install(this);
 			if (textWidget != null) {

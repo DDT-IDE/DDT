@@ -10,9 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
+import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
@@ -27,6 +29,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
+import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -65,9 +68,18 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
+	@Override
+	public ITemplateAccess getEditorTemplates() {
+		return DeeTemplateAccess.getInstance();
+	}
+	
 	@Deprecated
 	@Override
-	public DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
+	public org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration createSourceViewerConfiguration() {
+		throw assertFail();
+	}
+	
+	public DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration2() {
 		return new DeeSimpleSourceViewerConfiguration(LangUIPlugin.getInstance().getColorManager(),
 				getPreferenceStore(), null, false);
 	}

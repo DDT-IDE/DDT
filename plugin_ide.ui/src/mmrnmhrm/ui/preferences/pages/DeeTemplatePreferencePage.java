@@ -8,7 +8,7 @@ import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
-import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
+import org.eclipse.dltk.ui.templates_.ScriptTemplatePreferencePage;
 import org.eclipse.jface.text.IDocument;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
@@ -39,7 +39,7 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	}
 	
 	@Override
-	protected void setDocumentParticioner(IDocument document) {
+	protected void setDocumentPartitioner(IDocument document) {
 		getTextTools().setupDocumentPartitioner(document, DeePartitions.PARTITIONING_ID);
 	}
 	

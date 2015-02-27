@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -22,16 +22,14 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	
 	private boolean fConfigureFormatter;
 	
-	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager,
-			IPreferenceStore preferenceStore, ITextEditor editor,
-			boolean configureFormatter) {
+	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
+			ITextEditor editor, boolean configureFormatter) {
 		super(colorManager, preferenceStore, editor);
 		fConfigureFormatter = configureFormatter;
 	}
 	
 	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(
-			ISourceViewer sourceViewer, String contentType) {
+	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
 		return null;
 	}
 	
@@ -52,12 +50,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		return null;
-	}
-	
-	@Override
-	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
+	public ITextHover getTextHover_do(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		return null;
 	}
 	

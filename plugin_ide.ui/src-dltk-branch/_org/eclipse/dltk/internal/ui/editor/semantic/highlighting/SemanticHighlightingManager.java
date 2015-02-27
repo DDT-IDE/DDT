@@ -15,6 +15,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collections;
 
+import mmrnmhrm.ui.DeeUIPlugin;
+import mmrnmhrm.ui.text.DeeTextTools;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -34,8 +37,8 @@ import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.IColorManagerExtension;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
+import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.Region;
@@ -203,11 +206,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 		fSourceViewer = sourceViewer;
 		fColorManager = colorManager;
 		fPreferenceStore = preferenceStore;
-		final ScriptTextTools textTools = getTextTools();
-		if (textTools != null) {
-			fConfiguration = textTools.createSourceViewerConfiguraton(
-					preferenceStore, editor);
-		}
+		final DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
+		fConfiguration = textTools.createSourceViewerConfiguraton2(preferenceStore, editor);
+		
 		if (fEditor != null) {
 			Assert.isNotNull(fConfiguration);
 			IPresentationReconciler presReconciler = fConfiguration
@@ -383,10 +384,6 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 							.getBoolean(sh.getEnabledPreferenceKey());
 			fHighlightings[a] = new HighlightingStyle(ta, isEnabled, sh);
 		}
-	}
-
-	private ScriptTextTools getTextTools() {
-		return fEditor != null ? fEditor.getTextTools() : null;
 	}
 
 	/**
@@ -566,8 +563,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 		}
 	}
 
-	private void adaptToEnablementChange(HighlightingStyle highlighting,
-			PropertyChangeEvent event) {
+	protected void adaptToEnablementChange(HighlightingStyle highlighting, PropertyChangeEvent event) {
 		Object value = event.getNewValue();
 		boolean eventValue;
 		if (value instanceof Boolean)
@@ -601,8 +597,8 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 		}
 	}
 
-	private void adaptToTextStyleChange(HighlightingStyle highlighting,
-			PropertyChangeEvent event, int styleAttribute) {
+	protected void adaptToTextStyleChange(HighlightingStyle highlighting, PropertyChangeEvent event, 
+			int styleAttribute) {
 		boolean eventValue = false;
 		Object value = event.getNewValue();
 		if (value instanceof Boolean)

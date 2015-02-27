@@ -19,6 +19,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangNature;
 import mmrnmhrm.ui.DeeUIPlugin;
+import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.resources.ProjectScope;
@@ -63,12 +64,11 @@ import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
-import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
+import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -138,6 +138,7 @@ import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceM
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 
+/* FIXME: DLTK: need to review this class */
 public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
 		IScriptEditor {
@@ -253,11 +254,8 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		}
 		IPreferenceStore store = createCombinedPreferenceStore(null);
 		setPreferenceStore(store);
-		ScriptTextTools textTools = getTextTools();
-		if (textTools != null) {
-			setSourceViewerConfiguration(textTools
-					.createSourceViewerConfiguraton(store, this));
-		}
+		DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
+		setSourceViewerConfiguration(textTools.createSourceViewerConfiguraton2(store, this));
 	}
 
 	/**
@@ -299,7 +297,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	}
 	
 	@Deprecated
-	public ScriptTextTools getTextTools() {
+	public DeeTextTools getTextTools() {
 		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
@@ -486,13 +484,9 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
 		final SourceViewerConfiguration svConfiguration = getSourceViewerConfiguration();
-		if (svConfiguration == null
-				|| svConfiguration instanceof ScriptSourceViewerConfiguration) {
-			final ScriptTextTools textTools = getTextTools();
-			if (textTools != null) {
-				setSourceViewerConfiguration(textTools
-						.createSourceViewerConfiguraton(store, this));
-			}
+		if (svConfiguration == null || svConfiguration instanceof ScriptSourceViewerConfiguration) {
+			DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
+			setSourceViewerConfiguration(textTools.createSourceViewerConfiguraton2(store, this));
 		}
 		if (getSourceViewer() instanceof ScriptSourceViewer) {
 			((ScriptSourceViewer) getSourceViewer()).setPreferenceStore(store);
@@ -547,7 +541,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	 * 
 	 * @since 3.0
 	 */
-	private ScriptTemplatesPage2 fTemplatesPage;
+	private ScriptTemplatesPage fTemplatesPage;
 
 	/**
 	 * Creates the templates page used with this editor.
@@ -555,7 +549,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	 * @return the created script templates page
 	 * @since 3.0
 	 */
-	protected ScriptTemplatesPage2 createTemplatesPage() {
+	protected ScriptTemplatesPage createTemplatesPage() {
 		final IDLTKUILanguageToolkit uiToolkit = getUILanguageToolkit();
 		if (uiToolkit == null) {
 			return null;
@@ -565,7 +559,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 			return null;
 		}
 		try {
-			return new ScriptTemplatesPage2(this, templateAccess);
+			return new ScriptTemplatesPage(this, templateAccess);
 		} catch (Throwable e) {
 			return null;
 		}
