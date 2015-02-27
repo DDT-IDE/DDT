@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.engine.util;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +21,7 @@ import melnorme.utilbox.misc.Location;
  * An entry caching some value, derived from a file as input. 
  * Keeps tracks of file and value timestamps, to see if current value is stale or not with regards to the file input.
  */
-public class FileCachingEntry<VALUE> {
+public abstract class FileCachingEntry<VALUE> {
 	
 	protected final Location fileLocation;
 	
@@ -58,6 +56,10 @@ public class FileCachingEntry<VALUE> {
 		FileTime lastModifiedTime;
 		try {
 			lastModifiedTime = Files.getLastModifiedTime(getFilePath());
+			
+			if(lastModifiedTime.toMillis() > System.currentTimeMillis()) {
+				handleWarning_ModifiedTimeInTheFuture(lastModifiedTime);
+			}
 		} catch (IOException e) {
 			return true;
 		}
@@ -69,20 +71,11 @@ public class FileCachingEntry<VALUE> {
 	}
 	
 	public void updateValue(VALUE value) {
-		updateValue(value, null);
-	}
-	
-	public void updateValue(VALUE value, FileTime newTimeStampMaximum) {
-		assertNotNull(newTimeStampMaximum);
-		
 		FileTime newValueTimeStamp;
 		try {
 			newValueTimeStamp = Files.getLastModifiedTime(getFilePath());
 		} catch (IOException e) {
 			newValueTimeStamp = FileTime.fromMillis(0);
-		}
-		if(newTimeStampMaximum != null && newTimeStampMaximum.compareTo(newValueTimeStamp) < 0) {
-			newValueTimeStamp = newTimeStampMaximum;
 		}
 		internalSetValue(value, newValueTimeStamp);
 	}
@@ -91,5 +84,7 @@ public class FileCachingEntry<VALUE> {
 		this.value = value;
 		this.valueTimeStamp = newTimeStamp;
 	}
+	
+	protected abstract void handleWarning_ModifiedTimeInTheFuture(FileTime lastModifiedTime);
 	
 }

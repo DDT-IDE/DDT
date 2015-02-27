@@ -10,14 +10,13 @@
  *******************************************************************************/
 package dtool.engine;
 
-import static dtool.engine.DToolServer.TIMESTAMP_FORMAT;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.util.Date;
+import java.text.MessageFormat;
 import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
@@ -111,7 +110,14 @@ public class SemanticManager {
 		
 		@Override
 		protected FileCachingEntry<ResolvedManifest> doCreateEntry(BundleKey bundleKey) {
-			return new FileCachingEntry<>(bundleKey.getBundleLocation().getManifestLocation());
+			return new FileCachingEntry<ResolvedManifest>(bundleKey.getBundleLocation().getManifestLocation()) {
+				
+				@Override
+				protected void handleWarning_ModifiedTimeInTheFuture(FileTime lastModifiedTime) {
+					 dtoolServer.logError(MessageFormat.format("File `{0}` has modified time in the future ({1}).", 
+						 getFileLocation(), lastModifiedTime.toString()));
+				}
+			};
 		}
 		
 		public ResolvedManifest getEntryManifest(BundleKey bundleKey) {
@@ -173,18 +179,32 @@ public class SemanticManager {
 				
 				StringBuilder sb = new StringBuilder();
 				
-				sb.append(" Completed `dub describe`, resolved new manifests");
-				sb.append(" (timestamp: " + TIMESTAMP_FORMAT.format(new Date(dubStartTimeStamp.toMillis())) + ")");
-				sb.append(" : \n");
+				sb.append(" Completed `dub describe`, resolved new manifests:\n");
 				
 				for(ResolvedManifest newManifestValue : dubDescribeAnalyzer.getAllManifests()) {
-					sb.append(" Bundle:  " + String.format("%-25s", newManifestValue.getBundleName())  
-						+ "  @ " + newManifestValue.bundlePath + "\n");
+					sb.append(" Bundle:  " + String.format("%-25s", newManifestValue.getBundleName()));
+					sb.append("  @ " + newManifestValue.bundlePath);
 					
 					BundleKey bundleKey = newManifestValue.getBundleKey();
-					// We cap the maximum timestamp because DUB describe is only guaranteed to have read the 
-					// manifest files up to dubStartTimeStamp
-					getEntry(bundleKey).updateValue(newManifestValue, dubStartTimeStamp);
+					FileCachingEntry<ResolvedManifest> entry = getEntry(bundleKey);
+					
+					entry.updateValue(newManifestValue);
+					
+					sb.append("  (TS: " + entry.getValueTimeStamp().toString() + ")\n");
+					
+					if(dubStartTimeStamp.compareTo(entry.getValueTimeStamp()) < 0) {
+						// This means the file was modified after `dub describe` began, 
+						// which means the manifest is potentially stale, so mark it as such.
+						
+						// Sanity check, only mark as stale if modifed date is not in the future.
+						if(entry.getValueTimeStamp().toMillis() < System.currentTimeMillis()) {
+							sb.append("  ! Warning: bundle manifest modified during manifest describe operation.\n");
+							
+							entry.markStale();
+						}
+						
+					}
+					
 				}
 				sb.append("---");
 				dtoolServer.logMessage(sb.toString());

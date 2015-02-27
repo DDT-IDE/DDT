@@ -114,7 +114,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			FileCachingEntry<ResolvedManifest> entry = sm.manifestManager.infos.getEntry(bundleKey(BASIC_LIB));
 			assertTrue(entry.isStale() == false);
 			
-			// This actually tests for a regression
+			// This tests for a case we actually had as a bug undetected for a long time.  
 			Location manifestFilePath = BASIC_LIB.getLocation().resolve_fromValid(BundlePath.DUB_MANIFEST_FILENAME);
 			assertTrue(entry.getFileLocation().equals(manifestFilePath));
 			

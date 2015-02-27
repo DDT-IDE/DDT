@@ -173,12 +173,12 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			return bundleResolution;
 		}
 		
-		public void checkStaleStatus(ResolutionKey bundleKey, StaleState staleState) {
+		public void checkStaleStatus(ResolutionKey resKey, StaleState staleState) {
 			
-			assertEquals(manifestManager.getEntry(bundleKey.bundleKey).isStale(), 
+			assertEquals(manifestManager.getEntry(resKey.bundleKey).isStale(), 
 				staleState == MANIFEST_STALE);
 			
-			BundleResolution storedResolution = getStoredResolution(bundleKey);
+			BundleResolution storedResolution = getStoredResolution(resKey);
 			
 			if(storedResolution == null) {
 				assertTrue(staleState == MANIFEST_STALE || staleState == NO_BUNDLE_RESOLUTION);
@@ -189,7 +189,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 					staleState == MODULES_STALE || staleState == MODULE_CONTENTS_STALE);
 			}
 			
-			assertEquals(checkIsResolutionStale(bundleKey), staleState != CURRENT);
+			assertEquals(checkIsResolutionStale(resKey), staleState != CURRENT);
 		}
 		
 		@Override
@@ -214,7 +214,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	
 	protected BundleResolution getUpdatedResolution(ResolutionKey resKey) throws CommonException {
 		assertTrue(sm.checkIsResolutionStale(resKey));
-		return sm.getUpdatedResolution(resKey, defaultManifestUpdateOptions());
+		BundleResolution sr = sm.getUpdatedResolution(resKey, defaultManifestUpdateOptions());
+		assertTrue(sm.checkIsResolutionStale(resKey) == false);
+		return sr;
 	}
 	
 	
