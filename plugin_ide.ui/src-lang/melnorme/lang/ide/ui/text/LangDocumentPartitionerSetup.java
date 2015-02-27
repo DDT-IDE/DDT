@@ -50,6 +50,11 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	
 	protected void setupDocumentPartitioner(IDocument document, String partitioning) {
 		IDocumentPartitioner partitioner = createDocumentPartitioner();
+		setupDocumentPartitioner(partitioner, document, partitioning);
+	}
+	
+	public static void setupDocumentPartitioner(IDocumentPartitioner partitioner, IDocument document, 
+			String partitioning) {
 		if (partitioner != null) {
 			partitioner.connect(document);
 			if (document instanceof IDocumentExtension3) {

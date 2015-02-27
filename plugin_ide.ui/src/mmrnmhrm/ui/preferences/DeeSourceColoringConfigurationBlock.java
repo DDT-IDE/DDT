@@ -22,7 +22,7 @@ import mmrnmhrm.ui.text.DeeColorPreferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
@@ -79,7 +79,7 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	}
 	
 	protected DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
-			IPreferenceStore preferenceStore, ITextEditor editor) {
+			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
 		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, editor, false);
 	}
 	

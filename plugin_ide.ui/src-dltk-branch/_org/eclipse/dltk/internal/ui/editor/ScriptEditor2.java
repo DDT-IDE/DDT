@@ -11,22 +11,17 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.editor;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
@@ -37,7 +32,6 @@ import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IPackageDeclaration;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ISourceReference;
@@ -57,7 +51,6 @@ import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUILanguageManager;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.EclipsePreferencesAdapter;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -120,12 +113,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.part.IShowInTargetList;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
-import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
@@ -138,8 +128,8 @@ import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceM
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 
-/* FIXME: DLTK: need to review this class */
-public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
+/* FIXME: need to review this class */
+public abstract class ScriptEditor2 extends AbstractLangEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
 		IScriptEditor {
 	
@@ -164,54 +154,36 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	 */
 	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
 	
+
+	private ScriptOutlinePage fOutlinePage;
+	private ProjectionSupport fProjectionSupport;
+	private IFoldingStructureProvider fProjectionModelUpdater;
+	private InformationPresenter fInformationPresenter;
+	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
+	
 	/**
 	 * Updates the selection in the editor's widget with the selection of the
 	 * outline page.
 	 */
-	class OutlineSelectionChangedListener extends
-			AbstractSelectionChangedListener {
+	class OutlineSelectionChangedListener extends AbstractSelectionChangedListener {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			doSelectionChanged(event);
 		}
 	}
-
-	private ScriptOutlinePage fOutlinePage;
-
-	private ProjectionSupport fProjectionSupport;
-
-	/**
-	 * This editor's projection model updater
-	 */
-	private IFoldingStructureProvider fProjectionModelUpdater;
-
-
-	/** The information presenter. */
-	private InformationPresenter fInformationPresenter;
-
-	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
-
-	/**
-	 * Updates the script outline page selection and this editor's range indicator.
-	 */
+	
 	private class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
-		/*
-		 * @see
-		 * org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged
-		 * (org.eclipse.jface.viewers.SelectionChangedEvent)
-		 */
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			// XXX: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=56161
 			ScriptEditor2.this.selectionChanged();
 		}
 	}
 
-	/**
-	 * The editor selection changed listener.
-	 */
-	private EditorSelectionChangedListener fEditorSelectionChangedListener;
-
+	private final EditorSelectionChangedListener fEditorSelectionChangedListener = 
+			new EditorSelectionChangedListener();
+	
+	/* -----------------  ----------------- */
+	
 	public ScriptEditor2() {
 		super();
 		setDocumentProvider(DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider());
@@ -248,48 +220,19 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 
 	@Override
 	protected void initializeEditor() {
+		super.initializeEditor();
+		
 		occurrencesFinder = new OccurrencesFinder2(this);
 		if (!occurrencesFinder.isValid()) {
 			occurrencesFinder = null;
 		}
-		IPreferenceStore store = createCombinedPreferenceStore(null);
-		setPreferenceStore(store);
-		DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
-		setSourceViewerConfiguration(textTools.createSourceViewerConfiguraton2(store, this));
+		
+//		changePreferenceStore(createCombinedPreferenceStore(null));
 	}
 
-	/**
-	 * Creates and returns the preference store for this editor with the given
-	 * input.
-	 * 
-	 * @param input
-	 *            The editor input for which to create the preference store
-	 * @return the preference store for this editor
-	 */
-	private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
-		final List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(8);
-		final IScriptProject project = EditorUtility.getScriptProject(input);
-		final IDLTKLanguageToolkit toolkit = getLanguageToolkit();
-		final String preferenceQualifier = toolkit.getPreferenceQualifier();
-		if (project != null) {
-			if (preferenceQualifier != null) {
-				stores.add(new EclipsePreferencesAdapter(new ProjectScope(
-						project.getProject()), preferenceQualifier));
-			}
-			stores.add(new EclipsePreferencesAdapter(new ProjectScope(project
-					.getProject()), DLTKCore.PLUGIN_ID));
-		}
-		stores.add(getScriptPreferenceStore());
-		if (preferenceQualifier != null) {
-			stores.add(new EclipsePreferencesAdapter(InstanceScope.INSTANCE,
-					preferenceQualifier));
-			stores.add(new EclipsePreferencesAdapter(DefaultScope.INSTANCE,
-					preferenceQualifier));
-		}
+	@Override
+	protected void alterCombinedPreferenceStores_beforeEditorsUI(List<IPreferenceStore> stores) {
 		stores.add(new PreferencesAdapter(DLTKCore.getDefault().getPluginPreferences()));
-		stores.add(EditorsUI.getPreferenceStore());
-		stores.add(PlatformUI.getPreferenceStore());
-		return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));
 	}
 	
 	public IPreferenceStore getScriptPreferenceStore() {
@@ -311,16 +254,16 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		IPreferenceStore store = getPreferenceStore();
 		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
 			isOverviewRulerVisible(), styles, store, this);
-		assertNotNull(viewer);
 		
 		installProjectionSupport(store, viewer);
-
+		
 		// ensure source viewer decoration support has been created and configured
 		getSourceViewerDecorationSupport(viewer);
 		
 		return viewer;
 	}
 	
+	@Override
 	public AdaptedSourceViewer getSourceViewer_() {
 		return (AdaptedSourceViewer) getSourceViewer();
 	}
@@ -354,7 +297,6 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		fInformationPresenter.install(getSourceViewer());
 		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
 
-		fEditorSelectionChangedListener = new EditorSelectionChangedListener();
 		fEditorSelectionChangedListener.install(getSelectionProvider());
 		
 		installSemanticHighlighting();
@@ -367,29 +309,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	/* ----------------- set input ----------------- */
 	
 	@Override
-	protected void doSetInput(IEditorInput input) throws CoreException {
-		AdaptedSourceViewer sourceViewer = getSourceViewer_(); // can be null
-		
-		if(sourceViewer != null) {
-			// uninstall & unregister preference store listener
-			getSourceViewerDecorationSupport(sourceViewer).uninstall();
-			sourceViewer.unconfigure();
-			setPreferenceStore(createCombinedPreferenceStore(input));
-			sourceViewer.configure(getSourceViewerConfiguration());
-			getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
-		} else {
-			setPreferenceStore(createCombinedPreferenceStore(input));
-		}
-		
-		try {
-			internalDoSetInput(input);
-		} catch (ModelException e) {
-			DLTKUIPlugin.log(e);
-			this.close(false);
-		}
-	}
-	
-	protected void internalDoSetInput(IEditorInput input) throws CoreException {
+	protected void internalDoSetInput(IEditorInput input) {
 		ScriptSourceViewer sourceViewer = getSourceViewer_(); // Can be null
 		IPreferenceStore store = getPreferenceStore();
 		
@@ -400,7 +320,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 
 		// correct connection code here.
 
-		super.doSetInput(input);
+		super.internalDoSetInput(input);
 
 		final IDocumentProvider docProvider = getDocumentProvider();
 		final IAnnotationModel model = docProvider.getAnnotationModel(input);
@@ -418,14 +338,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 				sourceViewer.setReconciler(reconciler);
 			}
 		}
-		if (DLTKCore.DEBUG) {
-			System.err
-					.println("TODO: Add encoding support and overriding indicator support"); //$NON-NLS-1$
-		}
-		// if (fEncodingSupport != null)
-		// fEncodingSupport.reset();
-		// if (isShowingOverrideIndicators())
-		// installOverrideIndicator(false);
+		
 		setOutlinePageInput(fOutlinePage, input);
 	}
 	
@@ -435,18 +348,11 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	}
 
 	private boolean isFoldingEnabled() {
-		return getPreferenceStore().getBoolean(
-				PreferenceConstants.EDITOR_FOLDING_ENABLED);
+		return getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 
 	@Override
-	public boolean isSaveAsAllowed() {
-		return true;
-	}
-
-	@Override
-	protected IVerticalRulerColumn createAnnotationRulerColumn(
-			CompositeRuler ruler) {
+	protected IVerticalRulerColumn createAnnotationRulerColumn(CompositeRuler ruler) {
 		if (!getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER))
 			return super.createAnnotationRulerColumn(ruler);
 
@@ -483,14 +389,9 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	@Override
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
-		final SourceViewerConfiguration svConfiguration = getSourceViewerConfiguration();
-		if (svConfiguration == null || svConfiguration instanceof ScriptSourceViewerConfiguration) {
-			DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
-			setSourceViewerConfiguration(textTools.createSourceViewerConfiguraton2(store, this));
-		}
-		if (getSourceViewer() instanceof ScriptSourceViewer) {
-			((ScriptSourceViewer) getSourceViewer()).setPreferenceStore(store);
-		}
+		
+//		getSourceViewer_().setPreferenceStore(store);
+		
 		if (occurrencesFinder != null) {
 			occurrencesFinder.setPreferenceStore(store);
 		}
@@ -581,8 +482,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 			return new IShowInTargetList() {
 				@Override
 				public String[] getShowInTargetIds() {
-					return new String[] { DLTKUIPlugin.ID_SCRIPT_EXPLORER,
-							IPageLayout.ID_OUTLINE };
+					return new String[] { IPageLayout.ID_OUTLINE };
 				}
 			};
 		}
@@ -980,8 +880,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 
 	/**
 	 * React to changed selection.
-	 * 
-	 * 
+	 * Updates the script outline page selection and this editor's range indicator.
 	 */
 	protected void selectionChanged() {
 		if (getSelectionProvider() == null)
@@ -1484,7 +1383,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 
 	@Override
 	protected void performRevert() {
-		ProjectionViewer projectionViewer = (ProjectionViewer) getSourceViewer();
+		ProjectionViewer projectionViewer = getSourceViewer_();
 		projectionViewer.setRedraw(false);
 		try {
 
@@ -1499,8 +1398,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 
 			if (projectionMode) {
 				if (fProjectionModelUpdater != null)
-					fProjectionModelUpdater.install(this, projectionViewer,
-							getPreferenceStore());
+					fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
 				projectionViewer.enableProjection();
 			}
 
@@ -1513,6 +1411,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 		return LangNature.NATURE_ID;
 	}
 	
+	@Deprecated
 	@Override
 	public DeeLanguageToolkit getLanguageToolkit() {
 		return DeeLanguageToolkit.getDefault();
@@ -1627,8 +1526,7 @@ public abstract class ScriptEditor2 extends AbstractDecoratedTextEditor
 	}
 
 	@Override
-	protected void configureSourceViewerDecorationSupport(
-			SourceViewerDecorationSupport support) {
+	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
 		configureBracketMatcher(support);
 		super.configureSourceViewerDecorationSupport(support);
 	}

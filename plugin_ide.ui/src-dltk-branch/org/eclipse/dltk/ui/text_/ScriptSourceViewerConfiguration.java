@@ -19,30 +19,25 @@ import java.util.Map;
 
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.annotations.Nullable;
-import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
 import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverProxy;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
-import org.eclipse.dltk.ui.text.AbstractScriptScanner;
-import org.eclipse.dltk.ui.text.IColorManager;
-import org.eclipse.dltk.ui.text.ScriptCommentScanner;
 import org.eclipse.dltk.ui.text.ScriptOutlineInformationControl;
-import org.eclipse.dltk.ui.text.TodoTaskPreferencesOnPreferenceStore;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.spelling.SpellCheckDelegate;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
@@ -73,24 +68,22 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.HyperlinkDetectorRegistry;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-/* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
-public abstract class ScriptSourceViewerConfiguration extends TextSourceViewerConfiguration {
+import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
-	private IColorManager fColorManager;
-	private ITextEditor fTextEditor;
+/* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
+public abstract class ScriptSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
+
 	private String fDocumentPartitioning;
 
-	public ScriptSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
-			ITextEditor editor, String partitioning) {
-		super(preferenceStore);
-
-		fColorManager = colorManager;
-		fTextEditor = editor;
+	public ScriptSourceViewerConfiguration(IPreferenceStore preferenceStore, IColorManager colorManager, 
+			AbstractDecoratedTextEditor editor, String partitioning) {
+		super(preferenceStore, colorManager, editor);
+		
 		fDocumentPartitioning = assertNotNull(partitioning);
 
 		initializeScanners();
@@ -103,61 +96,11 @@ public abstract class ScriptSourceViewerConfiguration extends TextSourceViewerCo
 	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
 		return fDocumentPartitioning;
 	}
-
-	/**
-	 * Returns a scanner that is capable of detecting single line comments that
-	 * contain todo tasks.
-	 * 
-	 * <p>
-	 * Clients should make a call to this method to create the scanner in their
-	 * overriden <code>initalizeScanners()</code> implementation.
-	 * </p>
-	 * 
-	 * @param commentColor
-	 *            comment color key
-	 * @param tagColor
-	 *            tag color key
-	 * 
-	 * @see #createCommentScanner(String, String, ITodoTaskPreferences)
-	 */
-	/* FIXME: DLTK: ScriptCommentScanner */
-	protected final AbstractScriptScanner createCommentScanner(
-			String commentColor, String tagColor) {
-		return createCommentScanner(commentColor, tagColor,
-				new TodoTaskPreferencesOnPreferenceStore(fPreferenceStore));
-	}
-
-	/**
-	 * Returns a scanner that is capable of detecting single line comments that
-	 * contain todo tasks.
-	 * 
-	 * <p>
-	 * Default implementation returns an instance of
-	 * {@link ScriptCommentScanner}. Clients that need to define an alternate
-	 * comment scanner implementation should override this method.
-	 * </p>
-	 * 
-	 * @see #createCommentScanner(String, String)
-	 */
-	protected AbstractScriptScanner createCommentScanner(String commentColor,
-			String tagColor, ITodoTaskPreferences taskPrefs) {
-		return new ScriptCommentScanner(getColorManager(), fPreferenceStore,
-				commentColor, tagColor, taskPrefs);
-	}
-
 	
 	protected IColorManager getColorManager() {
-		return this.fColorManager;
+		return getColorManager2();
 	}
-
-	public IPreferenceStore getPreferenceStore() {
-		return fPreferenceStore;
-	}
-
-	public ITextEditor getEditor() {
-		return this.fTextEditor;
-	}
-
+	
 	@Override
 	public IReconciler getReconciler(ISourceViewer sourceViewer) {
 		final ITextEditor editor = getEditor();
@@ -179,14 +122,6 @@ public abstract class ScriptSourceViewerConfiguration extends TextSourceViewerCo
 	
 	protected SpellCheckDelegate createSpellCheckDelegate() {
 		return new SpellCheckDelegate();
-	}
-	
-	public boolean affectsTextPresentation(PropertyChangeEvent event) {
-		return false;
-	}
-
-	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-
 	}
 	
 	/* FIXME: DLTK: review ToggleCommentAction */
@@ -276,7 +211,7 @@ public abstract class ScriptSourceViewerConfiguration extends TextSourceViewerCo
 
 		final IHyperlinkDetector[] inheritedDetectors = super.getHyperlinkDetectors(sourceViewer);
 
-		if (fTextEditor == null) {
+		if (getEditor() == null) {
 			return inheritedDetectors;
 		}
 
@@ -294,7 +229,7 @@ public abstract class ScriptSourceViewerConfiguration extends TextSourceViewerCo
 			System.arraycopy(inheritedDetectors, 0, detectors, resultIndex, inheritedDetectors.length);
 			resultIndex += inheritedDetectors.length;
 		}
-		detectors[resultIndex++] = new ModelElementHyperlinkDetector(fTextEditor);
+		detectors[resultIndex++] = new ModelElementHyperlinkDetector(getEditor());
 		if (additionalDetectors != null) {
 			System.arraycopy(additionalDetectors, 0, detectors, resultIndex, additionalDetectors.length);
 			resultIndex += additionalDetectors.length;

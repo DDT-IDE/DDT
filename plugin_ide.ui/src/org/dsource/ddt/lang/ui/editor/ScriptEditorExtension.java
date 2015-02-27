@@ -11,16 +11,14 @@
 package org.dsource.ddt.lang.ui.editor;
 
 
+import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.part.IShowInTargetList;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor_Actions;
@@ -31,37 +29,11 @@ public abstract class ScriptEditorExtension extends ScriptEditor_Actions {
 	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
 		if(document instanceof IDocumentExtension3) {
 			IDocumentExtension3 extension = (IDocumentExtension3) document;
-			String partitioning = getPartitioningToConnect();
+			String partitioning = TextSettings_Actual.PARTITIONING_ID;
 			if(extension.getDocumentPartitioner(partitioning) == null) {
 				getTextTools().setupDocumentPartitioner(document, partitioning);
 			}
 		}
-	}
-	
-	protected abstract String getPartitioningToConnect();
-	
-	@Override
-	protected void createActions() {
-		super.createActions();
-	}
-	
-	@Override
-	public void editorContextMenuAboutToShow(IMenuManager menu) {
-		super.editorContextMenuAboutToShow(menu);
-	}
-	
-	// Prevent showing Script Explorer in "Show In"
-	@Override
-	public Object getAdapter(Class required) {
-		if (required == IShowInTargetList.class) {
-			return new IShowInTargetList() {
-				@Override
-				public String[] getShowInTargetIds() {
-					return new String[] { IPageLayout.ID_OUTLINE };
-				}
-			};
-		}
-		return super.getAdapter(required);
 	}
 	
 	/* -----------------  ----------------- */

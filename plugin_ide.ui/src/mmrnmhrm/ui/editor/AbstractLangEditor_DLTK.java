@@ -11,12 +11,10 @@
 package mmrnmhrm.ui.editor;
 
 
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 
 import org.dsource.ddt.lang.ui.editor.ScriptEditorExtension;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
@@ -31,16 +29,10 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditorExtension {
 		super();
 	}
 	
-	@Override
-	protected void initializeEditor() {
-		super.initializeEditor();
-		initialize_setContextMenuIds();
-	}
-	
 	/* ----------------- text presentation ----------------- */
 	
-	protected ICharacterPairMatcher bracketMatcher = 
-			new DefaultCharacterPairMatcher("{}[]()".toCharArray());
+	/* FIXME: review this, does it need to go Lang? */
+	protected ICharacterPairMatcher bracketMatcher = new DefaultCharacterPairMatcher("{}[]()".toCharArray());
 	
 	@Override
 	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
@@ -57,30 +49,7 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditorExtension {
 	
 	/* ----------------- actions ----------------- */
 	
-	protected void initialize_setContextMenuIds() {
-		setEditorContextMenuId(LangUIPlugin_Actual.EDITOR_CONTEXT);
-		setRulerContextMenuId(LangUIPlugin_Actual.RULER_CONTEXT);
-	}
-	
-	protected AbstractLangEditorActions editorActionsManager;
-	
 	@Override
-	protected void createActions() {
-		super.createActions();
-		
-		editorActionsManager = createActionsManager();
-	}
-	
 	protected abstract AbstractLangEditorActions createActionsManager();
-	
-	@Override
-	public void editorContextMenuAboutToShow(IMenuManager menu) {
-		super.editorContextMenuAboutToShow(menu);
-		editorContextMenuAboutToShow_extend(menu);
-	}
-	
-	protected void editorContextMenuAboutToShow_extend(IMenuManager menu) {
-		editorActionsManager.editorContextMenuAboutToShow(menu);
-	}
 	
 }

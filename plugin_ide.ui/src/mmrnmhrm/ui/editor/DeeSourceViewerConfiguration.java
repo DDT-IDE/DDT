@@ -26,14 +26,13 @@ import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 import mmrnmhrm.ui.text.DeePartitions;
 
-import org.dsource.ddt.lang.ui.editor.AbstractLangSourceViewerConfiguration;
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
+import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -50,12 +49,15 @@ import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
+import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+
+public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
-			ITextEditor editor) {
+			AbstractDecoratedTextEditor editor) {
 		super(preferenceStore, colorManager, editor, DeePartitions.PARTITIONING_ID);
 	}
 	

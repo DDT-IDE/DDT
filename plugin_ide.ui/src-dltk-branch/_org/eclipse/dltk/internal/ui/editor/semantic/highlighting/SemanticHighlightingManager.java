@@ -15,8 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collections;
 
-import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.text.DeeTextTools;
+import melnorme.lang.ide.ui.TextSettings_Actual;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -206,8 +205,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 		fSourceViewer = sourceViewer;
 		fColorManager = colorManager;
 		fPreferenceStore = preferenceStore;
-		final DeeTextTools textTools = DeeUIPlugin.getDefault().getTextTools();
-		fConfiguration = textTools.createSourceViewerConfiguraton2(preferenceStore, editor);
+		fConfiguration = TextSettings_Actual.createSourceViewerConfiguration(preferenceStore, editor);
 		
 		if (fEditor != null) {
 			Assert.isNotNull(fConfiguration);

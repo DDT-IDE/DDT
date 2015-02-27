@@ -12,17 +12,9 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.PreferencesLookupDelegate;
-import org.eclipse.dltk.ui.formatter.IScriptFormatterFactory;
-import org.eclipse.dltk.ui.formatter.ScriptFormatterManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
@@ -32,7 +24,6 @@ import org.eclipse.jface.text.contentassist.ICompletionListener;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
-import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.IOverviewRuler;
@@ -41,10 +32,8 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-import _org.eclipse.dltk.ui.formatter.internal.ScriptFormattingContextProperties;
-
-public class AdaptedSourceViewer extends ScriptSourceViewer implements
-		ICompletionListener {
+/* FIXME: DLTK: review this class. */
+public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompletionListener {
 	
 	protected static interface ITextConverter {
 		void customizeDocumentCommand(IDocument document, DocumentCommand command);
@@ -198,51 +187,12 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements
 	}
 
 	@Override
-	public void selectionChanged(ICompletionProposal proposal,
-			boolean smartToggle) {
+	public void selectionChanged(ICompletionProposal proposal, boolean smartToggle) {
 	}
-
-	private IProject getProject() {
-		final IModelElement input = editor.getInputModelElement();
-		if (input != null) {
-			final IScriptProject scriptProject = input.getScriptProject();
-			if (scriptProject != null) {
-				return scriptProject.getProject();
-			}
-		}
-		return null;
-	}
-
-	private ISourceModule getSourceModule() {
-		final IModelElement input = editor.getInputModelElement();
-		if (input != null) {
-			return (ISourceModule) input
-					.getAncestor(IModelElement.SOURCE_MODULE);
-		}
-		return null;
-	}
-
+	
 	@Override
 	public IFormattingContext createFormattingContext() {
-		final IFormattingContext context = super.createFormattingContext();
-		context.setProperty(ScriptFormattingContextProperties.MODULE,
-				getSourceModule());
-		final IProject project = getProject();
-		context.setProperty(
-				ScriptFormattingContextProperties.CONTEXT_PROJECT, project);
-		final IScriptFormatterFactory factory = ScriptFormatterManager
-				.getSelected(editor.getNatureId(), project);
-		if (factory != null) {
-			context.setProperty(
-					ScriptFormattingContextProperties.CONTEXT_FORMATTER_ID,
-					factory.getId());
-			final Map<String, String> preferences = factory
-					.retrievePreferences(new PreferencesLookupDelegate(
-							project));
-			context.setProperty(
-					FormattingContextProperties.CONTEXT_PREFERENCES,
-					preferences);
-		}
+		IFormattingContext context = super.createFormattingContext();
 		return context;
 	}
 	

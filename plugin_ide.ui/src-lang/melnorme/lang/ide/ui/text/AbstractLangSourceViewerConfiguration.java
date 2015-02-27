@@ -80,6 +80,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		return preferenceStore;
 	}
 	
+	public AbstractDecoratedTextEditor getEditor() {
+		return editor;
+	}
+	
 	@Override
 	public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
 		return TextSettings_Actual.PARTITIONING_ID;
@@ -139,7 +143,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		}
 	}
 	
-	//@Override
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if(scanner.affectsBehavior(event))
@@ -148,7 +151,6 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		return false;
 	}
 	
-	//@Override
 	public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 		for (AbstractLangScanner scanner : getScanners()) {
 			if (scanner.affectsBehavior(event)) {
