@@ -120,11 +120,6 @@ public class DToolClient {
 		
 	}
 	
-	public static Path getPathHandleForModuleSource(IModuleSource input) {
-		return DToolClient_Bad.getFilePathOrNull(input);
-	}
-	
-	
 	/* ----------------- Module build structure operation and working copy handling ----------------- */
 	
 	public ParsedModule doParseForBuildStructureOrIndex(IModuleSource input, IProblemReporter reporter) {

@@ -15,12 +15,12 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import mmrnmhrm.ui.editor.EditorUtil;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
-import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Region;
 
+import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
+import _org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import dtool.ast.definitions.Module;
 
 public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
@@ -62,8 +62,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	}
 	
 	@Override
-	public void computeFoldableBlocks(IFoldingContent content) {
-		Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content);
+	public void computeFoldableBlocks(FoldingContent content) {
+		Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content, content.getFilePath());
 		
 		if (deeModule != null) {
 			deeModule.accept(new ASTVisitor() {

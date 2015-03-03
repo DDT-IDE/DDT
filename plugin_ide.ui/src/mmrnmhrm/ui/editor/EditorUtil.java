@@ -46,8 +46,7 @@ public class EditorUtil {
 	
 	// ------------  syntax and semantic operations util ------------ 
 	
-	public static Module getParsedModule_NoWaitInUI(IModuleSource input) {
-		Path filePath = DToolClient.getPathHandleForModuleSource(input);
+	public static Module getParsedModule_NoWaitInUI(IModuleSource input, Path filePath) {
 		if(filePath == null) {
 			return null;
 		}

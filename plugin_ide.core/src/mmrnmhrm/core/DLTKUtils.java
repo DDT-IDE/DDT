@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuffer;
 import org.eclipse.dltk.core.IScriptModel;
@@ -79,16 +78,6 @@ public class DLTKUtils {
 	
 	public static Path getFilePath(IPath location) throws InvalidPathExceptionX {
 		return MiscUtil.createPath(location.toOSString());
-	}
-	
-	@Deprecated
-	public static Path getFilePath(IModuleSource moduleSource) throws InvalidPathExceptionX {
-		ISourceModule sourceModule = tryCast(moduleSource.getModelElement(), ISourceModule.class);
-		if(sourceModule != null) {
-			return getFilePath(sourceModule);
-		} else {
-			return MiscUtil.createPath(moduleSource.getFileName());
-		}
 	}
 	
 }

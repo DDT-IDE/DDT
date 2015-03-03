@@ -7,13 +7,13 @@ import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
-import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 
+import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
+import _org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import _org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
 import dtool.ast.definitions.Module;
 
@@ -40,13 +40,13 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	}
 	
 	@Override
-	public void computeFoldableBlocks(IFoldingContent content) {
+	public void computeFoldableBlocks(FoldingContent content) {
 		offsetForModuleDeclaration = -1;
 		
 		if(isFoldingComments()) {
 			
 			// With changes in the parser perhaps this code could be simplified.
-			Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content);
+			Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content, content.getFilePath());
 			if (deeModule != null && deeModule.md != null) {
 				offsetForModuleDeclaration = deeModule.md.getOffset();
 			}

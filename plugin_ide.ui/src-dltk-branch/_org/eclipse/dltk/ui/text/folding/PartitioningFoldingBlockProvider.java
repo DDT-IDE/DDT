@@ -18,7 +18,6 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.IPartitioningProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -31,6 +30,8 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.rules.FastPartitioner;
+
+import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
 
 /**
  * Abstract implementation of {@link IFoldingBlockProvider} to fold
@@ -153,7 +154,7 @@ public abstract class PartitioningFoldingBlockProvider {
 		return docRegionList;
 	}
 
-	protected void computeBlocksForPartitionType(IFoldingContent content,
+	protected void computeBlocksForPartitionType(FoldingContent content,
 			String partition, IFoldingBlockKind kind, boolean collapse) {
 		try {
 			final String contents = content.getSourceContents();

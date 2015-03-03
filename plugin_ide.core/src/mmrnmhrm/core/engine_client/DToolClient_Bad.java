@@ -17,12 +17,12 @@ import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ISourceModule;
 
 /**
  * Problematic API that needs to be replaced eventually
  */
+@Deprecated
 public class DToolClient_Bad {
 	
 	@Deprecated
@@ -36,16 +36,6 @@ public class DToolClient_Bad {
 	
 	@Deprecated
 	public static Path getFilePathOrNull(ISourceModule input) {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			DeeCore.logError("Invalid path from DLTK: " + e);
-			return null;
-		}
-	}
-	
-	@Deprecated
-	public static Path getFilePathOrNull(IModuleSource input) {
 		try {
 			return DLTKUtils.getFilePath(input);
 		} catch (InvalidPathExceptionX e) {

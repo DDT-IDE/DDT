@@ -11,6 +11,7 @@ package _org.eclipse.dltk.ui.text.folding;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,9 +21,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.ide.ui.editor.EditorUtils;
 import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
 import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ElementChangedEvent;
 import org.eclipse.dltk.core.IElementChangedListener;
@@ -38,9 +41,7 @@ import org.eclipse.dltk.ui.text.folding.AbortFoldingException;
 import org.eclipse.dltk.ui.text.folding.DefaultElementCommentResolver;
 import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
-import org.eclipse.dltk.ui.text.folding.IFoldingContent;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jdt.internal.ui.text_.DocumentCharacterIterator;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -742,15 +743,16 @@ public class DelegatingFoldingStructureProvider {
 
 	private boolean computeFoldingStructure(FoldingStructureComputationContext ctx) {
 		try {
-			if (blockProviders == null) {
+			if (blockProviders == null || fEditor == null) {
 				return false;
 			}
-			final FoldingContent content = new FoldingContent(fInput);
+			Path filePath = EditorUtils.getFilePathFromEditorInput(fEditor.getEditorInput());
+			
+			final FoldingContent content = new FoldingContent(fInput, filePath);
 			final Requestor requestor = new Requestor(content, ctx);
 			for (IFoldingBlockProvider provider : blockProviders) {
 				provider.setRequestor(requestor);
-				requestor.lineCountDelta = Math.max(1,
-						provider.getMinimalLineCount() - 1);
+				requestor.lineCountDelta = Math.max(1, provider.getMinimalLineCount() - 1);
 				provider.computeFoldableBlocks(content);
 				provider.setRequestor(null);
 			}
@@ -764,12 +766,6 @@ public class DelegatingFoldingStructureProvider {
 			blockProviders = null;
 			return false;
 		}
-	}
-
-	// for testing
-	public static IFoldingContent createContent(IModelElement input)
-			throws ModelException {
-		return new FoldingContent(input);
 	}
 
 	/**
@@ -1027,31 +1023,30 @@ public class DelegatingFoldingStructureProvider {
 
 	}
 
-	private static class FoldingContent implements IFoldingContent {
+	public static class FoldingContent implements IModuleSource {
 
-		private final IModelElement input;
-		private final String contents;
+		protected final IModelElement input;
+		protected final String contents;
+		protected final Path filePath;
 
-		public FoldingContent(IModelElement input) throws ModelException {
+		public FoldingContent(IModelElement input, Path filePath) throws ModelException {
 			this.input = input;
 			this.contents = ((ISourceReference) input).getSource();
+			this.filePath = filePath;
 		}
 
 		public String get() {
 			return contents;
 		}
 
-		@Override
 		public String get(int offset, int length) {
 			return contents.substring(offset, offset + length);
 		}
 
-		@Override
 		public String substring(int beginIndex, int endIndex) {
 			return contents.substring(beginIndex, endIndex);
 		}
 
-		@Override
 		public String get(IRegion region) {
 			return get(region.getOffset(), region.getLength());
 		}
@@ -1064,6 +1059,10 @@ public class DelegatingFoldingStructureProvider {
 		@Override
 		public IModelElement getModelElement() {
 			return input;
+		}
+		
+		public Path getFilePath() {
+			return filePath;
 		}
 
 		@Override
@@ -1080,12 +1079,11 @@ public class DelegatingFoldingStructureProvider {
 
 	private static class Requestor implements IFoldingBlockRequestor {
 
-		final IFoldingContent content;
+		final FoldingContent content;
 		final FoldingStructureComputationContext ctx;
 		int lineCountDelta;
 
-		public Requestor(IFoldingContent content,
-				FoldingStructureComputationContext ctx) {
+		public Requestor(FoldingContent content, FoldingStructureComputationContext ctx) {
 			this.content = content;
 			this.ctx = ctx;
 		}
