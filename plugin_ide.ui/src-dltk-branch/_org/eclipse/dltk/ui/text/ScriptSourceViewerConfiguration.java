@@ -30,7 +30,6 @@ import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
-import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverProxy;
@@ -74,6 +73,7 @@ import org.eclipse.ui.texteditor.HyperlinkDetectorRegistry;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import _org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 
 /* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
 public abstract class ScriptSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
