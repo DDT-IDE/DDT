@@ -16,6 +16,7 @@
  * Fixed: Semantic engine does not detect modifications to `dub.json` during an Eclipse session!!
  * Fixed: (regression) Editor Quick Outline command not working.
  * Fixed: (regression) Editor code folding not working.
+ * Fixed: Cleanup editor context menu "Source" entry, removed Indentation action which was not implemented.
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.

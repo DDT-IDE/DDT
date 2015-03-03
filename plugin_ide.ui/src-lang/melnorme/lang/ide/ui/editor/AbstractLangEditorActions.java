@@ -38,6 +38,8 @@ public abstract class AbstractLangEditorActions implements IDisposable {
 				CommandContributionItem.STYLE_PUSH
 			)
 		));
+		
+		/* FIXME: source menu*/
 	}
 	
 	@Override

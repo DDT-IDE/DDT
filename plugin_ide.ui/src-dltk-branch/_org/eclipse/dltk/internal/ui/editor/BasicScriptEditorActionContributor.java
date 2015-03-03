@@ -22,9 +22,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
+
+import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 
 /**
  * Common base class for action contributors for Script editors.
@@ -92,8 +93,7 @@ public class BasicScriptEditorActionContributor extends AbstractLangEditorAction
 
 		if (part instanceof ScriptEditor_Actions) {
 			ScriptEditor_Actions editor = (ScriptEditor_Actions) part;
-			editor.getActionGroup().fillActionBars(getActionBars());
-			final ActionGroup foldingActions = editor.getFoldingActionGroup();
+			final FoldingActionGroup foldingActions = editor.getFoldingActionGroup();
 			if (foldingActions != null)
 				foldingActions.updateActionBars();
 		}

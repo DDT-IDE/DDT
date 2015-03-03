@@ -24,33 +24,23 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.ui.actions.ActionContext;
-import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
-import _org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
-import _org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
 import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
 
 public abstract class ScriptEditor_Actions extends ScriptEditor {
 	
-	private ActionGroup fFoldingGroup;
-	private CompositeActionGroup fContextMenuGroup;
-	private CompositeActionGroup fActionGroups;
+	private FoldingActionGroup fFoldingGroup;
 	
 	public ScriptEditor_Actions() {
 		super();
 	}
 	
-	ActionGroup getActionGroup() {
-		return fActionGroups;
-	}
-	
-	ActionGroup getFoldingActionGroup() {
+	FoldingActionGroup getFoldingActionGroup() {
 		return fFoldingGroup;
 	}
 	
@@ -58,11 +48,7 @@ public abstract class ScriptEditor_Actions extends ScriptEditor {
 	protected void createActions() {
 		super.createActions();
 
-		fActionGroups = new CompositeActionGroup(new ActionGroup[] { });
-
-		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { });
-
-		fFoldingGroup = createFoldingActionGroup();
+		fFoldingGroup = new FoldingActionGroup(this, getSourceViewer_(), getScriptPreferenceStore());
 
 		Action action = new GotoMatchingBracketAction(this);
 		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
@@ -111,32 +97,14 @@ public abstract class ScriptEditor_Actions extends ScriptEditor {
 		SourceViewerConfiguration configuration = getSourceViewerConfiguration();
 		((ToggleCommentAction) action).configure(sourceViewer, configuration);
 
-		final ActionGroup generateActions = createGenerateActionGroup();
-		if (generateActions != null) {
-			fActionGroups.addGroup(generateActions);
-			fContextMenuGroup.addGroup(generateActions);
-		}
 	}
 
-	protected ActionGroup createGenerateActionGroup() {
-		return new GenerateActionGroup(this, ITextEditorActionConstants.GROUP_EDIT);
-	}
-
-	protected ActionGroup createFoldingActionGroup() {
-		return new FoldingActionGroup(this, getSourceViewer_(), getScriptPreferenceStore());
-	}
-	
 	@Override
 	public void editorContextMenuAboutToShow(IMenuManager menu) {
 		super.editorContextMenuAboutToShow(menu);
 		
 		menu.insertAfter(ICommonMenuConstants.GROUP_OPEN, new GroupMarker(ICommonMenuConstants.GROUP_SHOW));
 		
-		ActionContext context = new ActionContext(getSelectionProvider().getSelection());
-		context.setInput(getEditorInput());
-		fContextMenuGroup.setContext(context);
-		fContextMenuGroup.fillContextMenu(menu);
-		fContextMenuGroup.setContext(null);
 		// Quick views
 		menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN,
 				getAction(IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
