@@ -48,7 +48,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
@@ -57,7 +57,7 @@ import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
  */
 public class SemanticHighlightingManager implements IPropertyChangeListener {
 	
-	public static SemanticHighlightingManager install(ScriptTextTools textTools, ScriptEditor2 editor, 
+	public static SemanticHighlightingManager install(ScriptTextTools textTools, ScriptEditor editor, 
 			IPreferenceStore store) {
 		SemanticHighlightingManager semanticManager = null;
 		
@@ -173,7 +173,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	private HighlightingStyle[] fHighlightings;
 
 	/** The editor */
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 	/** The source viewer */
 	private ScriptSourceViewer fSourceViewer;
 	/** The color manager */
@@ -197,7 +197,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	 * @param preferenceStore
 	 *            The preference store
 	 */
-	public void install(ScriptEditor2 editor, ScriptSourceViewer sourceViewer,
+	public void install(ScriptEditor editor, ScriptSourceViewer sourceViewer,
 			IColorManager colorManager, IPreferenceStore preferenceStore) {
 		fEditor = editor;
 		assertNotNull(editor);

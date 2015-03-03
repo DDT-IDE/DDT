@@ -26,27 +26,27 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IUpdate;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 
 public class GoToNextPreviousMemberAction extends Action implements IUpdate {
 
 	public static final String NEXT_MEMBER= "GoToNextMember"; //$NON-NLS-1$
 	public static final String PREVIOUS_MEMBER= "GoToPreviousMember"; //$NON-NLS-1$
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 	private boolean fIsGotoNext;
 
-	public static GoToNextPreviousMemberAction newGoToNextMemberAction(ScriptEditor2 editor) {
+	public static GoToNextPreviousMemberAction newGoToNextMemberAction(ScriptEditor editor) {
 		String text= "N&ext Member";
 		return new GoToNextPreviousMemberAction(editor, text, true);
 	}
 
-	public static GoToNextPreviousMemberAction newGoToPreviousMemberAction(ScriptEditor2 editor) {
+	public static GoToNextPreviousMemberAction newGoToPreviousMemberAction(ScriptEditor editor) {
 		String text= "Previ&ous Member";
 		return new GoToNextPreviousMemberAction(editor, text, false);
 	}
 
-	private GoToNextPreviousMemberAction(ScriptEditor2 editor, String text, boolean isGotoNext) {
+	private GoToNextPreviousMemberAction(ScriptEditor editor, String text, boolean isGotoNext) {
 		super(text);
 		fEditor= editor;
 		fIsGotoNext= isGotoNext;

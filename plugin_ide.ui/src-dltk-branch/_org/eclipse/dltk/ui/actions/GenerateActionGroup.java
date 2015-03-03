@@ -36,7 +36,7 @@ import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
 import _org.eclipse.dltk.internal.ui.actions.DLTKQuickMenuAction;
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 /**
  * Action group that adds the source and generate actions to a part's context
@@ -80,14 +80,14 @@ public class GenerateActionGroup extends ActionGroup {
 	 */
 	public static final String GROUP_EDIT = "editGroup"; //$NON-NLS-1$
 
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 	private IWorkbenchSite fSite;
 	private final String fGroupName;
 
 	private static final String QUICK_MENU_ID = "org.eclipse.dltk.ui.edit.text.java.source.quickMenu"; //$NON-NLS-1$
 
 	private class SourceQuickAccessAction extends DLTKQuickMenuAction {
-		public SourceQuickAccessAction(ScriptEditor2 editor) {
+		public SourceQuickAccessAction(ScriptEditor editor) {
 			super(editor, QUICK_MENU_ID);
 		}
 
@@ -110,7 +110,7 @@ public class GenerateActionGroup extends ActionGroup {
 	 * @param groupName
 	 *            the group name to add the action to
 	 */
-	public GenerateActionGroup(ScriptEditor2 editor, String groupName) {
+	public GenerateActionGroup(ScriptEditor editor, String groupName) {
 		fSite = editor.getSite();
 		fEditor = editor;
 		fGroupName = groupName;

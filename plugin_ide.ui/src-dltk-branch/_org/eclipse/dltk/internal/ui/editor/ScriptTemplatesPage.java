@@ -64,7 +64,7 @@ import _org.eclipse.dltk.ui.preferences.EditTemplateDialog;
 public class ScriptTemplatesPage extends AbstractTemplatesPage {
 
 	private final TemplateVariableProcessor fTemplateProcessor;
-	private final ScriptEditor2 fScriptEditor;
+	private final ScriptEditor fScriptEditor;
 	private final ITemplateAccess fTemplateAccess;
 
 	/**
@@ -73,7 +73,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 	 * @param scriptEditor
 	 *            the java editor
 	 */
-	public ScriptTemplatesPage(ScriptEditor2 scriptEditor,
+	public ScriptTemplatesPage(ScriptEditor scriptEditor,
 			ITemplateAccess templateAccess) {
 		super(scriptEditor, scriptEditor.getSourceViewer_());
 		fScriptEditor = scriptEditor;

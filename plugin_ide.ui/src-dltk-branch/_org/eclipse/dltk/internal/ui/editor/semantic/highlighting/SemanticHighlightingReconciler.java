@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 /**
  * Semantic highlighting reconciler - Background thread implementation.
@@ -49,7 +49,7 @@ public class SemanticHighlightingReconciler implements
 		IScriptReconcilingListener, ITextInputListener {
 
 	/** The Java editor this semantic highlighting reconciler is installed on */
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 	/** The source viewer this semantic highlighting reconciler is installed on */
 	private ISourceViewer fSourceViewer;
 	/** The semantic highlighting presenter */
@@ -187,7 +187,7 @@ public class SemanticHighlightingReconciler implements
 		if (runnable == null)
 			return;
 
-		ScriptEditor2 editor = fEditor;
+		ScriptEditor editor = fEditor;
 		if (editor == null)
 			return;
 
@@ -206,7 +206,7 @@ public class SemanticHighlightingReconciler implements
 		display.asyncExec(runnable);
 	}
 
-	public void install(ScriptEditor2 editor, ISourceViewer sourceViewer,
+	public void install(ScriptEditor editor, ISourceViewer sourceViewer,
 			ISemanticHighlightingUpdater fHighlightingUpdater,
 			SemanticHighlightingPresenter presenter,
 			SemanticHighlighting[] semanticHighlightings,

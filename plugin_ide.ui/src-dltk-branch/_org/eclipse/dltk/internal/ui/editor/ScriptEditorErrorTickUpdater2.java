@@ -29,11 +29,11 @@ import org.eclipse.ui.IEditorInput;
  */
 public class ScriptEditorErrorTickUpdater2 implements IProblemChangedListener {
 	
-	private ScriptEditor2 fScriptEditor;
+	private ScriptEditor fScriptEditor;
 	
 	protected ProblemsLabelDecorator problemsDecorator = new ProblemsLabelDecorator(null);
 	
-	public ScriptEditorErrorTickUpdater2(ScriptEditor2 editor) {
+	public ScriptEditorErrorTickUpdater2(ScriptEditor editor) {
 		Assert.isNotNull(editor);
 		fScriptEditor = editor;
 		DLTKUIPlugin.getDefault().getProblemMarkerManager().addListener(this);

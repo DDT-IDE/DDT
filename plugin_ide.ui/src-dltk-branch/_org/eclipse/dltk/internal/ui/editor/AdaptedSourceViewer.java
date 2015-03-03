@@ -44,12 +44,12 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompleti
 	protected boolean fIgnoreTextConverters = false;
 	protected boolean fInCompletionSession;
 	
-	protected final ScriptEditor2 editor;
+	protected final ScriptEditor editor;
 	
 	public AdaptedSourceViewer(Composite parent,
 			IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 			boolean showAnnotationsOverview, int styles,
-			IPreferenceStore store, ScriptEditor2 editor) {
+			IPreferenceStore store, ScriptEditor editor) {
 		super(parent, verticalRuler, overviewRuler,
 				showAnnotationsOverview, styles, store);
 		this.editor = editor;

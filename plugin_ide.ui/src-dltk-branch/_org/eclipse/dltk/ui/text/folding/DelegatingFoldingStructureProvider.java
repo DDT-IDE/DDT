@@ -58,7 +58,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 /**
  * This implementation of {@link IFoldingStructureProvider} delegates the actual
@@ -498,7 +498,7 @@ public class DelegatingFoldingStructureProvider {
 	}
 
 	/* context and listeners */
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 	private IFoldingBlockProvider[] blockProviders;
 	private ProjectionListener fProjectionListener;
 	private IModelElement fInput;
@@ -514,7 +514,7 @@ public class DelegatingFoldingStructureProvider {
 		// empty constructor
 	}
 
-	public void install(ScriptEditor2 editor, ProjectionViewer viewer, IPreferenceStore store) {
+	public void install(ScriptEditor editor, ProjectionViewer viewer, IPreferenceStore store) {
 		internalUninstall();
 		assertNotNull(editor);
 		fStore = store;

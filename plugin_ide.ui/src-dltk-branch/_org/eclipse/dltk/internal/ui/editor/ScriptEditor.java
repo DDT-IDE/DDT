@@ -127,7 +127,7 @@ import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 
 /* FIXME: need to review this class */
-public abstract class ScriptEditor2 extends AbstractLangEditor
+public abstract class ScriptEditor extends AbstractLangEditor
 		implements IScriptReconcilingListener, IScriptLanguageProvider,
 		IScriptEditor {
 	
@@ -173,7 +173,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 	private class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
-			ScriptEditor2.this.selectionChanged();
+			ScriptEditor.this.selectionChanged();
 		}
 	}
 
@@ -182,7 +182,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 	
 	/* -----------------  ----------------- */
 	
-	public ScriptEditor2() {
+	public ScriptEditor() {
 		super();
 		setDocumentProvider(DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider());
 	}
@@ -1035,7 +1035,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 			IWorkbenchPartSite site = getSite();
 			if (site != null) {
 				IWorkbenchPage page = site.getPage();
-				if (!page.isPartVisible(ScriptEditor2.this)) {
+				if (!page.isPartVisible(ScriptEditor.this)) {
 					// if we're not visible - defer until visible
 					fPage = page;
 					fFoldingRunner = this;
@@ -1065,7 +1065,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		 */
 		@Override
 		public void partVisible(IWorkbenchPartReference partRef) {
-			if (ScriptEditor2.this.equals(partRef.getPart(false))) {
+			if (ScriptEditor.this.equals(partRef.getPart(false))) {
 				cancel();
 				toggleFolding();
 			}
@@ -1077,7 +1077,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		 */
 		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
-			if (ScriptEditor2.this.equals(partRef.getPart(false))) {
+			if (ScriptEditor.this.equals(partRef.getPart(false))) {
 				cancel();
 			}
 		}

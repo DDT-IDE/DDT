@@ -101,10 +101,10 @@ public class OccurrencesFinder2 {
 	 */
 	private Annotation[] fOccurrenceAnnotations = null;
 
-	private final ScriptEditor2 editor;
+	private final ScriptEditor editor;
 	private final IOccurrencesFinder[] finders;
 
-	public OccurrencesFinder2(ScriptEditor2 editor) {
+	public OccurrencesFinder2(ScriptEditor editor) {
 		this.editor = editor;
 		final NatureExtensionManager<IOccurrencesFinder> occurrencesFinderManager = new NatureExtensionManager<IOccurrencesFinder>(
 				DLTKUIPlugin.PLUGIN_ID + ".search", IOccurrencesFinder.class);

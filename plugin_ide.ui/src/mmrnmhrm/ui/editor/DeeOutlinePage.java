@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 
 /**
@@ -24,7 +24,7 @@ import _org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
  */
 public class DeeOutlinePage extends ScriptOutlinePage {
 	
-	public DeeOutlinePage(ScriptEditor2 editor, IPreferenceStore store) {
+	public DeeOutlinePage(ScriptEditor editor, IPreferenceStore store) {
 		super(editor, store);
 	}
 	

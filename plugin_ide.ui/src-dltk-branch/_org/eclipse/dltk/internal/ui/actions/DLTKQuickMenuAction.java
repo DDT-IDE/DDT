@@ -20,18 +20,18 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 
-	private ScriptEditor2 fEditor;
+	private ScriptEditor fEditor;
 
-	public DLTKQuickMenuAction(ScriptEditor2 editor, String commandId) {
+	public DLTKQuickMenuAction(ScriptEditor editor, String commandId) {
 		super(commandId);
 		fEditor = editor;
 	}
 
-	protected ScriptEditor2 getScriptEditor() {
+	protected ScriptEditor getScriptEditor() {
 		return fEditor;
 	}
 

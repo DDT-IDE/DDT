@@ -42,7 +42,7 @@ import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 public abstract class BracketInserter2 implements VerifyKeyListener,
 		ILinkedModeListener {
 
-	protected final ScriptEditor2 editor;
+	protected final ScriptEditor editor;
 	protected boolean fCloseBrackets = true;
 	protected boolean fCloseStrings = true;
 	protected boolean fCloseAngularBrackets = true;
@@ -50,7 +50,7 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 	protected IPositionUpdater fUpdater;
 	protected Stack<BracketLevel> fBracketLevelStack = new Stack<BracketLevel>();
 
-	protected BracketInserter2(ScriptEditor2 editor) {
+	protected BracketInserter2(ScriptEditor editor) {
 		this.editor = editor;
 		CATEGORY = this.editor.toString();
 		fUpdater = new ExclusivePositionUpdater(CATEGORY);
@@ -264,9 +264,9 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 		public final char fEscapeCharacter;
 		public final Stack<BracketLevel> fStack;
 		public final int fSize;
-		protected final ScriptEditor2 editor;
+		protected final ScriptEditor editor;
 
-		public ExitPolicy(ScriptEditor2 scriptEditor, char exitCharacter, char escapeCharacter, 
+		public ExitPolicy(ScriptEditor scriptEditor, char exitCharacter, char escapeCharacter, 
 				Stack<BracketLevel> stack) {
 			this.editor = scriptEditor;
 			fExitCharacter = exitCharacter;

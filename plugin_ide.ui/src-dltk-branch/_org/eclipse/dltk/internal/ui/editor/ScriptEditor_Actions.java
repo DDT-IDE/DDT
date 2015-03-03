@@ -52,7 +52,7 @@ import _org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
 import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
 
-public abstract class ScriptEditor_Actions extends ScriptEditor2 {
+public abstract class ScriptEditor_Actions extends ScriptEditor {
 	
 	public static final int BREAK_ITERATOR__DONE = -1;
 	

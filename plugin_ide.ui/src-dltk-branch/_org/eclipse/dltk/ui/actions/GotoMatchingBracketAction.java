@@ -22,15 +22,15 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 public class GotoMatchingBracketAction extends Action {
 
 	public final static String GOTO_MATCHING_BRACKET = "GotoMatchingBracket"; //$NON-NLS-1$
 
-	private final ScriptEditor2 fEditor;
+	private final ScriptEditor fEditor;
 
-	public GotoMatchingBracketAction(ScriptEditor2 editor) {
+	public GotoMatchingBracketAction(ScriptEditor editor) {
 		super(DLTKEditorMessages.GotoMatchingBracket_label);
 		Assert.isNotNull(editor);
 		fEditor = editor;
@@ -65,7 +65,7 @@ public class GotoMatchingBracketAction extends Action {
 			selection.y = -selection.y;
 		}
 		
-		selection.x = ScriptEditor2.widgetOffset2ModelOffset_(sourceViewer, selection.x);
+		selection.x = ScriptEditor.widgetOffset2ModelOffset_(sourceViewer, selection.x);
 		
 		return new Region(selection.x, selection.y);
 	}
@@ -93,7 +93,7 @@ public class GotoMatchingBracketAction extends Action {
 		}
 	}
 
-	public static void gotoMatchingBracket(ScriptEditor2 editor) {
+	public static void gotoMatchingBracket(ScriptEditor editor) {
 		final ICharacterPairMatcher bracketMatcher = editor.getBracketMatcher();
 		if (bracketMatcher == null) {
 			return;
