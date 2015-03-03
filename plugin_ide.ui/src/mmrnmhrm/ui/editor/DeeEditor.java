@@ -2,8 +2,7 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 import mmrnmhrm.ui.DeeUIPlugin;
-
-import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
+import _org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 
 public class DeeEditor extends DeeBaseEditor {
 	

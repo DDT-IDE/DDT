@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.actions.MemberFilterActionGroup;
 import org.eclipse.dltk.ui.viewsupport.MemberFilterAction;
@@ -18,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 
 /**
  * TODO: DLTK request: we would like {@link #isInnerType()}  to be protected so we can extends
