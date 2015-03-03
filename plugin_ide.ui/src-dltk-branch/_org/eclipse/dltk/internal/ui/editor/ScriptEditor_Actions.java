@@ -64,6 +64,10 @@ public abstract class ScriptEditor_Actions extends ScriptEditor2 {
 		super();
 	}
 	
+	ActionGroup getActionGroup() {
+		return fActionGroups;
+	}
+	
 	ActionGroup getFoldingActionGroup() {
 		return fFoldingGroup;
 	}
@@ -77,19 +81,6 @@ public abstract class ScriptEditor_Actions extends ScriptEditor2 {
 		fContextMenuGroup = new CompositeActionGroup(new ActionGroup[] { });
 
 		fFoldingGroup = createFoldingActionGroup();
-
-		// ResourceAction resAction = new TextOperationAction(DLTKEditorMessages
-		// .getBundleForConstructedKeys(), "ShowDocumentaion.", this,
-		// ISourceViewer.INFORMATION, true);
-		//
-		// resAction = new InformationDispatchAction(DLTKEditorMessages
-		// .getBundleForConstructedKeys(), "ShowDocumentation.",
-		// (TextOperationAction) resAction);
-		//
-		// resAction
-		// .setActionDefinitionId(IScriptEditorActionDefinitionIds.
-		// SHOW_DOCUMENTATION);
-		// setAction("ShowDocumentation", resAction);
 
 		Action action = new GotoMatchingBracketAction(this);
 		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);

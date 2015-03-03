@@ -11,7 +11,6 @@
 package _org.eclipse.dltk.internal.ui.actions;
 
 import org.eclipse.dltk.internal.ui.actions.QuickMenuAction;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.text.ScriptWordFinder;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
@@ -26,10 +25,6 @@ import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 public abstract class DLTKQuickMenuAction extends QuickMenuAction {
 
 	private ScriptEditor2 fEditor;
-
-	public DLTKQuickMenuAction(String commandId) {
-		super(commandId);
-	}
 
 	public DLTKQuickMenuAction(ScriptEditor2 editor, String commandId) {
 		super(commandId);

@@ -121,12 +121,12 @@
 	
 	<extension point="org.eclipse.ui.editors">
 		<editor
-		 class="mmrnmhrm.ui.editor.DeeEditor"
-		 contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
-		 default="true"
-		 icon="icons/obj16/dee_file.gif"
-		 id="org.dsource.ddt.ide.ui.editors.DeeEditor"
-		 name="%LangEditor.name">
+			class="mmrnmhrm.ui.editor.DeeEditor"
+			contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
+			default="true"
+			icon="icons/obj16/dee_file.gif"
+			id="org.dsource.ddt.ide.ui.editors.DeeEditor"
+			name="%LangEditor.name">
 			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />
 		</editor>
 	</extension>
@@ -367,6 +367,20 @@
    
    <extension point="org.eclipse.ui.menus">
    </extension>
+   
+   	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+			<menu
+				id="org.dsource.ddt.ide.ui.sourceMenu"
+				label="Source"
+				mnemonic="S">
+				<separator name="comment" visible="true"/>
+				<separator name="format" visible="true"/>
+				<separator name="additions" visible="true"/>
+			</menu>
+		</menuContribution>
+	</extension>
    
    <extension
          point="org.eclipse.ui.actionSets">
