@@ -14,8 +14,6 @@ package _org.eclipse.dltk.internal.ui.editor;
 
 import java.text.CharacterIterator;
 
-import org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
-import org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
 import org.eclipse.dltk.internal.ui.text.DLTKWordIterator;
@@ -48,6 +46,8 @@ import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.TextNavigationAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
+import _org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
+import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
 import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
@@ -290,8 +290,7 @@ public abstract class ScriptEditor_Actions extends ScriptEditor2 {
 			// Check whether we are in ascriptcode partition and the preference
 			// is enabled
 			final IPreferenceStore store = getPreferenceStore();
-			if (!store
-					.getBoolean(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION)) {
+			if (!store.getBoolean(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION)) {
 				super.run();
 				return;
 			}

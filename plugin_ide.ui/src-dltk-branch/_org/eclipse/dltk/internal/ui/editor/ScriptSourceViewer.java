@@ -551,8 +551,7 @@ public class ScriptSourceViewer extends ProjectionViewer implements
 	 */
 	@Override
 	protected StyleRange modelStyleRange2WidgetStyleRange(StyleRange range) {
-		IRegion region = modelRange2WidgetRange(new Region(range.start,
-				range.length));
+		IRegion region = modelRange2WidgetRange(new Region(range.start, range.length));
 		if (region != null) {
 			// don't clone the style range, but simply reuse it.
 			range.start = region.getOffset();
