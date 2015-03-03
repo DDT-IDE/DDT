@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ui.EclipsePreferencesAdapter;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -77,6 +78,10 @@ public abstract class AbstractLangEditor extends TextEditor {
 			sourceViewer.configure(getSourceViewerConfiguration());
 			getSourceViewerDecorationSupport(sourceViewer).install(getPreferenceStore());
 		}
+		
+		IDocument doc = getDocumentProvider().getDocument(input);
+		// Setup up partitioning if not set. It can happen if opening non-language files in the language editor.
+		TextSettings_Actual.createDocumentSetupHelper().setupPartitioningIfNotSet(doc);
 		
 		internalDoSetInput(input);
 	}

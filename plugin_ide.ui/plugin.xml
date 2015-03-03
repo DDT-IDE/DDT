@@ -35,11 +35,10 @@
 	
 	<!-- ============ EDITOR ============= -->
 	
-	<extension
-		 id="DeeDocumentSetupParticipant"
-		 name="D Document Setup Participant"
-		 point="org.eclipse.core.filebuffers.documentSetup">
-		  <participant
+	<extension point="org.eclipse.core.filebuffers.documentSetup"
+		id="DeeDocumentSetupParticipant"
+		name="D Document Setup Participant">
+		<participant
 			class="mmrnmhrm.ui.text.DeeDocumentSetupParticipant"
 			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
 		</participant>

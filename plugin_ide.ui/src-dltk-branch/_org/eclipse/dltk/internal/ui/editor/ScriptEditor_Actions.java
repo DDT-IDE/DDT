@@ -14,7 +14,6 @@ package _org.eclipse.dltk.internal.ui.editor;
 
 import java.text.CharacterIterator;
 
-import org.dsource.ddt.lang.ui.editor.ScriptEditorExtension;
 import org.eclipse.dltk.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;

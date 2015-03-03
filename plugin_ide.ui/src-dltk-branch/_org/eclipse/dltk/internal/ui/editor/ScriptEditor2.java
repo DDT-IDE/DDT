@@ -244,9 +244,6 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
-	protected void connectPartitioningToElement(IEditorInput input, IDocument document) {
-	}
-	
 	@Override
 	protected final AdaptedSourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, 
 			int styles) {
@@ -328,8 +325,6 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 			((SourceModuleAnnotationModel) model).problemFactory = 
 					DLTKLanguageManager.getProblemFactory(getNatureId());
 		}
-		final IDocument doc = docProvider.getDocument(input);
-		connectPartitioningToElement(input, doc);
 
 		if (sourceViewer != null && sourceViewer.getReconciler() == null) {
 			IReconciler reconciler = getSourceViewerConfiguration().getReconciler(sourceViewer);
