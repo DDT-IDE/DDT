@@ -10,12 +10,11 @@
  * 			Alex Panchenko <alex@xored.com>
  *******************************************************************************/
 
-package org.eclipse.dltk.internal.ui.preferences_;
+package _org.eclipse.dltk.internal.ui.preferences;
 
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -25,6 +24,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
+
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 /**
  * Handles dltk editor font changes for script source preview viewers.

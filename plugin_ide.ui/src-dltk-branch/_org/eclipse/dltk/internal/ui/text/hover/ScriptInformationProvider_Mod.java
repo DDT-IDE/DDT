@@ -7,11 +7,12 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.internal.ui.text.hover;
+package _org.eclipse.dltk.internal.ui.text.hover;
 
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptWordFinder;
+import org.eclipse.dltk.internal.ui.text.hover.ScriptTypeHover;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;

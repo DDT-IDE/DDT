@@ -7,7 +7,6 @@ import java.net.URL;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
-import melnorme.lang.jdt.ui.JavaPlugin;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.eclipse.core.resources.IProject;
@@ -34,6 +33,11 @@ class JDT_PreferenceConstants {
 	 */
 	public final static String APPEARANCE_JAVADOC_FONT= LangUIPlugin.PLUGIN_ID + ".javadocfont";
 	
+}
+
+abstract class JavaPlugin extends LangUIPlugin {
+
+
 }
 
 public class HoverUtil {

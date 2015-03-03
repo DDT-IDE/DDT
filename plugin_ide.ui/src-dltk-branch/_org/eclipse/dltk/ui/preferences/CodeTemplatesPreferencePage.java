@@ -9,7 +9,7 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ui.preferences_;
+package _org.eclipse.dltk.ui.preferences;
 
 import java.util.Map;
 

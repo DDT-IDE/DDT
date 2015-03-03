@@ -37,7 +37,6 @@ import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.IColorManagerExtension;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.Region;
@@ -51,6 +50,7 @@ import org.eclipse.swt.graphics.RGB;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor2;
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 /**
  * Semantic highlighting manager

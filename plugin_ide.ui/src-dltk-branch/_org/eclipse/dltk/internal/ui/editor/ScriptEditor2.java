@@ -61,7 +61,6 @@ import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -127,6 +126,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 /* FIXME: need to review this class */
 public abstract class ScriptEditor2 extends AbstractLangEditor

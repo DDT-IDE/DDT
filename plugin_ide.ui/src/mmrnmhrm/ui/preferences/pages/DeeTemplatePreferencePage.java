@@ -8,8 +8,9 @@ import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
-import org.eclipse.dltk.ui.templates_.ScriptTemplatePreferencePage;
 import org.eclipse.jface.text.IDocument;
+
+import _org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	

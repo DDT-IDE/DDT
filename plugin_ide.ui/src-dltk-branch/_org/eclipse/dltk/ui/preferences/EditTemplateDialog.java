@@ -9,7 +9,7 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ui.preferences_;
+package _org.eclipse.dltk.ui.preferences;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,6 @@ import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.expressions.Expression;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.internal.ui.preferences_.ScriptSourcePreviewerUpdater;
 import org.eclipse.dltk.internal.ui.util.SWTUtil;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IContextMenuConstants;
@@ -91,6 +90,8 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
+
+import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
 
 /**
  * Dialog to edit a template.

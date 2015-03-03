@@ -21,9 +21,7 @@ import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
-import org.eclipse.dltk.internal.ui.preferences_.ScriptSourcePreviewerUpdater;
 import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.dltk.ui.preferences_.EditTemplateDialog;
 import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.text.templates.TemplateVariableProcessor;
@@ -53,6 +51,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
+
+import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
+import _org.eclipse.dltk.ui.preferences.EditTemplateDialog;
 
 /**
  * The templates page for the Script editor.

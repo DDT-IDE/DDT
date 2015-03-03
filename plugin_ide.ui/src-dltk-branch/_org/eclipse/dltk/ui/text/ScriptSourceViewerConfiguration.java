@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ui.text_;
+package _org.eclipse.dltk.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 

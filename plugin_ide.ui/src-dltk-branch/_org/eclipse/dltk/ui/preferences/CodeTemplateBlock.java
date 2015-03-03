@@ -9,7 +9,7 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ui.preferences_;
+package _org.eclipse.dltk.ui.preferences;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -34,7 +34,6 @@ import mmrnmhrm.ui.text.DeeTextTools;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.preferences.OptionsConfigurationBlock;
-import org.eclipse.dltk.internal.ui.preferences_.ScriptSourcePreviewerUpdater;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.ITreeListAdapter;
@@ -79,6 +78,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
+
+import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
 
 public class CodeTemplateBlock extends OptionsConfigurationBlock {
 

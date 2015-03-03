@@ -16,7 +16,6 @@ package _org.eclipse.dltk.internal.ui.editor;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
@@ -42,6 +41,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 public class ScriptSourceViewer extends ProjectionViewer implements
 		IPropertyChangeListener {

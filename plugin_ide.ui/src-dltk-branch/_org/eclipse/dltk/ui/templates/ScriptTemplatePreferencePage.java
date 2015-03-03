@@ -7,13 +7,12 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ui.templates_;
+package _org.eclipse.dltk.ui.templates;
 
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ui.templates.CodeTemplateSourceViewerConfigurationAdapter;
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
@@ -32,6 +31,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
+
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 public abstract class ScriptTemplatePreferencePage extends
 		TemplatePreferencePage implements IWorkbenchPreferencePage {

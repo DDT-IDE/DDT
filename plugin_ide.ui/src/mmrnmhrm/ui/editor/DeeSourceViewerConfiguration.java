@@ -28,11 +28,9 @@ import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
-import org.eclipse.dltk.ui.text_.ScriptSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -53,6 +51,8 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
+import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
 	
