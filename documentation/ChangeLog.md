@@ -14,7 +14,8 @@
    * Recommend re-create project.
  * Fixed #94: Weird tooltip of file location (when Open Definition goes to a file outside the workspace).
  * Fixed: Semantic engine does not detect modifications to `dub.json` during an Eclipse session!!
- * Fixed: Regression: Editor Quick Outline command not working.
+ * Fixed: (regression) Editor Quick Outline command not working.
+ * Fixed: (regression) Editor code folding not working.
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.

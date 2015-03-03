@@ -169,20 +169,6 @@
              translations="templates/default-templates.properties">
       </include>
    </extension>
-   <extension point="org.eclipse.dltk.ui.folding">
-      <structureProvider
-           class="org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-      </structureProvider>
-      <blockProvider
-           class="mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-      </blockProvider>
-      <blockProvider
-           class="mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider"
-           nature="org.dsource.ddt.ide.core.nature">
-      </blockProvider>
-   </extension>
 	
 	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
 		<target 

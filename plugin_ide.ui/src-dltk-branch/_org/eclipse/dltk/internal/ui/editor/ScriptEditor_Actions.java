@@ -17,10 +17,10 @@ import java.text.CharacterIterator;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
 import org.eclipse.dltk.internal.ui.text.DLTKWordIterator;
-import org.eclipse.dltk.internal.ui.text.DocumentCharacterIterator;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
+import org.eclipse.jdt.internal.ui.text_.DocumentCharacterIterator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -287,18 +287,20 @@ public abstract class ScriptEditor_Actions extends ScriptEditor2 {
 			}
 			final ISourceViewer viewer = getSourceViewer();
 			final IDocument document = viewer.getDocument();
-			fIterator
-					.setText((CharacterIterator) new DocumentCharacterIterator(
-							document));
-			int position = widgetOffset2ModelOffset(viewer, viewer
-					.getTextWidget().getCaretOffset());
-			if (position == -1)
-				return;
-			int next = findNextPosition(position);
-			if (next != BREAK_ITERATOR__DONE) {
-				setCaretPosition(next);
-				getTextWidget().showSelection();
-				fireSelectionChanged();
+			try {
+				fIterator.setText((CharacterIterator) new DocumentCharacterIterator(document));
+				
+				int position = widgetOffset2ModelOffset(viewer, viewer.getTextWidget().getCaretOffset());
+				if (position == -1)
+					return;
+				int next = findNextPosition(position);
+				if (next != BREAK_ITERATOR__DONE) {
+					setCaretPosition(next);
+					getTextWidget().showSelection();
+					fireSelectionChanged();
+				}
+			} catch (BadLocationException e) {
+				// ignore
 			}
 		}
 
@@ -461,18 +463,19 @@ public abstract class ScriptEditor_Actions extends ScriptEditor2 {
 			}
 			final ISourceViewer viewer = getSourceViewer();
 			final IDocument document = viewer.getDocument();
-			fIterator
-					.setText((CharacterIterator) new DocumentCharacterIterator(
-							document));
-			int position = widgetOffset2ModelOffset(viewer, viewer
-					.getTextWidget().getCaretOffset());
-			if (position == -1)
-				return;
-			int previous = findPreviousPosition(position);
-			if (previous != BREAK_ITERATOR__DONE) {
-				setCaretPosition(previous);
-				getTextWidget().showSelection();
-				fireSelectionChanged();
+			try {
+				fIterator.setText((CharacterIterator) new DocumentCharacterIterator(document));
+				int position = widgetOffset2ModelOffset(viewer, viewer.getTextWidget().getCaretOffset());
+				if (position == -1)
+					return;
+				int previous = findPreviousPosition(position);
+				if (previous != BREAK_ITERATOR__DONE) {
+					setCaretPosition(previous);
+					getTextWidget().showSelection();
+					fireSelectionChanged();
+				}
+			} catch (BadLocationException e) {
+				// Ignore
 			}
 		}
 

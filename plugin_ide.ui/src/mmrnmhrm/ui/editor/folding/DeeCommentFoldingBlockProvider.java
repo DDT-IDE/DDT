@@ -7,16 +7,17 @@ import mmrnmhrm.ui.text.DeePartitioningProvider;
 import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
+import org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingContent;
-import org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 
+import _org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
 import dtool.ast.definitions.Module;
 
-public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider {
+public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	public DeeCommentFoldingBlockProvider() {
 		super(DeePartitioningProvider.getInstance());

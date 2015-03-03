@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IImportDeclaration;
 import org.eclipse.dltk.core.ILocalVariable;
 import org.eclipse.dltk.core.IMember;
@@ -56,7 +55,6 @@ import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
-import org.eclipse.dltk.ui.text.folding.FoldingProviderManager;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
@@ -126,6 +124,7 @@ import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceM
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
+import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 
 /* FIXME: need to review this class */
 public abstract class ScriptEditor2 extends AbstractLangEditor
@@ -156,7 +155,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 
 	private ScriptOutlinePage fOutlinePage;
 	private ProjectionSupport fProjectionSupport;
-	private IFoldingStructureProvider fProjectionModelUpdater;
+	private DelegatingFoldingStructureProvider fProjectionModelUpdater;
 	private InformationPresenter fInformationPresenter;
 	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
 	
@@ -1108,18 +1107,6 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		}
 	}
 
-	/**
-	 * Creates folding structure provider to use in this editor. Default
-	 * implementation queries the
-	 * <code>org.eclipse.dltk.ui.folding/structureProvider</code> extension
-	 * point.
-	 * 
-	 * @return folding structure provider or <code>null</code>.
-	 */
-	protected IFoldingStructureProvider createFoldingStructureProvider() {
-		return FoldingProviderManager.getStructureProvider(getNatureId());
-	}
-	
 	private boolean isEditorHoverProperty(String property) {
 		return PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS.equals(property);
 	}
@@ -1312,7 +1299,7 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
 		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
 		
-		final IDLTKLanguageToolkit toolkit = this.getLanguageToolkit();
+		final DeeLanguageToolkit toolkit = DeeLanguageToolkit.getDefault();
 		fProjectionSupport.setHoverControlCreator(new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell shell) {
@@ -1334,10 +1321,8 @@ public abstract class ScriptEditor2 extends AbstractLangEditor
 		
 		fProjectionSupport.install();
 		
-		fProjectionModelUpdater = createFoldingStructureProvider();
-		if (fProjectionModelUpdater != null) {
-			fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
-		}
+		fProjectionModelUpdater = new DelegatingFoldingStructureProvider();
+		fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
 	}
 	
 	/**
