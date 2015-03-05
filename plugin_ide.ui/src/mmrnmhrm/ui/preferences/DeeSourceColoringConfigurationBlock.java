@@ -16,15 +16,9 @@ import java.io.InputStream;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
-import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.source.projection.ProjectionViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
 public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	
@@ -64,23 +58,6 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	@Override
 	protected InputStream getPreviewContentAsStream() {
 		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
-	}
-	
-	@Override
-	protected ProjectionViewer createPreviewViewer(Composite parent, boolean showAnnotationsOverview,
-			int styles, IPreferenceStore store) {
-		/* FIXME: review this code*/
-		ScriptSourceViewer sourceViewer = new ScriptSourceViewer(parent, null, null,
-			showAnnotationsOverview, styles, store);
-		DeeSimpleSourceViewerConfiguration configuration = createSimpleSourceViewerConfiguration(store, null);
-		sourceViewer.configure(configuration);
-		configuration.setupViewerForTextPresentationPrefChanges(sourceViewer);
-		return sourceViewer;
-	}
-	
-	protected DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
-			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
-		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, editor, false);
 	}
 	
 }

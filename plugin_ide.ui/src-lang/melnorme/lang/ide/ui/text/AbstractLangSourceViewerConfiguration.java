@@ -32,6 +32,7 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.cdt.ui.text.ITokenStore;
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
@@ -182,6 +183,10 @@ public abstract class AbstractLangSourceViewerConfiguration extends TextSourceVi
 		});
 		
 		preferenceStore.addPropertyChangeListener(propertyChangeListener);
+	}
+	
+	public String getFontPropertyPreferenceKey() {
+		return JFaceResources.TEXT_FONT;
 	}
 	
 	/* ----------------- Navigation operations ----------------- */

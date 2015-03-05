@@ -24,10 +24,10 @@ import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.utilbox.misc.ArrayUtil;
 
+import org.eclipse.cdt.internal.ui.editor.EclipsePreferencesAdapter;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.ui.EclipsePreferencesAdapter;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;

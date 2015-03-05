@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.cdt.ui.text;
 
-import org.eclipse.dltk.ui.text.IColorManagerExtension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -31,7 +30,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @since 5.1
  */
-public interface IColorManager extends IColorManagerExtension {
+public interface IColorManager extends org.eclipse.jdt.ui.text.IColorManagerExtension {
 	
 	/**
 	 * Returns a color object for the given key. The color objects 

@@ -25,7 +25,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 
 import dtool.dub.DubBundleDescription;
 
-/* FIXME: */
+/* FIXME: DeeLaunchShortcut */
 public class DeeLaunchShortcut extends AbstractLaunchShortcut {
 	
 	@Override

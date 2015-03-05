@@ -390,7 +390,7 @@ public class CodeTemplateBlock extends OptionsConfigurationBlock {
 		TemplatePersistenceData[] templates = fTemplateStore.getTemplateData();
 		for (int i = 0; i < templates.length; i++) {
 			TemplatePersistenceData curr = templates[i];
-			// FIXME if (isComment == curr.getTemplate().getName().endsWith(
+			// FIXME: (DLTK) if (isComment == curr.getTemplate().getName().endsWith(
 			// CodeTemplateContextType.COMMENT_SUFFIX)) {
 			res.add(curr);
 			// }

@@ -43,7 +43,6 @@ import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jdt.internal.ui.text_.HTMLAnnotationHover;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -399,11 +398,6 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 	protected abstract ContentAssistPreference getContentAssistPreference();
 	
 	protected abstract void alterContentAssistant(ContentAssistant assistant);
-
-	/* FIXME: DLTK: review this code*/
-	public String getFontPropertyPreferenceKey() {
-		return JFaceResources.TEXT_FONT;
-	}
 
 	public void changeContentAssistantConfiguration(ContentAssistant ca, PropertyChangeEvent event) {
 		getContentAssistPreference().changeConfiguration(ca, fPreferenceStore, event);

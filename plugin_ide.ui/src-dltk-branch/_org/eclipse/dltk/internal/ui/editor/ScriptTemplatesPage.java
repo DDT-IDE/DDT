@@ -349,7 +349,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 	/**
 	 * Get the active contexts for the given position in the document.
 	 * <p>
-	 * FIXME: should trigger code assist to get the context.
+	 * FIXME: (DLTK) should trigger code assist to get the context.
 	 * </p>
 	 * 
 	 * @param document
