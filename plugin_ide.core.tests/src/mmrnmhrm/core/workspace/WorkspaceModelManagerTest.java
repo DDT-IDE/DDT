@@ -188,7 +188,9 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		writeDubJson(libProject, dubLibJson);
 		
 		// DUB_LIB project buildpath entry not on DUB_TEST yet
-		_awaitModelUpdates_(); /*FIXME: BUG here, sometimes, not resolved*/
+		_awaitModelUpdates_(); // There used to be a bug here, 
+		// but I believe it has been fixed since DLTK lib buildpath usage was removed
+		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		checkFullyResolvedCode(project, dubBundle, 
 			main(loc(project), null, "dub_test", DEFAULT_VERSION, srcFolders(), 
