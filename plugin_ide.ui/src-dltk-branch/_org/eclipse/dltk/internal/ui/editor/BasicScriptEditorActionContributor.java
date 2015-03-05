@@ -11,7 +11,7 @@ package _org.eclipse.dltk.internal.ui.editor;
 
 import java.util.ResourceBundle;
 
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActionContributor;
+import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.GotoMatchingBracketAction;
@@ -30,7 +30,7 @@ import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 /**
  * Common base class for action contributors for Script editors.
  */
-public class BasicScriptEditorActionContributor extends AbstractLangEditorActionContributor {
+public class BasicScriptEditorActionContributor extends LangEditorActionContributor {
 
 	private RetargetTextEditorAction fGotoMatchingBracket;
 	private RetargetTextEditorAction fShowOutline;

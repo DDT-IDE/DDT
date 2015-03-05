@@ -57,7 +57,7 @@ public class LangEditorActionContributorHelper extends TextEditorActionContribut
 		return (IHandlerService) getServiceLocator().getService(IHandlerService.class);
 	}
 	
-	protected CommandContributionItem createEditorContribution(String commandId, String editorActionId) {
+	protected CommandContributionItem createEditorActionContribution(String commandId, String editorActionId) {
 		final EditorActionContribution editorActionHelper = new EditorActionContribution(
 			getHandlerService(), commandId, editorActionId);
 		registerContribution(editorActionHelper);
