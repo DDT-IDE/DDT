@@ -23,7 +23,7 @@ with 4Gb of RAM or more, the following is recommended as minimum values:
 
 ### DDT Prerequisites and Configuration
 
-The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the DDT `DUB` preference page. A D compiler is also required. This is so the standard library source modules can be found and used (for code completion, etc.).
+The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the `DDT` preference page. A D compiler is also required. This is so the standard library source modules can be found and used (for code completion, etc.).
 
 ##### Compiler setup:
 Every time DUB is invoked to resolve the `dub.json` file (see DUB manifest section below), DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables (`DUB_COMPILERS_PATH` is treated by DDT the same way as the `PATH` variable). Most compiler standard-library directory layouts, relative to the compiler executable, should be recognized (be it DMD, GDC, or LDC). 

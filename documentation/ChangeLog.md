@@ -1,22 +1,36 @@
 ## DDT release ChangeLog
 
-### DDT 0.11.x
- * Fixed: added loop detection for known loop scenarios during semantic engine analysis.
+### DDT 0.11.0
+##### Parser:
  * Fixed: Error parsing UDAS as function attributes (example: `int foo() @blah { }`) .
  * Fixed #92: Error parsing `extern(C++)`.
  * Fixed: removed parser errors about types being used in expressions. 
    * Fixes false errors occurring in valid code such as `auto x = int(223)`;
- * Support for basic template instantiation in semantic engine.
- * Better UI error reporting (user dialogs) in the event of `dub describe` failures.
- * Minor improvements to the New Project wizard.
- * Moved DUB preference page to root pref page (TODO: update docs)
- * Removed search functionality (was broken and not well adapted to D semantics).
-   * Recommend re-create project.
+
+##### Semantic Engine:
+ * Support for basic template instantiation in semantic engine. 
+  * Simple template overloads are understood, but template constraints are ignored (and more complex template overloads are not disambiguated correctly either).
+  * Example: 
+```
+template Container(T) { T member; };
+auto x = Container!(int).member.【Code Complete now understands that member is int】;
+```  
+ * Fixed: added loop detection during engine semantic analysis.
+
+##### Core:
+ * Removed search functionality (was broken and not well properly adapted to the D language).
+   * It is recommended that Recommend re-create project.
  * Fixed #94: Weird tooltip of file location (when Open Definition goes to a file outside the workspace).
  * Fixed: Semantic engine does not detect modifications to `dub.json` during an Eclipse session!!
- * Fixed: (regression) Editor Quick Outline command not working.
- * Fixed: (regression) Editor code folding not working.
+
+##### UI:
+ * Better UI error reporting (user dialogs) in the event of `dub describe` failures.
+ * Minor improvements to the New Project wizard.
+ * Moved DUB preference page to root DDT preference page.
+ * Fixed: (regression!) Editor Quick Outline command not working.
+ * Fixed: (regression!) Editor code folding not working.
  * Fixed: Cleanup editor context menu "Source" entry, removed Indentation action which was not implemented.
+
 
 ### DDT 0.10.4
  * Fixed #88: Semantic operations (code complete, etc.) involving DUB packages with subpackages would always cause the `dub describe` to run and thus incur a significant slowdown.
