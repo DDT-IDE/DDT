@@ -15,8 +15,10 @@ import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
@@ -30,7 +32,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.junit.Test;
 
@@ -40,7 +41,6 @@ import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
 import dtool.engine.tests.DefUnitResultsChecker;
-import dtool.tests.MockCompilerInstalls;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
@@ -128,7 +128,11 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	protected void checkModuleContains(IFile file, String moduleName, String... results) throws CoreException {
 		checkModuleExists(file, moduleName, true);
-		doCodeCompletion(file, 0, results);
+		try {
+			doCodeCompletion(file, 0, results);
+		} catch (IOException e) {
+			throw LangCore.createCoreException("doCodeCompletion", e);
+		}
 	}
 	
 	protected void checkModuleExists(IFile file, String moduleName, boolean exists) {
@@ -154,49 +158,55 @@ public class DToolClient_Test extends CommonCoreTest {
 		updateFileContents(moduleFile, originalFileContents);
 		
 		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
-		doCodeCompletion(moduleFile, 0, "wc_change0");
+		doCodeCompletion(moduleFile, sourceModule.getSource(),  0, "wc_change0");
 		
 		sourceModule.getBuffer().setContents("module wc_change1;");
 		assertEquals(readFileContents(moduleFile), originalFileContents);
 		
-		doCodeCompletion(moduleFile, 0, "wc_change1");
+		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change1");
 		
 		sourceModule.getBuffer().setContents("module wc_change2;");
-		doCodeCompletion(moduleFile, 0, "wc_change2");
+		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change2");
 		
 		sourceModule.discardWorkingCopy();
-		doCodeCompletion(moduleFile, 0, "wc_change0");
+		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change0");
 		
 		
 		sourceModule = testsProject.getSourceModule("source/basic_pack/foo.d");
 		moduleFile = (IFile) sourceModule.getResource();
-		doCodeCompletion(moduleFile, 0, "basic_pack/");
+		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "basic_pack/");
 		
 		// Test commitWorkingCopy
 		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
 		sourceModule.getBuffer().setContents("module wc_commitWC_Test;");
 		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
-		doCodeCompletion(moduleFile, 0, "wc_commitWC_Test/");
+		doCodeCompletion(moduleFile, sourceModule.getSource(),0, "wc_commitWC_Test/");
 
 		sourceModule.getBuffer().setContents("module wc_commitWC_Test2;");
 		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
 		sourceModule.discardWorkingCopy();
-		doCodeCompletion(moduleFile, 0, "wc_commitWC_Test2/");
+		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_commitWC_Test2/");
 		
 		// Test setContents of non-working copy - only valid if sourceModule in buildpath it seems
 		if(sourceModule.exists()) {
 			sourceModule.getBuffer().setContents("module wc_change3;");
 			assertTrue(sourceModule.isWorkingCopy() == false);
-			doCodeCompletion(moduleFile, 0, "wc_change3/");
+			doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change3/");
 		}
 	}
 	
-	// Note: we don't use this method to test code completion, we are test the Working Copies of the server.
+	protected void doCodeCompletion(IFile file, int offset, String... results) 
+			throws CoreException, IOException {
+		doCodeCompletion(file, readFileContents(file), offset, results);
+	}
+	
+	// Note: we don't use this method to test code completion, we are testing the Working Copies of the server.
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
-	protected void doCodeCompletion(IFile file, int offset, String... results) throws CoreException {
-		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(file);
-		CompletionSearchResult cc = client.runCodeCompletion(sourceModule, offset, 
-			MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH);
+	protected void doCodeCompletion(IFile file, String fileContents, int offset, String... results) 
+			throws CoreException, IOException {
+		Path filePath = file.getLocation().toFile().toPath();
+		
+		CompletionSearchResult cc = client.performCompletionOperation(filePath, offset, fileContents, 5000);
 		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
 	}
 	

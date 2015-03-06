@@ -182,6 +182,8 @@ public class ModuleParseCache {
 		}
 		
 		protected void setNewSource(String newSource) {
+			// We only set a new parsedModule if the new source is actually different from previous source.
+			// Otherwise, as an optimization, we simply reuse the previous parsedModule
 			if(!areEqual(source, newSource)) {
 				source = newSource;
 				parsedModule = null;

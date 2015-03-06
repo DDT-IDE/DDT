@@ -40,6 +40,8 @@ import org.eclipse.ui.IEditorPart;
 public class DeeCompletionProposalComputer extends ScriptCompletionProposalComputer
 	implements IScriptCompletionProposalComputer {
 	
+	protected DToolClient dtoolclient = DToolClient.getDefault();
+	
 	public DeeCompletionProposalComputer() {
 	}
 	
@@ -93,7 +95,7 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 	protected List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
 			IDocument document) throws CoreException {
 		
-		CompletionSearchResult completionResult = DToolClient.performCompletionOperation(
+		CompletionSearchResult completionResult = dtoolclient.performCompletionOperation(
 			filePath, offset, document.get(), 5000);
 		
 		ArrayList2<CompletionProposal> proposals = new DeeCompletionOperation().

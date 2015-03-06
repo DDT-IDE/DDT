@@ -13,28 +13,19 @@ package mmrnmhrm.core.engine_client;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
-import mmrnmhrm.core.model_elements.ModelDeltaVisitor;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ElementChangedEvent;
-import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 
@@ -47,7 +38,7 @@ import dtool.parser.DeeParserResult.ParsedModule;
 /**
  * Handle communication with DToolServer.
  */
-public class DToolClient {
+public class DToolClient extends AbstractSemanticDaemonClient {
 	
 	public static DToolClient getDefault() {
 		return DeeCore.getDToolClient();
@@ -64,9 +55,9 @@ public class DToolClient {
 	protected final DToolServer dtoolServer;
 	protected final ClientModuleParseCache moduleParseCache;
 	
-	protected final WorkingCopyListener wclistener = new WorkingCopyListener();
-	
 	public DToolClient() {
+		super();
+		
 		dtoolServer = new DToolServer() {
 			@Override
 			public void logError(String message, Throwable throwable) {
@@ -77,11 +68,11 @@ public class DToolClient {
 			}
 		};
 		moduleParseCache = new ClientModuleParseCache(dtoolServer);
-		DLTKCore.addElementChangedListener(wclistener, ElementChangedEvent.POST_CHANGE);
 	}
 	
+	@Override
 	public void shutdown() {
-		DLTKCore.removeElementChangedListener(wclistener);
+		super.shutdown();
 	}
 	
 	public ClientModuleParseCache getClientModuleCache() {
@@ -166,8 +157,7 @@ public class DToolClient {
 				// Because of that, we should check here as well if it's a WC, and discard it if so.
 				boolean isWorkingCopy = sourceModule.isWorkingCopy();
 				if(!isWorkingCopy) {
-					discardServerWorkingCopy(filePath);
-					getClientModuleCache().discardWorkingCopy(filePath);
+					discardWorkingCopy(filePath);
 				}
 				return getClientModuleCache().getParsedModule(filePath);
 			}
@@ -177,103 +167,70 @@ public class DToolClient {
 		}
 	}
 	
-	protected class WorkingCopyListener extends ModelDeltaVisitor {
-		
-		@Override
-		public void visitSourceModule(IModelElementDelta moduleDelta, ISourceModule sourceModule) {
-			if((moduleDelta.getFlags() & IModelElementDelta.F_PRIMARY_WORKING_COPY) != 0) {
-				if(sourceModule.isWorkingCopy() == false) {
-					Path filePath = DToolClient_Bad.getFilePathOrNull(sourceModule);
-					if(filePath != null) {
-						// We update the server working copy too.
-						discardServerWorkingCopy(filePath);
-						getClientModuleCache().discardWorkingCopy(filePath);
-					}
-				}
-			}
-		}
-		
-	}
-	
-	/** Warning: if the module is not a client working copy, some code must later be responsible for disposing
-	 * of the server's working copy */
-	public void updateWorkingCopyIfInconsistent(Path filePath, String source, ISourceModule sourceModule) {
-		try {
-			if(!sourceModule.isConsistent()) {
-				// This usually means the module is a working copy.
-				getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
-			} else {
-				if(!sourceModule.isWorkingCopy()) {
-					discardServerWorkingCopy(filePath);
-				}
-			}
-		} catch (ModelException e) {
-			DeeCore.logError("Should not happen");
-		}
+	@Override
+	protected void discardWorkingCopy(Path filePath) {
+		discardServerWorkingCopy(filePath);
+		getClientModuleCache().discardWorkingCopy(filePath);
 	}
 	
 	/** Warning: some code must later be responsible for disposing of the server's working copy */
-	public void updateWorkingCopyIfInconsistent2(Path filePath, String source) {
+	@Override
+	public void updateServerWorkingCopy(Path filePath, String source) {
 		getServerSemanticManager().setWorkingCopyAndParse(filePath, source);
 	}
 	
+	@Override
 	public void discardServerWorkingCopy(Path filePath) {
 		getServerSemanticManager().discardWorkingCopy(filePath);
 	}
 	
-	
-	/* -----------------  ----------------- */
-	
-	public CompletionSearchResult runCodeCompletion(ISourceModule sourceModule, int offset, Location compilerPath) 
-			throws CoreException {
-		Path filePath = DToolClient_Bad.getFilePath(sourceModule);
+	public CompletionSearchResult performCompletionOperation(final Path filePath, final int offset, 
+			String source, final int timeoutMillis) throws CoreException {
 		
-		try {
-			// Submit latest source to engine server.
-			updateWorkingCopyIfInconsistent(filePath, sourceModule.getSource(), sourceModule);
-			
-			return doCodeCompletion(filePath, offset, compilerPath);
-		} finally {
-			// If the module stopped being a working copy, or never was one the first place, 
-			// then we must discard the server's WC
-			if(!sourceModule.isWorkingCopy()) {
-				discardServerWorkingCopy(filePath);
-			}
+		return new CodeCompletionOperation(filePath, source, timeoutMillis, offset).runSemanticServerOperation();
+	}
+	
+	public class CodeCompletionOperation extends SemanticEngineOperation<CompletionSearchResult> {
+		
+		public CodeCompletionOperation(Path filePath, String source, int timeoutMillis, int offset) {
+			super(filePath, source, offset, timeoutMillis, "Code Completion");
+		}
+		
+		@Override
+		protected CompletionSearchResult doRunOperationWithWorkingCopy() throws CoreException {
+			return doCodeCompletion(filePath, offset, DeeCompletionOperation.compilerPathOverride);
+		}
+		
+	}
+	
+	public class FindDefinitionOperation extends SemanticEngineOperation<FindDefinitionResult> {
+		
+		public FindDefinitionOperation(Path filePath, String source, int offset, int timeoutMillis) {
+			super(filePath, source, offset, timeoutMillis, "Find Definition");
+		}
+		
+		@Override
+		protected FindDefinitionResult doRunOperationWithWorkingCopy() throws CoreException {
+			return doFindDefinition(filePath, offset);
 		}
 	}
 	
-	/* FIXME: make consistent with above */
-	public static CompletionSearchResult performCompletionOperation(final Path filePath, final int offset, 
-			String source, int timeoutMillis) throws CoreException {
-		try {
-			getDefault().updateWorkingCopyIfInconsistent2(filePath, source);
-			
-			ExecutorTaskAgent completionExecutor = new ExecutorTaskAgent("CompletionExecutor");
-			
-			Future<CompletionSearchResult> future = completionExecutor.submit(new Callable<CompletionSearchResult>() {
-				@Override
-				public CompletionSearchResult call() throws CoreException {
-					return getDefault().doCodeCompletion(
-						filePath, offset, DeeCompletionOperation.compilerPathOverride);
-				}
-			});
-			
-			try {
-				return EclipseUtils.getFutureResult(future, timeoutMillis, TimeUnit.MILLISECONDS, "Content Assist");
-			} finally {
-				completionExecutor.shutdown();
-			}
-			
-		} finally {
-			/* FIXME: don't discard working copy */
-			getDefault().discardServerWorkingCopy(filePath);
+	public class FindDDocViewOperation extends SemanticEngineOperation<String> {
+		
+		public FindDDocViewOperation(Path filePath, String source, int offset, int timeoutMillis) {
+			super(filePath, source, offset, timeoutMillis, "Resolve DDoc");
+		}
+		
+		@Override
+		protected String doRunOperationWithWorkingCopy() throws CoreException {
+			return getDDocHTMLView(filePath, offset);
 		}
 	}
 	
 	/* ----------------- Engine client requests ----------------- */
 	
 	
-	public CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
+	protected CompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws CoreException {
 		try {
 			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath, 
@@ -283,7 +240,7 @@ public class DToolClient {
 		}
 	}
 	
-	public FindDefinitionResult doFindDefinition(Path filePath, int offset) throws CoreException {
+	protected FindDefinitionResult doFindDefinition(Path filePath, int offset) throws CoreException {
 		try {
 			return dtoolServer.doFindDefinition(filePath, offset, DeeCorePreferences.getEffectiveDubPath());
 		} catch (CommonException e) {
@@ -291,7 +248,7 @@ public class DToolClient {
 		}
 	}
 	
-	public String getDDocHTMLView(Path filePath, int offset) throws CoreException {
+	protected String getDDocHTMLView(Path filePath, int offset) throws CoreException {
 		try {
 			return dtoolServer.getDDocHTMLView(filePath, offset, DeeCorePreferences.getEffectiveDubPath());
 		} catch (CommonException e) {

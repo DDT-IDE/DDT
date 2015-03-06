@@ -16,7 +16,6 @@ import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.core.ISourceModule;
 
 /**
@@ -24,15 +23,6 @@ import org.eclipse.dltk.core.ISourceModule;
  */
 @Deprecated
 public class DToolClient_Bad {
-	
-	@Deprecated
-	public static Path getFilePath(ISourceModule input) throws CoreException {
-		try {
-			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
-			throw new CoreException(DeeCore.createErrorStatus("Invalid path for module source. ", e));
-		}
-	}
 	
 	@Deprecated
 	public static Path getFilePathOrNull(ISourceModule input) {

@@ -12,12 +12,13 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
+import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.ui.actions.AbstractEditorOperationExt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
@@ -71,7 +72,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		return null;
 	}
 	
-	public static class GetDDocHTMLViewOperation extends AbstractEditorOperationExt {
+	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation {
 		
 		protected final int offset;
 		protected String info;
@@ -82,8 +83,9 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		}
 		
 		@Override
-		protected void performLongRunningComputation_withUpdatedServerWorkingCopy() throws CoreException {
-			info = DToolClient.getDefault().getDDocHTMLView(inputPath, offset);
+		protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
+			info = DToolClient.getDefault().
+					new FindDDocViewOperation(inputPath, doc.get(), offset, -1).runSemanticServerOperation();
 		}
 		
 		@Override
