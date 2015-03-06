@@ -27,12 +27,15 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
 import dtool.dub.BundlePath;
@@ -42,6 +45,8 @@ import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
 import dtool.engine.tests.DefUnitResultsChecker;
 
+
+// TODO: move this test to core
 public class DToolClient_Test extends CommonCoreTest {
 	
 	protected static final DToolClient client = DToolClient.getDefault();
@@ -150,48 +155,66 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
-		ISourceModule sourceModule = testsProject.getSourceModule("source/basic_foo.d");
-		IFile moduleFile = (IFile) sourceModule.getResource();
-		sourceModule.discardWorkingCopy();
+		IFile moduleFile = testsProject.getFile("source/basic_foo.d");
 		
-		String originalFileContents = "module wc_change0;";
-		updateFileContents(moduleFile, originalFileContents);
+		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
 		
-		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
-		doCodeCompletion(moduleFile, sourceModule.getSource(),  0, "wc_change0");
+		try {
+			fbm.connect(moduleFile.getLocation(), LocationKind.LOCATION, null);
+			ITextFileBuffer fileBuffer = fbm.getTextFileBuffer(moduleFile.getLocation(), LocationKind.LOCATION);
+			IDocument document = fileBuffer.getDocument();
+			
+			fileBuffer.revert(null);
+			
+			String originalFileContents = "module wc_change0;";
+			updateFileContents(moduleFile, originalFileContents);
+			
+			doCodeCompletion(moduleFile, document.get(),  0, "wc_change0");
+			
+			document.set("module wc_change1;");
+			assertEquals(readFileContents(moduleFile), originalFileContents);
+			
+			doCodeCompletion(moduleFile, document.get(), 0, "wc_change1");
+			
+			document.set("module wc_change2;");
+			doCodeCompletion(moduleFile, document.get(), 0, "wc_change2");
+			
+			fileBuffer.revert(null);
+			doCodeCompletion(moduleFile, document.get(), 0, "wc_change0");
+			
+		} finally {
+			fbm.disconnect(moduleFile.getLocation(), LocationKind.LOCATION, null);
+		}
 		
-		sourceModule.getBuffer().setContents("module wc_change1;");
-		assertEquals(readFileContents(moduleFile), originalFileContents);
 		
-		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change1");
-		
-		sourceModule.getBuffer().setContents("module wc_change2;");
-		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change2");
-		
-		sourceModule.discardWorkingCopy();
-		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change0");
-		
-		
-		sourceModule = testsProject.getSourceModule("source/basic_pack/foo.d");
-		moduleFile = (IFile) sourceModule.getResource();
-		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "basic_pack/");
-		
-		// Test commitWorkingCopy
-		sourceModule.becomeWorkingCopy(new NullProblemRequestor(), new NullProgressMonitor());
-		sourceModule.getBuffer().setContents("module wc_commitWC_Test;");
-		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
-		doCodeCompletion(moduleFile, sourceModule.getSource(),0, "wc_commitWC_Test/");
+		try {
+			moduleFile = testsProject.getFile("source/basic_pack/foo.d");
+			
+			fbm.connect(moduleFile.getLocation(), LocationKind.LOCATION, null);
+			ITextFileBuffer fileBuffer = fbm.getTextFileBuffer(moduleFile.getLocation(), LocationKind.LOCATION);
+			IDocument document = fileBuffer.getDocument();
 
-		sourceModule.getBuffer().setContents("module wc_commitWC_Test2;");
-		sourceModule.commitWorkingCopy(true, new NullProgressMonitor());
-		sourceModule.discardWorkingCopy();
-		doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_commitWC_Test2/");
+			doCodeCompletion(moduleFile, document.get(), 0, "basic_pack/");
+			
+			// Test commitWorkingCopy 
+			//XXX: These tests might have become obsolue, we don't use DLTK API anymore
+			
+			document.set("module wc_commitWC_Test;");
+			fileBuffer.commit(null, true);
+			doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test/");
+	
+			document.set("module wc_commitWC_Test2;");
+			fileBuffer.commit(null, true);
+			fileBuffer.revert(null);
+			doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test2/");
+			
+//			// Test setContents of non-working copy 
+//			document.set("module wc_change3;");
+//			assertTrue(sourceModule.isWorkingCopy() == false);
+//			doCodeCompletion(moduleFile, document.get(), 0, "wc_change3/");
 		
-		// Test setContents of non-working copy - only valid if sourceModule in buildpath it seems
-		if(sourceModule.exists()) {
-			sourceModule.getBuffer().setContents("module wc_change3;");
-			assertTrue(sourceModule.isWorkingCopy() == false);
-			doCodeCompletion(moduleFile, sourceModule.getSource(), 0, "wc_change3/");
+		} finally {
+			fbm.disconnect(moduleFile.getLocation(), LocationKind.LOCATION, null);
 		}
 	}
 	
