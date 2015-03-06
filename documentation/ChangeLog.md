@@ -19,7 +19,7 @@ auto x = Container!(int).member.【Code Complete now understands that member is 
 
 ##### Core:
  * Removed search functionality (was broken and not well properly adapted to the D language).
-   * It is recommended that Recommend re-create project.
+   * It is recommended to re-create DDT projects, to ensure no residual effects from this change.
  * Fixed #94: Weird tooltip of file location (when Open Definition goes to a file outside the workspace).
  * Fixed: Semantic engine does not detect modifications to `dub.json` during an Eclipse session!!
 
