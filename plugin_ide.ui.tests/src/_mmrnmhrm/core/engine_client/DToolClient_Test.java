@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.engine_client;
+package _mmrnmhrm.core.engine_client;
 
 import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 

@@ -99,7 +99,7 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 		return moduleParseCache;
 	}
 	
-	protected SemanticManager getServerSemanticManager() {
+	public SemanticManager getServerSemanticManager() {
 		return dtoolServer.getSemanticManager();
 	}
 	
