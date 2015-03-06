@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -25,7 +26,7 @@ import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.ResolveDocViewOperation;
 
-public class DToolServer {
+public class DToolServer implements ISimpleStatusLogger {
 	
 	public static final SimpleDateFormat TIMESTAMP_FORMAT = new SimpleDateFormat("HH:mm:ss.SSS");
 	
@@ -47,6 +48,7 @@ public class DToolServer {
 		semanticManager.shutdown();
 	}
 	
+	@Override
 	public void logMessage(String message) {
 		System.out.println("> " + message);
 	}
@@ -54,6 +56,7 @@ public class DToolServer {
 	public final void logError(String message) {
 		logError(message, null);
 	}
+	@Override
 	public void logError(String message, Throwable throwable) {
 		System.out.println("!! " + message);
 		if(throwable != null) {

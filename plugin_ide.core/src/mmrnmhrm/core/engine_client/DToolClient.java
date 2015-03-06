@@ -14,8 +14,10 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
@@ -67,7 +69,25 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 				DeeCore.logError(message, throwable);
 			}
 		};
-		moduleParseCache = new ClientModuleParseCache(dtoolServer);
+		moduleParseCache = new ClientModuleParseCache(new ISimpleStatusLogger() {
+			
+			public static final String PREFIX = "[IDE AST Cache]: ";
+			
+			@Override
+			public void logMessage(String message) {
+				log.println(PREFIX + message);
+			}
+			
+			@Override
+			public void logError(String message, Throwable throwable) {
+				log.println(PREFIX + message);
+				if(throwable != null) {
+					log.println(throwable.toString());
+				}
+				
+				LangCore.logError(message, throwable);
+			}
+		});
 	}
 	
 	@Override
@@ -85,8 +105,8 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 	
 	public static class ClientModuleParseCache extends ModuleParseCache {
 		
-		protected ClientModuleParseCache(DToolServer dtoolServer) {
-			super(dtoolServer);
+		public ClientModuleParseCache(ISimpleStatusLogger statusLogger) {
+			super(statusLogger);
 		}
 		
 		public ParsedModule getParsedModuleOrNull(Path filePath) {

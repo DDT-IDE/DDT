@@ -21,6 +21,7 @@ import java.util.HashMap;
 
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.FileModificationDetectionHelper;
+import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -33,10 +34,10 @@ import dtool.parser.DeeParserResult.ParsedModule;
  */
 public class ModuleParseCache {
 	
-	protected final DToolServer dtoolServer;
+	protected final ISimpleStatusLogger statusLogger;
 	
-	public ModuleParseCache(DToolServer dtoolServer) {
-		this.dtoolServer = dtoolServer;
+	public ModuleParseCache(ISimpleStatusLogger statusLogger) {
+		this.statusLogger = statusLogger;
 	}
 	
 	protected final HashMap<String, CachedModuleEntry> cache = new HashMap<>();
@@ -94,11 +95,15 @@ public class ModuleParseCache {
 		synchronized(this) {
 			CachedModuleEntry entry = cache.get(key);
 			if(entry == null) {
-				entry = new CachedModuleEntry_Logged(filePath);
+				entry = doCreateEntry(filePath);
 				cache.put(key, entry);
 			}
 			return entry;
 		}
+	}
+	
+	protected CachedModuleEntry doCreateEntry(Path filePath) {
+		return new CachedModuleEntry_Logged(filePath);
 	}
 	
 	protected ParsedModule parseModuleWithNewSource(Path filePath, String source) {
@@ -259,12 +264,12 @@ public class ModuleParseCache {
 		@Override
 		protected void parsedSource_after() {
 			String isWorkingCopySuffix = isWorkingCopy() ? " [WorkingCopy]" : "";
-			dtoolServer.logMessage("ParseCache: Parsed module " + filePath + isWorkingCopySuffix);
+			statusLogger.logMessage("ParseCache: Parsed module " + filePath + isWorkingCopySuffix);
 		}
 		
 		@Override
 		protected void discardWorkingCopy_after() {
-			dtoolServer.logMessage("ParseCache: Discarded working copy: " + filePath);
+			statusLogger.logMessage("ParseCache: Discarded working copy: " + filePath);
 		}
 	}
 	
