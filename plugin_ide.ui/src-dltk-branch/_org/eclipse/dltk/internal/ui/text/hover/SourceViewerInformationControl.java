@@ -12,10 +12,7 @@ package _org.eclipse.dltk.internal.ui.text.hover;
 
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.ui.DLTKUILanguageManager;
-import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -52,6 +49,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @since 3.0
  */
+/* FIXME: DLTK review this class*/
 public class SourceViewerInformationControl implements IInformationControl,
 		IInformationControlExtension, DisposeListener {
 
@@ -96,7 +94,6 @@ public class SourceViewerInformationControl implements IInformationControl,
 
 	private Color fBackgroundColor;
 	private boolean fIsSystemBackgroundColor = true;
-	private final IDLTKUILanguageToolkit fToolkit;
 
 	/**
 	 * Creates a default information control with the given shell as parent. The
@@ -111,9 +108,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @param style
 	 *            the additional styles for the styled text widget
 	 */
-	public SourceViewerInformationControl(Shell parent, int shellStyle,
-			int style, IDLTKLanguageToolkit toolkit) {
-		this(parent, shellStyle, style, null, toolkit);
+	public SourceViewerInformationControl(Shell parent, int shellStyle, int style) {
+		this(parent, shellStyle, style, null);
 	}
 
 	/**
@@ -134,8 +130,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @since 3.0
 	 */
 	public SourceViewerInformationControl(Shell parent, int shellStyle,
-			int style, String statusFieldText, IDLTKLanguageToolkit toolkit) {
-		this.fToolkit = DLTKUILanguageManager.getLanguageToolkit(toolkit);
+			int style, String statusFieldText) {
 		GridLayout layout;
 		GridData gd;
 
@@ -226,7 +221,7 @@ public class SourceViewerInformationControl implements IInformationControl,
 
 	protected void createViewer(int style, Composite composite) {
 		fViewer = new ScriptSourceViewer(composite, null, null, false, style,
-				fToolkit.getPreferenceStore());
+			DeeUILanguageToolkit.getDefault().getPreferenceStore());
 		fViewer.configure(DeeUILanguageToolkit.getDefault().createSourceViewerConfiguration2());
 	}
 
@@ -242,8 +237,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 		}
 	}
 
-	private RGB getHoverBackgroundColorRGB() {
-		IPreferenceStore store = fToolkit.getPreferenceStore();
+	protected RGB getHoverBackgroundColorRGB() {
+		IPreferenceStore store = DeeUILanguageToolkit.getDefault().getPreferenceStore();
 		return store
 				.getBoolean(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT) ? null
 				: PreferenceConverter
@@ -263,9 +258,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @param style
 	 *            the additional styles for the styled text widget
 	 */
-	public SourceViewerInformationControl(Shell parent, int style,
-			IDLTKLanguageToolkit toolkit) {
-		this(parent, SWT.NO_TRIM | SWT.TOOL, style, toolkit);
+	public SourceViewerInformationControl(Shell parent, int style) {
+		this(parent, SWT.NO_TRIM | SWT.TOOL, style);
 	}
 
 	/**
@@ -283,9 +277,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 *            <code>null</code> if the status field should be hidden
 	 * @since 3.0
 	 */
-	public SourceViewerInformationControl(Shell parent, int style,
-			String statusFieldText, IDLTKLanguageToolkit toolkit) {
-		this(parent, SWT.NO_TRIM | SWT.TOOL, style, statusFieldText, toolkit);
+	public SourceViewerInformationControl(Shell parent, int style, String statusFieldText) {
+		this(parent, SWT.NO_TRIM | SWT.TOOL, style, statusFieldText);
 	}
 
 	/**
@@ -296,9 +289,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 * @param parent
 	 *            the parent shell
 	 */
-	public SourceViewerInformationControl(Shell parent,
-			IDLTKLanguageToolkit toolkit) {
-		this(parent, SWT.NONE, toolkit);
+	public SourceViewerInformationControl(Shell parent) {
+		this(parent, SWT.NONE);
 	}
 
 	/**
@@ -313,9 +305,8 @@ public class SourceViewerInformationControl implements IInformationControl,
 	 *            <code>null</code> if the status field should be hidden
 	 * @since 3.0
 	 */
-	public SourceViewerInformationControl(Shell parent, String statusFieldText,
-			IDLTKLanguageToolkit toolkit) {
-		this(parent, SWT.NONE, statusFieldText, toolkit);
+	public SourceViewerInformationControl(Shell parent, String statusFieldText) {
+		this(parent, SWT.NONE, statusFieldText);
 	}
 
 	/**
@@ -351,10 +342,9 @@ public class SourceViewerInformationControl implements IInformationControl,
 		}
 
 		IDocument doc = new Document(content);
-		ScriptTextTools textTools = fToolkit.getTextTools();
+		ScriptTextTools textTools = DeeUILanguageToolkit.getDefault().getTextTools();
 		if (textTools != null) {
-			textTools.setupDocumentPartitioner(doc, fToolkit
-					.getPartitioningId());
+			textTools.setupDocumentPartitioner(doc, DeeUILanguageToolkit.getDefault().getPartitioningId());
 		}
 		fViewer.setInput(doc);
 	}

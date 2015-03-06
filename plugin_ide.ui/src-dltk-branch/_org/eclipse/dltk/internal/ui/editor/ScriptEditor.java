@@ -1299,14 +1299,12 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.error"); //$NON-NLS-1$
 		fProjectionSupport.addSummarizableAnnotationType("org.eclipse.ui.workbench.texteditor.warning"); //$NON-NLS-1$
 		
-		final DeeLanguageToolkit toolkit = DeeLanguageToolkit.getDefault();
 		fProjectionSupport.setHoverControlCreator(new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell shell) {
 				int shellStyle = SWT.TOOL | SWT.NO_TRIM | getOrientation();
 				String statusFieldText = EditorsUI.getTooltipAffordanceString();
-				return new SourceViewerInformationControl(shell,
-						shellStyle, SWT.NONE, statusFieldText, toolkit);
+				return new SourceViewerInformationControl(shell, shellStyle, SWT.NONE, statusFieldText);
 			}
 		});
 		fProjectionSupport.setInformationPresenterControlCreator(new IInformationControlCreator() {
@@ -1315,7 +1313,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 					Shell shell) {
 				int shellStyle = SWT.RESIZE | SWT.TOOL | getOrientation();
 				int style = SWT.V_SCROLL | SWT.H_SCROLL;
-				return new SourceViewerInformationControl(shell, shellStyle, style, toolkit);
+				return new SourceViewerInformationControl(shell, shellStyle, style);
 			}
 		});
 		

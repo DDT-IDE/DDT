@@ -4,8 +4,9 @@ import mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
-import org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor;
 import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
+
+import _org.eclipse.dltk.ui.templates.ScriptTemplateCompletionProcessor;
 
 public class DeeTemplateCompletionProcessor extends ScriptTemplateCompletionProcessor {
 	
