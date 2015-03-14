@@ -10,27 +10,8 @@
  *******************************************************************************/
 package dtool.tests;
 
-import melnorme.utilbox.core.DevelopmentCodeMarkers.Tests_HasExternalDependencies;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
-public class DToolTests implements Tests_HasExternalDependencies {
+public class DToolTests implements DevelopmentCodeMarkers {
 	
-	public static final String DTOOL_PREFIX = "DTool.";
-	public static final boolean TESTS_LITE_MODE = getSystemProperty("TestsLiteMode", false); 
-	
-	public static String getSystemProperty(String propName, String defaultValue) {
-		String propValue = System.getProperty(DTOOL_PREFIX + propName);
-		if(propValue == null) {
-			return defaultValue;
-		}
-		return propValue;
-	}
-	
-	public static boolean getSystemProperty(String propName, boolean defaultValue) {
-		String propValue = System.getProperty(DTOOL_PREFIX + propName);
-		if(propValue == null) {
-			return defaultValue;
-		}
-		return propValue != null;
-	}
-
 }
