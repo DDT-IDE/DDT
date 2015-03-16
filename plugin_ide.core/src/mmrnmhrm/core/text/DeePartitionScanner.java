@@ -1,5 +1,6 @@
 package mmrnmhrm.core.text;
 
+import melnorme.lang.ide.core.text.PatternRule_Fixed;
 import melnorme.utilbox.collections.ArrayList2;
 
 import org.eclipse.jface.text.rules.IPredicateRule;

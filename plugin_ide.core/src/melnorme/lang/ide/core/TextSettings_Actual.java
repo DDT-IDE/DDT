@@ -1,10 +1,10 @@
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.text.DeeDocumentSetupParticipant;
 import mmrnmhrm.core.text.DeePartitionScanner;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;

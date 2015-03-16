@@ -12,8 +12,8 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;

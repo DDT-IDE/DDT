@@ -1,5 +1,7 @@
 package mmrnmhrm.core.text;
 
+import melnorme.lang.ide.core.text.PatternRule_Fixed;
+
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.text.Scanner_BaseTest;
 import mmrnmhrm.core.text.DeePartitionScanner;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.rules.FastPartitioner;

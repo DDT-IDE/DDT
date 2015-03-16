@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.core.text;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+
 
 public class DeeDocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
@@ -38,7 +39,6 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
-import mmrnmhrm.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
