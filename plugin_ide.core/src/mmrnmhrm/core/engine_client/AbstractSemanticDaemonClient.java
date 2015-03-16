@@ -109,16 +109,20 @@ public abstract class AbstractSemanticDaemonClient {
 	protected IFileBuffer getFileBuffer(Path filePath) {
 		
 		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
-		IFileBuffer fileBuffer = fbm.getFileBuffer(EclipseUtils.epath(filePath), LocationKind.LOCATION);
-		fbm.getTextFileBuffer(EclipseUtils.epath(filePath), LocationKind.LOCATION);
+		
+		IFileBuffer fileBuffer = fbm.getFileBuffer(EclipseUtils.epath(filePath), LocationKind.NORMALIZE);
 		if(fileBuffer != null) {
 			return fileBuffer;
 		}
 		
 		// Could be an external file, try alternative API:
-		IFileStore fileStore = FileBuffers.getFileStoreAtLocation(EclipseUtils.epath(filePath));
-		fileBuffer = fbm.getFileStoreFileBuffer(fileStore);
+		fileBuffer = fbm.getFileStoreFileBuffer(FileBuffers.getFileStoreAtLocation(EclipseUtils.epath(filePath)));
+		if(fileBuffer != null) {
+			return fileBuffer;
+		}
 		
+		// Fall back, try LocationKind.LOCATION
+		fileBuffer = fbm.getFileBuffer(EclipseUtils.epath(filePath), LocationKind.LOCATION);
 		return fileBuffer;
 	}
 	

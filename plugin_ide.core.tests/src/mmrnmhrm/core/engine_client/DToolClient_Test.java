@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package _mmrnmhrm.core.engine_client;
+package mmrnmhrm.core.engine_client;
 
 import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
@@ -24,7 +24,6 @@ import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
@@ -36,6 +35,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
@@ -156,67 +156,77 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
+		
+		RunWithTextFileBuffer test = new RunWithTextFileBuffer() {
+			@Override
+			protected void doRun(IFile moduleFile, ITextFileBuffer fileBuffer, IDocument document) 
+					throws CoreException, IOException {
+				fileBuffer.revert(null);
+				
+				String originalFileContents = "module wc_change0;";
+				updateFileContents(moduleFile, originalFileContents);
+				
+				doCodeCompletion(moduleFile, document.get(),  0, "wc_change0");
+				
+				document.set("module wc_change1;");
+				assertEquals(readFileContents(moduleFile), originalFileContents);
+				
+				doCodeCompletion(moduleFile, document.get(), 0, "wc_change1");
+				
+				document.set("module wc_change2;");
+				doCodeCompletion(moduleFile, document.get(), 0, "wc_change2");
+				
+				fileBuffer.revert(null);
+				doCodeCompletion(moduleFile, document.get(), 0, "wc_change0");
+				
+				// Test commit 
+				
+				document.set("module wc_commitWC_Test;");
+				fileBuffer.commit(null, true);
+				doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test/");
+		
+				document.set("module wc_commitWC_Test2;");
+				fileBuffer.commit(null, true);
+				fileBuffer.revert(null);
+				doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test2/");
+			};
+		};
 		IFile moduleFile = testsProject.getFile("source/basic_foo.d");
+		test.run(moduleFile, moduleFile.getFullPath(), LocationKind.IFILE);
+		test.run(moduleFile, moduleFile.getLocation(), LocationKind.LOCATION);
 		
-		ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
-		
-		try {
-			fbm.connect(moduleFile.getLocation(), LocationKind.LOCATION, null);
-			ITextFileBuffer fileBuffer = fbm.getTextFileBuffer(moduleFile.getLocation(), LocationKind.LOCATION);
-			IDocument document = fileBuffer.getDocument();
-			
-			fileBuffer.revert(null);
-			
-			String originalFileContents = "module wc_change0;";
-			updateFileContents(moduleFile, originalFileContents);
-			
-			doCodeCompletion(moduleFile, document.get(),  0, "wc_change0");
-			
-			document.set("module wc_change1;");
-			assertEquals(readFileContents(moduleFile), originalFileContents);
-			
-			doCodeCompletion(moduleFile, document.get(), 0, "wc_change1");
-			
-			document.set("module wc_change2;");
-			doCodeCompletion(moduleFile, document.get(), 0, "wc_change2");
-			
-			fileBuffer.revert(null);
-			doCodeCompletion(moduleFile, document.get(), 0, "wc_change0");
-			
-		} finally {
-			fbm.disconnect(moduleFile.getLocation(), LocationKind.LOCATION, null);
-		}
-		
-		
-		try {
-			moduleFile = testsProject.getFile("source/basic_pack/foo.d");
-			
-			fbm.connect(moduleFile.getLocation(), LocationKind.LOCATION, null);
-			ITextFileBuffer fileBuffer = fbm.getTextFileBuffer(moduleFile.getLocation(), LocationKind.LOCATION);
-			IDocument document = fileBuffer.getDocument();
-
-			doCodeCompletion(moduleFile, document.get(), 0, "basic_pack/");
-			
-			// Test commitWorkingCopy 
-			//XXX: These tests might have become obsolue, we don't use DLTK API anymore
-			
-			document.set("module wc_commitWC_Test;");
-			fileBuffer.commit(null, true);
-			doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test/");
+		//TODO: test file store
+	}
 	
-			document.set("module wc_commitWC_Test2;");
-			fileBuffer.commit(null, true);
-			fileBuffer.revert(null);
-			doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test2/");
-			
-//			// Test setContents of non-working copy 
-//			document.set("module wc_change3;");
-//			assertTrue(sourceModule.isWorkingCopy() == false);
-//			doCodeCompletion(moduleFile, document.get(), 0, "wc_change3/");
+	public static abstract class RunWithTextFileBuffer {
 		
-		} finally {
-			fbm.disconnect(moduleFile.getLocation(), LocationKind.LOCATION, null);
+		public RunWithTextFileBuffer() {
 		}
+		
+		public final void run(IFile moduleFile, IPath fullPath, LocationKind locationKind) 
+				throws CoreException, IOException {
+			
+			ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
+			
+			// Try connect using LocationKind.IFILE
+			try {
+				assertTrue(fbm.getTextFileBuffer(fullPath, LocationKind.NORMALIZE) == null);
+				
+				fbm.connect(fullPath, locationKind, null);
+				ITextFileBuffer fileBuffer = fbm.getTextFileBuffer(fullPath, locationKind);
+				if(locationKind != LocationKind.LOCATION) {
+					assertTrue(fileBuffer == fbm.getTextFileBuffer(fullPath, LocationKind.NORMALIZE));
+				}
+				
+				doRun(moduleFile, fileBuffer, fileBuffer.getDocument());
+			} finally {
+				fbm.disconnect(fullPath, locationKind, null);
+			}
+			
+		}
+		
+		protected abstract void doRun(IFile moduleFile, ITextFileBuffer fileBuffer, IDocument document) 
+				throws CoreException, IOException;
 	}
 	
 	protected void doCodeCompletion(IFile file, int offset, String... results) 

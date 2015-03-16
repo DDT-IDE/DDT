@@ -1,5 +1,8 @@
 ## DDT release ChangeLog
 
+### DDT 0.11.1
+ * Fixed: AssertionFailedException, or incorrect results invoking Content Assist on unsaved editor files.
+
 ### DDT 0.11.0
 ##### Parser:
  * Fixed: Error parsing UDAS as function attributes (example: `int foo() @blah { }`) .
