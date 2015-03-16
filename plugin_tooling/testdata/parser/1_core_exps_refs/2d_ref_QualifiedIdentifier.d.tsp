@@ -16,6 +16,9 @@ DefVariable(RefQualified(RefQualified(RefIdentifier RefIdentifier) RefIdentifier
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ 
 #PARSE(REFERENCE)     foo. #@NO_ID #@BREAK int
 #STRUCTURE_EXPECTED:  RefQualified(RefIdentifier #@NO_ID)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ bug #101 similar:
+#PARSE(REFERENCE)     foo. #@NO_ID #@BREAK .n
+#STRUCTURE_EXPECTED:  RefQualified(RefIdentifier #@NO_ID)
 
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(REFERENCE)     #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER #@IGNORE_REST .foo

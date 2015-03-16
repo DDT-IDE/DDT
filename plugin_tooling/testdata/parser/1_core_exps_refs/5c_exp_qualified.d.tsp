@@ -38,6 +38,10 @@
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION_ToE) #@QUALIFIER . #@NO_ID /* error doesnt break parsing */ () + 23
 #STRUCTURE_EXPECTED:   ExpInfix( ExpCall( ExpReference(RefQualified(#@QUALIFIER #@NO_ID)) )  Integer)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ bug  #101 :
+#PARSE(EXPRESSION_ToE) foo. #@NO_ID /* error doesnt break parsing */ #@IGNORE_REST .id
+#STRUCTURE_EXPECTED:   ExpReference(RefQualified(RefIdentifier #@NO_ID))
+
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 #PARSE(EXPRESSION_ToE) . #@NO_ID /* error doesnt break parsing */ + 23
 #STRUCTURE_EXPECTED:   ExpInfix(  ExpReference(RefModuleQualified(#@NO_ID)) Integer  )

@@ -713,7 +713,13 @@ protected class ParseRule_Expression {
 			if(qualifier instanceof ExpReference) {
 				ExpReference expReference = (ExpReference) qualifier;
 				if(expReference.ref instanceof RefQualified) {
-					assertTrue(((RefQualified) expReference.ref).isExpressionQualifier);
+					RefQualified refQualified = (RefQualified) expReference.ref;
+					if(refQualified.qualifiedId.isMissing()) {
+						// Special case, if refQualified.qualifiedId was missing, 
+						// the we don't try to continue parsing the expression.
+						return qualifier;
+					}
+					assertTrue(refQualified.isExpressionQualifier);
 				} else if(expReference.ref instanceof RefTemplateInstance) {
 				} else {
 					assertFail(); // ...otherwise refqualified would have been parsed already

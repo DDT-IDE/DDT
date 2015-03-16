@@ -124,6 +124,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 				
 			} else if(mde.name.equals("parser") && areEqual(mde.value, "IgnoreRest")){
 				int pos = assertNoLength(mde).offset;
+				
 				if(expectedRemainingSource == null) {
 					expectedParsedSource = fullSource.substring(0, pos);
 					expectedRemainingSource = fullSource.substring(pos);

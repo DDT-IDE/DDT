@@ -1,7 +1,8 @@
 ## DDT release ChangeLog
 
 ### DDT 0.11.1
- * Fixed: AssertionFailedException, or incorrect results invoking Content Assist on unsaved editor files. (Fixes #99, #97)
+ * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
+ * Fixed #101: Assertion failure parsing invalid syntax: `auto x = n. .n;`
 
 ### DDT 0.11.0
 ##### Parser:
