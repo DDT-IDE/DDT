@@ -2,10 +2,10 @@ package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test;
+import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;

@@ -13,6 +13,7 @@ package mmrnmhrm.ui;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
@@ -21,7 +22,6 @@ import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
-import mmrnmhrm.ui.text.DeePartitions;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
+import mmrnmhrm.core.text.FullPatternRule;
 
 import org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import org.eclipse.jface.text.rules.IRule;

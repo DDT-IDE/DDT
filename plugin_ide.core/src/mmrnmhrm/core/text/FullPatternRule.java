@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.text;
+package mmrnmhrm.core.text;
 
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.ArrayUtil;

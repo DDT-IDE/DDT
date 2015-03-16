@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeTextTools;
@@ -358,7 +358,7 @@ public class CodeTemplateBlock extends OptionsConfigurationBlock {
 		IPreferenceStore store = toolkit.getCombinedPreferenceStore();
 		SourceViewer viewer = new ScriptSourceViewer(parent, null, null, false,
 				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
-		DeeSourceViewerConfiguration configuration = TextSettings_Actual.createSourceViewerConfiguration(store, null);
+		DeeSourceViewerConfiguration configuration = EditorSettings_Actual.createSourceViewerConfiguration(store, null);
 		viewer.configure(configuration);
 
 		viewer.setEditable(false);

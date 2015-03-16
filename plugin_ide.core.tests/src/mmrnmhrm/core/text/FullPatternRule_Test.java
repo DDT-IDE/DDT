@@ -8,13 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.text.FullPatternRule;
+import mmrnmhrm.core.text.FullPatternRule;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;

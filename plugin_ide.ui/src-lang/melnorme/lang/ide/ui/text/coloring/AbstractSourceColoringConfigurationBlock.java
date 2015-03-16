@@ -16,13 +16,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.TextSettings_Actual;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage_Old.IPreferencesBlock_Old;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 import melnorme.util.swt.SWTFactoryUtil;
 import melnorme.util.swt.components.AbstractComponentExt;
 import melnorme.util.swt.components.IFieldValueListener;
@@ -39,6 +38,7 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tree.IElement;
 import melnorme.utilbox.tree.SimpleTreeElement;
 import melnorme.utilbox.tree.TreeVisitor;
+import mmrnmhrm.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.cdt.internal.ui.text.util.CColorManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -396,7 +396,7 @@ public abstract class AbstractSourceColoringConfigurationBlock extends AbstractC
 	
 	protected AbstractLangSourceViewerConfiguration createSimpleSourceViewerConfiguration( 
 			IPreferenceStore preferenceStore) {
-		return TextSettings_Actual.createSimpleSourceViewerConfiguration(preferenceStore, colorManager);
+		return EditorSettings_Actual.createSimpleSourceViewerConfiguration(preferenceStore, colorManager);
 	}
 	
 }

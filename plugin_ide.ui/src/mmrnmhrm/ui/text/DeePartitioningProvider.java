@@ -10,6 +10,9 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import mmrnmhrm.core.text.DeePartitionScanner;
+import mmrnmhrm.core.text.DeePartitions;
+
 import org.eclipse.dltk.ui.text.IPartitioningProvider;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 

@@ -10,6 +10,13 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
+import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
+
+import org.eclipse.cdt.ui.text.IColorManager;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+
 
 public class EditorSettings_Actual {
 	
@@ -17,6 +24,17 @@ public class EditorSettings_Actual {
 	public static final String EDITOR_CONTEXT_ID = "org.dsource.ddt.ide.ui.contexts.DeeEditor";
 	
 	public static final String EDITOR_CODE_TARGET = "org.dsource.ddt.ide.ui.texteditor.deeCodeTarget";
+	
+	public static DeeSourceViewerConfiguration createSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
+	}
+	
+	public static DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, IColorManager colorManager) {
+		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, null, false);
+	}
 	
 	/* ----------------- actions ----------------- */
 	

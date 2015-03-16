@@ -8,9 +8,8 @@
  * Contributors:
 
  *******************************************************************************/
-package mmrnmhrm.ui.text;
+package mmrnmhrm.core.text;
 
-import melnorme.lang.ide.ui.text.LangDocumentPartitionerSetup;
 
 public class DeeDocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	

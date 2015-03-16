@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.tests.CommonTest;
+import mmrnmhrm.core.text.DeePartitions;
 
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.Document;

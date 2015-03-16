@@ -1,6 +1,4 @@
-package mmrnmhrm.ui.text;
-
-import melnorme.lang.ide.ui.text.PatternRule_Fixed;
+package mmrnmhrm.core.text;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;

@@ -15,7 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.util.Collections;
 
-import melnorme.lang.ide.ui.TextSettings_Actual;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -205,7 +205,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 		fSourceViewer = sourceViewer;
 		fColorManager = colorManager;
 		fPreferenceStore = preferenceStore;
-		fConfiguration = TextSettings_Actual.createSourceViewerConfiguration(preferenceStore, editor);
+		fConfiguration = EditorSettings_Actual.createSourceViewerConfiguration(preferenceStore, editor);
 		
 		if (fEditor != null) {
 			Assert.isNotNull(fConfiguration);

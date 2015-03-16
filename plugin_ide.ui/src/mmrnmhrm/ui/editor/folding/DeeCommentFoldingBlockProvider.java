@@ -2,9 +2,9 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
+import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.EditorUtil;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
-import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.jface.preference.IPreferenceStore;

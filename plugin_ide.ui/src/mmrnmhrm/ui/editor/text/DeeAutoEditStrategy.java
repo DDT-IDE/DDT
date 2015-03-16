@@ -11,7 +11,7 @@
 package mmrnmhrm.ui.editor.text;
 
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
-import mmrnmhrm.ui.text.DeePartitions;
+import mmrnmhrm.core.text.DeePartitions;
 
 import org.eclipse.jface.text.ITextViewer;
 

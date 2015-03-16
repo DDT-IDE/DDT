@@ -18,13 +18,13 @@ import java.util.Map;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.utilbox.core.CoreUtil;
+import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
-import mmrnmhrm.ui.text.DeePartitions;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;

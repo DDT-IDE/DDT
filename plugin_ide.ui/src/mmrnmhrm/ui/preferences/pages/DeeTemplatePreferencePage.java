@@ -1,10 +1,10 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
-import mmrnmhrm.ui.text.DeePartitions;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
