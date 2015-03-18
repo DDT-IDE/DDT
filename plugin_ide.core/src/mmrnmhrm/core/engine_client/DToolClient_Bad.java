@@ -12,7 +12,7 @@ package mmrnmhrm.core.engine_client;
 
 import java.nio.file.Path;
 
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
+import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DLTKUtils;
 import mmrnmhrm.core.DeeCore;
 
@@ -28,7 +28,7 @@ public class DToolClient_Bad {
 	public static Path getFilePathOrNull(ISourceModule input) {
 		try {
 			return DLTKUtils.getFilePath(input);
-		} catch (InvalidPathExceptionX e) {
+		} catch (CommonException e) {
 			DeeCore.logError("Invalid path from DLTK: " + e);
 			return null;
 		}

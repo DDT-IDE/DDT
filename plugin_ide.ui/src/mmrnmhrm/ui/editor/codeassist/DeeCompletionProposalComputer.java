@@ -21,6 +21,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 
@@ -78,9 +79,12 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 				throw LangCore.createCoreException("Error, no editor available for operation.", null);
 			}
 			
-			Path fileLocation = EditorUtils.getLocationFromEditor(editor.getEditorInput());
+			Location fileLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
+			if(fileLocation == null) {
+				throw LangCore.createCoreException("Error, invalid location for editor input.", null);
+			}
 			
-			return doComputeCompletionProposals(offset, fileLocation, viewer.getDocument());
+			return doComputeCompletionProposals(offset, fileLocation.path, viewer.getDocument());
 		} catch (CoreException ce) {
 			if(DeeCompletionOperation.compilerPathOverride == null) {
 				UIOperationExceptionHandler.handleOperationStatus("Content Assist", ce);

@@ -136,7 +136,7 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 	public void testSearchTask$() throws Exception {
 		testWithPathVar(MULTIPLE_IN_ONE_PATH.toString());
 		
-		testWithPathVar(workingDirPath("__NON_EXISTING___###__").toString() + PATH_SEP + 
+		testWithPathVar(workingDirLoc("__NON_EXISTING___###__").toString() + PATH_SEP + 
 			MULTIPLE_IN_ONE_PATH.toString());
 	}
 	

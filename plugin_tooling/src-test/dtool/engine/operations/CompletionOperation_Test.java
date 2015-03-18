@@ -10,15 +10,13 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
-import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIVE_TYPES;
+import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
+import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
@@ -26,11 +24,11 @@ import dtool.engine.tests.DefUnitResultsChecker;
 
 public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
-	protected CompletionSearchResult doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.doCodeCompletion(filePath, offset, null, testsDubPath());
+	protected CompletionSearchResult doOperation(Location filePath, int offset) throws Exception {
+		return dtoolEngine.doCodeCompletion(filePath.path, offset, null, testsDubPath());
 	}
 	
-	public static final Path MODULE_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve("completion_test.d");
+	public static final Location MODULE_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve_valid("completion_test.d");
 	public static final String MODULE_Contents = readStringFromFile(MODULE_FilePath);
 	
 	protected final String[] COMPLETION_TEST_MEMBERS = array("Foo", "bar", "abc1", "abc2");
@@ -130,12 +128,12 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		
 	}
 	
-	protected void testFindDefinition(Path modulePath, int offset, int replaceLength, String... expectedResults) 
+	protected void testFindDefinition(Location modulePath, int offset, int replaceLength, String... expectedResults) 
 			throws Exception {
 		testFindDefinition(modulePath, offset, ECompletionResultStatus.RESULT_OK, replaceLength, expectedResults);
 	}
 	
-	protected void testFindDefinition(Path modulePath, int offset,  
+	protected void testFindDefinition(Location modulePath, int offset,  
 			ECompletionResultStatus resultStatus, int replaceLength, String... expectedResults) throws Exception {
 		CompletionSearchResult opResult = doOperation(modulePath, offset);
 		

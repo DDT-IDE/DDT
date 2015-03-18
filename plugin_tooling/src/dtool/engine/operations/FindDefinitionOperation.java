@@ -24,6 +24,7 @@ import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.definitions.DefSymbol;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -108,11 +109,11 @@ public class FindDefinitionOperation extends AbstractDToolOperation {
 		for (INamedElement namedElement : namedElements) {
 			final INamedElementNode node = namedElement.resolveUnderlyingNode();
 			
-			Path compilationUnitPath = null;
+			Location compilationUnitPath = null;
 			SourceRange sourceRange = null;
 			
 			if(node != null) { // This can happen with intrinsic elements 
-				compilationUnitPath = node.getModuleNode().getCompilationUnitPath();
+				compilationUnitPath = Location.createValidOrNull(node.getModuleNode().getCompilationUnitPath());
 				sourceRange = node.getNameSourceRangeOrNull();
 			}
 			

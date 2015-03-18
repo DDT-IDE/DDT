@@ -11,8 +11,7 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
+import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
@@ -20,14 +19,14 @@ import dtool.engine.analysis.CommonNodeSemanticsTest;
 
 public class FindDDocOperation_Test extends CommonDToolOperation_Test {
 	
-	public static final Path DDOC_TESTER_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve("ddoc_tester.d");
+	public static final Location DDOC_TESTER_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve_valid("ddoc_tester.d");
 	public static final String DDOC_TESTER_Contents = readStringFromFile(DDOC_TESTER_FilePath);
 	
-	protected String doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.getDDocHTMLView(filePath, offset, testsDubPath());
+	protected String doOperation(Location filePath, int offset) throws Exception {
+		return dtoolEngine.getDDocHTMLView(filePath.path, offset, testsDubPath());
 	}
 	
-	protected String testFindDefinition(Path modulePath, int offset, String expectedEnd, String... expectedContains) 
+	protected String testFindDefinition(Location modulePath, int offset, String expectedEnd, String... expectedContains) 
 			throws Exception {
 		String opResult = doOperation(modulePath, offset);
 		

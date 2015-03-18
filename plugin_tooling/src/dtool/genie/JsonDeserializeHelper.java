@@ -13,7 +13,9 @@ package dtool.genie;
 import java.nio.file.Path;
 import java.util.Map;
 
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 
 
 /**
@@ -83,6 +85,24 @@ public abstract class JsonDeserializeHelper<EXC extends Exception> {
 			if(allowNull) 
 				return null;
 			throw validationError("Invalid path: " + pathString);
+		}
+		return path;
+	}
+	
+	protected Location getLocation(Map<String, Object> map, String propName) throws EXC {
+		return getLocation(map, propName, false);
+	}
+	protected Location getLocationOrNull(Map<String, Object> map, String propName) throws EXC {
+		return getLocation(map, propName, true);
+	}
+	
+	protected Location getLocation(Map<String, Object> map, String propName, boolean allowNull) throws EXC {
+		String pathString = getValue(map, propName, String.class, allowNull);
+		Location path = pathString == null ? null : Location.createValidOrNull(PathUtil.createPathOrNull(pathString));
+		if(path == null) {
+			if(allowNull) 
+				return null;
+			throw validationError("Invalid location: " + pathString);
 		}
 		return path;
 	}

@@ -14,8 +14,8 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 import melnorme.utilbox.misc.ReflectionUtils;
 
 import org.eclipse.core.filesystem.IFileStore;
@@ -44,7 +44,7 @@ public class DLTKUtils {
 	}
 	
 	@Deprecated
-	public static Path getFilePath(ISourceModule sourceModule) throws InvalidPathExceptionX {
+	public static Path getFilePath(ISourceModule sourceModule) throws CommonException {
 		IResource resource = sourceModule.getResource();
 		if(resource != null && resource.getLocation() != null) {
 			// This is the best case, it means we should have an accurate path.
@@ -73,11 +73,11 @@ public class DLTKUtils {
 		
 		DeeCore.logError("Failed to get accurate filePath from source module: " + pathString);
 		pathString = pathString.replace("/ /", ""); // Fix for Windows Path issue: "/ /" is not valid!
-		return MiscUtil.createPath("###ExternalFile/" + pathString);
+		return MiscUtil.createPath2("###ExternalFile/" + pathString);
 	}
 	
-	public static Path getFilePath(IPath location) throws InvalidPathExceptionX {
-		return MiscUtil.createPath(location.toOSString());
+	public static Path getFilePath(IPath location) throws CommonException {
+		return MiscUtil.createPath2(location.toOSString());
 	}
 	
 }

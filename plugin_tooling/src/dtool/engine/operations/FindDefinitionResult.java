@@ -13,12 +13,12 @@ package dtool.engine.operations;
 import static dtool.engine.operations.FindDefinitionOperation.FIND_DEF_ReferenceResolveFailed;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.Collection2;
+import melnorme.utilbox.misc.Location;
 import dtool.ast.references.Reference;
 
 public class FindDefinitionResult {
@@ -61,14 +61,14 @@ public class FindDefinitionResult {
 		
 		public final String extendedName;
 		public final boolean isLanguageIntrinsic;
-		public final Path modulePath;
+		public final Location modulePath;
 		public final SourceRange sourceRange;
 		
-		public FindDefinitionResultEntry(String extendedName, boolean isLanguageIntrinsic, Path compilationUnitPath, 
+		public FindDefinitionResultEntry(String extendedName, boolean isLanguageIntrinsic, Location compilationUnitLoc, 
 				SourceRange sourceRange) {
 			this.extendedName = assertNotNull(extendedName);
 			this.isLanguageIntrinsic = isLanguageIntrinsic;
-			this.modulePath = compilationUnitPath;
+			this.modulePath = compilationUnitLoc;
 			this.sourceRange = sourceRange;
 		}
 		

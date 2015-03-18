@@ -22,6 +22,8 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.DefaultBufferListener;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.SimpleLogger;
 
 import org.eclipse.core.filebuffers.FileBuffers;
@@ -80,7 +82,15 @@ public abstract class AbstractSemanticDaemonClient {
 			return;
 		}
 		
-		discardWorkingCopy(filePath);
+		Location fileLoc;
+		try {
+			fileLoc = Location.create2(filePath);
+		} catch (CommonException e) {
+			LangCore.logError("Invalid location.", e);
+			return;
+		}
+		
+		discardWorkingCopy(fileLoc.path);
 	}
 	
 	protected abstract void updateServerWorkingCopy(Path filePath, String source);

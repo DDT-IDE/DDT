@@ -85,7 +85,7 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		@Override
 		protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
 			info = DToolClient.getDefault().
-					new FindDDocViewOperation(inputPath, doc.get(), offset, -1).runSemanticServerOperation();
+					new FindDDocViewOperation(inputLoc.path, doc.get(), offset, -1).runSemanticServerOperation();
 		}
 		
 		@Override

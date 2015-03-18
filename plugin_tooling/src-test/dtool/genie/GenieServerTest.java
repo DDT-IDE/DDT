@@ -21,10 +21,11 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.Socket;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import melnorme.utilbox.misc.Location;
 
 import org.junit.After;
 import org.junit.Test;
@@ -285,9 +286,9 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	public class FindDefinitionOperation_GenieTest extends FindDefinitionOperation_Test {
 		
 		@Override
-		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
+		protected FindDefinitionResult doOperation(Location filePath, int offset) throws GenieCommandException {
 			try {
-				String response = new FindDefinitionRequest().setArguments(testsDubPath2(), filePath, offset).
+				String response = new FindDefinitionRequest().setArguments(testsDubPath2(), filePath.path, offset).
 						performAndGetResponse();
 				return new FindDefinitionResultParser().read(new JsonReaderExt(new StringReader(response)));
 			} catch (IOException e) {
@@ -300,9 +301,9 @@ public class GenieServerTest extends JsonWriterTestUtils {
 	public class FindDefinitionOperation_ReuseConnectionTest extends FindDefinitionOperation_GenieTest {
 		
 		@Override
-		protected FindDefinitionResult doOperation(Path filePath, int offset) throws GenieCommandException {
+		protected FindDefinitionResult doOperation(Location filePath, int offset) throws GenieCommandException {
 			try {
-				new FindDefinitionRequest().setArguments(testsDubPath2(), filePath, offset).
+				new FindDefinitionRequest().setArguments(testsDubPath2(), filePath.path, offset).
 					writeRequest(new JsonWriterExt(serverInput));
 				
 				return new FindDefinitionResultParser().read(new JsonReaderExt(serverOutput));

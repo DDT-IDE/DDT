@@ -16,9 +16,9 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
 
 /**
  * A valid directory path for a dub bundle.
@@ -31,9 +31,9 @@ public class BundlePath {
 	
 	public static BundlePath create(String pathStr) {
 		try {
-			Path path = MiscUtil.createPath(pathStr);
+			Path path = MiscUtil.createPath2(pathStr);
 			return BundlePath.create(path);
-		} catch (InvalidPathExceptionX e) {
+		} catch (CommonException e) {
 			return null;
 		}
 	}

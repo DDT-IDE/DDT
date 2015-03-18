@@ -12,9 +12,7 @@ package dtool.engine.operations;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
+import melnorme.utilbox.misc.Location;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
@@ -23,11 +21,11 @@ public abstract class CommonDToolOperation_Test extends CommonDToolTest {
 	
 	public static final String RESOLVER2 = "resolver2";
 	
-	public static final Path BUNDLE_FOO__SRC_FOLDER = getTestResource("bundleFoo/source");
+	public static final Location BUNDLE_FOO__SRC_FOLDER = getTestResource("bundleFoo/source");
 	
-	protected static Path getTestResource(String resourcePath) {
-		return DToolTestResources.getInstance().getResourcesDir().toPath().
-				resolve(RESOLVER2).resolve(resourcePath);
+	protected static Location getTestResource(String resourcePath) {
+		Location resolver2Loc = DToolTestResources.getInstance().getResourcesDir().resolve_valid(RESOLVER2);
+		return resolver2Loc.resolve_valid(resourcePath);
 	}
 	
 	protected static Tests_DToolServer dtoolEngine = new Tests_DToolServer();

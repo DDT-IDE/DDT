@@ -114,7 +114,7 @@ public class FindDefinitionRequest extends AbstractClientOperation {
 			return new FindDefinitionResultEntry(
 				getString(resultEntry, "extendedName"), 
 				getBoolean(resultEntry, "isIntrinsic"), 
-				getPathOrNull(resultEntry, "modulePath"), 
+				getLocationOrNull(resultEntry, "modulePath"), 
 				sr);
 		}
 		

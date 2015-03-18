@@ -10,6 +10,7 @@
  *******************************************************************************/
 package dtool.tests;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import melnorme.lang.tests.CommonToolingTest;
 import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
@@ -41,7 +43,11 @@ public class CommonDToolTest extends CommonToolingTest {
 	}
 	
 	public static Path testsDubPath2() {
-		return testsDubPath() == null ? null : PathUtil.createPathOrNull(testsDubPath());
+		try {
+			return testsDubPath() == null ? null : PathUtil.createPath2(testsDubPath());
+		} catch (CommonException e) {
+			throw assertFail();
+		}
 	}
 	
 	/* -----------------  ----------------- */

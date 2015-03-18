@@ -11,10 +11,8 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.nio.file.Path;
-
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
@@ -22,11 +20,11 @@ import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 
 public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 	
-	public static final Path BASIC_FOO_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve("basic_foo.d");
+	public static final Location BASIC_FOO_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve_valid("basic_foo.d");
 	public static final String BASIC_FOO_Contents = readStringFromFile(BASIC_FOO_FilePath);
 	
-	protected FindDefinitionResult doOperation(Path filePath, int offset) throws Exception {
-		return dtoolEngine.doFindDefinition(filePath, offset, testsDubPath());
+	protected FindDefinitionResult doOperation(Location filePath, int offset) throws Exception {
+		return dtoolEngine.doFindDefinition(filePath.path, offset, testsDubPath());
 	}
 	
 	@Test
@@ -64,12 +62,12 @@ public class FindDefinitionOperation_Test extends CommonDToolOperation_Test {
 		
 	}
 	
-	protected void testFindDefinition(Path modulePath, int offset, FindDefinitionResultEntry... expectedResults) 
+	protected void testFindDefinition(Location modulePath, int offset, FindDefinitionResultEntry... expectedResults) 
 			throws Exception {
 		testFindDefinition(modulePath, offset, null, expectedResults);
 	}
 	
-	protected void testFindDefinition(Path modulePath, int offset, String errorMsg, 
+	protected void testFindDefinition(Location modulePath, int offset, String errorMsg, 
 			FindDefinitionResultEntry... expectedResults) throws Exception {
 		FindDefinitionResult opResult = doOperation(modulePath, offset);
 		

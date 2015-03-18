@@ -13,7 +13,6 @@ package mmrnmhrm.ui.actions;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
@@ -23,6 +22,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.core.fntypes.Function;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine_client.DToolClient;
 
@@ -57,7 +57,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 	@Override
 	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
 		findDefResult = DToolClient.getDefault().
-				new FindDefinitionOperation(inputPath, doc.get(), offset, -1).runSemanticServerOperation();
+				new FindDefinitionOperation(inputLoc.path, doc.get(), offset, -1).runSemanticServerOperation();
 	}
 	
 	@Override
@@ -93,19 +93,19 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 			throw LangCore.createCoreException(msg, null);
 		}
 		
-		Path newEditorFilePath = fdResultEntry.modulePath;
-		if(newEditorFilePath == null) {
+		Location newEditorFileLoc = fdResultEntry.modulePath;
+		if(newEditorFileLoc == null) {
 			throw LangCore.createCoreException("no file path provided", null);
 		}
-		if(!newEditorFilePath.toFile().exists()) {
+		if(!newEditorFileLoc.toFile().exists()) {
 			throw LangCore.createCoreException("File does not exist.", null);
 		}
 		
 		IEditorInput newInput;
-		if(areEqual(newEditorFilePath, inputPath)) {
+		if(areEqual(newEditorFileLoc, inputLoc)) {
 			newInput = editor.getEditorInput();
 		} else {
-			newInput = EditorUtils.getBestEditorInputForPath(newEditorFilePath);
+			newInput = EditorUtils.getBestEditorInputForLoc(newEditorFileLoc);
 		}
 		
 		EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, 

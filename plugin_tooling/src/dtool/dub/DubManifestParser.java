@@ -11,7 +11,6 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.misc.MiscUtil.createPath;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -20,10 +19,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil.InvalidPathExceptionX;
+import melnorme.utilbox.misc.PathUtil;
 
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
@@ -120,9 +120,9 @@ public class DubManifestParser extends CommonDubParser {
 		ArrayList<Path> pathArray = new ArrayList<>();
 		for (String pathString : paths) {
 			try {
-				pathArray.add(createPath(pathString));
-			} catch (InvalidPathExceptionX e) {
-				putError("Invalid source/import path: " + pathString);
+				pathArray.add(PathUtil.createPath(pathString, "Invalid source/import path: "));
+			} catch (CommonException ce) {
+				putError(ce.getMessage());
 			}
 		}
 		
