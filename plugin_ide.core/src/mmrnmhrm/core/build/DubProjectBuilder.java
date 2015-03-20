@@ -12,6 +12,7 @@ package mmrnmhrm.core.build;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore;
@@ -137,29 +138,17 @@ public class DubProjectBuilder extends LangProjectBuilder {
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
-		ExternalProcessResult processResult;
-		try {
-			processResult = submitAndAwaitDubCommand(monitor, ArrayUtil.createFrom(commands, String.class));
-		} catch (CoreException ce) {
-			if(!monitor.isCanceled()) {
-				DeeCore.logStatus(ce.getStatus());
-			}
-			
-			forgetLastBuiltState();
-			throw ce; // Note: if monitor is cancelled, exception will be ignored.
-		} finally {
-			project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		}
-		
+		ExternalProcessResult processResult = submitAndAwaitDubCommand(monitor, commands);
 		processBuildOutput(processResult);
 		
 		return null;
 	}
 	
-	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
+	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, List<String> commandList) 
 			throws CoreException, OperationCancellation {
 		DubProcessManager dubProcessManager = DeeCore.getDubProcessManager();
 		
+		String[] commands = ArrayUtil.createFrom(commandList, String.class);
 		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(
 			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
 		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
