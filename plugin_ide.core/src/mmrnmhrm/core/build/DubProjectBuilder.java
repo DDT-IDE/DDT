@@ -24,6 +24,7 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.lang.utils.SearchPathForExecutable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -121,7 +122,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		
 		String validatedDubPath = getSDKToolPath();
 		
@@ -156,7 +157,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, String... commands) 
-			throws CoreException {
+			throws CoreException, OperationCancellation {
 		DubProcessManager dubProcessManager = DeeCore.getDubProcessManager();
 		
 		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(

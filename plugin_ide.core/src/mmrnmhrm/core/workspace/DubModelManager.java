@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
@@ -351,7 +352,12 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		IRunProcessTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
 			project, array(dubPath, "describe"), pm);
-		ExternalProcessResult processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
+		ExternalProcessResult processHelper;
+		try {
+			processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
+		} catch (OperationCancellation e) {
+			throw LangCore.createCoreException("Error, `describe` cancelled.", null);
+		}
 		
 		final DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(bundlePath, processHelper);
 		if(bundleDesc.hasErrors()) {

@@ -22,9 +22,9 @@ import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.ExceptionAdapter;
-import melnorme.utilbox.core.fntypes.ICallable;
 import melnorme.utilbox.misc.ListenerListHelper;
 import melnorme.utilbox.misc.ListenersHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -70,23 +70,25 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessResult submitDubCommandAndWait(IRunProcessTask task) throws CoreException {
-		try {
-			return submitAndGetTask(task);
-		} catch (InterruptedException e) {
-			throw LangCore.createCoreException("Unexpected interruption", e);
-		}
+	public ExternalProcessResult submitDubCommandAndWait(IRunProcessTask task) 
+			throws CoreException, OperationCancellation  {
+		return submitAndGetTask(task);
 	}
 	
-	public <T> T submitAndGetTask(ICallable<T, CoreException> task) throws InterruptedException, CoreException {
-		Future<T> future = dubProcessAgent.submit(task);
+	public ExternalProcessResult submitAndGetTask(IRunProcessTask task) 
+			throws CoreException, OperationCancellation {
+		Future<ExternalProcessResult> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();
 		} catch (InterruptedException e) {
 			future.cancel(true);
-			throw e;
+			LangCore.logError("Unexpected interruption", e);
+			throw new OperationCancellation();
 		} catch (ExecutionException e) {
 			Throwable cause = e.getCause();
+			if(cause instanceof OperationCancellation) {
+				throw (OperationCancellation) cause;
+			}
 			if(cause instanceof CoreException) {
 				throw (CoreException) cause;
 			}
