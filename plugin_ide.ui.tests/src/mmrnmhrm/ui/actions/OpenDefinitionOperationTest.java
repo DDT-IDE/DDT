@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -164,8 +163,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
 			throws CoreException {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
-		FindDefinitionResult opResult = new DeeOpenDefinitionHandler().createOperation(srcEditor, 
-			OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS).executeWithResult();
+		FindDefinitionResult opResult = new DeeOpenDefinitionOperation(srcEditor).executeWithResult();
 		
 		if(errorMessageContains != null) {
 			assertTrue(opResult.errorMessage.contains(errorMessageContains));

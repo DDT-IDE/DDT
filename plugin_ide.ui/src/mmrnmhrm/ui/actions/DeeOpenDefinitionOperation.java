@@ -43,6 +43,14 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 	
 	protected FindDefinitionResult findDefResult;
 	
+	public DeeOpenDefinitionOperation(ITextEditor editor) {
+		this(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+	}
+	
+	public DeeOpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode) {
+		this(editor, openNewEditorMode, EditorUtils.getSelectionSR(editor).getOffset());
+	}
+	
 	public DeeOpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode, int offset) {
 		super(OPEN_DEFINITION_OPNAME, editor);
 		this.openNewEditorMode = openNewEditorMode;

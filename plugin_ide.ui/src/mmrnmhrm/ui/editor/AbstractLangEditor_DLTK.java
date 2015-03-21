@@ -12,7 +12,6 @@ package mmrnmhrm.ui.editor;
 
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.editor.AbstractLangEditorActions;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
 import org.eclipse.core.runtime.CoreException;
@@ -74,10 +73,5 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditor_Actions {
 		}
 		super.dispose();
 	}
-	
-	/* ----------------- actions ----------------- */
-	
-	@Override
-	protected abstract AbstractLangEditorActions createActionsManager();
 	
 }

@@ -10,11 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.ui;
 
+import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import mmrnmhrm.ui.editor.DeeEditor;
+import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 
@@ -36,8 +40,21 @@ public class EditorSettings_Actual {
 		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, null, false);
 	}
 	
+	public static Class<DeeEditor> editorKlass() {
+		return DeeEditor.class;
+	}
+	
+	
 	/* ----------------- actions ----------------- */
 	
-	public static final String COMMAND_OpenDef_ID = "org.dsource.ddt.ide.ui.commands.openDefinition";
+	public static interface EditorCommandIds {
+		
+		public static final String OpenDef_ID = "org.dsource.ddt.ide.ui.commands.openDefinition";
+		
+	}
+	
+	public static LangEditorContextMenuContributor createCommandsContribHelper(IServiceLocator svcLocator) {
+		return new DeeEditorContextMenuContributor(svcLocator);
+	}
 	
 }

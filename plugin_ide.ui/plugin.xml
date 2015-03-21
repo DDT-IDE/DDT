@@ -368,16 +368,6 @@
             visible="false">
 
          <action
-               class="mmrnmhrm.ui.actions.OpenDefinitionAction"
-               definitionId="org.dsource.ddt.ide.ui.commands.openDefinition"
-               icon="icons/action16e/gotodef.gif"
-               id="org.dsource.ddt.ide.ui.actions.openDefinition"
-               label="%OpenDefinitionAction.label"
-               menubarPath="navigate/open.ext"
-               toolbarPath="org.eclipse.search.searchActionSet/Search"
-               tooltip="%OpenDefinitionAction.tooltip">
-         </action>
-         <action
             definitionId="org.dsource.ddt.ide.ui.commands.openDeeType"
             class="mmrnmhrm.ui.actions.DeeOpenTypeAction"
             icon="icons/action16e/opentype.gif"

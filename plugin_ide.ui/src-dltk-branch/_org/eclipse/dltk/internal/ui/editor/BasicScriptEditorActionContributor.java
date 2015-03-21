@@ -30,7 +30,7 @@ import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 /**
  * Common base class for action contributors for Script editors.
  */
-public class BasicScriptEditorActionContributor extends LangEditorActionContributor {
+public abstract class BasicScriptEditorActionContributor extends LangEditorActionContributor {
 
 	private RetargetTextEditorAction fGotoMatchingBracket;
 	private RetargetTextEditorAction fShowOutline;
@@ -57,7 +57,7 @@ public class BasicScriptEditorActionContributor extends LangEditorActionContribu
 //		fGotoPreviousMemberAction.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_PREVIOUS_MEMBER);
 
 	}
-
+	
 	@Override
 	public void contributeToMenu(IMenuManager menu) {
 		super.contributeToMenu(menu);
