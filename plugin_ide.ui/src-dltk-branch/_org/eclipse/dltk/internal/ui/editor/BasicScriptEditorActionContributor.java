@@ -106,9 +106,8 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 	}
 
 	@Override
-	public void dispose() {
+	protected void doDispose() {
 		setActiveEditor(null);
-		super.dispose();
 	}
 	
 }
