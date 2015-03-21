@@ -25,7 +25,6 @@ public class DeeEditorActionContributor extends	BasicScriptEditorActionContribut
 	protected AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
 		return new DeeOpenDefinitionOperation(editor, newEditorMode, range.getOffset());
-		// TODO: icons/action16e/gotodef.gif
 	}
 	
 }

@@ -1,5 +1,8 @@
 ## DDT release ChangeLog
 
+### DDT 0.11.1+
+ * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
+
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
  * Fixed #101: Assertion failure parsing invalid syntax: `auto x = n. .n;`
