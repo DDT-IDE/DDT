@@ -24,20 +24,54 @@
 		</perspectiveExtension>
 	</extension>
 	
-   <extension
-       point="org.eclipse.dltk.ui.language">
+	
+	<!-- ============ EDITOR ============= -->
+	
+	<extension point="org.eclipse.ui.editors">
+		<editor
+			class="mmrnmhrm.ui.editor.DeeEditor"
+			contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
+			default="true"
+			icon="icons/obj16/dee_file.gif"
+			id="org.dsource.ddt.ide.ui.editors.DeeEditor"
+			name="%LangEditor.name">
+			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />
+		</editor>
+	</extension>
+	
+	<extension point="org.eclipse.ui.contexts">
+		<context
+			name="%LangEditContext.name"
+			description="%LangEditContext.description"
+			parentId="org.eclipse.dltk.ui.scriptEditorScope"
+			id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
+		</context>
+	</extension>
+	
+	<extension point="org.eclipse.core.expressions.definitions">
+		<definition id="org.dsource.ddt.ide.ui.expressions.InContext">
+			<or>
+				<with variable="activeEditorId"> 
+					<equals value="org.dsource.ddt.ide.ui.editors.DeeEditor"/> 
+				</with>
+				<with variable="activeWorkbenchWindow.activePerspective"> 
+					<equals value="org.dsource.ddt.ide.ui.DeePerspective"/> 
+				</with>
+			</or>
+		</definition>
+	</extension>
+	
+	<!-- ============ EDITOR - Other ============= -->
+	
+	<!-- ============ Other (TODO cleanup) ============= -->
+	
+   <extension point="org.eclipse.dltk.ui.language">
       <language
           class="mmrnmhrm.ui.DeeUILanguageToolkit"
           nature="org.dsource.ddt.ide.core.nature"
           priority="0"/>
    </extension>
    
-	
-	<!-- ============ EDITOR ============= -->
-	
-	
-	<!-- ============ Other (TODO cleanup) ============= -->
-	
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
@@ -110,26 +144,6 @@
    
 	<!-- ============ EDITOR related ============= -->
 	
-	<extension point="org.eclipse.ui.editors">
-		<editor
-			class="mmrnmhrm.ui.editor.DeeEditor"
-			contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
-			default="true"
-			icon="icons/obj16/dee_file.gif"
-			id="org.dsource.ddt.ide.ui.editors.DeeEditor"
-			name="%LangEditor.name">
-			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />
-		</editor>
-	</extension>
-	
-	<extension point="org.eclipse.ui.contexts">
-		<context
-			name="%LangEditContext.name"
-			description="%LangEditContext.description"
-			parentId="org.eclipse.dltk.ui.scriptEditorScope"
-			id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
-		</context>
-	</extension>
 	
    <extension
        id="DeeCodeCompletionProposalComputer"
@@ -342,10 +356,7 @@
       </key>
    </extension>
    
-   <extension point="org.eclipse.ui.menus">
-   </extension>
-   
-   	
+	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
 			<menu
@@ -358,45 +369,28 @@
 			</menu>
 		</menuContribution>
 	</extension>
-   
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="%LangActionSet.description"
-            id="org.dsource.ddt.ide.ui.DeeActionSet"
-            label="%LangActionSet.label"
-            visible="false">
-
-         <action
-            definitionId="org.dsource.ddt.ide.ui.commands.openDeeType"
-            class="mmrnmhrm.ui.actions.DeeOpenTypeAction"
-            icon="icons/action16e/opentype.gif"
-            id="org.dsource.ddt.ide.ui.actions.openType"
-            label="%OpenTypeAction.label"
-            menubarPath="navigate/open.ext2"
-            toolbarPath="org.eclipse.search.searchActionSet/Search"
-            tooltip="%OpenTypeAction.tooltip">
-         </action>
-
-         <menu
-               label="%SearchMenu.label"
-               path="navigate"
-               id="org.eclipse.search.menu">
-            <groupMarker name="dialogGroup"/>
-         </menu>
-
-      </actionSet>
-   </extension>
-   <extension point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation
-            targetID="org.eclipse.ui.edit.text.actionSet.presentation">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
-      <actionSetPartAssociation
-            targetID="org.dsource.ddt.ide.ui.DeeActionSet">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor"/>
-      </actionSetPartAssociation>
-   </extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:navigate?after=open.ext2">
+			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+				icon="icons/action16e/opentype.gif"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		
+		<menuContribution locationURI="toolbar:org.eclipse.ui.edit.text.actionSet.presentation?after=Presentation">
+			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+				icon="icons/action16e/opentype.gif"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
 	
 	
 	<!-- ============ Launch ============= -->
@@ -418,12 +412,6 @@
 		</launchConfigurationTabGroup>
 	</extension>
 	
-   <extension point="org.eclipse.ui.actionSetPartAssociations">
-      <actionSetPartAssociation targetID="org.eclipse.debug.ui.launchActionSet">
-         <part id="org.dsource.ddt.ide.ui.editors.DeeEditor" />
-      </actionSetPartAssociation>
-   </extension>
-   
    <extension point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="mmrnmhrm.ui.launch.DeeLaunchShortcut"
