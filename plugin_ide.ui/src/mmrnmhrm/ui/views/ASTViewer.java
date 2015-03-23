@@ -312,7 +312,7 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 	
 	@Override
 	public void doubleClick(DoubleClickEvent event) {
-		new DeeOpenDefinitionOperation(fEditor, OpenNewEditorMode.NEVER).executeAndHandle();
+		new DeeOpenDefinitionOperation(fEditor, OpenNewEditorMode.NEVER).executeAndHandleResult();
 	}
 	
 	@Override

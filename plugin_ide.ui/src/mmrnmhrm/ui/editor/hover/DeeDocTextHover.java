@@ -12,8 +12,8 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 

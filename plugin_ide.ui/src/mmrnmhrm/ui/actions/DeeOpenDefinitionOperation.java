@@ -17,7 +17,7 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -44,7 +44,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 	protected FindDefinitionResult findDefResult;
 	
 	public DeeOpenDefinitionOperation(ITextEditor editor) {
-		this(editor, OpenNewEditorMode.TRY_REUSING_EXISTING_EDITORS);
+		this(editor, OpenNewEditorMode.TRY_REUSING_EXISTING);
 	}
 	
 	public DeeOpenDefinitionOperation(ITextEditor editor, OpenNewEditorMode openNewEditorMode) {

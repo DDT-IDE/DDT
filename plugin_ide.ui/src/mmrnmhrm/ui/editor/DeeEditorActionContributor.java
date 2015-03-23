@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import melnorme.lang.ide.ui.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import mmrnmhrm.ui.actions.DeeOpenDefinitionOperation;
@@ -25,6 +25,10 @@ public class DeeEditorActionContributor extends	BasicScriptEditorActionContribut
 	protected AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
 		return new DeeOpenDefinitionOperation(editor, newEditorMode, range.getOffset());
+	}
+	
+	@Override
+	protected void registerOtherEditorHandlers() {
 	}
 	
 }
