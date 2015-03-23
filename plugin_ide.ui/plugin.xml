@@ -63,30 +63,133 @@
 	
 	<!-- ============ EDITOR - Other ============= -->
 	
-	<!-- ============ Other (TODO cleanup) ============= -->
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+		<target 
+			id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
+			name="%hyperlinkDetector.target.name">
+			<context type="org.eclipse.ui.texteditor.ITextEditor" />
+		</target>
+	</extension>
+	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+		<hyperlinkDetector
+			class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
+			id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
+			name="%hyperlinkDetector.name"
+			targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
+		</hyperlinkDetector>
+	</extension>
 	
-   <extension point="org.eclipse.dltk.ui.language">
-      <language
-          class="mmrnmhrm.ui.DeeUILanguageToolkit"
-          nature="org.dsource.ddt.ide.core.nature"
-          priority="0"/>
+	<!-- ============ Actions/Commands ============= -->
+	
+	<extension point="org.eclipse.ui.commands">
+		<category
+			description="%LangCommandCategory.description"
+			id="org.dsource.ddt.ide.ui.commands.Category"
+			name="%LangCommandCategory.name">
+		</category>
+		
+		<command
+			categoryId="org.dsource.ddt.ide.ui.commands.Category"
+			description="%OpenDefinitionAction.tooltip"
+			id="org.dsource.ddt.ide.ui.commands.openDefinition"
+			name="%OpenDefinitionAction.name">
+		</command>
+		
+		<command
+			categoryId="org.dsource.ddt.ide.ui.commands.Category"
+			defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
+			description="%OpenTypeAction.tooltip"
+			id="org.dsource.ddt.ide.ui.commands.openDeeType"
+			name="%OpenTypeAction.name">
+		</command>
+
+      <command
+       categoryId="org.dsource.ddt.ide.ui.commands.Category"
+       description="%OpenTypeInHierarchyAction.tooltip"
+       id="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
+       name="%OpenTypeInHierarchyAction.name">
+      </command>
+
+	</extension>
+	
+	<extension point="org.eclipse.ui.bindings">
+		<key
+			commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
+			contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="F3">
+		</key>
+		
+		<key
+            commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+T">
+      </key>
+      <key
+            commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
+            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+H">
+      </key>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.propertyPages">
-      <page
-            class="mmrnmhrm.ui.preferences.pages.DubOptionsPropertyPage"
-            id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
-            name="%LangBuildOptionsPropertyPage.name">
-         <enabledWhen>
-            <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
-         </enabledWhen>
-      </page>
-   </extension>
 	
-	<extension point="org.eclipse.core.runtime.preferences">
-		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+			<menu
+				id="org.dsource.ddt.ide.ui.sourceMenu"
+				label="Source"
+				mnemonic="S">
+				<separator name="comment" visible="true"/>
+				<separator name="format" visible="true"/>
+				<separator name="additions" visible="true"/>
+			</menu>
+		</menuContribution>
 	</extension>
+	
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="menu:navigate?after=open.ext2">
+			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+				icon="icons/action16e/opentype.gif"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+		
+		<menuContribution locationURI="toolbar:org.eclipse.ui.edit.text.actionSet.presentation?after=Presentation">
+			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+				icon="icons/action16e/opentype.gif"
+				style="push">
+				<visibleWhen checkEnabled="false">
+					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
+				</visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	
+	<!-- ============ wizards ============= -->
+	
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id="org.dsource.ddt.ide.category"
+			name="%LangWizardsCategory.name"/>
+		<wizard
+			category="org.dsource.ddt.ide.category"
+			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
+			icon="icons/action16e/newprj_wiz.gif"
+			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
+			name="%NewProjectWizard.name"
+			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
+			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
+			project="true">
+		</wizard>
+	</extension>
+	
+	
+	<!-- ============ Preference pages ============= -->
 	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
@@ -100,11 +203,6 @@
 			class="mmrnmhrm.ui.preferences.DeeToolsConsolePrefPage"
 			name="%LangToolsConsolePreferencePage.name">
 		</page>
-      <page
-             category="org.dsource.ddt.ide.ui.PreferencePages.Root"
-             id=      "org.dsource.ddt.ide.ui.PreferencePages.Appearance"
-             class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
-             name="%LangAppearancePreferencePage.name"/>
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor"
@@ -123,6 +221,12 @@
 			class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"
 			name="%LangEditorSyntaxColoringPreferencePage.name">
 		</page>
+		
+      <page
+             category="org.dsource.ddt.ide.ui.PreferencePages.Root"
+             id=      "org.dsource.ddt.ide.ui.PreferencePages.Appearance"
+             class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
+             name="%LangAppearancePreferencePage.name"/>
       <page
            category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
            id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.ContentAssist"
@@ -140,10 +244,32 @@
             class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
             name="%LangEditorFoldingPreferencePage.name">
       </page>
+	</extension>
+	
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+			class="mmrnmhrm.ui.preferences.pages.DubOptionsPropertyPage"
+			id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
+			name="%LangBuildOptionsPropertyPage.name">
+			<enabledWhen> <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" /> </enabledWhen>
+		</page>
+	</extension>
+	
+	<!-- ============ Other (TODO cleanup) ============= -->
+	
+   <extension point="org.eclipse.dltk.ui.language">
+      <language
+          class="mmrnmhrm.ui.DeeUILanguageToolkit"
+          nature="org.dsource.ddt.ide.core.nature"
+          priority="0"/>
    </extension>
    
-	<!-- ============ EDITOR related ============= -->
 	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	</extension>
+	
+	<!-- ============ EDITOR related TODO ============= -->
 	
    <extension
        id="DeeCodeCompletionProposalComputer"
@@ -174,41 +300,6 @@
              translations="templates/default-templates.properties">
       </include>
    </extension>
-	
-	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-		<target 
-			id="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget"
-			name="%hyperlinkDetector.target.name">
-			<context type="org.eclipse.ui.texteditor.ITextEditor" />
-		</target>
-	</extension>
-	<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
-		<hyperlinkDetector
-			class="mmrnmhrm.ui.editor.text.DeeHyperlinkDetector"
-			id="org.dsource.ddt.ide.ui.editor.text.DeeHyperlinkDetector"
-			name="%hyperlinkDetector.name"
-			targetId="org.dsource.ddt.ide.ui.texteditor.deeCodeTarget">
-		</hyperlinkDetector>
-	</extension>
-	
-	<!-- ============ wizards ============= -->
-	
-	<extension point="org.eclipse.ui.newWizards">
-		<category
-			id="org.dsource.ddt.ide.category"
-			name="%LangWizardsCategory.name"/>
-		<wizard
-			category="org.dsource.ddt.ide.category"
-			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
-			icon="icons/action16e/newprj_wiz.gif"
-			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
-			name="%NewProjectWizard.name"
-			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
-			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
-			project="true">
-		</wizard>
-	</extension>
-	
 	
    <!-- ============ other extensions ============= -->
    
@@ -294,104 +385,6 @@
    </extension>
    
    
-	<!-- ============ commands/actions ============= -->
-	<extension point="org.eclipse.ui.commands">
-		<category
-			description="%LangCommandCategory.description"
-			id="org.dsource.ddt.ide.ui.commands.category1"
-			name="%LangCommandCategory.name">
-		</category>
-		
-		<command
-			categoryId="org.dsource.ddt.ide.ui.commands.category1"
-			description="%OpenDefinitionAction.tooltip"
-			id="org.dsource.ddt.ide.ui.commands.openDefinition"
-			name="%OpenDefinitionAction.name">
-		</command>
-		
-		<command
-			categoryId="org.dsource.ddt.ide.ui.commands.category1"
-			defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
-			description="%OpenTypeAction.tooltip"
-			id="org.dsource.ddt.ide.ui.commands.openDeeType"
-			name="%OpenTypeAction.name">
-		</command>
-
-      <command
-       categoryId="org.dsource.ddt.ide.ui.commands.category1"
-       description="%OpenTypeInHierarchyAction.tooltip"
-       id="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-       name="%OpenTypeInHierarchyAction.name">
-      </command>
-
-<!--
-      <command
-            categoryId="org.dsource.ddt.ide.ui.commands.category1"
-            defaultHandler="mmrnmhrm.ui.actions.SampleTest1Handler"
-            id="org.dsource.ddt.ide.ui.commands.sampleCommand"
-            name="Test Action">
-      </command>
--->
-   </extension>
-   
-	<extension point="org.eclipse.ui.bindings">
-		<key
-			commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
-			contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-			sequence="F3">
-		</key>
-		
-		<key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+T">
-      </key>
-      <key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+H">
-      </key>
-   </extension>
-   
-	
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
-			<menu
-				id="org.dsource.ddt.ide.ui.sourceMenu"
-				label="Source"
-				mnemonic="S">
-				<separator name="comment" visible="true"/>
-				<separator name="format" visible="true"/>
-				<separator name="additions" visible="true"/>
-			</menu>
-		</menuContribution>
-	</extension>
-	
-	<extension point="org.eclipse.ui.menus">
-		<menuContribution locationURI="menu:navigate?after=open.ext2">
-			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-				icon="icons/action16e/opentype.gif"
-				style="push">
-				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
-				</visibleWhen>
-			</command>
-		</menuContribution>
-		
-		<menuContribution locationURI="toolbar:org.eclipse.ui.edit.text.actionSet.presentation?after=Presentation">
-			<command commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-				icon="icons/action16e/opentype.gif"
-				style="push">
-				<visibleWhen checkEnabled="false">
-					<reference definitionId="org.dsource.ddt.ide.ui.expressions.InContext" />
-				</visibleWhen>
-			</command>
-		</menuContribution>
-	</extension>
-	
 	
 	<!-- ============ Launch ============= -->
 	
