@@ -44,7 +44,7 @@
 			name="%LangEditContext.name"
 			description="%LangEditContext.description"
 			parentId="org.eclipse.dltk.ui.scriptEditorScope"
-			id="org.dsource.ddt.ide.ui.contexts.DeeEditor">
+			id="org.dsource.ddt.ide.ui.Contexts.Editor">
 		</context>
 	</extension>
 	
@@ -127,7 +127,7 @@
 	<extension point="org.eclipse.ui.bindings">
 		<key
 			commandId="org.dsource.ddt.ide.ui.commands.openDefinition"
-			contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+			contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="F3">
 		</key>
@@ -152,13 +152,13 @@
 		
 		<key
             commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+T">
       </key>
       <key
             commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-            contextId="org.dsource.ddt.ide.ui.contexts.DeeEditor"
+            contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+H">
       </key>

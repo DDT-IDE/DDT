@@ -25,7 +25,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 public class EditorSettings_Actual {
 	
 	public static final String EDITOR_ID = "org.dsource.ddt.ide.ui.editors.DeeEditor";
-	public static final String EDITOR_CONTEXT_ID = "org.dsource.ddt.ide.ui.contexts.DeeEditor";
+	public static final String EDITOR_CONTEXT_ID = "org.dsource.ddt.ide.ui.Contexts.Editor";
 	
 	public static final String EDITOR_CODE_TARGET = "org.dsource.ddt.ide.ui.texteditor.deeCodeTarget";
 	
@@ -51,8 +51,8 @@ public class EditorSettings_Actual {
 		
 		public static final String OpenDef_ID = "org.dsource.ddt.ide.ui.commands.openDefinition";
 		
-		public static final String GoToMatchingBracket = "LANG_PROJECT_ID.ide.ui.commands.GoToMatchingBracket";
-		public static final String ToggleComment = "LANG_PROJECT_ID.ide.ui.commands.ToggleComment";
+		public static final String GoToMatchingBracket = "org.dsource.ddt.ide.ui.commands.GoToMatchingBracket";
+		public static final String ToggleComment = "org.dsource.ddt.ide.ui.commands.ToggleComment";
 		
 	}
 	
