@@ -24,10 +24,10 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 public class EditorSettings_Actual {
 	
-	public static final String EDITOR_ID = "org.dsource.ddt.ide.ui.editors.DeeEditor";
-	public static final String EDITOR_CONTEXT_ID = "org.dsource.ddt.ide.ui.Contexts.Editor";
+	public static final String EDITOR_ID = LangUIPlugin.PLUGIN_ID + ".editors.DeeEditor";
+	public static final String EDITOR_CONTEXT_ID = LangUIPlugin.PLUGIN_ID + ".Contexts.Editor";
 	
-	public static final String EDITOR_CODE_TARGET = "org.dsource.ddt.ide.ui.texteditor.deeCodeTarget";
+	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".texteditor.deeCodeTarget";
 	
 	public static DeeSourceViewerConfiguration createSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
@@ -49,10 +49,10 @@ public class EditorSettings_Actual {
 	
 	public static interface EditorCommandIds {
 		
-		public static final String OpenDef_ID = "org.dsource.ddt.ide.ui.commands.openDefinition";
+		public static final String OpenDef_ID = LangUIPlugin.PLUGIN_ID + ".commands.openDefinition";
 		
-		public static final String GoToMatchingBracket = "org.dsource.ddt.ide.ui.commands.GoToMatchingBracket";
-		public static final String ToggleComment = "org.dsource.ddt.ide.ui.commands.ToggleComment";
+		public static final String GoToMatchingBracket = LangUIPlugin.PLUGIN_ID + ".commands.GoToMatchingBracket";
+		public static final String ToggleComment = LangUIPlugin.PLUGIN_ID + ".commands.ToggleComment";
 		
 	}
 	
