@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeeTextTools;
@@ -1476,47 +1477,19 @@ public abstract class ScriptEditor extends AbstractLangEditor
 				performSave(false, progressMonitor);
 		}
 	}
-
-	private ICharacterPairMatcher fBracketMatcher;
-
-	/**
-	 * Returns the bracket matcher for this editor, delegates to
-	 * {@link #createBracketMatcher()} to actually create it.
-	 * 
-	 * @return the bracket matcher or <code>null</code>
-	 */
-	public final ICharacterPairMatcher getBracketMatcher() {
-		if (fBracketMatcher == null) {
-			fBracketMatcher = createBracketMatcher();
-		}
-		return fBracketMatcher;
-	}
-
-	/**
-	 * Override in your editor class to create bracket matcher for your
-	 * language.
-	 * 
-	 * @return
-	 */
-	protected ICharacterPairMatcher createBracketMatcher() {
-		return null;
-	}
-
+	
 	@Override
-	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
-		configureBracketMatcher(support);
-		super.configureSourceViewerDecorationSupport(support);
-	}
-
 	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
-		final ICharacterPairMatcher bracketMatcher = getBracketMatcher();
-		if (bracketMatcher != null) {
-			support.setCharacterPairMatcher(bracketMatcher);
-			support.setMatchingCharacterPainterPreferenceKeys(
-					MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
-		}
+		support.setCharacterPairMatcher(fBracketMatcher);
+		
+		// TODO: use our own preferences
+		support.setMatchingCharacterPainterPreferenceKeys(
+			MATCHING_BRACKETS, 
+			MATCHING_BRACKETS_COLOR, 
+			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
+			EditorPrefConstants.ENCLOSING_BRACKETS);
 	}
-
+	
 	public void updatedTitleImage(Image image) {
 		setTitleImage(image);
 	}

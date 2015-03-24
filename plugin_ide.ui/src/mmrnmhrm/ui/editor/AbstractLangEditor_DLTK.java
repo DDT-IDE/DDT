@@ -15,10 +15,7 @@ import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor_Actions;
@@ -31,25 +28,6 @@ public abstract class AbstractLangEditor_DLTK extends ScriptEditor_Actions {
 	
 	public AbstractLangEditor_DLTK() {
 		super();
-	}
-	
-	/* ----------------- text presentation ----------------- */
-	
-	/* FIXME: review this, convert to go Lang? */
-	
-	protected ICharacterPairMatcher bracketMatcher = new DefaultCharacterPairMatcher("{}[]()".toCharArray());
-	
-	@Override
-	protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
-		support.setCharacterPairMatcher(bracketMatcher);
-		support.setMatchingCharacterPainterPreferenceKeys(MATCHING_BRACKETS, MATCHING_BRACKETS_COLOR);
-		
-		super.configureSourceViewerDecorationSupport(support);
-	}
-	
-	@Override
-	protected ICharacterPairMatcher createBracketMatcher() {
-		return bracketMatcher;
 	}
 	
 	/* -----------------  ----------------- */

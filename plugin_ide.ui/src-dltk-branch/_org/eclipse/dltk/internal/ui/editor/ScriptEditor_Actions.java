@@ -30,7 +30,6 @@ import org.eclipse.ui.texteditor.TextOperationAction;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.actions.GoToNextPreviousMemberAction;
-import _org.eclipse.dltk.ui.actions.GotoMatchingBracketAction;
 
 public abstract class ScriptEditor_Actions extends ScriptEditor {
 	
@@ -50,10 +49,8 @@ public abstract class ScriptEditor_Actions extends ScriptEditor {
 
 		fFoldingGroup = new FoldingActionGroup(this, getSourceViewer_(), getScriptPreferenceStore());
 
-		Action action = new GotoMatchingBracketAction(this);
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
-		setAction(GotoMatchingBracketAction.GOTO_MATCHING_BRACKET, action);
-
+		Action action;
+		
 		Action outlineAction = new TextOperationAction(
 				DLTKEditorMessages.getBundleForConstructedKeys(),
 				"ShowOutline.", this, //$NON-NLS-1$

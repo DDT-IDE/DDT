@@ -9,12 +9,9 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.editor;
 
-import java.util.ResourceBundle;
-
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.internal.ui.editor.GotoMatchingBracketAction;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -32,7 +29,6 @@ import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
  */
 public abstract class BasicScriptEditorActionContributor extends LangEditorActionContributor {
 
-	private RetargetTextEditorAction fGotoMatchingBracket;
 	private RetargetTextEditorAction fShowOutline;
 
 //	private RetargetTextEditorAction fGotoNextMemberAction;
@@ -40,11 +36,6 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 
 	public BasicScriptEditorActionContributor() {
 		super();
-
-		ResourceBundle b = DLTKEditorMessages.getBundleForConstructedKeys();
-
-		fGotoMatchingBracket = new RetargetTextEditorAction(b, "GotoMatchingBracket.");
-		fGotoMatchingBracket.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_MATCHING_BRACKET);
 
 		fShowOutline = new RetargetTextEditorAction(
 				DLTKEditorMessages.getBundleForConstructedKeys(),
@@ -72,7 +63,6 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 			gotoMenu.add(new Separator("additions2"));
 //			gotoMenu.appendToGroup("additions2", fGotoPreviousMemberAction); 
 //			gotoMenu.appendToGroup("additions2", fGotoNextMemberAction);
-			gotoMenu.appendToGroup("additions2", fGotoMatchingBracket);
 		}
 	}
 
@@ -86,7 +76,6 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 			textEditor = (ITextEditor) part;
 
 		fShowOutline.setAction(getAction(textEditor, IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
-		fGotoMatchingBracket.setAction(getAction(textEditor, GotoMatchingBracketAction.GOTO_MATCHING_BRACKET));
 
 //		fGotoNextMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.NEXT_MEMBER));
 //		fGotoPreviousMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.PREVIOUS_MEMBER));

@@ -11,6 +11,7 @@
 package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
@@ -44,6 +45,9 @@ public class EditorSettings_Actual {
 		return DeeEditor.class;
 	}
 	
+	public static interface EditorPrefConstants extends EditorPrefConstants_Common {
+		
+	}
 	
 	/* ----------------- actions ----------------- */
 	
