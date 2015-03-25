@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Collections;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,7 +51,6 @@ import org.eclipse.swt.graphics.RGB;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
 /**
  * Semantic highlighting manager
@@ -181,7 +181,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 	/** The preference store */
 	private IPreferenceStore fPreferenceStore;
 	/** The source viewer configuration */
-	private ScriptSourceViewerConfiguration fConfiguration;
+	private AbstractLangSourceViewerConfiguration fConfiguration;
 	/** The presentation reconciler */
 	private ScriptPresentationReconciler fPresentationReconciler;
 

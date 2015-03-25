@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
@@ -30,15 +31,15 @@ public class EditorSettings_Actual {
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".texteditor.deeCodeTarget";
 	
-	public static DeeSourceViewerConfiguration createSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
-		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
-	}
-	
 	public static DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
 			IPreferenceStore preferenceStore, IColorManager colorManager) {
 		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, null, false);
+	}
+	
+	public static AbstractLangSourceViewerConfiguration createSourceViewerConfiguration(
+			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
+		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
 	}
 	
 	public static Class<DeeEditor> editorKlass() {

@@ -24,6 +24,9 @@
 		</perspectiveExtension>
 	</extension>
 	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
+	</extension>
 	
 	<!-- ============ EDITOR ============= -->
 	
@@ -294,10 +297,6 @@
           priority="0"/>
    </extension>
    
-	
-	<extension point="org.eclipse.core.runtime.preferences">
-		<initializer class="mmrnmhrm.ui.DeeUIPreferenceInitializer"/>
-	</extension>
 	
 	<!-- ============ EDITOR related TODO ============= -->
 	

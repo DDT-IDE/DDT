@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.core.expressions.Expression;
@@ -467,7 +467,8 @@ public class EditTemplateDialog extends StatusDialog {
 		IPreferenceStore store = toolkit.getCombinedPreferenceStore();
 		SourceViewer viewer = new ScriptSourceViewer(parent, null, null, false,
 				SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, store);
-		DeeSourceViewerConfiguration configuration = EditorSettings_Actual.createSourceViewerConfiguration(store, null);
+		AbstractLangSourceViewerConfiguration configuration = 
+				EditorSettings_Actual.createSourceViewerConfiguration(store, null);
 		viewer.configure(configuration);
 		viewer.setEditable(true);
 		viewer.setDocument(document, prefix.length(), document.getLength()
