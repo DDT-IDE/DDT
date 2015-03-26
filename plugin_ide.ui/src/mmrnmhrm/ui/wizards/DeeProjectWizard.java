@@ -21,7 +21,7 @@ import melnorme.lang.ide.ui.dialogs.WizardMessages;
 import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.build.DubProjectBuilder.DubLocationValidator;
+import mmrnmhrm.core.build.DubLocationValidator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

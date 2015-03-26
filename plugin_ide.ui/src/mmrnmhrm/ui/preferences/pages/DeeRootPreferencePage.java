@@ -16,7 +16,7 @@ import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.build.DubProjectBuilder.DubLocationValidator;
+import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
  * The root preference page for D
