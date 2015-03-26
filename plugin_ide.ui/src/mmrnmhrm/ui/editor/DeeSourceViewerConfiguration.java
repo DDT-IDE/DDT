@@ -10,9 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.array;
-
 import java.util.Map;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
@@ -22,7 +19,6 @@ import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
-import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
@@ -33,7 +29,6 @@ import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -97,20 +92,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	protected String getToggleCommentPrefix() {
 		return "//";
-	}
-	
-	@Override
-	public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
-		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-		assertTrue(DeePartitions.PARTITIONING_ID.equals(partitioning));
-		
-		if (DeePartitions.DEE_CHARACTER.equals(contentType)) {
-			return new IAutoEditStrategy[] { };
-		} else if (DeePartitions.$Methods.isString(contentType)) {
-			return new IAutoEditStrategy[] { };
-		} else {
-			return array(new DeeAutoEditStrategy(contentType, sourceViewer));
-		}
 	}
 	
 	@Override
