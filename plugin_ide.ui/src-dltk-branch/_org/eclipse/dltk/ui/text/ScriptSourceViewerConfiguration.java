@@ -123,22 +123,6 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 		return new SpellCheckDelegate();
 	}
 	
-	/* FIXME: DLTK: review ToggleCommentAction */
-	@Override
-	public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
-		return new String[] { getCommentPrefix(), "" };
-	}
-
-	/**
-	 * Returns the comment prefix.
-	 * 
-	 * <p>
-	 * Default implementation returns a <code>#</code>, sub-classes may override
-	 * if their language uses a different prefix.
-	 * </p>
-	 */
-	protected abstract String getCommentPrefix();
-
 	/**
 	 * Returns the outline presenter control creator. The creator is a factory
 	 * creating outline presenter controls for the given source viewer. This

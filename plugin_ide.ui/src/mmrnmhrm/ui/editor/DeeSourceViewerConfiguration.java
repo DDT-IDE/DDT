@@ -95,7 +95,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 	
 	@Override
-	protected String getCommentPrefix() {
+	protected String getToggleCommentPrefix() {
 		return "//";
 	}
 	
