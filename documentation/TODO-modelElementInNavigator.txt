@@ -1,5 +1,0 @@
- TODO:
-   * DLTK Model elements in Project Explorer
-     * flatten root script folder
-     * respond to DLTK model updates
-     * review Script label provider (text+image) 
