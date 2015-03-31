@@ -12,11 +12,11 @@ package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -25,11 +25,13 @@ import org.eclipse.ui.editors.text.EditorsUI;
 
 import dtool.ddoc.IDeeDocColorConstants;
 
-public class DeeUIPreferenceInitializer extends AbstractPreferenceInitializer {
+public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 	
 	// Extension point entry point
 	@Override
 	public void initializeDefaultPreferences() {
+		super.initializeDefaultPreferences();
+		
 		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
 		
 		EditorsUI.useAnnotationsPreferencePage(store);
