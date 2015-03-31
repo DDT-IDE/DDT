@@ -10,11 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import java.util.Map;
-
-import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
@@ -23,7 +19,6 @@ import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.dltk.internal.ui.editor.ModelElementHyperlinkDetector;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
@@ -35,7 +30,6 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -43,7 +37,6 @@ import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
@@ -146,30 +139,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 	
 	// ================
-	
-	@Override 
-	protected Map<String, ITextEditor> getHyperlinkDetectorTargets(ISourceViewer sourceViewer) {
-		Map<String, ITextEditor> targets = CoreUtil.downCast(super.getHyperlinkDetectorTargets(sourceViewer));
-		targets.put(EditorSettings_Actual.EDITOR_CODE_TARGET, getEditor()); 
-		return targets;
-	}
-	
-	@Override
-	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
-		IHyperlinkDetector[] hyperlinkDetectors = super.getHyperlinkDetectors(sourceViewer);
-		if(hyperlinkDetectors != null) {
-			for (int i = 0; i < hyperlinkDetectors.length; i++) {
-				if(hyperlinkDetectors[i] instanceof ModelElementHyperlinkDetector) {
-					// Remove ModelElementHyperlinkDetector cause it sucks
-					// Creating a new array is not necessary I think
-					hyperlinkDetectors[i] = null; 
-				}
-			}
-		}
-		return hyperlinkDetectors;
-	}
-	
-	/* -----------------  ----------------- */
 	
 	@Override
 	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
