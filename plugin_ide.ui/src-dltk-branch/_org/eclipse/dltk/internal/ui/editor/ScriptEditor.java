@@ -1217,11 +1217,9 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			}
 
 			final ScriptSourceViewerConfiguration ssvc = (ScriptSourceViewerConfiguration) getSourceViewerConfiguration();
-			final IContentAssistant c = ((AdaptedSourceViewer) sourceViewer)
-					.getContentAssistant();
+			final IContentAssistant c = getSourceViewer_().getContentAssistant();
 			if (c instanceof ContentAssistant) {
-				ssvc.changeContentAssistantConfiguration((ContentAssistant) c,
-						event);
+				ssvc.changeContentAssistantConfiguration((ContentAssistant) c, event);
 			}
 			ssvc.handlePropertyChangeEvent(event);
 		} finally {

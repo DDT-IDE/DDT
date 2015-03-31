@@ -13,6 +13,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -26,7 +27,6 @@ import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.text.ScriptOutlineInformationControl;
-import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.spelling.SpellCheckDelegate;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
@@ -58,6 +58,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
+import _org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 
 /* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
 public abstract class ScriptSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
@@ -289,7 +290,9 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 		return null;
 	}
 	
-	protected abstract ContentAssistPreference getContentAssistPreference();
+	protected ContentAssistPreference getContentAssistPreference() {
+		return DeeContentAssistPreference.getDefault();
+	}
 	
 	protected abstract void alterContentAssistant(ContentAssistant assistant);
 

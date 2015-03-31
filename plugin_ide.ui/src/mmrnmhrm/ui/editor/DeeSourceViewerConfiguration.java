@@ -13,14 +13,12 @@ package mmrnmhrm.ui.editor;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
-import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -131,11 +129,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		IContentAssistProcessor deeCodeCompletionProcessor = new DeeCodeCompletionProcessor(getEditor(), 
 			assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(deeCodeCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
-	}
-	
-	@Override
-	protected ContentAssistPreference getContentAssistPreference() {
-		return DeeContentAssistPreference.getDefault();
 	}
 	
 	// ================
