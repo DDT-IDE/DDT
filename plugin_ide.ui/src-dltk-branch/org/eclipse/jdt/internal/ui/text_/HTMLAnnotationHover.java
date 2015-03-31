@@ -14,10 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
-
 import org.eclipse.jface.text.source.DefaultAnnotationHover;
-
-import org.eclipse.jdt.internal.ui.JavaUIMessages;
 
 /**
  * Determines all markers for the given line and collects, concatenates, and formats
@@ -67,4 +64,11 @@ public class HTMLAnnotationHover extends DefaultAnnotationHover {
 		HTMLPrinter.addPageEpilog(buffer);
 		return buffer.toString();
 	}
+}
+
+class JavaUIMessages {
+
+	public static final String JavaAnnotationHover_multipleMarkersAtThisLine = 
+			"Multiple markers at this line";
+	
 }

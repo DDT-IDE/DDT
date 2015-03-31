@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.jdt.internal.ui;
 
-public class JavaUIMessages {
+public interface JavaUIMessages {
 
-	public static final String JavaAnnotationHover_multipleMarkersAtThisLine = 
-			"Multiple markers at this line";
+	String OptionalMessageDialog_dontShowAgain = 
+			"Do not show this &message again";
+	String JavaEditor_codeassist_noCompletions = 
+			"No completions available.";
 	
 }
