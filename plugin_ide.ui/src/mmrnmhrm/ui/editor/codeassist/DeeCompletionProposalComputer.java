@@ -10,8 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -28,15 +26,17 @@ import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.CompletionProposal;
+import org.eclipse.dltk.ui.text.completion.ContentAssistInvocationContext;
 import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposalComputer;
-import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
-import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalComputer;
 import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.ui.IEditorPart;
+
+import _org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalComputer;
 
 public class DeeCompletionProposalComputer extends ScriptCompletionProposalComputer
 	implements IScriptCompletionProposalComputer {
@@ -44,16 +44,6 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 	protected DToolClient dtoolclient = DToolClient.getDefault();
 	
 	public DeeCompletionProposalComputer() {
-	}
-	
-	@Override
-	protected ScriptCompletionProposalCollector createCollector(ScriptContentAssistInvocationContext context) {
-		throw assertFail();
-	}
-	
-	@Override
-	protected TemplateCompletionProcessor createTemplateProposalComputer(ScriptContentAssistInvocationContext context) {
-		return new DeeTemplateCompletionProcessor(context);
 	}
 	
 	protected String errorMessage;
@@ -113,6 +103,18 @@ public class DeeCompletionProposalComputer extends ScriptCompletionProposalCompu
 		}
 		
 		return completionProposals;
+	}
+	
+	@Override
+	protected TemplateCompletionProcessor createTemplateProposalComputer(ScriptContentAssistInvocationContext context) {
+		return new DeeTemplateCompletionProcessor(context);
+	}
+	
+	
+	@Override
+	public List<IContextInformation> computeContextInformation(ContentAssistInvocationContext context,
+			IProgressMonitor monitor) {
+		return super.computeContextInformation(context, monitor);
 	}
 	
 }

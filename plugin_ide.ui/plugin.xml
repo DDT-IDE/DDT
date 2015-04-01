@@ -311,12 +311,6 @@
          <partition type="__dftl_partition_content_type"/>
       </scriptCompletionProposalComputer>
    </extension>
-   <extension point="org.eclipse.dltk.ui.completion">
-      <proposalLabelProvider
-          class="mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalLabelProvider"
-          nature="org.dsource.ddt.ide.core.nature">
-      </proposalLabelProvider>
-   </extension>
 
    <extension point="org.eclipse.ui.editors.templates">
       <contextType
