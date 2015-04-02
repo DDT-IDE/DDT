@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import java.nio.file.Path;
 import java.util.List;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -18,6 +17,7 @@ import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
@@ -47,11 +47,14 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
-			IDocument document) throws CoreException {
+	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
+			int offset) throws CoreException {
+		
+		IDocument document = context.getViewer().getDocument();
+		Location editoInputFile = context.getEditorInputLocation();
 		
 		ArrayList2<RefSearchCompletionProposal> proposals = new DeeCompletionOperation(DToolClient.getDefault()).
-				execute(filePath, offset, document.get(), 5000);
+				execute(editoInputFile.path, offset, document.get(), 5000);
 		
 		ArrayList2<ICompletionProposal> result = new ArrayList2<ICompletionProposal>();
 		
