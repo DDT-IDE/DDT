@@ -10,9 +10,16 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
+import java.util.List;
+
 import melnorme.lang.ide.ui.editor.BestMatchHover;
+import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
+import mmrnmhrm.ui.editor.codeassist.DeeSnippetCompletionProcessor;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
@@ -22,17 +29,16 @@ import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
@@ -125,9 +131,29 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	// ================ Content Assist
 	
 	@Override
-	protected void alterContentAssistant(ContentAssistant assistant) {
-		IContentAssistProcessor deeCodeCompletionProcessor = new DeeContentAssistProcessor(getEditor(), assistant);
-		assistant.setContentAssistProcessor(deeCodeCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+	protected ContentAssistCategoriesBuilder getContentAssistCategoriesProvider() {
+		return new DeeContentAssistCategoriesBuilder();
+	}
+	
+	public static class DeeContentAssistCategoriesBuilder extends ContentAssistCategoriesBuilder {
+		@Override
+		protected DeeCompletionProposalComputer createDefaultSymbolsProposalComputer() {
+			return new DeeCompletionProposalComputer();
+		}
+		
+		@Override
+		protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
+			return new DeeCompletionProposalComputer() {
+				@Override
+				public List<ICompletionProposal> computeCompletionProposals(LangContentAssistInvocationContext context) {
+					TemplateCompletionProcessor tplProcessor = new DeeSnippetCompletionProcessor(context);
+					ICompletionProposal[] proposals = tplProcessor.computeCompletionProposals(
+						context.getViewer(), context.getInvocationOffset());
+					
+					return CoreUtil.listFrom(proposals);
+				}
+			};
+		}
 	}
 	
 	// ================

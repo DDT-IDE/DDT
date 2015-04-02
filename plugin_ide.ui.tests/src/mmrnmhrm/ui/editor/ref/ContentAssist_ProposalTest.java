@@ -1,17 +1,18 @@
 package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.List;
+
+import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.Test;
-
-import _org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 
 public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 	
@@ -27,15 +28,12 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 			
 			@Override
 			protected void testCompletionEngine(int offset, int rplLen) throws ModelException {
-				ContentAssistant ca = getContentAssistant(editor);
 				
-				DeeContentAssistProcessor caProcessor = new DeeContentAssistProcessor(editor, ca);
-				ICompletionProposal[] proposals = caProcessor.computeCompletionProposals(editor.getSourceViewer_(), offset);
+				DeeCompletionProposalComputer caComputer = new DeeCompletionProposalComputer();
+				List<ICompletionProposal> proposals = caComputer.computeCompletionProposals(
+					new LangContentAssistInvocationContext(editor.getSourceViewer_(), offset, editor));
 				
 				for (ICompletionProposal completionProposal : proposals) {
-					if(completionProposal instanceof ScriptTemplateProposal) {
-						continue;
-					}
 					
 					assertTrue(completionProposal instanceof DeeCompletionProposal);
 					DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
