@@ -43,7 +43,6 @@ import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
-import org.eclipse.jdt.internal.ui.text_.DocumentCharacterIterator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -60,6 +59,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 
 /**
  * This implementation of {@link IFoldingStructureProvider} delegates the actual

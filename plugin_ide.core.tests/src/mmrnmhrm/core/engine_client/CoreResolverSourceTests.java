@@ -39,11 +39,13 @@ import dtool.sourcegen.AnnotatedSource;
 
 public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	
-	protected static final Location COMPILER_PATH = CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath();
-	
 	static {
+		// This init needs to run before static fields
 		MiscUtil.loadClass(CommonDeeWorkspaceTestNew.class);
 	}
+	
+	protected static final Location COMPILER_PATH = CommonSemanticsTest.DEFAULT_TestsCompilerInstall.getCompilerPath();
+	
 	
 	@BeforeClass
 	public static void setUpExceptionListenerStatic() throws Exception {

@@ -14,16 +14,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
-import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
-import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
-import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -58,15 +55,14 @@ public abstract class ScriptTemplateCompletionProcessor extends
 
 	private static final Comparator<TemplateProposal> comparator = new ProposalComparator();
 
-	private final ScriptContentAssistInvocationContext context;
+	private final LangContentAssistInvocationContext context;
 
-	public ScriptTemplateCompletionProcessor(
-			ScriptContentAssistInvocationContext context) {
+	public ScriptTemplateCompletionProcessor(LangContentAssistInvocationContext context) {
 		Assert.isNotNull(context);
 		this.context = context;
 	}
 
-	protected ScriptContentAssistInvocationContext getContext() {
+	protected LangContentAssistInvocationContext getContext() {
 		return this.context;
 	}
 
@@ -193,14 +189,8 @@ public abstract class ScriptTemplateCompletionProcessor extends
 		TemplateContextType contextType = getContextType(viewer, region);
 		if (contextType instanceof ScriptTemplateContextType) {
 			IDocument document = viewer.getDocument();
-
-			ISourceModule sourceModule = getContext().getSourceModule();
-			if (sourceModule == null) {
-				return null;
-			}
 			return ((ScriptTemplateContextType) contextType).createContext(
-					document, region.getOffset(), region.getLength(),
-					sourceModule);
+					document, region.getOffset(), region.getLength());
 		}
 		return null;
 	}
@@ -214,7 +204,7 @@ public abstract class ScriptTemplateCompletionProcessor extends
 
 	protected IInformationControlCreator getInformationControlCreator() {
 		int orientation = Window.getDefaultOrientation();
-		IEditorPart editor = getContext().getEditor();
+		IEditorPart editor = getContext().getEditor_maybeNull();
 		if (editor == null)
 			editor = DLTKUIPlugin.getActivePage().getActiveEditor();
 		if (editor instanceof IWorkbenchPartOrientation)

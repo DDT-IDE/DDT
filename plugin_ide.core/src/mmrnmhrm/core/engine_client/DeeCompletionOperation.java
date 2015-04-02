@@ -11,6 +11,9 @@
 package mmrnmhrm.core.engine_client;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.nio.file.Path;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
@@ -30,7 +33,21 @@ public class DeeCompletionOperation {
 	// Tests may modify this variable, but only tests
 	public static volatile Location compilerPathOverride = null;
 	
-	public ArrayList2<CompletionProposal> completionResultAdapt(CompletionSearchResult completionResult,
+	protected final DToolClient dtoolClient;
+	
+	public DeeCompletionOperation(DToolClient dtoolClient) {
+		this.dtoolClient = dtoolClient;
+	}
+	
+	public ArrayList2<RefSearchCompletionProposal> execute(Path filePath, int offset, String source, int timeoutMillis) 
+			throws CoreException {
+		CompletionSearchResult completionResult = dtoolClient.performCompletionOperation(
+			filePath, offset, source, timeoutMillis);
+		
+		return completionResultAdapt(completionResult, offset);
+	}
+	
+	public ArrayList2<RefSearchCompletionProposal> completionResultAdapt(CompletionSearchResult completionResult,
 			final int position)
 			throws CoreException {
 		if(completionResult.isFailure()) {
@@ -38,9 +55,9 @@ public class DeeCompletionOperation {
 				completionResult.resultCode.getMessage(), null);
 		}
 		
-		ArrayList2<CompletionProposal> proposals = new ArrayList2<>();
+		ArrayList2<RefSearchCompletionProposal> proposals = new ArrayList2<>();
 		for (INamedElement result : completionResult.getResults()) {
-			CompletionProposal proposal = createProposal(result, position, completionResult);
+			RefSearchCompletionProposal proposal = createProposal(result, position, completionResult);
 			proposals.add(proposal);
 		}
 		return proposals;
@@ -51,7 +68,7 @@ public class DeeCompletionOperation {
 			new DefaultProblem(errorMessage, null, null, ProblemSeverity.ERROR, position, position, 0));
 	}
 	
-	protected static CompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
+	protected static RefSearchCompletionProposal createProposal(INamedElement namedElem, int ccOffset, 
 			CompletionSearchResult completionResult) {
 		PrefixSearchOptions searchOptions = completionResult.searchOptions;
 		
@@ -59,7 +76,7 @@ public class DeeCompletionOperation {
 		
 		String rplStr = rplName.substring(searchOptions.namePrefixLen);
 		
-		CompletionProposal proposal = new RefSearchCompletionProposal(ccOffset);
+		RefSearchCompletionProposal proposal = new RefSearchCompletionProposal(ccOffset);
 		proposal.setName(namedElem.getExtendedName());
 		proposal.setCompletion(rplStr);
 		proposal.setReplaceRange(ccOffset, ccOffset + completionResult.getReplaceLength());
@@ -68,6 +85,7 @@ public class DeeCompletionOperation {
 		return proposal;
 	}
 	
+	/* FIXME: review this code, remove DLTK deps */
 	public static class RefSearchCompletionProposal extends CompletionProposal {
 		
 		protected RefSearchCompletionProposal(int completionLocation) {

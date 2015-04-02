@@ -11,9 +11,7 @@ package _org.eclipse.dltk.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistPreference;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -30,7 +28,6 @@ import org.eclipse.dltk.ui.text.ScriptOutlineInformationControl;
 import org.eclipse.dltk.ui.text.spelling.SpellCheckDelegate;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
-import org.eclipse.jdt.internal.ui.text_.HTMLAnnotationHover;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -39,8 +36,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.formatter.IContentFormatter;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
@@ -50,7 +45,6 @@ import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -58,7 +52,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
-import _org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
+import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
 /* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
 public abstract class ScriptSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
@@ -268,36 +262,6 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 				return new DefaultInformationControl(parent, shellStyle, style, new HTMLTextPresenter(false));
 			}
 		};
-	}
-
-	@Override
-	public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		if (getEditor() != null) {
-			ContentAssistant assistant = new ContentAssistant();
-			
-			assistant.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-			assistant.setRestoreCompletionProposalSize(LangUIPlugin.getDialogSettings("completion_proposal_size"));
-			assistant.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-			assistant.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-			
-			alterContentAssistant(assistant);
-			
-			getContentAssistPreference().configure(assistant, fPreferenceStore);
-			
-			return assistant;
-		}
-		
-		return null;
-	}
-	
-	protected ContentAssistPreference getContentAssistPreference() {
-		return DeeContentAssistPreference.getDefault();
-	}
-	
-	protected abstract void alterContentAssistant(ContentAssistant assistant);
-
-	public void changeContentAssistantConfiguration(ContentAssistant ca, PropertyChangeEvent event) {
-		getContentAssistPreference().changeConfiguration(ca, fPreferenceStore, event);
 	}
 
 	@Override

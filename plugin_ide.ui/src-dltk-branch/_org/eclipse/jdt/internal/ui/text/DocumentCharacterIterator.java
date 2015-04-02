@@ -8,14 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.internal.ui.text_;
+package _org.eclipse.jdt.internal.ui.text;
 
 import java.text.CharacterIterator;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.ui.text_.DocumentCharacterIterator;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+
+import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 
 
 /**

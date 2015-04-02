@@ -76,9 +76,6 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompleti
 		super.unconfigure();
 	}
 	
-	public IContentAssistant getContentAssistant() {
-		return fContentAssistant;
-	}
 	
 	protected void hadnleElementContentReplaced() {
 		IAnnotationModel annotationModel = getAnnotationModel();

@@ -7,9 +7,9 @@ import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.text.DeeTextTools;
 
-import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.jface.text.IDocument;
 
+import _org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import _org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {

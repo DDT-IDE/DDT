@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.internal.ui.text_;
+package _org.eclipse.jdt.internal.ui.text;
 
 import java.util.Iterator;
 import java.util.List;

@@ -12,7 +12,7 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.ui.editor.codeassist.DeeCodeCompletionProcessor;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProcessor;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
@@ -126,8 +126,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	@Override
 	protected void alterContentAssistant(ContentAssistant assistant) {
-		IContentAssistProcessor deeCodeCompletionProcessor = new DeeCodeCompletionProcessor(getEditor(), 
-			assistant, IDocument.DEFAULT_CONTENT_TYPE);
+		IContentAssistProcessor deeCodeCompletionProcessor = new DeeContentAssistProcessor(getEditor(), assistant);
 		assistant.setContentAssistProcessor(deeCodeCompletionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
 	}
 	

@@ -73,15 +73,12 @@ import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextSelection;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.AnnotationRulerColumn;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.IVerticalRulerColumn;
@@ -244,8 +241,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	}
 	
 	@Override
-	protected final AdaptedSourceViewer createSourceViewer(Composite parent, IVerticalRuler verticalRuler, 
-			int styles) {
+	protected AdaptedSourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
 
 		IPreferenceStore store = getPreferenceStore();
 		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
@@ -1217,10 +1213,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			}
 
 			final ScriptSourceViewerConfiguration ssvc = (ScriptSourceViewerConfiguration) getSourceViewerConfiguration();
-			final IContentAssistant c = getSourceViewer_().getContentAssistant();
-			if (c instanceof ContentAssistant) {
-				ssvc.changeContentAssistantConfiguration((ContentAssistant) c, event);
-			}
+			
 			ssvc.handlePropertyChangeEvent(event);
 		} finally {
 			super.handlePreferenceStoreChanged(event);

@@ -2,6 +2,7 @@ package mmrnmhrm.ui.editor.ref;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,16 +92,18 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 			DeeCompletionOperation.compilerPathOverride = previousOverride;
 		}
 		
-		ICompletionProposal[] proposals;
 		Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");
-		proposals = (ICompletionProposal[]) ReflectionUtils.readField(completionProposalPopup, "fComputedProposals");
+		ICompletionProposal[] proposals = (ICompletionProposal[]) 
+				ReflectionUtils.readField(completionProposalPopup, "fComputedProposals");
+		ICompletionProposal[] filtered = (ICompletionProposal[]) 
+				ReflectionUtils.readField(completionProposalPopup, "fFilteredProposals");
 		
-//		DeeCodeCompletionProcessor caProcessor = (DeeCodeCompletionProcessor) 
-//			ca.getContentAssistProcessor(DeePartitions.DEE_CODE);
-//		proposals = caProcessor.computeCompletionProposals(editor.getViewer(), offset);
-		
-		assertEqualArrays(proposals, (ICompletionProposal[]) 
-			ReflectionUtils.readField(completionProposalPopup, "fFilteredProposals"));
+		if(nullToEmpty(proposals).length == 0) {
+			assertTrue(filtered.length == 0 || 
+					(filtered.length == 1 && filtered[0].getClass().getSimpleName().endsWith("EmptyProposal")));
+		} else {
+			assertEqualArrays(proposals, filtered);
+		}
 			
 		prefixLen = ContentAssistUI_CommonTest.DONT_CHECK; // Don't check TODO
 		checkProposals(offset, prefixLen, repLen, proposals, expectedResults);

@@ -11,110 +11,129 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.misc.Location;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
+import mmrnmhrm.core.engine_client.DeeCompletionOperation.RefSearchCompletionProposal;
+import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
+import mmrnmhrm.core.model_elements.DefElementDescriptor;
+import mmrnmhrm.ui.DeeImages;
+import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
+import mmrnmhrm.ui.views.DeeElementImageProvider;
+import mmrnmhrm.ui.views.DeeElementLabelProvider;
+import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.core.CompletionProposal;
-import org.eclipse.dltk.ui.text.completion.ContentAssistInvocationContext;
-import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposalComputer;
-import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
+import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ModelException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.swt.graphics.Image;
 
-import _org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalComputer;
-
-public class DeeCompletionProposalComputer extends ScriptCompletionProposalComputer
-	implements IScriptCompletionProposalComputer {
+public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
 	protected DToolClient dtoolclient = DToolClient.getDefault();
 	
 	public DeeCompletionProposalComputer() {
 	}
 	
-	protected String errorMessage;
-	protected IEditorPart editor;
-	
 	@Override
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-	
-	@Override
-	protected List<ICompletionProposal> computeScriptCompletionProposals(int offset,
-			ScriptContentAssistInvocationContext context, IProgressMonitor monitor) {
-		errorMessage = null;
-		editor = context.getEditor();
-		return computeCompletionProposals(context.getViewer(), offset);
-	}
-
-	public List<ICompletionProposal> computeCompletionProposals(ITextViewer viewer, int offset) {
-		errorMessage = null;
-		try {
-			if(editor == null) {
-				throw LangCore.createCoreException("Error, no editor available for operation.", null);
-			}
-			
-			Location fileLocation = EditorUtils.getLocationFromEditorInput(editor.getEditorInput());
-			if(fileLocation == null) {
-				throw LangCore.createCoreException("Error, invalid location for editor input.", null);
-			}
-			
-			return doComputeCompletionProposals(offset, fileLocation.path, viewer.getDocument());
-		} catch (CoreException ce) {
-			if(DeeCompletionOperation.compilerPathOverride == null) {
-				UIOperationExceptionHandler.handleOperationStatus("Content Assist", ce);
-			} else {
-				// We are in tests mode
-			}
-			errorMessage = ce.getMessage();
-			return Collections.EMPTY_LIST;
-		}
-	}
-	
 	protected List<ICompletionProposal> doComputeCompletionProposals(int offset, Path filePath, 
 			IDocument document) throws CoreException {
 		
-		CompletionSearchResult completionResult = dtoolclient.performCompletionOperation(
-			filePath, offset, document.get(), 5000);
+		ArrayList2<RefSearchCompletionProposal> proposals = new DeeCompletionOperation(DToolClient.getDefault()).
+				execute(filePath, offset, document.get(), 5000);
 		
-		ArrayList2<CompletionProposal> proposals = new DeeCompletionOperation().
-				completionResultAdapt(completionResult, offset);
+		ArrayList2<ICompletionProposal> result = new ArrayList2<ICompletionProposal>();
 		
-		DeeCompletionProposalCollector collector = new DeeCompletionProposalCollector();
-		ArrayList2<ICompletionProposal> completionProposals = new ArrayList2<ICompletionProposal>();
-		
-		for (CompletionProposal proposal : proposals) {
-			completionProposals.add(collector.adaptProposal(proposal));
+		for (RefSearchCompletionProposal proposal : proposals) {
+			result.add(adaptProposal(proposal));
 		}
 		
-		return completionProposals;
+		return result;
 	}
 	
 	@Override
-	protected TemplateCompletionProcessor createTemplateProposalComputer(ScriptContentAssistInvocationContext context) {
-		return new DeeTemplateCompletionProcessor(context);
+	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
+		return super.computeContextInformation(context);
 	}
 	
-	
 	@Override
-	public List<IContextInformation> computeContextInformation(ContentAssistInvocationContext context,
-			IProgressMonitor monitor) {
-		return super.computeContextInformation(context, monitor);
+	protected void handleExceptionInUI(CoreException ce) {
+		if(DeeCompletionOperation.compilerPathOverride == null) {
+			UIOperationExceptionHandler.handleOperationStatus("Content Assist", ce);
+		} else {
+			// We are in tests mode
+		}
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected final static char[] VAR_TRIGGER = { ' ', '=', ';' };
+	
+	protected final DeeModelElementLabelProvider modelElementLabelProvider = new DeeModelElementLabelProvider();
+	
+	protected static char[] getVarTrigger() {
+		return VAR_TRIGGER;
+	}
+	
+	public DeeCompletionProposal adaptProposal(RefSearchCompletionProposal proposal) {
+		INamedElement namedElement = proposal.getExtraInfo();
+		
+		String completion = proposal.getCompletion();
+		int repStart = proposal.getReplaceStart();
+		int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
+		Image image = createImage(proposal);
+		
+		String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
+		
+		DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
+				image, displayString, namedElement, null);
+		completionProposal.setTriggerCharacters(getVarTrigger());
+		return completionProposal;
+	}
+	
+	protected Image createImage(RefSearchCompletionProposal proposal) {
+		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
+		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
+	}
+	
+	public ImageDescriptor createImageDescriptor(RefSearchCompletionProposal proposal) {
+		ElementIconsStyle iconStyle = DeeElementImageProvider.getIconStylePreference();
+		
+		DefElementDescriptor defDescriptor = null;
+		
+		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
+			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
+		}
+		else if(proposal.getExtraInfo() instanceof INamedElement) {
+			INamedElement defElement = (INamedElement) proposal.getExtraInfo();
+			defDescriptor = new DefElementDescriptor(defElement);
+		} 
+		else if(proposal.getModelElement() instanceof IMember) {
+			IMember member = (IMember) proposal.getModelElement();
+			try {
+				defDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
+			} catch (ModelException e) {
+				DeeCore.logStatus(e);
+				return DeeImages.getIDEInternalErrorImageDescriptor();
+			}
+		}
+		
+		if(defDescriptor != null) {
+			return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, iconStyle);
+		}
+		// Return no image
+		return null;
 	}
 	
 }

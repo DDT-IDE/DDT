@@ -19,10 +19,7 @@ import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeTextTools;
 
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.text.templates.TemplateVariableProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -54,6 +51,7 @@ import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
 
 import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
 import _org.eclipse.dltk.ui.preferences.EditTemplateDialog;
+import _org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 
 /**
  * The templates page for the Script editor.
@@ -128,15 +126,11 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 		}
 		Position position = new Position(textSelection.getOffset() + 1, 0);
 		Region region = new Region(textSelection.getOffset() + 1, 0);
-		contextViewer.getSelectionProvider().setSelection(
-				new TextSelection(textSelection.getOffset(), 1));
-		ISourceModule compilationUnit = EditorUtility
-				.getEditorInputModelElement(fScriptEditor, true);
+		contextViewer.getSelectionProvider().setSelection(new TextSelection(textSelection.getOffset(), 1));
 
-		TemplateContextType type = getContextTypeRegistry().getContextType(
-				template.getContextTypeId());
-		DocumentTemplateContext context = ((ScriptTemplateContextType) type)
-				.createContext(document, position, compilationUnit);
+		TemplateContextType type = getContextTypeRegistry().getContextType(template.getContextTypeId());
+		
+		DocumentTemplateContext context = ((ScriptTemplateContextType) type).createContext(document, position);
 		context.setVariable("selection", savedText); //$NON-NLS-1$
 		if (context.getKey().length() == 0) {
 			try {
@@ -341,9 +335,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 			Template template, final int offset, int length) {
 		final ScriptTemplateContextType contextType = (ScriptTemplateContextType) getContextTypeRegistry()
 				.getContextType(template.getContextTypeId());
-		final ISourceModule module = (ISourceModule) EditorUtility
-				.getEditorInputModelElement(fScriptEditor, true);
-		return contextType.createContext(document, offset, length, module);
+		return contextType.createContext(document, offset, length);
 	}
 
 	/**

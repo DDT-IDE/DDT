@@ -2,8 +2,9 @@ package mmrnmhrm.ui.editor.templates;
 
 import mmrnmhrm.ui.DeeUI;
 
-import org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import org.eclipse.jface.preference.IPreferenceStore;
+
+import _org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 
 public class DeeTemplateAccess extends ScriptTemplateAccess {
 	

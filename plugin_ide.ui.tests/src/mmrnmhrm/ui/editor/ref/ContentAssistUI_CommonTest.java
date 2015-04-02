@@ -27,11 +27,12 @@ import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
+
+import _org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
