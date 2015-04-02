@@ -8,13 +8,16 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package org.eclipse.jdt.internal.ui;
+package melnorme.lang.ide.ui.editor;
 
-public interface JavaUIMessages {
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.util.PropertyChangeEvent;
 
-	String OptionalMessageDialog_dontShowAgain = 
-			"Do not show this &message again";
-	String JavaEditor_codeassist_noCompletions = 
-			"No completions available.";
+public interface ISourceViewerExt {
+	
+	IContentAssistant getContentAssistant();
+	
+	void handlePropertyChangeEvent_2(PropertyChangeEvent event, IPreferenceStore prefStore);
 	
 }
