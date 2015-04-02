@@ -3,6 +3,8 @@
 ### DDT 0.11.1+
  * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
  * Added editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P)
+ * Doc - Installation guide: Added note for users in China.
+ 
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
