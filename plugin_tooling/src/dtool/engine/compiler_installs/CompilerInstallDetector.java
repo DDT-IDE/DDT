@@ -80,18 +80,21 @@ public class CompilerInstallDetector {
 	}
 	
 	protected CompilerInstall detectLDCInstall(Location commandPath) {
-		Location cmdDir = commandPath.getParent();
+		Location cmdDir = commandPath.getParent(); //cmdir is usually "bin/"
 		
-		if(cmdDir.resolve_fromValid("../include/dlang/ldc").toFile().exists()) {
-			return new CompilerInstall(commandPath, ECompilerType.LDC, 
-				cmdDir.resolve_fromValid("../include/dlang/ldc"));
-		}
-		
+		// This is the layout of LDC downloadable archive as of dc2-0.15.2
 		if(cmdDir.resolve_fromValid("../import/core").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC,
 				cmdDir.resolve_fromValid("../import/ldc"),
 				cmdDir.resolve_fromValid("../import"));
 		}
+		
+		// This is some Linux distro, which one?
+		if(cmdDir.resolve_fromValid("../include/dlang/ldc").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.LDC, 
+				cmdDir.resolve_fromValid("../include/dlang/ldc"));
+		}
+		
 		return null;
 	}
 	
