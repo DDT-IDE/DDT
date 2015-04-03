@@ -15,14 +15,12 @@ import java.util.List;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.completion.CompletionSoftFailure;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
-import mmrnmhrm.core.engine_client.DeeCompletionOperation.RefSearchCompletionProposal;
-import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
@@ -31,13 +29,13 @@ import mmrnmhrm.ui.views.DeeElementLabelProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
+
+import dtool.engine.operations.DeeCompletionSearchResult.DeeCompletionProposal;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
@@ -48,17 +46,16 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	@Override
 	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException {
+			int offset) throws CoreException, CompletionSoftFailure {
 		
 		IDocument document = context.getViewer().getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		ArrayList2<RefSearchCompletionProposal> proposals = new DeeCompletionOperation(DToolClient.getDefault()).
+		ArrayList2<DeeCompletionProposal> proposals = new DeeCompletionOperation(DToolClient.getDefault()).
 				execute(editoInputFile.path, offset, document.get(), 5000);
 		
-		ArrayList2<ICompletionProposal> result = new ArrayList2<ICompletionProposal>();
-		
-		for (RefSearchCompletionProposal proposal : proposals) {
+		ArrayList2<ICompletionProposal> result = new ArrayList2<>();
+		for (DeeCompletionProposal proposal : proposals) {
 			result.add(adaptProposal(proposal));
 		}
 		
@@ -89,48 +86,36 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		return VAR_TRIGGER;
 	}
 	
-	public DeeCompletionProposal adaptProposal(RefSearchCompletionProposal proposal) {
+	public DeeContentAssistProposal adaptProposal(DeeCompletionProposal proposal) {
 		INamedElement namedElement = proposal.getExtraInfo();
 		
-		String completion = proposal.getCompletion();
+		String replaceString = proposal.getReplaceString();
 		int repStart = proposal.getReplaceStart();
-		int repLength = proposal.getReplaceEnd() - proposal.getReplaceStart();
+		int repLength = proposal.getReplaceLength();
 		Image image = createImage(proposal);
 		
 		String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
 		
-		DeeCompletionProposal completionProposal = new DeeCompletionProposal(completion, repStart, repLength,
+		DeeContentAssistProposal completionProposal = new DeeContentAssistProposal(replaceString, repStart, repLength,
 				image, displayString, namedElement, null);
 		completionProposal.setTriggerCharacters(getVarTrigger());
 		return completionProposal;
 	}
 	
-	protected Image createImage(RefSearchCompletionProposal proposal) {
+	protected Image createImage(DeeCompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
 		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
-	public ImageDescriptor createImageDescriptor(RefSearchCompletionProposal proposal) {
+	public ImageDescriptor createImageDescriptor(DeeCompletionProposal proposal) {
 		ElementIconsStyle iconStyle = DeeElementImageProvider.getIconStylePreference();
 		
 		DefElementDescriptor defDescriptor = null;
 		
-		if(proposal.getExtraInfo() instanceof DefElementDescriptor) {
-			defDescriptor = (DefElementDescriptor) proposal.getExtraInfo();
-		}
-		else if(proposal.getExtraInfo() instanceof INamedElement) {
-			INamedElement defElement = (INamedElement) proposal.getExtraInfo();
+		if(proposal.getExtraInfo() instanceof INamedElement) {
+			INamedElement defElement = proposal.getExtraInfo();
 			defDescriptor = new DefElementDescriptor(defElement);
 		} 
-		else if(proposal.getModelElement() instanceof IMember) {
-			IMember member = (IMember) proposal.getModelElement();
-			try {
-				defDescriptor = DeeSourceElementProvider.toElementDescriptor(member);
-			} catch (ModelException e) {
-				DeeCore.logStatus(e);
-				return DeeImages.getIDEInternalErrorImageDescriptor();
-			}
-		}
 		
 		if(defDescriptor != null) {
 			return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, iconStyle);

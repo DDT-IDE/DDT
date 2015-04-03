@@ -18,7 +18,7 @@ import melnorme.utilbox.collections.Collection2;
 public class CompletionSearchResult {
 	
 	public final ECompletionResultStatus resultCode;
-	public final PrefixSearchOptions searchOptions;
+	public final CompletionLocationInfo locationInfo;
 	public final int replaceLength;
 	public final Collection2<INamedElement> results;
 	
@@ -27,13 +27,13 @@ public class CompletionSearchResult {
 		this.resultCode = resultCode;
 		this.replaceLength = 0;
 		this.results = null;
-		this.searchOptions = null;
+		this.locationInfo = null;
 	}
 	
-	public CompletionSearchResult(PrefixSearchOptions searchOptions, Collection2<INamedElement> results) {
+	public CompletionSearchResult(CompletionLocationInfo locationInfo, Collection2<INamedElement> results) {
 		this.resultCode = ECompletionResultStatus.RESULT_OK;
-		this.searchOptions = assertNotNull(searchOptions);
-		this.replaceLength = searchOptions.rplLen;
+		this.locationInfo = assertNotNull(locationInfo);
+		this.replaceLength = locationInfo.rplLen;
 		this.results = results;
 	}
 	
@@ -53,17 +53,21 @@ public class CompletionSearchResult {
 		return replaceLength;
 	}
 	
-	public static class PrefixSearchOptions {
+	public static class CompletionLocationInfo {
 		
-		public String searchPrefix = "";
-		public int namePrefixLen = 0;
-		public int rplLen = 0;
+		public final int offset; // The location where completion was invoked
+		public final String searchPrefix;
+		public final int namePrefixLen;
+		public final int rplLen;
 		
-		public PrefixSearchOptions() {
+		public CompletionLocationInfo(int offset) {
+			this(offset, "", 0);
 		}
 		
-		public void setPrefixSearchOptions(String searchPrefix, int rplLen) {
+		public CompletionLocationInfo(int offset, String searchPrefix, int rplLen) {
 			assertTrue(rplLen >= 0);
+			assertTrue(offset >= 0);
+			this.offset = offset;
 			this.searchPrefix = searchPrefix;
 			this.namePrefixLen = searchPrefix.length();
 			this.rplLen = rplLen;

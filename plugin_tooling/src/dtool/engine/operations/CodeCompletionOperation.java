@@ -21,9 +21,8 @@ import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.PrefixSearchOptions;
+import melnorme.lang.tooling.engine.completion.CompletionSearchResult.CompletionLocationInfo;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -44,12 +43,12 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		super(semanticManager, filePath, offset, compilerPath, dubPath);
 	}
 	
-	public CompletionSearchResult doCodeCompletion() throws CommonException {
+	public DeeCompletionSearchResult doCodeCompletion() throws CommonException {
 		ResolvedModule resolvedModule = getResolvedModule(fileLoc);
 		return doCodeCompletion(resolvedModule, offset);
 	}
 	
-	public static CompletionSearchResult doCodeCompletion(ResolvedModule resolvedModule, int offset) {
+	public static DeeCompletionSearchResult doCodeCompletion(ResolvedModule resolvedModule, int offset) {
 		return completionSearch(resolvedModule.getParsedModule(), offset, resolvedModule.getSemanticContext());
 	}
 	
@@ -57,7 +56,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return !(token.getType() == DeeTokens.WHITESPACE || token.getType().isAlphaNumeric());
 	}
 	
-	public static CompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
+	public static DeeCompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
 			ISemanticContext mr) {
 		
 		assertTrue(isInRange(0, offset, parseResult.source.length()));
@@ -70,12 +69,12 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			&& isInsideRange(tokenAtOffsetLeft.getStartPos(), offset, tokenAtOffsetLeft.getEndPos()) 
 			&& canCompleteInsideToken(tokenAtOffsetLeft)
 		) {
-			return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
+			return new DeeCompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
 		}
 		if(tokenAtOffsetLeft != null 		
 			&& tokenAtOffsetLeft.getType().getGroupingToken() == DeeTokens.GROUP_FLOAT
 			&& tokenAtOffsetLeft.getSourceValue().endsWith(".")) {
-			return new CompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
+			return new DeeCompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
 		}
 		
 		final IToken nameToken;
@@ -101,35 +100,34 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			if(offset <= namedRef.getDotOffset()) {
 				elementAtOffset = namedRef.getLexicalParent();
 			}
-			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
+			CompletionLocationInfo locationInfo = new CompletionLocationInfo(offset);
+			return performCompletionSearch(locationInfo, mr, elementAtOffset);
 		} else if(elementAtOffset instanceof RefModule) {
 			RefModule refModule = (RefModule) elementAtOffset;
 			// RefModule has a specialized way to setup prefix len things
 			
 			String source = parseResult.source;
-			PrefixSearchOptions searchOptions = codeCompletionRefModule(offset, tokenAtOffsetRight, source, refModule);
-			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
+			CompletionLocationInfo locationInfo = codeCompletionRefModule(offset, tokenAtOffsetRight, source, refModule);
+			return performCompletionSearch(locationInfo, mr, elementAtOffset);
 		} 
 		
 		if(nameToken != null) {
 			assertTrue(nameToken.getSourceRange().contains(offset));
 			
-			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
 			
 			String searchPrefix = nameToken.getSourceValue().substring(0, offset - nameToken.getStartPos());
 			int rplLen = nameToken.getEndPos() - offset;
-			searchOptions.setPrefixSearchOptions(searchPrefix, rplLen);
+			CompletionLocationInfo locationInfo = new CompletionLocationInfo(offset, searchPrefix, rplLen);
 			
 			// Because of some parser limitations, in some cases nodeForNameLookup needs to be corrected,
 			// such that it won't be the same as nodeForNameLookup
 			ASTNode nodeForNameLookup = getStartingNodeForNameLookup(nameToken.getStartPos(), module);
 			
-			return performCompletionSearch(offset, mr, nodeForNameLookup, searchOptions);
+			return performCompletionSearch(locationInfo, mr, nodeForNameLookup);
 			
 		} else {
-			PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-			return performCompletionSearch(offset, mr, elementAtOffset, searchOptions);
+			CompletionLocationInfo locationInfo = new CompletionLocationInfo(offset);
+			return performCompletionSearch(locationInfo, mr, elementAtOffset);
 		}
 		
 	}
@@ -146,7 +144,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return node;
 	}
 	
-	public static PrefixSearchOptions codeCompletionRefModule(final int offset, IToken tokenAtOffsetRight, 
+	public static CompletionLocationInfo codeCompletionRefModule(final int offset, IToken tokenAtOffsetRight, 
 			String source, RefModule refModule) {
 		
 		int idEnd = refModule.getEndPos();
@@ -169,19 +167,14 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			moduleQualifiedNameCanonicalPrefix += lookAhead.getSourceValue();
 		}
 		
-		PrefixSearchOptions searchOptions = new PrefixSearchOptions();
-		searchOptions.setPrefixSearchOptions(moduleQualifiedNameCanonicalPrefix, rplLen);
-		// Maybe the above code can now be simplified, now that the line below was removed:
-		//searchOptions.isImportModuleSearch = true;
-		
-		return searchOptions;
+		return new CompletionLocationInfo(offset, moduleQualifiedNameCanonicalPrefix, rplLen);
 	}
 	
-	public static CompletionSearchResult performCompletionSearch(int offset, ISemanticContext mr, 
-			CommonLanguageElement element, PrefixSearchOptions searchOptions) {
-		CompletionScopeLookup search = new CompletionScopeLookup(offset, mr, searchOptions.searchPrefix);
+	public static DeeCompletionSearchResult performCompletionSearch(CompletionLocationInfo locationInfo, 
+			ISemanticContext context, CommonLanguageElement element) {
+		CompletionScopeLookup search = new CompletionScopeLookup(locationInfo.offset, context, locationInfo.searchPrefix);
 		element.performNameLookup(search);
-		return new CompletionSearchResult(searchOptions, search.getMatchedElements());
+		return new DeeCompletionSearchResult(locationInfo, search.getMatchedElements());
 	}
 	
 }

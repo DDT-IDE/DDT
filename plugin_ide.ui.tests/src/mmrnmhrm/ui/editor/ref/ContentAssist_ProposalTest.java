@@ -7,7 +7,7 @@ import java.util.List;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 
 import org.eclipse.dltk.core.ModelException;
@@ -35,8 +35,8 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 				
 				for (ICompletionProposal completionProposal : proposals) {
 					
-					assertTrue(completionProposal instanceof DeeCompletionProposal);
-					DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
+					assertTrue(completionProposal instanceof DeeContentAssistProposal);
+					DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
 					assertTrue(deeProposal.getReplacementOffset() == offset);
 					assertTrue(deeProposal.getReplacementLength() == rplLen);
 					assertTrue(deeProposal.getCursorPosition() == deeProposal.getReplacementString().length());

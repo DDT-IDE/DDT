@@ -22,7 +22,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.core.DLTKCore;
@@ -96,7 +96,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 			if(completionProposal instanceof ScriptTemplateProposal) {
 				continue;
 			}
-			DeeCompletionProposal proposal = (DeeCompletionProposal) completionProposal;
+			DeeContentAssistProposal proposal = (DeeContentAssistProposal) completionProposal;
 			String defName = proposal.namedElement.getExtendedName();
 			
 			assertTrue(repOffset == proposal.getReplacementOffset());
@@ -113,9 +113,9 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	public static List<INamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
 		List<INamedElement> results = new ArrayList<>();
-		for (ICompletionProposal iCompletionProposal : proposals) {
-			if(iCompletionProposal instanceof DeeCompletionProposal) {
-				DeeCompletionProposal deeCompletionProposal = (DeeCompletionProposal) iCompletionProposal;
+		for (ICompletionProposal completionProposal : proposals) {
+			if(completionProposal instanceof DeeContentAssistProposal) {
+				DeeContentAssistProposal deeCompletionProposal = (DeeContentAssistProposal) completionProposal;
 				results.add(deeCompletionProposal.namedElement);
 			}
 		}

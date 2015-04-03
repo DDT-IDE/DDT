@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -11,11 +21,11 @@ import org.eclipse.swt.graphics.Image;
 
 import dtool.ddoc.TextUI;
 
-public class DeeCompletionProposal extends ScriptCompletionProposalExtension {
+public class DeeContentAssistProposal extends ScriptCompletionProposalExtension {
 	
 	public final INamedElement namedElement; 
 	
-	public DeeCompletionProposal(String replacementString, int replacementOffset, int replacementLength, 
+	public DeeContentAssistProposal(String replacementString, int replacementOffset, int replacementLength, 
 			Image image, String displayString, INamedElement namedElement,
 			IContextInformation contextInformation) {
 		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);

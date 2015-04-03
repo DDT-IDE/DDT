@@ -20,7 +20,7 @@ import mmrnmhrm.core.engine_client.CoreResolverSourceTests;
 import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
-import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposal;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IFile;
@@ -135,8 +135,8 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	public List<INamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
 		ArrayList<INamedElement> results = new ArrayList<>();
 		for (ICompletionProposal completionProposal : proposals) {
-			if(completionProposal instanceof DeeCompletionProposal) {
-				DeeCompletionProposal deeProposal = (DeeCompletionProposal) completionProposal;
+			if(completionProposal instanceof DeeContentAssistProposal) {
+				DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
 				results.add(deeProposal.namedElement);
 			}
 		}
