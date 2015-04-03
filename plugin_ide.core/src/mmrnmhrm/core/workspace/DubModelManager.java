@@ -405,11 +405,12 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
 		
 		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
-			if(srcFolder.toFile().exists()) {
-				// DUB allows implicit source folders to not exist, so don't add them to buildpath, 
-				// otherwise error markers will appear. Fixes #105
-				IPath path2 = projectElement.getPath().append(srcFolder.toString());
-				entries.add(DLTKCore.newSourceEntry(path2));
+			// DUB allows implicit source folders to not exist, so don't add them to buildpath, 
+			// otherwise error markers will appear. Fixes #105
+			IPath srcFolderLocation = project.getLocation().append(srcFolder.toString());
+			if(srcFolderLocation.toFile().exists()) {
+				IPath entryWorkspacePath = projectElement.getPath().append(srcFolder.toString());
+				entries.add(DLTKCore.newSourceEntry(entryWorkspacePath));
 			}
 		}
 		

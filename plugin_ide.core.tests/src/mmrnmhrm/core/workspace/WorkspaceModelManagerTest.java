@@ -131,6 +131,10 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 			project, 
 			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
 		
+		createFolder(project.getFolder("src"));
+		createFolder(project.getFolder("src-test"));
+		createFolder(project.getFolder("src-import"));
+		
 		writeDubJsonAndCheckDubModel("{"+
 			jsEntry("name", "xptobundle")+
 			jsEntry("importPaths", jsArray("src", "src-test"))+
@@ -159,7 +163,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		writeDubJsonAndCheckDubModel("{"+ jsEntry("name", "xptobundle")+ jsFileEnd(),
 			project, 
-			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders(), rawDeps()));
+			main(location, null, "xptobundle", DEFAULT_VERSION, srcFolders("src"), rawDeps()));
 		
 		
 		// Test errors occurring from running dub describe
