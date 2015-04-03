@@ -27,7 +27,7 @@ public class DeeCompletionSearchResult extends CompletionSearchResult {
 		super(searchOptions, results);
 	}
 	
-	public ArrayList2<DeeCompletionProposal> handleResult() throws CompletionSoftFailure {
+	public ArrayList2<DeeCompletionProposal> getAdaptedResults() throws CompletionSoftFailure {
 		
 		if(isFailure()) {
 			throw new CompletionSoftFailure(resultCode.getMessage());

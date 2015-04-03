@@ -17,7 +17,7 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.engine_client.CoreResolverSourceTests;
-import mmrnmhrm.core.engine_client.DeeCompletionOperation;
+import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
@@ -84,12 +84,12 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 		ReflectionUtils.invokeMethod(ca, "hide"); //ca.hide();
 		SWTTestUtils.________________clearEventQueue________________();
 		
-		Location previousOverride = DeeCompletionOperation.compilerPathOverride;
+		Location previousOverride = DToolClient.compilerPathOverride;
 		try {
-			DeeCompletionOperation.compilerPathOverride = COMPILER_PATH;
+			DToolClient.compilerPathOverride = COMPILER_PATH;
 			ContentAssistUI_CommonTest.invokeContentAssist(editor, offset); 
 		} finally {
-			DeeCompletionOperation.compilerPathOverride = previousOverride;
+			DToolClient.compilerPathOverride = previousOverride;
 		}
 		
 		Object completionProposalPopup = ReflectionUtils.readField(ca, "fProposalPopup");

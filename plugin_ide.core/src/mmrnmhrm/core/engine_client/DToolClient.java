@@ -54,6 +54,9 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 		return new DToolClient();
 	}
 	
+	// Only tests may modify this variable:
+	public static volatile Location compilerPathOverride = null;
+	
 	protected final DToolServer dtoolServer;
 	protected final ClientModuleParseCache moduleParseCache;
 	
@@ -218,7 +221,7 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 		
 		@Override
 		protected DeeCompletionSearchResult doRunOperationWithWorkingCopy() throws CoreException {
-			return doCodeCompletion(filePath, offset, DeeCompletionOperation.compilerPathOverride);
+			return doCodeCompletion(filePath, offset, DToolClient.compilerPathOverride);
 		}
 		
 	}

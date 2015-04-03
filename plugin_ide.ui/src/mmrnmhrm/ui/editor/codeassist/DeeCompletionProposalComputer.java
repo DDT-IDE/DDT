@@ -20,7 +20,6 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.engine_client.DeeCompletionOperation;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
@@ -35,6 +34,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
+import dtool.engine.operations.DeeCompletionSearchResult;
 import dtool.engine.operations.DeeCompletionSearchResult.DeeCompletionProposal;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
@@ -51,8 +51,9 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		IDocument document = context.getViewer().getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		ArrayList2<DeeCompletionProposal> proposals = new DeeCompletionOperation(DToolClient.getDefault()).
-				execute(editoInputFile.path, offset, document.get(), 5000);
+		DeeCompletionSearchResult completionResult = dtoolclient.performCompletionOperation(
+			editoInputFile.path, offset, document.get(), 5000);
+		ArrayList2<DeeCompletionProposal> proposals = completionResult.getAdaptedResults();
 		
 		ArrayList2<ICompletionProposal> result = new ArrayList2<>();
 		for (DeeCompletionProposal proposal : proposals) {
@@ -69,7 +70,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	@Override
 	protected void handleExceptionInUI(CoreException ce) {
-		if(DeeCompletionOperation.compilerPathOverride == null) {
+		if(DToolClient.compilerPathOverride == null) {
 			UIOperationExceptionHandler.handleOperationStatus("Content Assist", ce);
 		} else {
 			// We are in tests mode
