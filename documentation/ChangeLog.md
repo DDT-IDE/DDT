@@ -4,6 +4,8 @@
  * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
  * Added editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P)
  * Doc - Installation guide: Added note for users in China.
+ * Fixed #102. A dialog is no longer shown when invoking content assist in invalid locations. 
+A less intrusive message is shown in the bottom of the workbench window. 
  
 
 ### DDT 0.11.1
