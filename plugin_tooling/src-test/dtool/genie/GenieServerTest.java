@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.After;
@@ -39,7 +40,6 @@ import dtool.genie.cmdline.FindDefinitionRequest.FindDefinitionResultParser;
 import dtool.genie.cmdline.ShutdownServerRequest;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
-import dtool.util.StatusException;
 
 public class GenieServerTest extends JsonWriterTestUtils {
 	
@@ -96,7 +96,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		
 		protected final ArrayList<Throwable> exceptions = new ArrayList<>();
 		
-		public TestsGenieServer(int portNumber) throws StatusException {
+		public TestsGenieServer(int portNumber) throws CommonException {
 			super(DTOOL_SERVER, portNumber);
 		}
 		

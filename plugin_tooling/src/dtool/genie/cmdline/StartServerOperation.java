@@ -12,10 +12,10 @@ package dtool.genie.cmdline;
 
 import java.io.PrintStream;
 
+import melnorme.utilbox.core.CommonException;
 import dtool.engine.DToolServer;
 import dtool.genie.GenieMain.AbstractCmdlineOperation;
 import dtool.genie.GenieServer;
-import dtool.util.StatusException;
 
 public class StartServerOperation extends AbstractCmdlineOperation {
 	
@@ -66,7 +66,7 @@ public class StartServerOperation extends AbstractCmdlineOperation {
 			DToolServer dtoolServer = new DToolServer();
 			GenieServer genieServer = new GenieServer(dtoolServer, requestedPortNumber);
 			genieServer.runServer();
-		} catch (StatusException se) {
+		} catch (CommonException se) {
 			throw errorBail("Error starting server. ", se);
 		}
 		

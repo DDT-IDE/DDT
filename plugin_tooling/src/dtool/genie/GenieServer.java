@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -30,7 +31,6 @@ import dtool.engine.DToolServer;
 import dtool.genie.cmdline.StartServerOperation;
 import dtool.util.JsonReaderExt;
 import dtool.util.JsonWriterExt;
-import dtool.util.StatusException;
 
 public class GenieServer extends AbstractSocketServer {
 	
@@ -45,7 +45,7 @@ public class GenieServer extends AbstractSocketServer {
 		return new File(System.getProperty("user.home"), StartServerOperation.SENTINEL_FILE_NAME);
 	}
 	
-	public GenieServer(DToolServer dtoolServer, int portNumber) throws StatusException {
+	public GenieServer(DToolServer dtoolServer, int portNumber) throws CommonException {
 		super(portNumber);
 		this.dtoolServer = assertNotNull(dtoolServer);
 		
@@ -56,7 +56,7 @@ public class GenieServer extends AbstractSocketServer {
 		try {
 			FileUtil.writeStringToFile(sentinelFile, getServerPortNumber()+"", StringUtil.UTF8);
 		} catch (IOException e) {
-			throw new StatusException("Error writing to sentinel file " + sentinelFile, e);
+			throw new CommonException("Error writing to sentinel file " + sentinelFile, e);
 		}
 	}
 	
@@ -184,7 +184,7 @@ public class GenieServer extends AbstractSocketServer {
 	}
 	
 	@SuppressWarnings("serial")
-	public static class GenieCommandException extends StatusException {
+	public static class GenieCommandException extends CommonException {
 		
 		public GenieCommandException(String message) {
 			super(message, null);
