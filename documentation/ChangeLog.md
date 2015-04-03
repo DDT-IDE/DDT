@@ -6,7 +6,7 @@
  * Doc - Installation guide: Added note for users in China.
  * Fixed #102. A dialog is no longer shown when invoking content assist in invalid locations. 
 A less intrusive message is shown in the bottom of the workbench window. 
- 
+ * Fixed #105: Errors about "project is missing required 'src' folder", when such DUB source/import was not explicitly defined.
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
