@@ -11,7 +11,6 @@
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
@@ -27,12 +26,10 @@ import dtool.ddoc.IDeeDocColorConstants;
 
 public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 	
-	// Extension point entry point
 	@Override
-	public void initializeDefaultPreferences() {
-		super.initializeDefaultPreferences();
+	protected void initializeDefaultPreferences_other(IPreferenceStore langUIStore) {
 		
-		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
+		IPreferenceStore store = langUIStore;
 		
 		EditorsUI.useAnnotationsPreferencePage(store);
 		EditorsUI.useQuickDiffPreferencePage(store);
