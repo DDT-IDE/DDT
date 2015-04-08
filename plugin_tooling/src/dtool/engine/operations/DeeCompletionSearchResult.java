@@ -10,9 +10,9 @@
  *******************************************************************************/
 package dtool.engine.operations;
 
-import melnorme.lang.tooling.completion.CompletionSoftFailure;
 import melnorme.lang.tooling.completion.LangCompletionProposal;
 import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
@@ -27,10 +27,10 @@ public class DeeCompletionSearchResult extends CompletionSearchResult {
 		super(searchOptions, results);
 	}
 	
-	public ArrayList2<DeeCompletionProposal> getAdaptedResults() throws CompletionSoftFailure {
+	public ArrayList2<DeeCompletionProposal> getAdaptedResults() throws OperationSoftFailure {
 		
 		if(isFailure()) {
-			throw new CompletionSoftFailure(resultCode.getMessage());
+			throw new OperationSoftFailure(resultCode.getMessage());
 		}
 		
 		int position = locationInfo.offset;

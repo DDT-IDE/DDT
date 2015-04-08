@@ -15,7 +15,7 @@ import java.util.List;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.lang.tooling.completion.CompletionSoftFailure;
+import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
@@ -46,7 +46,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	@Override
 	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException, CompletionSoftFailure {
+			int offset) throws CoreException, OperationSoftFailure {
 		
 		IDocument document = context.getViewer().getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
