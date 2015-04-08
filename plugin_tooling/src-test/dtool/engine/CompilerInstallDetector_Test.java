@@ -90,8 +90,8 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 		));
 		
 		testDetectInstall(MOCK_LDC_ARCHIVE, "bin/ldc2", ECompilerType.LDC, list(
-			"import/ldc",
-			"import/"
+			"import/",
+			"import/ldc"
 		));
 		
 		// Arch Linux
@@ -157,7 +157,7 @@ public class CompilerInstallDetector_Test extends CommonDToolTest {
 			list("include/d/4.6.1/"));
 		checkInstall(foundInstalls.get(1), MULTIPLE_IN_ONE_PATH.resolve_fromValid("ldc2"), ECompilerType.LDC, 
 			MULTIPLE_IN_ONE_PATH.getParent(), 
-			list("import/ldc", "import/"));
+			list("import/", "import/ldc"));
 	}
 	
 }
