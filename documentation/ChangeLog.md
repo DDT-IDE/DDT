@@ -10,7 +10,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Fixed #103: Added detection of more standard library folder layouts:
   * For DMD: `$DIR/bin/dmd` → `$DIR/include/d2/`  (DMD OSX Homebrew package)
   * For LDC: `$DIR/bin/ldc2` → `$DIR/include/d/•$DIR/include/d/ldc`  (MSCV archive, and LDC built from source)
-
+ * Added #107: allow content assist inside token strings (`q{ ... }`)
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)

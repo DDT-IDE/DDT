@@ -44,6 +44,8 @@ module tests;
 auto x = 123.#REFSEARCH¤【!after_float_point】; //Float token
 auto x = 123 .#REFSEARCH¤【#@INTEGRAL_PROPERTIES】;
 auto x = 123. #REFSEARCH¤【tests▪x】;
+
+auto x = q#REFSEARCH¤【!invalid_token】#FINDFAIL¤【】{#REFSEARCH¤【tests▪x】 foo + #REFSEARCH¤【tests▪x】};
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 int foo; //Test node boundaries (This test requires that a InvalidSyntaxElement node be created for each line)
 foo#FIND¤【foo】$; 

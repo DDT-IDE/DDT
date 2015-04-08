@@ -52,12 +52,24 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return completionSearch(resolvedModule.getParsedModule(), offset, resolvedModule.getSemanticContext());
 	}
 	
-	public static boolean canCompleteInsideToken(IToken token) {
-		return !(token.getType() == DeeTokens.WHITESPACE || token.getType().isAlphaNumeric());
+	public static boolean canCodeCompleteInsideToken(IToken token, int offset) {
+		if(token.getType() == DeeTokens.WHITESPACE || token.getType().isAlphaNumeric()) {
+			return true;
+		}
+		
+		if(token.getType() == DeeTokens.STRING_TOKENS) {
+			if(token.getSourceValue().length() < 3) {
+				return false; // This should never happen, actually.
+			}
+			// This string token is often used for code, so we allow completion inside it:
+			return isInRange(token.getStartPos()+2, offset, token.getEndPos()-1);
+		}
+		
+		return false;
 	}
 	
 	public static DeeCompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
-			ISemanticContext mr) {
+			ISemanticContext context) {
 		
 		assertTrue(isInRange(0, offset, parseResult.source.length()));
 		
@@ -67,7 +79,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		
 		if(tokenAtOffsetResult.isSingleToken() 
 			&& isInsideRange(tokenAtOffsetLeft.getStartPos(), offset, tokenAtOffsetLeft.getEndPos()) 
-			&& canCompleteInsideToken(tokenAtOffsetLeft)
+			&& !canCodeCompleteInsideToken(tokenAtOffsetLeft, offset)
 		) {
 			return new DeeCompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
 		}
@@ -101,14 +113,14 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 				elementAtOffset = namedRef.getLexicalParent();
 			}
 			CompletionLocationInfo locationInfo = new CompletionLocationInfo(offset);
-			return performCompletionSearch(locationInfo, mr, elementAtOffset);
+			return performCompletionSearch(locationInfo, context, elementAtOffset);
 		} else if(elementAtOffset instanceof RefModule) {
 			RefModule refModule = (RefModule) elementAtOffset;
 			// RefModule has a specialized way to setup prefix len things
 			
 			String source = parseResult.source;
 			CompletionLocationInfo locationInfo = codeCompletionRefModule(offset, tokenAtOffsetRight, source, refModule);
-			return performCompletionSearch(locationInfo, mr, elementAtOffset);
+			return performCompletionSearch(locationInfo, context, elementAtOffset);
 		} 
 		
 		if(nameToken != null) {
@@ -123,11 +135,11 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			// such that it won't be the same as nodeForNameLookup
 			ASTNode nodeForNameLookup = getStartingNodeForNameLookup(nameToken.getStartPos(), module);
 			
-			return performCompletionSearch(locationInfo, mr, nodeForNameLookup);
+			return performCompletionSearch(locationInfo, context, nodeForNameLookup);
 			
 		} else {
 			CompletionLocationInfo locationInfo = new CompletionLocationInfo(offset);
-			return performCompletionSearch(locationInfo, mr, elementAtOffset);
+			return performCompletionSearch(locationInfo, context, elementAtOffset);
 		}
 		
 	}
@@ -172,7 +184,8 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 	
 	public static DeeCompletionSearchResult performCompletionSearch(CompletionLocationInfo locationInfo, 
 			ISemanticContext context, CommonLanguageElement element) {
-		CompletionScopeLookup search = new CompletionScopeLookup(locationInfo.offset, context, locationInfo.searchPrefix);
+		CompletionScopeLookup search = new CompletionScopeLookup(locationInfo.offset, context, 
+			locationInfo.searchPrefix);
 		element.performNameLookup(search);
 		return new DeeCompletionSearchResult(locationInfo, search.getMatchedElements());
 	}
