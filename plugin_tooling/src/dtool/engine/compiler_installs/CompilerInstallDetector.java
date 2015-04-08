@@ -49,6 +49,13 @@ public class CompilerInstallDetector {
 				cmdDir.resolve_fromValid("../src/druntime/import"),
 				cmdDir.resolve_fromValid("../src/phobos"));
 		}
+		// a MacOSX homebrew layout (according to issue #103):
+		if(cmdDir.resolve_fromValid("../include/d2/std").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.DMD, 
+				cmdDir.resolve_fromValid("../include/d2/")
+			);
+		}
+		
 		// another MacOSX layout
 		Location resolvedCmdPath = cmdDir.resolve_fromValid("../share/dmd/bin/dmd");
 		if(resolvedCmdPath.toFile().exists()) {
@@ -82,11 +89,21 @@ public class CompilerInstallDetector {
 	protected CompilerInstall detectLDCInstall(Location commandPath) {
 		Location cmdDir = commandPath.getParent(); //cmdir is usually "bin/"
 		
-		// This is the layout of LDC downloadable archive as of dc2-0.15.2
-		if(cmdDir.resolve_fromValid("../import/core").toFile().exists()) {
+		// This is the layout of LDC downloadable archive as of ldc2-0.15.2 (Linux, OSX, MinGW)
+		if(cmdDir.resolve_fromValid("../import/std").toFile().exists()) {
 			return new CompilerInstall(commandPath, ECompilerType.LDC,
-				cmdDir.resolve_fromValid("../import/ldc"),
-				cmdDir.resolve_fromValid("../import"));
+				cmdDir.resolve_fromValid("../import"),
+				cmdDir.resolve_fromValid("../import/ldc")
+			);
+		}
+		
+		// This is the layout of LDC downloadable archive as of ldc2-0.15.2 (MSVC
+		// Also, LDC built from source according to issue #103
+		if(cmdDir.resolve_fromValid("../include/d/std").toFile().exists()) {
+			return new CompilerInstall(commandPath, ECompilerType.LDC,
+				cmdDir.resolve_fromValid("../include/d/"),
+				cmdDir.resolve_fromValid("../include/d/ldc")
+			);
 		}
 		
 		// This is some Linux distro, which one?

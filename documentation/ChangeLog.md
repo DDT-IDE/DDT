@@ -7,6 +7,10 @@
  * Fixed #102. A dialog is no longer shown when invoking content assist in invalid locations. 
 A less intrusive message is shown in the bottom of the workbench window. 
  * Fixed #105: Errors about "project is missing required 'src' folder", when such DUB source/import was not explicitly defined.
+ * Fixed #103: Added detection of more standard library folder layouts:
+  * For DMD: `$DIR/bin/dmd` → `$DIR/include/d2/`  (DMD OSX Homebrew package)
+  * For LDC: `$DIR/bin/ldc2` → `$DIR/include/d/•$DIR/include/d/ldc`  (MSCV archive, and LDC built from source)
+
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
