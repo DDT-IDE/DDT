@@ -45,7 +45,7 @@ public final class BundleKey {
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combineHashCodes(bundlePath, subPackageSuffix);
+		return HashcodeUtil.combinedHashCode(bundlePath, subPackageSuffix);
 	}
 	
 	@Override

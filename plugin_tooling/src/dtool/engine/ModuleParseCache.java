@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 
 import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.ops.FileModificationDetectionHelper;
+import melnorme.lang.tooling.ops.util.FileModificationDetectionHelper;
 import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;

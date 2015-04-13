@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.ops.FileCachingEntry;
+import melnorme.lang.tooling.ops.util.FileCachingEntry;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;

@@ -12,7 +12,7 @@ package mmrnmhrm.core.build;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.operations.SDKLocationValidator;
+import melnorme.lang.tooling.data.SDKLocationValidator;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.data.ValidationMessages;
 import melnorme.lang.utils.SearchPathForExecutable;

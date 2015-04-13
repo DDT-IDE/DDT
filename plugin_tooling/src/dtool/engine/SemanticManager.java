@@ -21,7 +21,7 @@ import java.util.List;
 
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.ops.FileCachingEntry;
+import melnorme.lang.tooling.ops.util.FileCachingEntry;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;

@@ -10,14 +10,19 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.List;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
@@ -28,6 +33,7 @@ import mmrnmhrm.ui.views.DeeElementLabelProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -61,6 +67,12 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		}
 		
 		return result;
+	}
+	
+	@Override
+	protected LangCompletionResult doInvokeContentAssistEngine(LangContentAssistInvocationContext context, int offset,
+			IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+		throw assertFail();
 	}
 	
 	@Override

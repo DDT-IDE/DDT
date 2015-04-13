@@ -42,7 +42,7 @@ public final class ResolutionKey {
 	
 	@Override
 	public int hashCode() {
-		return HashcodeUtil.combineHashCodes(bundleKey, compilerInstall);
+		return HashcodeUtil.combinedHashCode(bundleKey, compilerInstall);
 	}
 	
 	@Override
