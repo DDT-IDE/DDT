@@ -78,7 +78,8 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		return VAR_TRIGGER;
 	}
 	
-	public DeeContentAssistProposal adaptProposal(ToolCompletionProposal proposal) {
+	@Override
+	public DeeContentAssistProposal adaptToolProposal(ToolCompletionProposal proposal) {
 		
 		String replaceString = proposal.getReplaceString();
 		int repStart = proposal.getReplaceStart();
