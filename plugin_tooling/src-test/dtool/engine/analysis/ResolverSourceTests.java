@@ -17,10 +17,10 @@ import static melnorme.utilbox.misc.MiscUtil.nullToOther;
 import java.io.File;
 
 import melnorme.lang.tooling.context.EmptySemanticResolution;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.references.NamedReference;
 import dtool.engine.operations.CodeCompletionOperation;
+import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.tests.BaseResolverSourceTests;
@@ -65,11 +65,11 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		__resetSemantics();
-		CompletionSearchResult completion = CodeCompletionOperation.completionSearch(parseResult, options.offset, mr);
+		DeeSymbolCompletionResult completion = CodeCompletionOperation.completionSearch(parseResult, options.offset, mr);
 		
 		assertEquals(completion.getResultCode(), options.expectedStatusCode);
 		assertEquals(completion.getReplaceLength(), options.rplLen);
-		checkResults(completion.getResults(), options.expectedResults);
+		checkResults(completion.getElementResults(), options.expectedResults);
 	}
 	private void __resetSemantics() {
 		boolean resetSemantics = true;

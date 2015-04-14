@@ -96,19 +96,19 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompleti
 			return;
 
 		switch (operation) {
-		case CONTENTASSIST_PROPOSALS:
-			String msg = fContentAssistant.showPossibleCompletions();
-			editor.setStatusLineErrorMessage(msg);
-			return;
-		case QUICK_ASSIST:
-			/*
-			 * XXX: We can get rid of this once the SourceViewer has a way
-			 * to update the status line
-			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=133787
-			 */
-			msg = fQuickAssistAssistant.showPossibleQuickAssists();
-			editor.setStatusLineErrorMessage(msg);
-			return;
+//		case CONTENTASSIST_PROPOSALS:
+//			fContentAssistant.showPossibleCompletions();
+////			editor.setStatusLineErrorMessage(msg);
+//			return;
+//		case QUICK_ASSIST:
+//			/*
+//			 * XXX: We can get rid of this once the SourceViewer has a way
+//			 * to update the status line
+//			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=133787
+//			 */
+//			fQuickAssistAssistant.showPossibleQuickAssists();
+//			editor.setStatusLineErrorMessage(msg);
+//			return;
 		case UNDO:
 			fIgnoreTextConverters = true;
 			super.doOperation(operation);

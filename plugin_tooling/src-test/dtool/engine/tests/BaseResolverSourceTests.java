@@ -26,7 +26,6 @@ import java.util.Map;
 
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.fntypes.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -39,6 +38,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import dtool.ast.definitions.DefUnit;
 import dtool.engine.analysis.ModuleProxy;
+import dtool.engine.operations.DeeSymbolCompletionResult.ECompletionResultStatus;
 import dtool.parser.DeeParserSourceTests;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;

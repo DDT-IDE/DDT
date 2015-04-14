@@ -21,7 +21,7 @@ import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import dtool.engine.operations.CodeCompletionOperation;
-import dtool.engine.operations.DeeCompletionSearchResult;
+import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.ResolveDocViewOperation;
@@ -97,7 +97,7 @@ public class DToolServer implements ISimpleStatusLogger {
 		return new ResolveDocViewOperation(getSemanticManager(), filePath, offset, null, dubPath).perform();
 	}
 	
-	public DeeCompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath, String dubPath) 
+	public DeeSymbolCompletionResult doCodeCompletion(Path filePath, int offset, Location compilerPath, String dubPath) 
 			throws CommonException {
 		Path path = compilerPath == null ? null : compilerPath.path;
 		return new CodeCompletionOperation(getSemanticManager(), filePath, offset, path, dubPath).doCodeCompletion();

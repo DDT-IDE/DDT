@@ -14,17 +14,16 @@ import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIV
 import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
+import dtool.engine.operations.DeeSymbolCompletionResult.ECompletionResultStatus;
 import dtool.engine.tests.DefUnitResultsChecker;
 
 public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
-	protected CompletionSearchResult doOperation(Location filePath, int offset) throws Exception {
+	protected DeeSymbolCompletionResult doOperation(Location filePath, int offset) throws Exception {
 		return dtoolEngine.doCodeCompletion(filePath.path, offset, null, testsDubPath());
 	}
 	
@@ -135,7 +134,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
 	protected void testFindDefinition(Location modulePath, int offset,  
 			ECompletionResultStatus resultStatus, int replaceLength, String... expectedResults) throws Exception {
-		CompletionSearchResult opResult = doOperation(modulePath, offset);
+		DeeSymbolCompletionResult opResult = doOperation(modulePath, offset);
 		
 		assertTrue(opResult.resultCode == resultStatus);
 		assertTrue(opResult.getReplaceLength() == replaceLength);

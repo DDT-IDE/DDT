@@ -10,17 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.tooling._actual.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -35,12 +32,8 @@ import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
-
-import dtool.engine.operations.DeeCompletionSearchResult;
-import dtool.engine.operations.DeeCompletionSearchResult.DeeCompletionProposal;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
@@ -50,28 +43,15 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected List<ICompletionProposal> doComputeCompletionProposals(LangContentAssistInvocationContext context,
-			int offset) throws CoreException, CommonException, OperationSoftFailure {
+	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
+			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		
 		IDocument document = context.getViewer().getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		DeeCompletionSearchResult completionResult = dtoolclient.performCompletionOperation(
-			editoInputFile.path, offset, document.get(), 5000);
-		ArrayList2<DeeCompletionProposal> proposals = completionResult.getAdaptedResults();
-		
-		ArrayList2<ICompletionProposal> result = new ArrayList2<>();
-		for (DeeCompletionProposal proposal : proposals) {
-			result.add(adaptProposal(proposal));
-		}
-		
-		return result;
-	}
-	
-	@Override
-	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		throw assertFail();
+		int timeoutMillis = pm.getTimeoutMillis();
+		return dtoolclient.performCompletionOperation(editoInputFile.path, offset, document.get(), timeoutMillis)
+				.convertToCompletionResult();
 	}
 	
 	@Override
@@ -98,14 +78,14 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		return VAR_TRIGGER;
 	}
 	
-	public DeeContentAssistProposal adaptProposal(DeeCompletionProposal proposal) {
-		INamedElement namedElement = proposal.getExtraInfo();
+	public DeeContentAssistProposal adaptProposal(ToolCompletionProposal proposal) {
 		
 		String replaceString = proposal.getReplaceString();
 		int repStart = proposal.getReplaceStart();
 		int repLength = proposal.getReplaceLength();
 		Image image = createImage(proposal);
 		
+		INamedElement namedElement = proposal.getExtraData();
 		String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
 		
 		DeeContentAssistProposal completionProposal = new DeeContentAssistProposal(replaceString, repStart, repLength,
@@ -114,26 +94,23 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		return completionProposal;
 	}
 	
-	protected Image createImage(DeeCompletionProposal proposal) {
+	protected Image createImage(ToolCompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
 		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
-	public ImageDescriptor createImageDescriptor(DeeCompletionProposal proposal) {
+	public ImageDescriptor createImageDescriptor(ToolCompletionProposal proposal) {
+		
+		INamedElement namedElement = proposal.getExtraData();
+		if(namedElement == null) {
+			// Return no image
+			return null;
+		}
+		
 		ElementIconsStyle iconStyle = DeeElementImageProvider.getIconStylePreference();
 		
-		DefElementDescriptor defDescriptor = null;
-		
-		if(proposal.getExtraInfo() instanceof INamedElement) {
-			INamedElement defElement = proposal.getExtraInfo();
-			defDescriptor = new DefElementDescriptor(defElement);
-		} 
-		
-		if(defDescriptor != null) {
-			return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, iconStyle);
-		}
-		// Return no image
-		return null;
+		DefElementDescriptor defDescriptor = new DefElementDescriptor(namedElement);
+		return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, iconStyle);
 	}
 	
 }

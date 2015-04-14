@@ -21,7 +21,6 @@ import java.util.HashSet;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.tests.DeeCoreTestResources;
@@ -44,6 +43,7 @@ import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
+import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.tests.DefUnitResultsChecker;
 
 
@@ -240,8 +240,8 @@ public class DToolClient_Test extends CommonCoreTest {
 			throws CoreException, IOException {
 		Path filePath = file.getLocation().toFile().toPath();
 		
-		CompletionSearchResult cc = client.performCompletionOperation(filePath, offset, fileContents, 5000);
-		new DefUnitResultsChecker(cc.getResults()).simpleCheckResults(results);
+		DeeSymbolCompletionResult cc = client.performCompletionOperation(filePath, offset, fileContents, 5000);
+		new DefUnitResultsChecker(cc.getElementResults()).simpleCheckResults(results);
 	}
 	
 }

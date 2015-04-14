@@ -33,7 +33,7 @@ import org.eclipse.dltk.core.ModelException;
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.SemanticManager;
-import dtool.engine.operations.DeeCompletionSearchResult;
+import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 
@@ -207,20 +207,20 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 		getServerSemanticManager().discardWorkingCopy(filePath);
 	}
 	
-	public DeeCompletionSearchResult performCompletionOperation(final Path filePath, final int offset, 
+	public DeeSymbolCompletionResult performCompletionOperation(final Path filePath, final int offset, 
 			String source, final int timeoutMillis) throws CoreException {
 		
 		return new CodeCompletionOperation(filePath, source, timeoutMillis, offset).runSemanticServerOperation();
 	}
 	
-	public class CodeCompletionOperation extends SemanticEngineOperation<DeeCompletionSearchResult> {
+	public class CodeCompletionOperation extends SemanticEngineOperation<DeeSymbolCompletionResult> {
 		
 		public CodeCompletionOperation(Path filePath, String source, int timeoutMillis, int offset) {
 			super(filePath, source, offset, timeoutMillis, "Code Completion");
 		}
 		
 		@Override
-		protected DeeCompletionSearchResult doRunOperationWithWorkingCopy() throws CoreException {
+		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy() throws CoreException {
 			return doCodeCompletion(filePath, offset, DToolClient.compilerPathOverride);
 		}
 		
@@ -253,7 +253,7 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 	/* ----------------- Engine client requests ----------------- */
 	
 	
-	protected DeeCompletionSearchResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
+	protected DeeSymbolCompletionResult doCodeCompletion(Path filePath, int offset, Location compilerPath) 
 			throws CoreException {
 		try {
 			return dtoolServer.doCodeCompletion(filePath, offset, compilerPath, 

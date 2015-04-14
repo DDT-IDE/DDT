@@ -19,10 +19,9 @@ import java.nio.file.Path;
 import melnorme.lang.tooling.ast.CommonLanguageElement;
 import melnorme.lang.tooling.ast.util.ASTNodeFinderExtension;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.completion.CompletionLocationInfo;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.ECompletionResultStatus;
-import melnorme.lang.tooling.engine.completion.CompletionSearchResult.CompletionLocationInfo;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -30,6 +29,7 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefModule;
 import dtool.engine.ResolvedModule;
 import dtool.engine.SemanticManager;
+import dtool.engine.operations.DeeSymbolCompletionResult.ECompletionResultStatus;
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult;
 import dtool.parser.DeeTokens;
@@ -43,12 +43,12 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		super(semanticManager, filePath, offset, compilerPath, dubPath);
 	}
 	
-	public DeeCompletionSearchResult doCodeCompletion() throws CommonException {
+	public DeeSymbolCompletionResult doCodeCompletion() throws CommonException {
 		ResolvedModule resolvedModule = getResolvedModule(fileLoc);
 		return doCodeCompletion(resolvedModule, offset);
 	}
 	
-	public static DeeCompletionSearchResult doCodeCompletion(ResolvedModule resolvedModule, int offset) {
+	public static DeeSymbolCompletionResult doCodeCompletion(ResolvedModule resolvedModule, int offset) {
 		return completionSearch(resolvedModule.getParsedModule(), offset, resolvedModule.getSemanticContext());
 	}
 	
@@ -68,7 +68,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return false;
 	}
 	
-	public static DeeCompletionSearchResult completionSearch(DeeParserResult parseResult, int offset, 
+	public static DeeSymbolCompletionResult completionSearch(DeeParserResult parseResult, int offset, 
 			ISemanticContext context) {
 		
 		assertTrue(isInRange(0, offset, parseResult.source.length()));
@@ -81,12 +81,12 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 			&& isInsideRange(tokenAtOffsetLeft.getStartPos(), offset, tokenAtOffsetLeft.getEndPos()) 
 			&& !canCodeCompleteInsideToken(tokenAtOffsetLeft, offset)
 		) {
-			return new DeeCompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
+			return new DeeSymbolCompletionResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION);
 		}
 		if(tokenAtOffsetLeft != null 		
 			&& tokenAtOffsetLeft.getType().getGroupingToken() == DeeTokens.GROUP_FLOAT
 			&& tokenAtOffsetLeft.getSourceValue().endsWith(".")) {
-			return new DeeCompletionSearchResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
+			return new DeeSymbolCompletionResult(ECompletionResultStatus.INVALID_TOKEN_LOCATION_FLOAT);
 		}
 		
 		final IToken nameToken;
@@ -182,12 +182,12 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		return new CompletionLocationInfo(offset, moduleQualifiedNameCanonicalPrefix, rplLen);
 	}
 	
-	public static DeeCompletionSearchResult performCompletionSearch(CompletionLocationInfo locationInfo, 
+	public static DeeSymbolCompletionResult performCompletionSearch(CompletionLocationInfo locationInfo, 
 			ISemanticContext context, CommonLanguageElement element) {
 		CompletionScopeLookup search = new CompletionScopeLookup(locationInfo.offset, context, 
 			locationInfo.searchPrefix);
 		element.performNameLookup(search);
-		return new DeeCompletionSearchResult(locationInfo, search.getMatchedElements());
+		return new DeeSymbolCompletionResult(locationInfo, search.getMatchedElements());
 	}
 	
 }
