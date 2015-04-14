@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.compiler.CharOperation;
@@ -55,14 +55,14 @@ public abstract class ScriptTemplateCompletionProcessor extends
 
 	private static final Comparator<TemplateProposal> comparator = new ProposalComparator();
 
-	private final LangContentAssistInvocationContext context;
+	private final SourceOperationContext context;
 
-	public ScriptTemplateCompletionProcessor(LangContentAssistInvocationContext context) {
+	public ScriptTemplateCompletionProcessor(SourceOperationContext context) {
 		Assert.isNotNull(context);
 		this.context = context;
 	}
 
-	protected LangContentAssistInvocationContext getContext() {
+	protected SourceOperationContext getContext() {
 		return this.context;
 	}
 

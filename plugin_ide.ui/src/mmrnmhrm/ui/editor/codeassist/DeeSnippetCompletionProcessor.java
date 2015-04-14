@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType;
 import _org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
@@ -20,7 +20,7 @@ public class DeeSnippetCompletionProcessor extends ScriptTemplateCompletionProce
 	
 	private static char[] IGNORE = { '.' };
 	
-	public DeeSnippetCompletionProcessor(LangContentAssistInvocationContext context) {
+	public DeeSnippetCompletionProcessor(SourceOperationContext context) {
 		super(context);
 	}
 	

@@ -4,11 +4,11 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.List;
 
-import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import mmrnmhrm.core.engine_client.CompletionEngine_Test;
 import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -31,7 +31,7 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 				
 				DeeCompletionProposalComputer caComputer = new DeeCompletionProposalComputer();
 				List<ICompletionProposal> proposals = caComputer.computeCompletionProposals(
-					new LangContentAssistInvocationContext(editor.getSourceViewer_(), offset, editor));
+					new SourceOperationContext(editor.getSourceViewer_(), offset, editor));
 				
 				for (ICompletionProposal completionProposal : proposals) {
 					

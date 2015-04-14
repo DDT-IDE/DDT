@@ -13,8 +13,8 @@ package mmrnmhrm.ui.editor.codeassist;
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
+import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.ide.ui.text.completion.LangContentAssistInvocationContext;
 import melnorme.lang.tooling._actual.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -43,10 +43,10 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(LangContentAssistInvocationContext context, int offset,
+	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
 			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		
-		IDocument document = context.getViewer().getDocument();
+		IDocument document = context.getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
 		
 		int timeoutMillis = pm.getTimeoutMillis();
@@ -55,7 +55,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(LangContentAssistInvocationContext context) {
+	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		return super.computeContextInformation(context);
 	}
 	
