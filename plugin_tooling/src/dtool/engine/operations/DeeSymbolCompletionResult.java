@@ -12,7 +12,7 @@ package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling._actual.ToolCompletionProposal;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.symbols.INamedElement;

@@ -15,7 +15,7 @@ import java.util.List;
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.tooling._actual.ToolCompletionProposal;
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
