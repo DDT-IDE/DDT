@@ -82,6 +82,18 @@
 		</hyperlinkDetector>
 	</extension>
 	
+	<extension point="org.eclipse.ui.editors.templates">
+		<contextType
+			class="mmrnmhrm.ui.editor.templates.DeeTemplateContextType"
+			id="DeeUniversalTemplateContextType"
+			name="%LangTemplateContext.name">
+		</contextType>
+		<include
+			file="templates/default-templates.xml"
+			translations="templates/default-templates.properties">
+		</include>
+	</extension>
+	
 	<!-- ============ Actions/Commands ============= -->
 	
 	<extension point="org.eclipse.ui.commands">
@@ -299,20 +311,7 @@
    
 	
 	<!-- ============ EDITOR related TODO ============= -->
-	
-   <extension point="org.eclipse.ui.editors.templates">
-      <contextType
-             class="mmrnmhrm.ui.editor.templates.DeeUniversalTemplateContextType"
-             id="DeeUniversalTemplateContextType"
-             name="%LangTemplateContext.name">
-      </contextType>
-      <include
-             file="templates/default-templates.xml"
-             translations="templates/default-templates.properties">
-      </include>
-   </extension>
-	
-   <!-- ============ other extensions ============= -->
+	<!-- ============ other extensions ============= -->
    
    <extension
         point="org.eclipse.dltk.ui.modelLabelProvider">

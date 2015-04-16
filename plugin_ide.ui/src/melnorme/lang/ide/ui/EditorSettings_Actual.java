@@ -50,6 +50,8 @@ public class EditorSettings_Actual {
 		
 	}
 	
+	public static final String TEMPLATE_CONTEXT_TYPE_ID = "DeeUniversalTemplateContextType";
+	
 	/* ----------------- actions ----------------- */
 	
 	public static interface EditorCommandIds {
