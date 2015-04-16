@@ -268,27 +268,27 @@
 		</page>
 		
       <page
-             category="org.dsource.ddt.ide.ui.PreferencePages.Root"
-             id=      "org.dsource.ddt.ide.ui.PreferencePages.Appearance"
-             class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
-             name="%LangAppearancePreferencePage.name"/>
-      <page
            category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
            id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.ContentAssist"
            class="mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage"
            name="%LangContentAssistPreferencePage.name">
       </page>
-      <page
-              category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
-              id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.CodeTemplates"
-              class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"
-              name="%LangCodeTemplatesPreferencePage.name" />
+		<page
+			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
+			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.CodeTemplates"
+			class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"
+			name="%LangCodeTemplatesPreferencePage.name" />
       <page
             category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
             id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.Folding"
             class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
             name="%LangEditorFoldingPreferencePage.name">
       </page>
+      <page
+             category="org.dsource.ddt.ide.ui.PreferencePages.Root"
+             id=      "org.dsource.ddt.ide.ui.PreferencePages.Appearance"
+             class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
+             name="%LangAppearancePreferencePage.name"/>
 	</extension>
 	
 	<extension point="org.eclipse.ui.propertyPages">

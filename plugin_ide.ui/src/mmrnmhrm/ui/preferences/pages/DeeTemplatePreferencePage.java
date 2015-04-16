@@ -1,50 +1,10 @@
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.templates.TemplateRegistry;
-import mmrnmhrm.core.text.DeePartitions;
+import melnorme.lang.ide.ui.templates.LangTemplatePreferencePage;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.text.DeeTextTools;
 
-import org.eclipse.jface.text.IDocument;
-
-import _org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
-
-public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
-	
-	private static final String DEE_TEMPLATE_PREFPAGE_TITLE = "Code Templates";
+public class DeeTemplatePreferencePage extends LangTemplatePreferencePage {
 	
 	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.CodeTemplates";
-	
-	@Override
-	public void setTitle(String title) {
-		super.setTitle(DEE_TEMPLATE_PREFPAGE_TITLE);
-	}
-	
-	@Override
-	protected void setPreferenceStore() {
-		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
-	}
-	
-	@Override
-	protected TemplateRegistry getTemplateRegistry() {
-		return LangUIPlugin.getTemplateRegistry();
-	}
-	
-	@Override
-	protected DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration() {
-		return new DeeSimpleSourceViewerConfiguration(LangUIPlugin.getInstance().getColorManager(), 
-			getPreferenceStore(), null, false);
-	}
-	
-	@Override
-	protected void setDocumentPartitioner(IDocument document) {
-		getTextTools().setupDocumentPartitioner(document, DeePartitions.PARTITIONING_ID);
-	}
-	
-	protected DeeTextTools getTextTools() {
-		return DeeUIPlugin.getDefault().getTextTools();
-	}
 	
 }

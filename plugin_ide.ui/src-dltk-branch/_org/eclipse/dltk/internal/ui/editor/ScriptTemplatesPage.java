@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import melnorme.lang.ide.ui.templates.LangTemplateContextType;
+import melnorme.lang.ide.ui.templates.LangTemplatePreferencePage.LangEditTemplateDialog;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -52,7 +53,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
 
 import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
-import _org.eclipse.dltk.ui.preferences.EditTemplateDialog;
 
 /**
  * The templates page for the Script editor.
@@ -212,8 +212,8 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 	@Override
 	protected Template editTemplate(Template template, boolean edit,
 			boolean isNameModifiable) {
-		EditTemplateDialog dialog = new EditTemplateDialog(uiToolkit(),
-				getSite().getShell(), template, edit, isNameModifiable, true,
+		LangEditTemplateDialog dialog = new LangEditTemplateDialog(
+				getSite().getShell(), template, edit, isNameModifiable, 
 				getContextTypeRegistry());
 		if (dialog.open() == Window.OK)
 			return dialog.getTemplate();

@@ -11,8 +11,6 @@
 package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
-import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
@@ -133,11 +131,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		@Override
 		protected DeeCompletionProposalComputer createDefaultSymbolsProposalComputer() {
 			return new DeeCompletionProposalComputer();
-		}
-		
-		@Override
-		protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
-			return new LangTemplateCompletionProposalComputer();
 		}
 	}
 	

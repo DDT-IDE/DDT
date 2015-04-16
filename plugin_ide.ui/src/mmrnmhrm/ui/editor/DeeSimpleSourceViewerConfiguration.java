@@ -10,7 +10,6 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
@@ -24,8 +23,8 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	private boolean fConfigureFormatter;
 	
 	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
-			AbstractDecoratedTextEditor editor, boolean configureFormatter) {
-		super(colorManager, preferenceStore, editor);
+			boolean configureFormatter) {
+		super(colorManager, preferenceStore, null);
 		fConfigureFormatter = configureFormatter;
 	}
 	
@@ -74,8 +73,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, 
-			boolean doCodeResolve) {
+	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
 		return null;
 	}
 	

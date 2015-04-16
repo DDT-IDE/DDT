@@ -11,6 +11,7 @@ A less intrusive message is shown in the bottom of the workbench window.
   * For DMD: `$DIR/bin/dmd` → `$DIR/include/d2/`  (DMD OSX Homebrew package)
   * For LDC: `$DIR/bin/ldc2` → `$DIR/include/d/•$DIR/include/d/ldc`  (MSCV archive, and LDC built from source)
  * Added #107: allow content assist inside token strings (`q{ ... }`)
+ * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)

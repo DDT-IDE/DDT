@@ -80,7 +80,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	public DeeSimpleSourceViewerConfiguration createSourceViewerConfiguration2() {
 		return new DeeSimpleSourceViewerConfiguration(LangUIPlugin.getInstance().getColorManager(),
-				getPreferenceStore(), null, false);
+				getPreferenceStore(), false);
 	}
 	
 	@Override
