@@ -17,6 +17,7 @@ import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
+import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -51,6 +52,9 @@ public class EditorSettings_Actual {
 	}
 	
 	public static final String TEMPLATE_CONTEXT_TYPE_ID = "DeeUniversalTemplateContextType";
+	
+	public static final String CODE_DEFAULT_COLOR = DeeColorPreferences.DEFAULT.key;
+	
 	
 	/* ----------------- actions ----------------- */
 	
