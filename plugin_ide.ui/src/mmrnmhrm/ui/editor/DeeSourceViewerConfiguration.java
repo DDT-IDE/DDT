@@ -10,24 +10,17 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import java.util.List;
-
 import melnorme.lang.ide.ui.editor.BestMatchHover;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.templates.LangTemplateCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.ILangCompletionProposalComputer;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
-import melnorme.lang.tooling.ops.OperationSoftFailure;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.CoreUtil;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
-import mmrnmhrm.ui.editor.codeassist.DeeSnippetCompletionProcessor;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,13 +28,11 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
@@ -146,17 +137,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		
 		@Override
 		protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
-			return new DeeCompletionProposalComputer() {
-				@Override
-				protected List<ICompletionProposal> doComputeCompletionProposals(SourceOperationContext context,
-						int offset) throws CoreException, CommonException, OperationSoftFailure {
-					TemplateCompletionProcessor tplProcessor = new DeeSnippetCompletionProcessor(context);
-					ICompletionProposal[] proposals = tplProcessor.computeCompletionProposals(
-						context.getViewer_nonNull(), context.getInvocationOffset());
-					
-					return CoreUtil.listFrom(proposals);
-				}
-			};
+			return new LangTemplateCompletionProposalComputer();
 		}
 	}
 	

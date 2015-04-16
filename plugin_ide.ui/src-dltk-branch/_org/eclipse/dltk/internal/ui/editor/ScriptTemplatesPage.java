@@ -14,13 +14,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import melnorme.lang.ide.ui.templates.LangTemplateContextType;
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
+import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.dltk.ui.text.templates.TemplateVariableProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -51,7 +53,6 @@ import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
 
 import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
 import _org.eclipse.dltk.ui.preferences.EditTemplateDialog;
-import _org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 
 /**
  * The templates page for the Script editor.
@@ -63,7 +64,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 
 	private final TemplateVariableProcessor fTemplateProcessor;
 	private final ScriptEditor fScriptEditor;
-	private final ITemplateAccess fTemplateAccess;
+	private final TemplateRegistry fTemplateAccess;
 
 	/**
 	 * Create a new AbstractTemplatesPage for the JavaEditor
@@ -71,8 +72,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 	 * @param scriptEditor
 	 *            the java editor
 	 */
-	public ScriptTemplatesPage(ScriptEditor scriptEditor,
-			ITemplateAccess templateAccess) {
+	public ScriptTemplatesPage(ScriptEditor scriptEditor, TemplateRegistry templateAccess) {
 		super(scriptEditor, scriptEditor.getSourceViewer_());
 		fScriptEditor = scriptEditor;
 		fTemplateProcessor = new TemplateVariableProcessor();
@@ -130,7 +130,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 
 		TemplateContextType type = getContextTypeRegistry().getContextType(template.getContextTypeId());
 		
-		DocumentTemplateContext context = ((ScriptTemplateContextType) type).createContext(document, position);
+		DocumentTemplateContext context = ((LangTemplateContextType) type).createContext(document, position, null);
 		context.setVariable("selection", savedText); //$NON-NLS-1$
 		if (context.getKey().length() == 0) {
 			try {
@@ -154,7 +154,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 
 	@Override
 	protected IPreferenceStore getTemplatePreferenceStore() {
-		return fTemplateAccess.getTemplatePreferenceStore();
+		return fTemplateAccess.getPreferenceStore();
 	}
 
 	@Override
@@ -318,24 +318,10 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 				&& ch != '{' && ch != '}' && ch != ';';
 	}
 
-	/**
-	 * Get context
-	 * 
-	 * @param document
-	 *            the document
-	 * @param template
-	 *            the template
-	 * @param offset
-	 *            the offset
-	 * @param length
-	 *            the length
-	 * @return the context
-	 */
-	private DocumentTemplateContext getContext(IDocument document,
-			Template template, final int offset, int length) {
+	protected DocumentTemplateContext getContext(IDocument document, Template template, final int offset, int length) {
 		final ScriptTemplateContextType contextType = (ScriptTemplateContextType) getContextTypeRegistry()
 				.getContextType(template.getContextTypeId());
-		return contextType.createContext(document, offset, length);
+		return contextType.createContext(document, offset, length, null);
 	}
 
 	/**

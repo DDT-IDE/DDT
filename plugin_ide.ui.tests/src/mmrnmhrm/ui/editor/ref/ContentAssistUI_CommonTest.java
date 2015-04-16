@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
@@ -31,8 +32,6 @@ import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.source.ISourceViewer;
-
-import _org.eclipse.dltk.ui.templates.ScriptTemplateProposal;
 
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
@@ -93,7 +92,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	public static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
 		for(ICompletionProposal completionProposal : proposals) {
-			if(completionProposal instanceof ScriptTemplateProposal) {
+			if(completionProposal instanceof LangTemplateProposal) {
 				continue;
 			}
 			DeeContentAssistProposal proposal = (DeeContentAssistProposal) completionProposal;

@@ -1,15 +1,14 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.eclipse.jface.text.IDocument;
 
-import _org.eclipse.dltk.ui.templates.ScriptTemplateAccess;
 import _org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 
 public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
@@ -29,8 +28,8 @@ public class DeeTemplatePreferencePage extends ScriptTemplatePreferencePage {
 	}
 	
 	@Override
-	protected ScriptTemplateAccess getTemplateAccess() {
-		return DeeTemplateAccess.getInstance();
+	protected TemplateRegistry getTemplateRegistry() {
+		return LangUIPlugin.getTemplateRegistry();
 	}
 	
 	@Override

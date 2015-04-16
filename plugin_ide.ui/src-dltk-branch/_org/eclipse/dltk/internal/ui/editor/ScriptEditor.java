@@ -17,7 +17,10 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeeTextTools;
 
@@ -48,9 +51,7 @@ import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
-import org.eclipse.dltk.ui.DLTKUILanguageManager;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
@@ -58,7 +59,6 @@ import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
-import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -441,14 +441,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	 * @since 3.0
 	 */
 	protected ScriptTemplatesPage createTemplatesPage() {
-		final IDLTKUILanguageToolkit uiToolkit = getUILanguageToolkit();
-		if (uiToolkit == null) {
-			return null;
-		}
-		final ITemplateAccess templateAccess = uiToolkit.getEditorTemplates();
-		if (templateAccess == null) {
-			return null;
-		}
+		final TemplateRegistry templateAccess = LangUIPlugin.getTemplateRegistry();
 		try {
 			return new ScriptTemplatesPage(this, templateAccess);
 		} catch (Throwable e) {
@@ -1386,8 +1379,8 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		return DeeLanguageToolkit.getDefault();
 	}
 	
-	protected IDLTKUILanguageToolkit getUILanguageToolkit() {
-		return DLTKUILanguageManager.getLanguageToolkit(getNatureId());
+	protected DeeUILanguageToolkit getUILanguageToolkit() {
+		return DeeUILanguageToolkit.getDefault();
 	}
 
 	/*
@@ -1539,7 +1532,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	@Override
 	protected String[] collectContextMenuPreferencePages() {
 		final List<String> result = new ArrayList<String>();
-		final IDLTKUILanguageToolkit uiToolkit = getUILanguageToolkit();
+		final DeeUILanguageToolkit uiToolkit = getUILanguageToolkit();
 		addPages(result, uiToolkit.getEditorPreferencePages());
 		addPages(result, super.collectContextMenuPreferencePages());
 		return result.toArray(new String[result.size()]);

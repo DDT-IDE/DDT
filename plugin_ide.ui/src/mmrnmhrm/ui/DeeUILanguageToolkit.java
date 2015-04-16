@@ -15,7 +15,6 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.editor.templates.DeeTemplateAccess;
 import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
@@ -70,7 +69,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	
 	@Override
 	public ITemplateAccess getEditorTemplates() {
-		return DeeTemplateAccess.getInstance();
+		throw assertFail();
 	}
 	
 	@Deprecated

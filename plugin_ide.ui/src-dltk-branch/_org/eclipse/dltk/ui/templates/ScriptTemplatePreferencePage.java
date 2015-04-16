@@ -9,6 +9,8 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.templates;
 
+import melnorme.lang.ide.ui.templates.TemplateRegistry;
+
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ui.templates.CodeTemplateSourceViewerConfigurationAdapter;
@@ -79,7 +81,7 @@ public abstract class ScriptTemplatePreferencePage extends
 	public ScriptTemplatePreferencePage() {
 		setPreferenceStore();
 
-		ScriptTemplateAccess tplAccess = getTemplateAccess();
+		TemplateRegistry tplAccess = getTemplateRegistry();
 		setTemplateStore(tplAccess.getTemplateStore());
 		setContextTypeRegistry(tplAccess.getContextTypeRegistry());
 	}
@@ -227,7 +229,7 @@ public abstract class ScriptTemplatePreferencePage extends
 
 	protected abstract ScriptSourceViewerConfiguration createSourceViewerConfiguration();
 
-	protected abstract ScriptTemplateAccess getTemplateAccess();
+	protected abstract TemplateRegistry getTemplateRegistry();
 
 	protected abstract void setDocumentPartitioner(IDocument document);
 
