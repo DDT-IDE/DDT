@@ -120,9 +120,9 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
-import _org.eclipse.dltk.internal.ui.text.hover.SourceViewerInformationControl;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
+import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
 /* FIXME: need to review this class */
 public abstract class ScriptEditor extends AbstractLangEditor
@@ -1287,18 +1287,14 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		fProjectionSupport.setHoverControlCreator(new IInformationControlCreator() {
 			@Override
 			public IInformationControl createInformationControl(Shell shell) {
-				int shellStyle = SWT.TOOL | SWT.NO_TRIM | getOrientation();
 				String statusFieldText = EditorsUI.getTooltipAffordanceString();
-				return new SourceViewerInformationControl(shell, shellStyle, SWT.NONE, statusFieldText);
+				return new SourceViewerInformationControl(shell, false, getOrientation(), statusFieldText);
 			}
 		});
 		fProjectionSupport.setInformationPresenterControlCreator(new IInformationControlCreator() {
 			@Override
-			public IInformationControl createInformationControl(
-					Shell shell) {
-				int shellStyle = SWT.RESIZE | SWT.TOOL | getOrientation();
-				int style = SWT.V_SCROLL | SWT.H_SCROLL;
-				return new SourceViewerInformationControl(shell, shellStyle, style);
+			public IInformationControl createInformationControl(Shell shell) {
+				return new SourceViewerInformationControl(shell, true, getOrientation(), null);
 			}
 		});
 		
