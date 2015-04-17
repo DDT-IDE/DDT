@@ -71,7 +71,6 @@ import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.Messages;
 import org.eclipse.dltk.internal.ui.editor.SourceForwardingDocumentProvider;
-import org.eclipse.dltk.internal.ui.text.IProblemRequestorExtension;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
@@ -127,6 +126,8 @@ import org.eclipse.ui.texteditor.MarkerAnnotation;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.ui.texteditor.ResourceMarkerAnnotationModel;
 import org.eclipse.ui.texteditor.spelling.SpellingAnnotation;
+
+import _org.eclipse.dltk.internal.ui.text.IProblemRequestorExtension;
 
 public class SourceModuleDocumentProvider extends TextFileDocumentProvider
 		implements ISourceModuleDocumentProvider {

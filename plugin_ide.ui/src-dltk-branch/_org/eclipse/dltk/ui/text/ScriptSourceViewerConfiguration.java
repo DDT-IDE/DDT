@@ -11,21 +11,20 @@ package _org.eclipse.dltk.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.ui.editor.text.LangReconciler;
+import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
-import org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
-import org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverProxy;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.text.ScriptOutlineInformationControl;
-import org.eclipse.dltk.ui.text.spelling.SpellCheckDelegate;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -41,7 +40,6 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
-import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -51,7 +49,9 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
+import _org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
 import _org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
+import _org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
 /* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
@@ -81,26 +81,11 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 	}
 	
 	@Override
-	public IReconciler getReconciler(ISourceViewer sourceViewer) {
-		final ITextEditor editor = getEditor();
-		if (editor != null && editor.isEditable()) {
-			/* FIXME: DLTK: review ScriptCompositeReconcilingStrategy */
-			ScriptCompositeReconcilingStrategy strategy = new ScriptCompositeReconcilingStrategy(
-					editor, getConfiguredDocumentPartitioning(sourceViewer),
-					createSpellCheckDelegate());
-			ScriptReconciler reconciler = new ScriptReconciler(editor, strategy, false);
-			reconciler.setIsAllowedToModifyDocument(false);
-			reconciler.setIsIncrementalReconciler(false);
-			reconciler.setProgressMonitor(new NullProgressMonitor());
-			reconciler.setDelay(500);
-
-			return reconciler;
-		}
-		return null;
-	}
-	
-	protected SpellCheckDelegate createSpellCheckDelegate() {
-		return new SpellCheckDelegate();
+	protected LangReconciler doCreateReconciler(ITextEditor editor) {
+		ScriptCompositeReconcilingStrategy strategy = new ScriptCompositeReconcilingStrategy(editor, 
+			new LangReconcilingStrategy(editor));
+		ScriptReconciler reconciler = new ScriptReconciler(editor, strategy, false);
+		return reconciler;
 	}
 	
 	/**

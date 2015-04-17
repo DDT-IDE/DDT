@@ -23,7 +23,6 @@ import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.editor.highlighting.HighlightedPosition;
 import org.eclipse.dltk.ui.editor.highlighting.HighlightingStyle;
@@ -39,6 +38,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import _org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 
 /**
  * Semantic highlighting reconciler - Background thread implementation.

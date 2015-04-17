@@ -48,7 +48,6 @@ import org.eclipse.dltk.internal.ui.editor.IScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
-import org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
@@ -120,6 +119,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
+import _org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
