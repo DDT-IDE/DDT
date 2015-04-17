@@ -3,10 +3,12 @@ package melnorme.lang.ide.ui;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
+import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
+import mmrnmhrm.ui.editor.structure.DeeStructureModelManager;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
 
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -37,6 +39,10 @@ public final class LangUIPlugin_Actual {
 	
 	public static DeeAutoEditStrategy createAutoEditStrategy(ISourceViewer sourceViewer, String contentType) {
 		return new DeeAutoEditStrategy(contentType, sourceViewer);
+	}
+	
+	public static StructureModelManager createStructureModelManager() {
+		return new DeeStructureModelManager();
 	}
 	
 	/* ----------------- UI messages:  ----------------- */
