@@ -8,15 +8,15 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tooling.structure;
+package melnorme.lang.tooling;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
-import melnorme.lang.tooling.AbstractKindVisitor;
-import melnorme.lang.tooling.LANG_SPECIFIC;
-
 
 @LANG_SPECIFIC
-public enum StructureElementKind {
+public enum CompletionProposalKind {
+	
+	KEYWORD,
+	UNKNOWN,
 	
 	VARIABLE,
 	
@@ -26,53 +26,30 @@ public enum StructureElementKind {
 	CLASS,
 	INTERFACE,
 	STRUCT,
-	UNION,
 	
-	MODULEDEC,
+	MODULEDEC;
 	
-	TEMPLATE,
-	ALIAS,
-	
-	MIXIN,
-	
-	ENUMCONTAINER,
-	ENUM;
-	
-	public static abstract class StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+	public static abstract class ProposalKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
-		
-		public RET switchOnKind(StructureElementKind kind) {
+		public RET switchOnKind(CompletionProposalKind kind) {
 			switch(kind) {
+			case KEYWORD: return visitKeyword();
+			case UNKNOWN: return visitUnknown();
+			
 			case VARIABLE: return visitVariable();
 			
 			case FUNCTION: return visitFunction();
 			case CONSTRUCTOR: return visitConstructor();
 			
+			case STRUCT: return visitStruct();
 			case CLASS: return visitClass();
 			case INTERFACE: return visitInterface();
-			case STRUCT: return visitStruct();
-			case UNION: return visitUnion();
 			
 			case MODULEDEC: return visitModule();
 			
-			case TEMPLATE: return visitTemplate();
-			case ALIAS: return visitAlias();
-			
-			case MIXIN: return visitMixin();
-			case ENUMCONTAINER: return visitEnum();
-			case ENUM: return visitEnumElement();
 			}
 			throw assertUnreachable();
 		}
-		
-		protected abstract RET visitUnion();
-		
-		protected abstract RET visitMixin();
-		
-		protected abstract RET visitTemplate();
-		protected abstract RET visitAlias();
-		
-		protected abstract RET visitEnumElement();
 		
 	}
 	

@@ -12,6 +12,7 @@ package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
 import melnorme.lang.tooling.completion.LangCompletionResult;
@@ -73,9 +74,12 @@ public class DeeSymbolCompletionResult {
 	
 	public static ToolCompletionProposal createProposal(CompletionLocationInfo invocationInfo, int replaceLength, 
 			INamedElement namedElem) {
+		int rplOffset = invocationInfo.offset;
 		String rplName = namedElem.getName();
 		String rplString = rplName.substring(invocationInfo.namePrefixLen);
-		return new ToolCompletionProposal(invocationInfo.offset, rplString, replaceLength, namedElem);
+		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
+		String moduleName = null; // TODO
+		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, rplString, kind, moduleName, namedElem);
 	}
 	
 	public enum ECompletionResultStatus {

@@ -10,11 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
+import melnorme.lang.ide.ui.views.LangImageProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -82,9 +85,9 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	public DeeContentAssistProposal adaptToolProposal(ToolCompletionProposal proposal) {
 		
 		String replaceString = proposal.getReplaceString();
-		int repStart = proposal.getReplaceStart();
+		int repStart = proposal.getReplaceOffset();
 		int repLength = proposal.getReplaceLength();
-		Image image = createImage(proposal);
+		Image image = getImage(proposal);
 		
 		INamedElement namedElement = proposal.getExtraData();
 		String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
@@ -95,9 +98,15 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		return completionProposal;
 	}
 	
-	protected Image createImage(ToolCompletionProposal proposal) {
+	@Override
+	protected Image getImage(ToolCompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
 		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
+	}
+	
+	@Override
+	protected LangImageProvider getImageProvider() {
+		throw assertFail();
 	}
 	
 	public ImageDescriptor createImageDescriptor(ToolCompletionProposal proposal) {

@@ -10,24 +10,32 @@
  *******************************************************************************/
 package melnorme.lang.tooling;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.completion.LangToolCompletionProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
 
-public class ToolCompletionProposal extends LangToolCompletionProposal<INamedElement> {
+@LANG_SPECIFIC
+public class ToolCompletionProposal extends LangToolCompletionProposal {
 	
-	public ToolCompletionProposal(int completionLocation, String replaceString, int replaceLength,  
-			INamedElement namedElement) {
-		super(completionLocation, replaceString, replaceLength, namedElement.getExtendedName(), namedElement);
-	}
+	protected final INamedElement namedElement;
 	
-	public ToolCompletionProposal(int completionLocation, String replaceString, int replaceLength, String label, 
-			INamedElement namedElement) {
-		super(completionLocation, replaceString, replaceLength, label, namedElement);
+	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
+			CompletionProposalKind kind, String moduleName, INamedElement namedElement) {
+		super(replaceOffset, replaceLength, replaceString, label, kind, moduleName);
+		this.namedElement = namedElement;
 	}
 	
 	@Override
-	protected boolean subclassEquals(LangToolCompletionProposal<?> other) {
-		return getExtraData() == other.getExtraData();
+	protected boolean subclassEquals(LangToolCompletionProposal _other) {
+		if(!(_other instanceof ToolCompletionProposal)) return false;
+		
+		ToolCompletionProposal other = (ToolCompletionProposal) _other;
+		
+		return areEqual(namedElement, other.namedElement);
+	}
+	
+	public INamedElement getExtraData() {
+		return namedElement;
 	}
 	
 }
