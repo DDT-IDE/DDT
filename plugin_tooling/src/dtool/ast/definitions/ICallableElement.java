@@ -14,6 +14,7 @@ import melnorme.utilbox.collections.ArrayView;
 
 public interface ICallableElement {
 	
+	/** @return the ICallableElement's parameters, non-null. */
 	ArrayView<IFunctionParameter> getParameters();
 	
 }

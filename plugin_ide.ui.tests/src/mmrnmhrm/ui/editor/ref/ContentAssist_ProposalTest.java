@@ -34,12 +34,10 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 					new SourceOperationContext(editor.getSourceViewer_(), offset, editor));
 				
 				for (ICompletionProposal completionProposal : proposals) {
-					
 					assertTrue(completionProposal instanceof DeeContentAssistProposal);
 					DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
 					assertTrue(deeProposal.getReplacementOffset() == offset);
 					assertTrue(deeProposal.getReplacementLength() == rplLen);
-					assertTrue(deeProposal.getCursorPosition() == deeProposal.getReplacementString().length());
 				}
 			}
 		}.testBasic();

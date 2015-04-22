@@ -11,8 +11,10 @@
 package melnorme.lang.tooling;
 
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.completion.LangToolCompletionProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.collections.Indexable;
 
 @LANG_SPECIFIC
 public class ToolCompletionProposal extends LangToolCompletionProposal {
@@ -20,8 +22,11 @@ public class ToolCompletionProposal extends LangToolCompletionProposal {
 	protected final INamedElement namedElement;
 	
 	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
-			CompletionProposalKind kind, String moduleName, INamedElement namedElement) {
-		super(replaceOffset, replaceLength, replaceString, label, kind, moduleName);
+			CompletionProposalKind kind, String moduleName, 
+			String fullReplaceString, Indexable<SourceRange> sourceSubElements,
+			INamedElement namedElement) {
+		super(replaceOffset, replaceLength, replaceString, label, kind, moduleName, 
+			fullReplaceString, sourceSubElements);
 		this.namedElement = namedElement;
 	}
 	

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.views;
+package dtool.engine.operations;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -27,7 +27,7 @@ import dtool.ast.references.Reference;
 import dtool.ddoc.TextUI;
 import dtool.engine.analysis.IVarDefinitionLike;
 
-public class DeeElementLabelProvider {
+public class DeeNamedElementLabelProvider {
 	
 	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
 		
@@ -57,17 +57,17 @@ public class DeeElementLabelProvider {
 		switch (defUnit.getNodeType()) {
 		case DEFINITION_VARIABLE: {
 			DefinitionVariable elem = (DefinitionVariable) defUnit;
-			return elem.getName() + getTypeSegment(elem.type) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getTypeSegment(elem.type);
 		}
 		case DEFINITION_VAR_FRAGMENT: {
 			DefVarFragment elem = (DefVarFragment) defUnit;
 			Reference type = elem.getDeclaredType();
-			return elem.getName() + getTypeSegment(type) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getTypeSegment(type);
 		}
 		
 		case FUNCTION_PARAMETER: {
 			FunctionParameter elem = (FunctionParameter) defUnit;
-			return elem.getName() + getTypeSegment(elem.type) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getTypeSegment(elem.type);
 		}
 		
 		case DEFINITION_FUNCTION: {
@@ -76,26 +76,25 @@ public class DeeElementLabelProvider {
 			cp.appendList("(", elem.tplParams, ",", ") ");
 			cp.append(elem.toStringParametersForSignature());
 			cp.append(getTypeSegment(elem.retType));
-			cp.append(getDefUnitContainerSuffix(defUnit));
 			return cp.toString();
 		}
 		
 		case DEFINITION_ALIAS_FRAGMENT: {
 			DefinitionAliasFragment elem = (DefinitionAliasFragment) defUnit;
-			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getAliasSegment(elem.target);
 		}
 		case DEFINITION_ALIAS_VAR_DECL: {
 			DefinitionAliasVarDecl elem = (DefinitionAliasVarDecl) defUnit;
-			return elem.getName() + getAliasSegment(elem.target) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getAliasSegment(elem.target);
 		}
 		case ALIAS_VAR_DECL_FRAGMENT: {
 			AliasVarDeclFragment elem = (AliasVarDeclFragment) defUnit;
-			return elem.getName() + getAliasSegment(elem.getAliasTarget()) + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getAliasSegment(elem.getAliasTarget());
 		}
 		case DEFINITION_ALIAS_FUNCTION_DECL: {
 			DefinitionAliasFunctionDecl elem = (DefinitionAliasFunctionDecl) defUnit;
 			// TODO: print the correct alias target (a function type)
-			return elem.getName() + getAliasSegment(elem.target) + "(?)" + getDefUnitContainerSuffix(defUnit);
+			return elem.getName() + getAliasSegment(elem.target) + "(?)";
 		}
 		
 		
@@ -103,10 +102,10 @@ public class DeeElementLabelProvider {
 		}
 		
 		if(defUnit instanceof DefinitionAggregate) {
-			return defUnit.getName() + getDefUnitContainerSuffix(defUnit);
+			return defUnit.getName();
 		}
 		
-		return defUnit.getName() + getDefUnitContainerSuffix(defUnit);
+		return defUnit.getName();
 	}
 
 	public static String getTypeSegment(Reference typeRef) {
@@ -119,11 +118,6 @@ public class DeeElementLabelProvider {
 			targetToString = "?";
 		}
 		return " -> " + targetToString;
-	}
-	
-	public static String getDefUnitContainerSuffix(DefUnit defUnit) {
-		String moduleFullyQualifiedName = defUnit.getModuleFullName();
-		return moduleFullyQualifiedName == null ? "" : " - " + moduleFullyQualifiedName;
 	}
 	
 }

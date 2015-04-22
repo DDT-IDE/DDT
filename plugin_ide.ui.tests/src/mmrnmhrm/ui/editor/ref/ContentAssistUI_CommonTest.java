@@ -105,7 +105,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 				if(repStr.indexOf('(') != -1) {
 					repStr = repStr.substring(0, repStr.indexOf('('));
 				}
-				assertTrue(repStr.equals(proposal.getReplacementString()));				
+				assertTrue(repStr.equals(proposal.getBaseReplaceString()));				
 			}
 		}
 	}

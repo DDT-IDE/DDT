@@ -1,8 +1,9 @@
 ## DDT release ChangeLog
 
 ### DDT 0.11.1+
+ * Added: Automatic insertion of arguments for function proposal in Content Assist.
  * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
- * Added editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P)
+ * Added: Editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
  * Doc - Installation guide: Added note for users in China.
  * Fixed #102. A dialog is no longer shown when invoking content assist in invalid locations. 
 A less intrusive message is shown in the bottom of the workbench window. 
@@ -12,6 +13,7 @@ A less intrusive message is shown in the bottom of the workbench window.
   * For LDC: `$DIR/bin/ldc2` → `$DIR/include/d/•$DIR/include/d/ldc`  (MSCV archive, and LDC built from source)
  * Added #107: allow content assist inside token strings (`q{ ... }`)
  * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
+ * Fixed regression: function overloads no longer appear separately in Content Assist
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)

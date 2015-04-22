@@ -23,6 +23,7 @@ import dtool.ddoc.TextUI;
 import dtool.engine.analysis.CommonNodeSemanticsTest;
 import dtool.engine.analysis.DeeLanguageIntrinsics;
 import dtool.engine.analysis.ModuleProxy;
+import dtool.engine.operations.DeeNamedElementLabelProvider;
 
 public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	
@@ -62,7 +63,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 	
 	protected void checkLabel(INamedElement defElement, String hoverSignatureLabel, String contentAssistPopupLabel) {
 		assertEquals(TextUI.getLabelForHoverSignature(defElement), hoverSignatureLabel);
-		assertEquals(DeeElementLabelProvider.getLabelForContentAssistPopup(defElement), contentAssistPopupLabel);
+		assertEquals(DeeNamedElementLabelProvider.getLabelForContentAssistPopup(defElement), contentAssistPopupLabel);
 	}
 	
 }

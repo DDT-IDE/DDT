@@ -14,11 +14,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
+import dtool.ast.definitions.ICallableElement;
+import dtool.ast.definitions.IFunctionParameter;
 
 public class DeeSymbolCompletionResult {
 	
@@ -65,8 +69,16 @@ public class DeeSymbolCompletionResult {
 		
 		ArrayList2<ToolCompletionProposal> proposals = new ArrayList2<>();
 		for (INamedElement result : getElementResults()) {
-			ToolCompletionProposal proposal = createProposal(locationInfo, getReplaceLength(), result);
-			proposals.add(proposal);
+			if(result instanceof OverloadedNamedElement) {
+				OverloadedNamedElement overload = (OverloadedNamedElement) result;
+				
+				for (INamedElement namedElement : overload.getOverloadedElements()) {
+					proposals.add(createProposal(locationInfo, getReplaceLength(), namedElement));	
+				}
+				
+			} else {
+				proposals.add(createProposal(locationInfo, getReplaceLength(), result));
+			}
 		}
 		
 		return new LangCompletionResult(proposals);
@@ -78,8 +90,53 @@ public class DeeSymbolCompletionResult {
 		String rplName = namedElem.getName();
 		String rplString = rplName.substring(invocationInfo.namePrefixLen);
 		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
-		String moduleName = null; // TODO
-		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, rplString, kind, moduleName, namedElem);
+		String moduleName = namedElem.getModuleFullName();
+		String baseLabel = DeeNamedElementLabelProvider.getLabelForContentAssistPopup(namedElem);
+		
+		String fullReplaceString = rplString;
+		ArrayList2<SourceRange> subElements = null;
+		if(namedElem instanceof ICallableElement) {
+			ICallableElement callableElement = (ICallableElement) namedElem;
+			subElements = new ArrayList2<SourceRange>();
+			fullReplaceString = getFullReplaceString(rplString, callableElement, subElements);
+		}
+		
+		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, baseLabel, kind, moduleName, 
+			fullReplaceString, subElements, namedElem);
+	}
+	
+	public static String getFullReplaceString(String rplString, ICallableElement callableElement, 
+			ArrayList2<SourceRange> subElements) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append(rplString);
+		
+		sb.append("(");
+		boolean first = true;
+		for (IFunctionParameter param : callableElement.getParameters()) {
+			if(!first) {
+				sb.append(", ");
+			}
+			
+			String paramName = getParamNameSuggestion(param);
+			
+			subElements.add(new SourceRange(sb.length(), paramName.length()));
+			sb.append(paramName);
+			
+			first = false;
+		}
+		sb.append(")");
+		
+		return sb.toString();
+	}
+	
+	protected static String getParamNameSuggestion(IFunctionParameter param) {
+		if(param instanceof INamedElement) {
+			INamedElement namedParam = (INamedElement) param;
+			return namedParam.getName();
+		} else {
+			return "__";
+		}
 	}
 	
 	public enum ECompletionResultStatus {

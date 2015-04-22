@@ -10,26 +10,25 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
+import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
+import _org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal;
 import dtool.ddoc.TextUI;
 
-public class DeeContentAssistProposal extends ScriptCompletionProposalExtension {
+public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	
 	public final INamedElement namedElement; 
 	
-	public DeeContentAssistProposal(String replacementString, int replacementOffset, int replacementLength, 
-			Image image, String displayString, INamedElement namedElement,
-			IContextInformation contextInformation) {
-		super(replacementString, replacementOffset, replacementLength, image, displayString, contextInformation, 5);
-		this.namedElement = namedElement;
+	public DeeContentAssistProposal(ToolCompletionProposal proposal, Image image) {
+		super(proposal, null, image, null);
+		this.namedElement = proposal.getExtraData();
 	}
 	
 	@Override
@@ -38,30 +37,9 @@ public class DeeContentAssistProposal extends ScriptCompletionProposalExtension 
 	}
 	
 	@Override
-	protected boolean isSmartTrigger(char trigger) {
-		// BM: From my understanding, a smart trigger is a insertion trigger character 
-		// that doesn't get added to the text
-		return false;
-	}
-	
-	@Override
-	protected boolean isValidPrefix(String prefix) {
-		if(isInDoc()) {
-			return super.isValidPrefix(prefix);
-		}
-		return isPrefix(prefix, getReplacementString());
-	}
-	
-	@Override
 	protected boolean insertCompletion() {
 		IPreferenceStore preference = DeeUI.getInstance().getPreferenceStore();
 		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
-	}
-	
-	/** A string representation of this proposal, useful for debugging purposes only. */
-	@Override
-	public String toString() {
-		return namedElement.getName();
 	}
 	
 }

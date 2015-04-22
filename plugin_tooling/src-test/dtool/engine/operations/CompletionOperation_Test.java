@@ -14,6 +14,12 @@ import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIV
 import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
+import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.completion.LangToolCompletionProposal;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
@@ -36,22 +42,22 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1*/"), 0,
 			"abc1", "abc2"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "abc/*CC1*/"), 3,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "abc/*CC1*/"), 3,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
 		
 		
 		// Boundary condition, offset = 0 && offset = length
-		testFindDefinition(MODULE_FilePath, 0, 0,
+		testCodeCompletion(MODULE_FilePath, 0, 0,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
-		testFindDefinition(MODULE_FilePath, MODULE_Contents.length(), 0,
+		testCodeCompletion(MODULE_FilePath, MODULE_Contents.length(), 0,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
-		testFindDefinition(BUNDLE_FOO__SRC_FOLDER.resolve("empty_module.d"), 0, 0,
+		testCodeCompletion(BUNDLE_FOO__SRC_FOLDER.resolve("empty_module.d"), 0, 0,
 			concat(PRIMITIVE_TYPES, "empty_module")
 		);
 		
@@ -59,80 +65,80 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		/* -----------------  ----------------- */
 		
 		// Test qualified ref
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC2*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC2*/"), 0,
 			"xx1", "xx2"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "xx/*CC2*/"), 2,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "xx/*CC2*/"), 2,
 			FOO_MEMBERS
 		);
 		
 		// Test qualified ref - odd case before dot
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_beforeDot*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_beforeDot*/"), 0,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, ". /*CC_afterDot*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, ". /*CC_afterDot*/"), 0,
 			concat(PRIMITIVE_TYPES, COMPLETION_TEST_MEMBERS)
 		);
 		// Test qualified ref - odd case after dot
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_afterDot*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_afterDot*/"), 0,
 			FOO_MEMBERS
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, " /*CC_afterDot*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, " /*CC_afterDot*/"), 0,
 			FOO_MEMBERS
 		);
 		
 		
 		// Test qualified ref - missing qualifier
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_afterDot2*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_afterDot2*/"), 0,
 			FOO_MEMBERS
 		);
 		
 		// Test completion under primitive
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_1*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_1*/"), 0,
 			"int", "intVar"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "t/*CC_keywords_1*/"), 1,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "t/*CC_keywords_1*/"), 1,
 			"int", "intVar", "incredible"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "nt/*CC_keywords_1*/"), 2,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "nt/*CC_keywords_1*/"), 2,
 			"int", "intVar", "incredible", "ifloat", "idouble", "ireal"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "int/*CC_keywords_1*/"), 3,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "int/*CC_keywords_1*/"), 3,
 			concat(PRIMITIVE_TYPES, concat(COMPLETION_TEST_MEMBERS, "intVar", "incredible"))
 		);
 		
 		// Test completion under keyword
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_2*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_2*/"), 0,
 			"int", "intVar", "incredible"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "in/*CC_keywords_2*/"), 2,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "in/*CC_keywords_2*/"), 2,
 			concat(PRIMITIVE_TYPES, concat(COMPLETION_TEST_MEMBERS, "intVar", "incredible"))
 		);
 		
 		
 		// Test completion under primitive - in qualified
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_q1*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_q1*/"), 0,
 			"intOther"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "int/*CC_keywords_q1*/"), 3,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "int/*CC_keywords_q1*/"), 3,
 			FOO_MEMBERS
 		);
 		// Test completion under keyword - in qualified
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_q2*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC_keywords_q2*/"), 0,
 			"intOther", "inzzz", "init"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "in/*CC_keywords_q2*/"), 2,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "in/*CC_keywords_q2*/"), 2,
 			FOO_MEMBERS
 		);
 		
 	}
 	
-	protected void testFindDefinition(Location modulePath, int offset, int replaceLength, String... expectedResults) 
+	protected void testCodeCompletion(Location modulePath, int offset, int replaceLength, String... expectedResults) 
 			throws Exception {
-		testFindDefinition(modulePath, offset, ECompletionResultStatus.RESULT_OK, replaceLength, expectedResults);
+		testCodeCompletion(modulePath, offset, ECompletionResultStatus.RESULT_OK, replaceLength, expectedResults);
 	}
 	
-	protected void testFindDefinition(Location modulePath, int offset,  
+	protected void testCodeCompletion(Location modulePath, int offset,  
 			ECompletionResultStatus resultStatus, int replaceLength, String... expectedResults) throws Exception {
 		DeeSymbolCompletionResult opResult = doOperation(modulePath, offset);
 		
@@ -150,13 +156,67 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	public void testNameMatching() throws Exception { testNameMatching$(); }
 	public void testNameMatching$() throws Exception {
 		// Test case insensitive matching
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-b*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-b*/"), 0,
 			"abc1", "abc2"
 		);
-		testFindDefinition(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-c*/"), 0,
+		testCodeCompletion(MODULE_FilePath, indexOf(MODULE_Contents, "/*CC1-c*/"), 0,
 			"abc1", "abc2"
 		);
 		
+	}
+	
+	/* -----------------  ----------------- */
+	
+	
+	@Test
+	public void testCompletionProposals() throws Exception { testCompletionProposals$(); }
+	public void testCompletionProposals$() throws Exception {
+		
+		final Location MODULE_FilePath = BUNDLE_FOO__SRC_FOLDER.resolve_valid("completion_test2.d");
+		final String MODULE_Contents = readStringFromFile(MODULE_FilePath);
+		
+		// Test overload and fullReplaceString/subElements
+		
+		// TODO: change proposal type
+		
+		int offset = MODULE_Contents.indexOf("/*CC_1*/");
+		testCodeCompletionProposals(MODULE_FilePath, offset,
+			new LangCompletionResult(new ArrayList2<>(
+				proposal(offset, 0, "", "foo() : void", 
+					CompletionProposalKind.UNKNOWN, "_dummy2", "()"),
+				proposal(offset, 0, "", "foo(int a) : void", 
+					CompletionProposalKind.UNKNOWN, "_dummy2", "(a)", sr(1, 1)),
+				proposal(offset, 0, "", "foo(int a, string str) : void", 
+					CompletionProposalKind.UNKNOWN, "_dummy2", "(a, str)", sr(1, 1), sr(4, 3)),
+				proposal(offset, 0, "Template", "fooTemplate(T) (T param) : int", 
+					CompletionProposalKind.UNKNOWN, "_dummy2", "Template(param)", sr(9, 5))
+			))
+		);
+	}
+	
+	protected SourceRange sr(int offset, int length) {
+		return new SourceRange(offset, length);
+	}
+	
+	public ToolCompletionProposal proposal(int replaceOffset, int replaceLength, String replaceString, String label,
+			CompletionProposalKind kind, String moduleName, 
+			String fullReplaceString, SourceRange... sourceSubElements) {
+		return new ToolCompletionProposal(replaceOffset, replaceLength, replaceString, label, kind, moduleName, 
+			fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
+			
+			@Override
+			protected boolean subclassEquals(LangToolCompletionProposal _other) {
+				return true; // Hack because we don't want to check namedElement
+			}
+		};
+	}
+	
+	protected void testCodeCompletionProposals(Location modulePath, int offset, LangCompletionResult expectedResult) 
+			throws Exception {
+		DeeSymbolCompletionResult opResult = doOperation(modulePath, offset);
+		
+		LangCompletionResult langResult = opResult.convertToCompletionResult();
+		assertAreEqualLists(expectedResult.getValidatedProposals(), langResult.getValidatedProposals());
 	}
 	
 }

@@ -29,7 +29,6 @@ import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
-import mmrnmhrm.ui.views.DeeElementLabelProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.core.runtime.CoreException;
@@ -83,17 +82,9 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	@Override
 	public DeeContentAssistProposal adaptToolProposal(ToolCompletionProposal proposal) {
-		
-		String replaceString = proposal.getReplaceString();
-		int repStart = proposal.getReplaceOffset();
-		int repLength = proposal.getReplaceLength();
 		Image image = getImage(proposal);
 		
-		INamedElement namedElement = proposal.getExtraData();
-		String displayString = DeeElementLabelProvider.getLabelForContentAssistPopup(namedElement);
-		
-		DeeContentAssistProposal completionProposal = new DeeContentAssistProposal(replaceString, repStart, repLength,
-				image, displayString, namedElement, null);
+		DeeContentAssistProposal completionProposal = new DeeContentAssistProposal(proposal, image);
 		completionProposal.setTriggerCharacters(getVarTrigger());
 		return completionProposal;
 	}

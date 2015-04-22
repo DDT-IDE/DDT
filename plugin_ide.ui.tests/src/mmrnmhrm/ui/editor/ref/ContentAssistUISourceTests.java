@@ -21,7 +21,6 @@ import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
-import mmrnmhrm.ui.views.DeeElementLabelProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +29,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import dtool.ast.definitions.EArcheType;
 import dtool.ddoc.TextUI;
+import dtool.engine.operations.DeeNamedElementLabelProvider;
 import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
@@ -128,7 +128,7 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	public void precheckOriginalResults(Iterable<INamedElement> resultDefElementsOriginal) {
 		for (INamedElement defElement : resultDefElementsOriginal) {
 			TextUI.getLabelForHoverSignature(defElement);
-			DeeElementLabelProvider.getLabelForContentAssistPopup(defElement);
+			DeeNamedElementLabelProvider.getLabelForContentAssistPopup(defElement);
 		}
 	}
 	
