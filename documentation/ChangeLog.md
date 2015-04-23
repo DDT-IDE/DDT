@@ -14,6 +14,8 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Added #107: allow content assist inside token strings (`q{ ... }`)
  * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
  * Fixed regression: function overloads no longer appear separately in Content Assist
+  ▶ Recommended/tested CDT version: 8.6.0
+ 
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
