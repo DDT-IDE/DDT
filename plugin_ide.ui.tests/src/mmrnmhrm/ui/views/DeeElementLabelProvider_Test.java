@@ -54,7 +54,7 @@ public class DeeElementLabelProvider_Test extends CommonDeeUITest {
 		
 		checkLabel(CommonNodeSemanticsTest.parseElement("alias xxx = ;", "xx", INamedElement.class).element, 
 			"xxx", 
-			"xxx -> ? - _tests");
+			"xxx -> ?");
 	}
 	
 	protected RefModule getMockRefModule() {
