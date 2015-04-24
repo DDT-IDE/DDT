@@ -94,7 +94,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 			super(manager, NULL_COMPILER_INSTALL, BundleModules.createSyntheticBundleModules(
 				NULL_COMPILER_INSTALL_PATH_objectPath));
 			
-			ParsedModule parsedModule = DeeParser.parseSource(SYNTHETIC_Module_Object, "object");
+			ParsedModule parsedModule = DeeParser.parseSourceModule(SYNTHETIC_Module_Object, "object");
 			fakeObjectModule = new ResolvedModule(parsedModule, this);
 			resolvedModules.put(NULL_COMPILER_INSTALL_PATH_objectPath, fakeObjectModule);
 		}

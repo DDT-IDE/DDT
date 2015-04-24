@@ -46,7 +46,7 @@ public class DeclarationAttributesTest extends CommonDToolTest {
 	}
 	
 	public CommonDefinition getDefToTest(String source, String name) {
-		Module module = DeeParser.parseSource(source, "attribs_test").module;
+		Module module = DeeParser.parseSourceModule(source, "attribs_test").module;
 		ASTNode node = MiscNodeUtils.searchDefUnit(module, name, ASTNodeTypes.DECLARATION_ATTRIB);
 		CommonDefinition def = assertCast(node, CommonDefinition.class);
 		assertEquals(def.getName(), name);

@@ -11,12 +11,12 @@
 package mmrnmhrm.ui.editor.structure;
 
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
-
-import org.eclipse.jface.text.IDocument;
-
 import dtool.parser.DeeParserResult.ParsedModule;
+import dtool.parser.structure.DeeStructureCreator;
 
 public class DeeStructureModelManager extends StructureModelManager {
 	
@@ -26,12 +26,13 @@ public class DeeStructureModelManager extends StructureModelManager {
 	}
 	
 	@Override
-	public void rebuild(Location location, IDocument document) {
-		// TODO:
-		if(false) {
-			String source = document.get();
-			ParsedModule parsedModule = setWorkingCopyAndParse(location, source);
-		}
+	public void rebuild(Location location, String source, M_WorkerThread reconcilerWorkerThread) {
+		ParsedModule parsedModule = setWorkingCopyAndParse(location, source);
+		
+		// Note: there should not be multiple reconciler threads for the same location
+		
+		SourceFileStructure moduleStructure = new DeeStructureCreator().createStructure(location, parsedModule);
+		addNewStructure(location, moduleStructure);
 	}
 	
 	protected ParsedModule setWorkingCopyAndParse(Location location, String source) {

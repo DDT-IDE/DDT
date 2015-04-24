@@ -233,7 +233,7 @@ public class ModuleParseCache {
 		
 		protected ParsedModule doGetParsedModule(String source) {
 			if(parsedModule == null) {
-				parsedModule = DeeParser.parseSource(source, filePath);
+				parsedModule = DeeParser.parseSourceModule(source, filePath);
 				parsedSource_after();
 			}
 			return parsedModule;

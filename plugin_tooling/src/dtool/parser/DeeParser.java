@@ -65,15 +65,15 @@ public class DeeParser
 		return this;
 	}
 	
-	public static ParsedModule parseSource(String source, String defaultModuleName) {
-		return parseSource(source, defaultModuleName, null);
+	public static ParsedModule parseSourceModule(String source, String defaultModuleName) {
+		return parseSourceModule(source, defaultModuleName, null);
 	}
 	
-	public static ParsedModule parseSource(String source, String defaultModuleName, Path modulePath) {
+	public static ParsedModule parseSourceModule(String source, String defaultModuleName, Path modulePath) {
 		return new DeeParser(source).parseModuleSource(defaultModuleName, modulePath);
 	}
 	
-	public static ParsedModule parseSource(String source, Path modulePath) {
+	public static ParsedModule parseSourceModule(String source, Path modulePath) {
 		return new DeeParser(source).parseModuleSource(modulePath);
 	}
 	
