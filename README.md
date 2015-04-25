@@ -1,4 +1,4 @@
-See project page ( http://code.google.com/p/ddt/ ) for user information.
+See project page ( http://ddt-ide.github.io/ ) for user information.
 
 Developers Guide
 ================
