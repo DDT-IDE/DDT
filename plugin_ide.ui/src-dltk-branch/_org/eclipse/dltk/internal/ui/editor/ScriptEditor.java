@@ -1521,11 +1521,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	}
 
 	@Override
-	public int getOrientation() {
-		return SWT.LEFT_TO_RIGHT;
-	}
-
-	@Override
 	protected String[] collectContextMenuPreferencePages() {
 		final List<String> result = new ArrayList<String>();
 		final DeeUILanguageToolkit uiToolkit = getUILanguageToolkit();
