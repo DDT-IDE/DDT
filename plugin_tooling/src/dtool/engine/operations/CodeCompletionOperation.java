@@ -101,7 +101,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		
 		Module module = parseResult.getModuleNode();
 		ASTNode pickedNode = new ASTNodeFinderExtension(module, offset, true).match;
-		assertTrue(pickedNode.getSourceRange().contains(offset));
+		assertTrue(pickedNode.getSourceRange().inclusiveContains(offset));
 		
 		CommonLanguageElement elementAtOffset = pickedNode;
 		
@@ -124,7 +124,7 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		} 
 		
 		if(nameToken != null) {
-			assertTrue(nameToken.getSourceRange().contains(offset));
+			assertTrue(nameToken.getSourceRange().inclusiveContains(offset));
 			
 			
 			String searchPrefix = nameToken.getSourceValue().substring(0, offset - nameToken.getStartPos());

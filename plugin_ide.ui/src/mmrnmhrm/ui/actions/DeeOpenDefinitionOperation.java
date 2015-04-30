@@ -63,13 +63,13 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 	}
 	
 	@Override
-	protected void performLongRunningComputation_do(IProgressMonitor monitor) throws CoreException {
+	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException {
 		findDefResult = DToolClient.getDefault().
 				new FindDefinitionOperation(inputLoc.path, doc.get(), offset, -1).runSemanticServerOperation();
 	}
 	
 	@Override
-	protected void performOperation_handleResult() throws CoreException {
+	protected void handleComputationResult() throws CoreException {
 		assertNotNull(findDefResult);
 		handleOpenDefinitionResult(findDefResult);
 	}
