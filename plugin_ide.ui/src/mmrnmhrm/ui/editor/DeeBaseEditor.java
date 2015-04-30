@@ -38,10 +38,5 @@ public abstract class DeeBaseEditor extends AbstractLangEditor_DLTK {
 		super.dispose();
 	}
 	
-	@Override
-	protected void doSelectionChanged(SelectionChangedEvent event) {
-		// This is the normal path
-		super.doSelectionChanged(event);
-	}
 	
 }

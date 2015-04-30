@@ -18,10 +18,11 @@ import java.util.List;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
+import mmrnmhrm.ui.editor.DeeOutlinePage;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
@@ -29,11 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
-import org.eclipse.dltk.core.IImportDeclaration;
-import org.eclipse.dltk.core.ILocalVariable;
-import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IPackageDeclaration;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
@@ -44,7 +41,6 @@ import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
-import org.eclipse.dltk.internal.ui.editor.IScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -69,7 +65,6 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -97,25 +92,18 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.IPartService;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.part.IShowInTargetList;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
-import org.eclipse.ui.views.contentoutline.ContentOutline;
-import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
@@ -125,9 +113,8 @@ import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
 /* FIXME: need to review this class */
-public abstract class ScriptEditor extends AbstractLangEditor
-		implements IScriptReconcilingListener, IScriptLanguageProvider,
-		IScriptEditor {
+public abstract class ScriptEditor extends AbstractLangStructureEditor
+		implements IScriptReconcilingListener, IScriptLanguageProvider {
 	
 	/** The editor's save policy */
 	protected ISavePolicy fSavePolicy = null;
@@ -151,32 +138,9 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
 	
 
-	private ScriptOutlinePage fOutlinePage;
 	private ProjectionSupport fProjectionSupport;
 	private DelegatingFoldingStructureProvider fProjectionModelUpdater;
 	private InformationPresenter fInformationPresenter;
-	private AbstractSelectionChangedListener fOutlineSelectionChangedListener = new OutlineSelectionChangedListener();
-	
-	/**
-	 * Updates the selection in the editor's widget with the selection of the
-	 * outline page.
-	 */
-	class OutlineSelectionChangedListener extends AbstractSelectionChangedListener {
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			doSelectionChanged(event);
-		}
-	}
-	
-	private class EditorSelectionChangedListener extends AbstractSelectionChangedListener {
-		@Override
-		public void selectionChanged(SelectionChangedEvent event) {
-			ScriptEditor.this.selectionChanged();
-		}
-	}
-
-	private final EditorSelectionChangedListener fEditorSelectionChangedListener = 
-			new EditorSelectionChangedListener();
 	
 	/* -----------------  ----------------- */
 	
@@ -289,7 +253,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		fInformationPresenter.install(getSourceViewer());
 		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
 
-		fEditorSelectionChangedListener.install(getSelectionProvider());
 		
 		installSemanticHighlighting();
 		
@@ -329,8 +292,9 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			}
 		}
 		
-		setOutlinePageInput(fOutlinePage, input);
 	}
+	
+	/* -----------------  ----------------- */
 	
 	@Override
 	public void setStatusLineErrorMessage(String message) {
@@ -387,46 +351,11 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		}
 	}
 
-	private ScriptOutlinePage createOutlinePage() {
-		final ScriptOutlinePage page = doCreateOutlinePage();
-		fOutlineSelectionChangedListener.install(page);
-		setOutlinePageInput(page, getEditorInput());
-		return page;
-	}
-
-	/**
-	 * Creates the outline page used with this editor.
-	 * 
-	 * @return the created script outline page
-	 */
-	protected ScriptOutlinePage doCreateOutlinePage() {
-		return new ScriptOutlinePage(this, getPreferenceStore());
-	}
-
-	/**
-	 * Informs the editor that its outliner has been closed.
-	 */
 	@Override
-	public void outlinePageClosed() {
-		if (fOutlinePage != null) {
-			fOutlineSelectionChangedListener.uninstall(fOutlinePage);
-			fOutlinePage = null;
-			resetHighlightRange();
-		}
+	protected ScriptOutlinePage init_createOutlinePage() {
+		return new DeeOutlinePage(this);
 	}
-
-	private void setOutlinePageInput(ScriptOutlinePage page, IEditorInput input) {
-		if (page == null) {
-			return;
-		}
-		IModelElement me = getInputModelElement();
-		if (me != null && me.exists()) {
-			page.setInput(me);
-		} else {
-			page.setInput(null);
-		}
-	}
-
+	
 	/**
 	 * The templates page.
 	 * 
@@ -455,19 +384,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			if (fTemplatesPage == null)
 				fTemplatesPage = createTemplatesPage();
 			return fTemplatesPage;
-		}
-		if (IContentOutlinePage.class.equals(required)) {
-			if (fOutlinePage == null)
-				fOutlinePage = createOutlinePage();
-			return fOutlinePage;
-		}
-		if (required == IShowInTargetList.class) {
-			return new IShowInTargetList() {
-				@Override
-				public String[] getShowInTargetIds() {
-					return new String[] { IPageLayout.ID_OUTLINE };
-				}
-			};
 		}
 		if (required == OccurrencesFinder2.class) {
 			return occurrencesFinder;
@@ -498,26 +414,16 @@ public abstract class ScriptEditor extends AbstractLangEditor
 				break;
 			}
 		}
-		if (!isActivePart() && DLTKUIPlugin.getActivePage() != null)
-			DLTKUIPlugin.getActivePage().bringToTop(this);
+//		if (!isActivePart() && getSite().getPage() != null) {
+//			getSite().getPage().bringToTop(this);
+//		}
 		setSelection(reference, !isActivePart());
+		
 		if (occurrencesFinder != null) {
 			occurrencesFinder.updateOccurrenceAnnotations();
 		}
 	}
-
-	protected boolean isActivePart() {
-		IWorkbenchPart part = getActivePart();
-		return part != null && part.equals(this);
-	}
-
-	private IWorkbenchPart getActivePart() {
-		IWorkbenchWindow window = getSite().getWorkbenchWindow();
-		IPartService service = window.getPartService();
-		IWorkbenchPart part = service.getActivePart();
-		return part;
-	}
-
+	
 	protected void setSelection(ISourceReference reference, boolean moveCursor) {
 		if (getSelectionProvider() == null)
 			return;
@@ -530,9 +436,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			// (which it isn't if
 			// this is called from a PostSelectionEvent that should only update
 			// the magnet)
-			if (moveCursor
-					&& (textSelection.getOffset() != 0 || textSelection
-							.getLength() != 0))
+			if (moveCursor && (textSelection.getOffset() != 0 || textSelection.getLength() != 0))
 				markInNavigationHistory();
 		}
 		if (reference != null) {
@@ -543,8 +447,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			if (textWidget == null)
 				return;
 			try {
-				ISourceRange range = null;
-				range = reference.getSourceRange();
+				ISourceRange range = reference.getSourceRange();
 				if (range == null)
 					return;
 				int offset = range.getOffset();
@@ -556,24 +459,12 @@ public abstract class ScriptEditor extends AbstractLangEditor
 					return;
 				offset = -1;
 				length = -1;
-				if (reference instanceof IMember) {
-					range = ((IMember) reference).getNameRange();
-					if (range != null) {
-						offset = range.getOffset();
-						length = range.getLength();
-					}
-				} else if (reference instanceof ILocalVariable) {
-					range = ((ILocalVariable) reference).getNameRange();
-					if (range != null) {
-						offset = range.getOffset();
-						length = range.getLength();
-					}
-				} else if (reference instanceof IImportDeclaration
-						|| reference instanceof IPackageDeclaration) {
-					// range is still getSourceRange()
+				range = reference.getNameRange();
+				if (range != null) {
 					offset = range.getOffset();
 					length = range.getLength();
 				}
+				
 				if (offset > -1 && length > 0) {
 					try {
 						textWidget.setRedraw(false);
@@ -596,81 +487,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	@Override
 	protected void doSetSelection(ISelection selection) {
 		super.doSetSelection(selection);
-		synchronizeOutlinePageSelection();
-	}
-
-	@Override
-	public void setSelection(IModelElement element) {
-
-		if (element == null || element instanceof ISourceModule) {
-			/*
-			 * If the element is an ISourceModule this unit is either the input
-			 * of this editor or not being displayed. In both cases, nothing
-			 * should happened.
-			 * (http://dev.eclipse.org/bugs/show_bug.cgi?id=5128)
-			 */
-			return;
-		}
-
-		IModelElement corresponding = getCorrespondingElement(element);
-		if (corresponding instanceof ISourceReference) {
-			ISourceReference reference = (ISourceReference) corresponding;
-			// set highlight range
-			setSelection(reference, true);
-			// set outliner selection
-			if (fOutlinePage != null) {
-				fOutlineSelectionChangedListener.uninstall(fOutlinePage);
-				fOutlinePage.select(reference);
-				fOutlineSelectionChangedListener.install(fOutlinePage);
-			}
-		}
-	}
-
-	/**
-	 * Synchronizes the outliner selection with the given element position in
-	 * the editor.
-	 * 
-	 * @param element
-	 *            thescriptelement to select
-	 */
-	protected void synchronizeOutlinePage(ISourceReference element) {
-		synchronizeOutlinePage(element, true);
-	}
-
-	/**
-	 * Synchronizes the outliner selection with the given element position in
-	 * the editor.
-	 * 
-	 * @param element
-	 *            thescriptelement to select
-	 * @param checkIfOutlinePageActive
-	 *            <code>true</code> if check for active outline page needs to be
-	 *            done
-	 * @since 2.0
-	 */
-	@Override
-	public void synchronizeOutlinePage(ISourceReference element,
-			boolean checkIfOutlinePageActive) {
-		if (fOutlinePage != null && element != null
-				&& !(checkIfOutlinePageActive && isOutlinePageActive())) {
-			fOutlineSelectionChangedListener.uninstall(fOutlinePage);
-			fOutlinePage.select(element);
-			fOutlineSelectionChangedListener.install(fOutlinePage);
-		}
-	}
-
-	/**
-	 * Synchronizes the outliner selection with the actual cursor position in
-	 * the editor.
-	 */
-	public void synchronizeOutlinePageSelection() {
-		synchronizeOutlinePage(computeHighlightRangeSourceReference());
-	}
-
-	private boolean isOutlinePageActive() {
-		IWorkbenchPart part = getActivePart();
-		return part instanceof ContentOutline
-				&& ((ContentOutline) part).getCurrentPage() == fOutlinePage;
 	}
 
 	/**
@@ -802,93 +618,14 @@ public abstract class ScriptEditor extends AbstractLangEditor
 		return null;
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#gotoAnnotation(
-	 * boolean)
-	 * 
-	 * @since 3.2
-	 */
-	@Override
-	public Annotation gotoAnnotation(boolean forward) {
-		fSelectionChangedViaGotoAnnotation = true;
-		return super.gotoAnnotation(forward);
-	}
-
-	/**
-	 * Computes and returns the source reference that includes the caret and
-	 * serves as provider for the outline page selection and the editor range
-	 * indication.
-	 * 
-	 * @return the computed source reference
-	 * @since 2.0
-	 */
-	@Override
-	public ISourceReference computeHighlightRangeSourceReference() {
-		ISourceViewer sourceViewer = getSourceViewer();
-		if (sourceViewer == null)
-			return null;
-		StyledText styledText = sourceViewer.getTextWidget();
-		if (styledText == null)
-			return null;
-		int caret = 0;
-		if (sourceViewer instanceof ITextViewerExtension5) {
-			ITextViewerExtension5 extension = (ITextViewerExtension5) sourceViewer;
-			caret = extension.widgetOffset2ModelOffset(styledText
-					.getCaretOffset());
-		} else {
-			int offset = sourceViewer.getVisibleRegion().getOffset();
-			caret = offset + styledText.getCaretOffset();
-		}
-		IModelElement element = getElementAt(caret, false);
-		if (!(element instanceof ISourceReference))
-			return null;
-		// if (element.getElementType() == IModelElement.IMPORT_DECLARATION) {
-		//
-		// IImportDeclaration declaration= (IImportDeclaration) element;
-		// IImportContainer container= (IImportContainer)
-		// declaration.getParent();
-		// ISourceRange srcRange= null;
-		//
-		// try {
-		// srcRange= container.getSourceRange();
-		// } catch (ModelException e) {
-		// }
-		//
-		// if (srcRange != null && srcRange.getOffset() == caret)
-		// return container;
-		// }
-		return (ISourceReference) element;
-	}
-
-	/**
-	 * React to changed selection.
-	 * Updates the script outline page selection and this editor's range indicator.
-	 */
-	protected void selectionChanged() {
-		if (getSelectionProvider() == null)
-			return;
-		ISourceReference element = computeHighlightRangeSourceReference();
-		if (getPreferenceStore().getBoolean(
-				PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE))
-			synchronizeOutlinePage(element);
-		setSelection(element, false);
-		if (!fSelectionChangedViaGotoAnnotation)
-			updateStatusLine();
-		fSelectionChangedViaGotoAnnotation = false;
-	}
-
 	protected void updateStatusLine() {
-		ITextSelection selection = (ITextSelection) getSelectionProvider()
-				.getSelection();
-		Annotation annotation = getAnnotation(selection.getOffset(),
-				selection.getLength());
+		ITextSelection selection = (ITextSelection) getSelectionProvider().getSelection();
+		Annotation annotation = getAnnotation(selection.getOffset(), selection.getLength());
 		setStatusLineErrorMessage(null);
 		setStatusLineMessage(null);
 		if (annotation != null) {
 			updateMarkerViews(annotation);
-			if (annotation instanceof IScriptAnnotation
-					&& ((IScriptAnnotation) annotation).isProblem())
+			if (annotation instanceof IScriptAnnotation && ((IScriptAnnotation) annotation).isProblem())
 				setStatusLineMessage(annotation.getText());
 		}
 	}
@@ -904,25 +641,12 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	}
 
 	/**
-	 * Returns thescriptelement of this editor's input corresponding to the
-	 * given IModelElement.
-	 * 
-	 * @param element
-	 *            thescriptelement
-	 * @return the corresponding model element
-	 */
-	protected IModelElement getCorrespondingElement(IModelElement element) {
-		return element;
-	}
-
-	/**
 	 * Returns the most narrow model element including the given offset.
 	 * 
 	 * @param offset
 	 *            the offset inside of the requested element
 	 * @return the most narrow model element
 	 */
-	@Override
 	public IModelElement getElementAt(int offset) {
 		return getElementAt(offset, true);
 	}
@@ -965,13 +689,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 	 * 
 	 */
 	private ToggleFoldingRunner fFoldingRunner;
-
-	/**
-	 * Tells whether the selection changed event is caused by a call to
-	 * {@link #gotoAnnotation(boolean)}.
-	 * 
-	 */
-	private boolean fSelectionChangedViaGotoAnnotation;
 
 	/**
 	 * Runner that will toggle folding either instantly (if the editor is
@@ -1156,26 +873,16 @@ public abstract class ScriptEditor extends AbstractLangEditor
 				updateHoverBehavior();
 
 			if (newValue != null)
-				newBooleanValue = Boolean.valueOf(newValue.toString())
-						.booleanValue();
-			if (PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE
-					.equals(property)) {
-				if (newBooleanValue)
-					selectionChanged();
-				return;
-			}
+				newBooleanValue = Boolean.valueOf(newValue.toString()).booleanValue();
 
 			if (occurrencesFinder != null
-					&& occurrencesFinder.handlePreferenceStoreChanged(property,
-							newBooleanValue)) {
+					&& occurrencesFinder.handlePreferenceStoreChanged(property,newBooleanValue)) {
 				return;
 			}
 
 			if (CodeFormatterConstants.FORMATTER_TAB_SIZE.equals(property)
-					|| CodeFormatterConstants.FORMATTER_INDENTATION_SIZE
-							.equals(property)
-					|| CodeFormatterConstants.FORMATTER_TAB_CHAR
-							.equals(property)) {
+					|| CodeFormatterConstants.FORMATTER_INDENTATION_SIZE.equals(property)
+					|| CodeFormatterConstants.FORMATTER_TAB_CHAR.equals(property)) {
 				if (CodeFormatterConstants.FORMATTER_TAB_CHAR.equals(property)) {
 					if (isTabsToSpacesConversionEnabled())
 						installTabsToSpacesConverter();
@@ -1184,8 +891,7 @@ public abstract class ScriptEditor extends AbstractLangEditor
 				}
 				updateIndentPrefixes();
 				StyledText textWidget = sourceViewer.getTextWidget();
-				int tabWidth = getSourceViewerConfiguration().getTabWidth(
-						sourceViewer);
+				int tabWidth = getSourceViewerConfiguration().getTabWidth(sourceViewer);
 				if (textWidget.getTabs() != tabWidth)
 					textWidget.setTabs(tabWidth);
 				return;
@@ -1500,18 +1206,6 @@ public abstract class ScriptEditor extends AbstractLangEditor
 			fSemanticManager.getReconciler().reconciled(ast, forced, progressMonitor);
 		}
 		
-		// Update Outline page selection
-		if (!forced && !progressMonitor.isCanceled()) {
-			Shell shell = getSite().getShell();
-			if (shell != null && !shell.isDisposed()) {
-				shell.getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						selectionChanged();
-					}
-				});
-			}
-		}
 	}
 
 	private SemanticHighlightingManager fSemanticManager;

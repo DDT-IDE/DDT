@@ -44,8 +44,8 @@ public class ScriptReconcilingStrategy implements IReconcilingStrategy, IReconci
 
 	public ScriptReconcilingStrategy(ITextEditor editor) {
 		fEditor = editor;
-		fManager = DLTKUIPlugin.getDefault().getWorkingCopyManager();
-		fDocumentProvider = DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider();
+		fManager = DLTKUIPlugin.getDefault().getWorkingCopyManager(); /*FIXME: BUG here*/
+		fDocumentProvider = DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider(); /*FIXME: BUG here*/
 		
 		fIsScriptReconcilingListener = fEditor instanceof IScriptReconcilingListener;
 		if (fIsScriptReconcilingListener) {
@@ -93,10 +93,9 @@ public class ScriptReconcilingStrategy implements IReconcilingStrategy, IReconci
 	// }
 	//
 	// }
-
+	
 	private IProblemRequestorExtension getProblemRequestorExtension() {
-		IAnnotationModel model = fDocumentProvider.getAnnotationModel(fEditor
-				.getEditorInput());
+		IAnnotationModel model = fDocumentProvider.getAnnotationModel(fEditor.getEditorInput());
 		if (model instanceof IProblemRequestorExtension)
 			return (IProblemRequestorExtension) model;
 		return null;

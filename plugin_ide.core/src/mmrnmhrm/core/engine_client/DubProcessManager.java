@@ -18,9 +18,11 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.process.AbstractRunProcessTask;
+import melnorme.lang.ide.core.utils.process.EclipseCancelMonitor;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.ide.core.utils.process.IStartProcessListener;
 import melnorme.lang.ide.core.utils.process.RunExternalProcessTask;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -99,7 +101,7 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 	public RunDubProcessOperation newDubOperation(String operationName, IProject project, 
 			String[] commands, IProgressMonitor monitor) {
 		ProcessBuilder pb = createProcessBuilder(project, commands);
-		return new RunDubProcessOperation(operationName, pb, project, monitor);
+		return new RunDubProcessOperation(operationName, pb, project, new EclipseCancelMonitor(monitor));
 	}
 	
 	public static ProcessBuilder createProcessBuilder(IProject project, String... commands) {
@@ -109,14 +111,14 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 		return new ProcessBuilder(commands).directory(workingDir.toFile());
 	}
 	
-	public class RunDubProcessOperation extends AbstractRunProcessTask implements IDubOperation{
+	public class RunDubProcessOperation extends AbstractRunProcessTask implements IDubOperation {
 		
 		protected final String operationName;
 		protected final IProject project;
 		protected ListenersHelper<IStartProcessListener> listenersHelper = new ListenersHelper<>();
 		
 		protected RunDubProcessOperation(String operationName, ProcessBuilder pb, IProject project,
-				IProgressMonitor cancelMonitor) {
+				ICancelMonitor cancelMonitor) {
 			super(pb, cancelMonitor);
 			
 			this.operationName = operationName;
@@ -124,9 +126,9 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 		}
 		
 		@Override
-		protected ExternalProcessNotifyingHelper startProcess(IProgressMonitor pm) throws CommonException {
+		protected ExternalProcessNotifyingHelper startProcess(ICancelMonitor cm) throws CommonException {
 			notifyOperationStarted(this);
-			return super.startProcess(pm);
+			return super.startProcess(cm);
 		}
 		
 		@Override
@@ -183,9 +185,9 @@ public class DubProcessManager extends ListenerListHelper<IDubProcessListener> {
 			return listenerListHelper;
 		}
 		
-		public RunExternalProcessTask newDubProcessTask(IProject project, String[] commands, IProgressMonitor monitor) {
+		public RunExternalProcessTask newDubProcessTask(IProject project, String[] commands, IProgressMonitor pm) {
 			ProcessBuilder pb = createProcessBuilder(project, commands);
-			return new RunExternalProcessTask(pb, project, monitor, listenerListHelper);
+			return new RunExternalProcessTask(pb, project, new EclipseCancelMonitor(pm), listenerListHelper);
 		}
 		
 	}

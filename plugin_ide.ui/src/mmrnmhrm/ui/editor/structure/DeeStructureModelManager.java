@@ -12,7 +12,6 @@ package mmrnmhrm.ui.editor.structure;
 
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.utils.M_WorkerThread;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -26,13 +25,17 @@ public class DeeStructureModelManager extends StructureModelManager {
 	}
 	
 	@Override
-	public void rebuild(Location location, String source, M_WorkerThread reconcilerWorkerThread) {
-		ParsedModule parsedModule = setWorkingCopyAndParse(location, source);
-		
-		// Note: there should not be multiple reconciler threads for the same location
-		
-		SourceFileStructure moduleStructure = new DeeStructureCreator().createStructure(location, parsedModule);
-		addNewStructure(location, moduleStructure);
+	protected StructureUpdateTask createStructureUpdateTask(Location location, String source) {
+		return new StructureUpdateTask(location, source) {
+			
+			@Override
+			protected SourceFileStructure createSourceFileStructure() {
+				/*FIXME: BUG here review setWorkingCopyAndParse */
+				ParsedModule parsedModule = setWorkingCopyAndParse(location, source);
+				return new DeeStructureCreator().createStructure(location, parsedModule);
+			}
+			
+		};
 	}
 	
 	protected ParsedModule setWorkingCopyAndParse(Location location, String source) {

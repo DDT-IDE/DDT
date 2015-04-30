@@ -3,6 +3,8 @@ package mmrnmhrm.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.ui.DLTKPluginImages;
@@ -11,9 +13,6 @@ import org.eclipse.dltk.ui.viewsupport.MemberFilterAction;
 import org.eclipse.dltk.ui.viewsupport.ModelElementFilter;
 import org.eclipse.dltk.ui.viewsupport.ModelElementFlagsFilter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.viewers.ILabelDecorator;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
@@ -24,26 +23,8 @@ import _org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
  */
 public class DeeOutlinePage extends ScriptOutlinePage {
 	
-	public DeeOutlinePage(ScriptEditor editor, IPreferenceStore store) {
-		super(editor, store);
-	}
-	
-	@Override
-	protected ILabelDecorator getLabelDecorator() {
-		return null;
-	}
-	
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-//		fOutlineViewer.setContentProvider(new DeeOutlinePageContentProvider(this));
-		
-//		fOutlineViewer.expandAll();
-	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
+	public DeeOutlinePage(ScriptEditor editor) {
+		super(editor, LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
@@ -52,7 +33,7 @@ public class DeeOutlinePage extends ScriptOutlinePage {
 		
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		MemberFilterActionGroup fMemberFilterActionGroup = new MemberFilterActionGroup(
-				fOutlineViewer, fStore);
+				getTreeViewer(), fStore);
 		List<MemberFilterAction> actions = new ArrayList<MemberFilterAction>(3);
 		
 		// variables
