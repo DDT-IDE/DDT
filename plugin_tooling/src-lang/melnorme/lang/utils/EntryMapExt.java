@@ -8,32 +8,29 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package dtool.engine.util;
+package melnorme.lang.utils;
 
 import java.util.HashMap;
 
-public abstract class CachingRegistry<KEY, ENTRY> {
+/**
+ * Thread-safe version of {@link EntryMap}
+ */
+public abstract class EntryMapExt<KEY, ENTRY> extends EntryMap<KEY, ENTRY> {
 	
 	protected final HashMap<KEY, ENTRY> map = new HashMap<>();
 	
-	public synchronized ENTRY getEntry(KEY key) {
-		
-		ENTRY entry;
-		
-		if(map.containsKey(key)) {
-			entry = map.get(key);
-		} else {
-			entry = createEntry(key);
-			map.put(key, entry);
+	@Override
+	public ENTRY getEntry(KEY key) {
+		synchronized(this) {
+			return super.getEntry(key);
 		}
-		
-		return entry;
 	}
 	
+	@Override
 	public synchronized ENTRY getEntryOrNull(KEY key) {
-		return map.get(key);
+		synchronized(this) {
+			return super.getEntryOrNull(key);
+		}
 	}
-	
-	protected abstract ENTRY createEntry(KEY key);
 	
 }
