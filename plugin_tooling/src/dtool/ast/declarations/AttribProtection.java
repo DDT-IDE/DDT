@@ -11,11 +11,11 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.parser.ISourceRepresentation;
 
 public class AttribProtection extends Attribute {
 	
@@ -42,20 +42,6 @@ public class AttribProtection extends Attribute {
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.appendToken(protection);
-	}
-	
-	public enum EProtection implements ISourceRepresentation {
-	    PRIVATE,
-	    PACKAGE,
-	    PROTECTED,
-	    PUBLIC,
-	    EXPORT,
-	    ;
-	    
-		@Override
-		public String getSourceValue() {
-			return toString().toLowerCase();
-		}
 	}
 	
 }

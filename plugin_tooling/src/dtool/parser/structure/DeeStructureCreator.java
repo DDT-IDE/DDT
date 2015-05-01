@@ -10,6 +10,11 @@
  *******************************************************************************/
 package dtool.parser.structure;
 
+import java.util.EnumSet;
+
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -17,11 +22,12 @@ import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.lang.tooling.structure.StructureElementData;
 import melnorme.lang.tooling.structure.StructureElementKind;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;
+import dtool.ast.declarations.AttribBasic.AttributeKinds;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
@@ -29,6 +35,8 @@ import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
+import dtool.ast.definitions.EArcheType;
+import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.references.Reference;
 import dtool.engine.analysis.IVarDefinitionLike;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -83,7 +91,7 @@ public class DeeStructureCreator extends ASTVisitor {
 		
 		StructureElementKind kind = null;
 		String type = null;
-		StructureElementData elementData = null;
+		ElementAttributes elementAttribs = null;
 		boolean hasStructuralChildren = true;
 		
 		switch (node.getArcheType()) {
@@ -155,9 +163,10 @@ public class DeeStructureCreator extends ASTVisitor {
 		
 		if(node instanceof CommonDefinition) {
 			CommonDefinition commonDefinition = (CommonDefinition) node;
-			elementData = getAttributes(commonDefinition); 
+			elementAttribs = getAttributes(commonDefinition); 
 		} else {
-			elementData = new StructureElementData();
+			// TODO: fragment elements
+			elementAttribs = new ElementAttributes(null);
 		}
 		
 		pushNewElement(new StructureElement(
@@ -165,27 +174,66 @@ public class DeeStructureCreator extends ASTVisitor {
 			node.getNameSourceRangeOrNull(),
 			node.getSourceRange(),
 			kind,
-			elementData,
+			elementAttribs,
 			type,
 			hasStructuralChildren ? collectChildren(node) : null)
 		);
 		return false;
 	}
 	
-	protected StructureElementData getAttributes(DefUnit node) {
+	public static Indexable<StructureElement> collectChildren(DefUnit node) {
+		return new DeeStructureCreator().collectChildElements(node);
+	}
+	
+	public static ElementAttributes getAttributes(INamedElement node) {
 		if(node instanceof CommonDefinition) {
-//			CommonDefinition commonDef = (CommonDefinition) node;
-			// TODO
+			CommonDefinition commonDefinition = (CommonDefinition) node;
+			return getDeclarationModifierFlags(commonDefinition);
 		}
-		return new StructureElementData();
+		return new ElementAttributes(null);
+	}
+	
+	public static ElementAttributes getDeclarationModifierFlags(CommonDefinition elem) {
+		EnumSet<EAttributeFlag> flagsSet = ElementAttributes.newFlagsSet();
+		
+		
+		setFlagIfHasAttribute(elem, AttributeKinds.STATIC, flagsSet, EAttributeFlag.STATIC);
+		setFlagIfHasAttribute(elem, AttributeKinds.FINAL, flagsSet, EAttributeFlag.FINAL);
+		
+		// Report these for variable only
+		if(elem.getArcheType() == EArcheType.Variable) {
+			setFlagIfHasAttribute(elem, AttributeKinds.CONST, flagsSet, EAttributeFlag.CONST); 
+			setFlagIfHasAttribute(elem, AttributeKinds.IMMUTABLE, flagsSet, EAttributeFlag.IMMUTABLE);
+		}
+		
+		setFlagIfHasAttribute(elem, AttributeKinds.ABSTRACT, flagsSet, EAttributeFlag.ABSTRACT);
+		
+		// set these for Function only
+		if(elem.getArcheType() == EArcheType.Function) {
+			setFlagIfHasAttribute(elem, AttributeKinds.OVERRIDE, flagsSet, EAttributeFlag.OVERRIDE);
+		}
+		
+		if(elem instanceof ITemplatableElement) {
+			ITemplatableElement templatableElement = (ITemplatableElement) elem;
+			if(templatableElement.isTemplated()) {
+				flagsSet.add(EAttributeFlag.TEMPLATED);
+			}
+		}
+		
+		EProtection prot = elem.getEffectiveProtection();
+		
+		return new ElementAttributes(prot, flagsSet);
+	}
+	
+	public static void setFlagIfHasAttribute(CommonDefinition def, AttributeKinds attrib, 
+			EnumSet<EAttributeFlag> flags, EAttributeFlag flag) {
+		if(def.hasAttribute(attrib)) {
+			flags.add(flag);
+		}
 	}
 	
 	protected String getTypeDesc(Reference type) {
 		return type == null ? null : type.toStringAsCode();
-	}
-	
-	public static Indexable<StructureElement> collectChildren(DefUnit node) {
-		return new DeeStructureCreator().collectChildElements(node);
 	}
 	
 }

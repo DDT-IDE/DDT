@@ -284,11 +284,6 @@
             class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
             name="%LangEditorFoldingPreferencePage.name">
       </page>
-      <page
-             category="org.dsource.ddt.ide.ui.PreferencePages.Root"
-             id=      "org.dsource.ddt.ide.ui.PreferencePages.Appearance"
-             class="mmrnmhrm.ui.preferences.pages.DeeAppearancePreferencePage"
-             name="%LangAppearancePreferencePage.name"/>
 	</extension>
 	
 	<extension point="org.eclipse.ui.propertyPages">

@@ -1,9 +1,9 @@
 package mmrnmhrm.ui.actions;
 
+import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.OpenTypeSelectionDialog2_Ext;
-import mmrnmhrm.ui.views.DeeElementImageProvider;
 import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
@@ -17,6 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
+/*FIXME: repurpose this operation */
 public class DeeOpenTypeAction extends OpenTypeAction {
 	
 	@Override
@@ -64,7 +65,7 @@ public class DeeOpenTypeAction extends OpenTypeAction {
 				public ImageDescriptor getImageDescriptor(ITypeInfoRequestor typeInfoRequestor) {
 					return deeModelElementLabelProvider.getImageDescriptor(
 						new DefElementDescriptor(typeInfoRequestor.getModifiers()),
-						DeeElementImageProvider.BIG_SIZE);
+						LangElementImageDescriptor.DEFAULT_SIZE);
 				}
 			};
 		}

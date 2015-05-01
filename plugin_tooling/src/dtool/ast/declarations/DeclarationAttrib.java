@@ -11,6 +11,7 @@
 package dtool.ast.declarations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
@@ -22,7 +23,6 @@ import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.IteratorUtil;
-import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.statements.IStatement;
 

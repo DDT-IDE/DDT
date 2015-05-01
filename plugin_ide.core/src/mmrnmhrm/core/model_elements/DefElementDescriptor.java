@@ -1,5 +1,6 @@
 package mmrnmhrm.core.model_elements;
 
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.eclipse.dltk.core.IModelElement;
@@ -11,6 +12,8 @@ import dtool.ast.definitions.EArcheType;
  * The descriptor should consist of an int field only, 
  * so that it can be stored in {@link IModelElement}'s modifier flags.
  */
+/*FIXME: remove this class. */
+@Deprecated
 public class DefElementDescriptor {
 	
 	public int elementFlags;
@@ -54,6 +57,21 @@ public class DefElementDescriptor {
 	public void setArcheType(int flagKind) {
 		elementFlags = elementFlags & ~DefElementFlagConstants.FLAGMASK_KIND; //Erase archetype
 		elementFlags |= flagKind; // Add new archetype flags
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(!(obj instanceof DefElementDescriptor)) return false;
+		
+		DefElementDescriptor other = (DefElementDescriptor) obj;
+		
+		return areEqual(elementFlags, other.elementFlags);
+	}
+	
+	@Override
+	public int hashCode() {
+		return elementFlags;
 	}
 	
 }

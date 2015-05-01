@@ -1,24 +1,25 @@
 package mmrnmhrm.ui.views;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+
+import java.util.EnumSet;
+
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.core.model_elements.DefElementFlagConstants;
 import mmrnmhrm.core.model_elements.DefElementFlagsUtil;
 import mmrnmhrm.ui.DeeImages;
-import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.DeeUIPreferenceConstants;
-import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
-import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.Reference;
@@ -26,7 +27,6 @@ import dtool.ast.references.Reference;
 public class DeeElementImageProvider {
 	
 	public static final Point SMALL_SIZE= new Point(16, 16);
-	public static final Point BIG_SIZE= new Point(22, 16);
 	
 	public static Image getElementImage(IASTNode element) {
 		if (element instanceof ASTNode) {
@@ -36,34 +36,28 @@ public class DeeElementImageProvider {
 	}
 	
 	public static Image getNodeImage(ASTNode node) {
-		ElementIconsStyle iconStyle = DeeElementImageProvider.getIconStylePreference();
-		ImageDescriptor imageDescriptor = getNodeImageDescriptor(node, iconStyle);
+		ImageDescriptor imageDescriptor = getNodeImageDescriptor(node);
 		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor);
 	}
 	
-	public static ElementIconsStyle getIconStylePreference() {
-		String iconStyleStr = DeeUIPlugin.getPrefStore().getString(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE);
-		return ElementIconsStyle.fromString(iconStyleStr, ElementIconsStyle.DDT);
-	}
 	
-	public static ImageDescriptor getNodeImageDescriptor(ASTNode node, ElementIconsStyle iconStyle) {
+	public static ImageDescriptor getNodeImageDescriptor(ASTNode node) {
 		if(node instanceof DefUnit) {
 			DefUnit defUnit = (DefUnit) node;
-			return getDefUnitImageDescriptor(defUnit, iconStyle);
+			return getDefUnitImageDescriptor(defUnit);
 		}
 		
 		return getNodeImageDescriptorKey(node).getDescriptor();
 	}
 	
-	public static ImageDescriptor getDefUnitImageDescriptor(DefUnit defUnit, ElementIconsStyle iconStyle) {
+	public static ImageDescriptor getDefUnitImageDescriptor(DefUnit defUnit) {
 		DefElementDescriptor defDescriptor = new DefElementDescriptor(defUnit);
-		return getDefUnitImageDescriptor(defDescriptor, iconStyle);
+		return getDefUnitImageDescriptor(defDescriptor);
 	}
 	
-	public static ImageDescriptor getDefUnitImageDescriptor(DefElementDescriptor defDescriptor,
-		ElementIconsStyle iconStyle) {
+	public static ImageDescriptor getDefUnitImageDescriptor(DefElementDescriptor defDescriptor) {
 		Point imageSize = DeeElementImageProvider.SMALL_SIZE;
-		return new DeeElementImageProvider().getImageDescriptor(defDescriptor, imageSize, iconStyle);
+		return new DeeElementImageProvider().getImageDescriptor(defDescriptor, imageSize);
 	}
 	
 	/* ---------------------------------------------- */
@@ -85,9 +79,7 @@ public class DeeElementImageProvider {
 		return DeeImages.NODE_OTHER;
 	}
 	
-	public ImageDescriptor getImageDescriptor(DefElementDescriptor elementDesc, Point imageSize,
-		ElementIconsStyle iconStyle) {
-		assertNotNull(iconStyle);
+	public ImageDescriptor getImageDescriptor(DefElementDescriptor elementDesc, Point imageSize) {
 		EArcheType archeType = elementDesc.getArcheType();
 		int elementFlags = elementDesc.elementFlags;
 		if(archeType == null) {
@@ -96,25 +88,19 @@ public class DeeElementImageProvider {
 			return DeeImages.getIDEInternalErrorImageDescriptor();
 		}
 		
-		ImageDescriptor baseImage = getBaseImageDescriptor(elementDesc, iconStyle);
+		ImageDescriptor baseImage = getBaseImageDescriptor(elementDesc);
 		
-		EProtection prot;
-		if (iconStyle == ElementIconsStyle.JDTLIKE && 
-			(archeType == EArcheType.Variable || archeType == EArcheType.Function)) {
-			prot = null; // Don't render protection adornment
-		} else {
-			prot = DefElementFlagsUtil.elementFlagsToProtection(elementFlags, null);
+		EProtection prot = DefElementFlagsUtil.elementFlagsToProtection(elementFlags, null);
 			
-			if(elementDesc.getArcheType() == EArcheType.Constructor) {
-				// This is to prevent drawing the constructor 'C' adornment
-				elementDesc.setArcheType(DefElementFlagConstants.FLAG_KIND_FUNCTION);
-			}
+		if(elementDesc.getArcheType() == EArcheType.Constructor) {
+			// This is to prevent drawing the constructor 'C' adornment
+			elementDesc.setArcheType(DefElementFlagConstants.FLAG_KIND_FUNCTION);
 		}
 		
-		return new DeeElementImageDescriptor(baseImage, elementDesc, prot, imageSize);
+		return getDecoratedImageDescriptor(baseImage, elementDesc, prot, imageSize);
 	}
 	
-	protected ImageDescriptor getBaseImageDescriptor(DefElementDescriptor elementDesc, ElementIconsStyle iconStyle) {
+	protected ImageDescriptor getBaseImageDescriptor(DefElementDescriptor elementDesc) {
 		EArcheType archeType = elementDesc.getArcheType();
 		int flags = elementDesc.elementFlags;
 		
@@ -129,20 +115,11 @@ public class DeeElementImageProvider {
 			return DeeImages.NODE_MODULE_DEC.getDescriptor();
 			
 		case Variable:
-			if(iconStyle == ElementIconsStyle.JDTLIKE) {
-				return getJDTStyleFieldImageDescriptor(flags); 
-			}
 			return DeeImages.ENT_VARIABLE.getDescriptor();
 			
 		case Function:
-			if(iconStyle == ElementIconsStyle.JDTLIKE) {
-				return getJDTStyleMethodImageDescriptor(flags);
-			}
 			return DeeImages.ENT_FUNCTION.getDescriptor();
 		case Constructor:
-			if(iconStyle == ElementIconsStyle.JDTLIKE) {
-				return getJDTStyleMethodImageDescriptor(flags);
-			}
 			return DeeImages.ENT_CONSTRUCTOR.getDescriptor();
 		case Struct:
 			return DeeImages.ENT_STRUCT.getDescriptor();
@@ -176,34 +153,44 @@ public class DeeElementImageProvider {
 		
 	}
 	
-	public ImageDescriptor getJDTStyleFieldImageDescriptor(int flags) {
-		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
-		case PRIVATE: 
-			return DeeImages.IMG_FIELD_PRIVATE.getDescriptor();
-		case PROTECTED:
-			return DeeImages.IMG_FIELD_PROTECTED.getDescriptor();
-		case PACKAGE: 
-			return DeeImages.IMG_FIELD_DEFAULT.getDescriptor();
-		case PUBLIC:
-		case EXPORT:
-			return DeeImages.IMG_FIELD_PUBLIC.getDescriptor();
-		}
-		throw assertUnreachable();
-	}
+	/* ----------------- header ----------------- */
 	
-	public ImageDescriptor getJDTStyleMethodImageDescriptor(int flags) {
-		switch (DefElementFlagsUtil.elementFlagsToProtection(flags, EProtection.PUBLIC)) {
-		case PRIVATE: 
-			return DeeImages.IMG_METHOD_PRIVATE.getDescriptor();
-		case PROTECTED:
-			return DeeImages.IMG_METHOD_PROTECTED.getDescriptor();
-		case PACKAGE: 
-			return DeeImages.IMG_METHOD_DEFAULT.getDescriptor();
-		case PUBLIC:
-		case EXPORT:
-			return DeeImages.IMG_METHOD_PUBLIC.getDescriptor();
+	protected static LangElementImageDescriptor getDecoratedImageDescriptor(ImageDescriptor baseImage, 
+			DefElementDescriptor elementDesc, EProtection prot, Point size) {
+		
+		EnumSet<EAttributeFlag> flagsSet = ElementAttributes.newFlagsSet();
+		
+		if(elementDesc.isOverride()) {
+			// Don't add because icon is ugly combined with function icon
 		}
-		throw assertUnreachable();
+		
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_STATIC)) {
+			flagsSet.add(EAttributeFlag.STATIC);
+		}
+		
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_FINAL)) {
+			flagsSet.add(EAttributeFlag.FINAL);
+		} else if(elementDesc.isFlag(DefElementFlagConstants.FLAG_ABSTRACT)) {
+			flagsSet.add(EAttributeFlag.ABSTRACT);
+		}
+		
+		if(elementDesc.isImmutable()) {
+			flagsSet.add(EAttributeFlag.IMMUTABLE);
+		} else if(elementDesc.isConst()) {
+			flagsSet.add(EAttributeFlag.CONST);
+		}
+		
+		if(elementDesc.isFlag(DefElementFlagConstants.FLAG_TEMPLATED)) {
+			flagsSet.add(EAttributeFlag.TEMPLATED);
+		}
+		
+		if(elementDesc.getArcheType() == EArcheType.Alias) {
+			flagsSet.add(EAttributeFlag.ALIAS);
+		}
+		
+		ElementAttributes elementData = new ElementAttributes(prot, flagsSet);
+		
+		return new DeeDecoratedImageDescriptor(size, baseImage, elementData);
 	}
 	
 }

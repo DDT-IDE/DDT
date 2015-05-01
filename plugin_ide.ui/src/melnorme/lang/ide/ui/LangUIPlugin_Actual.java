@@ -4,13 +4,18 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.editor.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.structure.StructureModelManager;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.hover.AnnotationHover_Adapter;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.editor.structure.DeeStructureModelManager;
 import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
+import mmrnmhrm.ui.views.DeeDecoratedImageDescriptor;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 /**
@@ -43,6 +48,16 @@ public final class LangUIPlugin_Actual {
 	
 	public static StructureModelManager createStructureModelManager() {
 		return new DeeStructureModelManager();
+	}
+	
+	public static StructureElementLabelProvider getStructureElementLabelProvider() {
+		return new StructureElementLabelProvider() {
+			@Override
+			public LangElementImageDescriptor getElementImageDescriptor(ImageDescriptor baseImage, 
+					ElementAttributes elementAttributes) {
+				return new DeeDecoratedImageDescriptor(baseImage, elementAttributes);
+			}
+		};
 	}
 	
 	/* ----------------- UI messages:  ----------------- */

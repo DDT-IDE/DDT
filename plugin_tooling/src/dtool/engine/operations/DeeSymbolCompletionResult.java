@@ -13,6 +13,7 @@ package dtool.engine.operations;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
@@ -23,6 +24,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
 import dtool.ast.definitions.ICallableElement;
 import dtool.ast.definitions.IFunctionParameter;
+import dtool.parser.structure.DeeStructureCreator;
 
 public class DeeSymbolCompletionResult {
 	
@@ -89,7 +91,6 @@ public class DeeSymbolCompletionResult {
 		int rplOffset = invocationInfo.offset;
 		String rplName = namedElem.getName();
 		String rplString = rplName.substring(invocationInfo.namePrefixLen);
-		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN;
 		String moduleName = namedElem.getModuleFullName();
 		String baseLabel = DeeNamedElementLabelProvider.getLabelForContentAssistPopup(namedElem);
 		
@@ -101,8 +102,11 @@ public class DeeSymbolCompletionResult {
 			fullReplaceString = getFullReplaceString(rplString, callableElement, subElements);
 		}
 		
-		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, baseLabel, kind, moduleName, 
-			fullReplaceString, subElements, namedElem);
+		CompletionProposalKind kind = CompletionProposalKind.UNKNOWN; /*FIXME: TODO */
+		ElementAttributes attributes = DeeStructureCreator.getAttributes(namedElem);
+		
+		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, baseLabel, kind, attributes, 
+			moduleName, fullReplaceString, subElements, namedElem);
 	}
 	
 	public static String getFullReplaceString(String rplString, ICallableElement callableElement, 

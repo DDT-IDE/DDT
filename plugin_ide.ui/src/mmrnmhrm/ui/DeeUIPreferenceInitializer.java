@@ -46,7 +46,6 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		store.setDefault(PreferenceConstants.APPEARANCE_COMPRESS_PACKAGE_NAMES, false);
 		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE, true);
 		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_TYPEPARAMETERS, true);
-		store.setDefault(DeeUIPreferenceConstants.ELEMENT_ICONS_STYLE, ""); // No specific default
 		
 		// Editor
 		store.setDefault(PreferenceConstants.EDITOR_SMART_INDENT, true);

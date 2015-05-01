@@ -10,14 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.util.List;
 
 import melnorme.lang.ide.core.operations.TimeoutProgressMonitor;
+import melnorme.lang.ide.ui.LangImageProvider;
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
-import melnorme.lang.ide.ui.views.LangImageProvider;
+import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.symbols.INamedElement;
@@ -26,10 +27,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
-import mmrnmhrm.ui.DeeImages;
-import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 import mmrnmhrm.ui.views.DeeElementImageProvider;
-import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -74,8 +72,6 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	protected final static char[] VAR_TRIGGER = { ' ', '=', ';' };
 	
-	protected final DeeModelElementLabelProvider modelElementLabelProvider = new DeeModelElementLabelProvider();
-	
 	protected static char[] getVarTrigger() {
 		return VAR_TRIGGER;
 	}
@@ -92,12 +88,12 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	@Override
 	protected Image getImage(ToolCompletionProposal proposal) {
 		ImageDescriptor imageDescriptor = createImageDescriptor(proposal);
-		return DeeImages.getImageDescriptorRegistry().get(imageDescriptor); 
+		return LangImages.getImageDescriptorRegistry().get(imageDescriptor); 
 	}
 	
 	@Override
-	protected LangImageProvider getImageProvider() {
-		throw assertFail();
+	protected AbstractLangImageProvider getImageProvider() {
+		return new LangImageProvider();
 	}
 	
 	public ImageDescriptor createImageDescriptor(ToolCompletionProposal proposal) {
@@ -108,10 +104,22 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 			return null;
 		}
 		
-		ElementIconsStyle iconStyle = DeeElementImageProvider.getIconStylePreference();
-		
+		/*FIXME: BUG here use imageDescriptor */
 		DefElementDescriptor defDescriptor = new DefElementDescriptor(namedElement);
-		return DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor, iconStyle);
+		ImageDescriptor imageDescriptor_old = DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor);
+		
+		
+		ImageDescriptor baseImage = getBaseImageDescriptor(proposal).getDescriptor();
+		if(baseImage == null) {
+			baseImage = ImageDescriptor.getMissingImageDescriptor();
+		}
+		
+		ImageDescriptor imageDescriptor = LangUIPlugin_Actual.getStructureElementLabelProvider()
+				.getElementImageDescriptor(baseImage, proposal.getAttributes());
+		
+//		assertTrue(areEqual(imageDescriptor, imageDescriptor_old));
+		
+		return imageDescriptor_old;
 	}
 	
 }

@@ -3,12 +3,13 @@ package mmrnmhrm.ui;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
-import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
 
 public abstract class DeeImages extends LangImages {
+	
+	protected static final String T_OBJ = "obj16";
+	protected static final String T_OVR = "ovr16";
 	
 	protected static final String T_ACTIONS = "action16e";
 	
@@ -55,20 +56,6 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageHandle NODE_REF = createManaged(T_OBJ, "node_ref.gif");
 	
 	
-	public static final ImageDescriptor DESC_OVR_PRIVATE = createUnmanaged(T_OVR, "aggregate-private.png");
-	public static final ImageDescriptor DESC_OVR_PROTECTED = createUnmanaged(T_OVR, "aggregate-protected.png");
-	public static final ImageDescriptor DESC_OVR_DEFAULT = createUnmanaged(T_OVR, "aggregate-default.png");
-	
-	public static final ImageDescriptor DESC_OVR_FINAL = createUnmanaged(T_OVR, "ovr_final.png");
-	public static final ImageDescriptor DESC_OVR_STATIC = createUnmanaged(T_OVR, "ovr_static.png");
-	public static final ImageDescriptor DESC_OVR_ABSTRACT = createUnmanaged(T_OVR, "ovr_abstract.png");
-	
-	public static final ImageDescriptor DESC_OVR_CONST = createUnmanaged(T_OVR, "ovr_const.png");
-	public static final ImageDescriptor DESC_OVR_IMMUTABLE = createUnmanaged(T_OVR, "ovr_immutable.png");
-	
-	public static final ImageDescriptor DESC_OVR_TEMPLATED = createUnmanaged(T_OVR, "ovr_templated.png");
-	public static final ImageDescriptor DESC_OVR_ALIAS = createUnmanaged(T_OVR, "ovr_alias_arrow.png");
-	
 	
 	/* ---------- DUB elements ---------- */
 	
@@ -92,13 +79,6 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageDescriptor COLLAPSE_ALL = createUnmanaged(T_ACTIONS, "collapseall.gif");
 	public static final ImageDescriptor EXPAND_ALL = createUnmanaged(T_ACTIONS, "expandall.gif");
 	
-	/* ------------------------------------------- */
-	
-	/** This is an alternate registry with keys based on ImageDescriptors.
-	 * XXX: maybe this should be consolidated with the other String key-based registry */ 
-	public static ImageDescriptorRegistry getImageDescriptorRegistry() {
-		return DLTKUIPlugin.getImageDescriptorRegistry();
-	}
 	
 	/* ------------------------------------------- */
 	

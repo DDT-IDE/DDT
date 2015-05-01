@@ -38,41 +38,44 @@ public enum StructureElementKind {
 	ENUMCONTAINER,
 	ENUM;
 	
-	public static abstract class StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
+	public <RET> RET switchOnKind(StructureElementKindVisitor<RET> visitor) {
+		return switchOnKind(this, visitor);
+	}
+	
+	public static <RET> RET switchOnKind(StructureElementKind kind, StructureElementKindVisitor<RET> visitor) {
+		switch(kind) {
+		case VARIABLE: return visitor.visitVariable();
 		
+		case FUNCTION: return visitor.visitFunction();
+		case CONSTRUCTOR: return visitor.visitConstructor();
 		
-		public RET switchOnKind(StructureElementKind kind) {
-			switch(kind) {
-			case VARIABLE: return visitVariable();
-			
-			case FUNCTION: return visitFunction();
-			case CONSTRUCTOR: return visitConstructor();
-			
-			case CLASS: return visitClass();
-			case INTERFACE: return visitInterface();
-			case STRUCT: return visitStruct();
-			case UNION: return visitUnion();
-			
-			case MODULEDEC: return visitModule();
-			
-			case TEMPLATE: return visitTemplate();
-			case ALIAS: return visitAlias();
-			
-			case MIXIN: return visitMixin();
-			case ENUMCONTAINER: return visitEnum();
-			case ENUM: return visitEnumElement();
-			}
-			throw assertUnreachable();
+		case CLASS: return visitor.visitClass();
+		case INTERFACE: return visitor.visitInterface();
+		case STRUCT: return visitor.visitStruct();
+		case UNION: return visitor.visitUnion();
+		
+		case MODULEDEC: return visitor.visitModule();
+		
+		case TEMPLATE: return visitor.visitTemplate();
+		case ALIAS: return visitor.visitAlias();
+		
+		case MIXIN: return visitor.visitMixin();
+		case ENUMCONTAINER: return visitor.visitEnum();
+		case ENUM: return visitor.visitEnumElement();
 		}
+		throw assertUnreachable();
+	}
+	
+	public static interface StructureElementKindVisitor<RET> extends AbstractKindVisitor<RET> {
 		
-		protected abstract RET visitUnion();
+		public abstract RET visitUnion();
 		
-		protected abstract RET visitMixin();
+		public abstract RET visitMixin();
 		
-		protected abstract RET visitTemplate();
-		protected abstract RET visitAlias();
+		public abstract RET visitTemplate();
+		public abstract RET visitAlias();
 		
-		protected abstract RET visitEnumElement();
+		public abstract RET visitEnumElement();
 		
 	}
 	

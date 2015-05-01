@@ -1,13 +1,13 @@
 package mmrnmhrm.core.model_elements;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.Flags;
 
 import dtool.ast.declarations.AttribBasic.AttributeKinds;
-import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplatableElement;

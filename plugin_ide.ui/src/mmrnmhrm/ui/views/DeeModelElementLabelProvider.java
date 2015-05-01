@@ -1,14 +1,15 @@
 package mmrnmhrm.ui.views;
 
+import melnorme.lang.ide.ui.LangImages;
+import melnorme.util.swt.jface.resources.ImageDescriptorRegistry;
+import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeImages;
-import mmrnmhrm.ui.DeeUIPreferenceConstants.ElementIconsStyle;
 
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -26,7 +27,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 	
 	public ImageDescriptorRegistry getImageDescriptorRegistry() {
-		return DeeImages.getImageDescriptorRegistry();
+		return LangImages.getImageDescriptorRegistry();
 	}
 	
 	@Override
@@ -34,7 +35,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 		if(object instanceof IMember) {
 			IMember member = (IMember) object;
 			
-			ImageDescriptor imageDescriptor = getImageDescriptor(member, DeeElementImageProvider.BIG_SIZE);
+			ImageDescriptor imageDescriptor = getImageDescriptor(member, LangElementImageDescriptor.DEFAULT_SIZE);
 			
 			return getImageDescriptorRegistry().get(imageDescriptor);
 		} else {
@@ -54,12 +55,7 @@ public class DeeModelElementLabelProvider extends LabelProvider implements ILabe
 	}
 	
 	public ImageDescriptor getImageDescriptor(DefElementDescriptor elementDesc, Point imageSize) {
-		ElementIconsStyle iconStyle = getIconStylePreference();
-		return new DeeElementImageProvider().getImageDescriptor(elementDesc, imageSize, iconStyle);
-	}
-	
-	protected ElementIconsStyle getIconStylePreference() {
-		return DeeElementImageProvider.getIconStylePreference();
+		return new DeeElementImageProvider().getImageDescriptor(elementDesc, imageSize);
 	}
 	
 }

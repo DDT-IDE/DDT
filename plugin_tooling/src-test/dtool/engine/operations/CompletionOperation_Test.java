@@ -12,9 +12,11 @@ package dtool.engine.operations;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIVE_TYPES;
 import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
+import static dtool.parser.structure.DeeStructureCreator_Test.att;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.completion.LangCompletionResult;
@@ -183,13 +185,13 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		testCodeCompletionProposals(MODULE_FilePath, offset,
 			new LangCompletionResult(new ArrayList2<>(
 				proposal(offset, 0, "", "foo() : void", 
-					CompletionProposalKind.UNKNOWN, "_dummy2", "()"),
+					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "()"),
 				proposal(offset, 0, "", "foo(int a) : void", 
-					CompletionProposalKind.UNKNOWN, "_dummy2", "(a)", sr(1, 1)),
+					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "(a)", sr(1, 1)),
 				proposal(offset, 0, "", "foo(int a, string str) : void", 
-					CompletionProposalKind.UNKNOWN, "_dummy2", "(a, str)", sr(1, 1), sr(4, 3)),
+					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "(a, str)", sr(1, 1), sr(4, 3)),
 				proposal(offset, 0, "Template", "fooTemplate(T) (T param) : int", 
-					CompletionProposalKind.UNKNOWN, "_dummy2", "Template(param)", sr(9, 5))
+					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "Template(param)", sr(9, 5))
 			))
 		);
 	}
@@ -199,10 +201,10 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	}
 	
 	public ToolCompletionProposal proposal(int replaceOffset, int replaceLength, String replaceString, String label,
-			CompletionProposalKind kind, String moduleName, 
+			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, 
 			String fullReplaceString, SourceRange... sourceSubElements) {
-		return new ToolCompletionProposal(replaceOffset, replaceLength, replaceString, label, kind, moduleName, 
-			fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
+		return new ToolCompletionProposal(replaceOffset, replaceLength, replaceString, label, kind, attributes, 
+			moduleName, fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
 			
 			@Override
 			protected boolean subclassEquals(LangToolCompletionProposal _other) {

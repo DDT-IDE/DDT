@@ -15,6 +15,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
  * Fixed regression: function overloads no longer appear separately in Content Assist
   ▶ Recommended/tested CDT version: 8.6.0
+ * Removed `Appearance` preference page and associated option.
  
 
 ### DDT 0.11.1

@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
@@ -33,7 +34,6 @@ import dtool.ast.declarations.AttribLinkage;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.declarations.AttribPragma;
 import dtool.ast.declarations.AttribProtection;
-import dtool.ast.declarations.AttribProtection.EProtection;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclList;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
