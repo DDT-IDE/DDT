@@ -124,7 +124,8 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetElementSemanticReady() {
-//			 assertTrue(type.isSemanticReady()); /* FIXME: */
+			/* FIXME: type.isSemanticReady() */
+//			 assertTrue(type.isSemanticReady()); 
 		}
 		
 		@Override
@@ -150,7 +151,8 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetElementSemanticReady() {
-//			 assertTrue(typeRef.isSemanticReady()); /* FIXME: */
+			/* FIXME: type.isSemanticReady() */
+//			 assertTrue(typeRef.isSemanticReady());
 		}
 		
 		@Override
