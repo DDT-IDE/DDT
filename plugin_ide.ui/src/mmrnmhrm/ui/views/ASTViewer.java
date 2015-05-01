@@ -55,6 +55,7 @@ import dtool.parser.DeeParserResult;
 /**
  * D AST viewer
  */
+@Deprecated
 public class ASTViewer extends ViewPart implements ISelectionListener,
 		ISelectionChangedListener, IDoubleClickListener {
 	
@@ -209,7 +210,9 @@ public class ASTViewer extends ViewPart implements ISelectionListener,
 		
 		//viewer.getControl().setRedraw(false);
 		viewer.refresh();
-		selNode = ASTNodeFinder.findElement(fDeeModule.getModuleNode(), offset);
+		if(offset <= fDeeModule.source.length()) {
+			selNode = ASTNodeFinder.findElement(fDeeModule.getModuleNode(), offset);
+		}
 		if(selNode != null) {
 			viewer.reveal(selNode);
 		}
