@@ -367,20 +367,6 @@
       </viewerContentBinding>
    </extension>
    
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="org.dsource.ddt.ide.ui"
-            name="%LangViewsCategory.name"/>
-      <view
-            category="org.dsource.ddt.ide.ui"
-            class="mmrnmhrm.ui.views.ASTViewer"
-            icon="icons/action16e/extra/sample.gif"
-            id="org.dsource.ddt.ide.ui.views.ASTViewer"
-            name="DDT AST Viewer"/>
-   </extension>
-   
-   
 	
 	<!-- ============ Launch ============= -->
 	

@@ -16,6 +16,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Fixed regression: function overloads no longer appear separately in Content Assist
   ▶ Recommended/tested CDT version: 8.6.0
  * Removed `Appearance` preference page and associated option.
+ * Removed internal/deprecated `AST Viewer` view.
  
 
 ### DDT 0.11.1

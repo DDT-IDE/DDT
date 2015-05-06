@@ -16,7 +16,6 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.views.ASTViewer;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -52,7 +51,6 @@ public class DeeEditorTest extends CommonDeeUITest {
 		assertTrue(editor instanceof DeeEditor);
 		
 		page.showView("org.eclipse.ui.views.ContentOutline");
-		page.showView(ASTViewer.VIEW_ID);
 	}
 	
 	@Test
@@ -64,7 +62,6 @@ public class DeeEditorTest extends CommonDeeUITest {
 		assertTrue(editor instanceof DeeEditor);
 		
 		page.showView("org.eclipse.ui.views.ContentOutline");
-		page.showView(ASTViewer.VIEW_ID);
 	}
 	
 	@Test
