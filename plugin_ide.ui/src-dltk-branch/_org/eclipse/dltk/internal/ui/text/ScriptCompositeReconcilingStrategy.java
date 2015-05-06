@@ -11,6 +11,7 @@ package _org.eclipse.dltk.internal.ui.text;
 
 import melnorme.utilbox.collections.ArrayList2;
 
+import org.eclipse.dltk.internal.ui.text.IProblemRequestorExtension;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;

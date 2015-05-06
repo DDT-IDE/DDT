@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.ui.text.IProblemRequestorExtension;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.jface.text.IDocument;
@@ -44,8 +45,8 @@ public class ScriptReconcilingStrategy implements IReconcilingStrategy, IReconci
 
 	public ScriptReconcilingStrategy(ITextEditor editor) {
 		fEditor = editor;
-		fManager = DLTKUIPlugin.getDefault().getWorkingCopyManager(); /*FIXME: BUG here*/
-		fDocumentProvider = DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider(); /*FIXME: BUG here*/
+		fManager = DLTKUIPlugin.getDefault().getWorkingCopyManager();
+		fDocumentProvider = DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider();
 		
 		fIsScriptReconcilingListener = fEditor instanceof IScriptReconcilingListener;
 		if (fIsScriptReconcilingListener) {

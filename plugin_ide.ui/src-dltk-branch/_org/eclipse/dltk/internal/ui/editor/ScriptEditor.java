@@ -20,6 +20,9 @@ import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import melnorme.utilbox.core.DevelopmentCodeMarkers.UsesReflectionToAccessInternalAPI;
+import melnorme.utilbox.misc.ReflectionUtils;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.editor.DeeOutlinePage;
@@ -104,8 +107,8 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
+import org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 
-import _org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -263,6 +266,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 	
 	/* ----------------- set input ----------------- */
 	
+	@UsesReflectionToAccessInternalAPI
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
 		ScriptSourceViewer sourceViewer = getSourceViewer_(); // Can be null
@@ -280,8 +284,15 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		final IDocumentProvider docProvider = getDocumentProvider();
 		final IAnnotationModel model = docProvider.getAnnotationModel(input);
 		if (model instanceof SourceModuleAnnotationModel) {
-			((SourceModuleAnnotationModel) model).problemFactory = 
-					DLTKLanguageManager.getProblemFactory(getNatureId());
+			SourceModuleAnnotationModel smAnnModel = (SourceModuleAnnotationModel) model;
+//			smAnnModel.problemFactory = DLTKLanguageManager.getProblemFactory(getNatureId());
+			// Need to use reflection because field is protected
+			try {
+				ReflectionUtils.writeField(smAnnModel, "problemFactory", 
+					DLTKLanguageManager.getProblemFactory(getNatureId()));
+			} catch(NoSuchFieldException e) {
+				DeeCore.logInternalError(e);
+			}
 		}
 
 		if (sourceViewer != null && sourceViewer.getReconciler() == null) {
