@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 @LANG_SPECIFIC
 public enum CompletionProposalKind {
 	
+	UNKNOWN,
 	KEYWORD,
 	ERROR,
 	
@@ -40,11 +41,13 @@ public enum CompletionProposalKind {
 	TUPLE,
 	TYPE,
 	
+	/* ----------------- Language-specific: ----------------- */
 	;
 	
 	
 	public <RET> RET switchOnKind(ProposalKindVisitor<RET> visitor) {
 		switch(this) {
+		case UNKNOWN: return visitor.visitUnknown();
 		case KEYWORD: return visitor.visitKeyword();
 		case ERROR: return visitor.visitError();
 		
@@ -69,6 +72,8 @@ public enum CompletionProposalKind {
 		case TUPLE: return visitor.visitTuple();
 		case TYPE: return visitor.visitType();
 		case MIXIN: return visitor.visitMixin();
+		
+		/* ----------------- Language-specific: ----------------- */
 		
 		}
 		throw assertUnreachable();
