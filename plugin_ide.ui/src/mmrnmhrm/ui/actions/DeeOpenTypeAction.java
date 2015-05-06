@@ -1,19 +1,13 @@
 package mmrnmhrm.ui.actions;
 
-import melnorme.util.swt.jface.resources.LangElementImageDescriptor;
-import mmrnmhrm.core.model_elements.DefElementDescriptor;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.OpenTypeSelectionDialog2_Ext;
-import mmrnmhrm.ui.views.DeeModelElementLabelProvider;
 
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.actions.OpenTypeAction;
-import org.eclipse.dltk.ui.dialogs.ITypeInfoImageProvider;
-import org.eclipse.dltk.ui.dialogs.ITypeInfoRequestor;
 import org.eclipse.dltk.ui.dialogs.TypeSelectionExtension;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 
@@ -56,19 +50,19 @@ public class DeeOpenTypeAction extends OpenTypeAction {
 	}
 	
 	protected final class DeeTypeSelectionExtension extends TypeSelectionExtension {
-		final DeeModelElementLabelProvider deeModelElementLabelProvider = new DeeModelElementLabelProvider();
+//		final DeeModelElementLabelProvider deeModelElementLabelProvider = new DeeModelElementLabelProvider();
 		
-		@Override
-		public ITypeInfoImageProvider getImageProvider() {
-			return new ITypeInfoImageProvider() {
-				@Override
-				public ImageDescriptor getImageDescriptor(ITypeInfoRequestor typeInfoRequestor) {
-					return deeModelElementLabelProvider.getImageDescriptor(
-						new DefElementDescriptor(typeInfoRequestor.getModifiers()),
-						LangElementImageDescriptor.DEFAULT_SIZE);
-				}
-			};
-		}
+//		@Override
+//		public ITypeInfoImageProvider getImageProvider() {
+//			return new ITypeInfoImageProvider() {
+//				@Override
+//				public ImageDescriptor getImageDescriptor(ITypeInfoRequestor typeInfoRequestor) {
+//					return deeModelElementLabelProvider.getImageDescriptor(
+//						new DefElementDescriptor(typeInfoRequestor.getModifiers()),
+//						LangElementImageDescriptor.DEFAULT_SIZE);
+//				}
+//			};
+//		}
 	}
 	
 }

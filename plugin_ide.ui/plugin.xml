@@ -35,7 +35,7 @@
 			class="mmrnmhrm.ui.editor.DeeEditor"
 			contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
 			default="true"
-			icon="icons/obj16/dee_file.gif"
+			icon="icons/views/source_file.gif"
 			id="org.dsource.ddt.ide.ui.editors.DeeEditor"
 			name="%LangEditor.name">
 			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />
@@ -307,15 +307,6 @@
 	
 	<!-- ============ EDITOR related TODO ============= -->
 	<!-- ============ other extensions ============= -->
-   
-   <extension
-        point="org.eclipse.dltk.ui.modelLabelProvider">
-      <modelLabelProvider
-           class="mmrnmhrm.ui.views.DeeModelElementLabelProvider"
-           id="org.dsource.ddt.ide.ui.modelLabelProvider"
-           language="org.dsource.ddt.ide.core.nature">
-      </modelLabelProvider>
-   </extension>
    
    <extension point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent

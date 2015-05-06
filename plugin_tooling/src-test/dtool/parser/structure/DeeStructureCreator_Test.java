@@ -16,6 +16,7 @@ import static melnorme.lang.tooling.EAttributeFlag.STATIC;
 import static melnorme.lang.tooling.structure.StructureElementKind.ALIAS;
 import static melnorme.lang.tooling.structure.StructureElementKind.CLASS;
 import static melnorme.lang.tooling.structure.StructureElementKind.CONSTRUCTOR;
+import static melnorme.lang.tooling.structure.StructureElementKind.ENUM_TYPE;
 import static melnorme.lang.tooling.structure.StructureElementKind.FUNCTION;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.lang.tooling.structure.StructureElementKind.VARIABLE;
@@ -28,7 +29,6 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.lang.tooling.structure.StructureElementKind;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
@@ -153,7 +153,7 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		testSource = "enum Foo : int { ONE, TWO }";
 		testParseStructure(
 			testSource, 
-			new StructureElement("Foo", sr("Foo", 3), sr("enum","}"), StructureElementKind.ENUM, att(), "int", elems(
+			new StructureElement("Foo", sr("Foo", 3), sr("enum","}"), ENUM_TYPE, att(), "int", elems(
 				new StructureElement("ONE", sr("ONE", 3), sr("ONE","ONE"), VARIABLE, attrib(null), null, null),
 				new StructureElement("TWO", sr("TWO", 3), sr("TWO","TWO"), VARIABLE, attrib(null), null, null)
 			))

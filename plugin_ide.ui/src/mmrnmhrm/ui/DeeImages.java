@@ -1,6 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui;
 
 import melnorme.lang.ide.ui.LangImages;
+import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -8,53 +19,32 @@ import org.eclipse.ui.ISharedImages;
 
 public abstract class DeeImages extends LangImages {
 	
-	protected static final String T_OBJ = "obj16";
-	protected static final String T_OVR = "ovr16";
+	protected static final String CAT_ELEMS = "language_elements";
 	
 	protected static final String T_ACTIONS = "action16e";
 	
-	public static final ImageHandle ELEM_PACKAGE = createManaged(T_OBJ, "dee_package.gif");
-	public static final ImageHandle ELEM_FILE = createManaged(T_OBJ, "dee_file.gif");
+	public static final ImageHandle SOURCE_FILE = createManaged("views", "source_file.gif");
 	
-	public static final ImageHandle NODE_MODULE_DEC = createManaged(T_OBJ, "ent_module.png");
+	public static final ImageHandle ELEM_MODULE = createManaged(CAT_ELEMS, "module.png");
+	public static final ImageHandle ELEM_PACKAGE = createManaged(CAT_ELEMS, "dee_package.gif");
 
-	public static final ImageHandle ENT_VARIABLE = createManaged(T_OBJ, "ent_variable.png");
-	public static final ImageHandle ENT_FUNCTION = createManaged(T_OBJ, "ent_function.png");
-	public static final ImageHandle ENT_CONSTRUCTOR = createManaged(T_OBJ, "ent_constructor.png");
+	public static final ImageHandle ENT_ERROR = LangElementImages.ERROR_ELEMENT;
 	
-	// We're using 'default' protection for 'package' protection in D
-	// No special icon for 'export' protection in D, same as public
-	public static final ImageHandle IMG_METHOD_PUBLIC = createManaged(T_OBJ, "function_public.gif");
-	public static final ImageHandle IMG_METHOD_PROTECTED = createManaged(T_OBJ, "function_protected.gif");
-	public static final ImageHandle IMG_METHOD_PRIVATE = createManaged(T_OBJ, "function_private.gif");
-	public static final ImageHandle IMG_METHOD_DEFAULT = createManaged(T_OBJ, "function_default.gif");
+	public static final ImageHandle ENT_VARIABLE = LangElementImages.VARIABLE;
+	public static final ImageHandle ENT_FUNCTION = LangElementImages.FUNCTION;
+	public static final ImageHandle ENT_CONSTRUCTOR = LangElementImages.CONSTRUCTOR;
 	
-	public static final ImageHandle IMG_FIELD_PUBLIC = createManaged(T_OBJ, "field_public_obj.gif");
-	public static final ImageHandle IMG_FIELD_PROTECTED = createManaged(T_OBJ, "field_protected_obj.gif");
-	public static final ImageHandle IMG_FIELD_PRIVATE = createManaged(T_OBJ, "field_private_obj.gif");
-	public static final ImageHandle IMG_FIELD_DEFAULT = createManaged(T_OBJ, "field_default_obj.gif");
+	public static final ImageHandle ENT_NATIVE = LangElementImages.T_NATIVE;
+	public static final ImageHandle ENT_STRUCT = LangElementImages.T_STRUCT;
+	public static final ImageHandle ENT_CLASS = LangElementImages.T_CLASS;
+	public static final ImageHandle ENT_INTERFACE = LangElementImages.T_INTERFACE;
+	public static final ImageHandle ENT_ENUM = LangElementImages.T_ENUM;
+	public static final ImageHandle ENT_UNION = createManaged(CAT_ELEMS, "t_union.gif");
+	public static final ImageHandle ENT_TEMPLATE = createManaged(CAT_ELEMS, "template.png");
 	
-	
-	public static final ImageHandle ENT_NATIVE = createManaged(T_OBJ, "ent_native.png");
-	public static final ImageHandle ENT_STRUCT = createManaged(T_OBJ, "ent_struct.png");
-	public static final ImageHandle ENT_UNION = createManaged(T_OBJ, "ent_union.gif");
-	public static final ImageHandle ENT_CLASS = createManaged(T_OBJ, "ent_class.gif");
-	public static final ImageHandle ENT_INTERFACE = createManaged(T_OBJ, "ent_interface.png");
-	public static final ImageHandle ENT_TEMPLATE = createManaged(T_OBJ, "ent_namespace.png");
-	public static final ImageHandle ENT_MIXIN = createManaged(T_OBJ, "ent_namespace.png");
-	public static final ImageHandle ENT_ENUM = createManaged(T_OBJ, "ent_enum.gif");
-	public static final ImageHandle ENT_TYPE_PARAMETER = createManaged(T_OBJ, "ent_type_parameter.png");
-	public static final ImageHandle ENT_TUPLE = createManaged(T_OBJ, "ent_tuple.png");
-//	public static final ImageHandle ENT_UNKOWN_ALIAS = createImage(T_OBJ, "ent_alias.png");
-	public static final ImageHandle ENT_ERROR = createManaged(T_OBJ, "ent_error.png");
-	
-	
-	public static final ImageHandle NODE_IMPORT = createManaged(T_OBJ, "elem_import.gif");
-	public static final ImageHandle NODE_IMPORTS = createManaged(T_OBJ, "elem_imports.gif");
-	
-	public static final ImageHandle NODE_OTHER = createManaged(T_OBJ, "node_other.gif");
-	public static final ImageHandle NODE_REF = createManaged(T_OBJ, "node_ref.gif");
-	
+	public static final ImageHandle ENT_MIXIN = createManaged(CAT_ELEMS, "namespace.png");
+	public static final ImageHandle ENT_TYPE_PARAMETER = LangElementImages.T_TYPE;
+	public static final ImageHandle ENT_TUPLE = createManaged(CAT_ELEMS, "tuple.png");
 	
 	
 	/* ---------- DUB elements ---------- */

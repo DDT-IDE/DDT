@@ -18,6 +18,8 @@ import melnorme.lang.tooling.LANG_SPECIFIC;
 @LANG_SPECIFIC
 public enum StructureElementKind {
 	
+	MODULEDEC,
+	
 	VARIABLE,
 	
 	FUNCTION,
@@ -27,16 +29,13 @@ public enum StructureElementKind {
 	INTERFACE,
 	STRUCT,
 	UNION,
-	
-	MODULEDEC,
+	ENUM_TYPE,
 	
 	TEMPLATE,
 	ALIAS,
 	
 	MIXIN,
-	
-	ENUMCONTAINER,
-	ENUM;
+	;
 	
 	public <RET> RET switchOnKind(StructureElementKindVisitor<RET> visitor) {
 		return switchOnKind(this, visitor);
@@ -60,8 +59,7 @@ public enum StructureElementKind {
 		case ALIAS: return visitor.visitAlias();
 		
 		case MIXIN: return visitor.visitMixin();
-		case ENUMCONTAINER: return visitor.visitEnum();
-		case ENUM: return visitor.visitEnumElement();
+		case ENUM_TYPE: return visitor.visitEnum();
 		}
 		throw assertUnreachable();
 	}
@@ -73,9 +71,6 @@ public enum StructureElementKind {
 		public abstract RET visitMixin();
 		
 		public abstract RET visitTemplate();
-		public abstract RET visitAlias();
-		
-		public abstract RET visitEnumElement();
 		
 	}
 	

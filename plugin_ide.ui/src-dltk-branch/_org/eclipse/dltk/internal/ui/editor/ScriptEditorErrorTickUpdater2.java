@@ -65,7 +65,7 @@ public class ScriptEditorErrorTickUpdater2 implements IProblemChangedListener {
 		if (titleImage == null) {
 			return;
 		}
-		Image baseImage = DeeImages.ELEM_FILE.getImage();
+		Image baseImage = DeeImages.SOURCE_FILE.getImage();
 		Image newImage = problemsDecorator.decorateImage(baseImage, editorFile);
 		
 		if (newImage != null && titleImage != newImage) {

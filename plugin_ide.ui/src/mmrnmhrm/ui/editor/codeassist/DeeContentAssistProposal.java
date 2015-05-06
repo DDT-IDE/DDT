@@ -33,7 +33,7 @@ public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
-		return TextUI.getDDocHTMLRender(namedElement);
+		return TextUI.getDDocHTMLRender(namedElement); /* FIXME: remove dependency on namedElement */
 	}
 	
 	@Override

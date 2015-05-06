@@ -19,15 +19,13 @@ import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.ide.ui.views.AbstractLangImageProvider;
+import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
-import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.model_elements.DefElementDescriptor;
-import mmrnmhrm.ui.views.DeeElementImageProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -97,29 +95,10 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	public ImageDescriptor createImageDescriptor(ToolCompletionProposal proposal) {
-		
-		INamedElement namedElement = proposal.getExtraData();
-		if(namedElement == null) {
-			// Return no image
-			return null;
-		}
-		
-		/*FIXME: BUG here use imageDescriptor */
-		DefElementDescriptor defDescriptor = new DefElementDescriptor(namedElement);
-		ImageDescriptor imageDescriptor_old = DeeElementImageProvider.getDefUnitImageDescriptor(defDescriptor);
-		
-		
 		ImageDescriptor baseImage = getBaseImageDescriptor(proposal).getDescriptor();
-		if(baseImage == null) {
-			baseImage = ImageDescriptor.getMissingImageDescriptor();
-		}
 		
-		ImageDescriptor imageDescriptor = LangUIPlugin_Actual.getStructureElementLabelProvider()
-				.getElementImageDescriptor(baseImage, proposal.getAttributes());
-		
-//		assertTrue(areEqual(imageDescriptor, imageDescriptor_old));
-		
-		return imageDescriptor_old;
+		StructureElementLabelProvider labelDecorator = LangUIPlugin_Actual.getStructureElementLabelProvider();
+		return labelDecorator.getElementImageDescriptor(baseImage, proposal.getAttributes());
 	}
 	
 }

@@ -1,6 +1,5 @@
 package mmrnmhrm.ui.views;
 
-import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 
 import org.eclipse.jface.viewers.IColorProvider;
@@ -33,7 +32,15 @@ public class ASTViewerLabelProvider extends LabelProvider implements IColorProvi
 	
 	@Override
 	public Image getImage(Object element) {
-		return DeeElementImageProvider.getElementImage((IASTNode) element);
+		if (element instanceof DefUnit) {
+//			DefUnit defUnit = (DefUnit) element;
+//			ImageDescriptor imageDescriptor = DeeElementImageProvider.getDefUnitImageDescriptor(defUnit);
+//			if(imageDescriptor == null) {
+//				return null;
+//			}
+//			return DeeImages.getImageDescriptorRegistry().get(imageDescriptor);
+		}
+		return null;
 	}
 
 	@Override

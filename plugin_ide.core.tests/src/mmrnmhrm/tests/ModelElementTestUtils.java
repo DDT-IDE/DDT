@@ -10,6 +10,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
 import org.eclipse.dltk.core.ModelException;
 
+@Deprecated
 public class ModelElementTestUtils {
 	
 	public static ArrayList<IMember> getChildren(IParent element, String childName) throws ModelException {

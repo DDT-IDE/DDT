@@ -179,21 +179,30 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		
 		// Test overload and fullReplaceString/subElements
 		
-		// TODO: change proposal type
+		int offset;
 		
-		int offset = MODULE_Contents.indexOf("/*CC_1*/");
+		offset = MODULE_Contents.indexOf("/*N*/");
 		testCodeCompletionProposals(MODULE_FilePath, offset,
-			new LangCompletionResult(new ArrayList2<>(
-				proposal(offset, 0, "", "foo() : void", 
-					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "()"),
-				proposal(offset, 0, "", "foo(int a) : void", 
-					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "(a)", sr(1, 1)),
-				proposal(offset, 0, "", "foo(int a, string str) : void", 
-					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "(a, str)", sr(1, 1), sr(4, 3)),
-				proposal(offset, 0, "Template", "fooTemplate(T) (T param) : int", 
-					CompletionProposalKind.UNKNOWN, att(), "_dummy2", "Template(param)", sr(9, 5))
+			new LangCompletionResult(list(
+				proposal(offset, 0, "", "void", 
+					CompletionProposalKind.NATIVE, att(), null, "")
 			))
 		);
+		
+		offset = MODULE_Contents.indexOf("/*CC_1*/");
+		testCodeCompletionProposals(MODULE_FilePath, offset,
+			new LangCompletionResult(list(
+				proposal(offset, 0, "", "foo() : void", 
+					CompletionProposalKind.FUNCTION, att(), "_dummy2", "()"),
+				proposal(offset, 0, "", "foo(int a) : void", 
+					CompletionProposalKind.FUNCTION, att(), "_dummy2", "(a)", sr(1, 1)),
+				proposal(offset, 0, "", "foo(int a, string str) : void", 
+					CompletionProposalKind.FUNCTION, att(), "_dummy2", "(a, str)", sr(1, 1), sr(4, 3)),
+				proposal(offset, 0, "TemplateFn", "fooTemplateFn(T) (T param) : int", 
+					CompletionProposalKind.FUNCTION, att(), "_dummy2", "TemplateFn(param)", sr(11, 5))
+			))
+		);
+		
 	}
 	
 	protected SourceRange sr(int offset, int length) {

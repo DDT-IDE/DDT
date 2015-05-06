@@ -19,23 +19,8 @@ import mmrnmhrm.ui.DeeImages;
 public class LangImageProvider extends AbstractLangImageProvider {
 	
 	@Override
-	public IManagedImage visitTemplate() {
-		return DeeImages.ENT_TEMPLATE;
-	}
-	
-	@Override
-	public IManagedImage visitAlias() {
-		return DeeImages.ENT_NATIVE;
-	}
-	
-	@Override
-	public IManagedImage visitMixin() {
-		return DeeImages.ENT_MIXIN;
-	}
-	
-	@Override
-	public IManagedImage visitUnion() {
-		return DeeImages.ENT_UNION;
+	public IManagedImage visitModule() {
+		return DeeImages.ELEM_MODULE;
 	}
 	
 	@Override
@@ -44,8 +29,33 @@ public class LangImageProvider extends AbstractLangImageProvider {
 	}
 	
 	@Override
-	public IManagedImage visitEnumElement() {
-		return DeeImages.ENT_VARIABLE;
+	public IManagedImage visitUnion() {
+		return DeeImages.ENT_UNION;
+	}
+	
+	@Override
+	public IManagedImage visitTemplate() {
+		return DeeImages.ENT_TEMPLATE;
+	}
+	
+	@Override
+	public IManagedImage visitMixin() {
+		return DeeImages.ENT_MIXIN;
+	}
+	
+	@Override
+	public IManagedImage visitPackage() {
+		return DeeImages.ELEM_PACKAGE;
+	}
+	
+	@Override
+	public IManagedImage visitTuple() {
+		return DeeImages.ENT_TUPLE;
+	}
+	
+	@Override
+	public IManagedImage visitType() {
+		return DeeImages.ENT_TYPE_PARAMETER;
 	}
 	
 }

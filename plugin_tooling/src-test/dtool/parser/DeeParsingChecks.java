@@ -24,7 +24,9 @@ import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
+import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.tests.CommonTestUtils;
+import dtool.ast.definitions.EArcheType.ArchetypeCastVisitor;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
@@ -52,6 +54,11 @@ public class DeeParsingChecks extends CommonTestUtils {
 			// Run additional tests on the node just parsed
 			// These might include node/rule specific tests
 			runNodeParsingChecks(node, getSource());
+			
+			if(node instanceof INamedElement) {
+				INamedElement namedElement = (INamedElement) node;
+				namedElement.getArcheType().accept(namedElement, new ArchetypeCastVisitor());
+			}
 		}
 		
 	}
