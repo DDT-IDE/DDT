@@ -4,7 +4,7 @@
 
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
 		<image
-			icon="icons/ovr16/d-dark_ovr.gif"
+			icon="icons/project_overlay.png"
 			id="org.dsource.ddt.ide.ui.deeProjectNatureImage"
 			natureId="org.dsource.ddt.ide.core.nature"/>
 	</extension>

@@ -25,8 +25,8 @@ public abstract class DeeImages extends LangImages {
 	
 	public static final ImageHandle SOURCE_FILE = createManaged("views", "source_file.gif");
 	
-	public static final ImageHandle ELEM_MODULE = createManaged(CAT_ELEMS, "module.png");
-	public static final ImageHandle ELEM_PACKAGE = createManaged(CAT_ELEMS, "dee_package.gif");
+	public static final ImageHandle ELEM_MODULE = LangElementImages.PACKAGE;
+	public static final ImageHandle ELEM_PACKAGE = createManaged(CAT_ELEMS, "dee_package.png");
 
 	public static final ImageHandle ENT_ERROR = LangElementImages.ERROR_ELEMENT;
 	
@@ -39,10 +39,10 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageHandle ENT_CLASS = LangElementImages.T_CLASS;
 	public static final ImageHandle ENT_INTERFACE = LangElementImages.T_INTERFACE;
 	public static final ImageHandle ENT_ENUM = LangElementImages.T_ENUM;
-	public static final ImageHandle ENT_UNION = createManaged(CAT_ELEMS, "t_union.gif");
-	public static final ImageHandle ENT_TEMPLATE = createManaged(CAT_ELEMS, "template.png");
+	public static final ImageHandle ENT_UNION = createManaged(CAT_ELEMS, "t_union.png");
+	public static final ImageHandle ENT_TEMPLATE = LangElementImages.NAMESPACE;
 	
-	public static final ImageHandle ENT_MIXIN = createManaged(CAT_ELEMS, "namespace.png");
+	public static final ImageHandle ENT_MIXIN = LangElementImages.NAMESPACE;
 	public static final ImageHandle ENT_TYPE_PARAMETER = LangElementImages.T_TYPE;
 	public static final ImageHandle ENT_TUPLE = createManaged(CAT_ELEMS, "tuple.png");
 	

@@ -17,6 +17,7 @@ A less intrusive message is shown in the bottom of the workbench window.
   ▶ Recommended/tested CDT version: 8.6.0
  * Removed `Appearance` preference page and associated option.
  * Removed internal/deprecated `AST Viewer` view.
+ * Improved transparency/aliasing of D element icons - this improves them for dark themes.
  
 
 ### DDT 0.11.1
