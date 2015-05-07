@@ -178,7 +178,7 @@ public class Module extends DefUnit implements IModuleNode, IConcreteNamedElemen
 	}
 	
 	@Override
-	public INamedElement getModuleElement() {
+	public INamedElement getContainingModuleNamespace() {
 		return this;
 	}
 	

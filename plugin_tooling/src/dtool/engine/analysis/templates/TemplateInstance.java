@@ -93,8 +93,8 @@ public class TemplateInstance extends ASTNode implements IScopeElement {
 	/* -----------------  ----------------- */ 
 	
 	@Override
-	public INamedElement getModuleElement() {
-		return templateDef.asNode().getModuleElement();
+	public INamedElement getContainingModuleNamespace() {
+		return templateDef.asNode().getContainingModuleNamespace();
 	}
 	
 	/* -----------------  ----------------- */

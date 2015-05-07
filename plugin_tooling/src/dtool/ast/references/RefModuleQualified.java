@@ -54,7 +54,7 @@ public class RefModuleQualified extends CommonQualifiedReference {
 	
 	@Override
 	public INamedElement resolveRootNameElement(ISemanticContext moduleResolver) {
-		return getModuleElement();
+		return getContainingModuleNamespace();
 	}
 	
 }

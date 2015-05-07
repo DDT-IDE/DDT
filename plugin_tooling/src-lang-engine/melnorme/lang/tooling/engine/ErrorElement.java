@@ -79,7 +79,7 @@ public class ErrorElement extends AbstractNamedElement implements IConcreteNamed
 	}
 	
 	@Override
-	public INamedElement getModuleElement() {
+	public INamedElement getContainingModuleNamespace() {
 		return null;
 	}
 	

@@ -54,7 +54,7 @@ public class NE_Module_Test extends NamedElement_CommonTest {
 			"import foo; auto _dummy = foo; ", "foo;");
 		ModuleProxy moduleProxy = assertCast(pickedElement.element, ModuleProxy.class);
 		
-		assertTrue(moduleProxy.getModuleElement() == moduleProxy);
+		assertTrue(moduleProxy.getContainingModuleNamespace() == moduleProxy);
 		assertCast(moduleProxy.resolveUnderlyingNode(), Module.class);
 		
 		assertTrue(((NamedElementSemantics) moduleProxy.getSemantics(pickedElement.context)).isResolved());

@@ -72,7 +72,7 @@ public class ModuleProxy extends AbstractNamedElement {
 	}
 	
 	@Override
-	public INamedElement getModuleElement() {
+	public INamedElement getContainingModuleNamespace() {
 		return this;
 	}
 	

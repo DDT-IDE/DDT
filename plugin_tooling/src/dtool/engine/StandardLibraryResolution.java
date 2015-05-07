@@ -111,7 +111,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		
 		@Override
 		public boolean bundleContainsElement(CommonLanguageElement languageElement, Location path) {
-			if(languageElement.getModuleElement() == fakeObjectModule.getModuleNode()) {
+			if(languageElement.getContainingModuleNamespace() == fakeObjectModule.getModuleNode()) {
 				return true;
 			}
 			return false;

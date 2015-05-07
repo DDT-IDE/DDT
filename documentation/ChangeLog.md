@@ -18,6 +18,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Removed `Appearance` preference page and associated option.
  * Removed internal/deprecated `AST Viewer` view.
  * Improved transparency/aliasing of D element icons - this improves them for dark themes.
+ * Fixed regression: the icon of packages in Content Assist incorrectly showing up as the natives icon.
  
 
 ### DDT 0.11.1

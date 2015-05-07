@@ -104,8 +104,13 @@ public class PackageNamespace extends AbstractResolvedNamedElement implements IS
 	}
 	
 	@Override
-	public INamedElement getModuleElement() {
+	public INamedElement getContainingModuleNamespace() {
 		return null;
+	}
+	
+	@Override
+	public boolean isBuiltinElement() {
+		return false;
 	}
 	
 	@Override

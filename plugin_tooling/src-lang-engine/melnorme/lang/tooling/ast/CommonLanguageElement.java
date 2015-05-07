@@ -148,11 +148,11 @@ public abstract class CommonLanguageElement implements ILanguageElement {
 	
 	@Override
 	public String getModuleFullName() {
-		INamedElement module = getModuleElement();
+		INamedElement module = getContainingModuleNamespace();
 		return module == null ? null : module.getFullyQualifiedName();
 	}
 	
-	public INamedElement getModuleElement() {
+	public INamedElement getContainingModuleNamespace() {
 		INamedElement namedElement = NodeElementUtil.getNearestNamedElement(this);
 		while(namedElement != null) {
 			if(namedElement.getArcheType() == EArcheType.Module) {
