@@ -11,6 +11,7 @@
 package dtool.parser.structure;
 
 import static melnorme.lang.tooling.EAttributeFlag.ABSTRACT;
+import static melnorme.lang.tooling.EAttributeFlag.ALIASED;
 import static melnorme.lang.tooling.EAttributeFlag.IMMUTABLE;
 import static melnorme.lang.tooling.EAttributeFlag.STATIC;
 import static melnorme.lang.tooling.structure.StructureElementKind.ALIAS;
@@ -170,14 +171,14 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		testSource = "alias Foo = Bar;";
 		testParseStructure(
 			testSource, 
-			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null), "Bar", null)
+			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null, ALIASED), "Bar", null)
 		);
 		
 		testSource = "alias Foo = Bar, XXX = XPTO;";
 		testParseStructure(
 			testSource, 
-			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null), "Bar", null),
-			new StructureElement("XXX", sr("XXX", 3), sr("XXX","XPTO"), ALIAS, attrib(null), "XPTO", null)
+			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null, ALIASED), "Bar", null),
+			new StructureElement("XXX", sr("XXX", 3), sr("XXX","XPTO"), ALIAS, attrib(null, ALIASED), "XPTO", null)
 		);
 
 		
