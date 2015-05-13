@@ -98,6 +98,7 @@ public class LangContentAssistProcessor extends ContenAssistProcessorExt {
 		protected ILangCompletionProposalComputer createSnippetsProposalComputer() {
 			return new LangTemplateCompletionProposalComputer();
 		}
+		
 	}
 	
 	/* -----------------  ----------------- */

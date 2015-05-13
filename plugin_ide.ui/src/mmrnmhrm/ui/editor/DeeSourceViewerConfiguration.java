@@ -26,15 +26,12 @@ import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
@@ -111,15 +108,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		};
 	}
 	
-	
-	@Override
-	protected void initializeQuickOutlineContexts(InformationPresenter presenter, IInformationProvider provider) {
-		String[] contentTypes = DeePartitions.DEE_PARTITION_TYPES;
-		for (int i= 0; i < contentTypes.length; i++) {
-			presenter.setInformationProvider(provider, contentTypes[i]);
-		}
-	}
-	
 	// ================ Content Assist
 	
 	@Override
@@ -139,11 +127,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	@Override
 	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
 		return super.getQuickAssistAssistant(sourceViewer);
-	}
-	
-	@Override
-	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer viewer, boolean b) {
-		return null;
 	}
 	
 }

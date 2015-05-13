@@ -35,7 +35,6 @@ import org.eclipse.dltk.core.IModelElementDelta;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.folding.AbortFoldingException;
 import org.eclipse.dltk.ui.text.folding.DefaultElementCommentResolver;
@@ -58,6 +57,7 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
+import _org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 

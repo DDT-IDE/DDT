@@ -27,7 +27,6 @@ import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.collections.ArrayList2;
@@ -82,13 +81,13 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		return new SourceRange(startOf(start), length);
 	}
 	
-	protected void testParseStructure(String source, IStructureElement... expectedElements) {
+	protected void testParseStructure(String source, StructureElement... expectedElements) {
 		// dummy loc
 		Location loc = DToolTestResources.getTestResourceLoc().resolve_fromValid("parser-structure/foo.d");
 		ParsedModule parsedModule = DeeParser.parseSourceModule(source, loc.toPath());
 		SourceFileStructure structure = new DeeStructureCreator().createStructure(loc, parsedModule);
 		
-		ArrayList2<IStructureElement> expectedStructure = new ArrayList2<>(expectedElements);
+		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(loc, expectedStructure);
 		assertAreEqualLists(expected.getChildren(), structure.getChildren());
 		

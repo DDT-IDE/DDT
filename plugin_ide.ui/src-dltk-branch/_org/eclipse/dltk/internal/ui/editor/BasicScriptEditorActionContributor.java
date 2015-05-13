@@ -11,16 +11,11 @@ package _org.eclipse.dltk.internal.ui.editor;
 
 import melnorme.lang.ide.ui.editor.LangEditorActionContributor;
 
-import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.RetargetTextEditorAction;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 
@@ -29,18 +24,11 @@ import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
  */
 public abstract class BasicScriptEditorActionContributor extends LangEditorActionContributor {
 
-	private RetargetTextEditorAction fShowOutline;
-
 //	private RetargetTextEditorAction fGotoNextMemberAction;
 //	private RetargetTextEditorAction fGotoPreviousMemberAction;
 
 	public BasicScriptEditorActionContributor() {
 		super();
-
-		fShowOutline = new RetargetTextEditorAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ShowOutline.");
-		fShowOutline.setActionDefinitionId(IScriptEditorActionDefinitionIds.SHOW_OUTLINE);
 
 //		fGotoNextMemberAction = new RetargetTextEditorAction(b, "GotoNextMember.");
 //		fGotoNextMemberAction.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_NEXT_MEMBER);
@@ -52,11 +40,6 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 	@Override
 	public void contributeToMenu(IMenuManager menu) {
 		super.contributeToMenu(menu);
-
-		IMenuManager navigateMenu = menu.findMenuUsingPath(IWorkbenchActionConstants.M_NAVIGATE);
-		if (navigateMenu != null) {
-			navigateMenu.appendToGroup(IWorkbenchActionConstants.SHOW_EXT, fShowOutline);
-		}
 
 		IMenuManager gotoMenu = menu.findMenuUsingPath("navigate/goTo");
 		if (gotoMenu != null) {
@@ -70,12 +53,6 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 	public void setActiveEditor(IEditorPart part) {
 
 		super.setActiveEditor(part);
-
-		ITextEditor textEditor = null;
-		if (part instanceof ITextEditor)
-			textEditor = (ITextEditor) part;
-
-		fShowOutline.setAction(getAction(textEditor, IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
 
 //		fGotoNextMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.NEXT_MEMBER));
 //		fGotoPreviousMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.PREVIOUS_MEMBER));

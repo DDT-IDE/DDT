@@ -16,19 +16,15 @@ import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
 import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverProxy;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
-import org.eclipse.dltk.ui.text.ScriptOutlineInformationControl;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
@@ -48,9 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import _org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
-import _org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import _org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
@@ -88,69 +82,7 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 		return reconciler;
 	}
 	
-	/**
-	 * Returns the outline presenter control creator. The creator is a factory
-	 * creating outline presenter controls for the given source viewer. This
-	 * implementation always returns a creator for
-	 * <code>ScriptOutlineInformationControl</code> instances.
-	 * 
-	 * @param sourceViewer
-	 *            the source viewer to be configured by this configuration
-	 * @param commandId
-	 *            the ID of the command that opens this control
-	 * @return an information control creator
-	 * 
-	 */
-	/* FIXME: DLTK: review ScriptOutlineInformationControl */
-	protected IInformationControlCreator getOutlinePresenterControlCreator(
-			ISourceViewer sourceViewer, final String commandId) {
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell parent) {
-				int shellStyle = SWT.RESIZE;
-				int treeStyle = SWT.V_SCROLL | SWT.H_SCROLL;
-				return new ScriptOutlineInformationControl(parent, shellStyle,
-						treeStyle, commandId, fPreferenceStore);
-			}
-		};
-	}
-	
-	/* FIXME: DLTK: getOutlinePresenter */
-	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
-		InformationPresenter presenter;
-		if (doCodeResolve) {
-			presenter = new InformationPresenter(
-					getOutlinePresenterControlCreator(sourceViewer, IScriptEditorActionDefinitionIds.OPEN_STRUCTURE));
-		} else {
-			presenter = new InformationPresenter(
-					getOutlinePresenterControlCreator(sourceViewer, IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
-		}
-		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-		presenter.setAnchor(AbstractInformationControlManager.ANCHOR_GLOBAL);
-		IInformationProvider provider = new ScriptElementProvider(getEditor(), doCodeResolve);
-		presenter.setInformationProvider(provider, IDocument.DEFAULT_CONTENT_TYPE);
-		initializeQuickOutlineContexts(presenter, provider);
-		for (String contentType : getOutlinePresenterContentTypes(sourceViewer, doCodeResolve)) {
-			if (IDocument.DEFAULT_CONTENT_TYPE.equals(contentType))
-				continue;
-			if (presenter.getInformationProvider(contentType) != null)
-				continue;
-			presenter.setInformationProvider(provider, contentType);
-		}
 
-		presenter.setSizeConstraints(50, 20, true, false);
-		return presenter;
-	}
-	
-	protected String[] getOutlinePresenterContentTypes(ISourceViewer sourceViewer, boolean doCodeResolve) {
-		return getConfiguredContentTypes(sourceViewer);
-	}
-
-	@Deprecated
-	protected abstract void initializeQuickOutlineContexts(InformationPresenter presenter, IInformationProvider provider);
-
-	public abstract IInformationPresenter getHierarchyPresenter(ScriptSourceViewer viewer, boolean b);
-	
 	/* FIXME: DLTK: review text hovers */
 	@Override
 	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {

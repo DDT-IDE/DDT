@@ -15,7 +15,6 @@ import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.util.NodeList;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.lang.tooling.structure.IStructureElement;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.lang.tooling.structure.StructureElement;
 import melnorme.utilbox.collections.ArrayList2;
@@ -38,7 +37,7 @@ public class DeeStructureCreator extends ASTVisitor {
 	}
 	
 	public SourceFileStructure createStructure(Location location, ParsedModule parsedModule) {
-		Indexable<IStructureElement> moduleChildren = collectChildElements(parsedModule.module).upcastTypeParameter();
+		Indexable<StructureElement> moduleChildren = collectChildElements(parsedModule.module);
 		return new SourceFileStructure(location, moduleChildren);
 	}
 	

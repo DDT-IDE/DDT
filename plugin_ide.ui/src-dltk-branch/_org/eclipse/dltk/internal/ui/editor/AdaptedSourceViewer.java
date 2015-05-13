@@ -46,12 +46,9 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompleti
 	
 	protected final ScriptEditor editor;
 	
-	public AdaptedSourceViewer(Composite parent,
-			IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
-			boolean showAnnotationsOverview, int styles,
-			IPreferenceStore store, ScriptEditor editor) {
-		super(parent, verticalRuler, overviewRuler,
-				showAnnotationsOverview, styles, store);
+	public AdaptedSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
+			boolean showAnnotationsOverview, int styles, IPreferenceStore store, ScriptEditor editor) {
+		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles, store);
 		this.editor = editor;
 	}
 
@@ -158,8 +155,7 @@ public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompleti
 
 	@Override
 	public boolean requestWidgetToken(IWidgetTokenKeeper requester) {
-		if (PlatformUI.getWorkbench().getHelpSystem()
-				.isContextHelpDisplayed())
+		if (PlatformUI.getWorkbench().getHelpSystem().isContextHelpDisplayed())
 			return false;
 		return super.requestWidgetToken(requester);
 	}

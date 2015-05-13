@@ -25,7 +25,6 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.editor.DeeOutlinePage;
 import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
@@ -36,16 +35,14 @@ import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ISourceRange;
-import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
+import org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
@@ -69,7 +66,6 @@ import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
@@ -86,8 +82,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
@@ -107,7 +101,6 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
-import org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 
 import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
 import _org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
@@ -362,11 +355,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		}
 	}
 
-	@Override
-	protected ScriptOutlinePage init_createOutlinePage() {
-		return new DeeOutlinePage(this);
-	}
-	
 	/**
 	 * The templates page.
 	 * 
@@ -412,87 +400,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		}
 
 		return super.getAdapter(required);
-	}
-
-	protected void doSelectionChanged(SelectionChangedEvent event) {
-		ISourceReference reference = null;
-		ISelection selection = event.getSelection();
-		Iterator<?> iter = ((IStructuredSelection) selection).iterator();
-		while (iter.hasNext()) {
-			Object o = iter.next();
-			if (o instanceof ISourceReference) {
-				reference = (ISourceReference) o;
-				break;
-			}
-		}
-//		if (!isActivePart() && getSite().getPage() != null) {
-//			getSite().getPage().bringToTop(this);
-//		}
-		setSelection(reference, !isActivePart());
-		
-		if (occurrencesFinder != null) {
-			occurrencesFinder.updateOccurrenceAnnotations();
-		}
-	}
-	
-	protected void setSelection(ISourceReference reference, boolean moveCursor) {
-		if (getSelectionProvider() == null)
-			return;
-		ISelection selection = getSelectionProvider().getSelection();
-		if (selection instanceof TextSelection) {
-			TextSelection textSelection = (TextSelection) selection;
-			// PR 39995: [navigation] Forward history cleared after going back
-			// in navigation history:
-			// mark only in navigation history if the cursor is being moved
-			// (which it isn't if
-			// this is called from a PostSelectionEvent that should only update
-			// the magnet)
-			if (moveCursor && (textSelection.getOffset() != 0 || textSelection.getLength() != 0))
-				markInNavigationHistory();
-		}
-		if (reference != null) {
-			StyledText textWidget = null;
-			ISourceViewer sourceViewer = getSourceViewer();
-			if (sourceViewer != null)
-				textWidget = sourceViewer.getTextWidget();
-			if (textWidget == null)
-				return;
-			try {
-				ISourceRange range = reference.getSourceRange();
-				if (range == null)
-					return;
-				int offset = range.getOffset();
-				int length = range.getLength();
-				if (offset < 0 || length < 0)
-					return;
-				setHighlightRange(offset, length, moveCursor);
-				if (!moveCursor)
-					return;
-				offset = -1;
-				length = -1;
-				range = reference.getNameRange();
-				if (range != null) {
-					offset = range.getOffset();
-					length = range.getLength();
-				}
-				
-				if (offset > -1 && length > 0) {
-					try {
-						textWidget.setRedraw(false);
-						sourceViewer.revealRange(offset, length);
-						sourceViewer.setSelectedRange(offset, length);
-					} finally {
-						textWidget.setRedraw(true);
-					}
-					markInNavigationHistory();
-				}
-			} catch (ModelException x) {
-			} catch (IllegalArgumentException x) {
-			}
-		} else if (moveCursor) {
-			resetHighlightRange();
-			markInNavigationHistory();
-		}
 	}
 
 	@Override

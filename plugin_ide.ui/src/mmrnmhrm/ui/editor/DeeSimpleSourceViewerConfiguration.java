@@ -1,5 +1,7 @@
 package mmrnmhrm.ui.editor;
 
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -10,8 +12,6 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
-
-import _org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 
 
 /**
@@ -73,18 +73,18 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public IInformationPresenter getOutlinePresenter(ISourceViewer sourceViewer, boolean doCodeResolve) {
-		return null;
-	}
-	
-	@Override
-	public IInformationPresenter getHierarchyPresenter(ScriptSourceViewer sourceViewer, boolean doCodeResolve) {
-		return null;
+	public void installOutlinePresenter(LangSourceViewer sourceViewer) {
+		return;
 	}
 	
 	@Override
 	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
 		return null;
+	}
+	
+	@Override
+	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
+		// Do nothing.
 	}
 	
 }

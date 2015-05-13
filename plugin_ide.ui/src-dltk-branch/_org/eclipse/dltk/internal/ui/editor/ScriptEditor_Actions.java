@@ -51,13 +51,6 @@ public abstract class ScriptEditor_Actions extends ScriptEditor {
 
 		Action action;
 		
-		Action outlineAction = new TextOperationAction(
-				DLTKEditorMessages.getBundleForConstructedKeys(),
-				"ShowOutline.", this, //$NON-NLS-1$
-				ScriptSourceViewer.SHOW_OUTLINE, true);
-		outlineAction.setActionDefinitionId(IScriptEditorActionDefinitionIds.SHOW_OUTLINE);
-		setAction(IScriptEditorActionDefinitionIds.SHOW_OUTLINE, outlineAction);
-
 		// GoToNextMember
 		action = GoToNextPreviousMemberAction.newGoToNextMemberAction(this);
 		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.GOTO_NEXT_MEMBER);
@@ -101,10 +94,6 @@ public abstract class ScriptEditor_Actions extends ScriptEditor {
 		super.editorContextMenuAboutToShow(menu);
 		
 		menu.insertAfter(ICommonMenuConstants.GROUP_OPEN, new GroupMarker(ICommonMenuConstants.GROUP_SHOW));
-		
-		// Quick views
-		menu.appendToGroup(ICommonMenuConstants.GROUP_OPEN,
-				getAction(IScriptEditorActionDefinitionIds.SHOW_OUTLINE));
 	}
 	
 	@Override

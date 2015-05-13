@@ -122,21 +122,21 @@
 			description="%ToggleCommentAction.description"
 		/>
 		
+		<command 
+			categoryId="org.dsource.ddt.ide.ui.commands.Category"
+			id="org.dsource.ddt.ide.ui.commands.QuickOutline"
+			name="%QuickOutlineAction.name"
+			description="%QuickOutlineAction.description"
+		/>
+		
 		<command
 			categoryId="org.dsource.ddt.ide.ui.commands.Category"
 			defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
 			description="%OpenTypeAction.tooltip"
 			id="org.dsource.ddt.ide.ui.commands.openDeeType"
-			name="%OpenTypeAction.name">
-		</command>
-
-      <command
-       categoryId="org.dsource.ddt.ide.ui.commands.Category"
-       description="%OpenTypeInHierarchyAction.tooltip"
-       id="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-       name="%OpenTypeInHierarchyAction.name">
-      </command>
-
+			name="%OpenTypeAction.name"
+		/>
+		
 	</extension>
 	
 	<extension point="org.eclipse.ui.bindings">
@@ -166,19 +166,20 @@
 		</key>
 		
 		<key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
-            contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+T">
-      </key>
-      <key
-            commandId="org.dsource.ddt.ide.ui.commands.openDeeTypeInHierarchy"
-            contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="M1+M2+H">
-      </key>
-   </extension>
-   
+			commandId="org.dsource.ddt.ide.ui.commands.QuickOutline"
+			contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+O">
+		</key>
+		
+		<key
+			commandId="org.dsource.ddt.ide.ui.commands.openDeeType"
+			contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			sequence="M1+M2+T">
+		</key>
+	</extension>
+	
 	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">

@@ -1,5 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -9,8 +21,12 @@ public class DeeOpenTypeHandler extends AbstractHandler {
 	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		new DeeOpenTypeAction().run();
-		return null;
+		try {
+			throw new CommonException("Not supported");
+		} catch(CommonException ce) {
+			UIOperationExceptionHandler.handleOperationStatus("Open Type", ce);
+			return null;
+		}
 	}
 	
 }

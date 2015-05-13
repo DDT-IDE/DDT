@@ -20,11 +20,11 @@ import mmrnmhrm.core.engine_client.DToolClient;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import _org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import dtool.ddoc.TextUI;
 
 /**
