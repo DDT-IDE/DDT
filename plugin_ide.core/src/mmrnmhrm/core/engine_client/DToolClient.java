@@ -21,7 +21,6 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.model_elements.DeeSourceElementProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
@@ -142,12 +141,10 @@ public class DToolClient extends AbstractSemanticDaemonClient {
 		return parsedModule;
 	}
 	
+	@Deprecated
 	public void provideModelElements(IModuleSource moduleSource, IProblemReporter pr, 
 			ISourceElementRequestor requestor) {
-		ParsedModule parsedModule = doParseForBuildStructureOrIndex(moduleSource, pr);
-		if (parsedModule != null) {
-			new DeeSourceElementProvider(requestor).provide(parsedModule);
-		}
+		doParseForBuildStructureOrIndex(moduleSource, pr);
 	}
 	
 	public ParsedModule getParsedModuleOrNull_fromBuildStructure(IModuleSource input) {

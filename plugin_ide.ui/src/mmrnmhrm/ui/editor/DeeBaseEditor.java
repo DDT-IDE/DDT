@@ -2,7 +2,6 @@ package mmrnmhrm.ui.editor;
 
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 
 import _org.eclipse.dltk.internal.ui.editor.BracketInserter2;
