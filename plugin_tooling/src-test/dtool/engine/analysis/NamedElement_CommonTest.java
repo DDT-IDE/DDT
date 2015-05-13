@@ -75,9 +75,12 @@ public abstract class NamedElement_CommonTest extends CommonNodeSemanticsTest {
 			String expectedTypeOfValue, String[] expectedMembers) {
 		final INamedElement namedElement = pickedElement.element;
 		
-		assertTrue(namedElement.isBuiltinElement() 
+		// TODO: might want to review this code
+		assertTrue(
+			namedElement.isBuiltinElement() 
 			|| namedElement.getSemanticContainerKey() != null
-			|| namedElement.getElementSemanticContext(null) != null);
+			|| namedElement.getElementSemanticContext(null) != null
+			|| namedElement.getSemantics(null) != null);
 		
 		if(emptyAsNull(namedElement.getModuleFullName()) == null) {
 			assertTrue(namedElement.getParentNamespace() == null);
