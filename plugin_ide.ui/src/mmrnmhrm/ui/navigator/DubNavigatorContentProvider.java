@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
@@ -84,10 +85,13 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 			public void run() {
 				throttleCodeJob.markRequestFinished();
 				for (IProject dubProject : dubProjects) {
-					getViewer().refresh(dubProject);
+					if(SWTUtil.isOkToUse(getViewer().getControl())) {
+						getViewer().refresh(dubProject);
+					}
 				}
 			}
 		});
+		
 	}
 	
 	public static abstract class DubContentElementsSwitcher<RET> {
