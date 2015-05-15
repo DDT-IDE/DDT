@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.Comparator;
 
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 
 public class ParserError {
 	
@@ -48,18 +47,17 @@ public class ParserError {
 		return getOffset() + getLength();
 	}
 	
-	public int getLineNumber() {
-		return 0; //TODO
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof ParserError))
 			return false;
 		
 		ParserError other = (ParserError) obj;
-		return errorType == other.errorType && areEqual(sourceRange, other.sourceRange) 
-			&& areEqual(msgErrorSource, other.msgErrorSource) && areEqual(msgData, other.msgData);
+		return 
+			areEqual(errorType, other.errorType) && 
+			areEqual(sourceRange, other.sourceRange) && 
+			areEqual(msgErrorSource, other.msgErrorSource) && 
+			areEqual(msgData, other.msgData);
 	}
 	
 	public static final class ErrorSourceRangeComparator implements Comparator<ParserError> {

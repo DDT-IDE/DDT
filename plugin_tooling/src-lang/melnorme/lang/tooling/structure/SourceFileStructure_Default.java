@@ -12,17 +12,22 @@ package melnorme.lang.tooling.structure;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.core.CoreUtil.nullToEmpty;
+import melnorme.lang.tooling.ast.ParserError;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
 
-public class SourceFileStructure extends StructureContainer implements ISourceFileStructure {
+public class SourceFileStructure_Default extends StructureContainer implements ISourceFileStructure {
 	
 	protected final Location location;
+	protected final Indexable<ParserError> parserProblems;
 	
-	public SourceFileStructure(Location location, Indexable<StructureElement> children) {
+	public SourceFileStructure_Default(Location location, Indexable<StructureElement> children, 
+			Indexable<ParserError> parserProblems) {
 		super(children);
 		this.location = assertNotNull(location);
+		this.parserProblems = nullToEmpty(parserProblems);
 	}
 	
 	@Override
@@ -62,6 +67,12 @@ public class SourceFileStructure extends StructureContainer implements ISourceFi
 	public StructureElement getStructureElementAt(int offset) {
 		return new StructureElementFinderByOffset(offset).findInnerMost(this);
 	}
+	
+	public Indexable<ParserError> getParserProblems() {
+		return parserProblems;
+	}
+	
+	/* ----------------- Utils ----------------- */
 	
 	public static class StructureElementFinderByOffset {
 		
