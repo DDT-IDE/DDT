@@ -8,9 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.engine_client;
+package mmrnmhrm.core.engine;
 
-import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
+import mmrnmhrm.core.engine.DubProcessManager.IDubOperation;
 
 public interface IDubProcessListener {
 	

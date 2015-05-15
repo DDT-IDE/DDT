@@ -14,17 +14,17 @@ package mmrnmhrm.ui.editor.hover;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import _org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import dtool.ddoc.TextUI;
 
 /**
@@ -45,10 +45,6 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 		ITextEditor editor = tryCast(getEditor(), ITextEditor.class);
 		if(editor == null) {
-			return null;
-		}
-		ISourceModule sourceModule = EditorUtility.getEditorInputModelElement(editor, false);
-		if(sourceModule == null) {
 			return null;
 		}
 		
@@ -83,9 +79,10 @@ public class DeeDocTextHover extends AbstractDocTextHover {
 		}
 		
 		@Override
-		protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException {
+		protected void performLongRunningComputation(IProgressMonitor monitor) 
+				throws CommonException, CoreException, OperationCancellation {
 			info = DToolClient.getDefault().
-					new FindDDocViewOperation(inputLoc.path, doc.get(), offset, -1).runSemanticServerOperation();
+					new FindDDocViewOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 		}
 		
 		@Override

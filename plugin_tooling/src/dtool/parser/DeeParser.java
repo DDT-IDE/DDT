@@ -65,7 +65,7 @@ public class DeeParser
 		return this;
 	}
 	
-	public static ParsedModule parseSourceModule(String source, String defaultModuleName) {
+	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName) {
 		return parseSourceModule(source, defaultModuleName, null);
 	}
 	

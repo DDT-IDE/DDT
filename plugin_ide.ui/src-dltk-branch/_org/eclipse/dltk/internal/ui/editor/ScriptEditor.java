@@ -18,11 +18,9 @@ import java.util.List;
 import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
-import melnorme.utilbox.core.DevelopmentCodeMarkers.UsesReflectionToAccessInternalAPI;
-import melnorme.utilbox.misc.ReflectionUtils;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.text.DeeTextTools;
@@ -31,20 +29,14 @@ import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.DLTKLanguageManager;
-import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
 import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
 import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
-import org.eclipse.dltk.internal.ui.editor.SourceModuleDocumentProvider.SourceModuleAnnotationModel;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptExpandHover;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
@@ -54,7 +46,6 @@ import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
@@ -67,20 +58,14 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.Annotation;
-import org.eclipse.jface.text.source.AnnotationRulerColumn;
-import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.IVerticalRulerColumn;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -90,27 +75,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPartListener2;
-import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 
-import _org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlightingManager;
-import _org.eclipse.dltk.internal.ui.text.IScriptReconcilingListener;
 import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
 /* FIXME: need to review this class */
-public abstract class ScriptEditor extends AbstractLangStructureEditor
-		implements IScriptReconcilingListener, IScriptLanguageProvider {
+public abstract class ScriptEditor extends AbstractLangStructureEditor implements IScriptLanguageProvider {
 	
 	/** The editor's save policy */
 	protected ISavePolicy fSavePolicy = null;
@@ -119,8 +98,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
 	/** Preference key for matching brackets color */
 	protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-
-	private OccurrencesFinder2 occurrencesFinder;
 
 	private static String[] GLOBAL_FOLDING_PROPERTIES = {
 			PreferenceConstants.EDITOR_FOLDING_ENABLED,
@@ -153,10 +130,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 			fProjectionModelUpdater.uninstall();
 			fProjectionModelUpdater = null;
 		}
-		if (occurrencesFinder != null) {
-			occurrencesFinder.dispose();
-			occurrencesFinder = null;
-		}
 
 		// ISourceViewer sourceViewer= getSourceViewer();
 		// if (sourceViewer instanceof ITextViewerExtension)
@@ -167,21 +140,12 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		// fCorrectionCommands.deregisterCommands();
 		// fCorrectionCommands= null;
 		// }
-		if (fSemanticManager != null) {
-			fSemanticManager.uninstall();
-			fSemanticManager = null;
-		}
 		super.dispose();
 	}
 
 	@Override
 	protected void initializeEditor() {
 		super.initializeEditor();
-		
-		occurrencesFinder = new OccurrencesFinder2(this);
-		if (!occurrencesFinder.isValid()) {
-			occurrencesFinder = null;
-		}
 		
 //		changePreferenceStore(createCombinedPreferenceStore(null));
 	}
@@ -248,21 +212,14 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		fInformationPresenter.setSizeConstraints(60, 10, true, true);
 		fInformationPresenter.install(getSourceViewer());
 		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
-
 		
-		installSemanticHighlighting();
-		
-		if (occurrencesFinder != null) {
-			occurrencesFinder.install();
-		}
 	}
 	
 	/* ----------------- set input ----------------- */
 	
-	@UsesReflectionToAccessInternalAPI
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
-		ScriptSourceViewer sourceViewer = getSourceViewer_(); // Can be null
+		LangSourceViewer sourceViewer = getSourceViewer_(); // Can be null
 		IPreferenceStore store = getPreferenceStore();
 		
 		if (sourceViewer != null && isFoldingEnabled()
@@ -273,29 +230,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		// correct connection code here.
 
 		super.internalDoSetInput(input);
-
-		final IDocumentProvider docProvider = getDocumentProvider();
-		final IAnnotationModel model = docProvider.getAnnotationModel(input);
-		if (model instanceof SourceModuleAnnotationModel) {
-			SourceModuleAnnotationModel smAnnModel = (SourceModuleAnnotationModel) model;
-//			smAnnModel.problemFactory = DLTKLanguageManager.getProblemFactory(getNatureId());
-			// Need to use reflection because field is protected
-			try {
-				ReflectionUtils.writeField(smAnnModel, "problemFactory", 
-					DLTKLanguageManager.getProblemFactory(getNatureId()));
-			} catch(NoSuchFieldException e) {
-				DeeCore.logInternalError(e);
-			}
-		}
-
-		if (sourceViewer != null && sourceViewer.getReconciler() == null) {
-			IReconciler reconciler = getSourceViewerConfiguration().getReconciler(sourceViewer);
-			if (reconciler != null) {
-				reconciler.install(sourceViewer);
-				sourceViewer.setReconciler(reconciler);
-			}
-		}
-		
 	}
 	
 	/* -----------------  ----------------- */
@@ -308,51 +242,12 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 	private boolean isFoldingEnabled() {
 		return getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
-
-	@Override
-	protected IVerticalRulerColumn createAnnotationRulerColumn(CompositeRuler ruler) {
-		if (!getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_ANNOTATION_ROLL_OVER))
-			return super.createAnnotationRulerColumn(ruler);
-
-		AnnotationRulerColumn column = new AnnotationRulerColumn(VERTICAL_RULER_WIDTH, getAnnotationAccess());
-		column.setHover(new ScriptExpandHover(ruler, getAnnotationAccess(),
-				new IDoubleClickListener() {
-
-					@Override
-					public void doubleClick(DoubleClickEvent event) {
-						// for now: just invoke ruler double click action
-						triggerAction(ITextEditorActionConstants.RULER_DOUBLE_CLICK);
-					}
-
-					private void triggerAction(String actionID) {
-						IAction action = getAction(actionID);
-						if (action != null) {
-							if (action instanceof IUpdate)
-								((IUpdate) action).update();
-							// hack to propagate line change
-							if (action instanceof ISelectionListener) {
-								((ISelectionListener) action).selectionChanged(
-										null, null);
-							}
-							if (action.isEnabled())
-								action.run();
-						}
-					}
-
-				}));
-
-		return column;
-	}
-
+	
 	@Override
 	protected void setPreferenceStore(IPreferenceStore store) {
 		super.setPreferenceStore(store);
 		
 //		getSourceViewer_().setPreferenceStore(store);
-		
-		if (occurrencesFinder != null) {
-			occurrencesFinder.setPreferenceStore(store);
-		}
 	}
 
 	/**
@@ -383,9 +278,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 			if (fTemplatesPage == null)
 				fTemplatesPage = createTemplatesPage();
 			return fTemplatesPage;
-		}
-		if (required == OccurrencesFinder2.class) {
-			return occurrencesFinder;
 		}
 		if (required == IFoldingStructureProvider.class)
 			return fProjectionModelUpdater;
@@ -546,59 +438,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 			if (annotation instanceof IScriptAnnotation && ((IScriptAnnotation) annotation).isProblem())
 				setStatusLineMessage(annotation.getText());
 		}
-	}
-
-	/**
-	 * Returns the model element wrapped by this editors input.
-	 * 
-	 * @return the model element wrapped by this editors input.
-	 * 
-	 */
-	public IModelElement getInputModelElement() {
-		return EditorUtility.getEditorInputModelElement(this, false);
-	}
-
-	/**
-	 * Returns the most narrow model element including the given offset.
-	 * 
-	 * @param offset
-	 *            the offset inside of the requested element
-	 * @return the most narrow model element
-	 */
-	public IModelElement getElementAt(int offset) {
-		return getElementAt(offset, true);
-	}
-
-	/**
-	 * Returns the most narrow element including the given offset. If
-	 * <code>reconcile</code> is <code>true</code> the editor's input element is
-	 * reconciled in advance. If it is <code>false</code> this method only
-	 * returns a result if the editor's input element does not need to be
-	 * reconciled.
-	 * 
-	 * @param offset
-	 *            the offset included by the retrieved element
-	 * @param reconcile
-	 *            <code>true</code> if working copy should be reconciled
-	 * @return the most narrow element which includes the given offset
-	 */
-	public IModelElement getElementAt(int offset, boolean reconcile) {
-		ISourceModule unit = (ISourceModule) getInputModelElement();
-		if (unit != null) {
-			try {
-				if (reconcile) {
-					ScriptModelUtil.reconcile(unit);
-					return unit.getElementAt(offset);
-				} else if (unit.isConsistent())
-					return unit.getElementAt(offset);
-			} catch (ModelException x) {
-				if (!x.isDoesNotExist())
-					// DLTKUIPlugin.log(x.getStatus());
-					System.err.println(x.getStatus());
-				// nothing found, be tolerant and go on
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -793,11 +632,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 			if (newValue != null)
 				newBooleanValue = Boolean.valueOf(newValue.toString()).booleanValue();
 
-			if (occurrencesFinder != null
-					&& occurrencesFinder.handlePreferenceStoreChanged(property,newBooleanValue)) {
-				return;
-			}
-
 			if (CodeFormatterConstants.FORMATTER_TAB_SIZE.equals(property)
 					|| CodeFormatterConstants.FORMATTER_INDENTATION_SIZE.equals(property)
 					|| CodeFormatterConstants.FORMATTER_TAB_CHAR.equals(property)) {
@@ -924,7 +758,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		
 		fProjectionSupport.install();
 		
-		fProjectionModelUpdater = new DelegatingFoldingStructureProvider();
+		fProjectionModelUpdater = new DelegatingFoldingStructureProvider(this);
 		fProjectionModelUpdater.install(this, projectionViewer, getPreferenceStore());
 	}
 	
@@ -1098,39 +932,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor
 		setTitleImage(image);
 	}
 
-
-	@Override
-	public void aboutToBeReconciled() {
-		
-		if(fSemanticManager != null && fSemanticManager.getReconciler() != null) {
-			fSemanticManager.getReconciler().aboutToBeReconciled();
-		}
-
-	}
-
-	@Override
-	public void reconciled(ISourceModule ast, boolean forced, IProgressMonitor progressMonitor) {
-
-		// see: https://bugs.eclipse.org/bugs/show_bug.cgi?id=58245
-		// JavaPlugin javaPlugin= JavaPlugin.getDefault();
-		// if (javaPlugin == null)
-		// return;
-		//
-		// // Always notify AST provider
-		// javaPlugin.getASTProvider().reconciled(ast, getInputJavaElement(),
-		// progressMonitor);
-		
-		if(fSemanticManager != null && fSemanticManager.getReconciler() != null) {
-			fSemanticManager.getReconciler().reconciled(ast, forced, progressMonitor);
-		}
-		
-	}
-
-	private SemanticHighlightingManager fSemanticManager;
-
-	protected void installSemanticHighlighting() {
-		fSemanticManager = SemanticHighlightingManager.install(getTextTools(), this, this.getPreferenceStore());
-	}
 
 	@Override
 	protected String[] collectContextMenuPreferencePages() {

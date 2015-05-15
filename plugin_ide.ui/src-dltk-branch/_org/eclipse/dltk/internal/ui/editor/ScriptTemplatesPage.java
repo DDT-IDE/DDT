@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.templates.LangTemplateContextType;
 import melnorme.lang.ide.ui.templates.LangTemplatePreferencePage.LangEditTemplateDialog;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
@@ -183,7 +184,7 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 		DeeTextTools tools = DeeUIPlugin.getDefault().getTextTools();
 		tools.setupDocumentPartitioner(document);
 		IPreferenceStore store = uiToolkit().getCombinedPreferenceStore();
-		ScriptSourceViewer viewer = new ScriptSourceViewer(parent, null, null,
+		LangSourceViewer viewer = new LangSourceViewer(parent, null, null,
 				false, SWT.V_SCROLL | SWT.H_SCROLL, store);
 
 		DeeSourceViewerConfiguration configuration = uiToolkit().createSourceViewerConfiguration2();

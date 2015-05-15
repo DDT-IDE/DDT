@@ -33,8 +33,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine_client.DubProcessManager;
-import mmrnmhrm.core.engine_client.DubProcessManager.DubCompositeOperation;
+import mmrnmhrm.core.engine.DubProcessManager;
+import mmrnmhrm.core.engine.DubProcessManager.DubCompositeOperation;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
 import org.eclipse.core.resources.IMarker;

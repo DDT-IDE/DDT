@@ -17,10 +17,10 @@ import java.util.ArrayList;
 
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import dtool.ast.declarations.AbstractConditionalDeclaration.VersionSymbol;
 import dtool.ast.declarations.AttribAlign;

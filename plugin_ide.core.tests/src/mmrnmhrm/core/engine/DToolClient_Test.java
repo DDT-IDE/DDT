@@ -8,20 +8,23 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.engine_client;
+package mmrnmhrm.core.engine;
 
 import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
 import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashSet;
 
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
@@ -43,11 +46,8 @@ import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
 import dtool.engine.SemanticManager;
 import dtool.engine.SemanticManager.ManifestUpdateOptions;
-import dtool.engine.operations.DeeSymbolCompletionResult;
-import dtool.engine.tests.DefUnitResultsChecker;
 
 
-// TODO: move this test to core
 public class DToolClient_Test extends CommonCoreTest {
 	
 	protected static final DToolClient client = DToolClient.getDefault();
@@ -89,16 +89,6 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	protected void doTestUpdates() throws CoreException, IOException {
 		IFolder SRC_FOLDER = testsProject.getFolder("source");
-		IFile basic_foo = exists(SRC_FOLDER.getFile("basic_foo.d"));
-		
-		doCodeCompletion(basic_foo, 0, "basic_foo", "barLibFunction");
-		
-		updateFileContents(basic_foo, "module change1;");
-		doCodeCompletion(basic_foo, 0, "change1");
-		
-		updateFileContents(basic_foo, "module change2;");
-		doCodeCompletion(basic_foo, 0, "change2");
-		
 		
 		IFile newFile = SRC_FOLDER.getFile("new_file.d");
 		updateFileContents(newFile, "module new_file;"); 
@@ -107,7 +97,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		IFolder newPackage = createFolder(SRC_FOLDER.getFolder("new_package"));
 		IFile newFile2 = newPackage.getFile("new_file2.d");
 		updateFileContents(newFile2, "module new_file2;");
-		checkModuleContains(newFile2, "new_package.new_file2", "new_file2/");
+		checkModuleContains(newFile2, "new_package.new_file2");
 		
 		deleteResource(newPackage);
 		checkModuleExists(newFile2, "new_package.new_package_file", false);
@@ -129,16 +119,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	}
 	
 	protected void checkModuleContains(IFile file, String moduleName) throws CoreException {
-		checkModuleContains(file, moduleName, moduleName + "/");
-	}
-	
-	protected void checkModuleContains(IFile file, String moduleName, String... results) throws CoreException {
 		checkModuleExists(file, moduleName, true);
-		try {
-			doCodeCompletion(file, 0, results);
-		} catch (IOException e) {
-			throw LangCore.createCoreException("doCodeCompletion", e);
-		}
 	}
 	
 	protected void checkModuleExists(IFile file, String moduleName, boolean exists) {
@@ -158,44 +139,46 @@ public class DToolClient_Test extends CommonCoreTest {
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
 		
 		RunWithTextFileBuffer test = new RunWithTextFileBuffer() {
+			
 			@Override
-			protected void doRun(IFile moduleFile, ITextFileBuffer fileBuffer, IDocument document) 
+			protected void doRun(IFile moduleFile, ITextFileBuffer fileBuffer) 
 					throws CoreException, IOException {
-				fileBuffer.revert(null);
+				
+				IDocument document = fileBuffer.getDocument();
 				
 				String originalFileContents = "module wc_change0;";
 				updateFileContents(moduleFile, originalFileContents);
+				fileBuffer.revert(null);
 				
-				doCodeCompletion(moduleFile, document.get(),  0, "wc_change0");
+				doCodeCompletion(moduleFile, document.get());
 				
 				document.set("module wc_change1;");
 				assertEquals(readFileContents(moduleFile), originalFileContents);
 				
-				doCodeCompletion(moduleFile, document.get(), 0, "wc_change1");
+				doCodeCompletion(moduleFile, document.get());
 				
 				document.set("module wc_change2;");
-				doCodeCompletion(moduleFile, document.get(), 0, "wc_change2");
+				doCodeCompletion(moduleFile, document.get());
 				
 				fileBuffer.revert(null);
-				doCodeCompletion(moduleFile, document.get(), 0, "wc_change0");
+				doCodeCompletion(moduleFile, document.get());
 				
 				// Test commit 
 				
 				document.set("module wc_commitWC_Test;");
 				fileBuffer.commit(null, true);
-				doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test/");
-		
+				doCodeCompletion(moduleFile, document.get());
+				
 				document.set("module wc_commitWC_Test2;");
 				fileBuffer.commit(null, true);
 				fileBuffer.revert(null);
-				doCodeCompletion(moduleFile, document.get(), 0, "wc_commitWC_Test2/");
+				doCodeCompletion(moduleFile, document.get());
 			};
 		};
 		IFile moduleFile = testsProject.getFile("source/basic_foo.d");
 		test.run(moduleFile, moduleFile.getFullPath(), LocationKind.IFILE);
 		test.run(moduleFile, moduleFile.getLocation(), LocationKind.LOCATION);
 		
-		//TODO: test file store
 	}
 	
 	public static abstract class RunWithTextFileBuffer {
@@ -218,30 +201,39 @@ public class DToolClient_Test extends CommonCoreTest {
 					assertTrue(fileBuffer == fbm.getTextFileBuffer(fullPath, LocationKind.NORMALIZE));
 				}
 				
-				doRun(moduleFile, fileBuffer, fileBuffer.getDocument());
+				doRun(moduleFile, fileBuffer);
 			} finally {
 				fbm.disconnect(fullPath, locationKind, null);
 			}
 			
 		}
 		
-		protected abstract void doRun(IFile moduleFile, ITextFileBuffer fileBuffer, IDocument document) 
+		protected abstract void doRun(IFile moduleFile, ITextFileBuffer fileBuffer) 
 				throws CoreException, IOException;
-	}
-	
-	protected void doCodeCompletion(IFile file, int offset, String... results) 
-			throws CoreException, IOException {
-		doCodeCompletion(file, readFileContents(file), offset, results);
 	}
 	
 	// Note: we don't use this method to test code completion, we are testing the Working Copies of the server.
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
-	protected void doCodeCompletion(IFile file, String fileContents, int offset, String... results) 
+	protected void doCodeCompletion(IFile file, String fileContents) 
 			throws CoreException, IOException {
-		Path filePath = file.getLocation().toFile().toPath();
+		Location fileLoc = ResourceUtils.getResourceLocation(file);
 		
-		DeeSymbolCompletionResult cc = client.performCompletionOperation(filePath, offset, fileContents, 5000);
-		new DefUnitResultsChecker(cc.getElementResults()).simpleCheckResults(results);
+		SourceFileStructure currentStructure = getCurrentStructure(fileLoc);
+		assertTrue(currentStructure != null);
+		assertAreEqual(currentStructure.parsedModule.source, fileContents);
+		
+	}
+	
+	protected StructureInfo getStructureInfo(Location fileLoc) {
+		return client.getStructureManager().getStructureInfo(fileLoc);
+	}
+	
+	protected SourceFileStructure getCurrentStructure(Location fileLoc) {
+		try {
+			return getStructureInfo(fileLoc).getCurrentStructure();
+		} catch(InterruptedException e) {
+			throw assertFail();
+		}
 	}
 	
 }

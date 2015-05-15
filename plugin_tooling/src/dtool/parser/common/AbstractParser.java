@@ -18,10 +18,10 @@ import java.util.HashMap;
 
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;

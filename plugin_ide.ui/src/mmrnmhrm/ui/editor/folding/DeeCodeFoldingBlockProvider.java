@@ -12,7 +12,7 @@ package mmrnmhrm.ui.editor.folding;
 
 import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import mmrnmhrm.ui.editor.EditorUtil;
+import melnorme.lang.tooling.structure.SourceFileStructure;
 
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
@@ -62,8 +62,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 	}
 	
 	@Override
-	public void computeFoldableBlocks(FoldingContent content) {
-		Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content, content.getFilePath());
+	public void computeFoldableBlocks(FoldingContent content, SourceFileStructure sourceFileStructure) {
+		Module deeModule = sourceFileStructure.parsedModule.module; 
 		
 		if (deeModule != null) {
 			deeModule.accept(new ASTVisitor() {

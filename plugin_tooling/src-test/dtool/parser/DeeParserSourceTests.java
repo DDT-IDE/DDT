@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
@@ -93,7 +94,7 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 		boolean allowAnyErrors = false;
 		boolean ignoreFurtherErrorMDs = false;
 		
-		ArrayList<ParserError> expectedErrors = new ArrayList<>();
+		ArrayList2<ParserError> expectedErrors = new ArrayList2<>();
 		List<MetadataEntry> additionalMetadata = new ArrayList<>();
 		List<StringCorrection> errorCorrectionMetadata = new ArrayList<>();
 		

@@ -27,7 +27,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine_client.DubProcessManager;
+import mmrnmhrm.core.engine.DubProcessManager;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;

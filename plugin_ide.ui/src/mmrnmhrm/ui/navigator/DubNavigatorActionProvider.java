@@ -13,7 +13,7 @@ package mmrnmhrm.ui.navigator;
 import static melnorme.utilbox.core.CoreUtil.array;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.engine_client.DubProcessManager;
+import mmrnmhrm.core.engine.DubProcessManager;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;

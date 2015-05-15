@@ -18,9 +18,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;

@@ -22,23 +22,15 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.util.swt.components.IFieldValueListener;
 import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
 import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
-import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ElementChangedEvent;
-import org.eclipse.dltk.core.IElementChangedListener;
-import org.eclipse.dltk.core.IMember;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IModelElementDelta;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ISourceReference;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.folding.AbortFoldingException;
-import org.eclipse.dltk.ui.text.folding.DefaultElementCommentResolver;
-import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
@@ -57,7 +49,6 @@ import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
-import _org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 
@@ -74,7 +65,7 @@ public class DelegatingFoldingStructureProvider {
 
 	/**
 	 * A context that contains the information needed to compute the folding
-	 * structure of an {@link ISourceModule}. Computed folding regions are
+	 * structure of an  ISourceModule . Computed folding regions are
 	 * collected via
 	 * {@link #addProjectionRange(DelegatingFoldingStructureProvider.ScriptProjectionAnnotation, Position)
 	 * addProjectionRange}.
@@ -84,12 +75,15 @@ public class DelegatingFoldingStructureProvider {
 		private final IDocument fDocument;
 		private final boolean fAllowCollapsing;
 		protected LinkedHashMap<Annotation, Position> fMap = new LinkedHashMap<Annotation, Position>();
-
+		
+		protected final SourceFileStructure sourceFileStructure;
+		
 		public FoldingStructureComputationContext(IDocument document,
-				ProjectionAnnotationModel model, boolean allowCollapsing) {
+				ProjectionAnnotationModel model, boolean allowCollapsing, SourceFileStructure sourceFileStructure) {
 			fDocument = document;
 			fModel = model;
 			fAllowCollapsing = allowCollapsing;
+			this.sourceFileStructure = sourceFileStructure;
 		}
 
 		public Map<Annotation, Position> getMap() {
@@ -235,40 +229,6 @@ public class DelegatingFoldingStructureProvider {
 	 */
 	private static interface Filter {
 		boolean match(ScriptProjectionAnnotation annotation);
-	}
-
-	/**
-	 * Matches comments.
-	 */
-	private static final class CommentFilter implements Filter {
-		public CommentFilter() {
-		}
-
-		@Override
-		public boolean match(ScriptProjectionAnnotation annotation) {
-			if (annotation.getKind().isComment()
-					&& !annotation.isMarkedDeleted()) {
-				return true;
-			}
-			return false;
-		}
-	}
-
-	/**
-	 * Matches members.
-	 */
-	private static final class MemberFilter implements Filter {
-		public MemberFilter() {
-		}
-
-		@Override
-		public boolean match(ScriptProjectionAnnotation annotation) {
-			if (!annotation.isMarkedDeleted()
-					&& annotation.getElement() instanceof IMember) {
-				return true;
-			}
-			return false;
-		}
 	}
 
 	/**
@@ -462,64 +422,23 @@ public class DelegatingFoldingStructureProvider {
 		}
 	}
 
-	private class ElementChangedListener implements IElementChangedListener {
-		public ElementChangedListener() {
-		}
-
-		/*
-		 * @see
-		 * org.eclipse.dltk.core.IElementChangedListener#elementChanged(org.
-		 * eclipse.dltk.core.ElementChangedEvent)
-		 */
-		@Override
-		public void elementChanged(ElementChangedEvent e) {
-			IModelElementDelta delta = findElement(fInput, e.getDelta());
-			if (delta != null
-					&& (delta.getFlags() & (IModelElementDelta.F_CONTENT | IModelElementDelta.F_CHILDREN)) != 0)
-				update(createContext(false));
-		}
-
-		private IModelElementDelta findElement(IModelElement target,
-				IModelElementDelta delta) {
-			if (delta == null || target == null)
-				return null;
-			IModelElement element = delta.getElement();
-			if (element.getElementType() > IModelElement.SOURCE_MODULE)
-				return null;
-			if (target.equals(element))
-				return delta;
-			IModelElementDelta[] children = delta.getAffectedChildren();
-			for (int i = 0; i < children.length; i++) {
-				IModelElementDelta d = findElement(target, children[i]);
-				if (d != null)
-					return d;
-			}
-			return null;
-		}
-	}
-
-	/* context and listeners */
+	protected final ScriptEditor editor; // XXX: this field is used in a different way than fEditor, it can't be null
+	
 	private ScriptEditor fEditor;
 	private IFoldingBlockProvider[] blockProviders;
 	private ProjectionListener fProjectionListener;
-	private IModelElement fInput;
-	private IElementChangedListener fElementListener;
-	/* filters */
-	/** Member filter, matches nested members (but not top-level types). */
-	private final Filter fMemberFilter = new MemberFilter();
-	/** Comment filter, matches comments. */
-	private final Filter fCommentFilter = new CommentFilter();
+	
 	private IPreferenceStore fStore;
 
-	public DelegatingFoldingStructureProvider() {
+	public DelegatingFoldingStructureProvider(ScriptEditor editor) {
+		this.editor = assertNotNull(editor);
 		// empty constructor
 	}
 
 	public void install(ScriptEditor editor, ProjectionViewer viewer, IPreferenceStore store) {
 		internalUninstall();
-		assertNotNull(editor);
 		fStore = store;
-		fEditor = editor;
+		fEditor = assertNotNull(editor);
 		fProjectionListener = new ProjectionListener(viewer);
 		blockProviders = new IFoldingBlockProvider[] {
 			new DeeCommentFoldingBlockProvider(), new DeeCodeFoldingBlockProvider() 
@@ -568,10 +487,19 @@ public class DelegatingFoldingStructureProvider {
 		handleProjectionDisabled();
 		if(fEditor != null) {
 			initialize();
-			fElementListener = new ElementChangedListener();
-			DLTKCore.addElementChangedListener(fElementListener);
+			
+			elementListener = new IFieldValueListener() {
+				@Override
+				public void fieldValueChanged() {
+					update(createContext(false, fEditor.getSourceFileStructure()));
+				}
+			};
+			editor.getStructureField().addListener(elementListener);
 		}
 	}
+	
+	private IFieldValueListener elementListener;
+	
 
 	/**
 	 * Called whenever projection is disabled, for example when the provider is
@@ -585,9 +513,9 @@ public class DelegatingFoldingStructureProvider {
 	 * </p>
 	 */
 	protected void handleProjectionDisabled() {
-		if (fElementListener != null) {
-			DLTKCore.removeElementChangedListener(fElementListener);
-			fElementListener = null;
+		if (elementListener != null) {
+			editor.getStructureField().removeListener(elementListener);
+			elementListener = null;
 		}
 	}
 
@@ -596,6 +524,7 @@ public class DelegatingFoldingStructureProvider {
 	}
 
 	public final void initialize(boolean isReinit) {
+		// don't auto collapse if reinitializing
 		update(createInitialContext(isReinit));
 	}
 
@@ -605,19 +534,14 @@ public class DelegatingFoldingStructureProvider {
 				provider.initializePreferences(fStore);
 			}
 		}
-		fInput = getInputElement();
-		if (fInput == null)
-			return null;
-
+		
 		// don't auto collapse if reinitializing
-		return createContext((isReinit) ? false : true);
+		SourceFileStructure structure = editor.getSourceFileStructure();
+		return createContext((isReinit) ? false : true, structure);
 	}
-
-	protected FoldingStructureComputationContext createInitialContext() {
-		return createInitialContext(true);
-	}
-
-	protected FoldingStructureComputationContext createContext(boolean allowCollapse) {
+	
+	protected FoldingStructureComputationContext createContext(boolean allowCollapse, 
+			SourceFileStructure sourceFileStructure) {
 		if (!isInstalled())
 			return null;
 		ProjectionAnnotationModel model = getModel();
@@ -626,13 +550,7 @@ public class DelegatingFoldingStructureProvider {
 		IDocument doc = getDocument();
 		if (doc == null)
 			return null;
-		return new FoldingStructureComputationContext(doc, model, allowCollapse);
-	}
-
-	private IModelElement getInputElement() {
-		if (fEditor == null)
-			return null;
-		return EditorUtility.getEditorInputModelElement(fEditor, false);
+		return new FoldingStructureComputationContext(doc, model, allowCollapse, sourceFileStructure);
 	}
 
 	static class Lock {
@@ -747,14 +665,18 @@ public class DelegatingFoldingStructureProvider {
 				return false;
 			}
 			Path filePath = EditorUtils.getFilePathFromEditorInput(fEditor.getEditorInput());
+			IDocument document = fEditor.getDocumentProvider().getDocument(fEditor.getEditorInput());
 			
-			final FoldingContent content = new FoldingContent(fInput, filePath);
+			final FoldingContent content = new FoldingContent(document.get(), filePath);
 			final Requestor requestor = new Requestor(content, ctx);
-			for (IFoldingBlockProvider provider : blockProviders) {
-				provider.setRequestor(requestor);
-				requestor.lineCountDelta = Math.max(1, provider.getMinimalLineCount() - 1);
-				provider.computeFoldableBlocks(content);
-				provider.setRequestor(null);
+			
+			if(ctx.sourceFileStructure != null){
+				for (IFoldingBlockProvider provider : blockProviders) {
+					provider.setRequestor(requestor);
+					requestor.lineCountDelta = Math.max(1, provider.getMinimalLineCount() - 1);
+					provider.computeFoldableBlocks(content, ctx.sourceFileStructure);
+					provider.setRequestor(null);
+				}
 			}
 			return true;
 		} catch (ModelException e) {
@@ -768,16 +690,6 @@ public class DelegatingFoldingStructureProvider {
 		}
 	}
 
-	/**
-	 * @param modelElement
-	 * @param contents
-	 * @return
-	 */
-	public IElementCommentResolver createElementCommentResolver(
-			IModelElement modelElement, String contents) {
-		return new DefaultElementCommentResolver((ISourceModule) modelElement,
-				contents);
-	}
 
 	protected boolean isEmptyRegion(IDocument d, ITypedRegion r)
 			throws BadLocationException {
@@ -890,8 +802,7 @@ public class DelegatingFoldingStructureProvider {
 		return provider.getDocument(fEditor.getEditorInput());
 	}
 
-	private Map<AnnotationKey, List<Tuple>> computeCurrentStructure(
-			FoldingStructureComputationContext ctx) {
+	private Map<AnnotationKey, List<Tuple>> computeCurrentStructure(FoldingStructureComputationContext ctx) {
 		Map<AnnotationKey, List<Tuple>> map = new HashMap<AnnotationKey, List<Tuple>>();
 		ProjectionAnnotationModel model = ctx.getModel();
 		Iterator<?> e = model.getAnnotationIterator();
@@ -921,75 +832,6 @@ public class DelegatingFoldingStructureProvider {
 		return map;
 	}
 
-	public final void collapseMembers() {
-		modifyFiltered(fMemberFilter, false);
-	}
-
-	public final void collapseComments() {
-		modifyFiltered(fCommentFilter, false);
-	}
-
-	/**
-	 * Collapses or expands all annotations matched by the passed filter.
-	 * 
-	 * @param filter
-	 *            the filter to use to select which annotations to collapse
-	 * @param expand
-	 *            <code>true</code> to expand the matched annotations,
-	 *            <code>false</code> to collapse them
-	 */
-	private void modifyFiltered(Filter filter, boolean expand) {
-		if (!isInstalled())
-			return;
-		ProjectionAnnotationModel model = getModel();
-		if (model == null)
-			return;
-		List<Annotation> modified = new ArrayList<Annotation>();
-		Iterator<?> iter = model.getAnnotationIterator();
-		while (iter.hasNext()) {
-			Object annotation = iter.next();
-			if (annotation instanceof ScriptProjectionAnnotation) {
-				ScriptProjectionAnnotation annot = (ScriptProjectionAnnotation) annotation;
-				if (expand == annot.isCollapsed() && filter.match(annot)) {
-					if (expand)
-						annot.markExpanded();
-					else
-						annot.markCollapsed();
-					modified.add(annot);
-				}
-			}
-		}
-		model.modifyAnnotations(null, null,
-				modified.toArray(new Annotation[modified.size()]));
-	}
-
-	protected final IModelElement getModuleElement() {
-		return fInput;
-	}
-
-	public void expandElements(final IModelElement[] array) {
-		modifyFiltered(new Filter() {
-
-			@Override
-			public boolean match(ScriptProjectionAnnotation annotation) {
-				Object element = annotation.getElement();
-				if (!(element instanceof IModelElement))
-					return false;
-				for (int a = 0; a < array.length; a++) {
-					IModelElement e = array[a];
-					if (e.equals(element)) {
-						return true;
-					}
-				}
-				return false;
-			}
-
-		}, true);
-	}
-
-	public void collapseElements(IModelElement[] modelElements) {
-		// empty implementation
-	}
 
 	private static class SourceRangeStamp {
 		final int length;
@@ -1023,15 +865,13 @@ public class DelegatingFoldingStructureProvider {
 
 	}
 
-	public static class FoldingContent implements IModuleSource {
+	public static class FoldingContent {
 
-		protected final IModelElement input;
 		protected final String contents;
 		protected final Path filePath;
 
-		public FoldingContent(IModelElement input, Path filePath) throws ModelException {
-			this.input = input;
-			this.contents = ((ISourceReference) input).getSource();
+		public FoldingContent(String contents, Path filePath) throws ModelException {
+			this.contents = contents;
 			this.filePath = filePath;
 		}
 
@@ -1051,28 +891,16 @@ public class DelegatingFoldingStructureProvider {
 			return get(region.getOffset(), region.getLength());
 		}
 
-		@Override
 		public char[] getContentsAsCharArray() {
 			return get().toCharArray();
 		}
 
-		@Override
-		public IModelElement getModelElement() {
-			return input;
-		}
-		
 		public Path getFilePath() {
 			return filePath;
 		}
 
-		@Override
 		public String getSourceContents() {
 			return get();
-		}
-
-		@Override
-		public String getFileName() {
-			return input.getElementName();
 		}
 
 	}

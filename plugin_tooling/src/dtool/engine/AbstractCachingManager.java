@@ -11,7 +11,7 @@
 package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import melnorme.lang.utils.EntryMapExt;
+import melnorme.lang.utils.EntryMapTS;
 import melnorme.utilbox.core.CommonException;
 
 
@@ -20,7 +20,7 @@ public abstract class AbstractCachingManager<KEY, VALUE, UPDATE_OPTIONS> {
 	public AbstractCachingManager() {
 	}
 	
-	protected final EntryMapExt<KEY, VALUE> infos = new EntryMapExt<KEY, VALUE>() {
+	protected final EntryMapTS<KEY, VALUE> infos = new EntryMapTS<KEY, VALUE>() {
 		
 		@Override
 		protected VALUE createEntry(KEY key) {

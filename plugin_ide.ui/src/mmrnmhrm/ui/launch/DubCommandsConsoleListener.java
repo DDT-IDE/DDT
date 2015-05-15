@@ -17,8 +17,8 @@ import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 import melnorme.lang.ide.ui.tools.console.ToolsConsole;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessNotifyingHelper;
-import mmrnmhrm.core.engine_client.DubProcessManager.IDubOperation;
-import mmrnmhrm.core.engine_client.IDubProcessListener;
+import mmrnmhrm.core.engine.IDubProcessListener;
+import mmrnmhrm.core.engine.DubProcessManager.IDubOperation;
 import mmrnmhrm.ui.DeeUIMessages;
 
 import org.eclipse.core.resources.IProject;

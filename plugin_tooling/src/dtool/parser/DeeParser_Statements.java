@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.ArrayList;
 
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;

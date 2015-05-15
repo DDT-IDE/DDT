@@ -49,7 +49,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 			ModuleFullName moduleFullName = entry.getKey();
 			
 			String source = CommonDToolTest.readStringFromFile_PreserveBOM(entry.getValue().toFile());
-			ParsedModule parsedModule = DeeParser.parseSourceModule(source, moduleFullName.getFullNameAsString());
+			ParsedModule parsedModule = DeeParser.parseUnlocatedModule(source, moduleFullName.getFullNameAsString());
 			
 			parsedModules.put(entry.getKey(), parsedModule);
 		}

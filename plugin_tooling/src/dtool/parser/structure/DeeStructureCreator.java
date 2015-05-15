@@ -38,7 +38,7 @@ public class DeeStructureCreator extends ASTVisitor {
 	
 	public SourceFileStructure createStructure(Location location, ParsedModule parsedModule) {
 		Indexable<StructureElement> moduleChildren = collectChildElements(parsedModule.module);
-		return new SourceFileStructure(location, moduleChildren);
+		return new SourceFileStructure(location, moduleChildren, parsedModule);
 	}
 	
 	public Indexable<StructureElement> collectChildElements(ASTNode node) {

@@ -22,7 +22,7 @@ import java.util.List;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileCachingEntry;
-import melnorme.lang.utils.EntryMapExt;
+import melnorme.lang.utils.EntryMapTS;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
@@ -222,7 +222,7 @@ public class SemanticManager {
 	
 	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
 	
-	protected class StdLibResolutionsCache extends EntryMapExt<CompilerInstall, StandardLibraryResolution> {
+	protected class StdLibResolutionsCache extends EntryMapTS<CompilerInstall, StandardLibraryResolution> {
 		@Override
 		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
 			if(key == null) {
@@ -327,7 +327,7 @@ public class SemanticManager {
 	/* ----------------- Working Copy and module resolution ----------------- */
 	
 	public ParsedModule setWorkingCopyAndParse(Path filePath, String source) {
-		return parseCache.setWorkingCopyAndGetParsedModule(filePath, source);
+		return getParseCache().setWorkingCopyAndGetParsedModule(filePath, source);
 	}
 	
 	public void discardWorkingCopy(Path filePath) {

@@ -11,6 +11,8 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.text.folding;
 
+import melnorme.lang.tooling.structure.SourceFileStructure;
+
 import org.eclipse.dltk.ui.text.folding.AbortFoldingException;
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -46,8 +48,7 @@ public interface IFoldingBlockProvider {
 	 * {@link AbortFoldingException}
 	 * 
 	 * @param content
-	 * @throws AbortFoldingException
 	 */
-	void computeFoldableBlocks(FoldingContent content);
+	void computeFoldableBlocks(FoldingContent content, SourceFileStructure sourceFileStructure);
 
 }

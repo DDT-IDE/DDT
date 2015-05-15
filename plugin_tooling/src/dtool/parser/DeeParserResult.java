@@ -15,11 +15,12 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.AbstractList;
-import java.util.Collections;
 import java.util.List;
 
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.Module;
 import dtool.parser.common.LexElement;
 import dtool.parser.common.LexerResult;
@@ -29,7 +30,7 @@ public class DeeParserResult extends LexerResult {
 	public final ASTNode node;
 	public final boolean ruleBroken;
 	public final Module module;
-	public final List<ParserError> errors;
+	public final Indexable<ParserError> errors;
 	
 	public DeeParserResult(String source, AbstractList<LexElement> tokenList, ASTNode node, boolean ruleBroken,
 		List<ParserError> errors) {
@@ -37,7 +38,7 @@ public class DeeParserResult extends LexerResult {
 		this.node = node;
 		this.ruleBroken = ruleBroken;
 		this.module = node instanceof Module ? (Module) node : null;
-		this.errors = Collections.unmodifiableList(errors);
+		this.errors = new ArrayList2<ParserError>(errors); // Ensure unmodifiable private copy
 		assertTrue(node == null || node.isSemanticReady());
 	}
 	
@@ -50,7 +51,7 @@ public class DeeParserResult extends LexerResult {
 		return module;
 	}
 	
-	public List<ParserError> getErrors() {
+	public Indexable<ParserError> getErrors() {
 		return errors;
 	}
 	

@@ -1,4 +1,4 @@
-package mmrnmhrm.core.engine_client;
+package mmrnmhrm.core.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
@@ -34,7 +34,7 @@ public abstract class CompletionEngine_Test extends CommonCoreTest {
 		testCompletionEngine(getMarkerEndPos("/+CC3@+/")+1, 2);
 	}
 	
-	protected abstract void testCompletionEngine(final int offset, final int rplLen) throws ModelException;
+	protected abstract void testCompletionEngine(final int offset, final int rplLen) throws Exception;
 	
 	protected int getMarkerEndPos(String markerString) throws ModelException {
 		int startPos = srcModule.getSource().indexOf(markerString);

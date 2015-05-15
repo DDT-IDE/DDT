@@ -25,11 +25,10 @@ import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
@@ -44,26 +43,17 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
 			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		
-		IDocument document = context.getDocument();
 		Location editoInputFile = context.getEditorInputLocation();
 		
 		int timeoutMillis = pm.getTimeoutMillis();
-		return dtoolclient.performCompletionOperation(editoInputFile.path, offset, document.get(), timeoutMillis)
-				.convertToCompletionResult();
+		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset)
+			.runEngineOperation(pm)
+			.convertToCompletionResult();
 	}
 	
 	@Override
 	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		return super.computeContextInformation(context);
-	}
-	
-	@Override
-	protected void handleExceptionInUI(CommonException ce) {
-		if(DToolClient.compilerPathOverride == null) {
-			super.handleExceptionInUI(ce);;
-		} else {
-			// We are in tests mode
-		}
 	}
 	
 	/* -----------------  ----------------- */

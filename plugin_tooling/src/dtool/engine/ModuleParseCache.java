@@ -13,6 +13,7 @@ package dtool.engine;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+import static melnorme.utilbox.misc.StringUtil.substringUntilMatch;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -253,6 +254,11 @@ public class ModuleParseCache {
 		protected void discardWorkingCopy_after() {
 		}
 		
+	}
+	
+	public ParsedModule parseUnlocatedModule(String source) {
+		statusLogger.logMessage("ParseCache: Parsed unpathed module: " + substringUntilMatch(source, "\n"));
+		return DeeParser.parseUnlocatedModule(source, "_unnamed");
 	}
 	
 	public class CachedModuleEntry_Logged extends CachedModuleEntry {

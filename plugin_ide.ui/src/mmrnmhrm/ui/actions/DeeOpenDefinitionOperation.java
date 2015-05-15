@@ -17,14 +17,16 @@ import java.util.List;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.engine_client.DToolClient;
+import mmrnmhrm.core.engine.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -63,9 +65,10 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 	}
 	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) throws CoreException {
+	protected void performLongRunningComputation(IProgressMonitor monitor) 
+			throws CommonException, CoreException, OperationCancellation {
 		findDefResult = DToolClient.getDefault().
-				new FindDefinitionOperation(inputLoc.path, doc.get(), offset, -1).runSemanticServerOperation();
+				new FindDefinitionOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 	}
 	
 	@Override

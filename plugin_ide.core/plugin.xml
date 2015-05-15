@@ -90,27 +90,6 @@
             nature="org.dsource.ddt.ide.core.nature">
       </language>
    </extension>
-   <extension
-         point="org.eclipse.dltk.core.sourceElementParsers">
-      <parser
-            class="mmrnmhrm.core.model_elements.DeeSourceElementParser"
-            nature="org.dsource.ddt.ide.core.nature"
-            priority="0">
-      </parser>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.sourceParsers">
-      <parserContribution
-            natureId="org.dsource.ddt.ide.core.nature">
-         <parser
-               class="mmrnmhrm.core.engine_client.DeeSourceParserFactory"
-               description="%sourceParser.description"
-               id="org.dsource.ddt.ide.core.SourceParser"
-               name="%sourceParser.name"
-               priority="1">
-         </parser>
-      </parserContribution>
-   </extension>
     <extension
          id="DubProblem"
          name="%DUBProblem"

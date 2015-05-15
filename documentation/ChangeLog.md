@@ -20,6 +20,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Improved transparency/aliasing of D element icons - this improves them for dark themes.
  * Fixed regression: the icon of packages in Content Assist incorrectly showing up as the natives icon.
  * Removed Open D Type action (wasn't implemented correctly).
+ * Reconciler thread timer. // TODO reword
 
 ### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)

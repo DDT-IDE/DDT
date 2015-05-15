@@ -7,7 +7,7 @@ import java.util.Map;
 
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.utilbox.misc.Pair;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;

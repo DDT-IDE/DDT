@@ -24,9 +24,11 @@ import java.util.List;
 
 import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ParserErrorTypes;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
@@ -35,11 +37,11 @@ import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.CommonDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAlias;
-import dtool.ast.definitions.FunctionAttribute;
 import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
+import dtool.ast.definitions.FunctionAttribute;
 import dtool.ast.definitions.IFunctionParameter;
-import dtool.ast.definitions.Module;
 import dtool.ast.definitions.ITemplateParameter;
+import dtool.ast.definitions.Module;
 import dtool.ast.expressions.ExpLiteralBool;
 import dtool.ast.expressions.ExpLiteralFloat;
 import dtool.ast.expressions.ExpLiteralInteger;
@@ -54,8 +56,8 @@ import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.DeeParsingChecks.DeeTestsChecksParser;
 import dtool.parser.DeeParsingChecks.ParametersReparseCheck;
-import dtool.parser.common.Token;
 import dtool.parser.common.AbstractParser.ParseRuleDescription;
+import dtool.parser.common.Token;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTests;
 import dtool.util.NewUtils;
@@ -70,13 +72,13 @@ public class DeeParserTester extends CommonTestUtils {
 	protected final String expectedRemainingSource; 
 	protected final String expectedPrintedSource;
 	protected final NamedNodeElement[] expectedStructure; 
-	protected final ArrayList<ParserError> expectedErrors;
+	protected final ArrayList2<ParserError> expectedErrors;
 	protected final List<MetadataEntry> additionalMetadataOriginal;
 	protected HashMap<String, Object> additionalMD;
 
 	
 	public DeeParserTester(String fullSource, String parseRule, String expectedRemainingSource, 
-		String expectedPrintedSource, NamedNodeElement[] expectedStructure, ArrayList<ParserError> expectedErrors,
+		String expectedPrintedSource, NamedNodeElement[] expectedStructure, ArrayList2<ParserError> expectedErrors,
 		List<MetadataEntry> additionalMetadata) {
 		this.fullSource = fullSource;
 		this.parseRule = parseRule;
@@ -296,8 +298,9 @@ public class DeeParserTester extends CommonTestUtils {
 	
 	/* ============= Error and Source Range Checkers ============= */
 	
-	public static void checkParserErrors(List<ParserError> resultErrors, ArrayList<ParserError> expectedErrors) {
-		resultErrors = new ArrayList<>(resultErrors);
+	public static void checkParserErrors(Indexable<ParserError> _resultErrors, Indexable<ParserError> _expectedErrors) {
+		ArrayList2<ParserError> resultErrors = new ArrayList2<>(_resultErrors);
+		ArrayList2<ParserError> expectedErrors = new ArrayList2<>(_expectedErrors);
 		Collections.sort(resultErrors, new ParserErrorComparator());
 		Collections.sort(expectedErrors, new ParserErrorComparator());
 		
@@ -403,13 +406,12 @@ public class DeeParserTester extends CommonTestUtils {
 			DeeTestsChecksParser parser = new DeeTestsChecksParser(parsedSource);
 			DeeParserResult resultToE = parser.parseUsingRule(DeeParser.RULE_TYPE_OR_EXP);
 			ASTNode expNode = result.node;
-			List<ParserError> resultToE_Errors = resultToE.getErrors();
+			Indexable<ParserError> resultToE_Errors = resultToE.getErrors();
 			if(result.errors.size() >= 1) {
 				ParserError lastError = result.getErrors().get(result.errors.size()-1);
 				if(lastError.errorType == ParserErrorTypes.TYPE_USED_AS_EXP_VALUE &&
 					SourceEquivalenceChecker.check(result.node.toStringAsCode(), lastError.msgErrorSource)) {
-					resultToE_Errors = new ArrayList<>(resultToE.getErrors());
-					resultToE_Errors.add(lastError);
+					resultToE_Errors = new ArrayList2<>(resultToE.getErrors()).addElements(lastError);
 					expNode = ((ExpReference) expNode).ref;
 				}
 			}

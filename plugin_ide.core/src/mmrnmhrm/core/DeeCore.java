@@ -11,25 +11,20 @@
 package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
-import mmrnmhrm.core.engine_client.DToolClient;
-import mmrnmhrm.core.engine_client.DubProcessManager;
-import mmrnmhrm.core.workspace.DubWorkspaceModel;
+import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DubProcessManager;
 import mmrnmhrm.core.workspace.DubModelManager;
+import mmrnmhrm.core.workspace.DubWorkspaceModel;
 
 import org.osgi.framework.BundleContext;
 
 public class DeeCore extends LangCore {
 	
-	protected static DToolClient dtoolClient;
 	protected static final DubWorkspaceModel dubModel = new DubWorkspaceModel();
 	protected static final DubModelManager modelManager = new DubModelManager(dubModel);
 	
 	public static DubProcessManager getDubProcessManager() {
 		return getWorkspaceModelManager().getProcessManager();
-	}
-	
-	public static DToolClient getDToolClient() {
-		return dtoolClient;
 	}
 	
 	public static DubWorkspaceModel getWorkspaceModel() {
@@ -40,9 +35,12 @@ public class DeeCore extends LangCore {
 		return modelManager;
 	}
 	
+	public static DToolClient getDToolClient() {
+		return (DToolClient) getEngineClient();
+	}
+	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		dtoolClient = DToolClient.initializeNew();
 	}
 	
 	@Override
@@ -53,7 +51,6 @@ public class DeeCore extends LangCore {
 	@Override
 	protected void doCustomStop(BundleContext context) {
 		modelManager.shutdownManager();
-		dtoolClient.shutdown();
 	}
 	
 }

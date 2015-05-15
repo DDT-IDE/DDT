@@ -41,7 +41,7 @@ public class ResolverSourceTests extends BaseResolverSourceTests {
 	@Override
 	public void prepareTestCase(String moduleName, String projectFolderName, AnnotatedSource testCase) {
 		moduleName = nullToOther(moduleName, DEFAULT_MODULE_NAME);
-		parseResult = DeeParser.parseSourceModule(testCase.source, moduleName);
+		parseResult = DeeParser.parseUnlocatedModule(testCase.source, moduleName);
 		
 		if(projectFolderName == null || projectFolderName.isEmpty()) {
 			mr = new EmptySemanticResolution();

@@ -1,4 +1,4 @@
-package mmrnmhrm.core.engine_client;
+package mmrnmhrm.core.engine;
 
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.core.IProblemRequestor;

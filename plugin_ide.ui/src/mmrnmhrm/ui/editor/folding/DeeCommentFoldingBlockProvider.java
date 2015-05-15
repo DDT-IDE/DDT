@@ -2,8 +2,8 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
+import melnorme.lang.tooling.structure.SourceFileStructure;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.ui.editor.EditorUtil;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 
 import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
@@ -40,13 +40,13 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 	}
 	
 	@Override
-	public void computeFoldableBlocks(FoldingContent content) {
+	public void computeFoldableBlocks(FoldingContent content, SourceFileStructure sourceFileStructure) {
 		offsetForModuleDeclaration = -1;
 		
 		if(isFoldingComments()) {
 			
 			// With changes in the parser perhaps this code could be simplified.
-			Module deeModule = EditorUtil.getParsedModule_NoWaitInUI(content, content.getFilePath());
+			Module deeModule = sourceFileStructure.parsedModule.module; 
 			if (deeModule != null && deeModule.md != null) {
 				offsetForModuleDeclaration = deeModule.md.getOffset();
 			}

@@ -13,6 +13,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -33,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
 /* FIXME: DLTK: review this class. */
-public class AdaptedSourceViewer extends ScriptSourceViewer implements ICompletionListener {
+public class AdaptedSourceViewer extends LangSourceViewer implements ICompletionListener {
 	
 	protected static interface ITextConverter {
 		void customizeDocumentCommand(IDocument document, DocumentCommand command);

@@ -11,8 +11,6 @@ package _org.eclipse.dltk.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.ui.editor.text.LangReconciler;
-import melnorme.lang.ide.ui.editor.text.LangReconcilingStrategy;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 
 import org.eclipse.cdt.ui.text.IColorManager;
@@ -42,10 +40,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.eclipse.ui.texteditor.ITextEditor;
 
-import _org.eclipse.dltk.internal.ui.text.ScriptCompositeReconcilingStrategy;
-import _org.eclipse.dltk.internal.ui.text.ScriptReconciler;
 import _org.eclipse.jdt.internal.ui.text.HTMLAnnotationHover;
 
 /* FIXME: DLTK review uses of other DLTK internal classes, possibly add them. */
@@ -74,15 +69,6 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 		return getColorManager2();
 	}
 	
-	@Override
-	protected LangReconciler doCreateReconciler(ITextEditor editor) {
-		ScriptCompositeReconcilingStrategy strategy = new ScriptCompositeReconcilingStrategy(editor, 
-			new LangReconcilingStrategy(editor));
-		ScriptReconciler reconciler = new ScriptReconciler(editor, strategy, false);
-		return reconciler;
-	}
-	
-
 	/* FIXME: DLTK: review text hovers */
 	@Override
 	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {
