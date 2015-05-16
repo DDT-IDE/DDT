@@ -23,7 +23,7 @@ import java.util.Map;
 
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.util.swt.components.IFieldValueListener;
+import melnorme.utilbox.fields.IFieldValueListener;
 import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
 import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
