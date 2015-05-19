@@ -84,7 +84,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	protected static ResolvedModule parseModule(String source, Path filePath) throws CommonException {
 		// make sure we reparse, even if source is the same. 
 		defaultSemMgr.getParseCache().discardEntry(filePath);
-		defaultSemMgr.getParseCache().setWorkingCopyAndGetParsedModule(filePath, source);
+		defaultSemMgr.getParseCache().setSourceAndParseModule(filePath, source);
 		ResolvedModule updatedModule = getUpdatedModule(Location.create_fromValid(filePath));
 		assertTrue(updatedModule.getSource().equals(source));
 		return updatedModule;

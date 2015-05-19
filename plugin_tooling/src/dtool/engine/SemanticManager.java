@@ -327,7 +327,7 @@ public class SemanticManager {
 	/* ----------------- Working Copy and module resolution ----------------- */
 	
 	public ParsedModule setWorkingCopyAndParse(Path filePath, String source) {
-		return getParseCache().setWorkingCopyAndGetParsedModule(filePath, source);
+		return getParseCache().setSourceAndParseModule(filePath, source);
 	}
 	
 	public void discardWorkingCopy(Path filePath) {

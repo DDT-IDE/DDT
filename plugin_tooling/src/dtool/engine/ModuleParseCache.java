@@ -23,6 +23,7 @@ import java.util.HashMap;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileModificationDetectionHelper;
 import melnorme.lang.utils.ISimpleStatusLogger;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -65,9 +66,6 @@ public class ModuleParseCache {
 		return parsedModule == null ? null : parsedModule.module;
 	}
 	
-	public ParsedModule setWorkingCopyAndGetParsedModule(Path filePath, String source) {
-		return parseModuleWithNewSource(filePath, source);
-	}
 	
 	
 	/* -----------------  ----------------- */
@@ -107,10 +105,9 @@ public class ModuleParseCache {
 		return new CachedModuleEntry_Logged(filePath);
 	}
 	
-	protected ParsedModule parseModuleWithNewSource(Path filePath, String source) {
+	public ParsedModule setSourceAndParseModule(Path filePath, String source) {
 		assertNotNull(source);
-		
-		return getEntry(filePath).getParsedModuleWithWorkingCopySource(source);
+		return getEntry(filePath).setWorkingSourceAndParse(source);
 	}
 	
 	public void discardWorkingCopy(Path filePath) {
@@ -175,10 +172,14 @@ public class ModuleParseCache {
 		}
 		
 		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
+			return getParsedModule(null);
+		}
+		
+		public ParsedModule getParsedModule(ICancelMonitor cancelMonitor) throws IOException, FileNotFoundException {
 			if(isStale()) {
 				readSource();
 			}			
-			return doGetParsedModule(source);
+			return doGetParsedModule(source, cancelMonitor);
 		}
 		
 		protected void readSource() throws IOException, FileNotFoundException {
@@ -225,16 +226,25 @@ public class ModuleParseCache {
 			}
 		}
 		
-		public synchronized ParsedModule getParsedModuleWithWorkingCopySource(String newSource) {
+		public synchronized ParsedModule setWorkingSourceAndParse(String newSource) {
 			assertNotNull(newSource);
-			setNewSource(newSource);
-			isWorkingCopy = true;
+			setWorkingSource(newSource);
 			return doGetParsedModule(newSource);
 		}
 		
+		public void setWorkingSource(String newSource) {
+			setNewSource(newSource);
+			isWorkingCopy = true;
+		}
+		
 		protected ParsedModule doGetParsedModule(String source) {
+			return doGetParsedModule(source, null);
+		}
+		
+		protected ParsedModule doGetParsedModule(String source, ICancelMonitor cancelMonitor) {
+			
 			if(parsedModule == null) {
-				parsedModule = DeeParser.parseSourceModule(source, filePath);
+				parsedModule = DeeParser.parseSourceModule(source, filePath, cancelMonitor);
 				parsedSource_after();
 			}
 			return parsedModule;
@@ -254,11 +264,15 @@ public class ModuleParseCache {
 		protected void discardWorkingCopy_after() {
 		}
 		
+		public synchronized void runUnderEntryLock(Runnable runnable) {
+			runnable.run();
+		}
+		
 	}
 	
-	public ParsedModule parseUnlocatedModule(String source) {
-		statusLogger.logMessage("ParseCache: Parsed unpathed module: " + substringUntilMatch(source, "\n"));
-		return DeeParser.parseUnlocatedModule(source, "_unnamed");
+	public ParsedModule parseModuleWithNoLocation(String source, ICancelMonitor cm) {
+		statusLogger.logMessage("ParseCache: Parsed module with no location: " + substringUntilMatch(source, "\n"));
+		return DeeParser.parseUnlocatedModule(source, "_unnamed", cm);
 	}
 	
 	public class CachedModuleEntry_Logged extends CachedModuleEntry {

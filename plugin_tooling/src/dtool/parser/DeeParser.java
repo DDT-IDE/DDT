@@ -23,6 +23,7 @@ import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserError.ErrorSourceRangeComparator;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -38,13 +39,49 @@ public class DeeParser
 	extends DeeParser_Statements 
 {
 	
-	protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
-	
-	public DeeParser(String source) {
-		this(new DeeLexer(source));
+	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName) {
+		return parseSourceModule(source, defaultModuleName, null, null);
 	}
 	
-	protected DeeParser(DeeLexer deeLexer) {
+	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName, ICancelMonitor cm) {
+		return parseSourceModule(source, defaultModuleName, null, cm);
+	}
+	
+	public static ParsedModule parseSourceModule(String source, Path modulePath) {
+		return parseSourceModule(source, null, modulePath, null);
+	}
+	
+	public static ParsedModule parseSourceModule(String source, Path modulePath, ICancelMonitor cm) {
+		return parseSourceModule(source, null, modulePath, cm);
+	}
+	
+	public static ParsedModule parseSourceModule(String source, String defaultModuleName, Path modulePath, 
+			ICancelMonitor cm) {
+		return new DeeParser(source, cm).parseModuleSource(defaultModuleName, modulePath);
+	}
+	
+	public static String getDefaultModuleName(Path modulePath) {
+		String fileName = modulePath.getFileName().toString();
+		return ModuleNamingRules.getDefaultModuleNameFromFileName(fileName);
+	}
+	
+	/* -----------------  ----------------- */
+	
+	protected ArrayList<ParserError> lexerErrors = new ArrayList<>();
+	protected final ICancelMonitor cancelMonitor;
+	
+	public DeeParser(String source, ICancelMonitor cancelMonitor) {
+		this(new DeeLexer(source), cancelMonitor);
+	}
+	
+	public DeeParser(String source) {
+		this(new DeeLexer(source), null);
+	}
+	
+	protected DeeParser(DeeLexer deeLexer, ICancelMonitor cancelMonitor) {
+		// FIXME: TO DO enable cancel monitor functionality, to allow parsing to be cancelled/stopped 
+		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : ICancelMonitor._Util.NULL_MONITOR;
+		
 		this.source = deeLexer.getSource();
 		DeeLexElementProducer deeLexElementProducer = new DeeLexElementProducer();
 		this.lexSource = new LexElementSource(deeLexElementProducer.produceLexTokens(deeLexer));
@@ -65,25 +102,12 @@ public class DeeParser
 		return this;
 	}
 	
-	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName) {
-		return parseSourceModule(source, defaultModuleName, null);
-	}
-	
-	public static ParsedModule parseSourceModule(String source, String defaultModuleName, Path modulePath) {
-		return new DeeParser(source).parseModuleSource(defaultModuleName, modulePath);
-	}
-	
-	public static ParsedModule parseSourceModule(String source, Path modulePath) {
-		return new DeeParser(source).parseModuleSource(modulePath);
-	}
-	
-	public ParsedModule parseModuleSource(Path modulePath) {
-		String fileName = modulePath.getFileName().toString();
-		String defaultModuleName = ModuleNamingRules.getDefaultModuleNameFromFileName(fileName);
-		return parseModuleSource(defaultModuleName, modulePath);
-	}
-	
 	public ParsedModule parseModuleSource(String defaultModuleName, Path modulePath) {
+		if(defaultModuleName == null) {
+			assertNotNull(modulePath);
+			defaultModuleName = getDefaultModuleName(modulePath);
+		}
+		
 		NodeResult<Module> nodeResult = parseModule(defaultModuleName, modulePath);
 		return (ParsedModule) prepParseResult(null, nodeResult, modulePath);
 	}

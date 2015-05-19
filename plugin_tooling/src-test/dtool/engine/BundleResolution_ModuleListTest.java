@@ -241,7 +241,7 @@ public class BundleResolution_ModuleListTest extends CommonSemanticManagerTest {
 		if(SUPPORT_RELATIVE_PATHS) {
 			// Test getResolvedModule for a relative path.
 			Location specialPath = loc(PathUtil.createValidPath(("###special/relative_bundle.d")));
-			sm.parseCache.parseModuleWithNewSource(specialPath.path, "module relative_bundle;");
+			sm.parseCache.setSourceAndParseModule(specialPath.path, "module relative_bundle;");
 			rm = getUpdatedResolvedModule(specialPath);
 			assertEqualSet(rm.semanticContext.findModules("o"), hashSet(
 				"object"

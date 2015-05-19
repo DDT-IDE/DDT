@@ -352,7 +352,7 @@ public class DeeParserTester extends CommonTestUtils {
 		}
 		ParseRuleDescription parseRuleDesc = getParseRule(parseRule);
 		if(parseRuleDesc == null) {
-			return deeParser.parseModuleSource(MiscUtil.createValidPath("_parser_tests.d"));
+			return deeParser.parseModuleSource(null, MiscUtil.createValidPath("_parser_tests.d"));
 		}
 		return deeParser.parseUsingRule(parseRuleDesc);
 	}

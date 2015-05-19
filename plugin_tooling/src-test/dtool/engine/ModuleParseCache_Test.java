@@ -155,10 +155,10 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	protected void testUpdateWorkingCopyAndParse(Path modulePath, String source) throws ModuleSourceException {
-		ParsedModule parsedModule = mpc.setWorkingCopyAndGetParsedModule(modulePath, source);
+		ParsedModule parsedModule = mpc.setSourceAndParseModule(modulePath, source);
 		assertTrue(mpc.getEntry(CU_PATH).isStale() == false);
 		assertTrue(mpc.getParsedModule(modulePath) == parsedModule);
-		assertTrue(mpc.setWorkingCopyAndGetParsedModule(modulePath, source) == parsedModule);
+		assertTrue(mpc.setSourceAndParseModule(modulePath, source) == parsedModule);
 		assertTrue(parsedModule.source == source);
 	}
 	
@@ -199,7 +199,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 	}
 	
 	protected ParsedModule setWorkingCopySourceAndParse(Path filePath, String source) {
-		ParsedModule parsedModule = mpc.setWorkingCopyAndGetParsedModule(filePath, source);
+		ParsedModule parsedModule = mpc.setSourceAndParseModule(filePath, source);
 		assertTrue(mpc.getEntry(filePath).isWorkingCopy());
 		return parsedModule;
 	}
@@ -210,7 +210,7 @@ public class ModuleParseCache_Test extends CommonDToolTest {
 		__initModuleParseCache();
 		
 		Path freeformPath = MiscUtil.createValidPath("#freeFormPath");
-		assertTrue(mpc.setWorkingCopyAndGetParsedModule(freeformPath, SOURCE1).source.equals(SOURCE1));
+		assertTrue(mpc.setSourceAndParseModule(freeformPath, SOURCE1).source.equals(SOURCE1));
 	}
 	
 }

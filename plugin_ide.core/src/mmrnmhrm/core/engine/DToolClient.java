@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
+import java.io.IOException;
+
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.EngineOperation;
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
@@ -27,6 +29,7 @@ import org.eclipse.jface.text.IDocument;
 
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
+import dtool.engine.ModuleParseCache.CachedModuleEntry;
 import dtool.engine.SemanticManager;
 import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
@@ -73,26 +76,80 @@ public class DToolClient extends EngineClient {
 	
 	/* -----------------  ----------------- */
 	
+	public abstract class WorkingCopyStructureUpdateTask extends StructureUpdateTask {
+		
+		protected final Location fileLocation;
+		
+		public WorkingCopyStructureUpdateTask(StructureInfo structureInfo, Location fileLocation) {
+			super(structureInfo);
+			this.fileLocation = fileLocation;
+		}
+		
+		@Override
+		protected SourceFileStructure createSourceFileStructure() {
+			ParsedModule parsedModule = (fileLocation == null) ? 
+					parseModuleWithNoLocation() :
+					setWorkingSourceAndParseModule(fileLocation);
+			
+			if(parsedModule == null || isCancelled()) {
+				return null;
+			}
+			return new DeeStructureCreator().createStructure(fileLocation, parsedModule);
+		}
+		
+		/**
+		 * @param fileLocation non-null
+		 */
+		protected ParsedModule setWorkingSourceAndParseModule(Location fileLocation) {
+			final CachedModuleEntry entry = getParseCache().getEntry(fileLocation.toPath());
+			entry.runUnderEntryLock(new Runnable() {
+				@Override
+				public void run() {
+					if(!isCancelled()) {
+						modifyWorkingSource(entry);
+					}
+				}
+			});
+			
+			if(isCancelled()) {
+				return null;
+			}
+			return parseModuleFromWorkingCopy(entry);
+		}
+		
+		protected abstract ParsedModule parseModuleWithNoLocation();
+		
+		protected abstract void modifyWorkingSource(CachedModuleEntry lockedEntry);
+		
+		protected abstract ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry);
+		
+	}
+	
 	@Override
 	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, final Location fileLocation, 
 			IDocument document, boolean isDirty) {
 		
-		/* FIXME: timestamp / concurrency of workingCopy*/
-		int requestSequenceNo = requestSequenceCounter++;
 		final String source = document.get();
 		
-		return new StructureUpdateTask(structureInfo) {
+		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
+			
 			@Override
-			protected SourceFileStructure createSourceFileStructure() {
-				// FIXME: todo cancel monitor 
-				
-				final ParsedModule parsedModule;
-				if(fileLocation != null) {
-					parsedModule = getParseCache().setWorkingCopyAndGetParsedModule(fileLocation.toPath(), source);
-				} else {
-					parsedModule = getParseCache().parseUnlocatedModule(source);
+			protected ParsedModule parseModuleWithNoLocation() {
+				return getParseCache().parseModuleWithNoLocation(source, cm);
+			}
+			
+			@Override
+			protected void modifyWorkingSource(CachedModuleEntry lockedEntry) {
+				lockedEntry.setWorkingSource(source);
+			}
+			
+			@Override
+			protected ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) {
+				try {
+					return entry.getParsedModule(cm);
+				} catch(IOException e) {
+					return null;
 				}
-				return new DeeStructureCreator().createStructure(fileLocation, parsedModule);
 			}
 		};
 	}
@@ -101,19 +158,28 @@ public class DToolClient extends EngineClient {
 	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
 		final Location location = getLocation(structureInfo.getKey());
 		
-		return new StructureUpdateTask(structureInfo) {
+		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
+			
 			@Override
-			protected SourceFileStructure createSourceFileStructure() {
-				/* FIXME: timestamp / concurrency of workingCopy*/
-				getParseCache().discardWorkingCopy(location.toPath());
+			protected ParsedModule parseModuleWithNoLocation() {
 				return null;
 			}
+			
+			@Override
+			protected void modifyWorkingSource(CachedModuleEntry lockedEntry) {
+				getParseCache().discardWorkingCopy(location.toPath());
+			}
+			
+			@Override
+			protected ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) {
+				return null;
+			}
+			
 		};
 	}
 	
 	/* ----------------- operations ----------------- */
 	
-	/* FIXME: review to see if still necessary. */
 	// Only tests may modify this variable:
 	public static volatile Location compilerPathOverride = null;
 	

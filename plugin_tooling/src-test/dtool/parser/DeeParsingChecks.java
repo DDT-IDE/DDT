@@ -41,7 +41,7 @@ public class DeeParsingChecks extends CommonTestUtils {
 	public static class DeeTestsChecksParser extends DeeParser {
 		
 		public DeeTestsChecksParser(String source) {
-			super(new DeeLexer(source));
+			super(new DeeLexer(source), null);
 		}
 		
 		@Override
