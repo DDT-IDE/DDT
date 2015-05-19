@@ -25,6 +25,7 @@ import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.utilbox.collections.ArrayView;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
@@ -188,11 +189,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			comments = END_DOCCOMMENTS_READ;
 		}
 		
-		public <T extends CommonDefinition> T conclude(T node) {
+		public <T extends CommonDefinition> T conclude(T node) throws OperationCancellation {
 			node.setExtendedStartPos(extendedStart);
 			return super.conclude(node);
 		}
-		public final <T extends CommonDefinition> NodeResult<T> resultConclude(T node) {
+		public final <T extends CommonDefinition> NodeResult<T> resultConclude(T node) throws OperationCancellation {
 			return result(ruleBroken, conclude(node));
 		}
 		
@@ -200,7 +201,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	/* ----------------------------------------------------------------- */
 	
-	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName, Path compilationUnitPath) {
+	public AbstractParser.NodeResult<Module> parseModule(String defaultModuleName, Path compilationUnitPath) 
+			throws OperationCancellation {
 		assertNotNull(defaultModuleName);
 		DeclarationModule md = parseModuleDeclaration();
 		
@@ -221,7 +223,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 	}
 	
-	public DeclarationModule parseModuleDeclaration() {
+	public DeclarationModule parseModuleDeclaration() throws OperationCancellation {
 		if(lookAhead() != DeeTokens.KW_MODULE) {
 			return null;
 		}
@@ -247,7 +249,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.conclude(new DeclarationModule(comments, arrayViewG(packagesList), moduleId));
 	}
 	
-	public NodeVector<ASTNode> parseDeclarations(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) {
+	public NodeVector<ASTNode> parseDeclarations(DeeTokens nodeListTerminator, boolean consumeCloseBrackets) 
+			throws OperationCancellation {
 		ArrayList<ASTNode> declarations = new ArrayList<>();
 		while(true) {
 			if(lookAhead() == nodeListTerminator) {
@@ -270,21 +273,21 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public static final ParseRuleDescription RULE_DECLARATION = new ParseRuleDescription("Declaration", "Declaration");
 	
 	public InvalidSyntaxElement parseInvalidElement(ParseRuleDescription expectedRule, 
-		boolean inStatementList) {
+		boolean inStatementList) throws OperationCancellation {
 		LexElement badToken = consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
 		parse.storeError(createSyntaxError(expectedRule));
 		return parse.conclude(new InvalidSyntaxElement(inStatementList, badToken));
 	}
 	
-	public NodeResult<? extends IDeclaration> parseDeclaration() {
+	public NodeResult<? extends IDeclaration> parseDeclaration() throws OperationCancellation {
 		return parseDeclaration(false, false, null);
 	}
-	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly) {
+	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly) throws OperationCancellation {
 		return parseDeclaration(statementsOnly, false, null);
 	}
 	public NodeResult<? extends IDeclaration> parseDeclaration(boolean statementsOnly, boolean autoDeclEnabled,
-		DefinitionStartInfo defStartInfo) {
+		DefinitionStartInfo defStartInfo) throws OperationCancellation {
 		
 		DeeTokens laGrouped = assertNotNull(lookAheadGrouped());
 		switch (laGrouped) {
@@ -430,7 +433,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	/* --------------------- ATTRIBUTES --------------------- */
 	
 	// Note: make sure this is consistent/synchronized with the code in declaration parse
-	public NodeResult<? extends Attribute> parseAttribute() {
+	public NodeResult<? extends Attribute> parseAttribute() throws OperationCancellation {
 		switch (lookAheadGrouped()) {
 		case KW_ALIGN: 
 			return parseAttribAlign();
@@ -462,7 +465,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return null;
 	}
 	
-	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(boolean isStatementParsing) {
+	public NodeResult<DeclarationAttrib> parseDeclarationAttrib(boolean isStatementParsing) 
+			throws OperationCancellation {
 		
 		DefinitionStartInfo defStartInfo = parseDefStartInfo();
 		ParseHelper parse = new ParseHelper(lookAheadElement());
@@ -511,7 +515,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return true;
 	}
 	
-	protected NodeVector<Attribute> parseDefinitionAttributes(ParseHelper parse) {
+	protected NodeVector<Attribute> parseDefinitionAttributes(ParseHelper parse) throws OperationCancellation {
 		ArrayList<Attribute> stcList = null;
 		
 		while(true) {
@@ -539,7 +543,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		"Declarator(Reference or Identifier)");
 	
 	public NodeResult<? extends IDeclaration> parseDeclaration_varOrFunction(DefinitionStartInfo defStartInfo, 
-		boolean autoEnablingAttribPresent) {
+		boolean autoEnablingAttribPresent) throws OperationCancellation {
 		if(!(canParseTypeReferenceStart(lookAhead()) || lookAhead() == DeeTokens.IDENTIFIER)) {
 			return declarationNullResult();
 		}
@@ -578,7 +582,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	
 	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
-		DefParseHelper parse, Reference ref, ProtoDefSymbol defId) 
+		DefParseHelper parse, Reference ref, ProtoDefSymbol defId) throws OperationCancellation 
 	{
 		ArrayList<DefVarFragment> fragments = null;
 		IInitializer init = null;
@@ -615,7 +619,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			new DefinitionVariable(comments, defId.createDefId(), ref, cstyleSuffix, init, arrayView(fragments)));
 	}
 	
-	protected DefVarFragment parseVarFragment(boolean isAutoRef) {
+	protected DefVarFragment parseVarFragment(boolean isAutoRef) throws OperationCancellation {
 		ProtoDefSymbol fragId = parseDefId();
 		ParseHelper parse = new ParseHelper(fragId.getStartPos());
 		IInitializer init = null;
@@ -632,7 +636,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public static final ParseRuleDescription RULE_INITIALIZER = new ParseRuleDescription("Initializer", "Initializer");
 	
-	public NodeResult<? extends IInitializer> parseInitializer() {
+	public NodeResult<? extends IInitializer> parseInitializer() throws OperationCancellation {
 		if(tryConsume(DeeTokens.KW_VOID)) {
 			return resultConclude(false, srOf(lastLexElement(), new InitializerVoid()));
 		}
@@ -640,7 +644,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parseNonVoidInitializer(true);
 	}
 	
-	public NodeResult<? extends IInitializer> parseNonVoidInitializer(boolean createMissing) {
+	public NodeResult<? extends IInitializer> parseNonVoidInitializer(boolean createMissing) 
+			throws OperationCancellation {
 		if(lookAhead() == DeeTokens.OPEN_BRACKET) {
 			NodeResult<InitializerArray> arrayInitResult = parseArrayInitializer();
 			if(arrayInitResult.ruleBroken) {
@@ -699,13 +704,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return true;
 	}
 
-	public NodeResult<Expression> parseExpInitializer(boolean createMissing) {
+	public NodeResult<Expression> parseExpInitializer(boolean createMissing) throws OperationCancellation {
 		return createMissing ? 
 			parseAssignExpression_toMissing(true, RULE_INITIALIZER) : 
 			parseAssignExpression();
 	}
 	
-	public NodeResult<InitializerArray> parseArrayInitializer() {
+	public NodeResult<InitializerArray> parseArrayInitializer() throws OperationCancellation {
 		ParseArrayInitEntry listParse = new ParseArrayInitEntry();
 		listParse.parseList(DeeTokens.OPEN_BRACKET, DeeTokens.COMMA, DeeTokens.CLOSE_BRACKET);
 		if(listParse.members == null)
@@ -716,7 +721,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public class ParseArrayInitEntry extends ElementListParseHelper<ArrayInitEntry> {
 		@Override
-		protected ArrayInitEntry parseElement(boolean createMissing) {
+		protected ArrayInitEntry parseElement(boolean createMissing) throws OperationCancellation {
 			Expression index = null;
 			IInitializer initializer = null;
 			
@@ -754,7 +759,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public static final ParseRuleDescription RULE_STRUCT_INITIALIZER = 
 		new ParseRuleDescription("StructInit", "StructInitializer");
 	
-	public NodeResult<InitializerStruct> parseStructInitializer() {
+	public NodeResult<InitializerStruct> parseStructInitializer() throws OperationCancellation {
 		ParseStructInitEntry listParse = new ParseStructInitEntry();
 		listParse.parseList(DeeTokens.OPEN_BRACE, DeeTokens.COMMA, DeeTokens.CLOSE_BRACE);
 		if(listParse.members == null)
@@ -765,7 +770,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public class ParseStructInitEntry extends ElementListParseHelper<StructInitEntry> {
 		@Override
-		protected StructInitEntry parseElement(boolean createMissing) {
+		protected StructInitEntry parseElement(boolean createMissing) throws OperationCancellation {
 			RefIdentifier member = null;
 			if(lookAhead() == DeeTokens.COLON || 
 				(lookAhead() == DeeTokens.IDENTIFIER && lookAhead(1) == DeeTokens.COLON)) {
@@ -781,7 +786,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 	}
 	
-	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor_atThis(DefParseHelper parse) {
+	protected NodeResult<DefinitionConstructor> parseDefinitionConstructor_atThis(DefParseHelper parse) 
+			throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_THIS);
 		
 		ProtoDefSymbol defId = defSymbol(lastLexElement()); // TODO: mark this as special DefSymbol
@@ -793,14 +799,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	 * http://dlang.org/declaration.html#DeclaratorSuffix
 	 */
 	protected NodeResult<DefinitionFunction> parseDefinitionFunction_afterIdentifier(DefParseHelper parse, 
-		Reference retType, ProtoDefSymbol defId) 
+		Reference retType, ProtoDefSymbol defId) throws OperationCancellation 
 	{
 		assertTrue(defId.isMissing() == false);
 		return parse_FunctionLike(parse, false, retType, defId).upcastTypeParam();
 	}
 	
 	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(DefParseHelper parse,
-		boolean isConstrutor, Reference retType, ProtoDefSymbol defId) {
+		boolean isConstrutor, Reference retType, ProtoDefSymbol defId) throws OperationCancellation {
 		
 		NodeVector<IFunctionParameter> fnParams = null;
 		NodeVector<ITemplateParameter> tplParams = null;
@@ -856,38 +862,41 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			comments, retType, defId.createDefId(), tplParams, fnParams, fnAttributes, tplConstraint, fnBody));
 	}
 	
-	protected final DeeParser_RuleParameters parseParameters(ParseHelper parse) {
+	protected final DeeParser_RuleParameters parseParameters(ParseHelper parse) throws OperationCancellation {
 		return new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parse(parse, false);
 	}
 	
-	protected final NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse) {
+	protected final NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse)
+			throws OperationCancellation {
 		return parseFunctionParameters(parse, false);
 	}
-	protected NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) {
+	protected NodeVector<IFunctionParameter> parseFunctionParameters(ParseHelper parse, boolean isOptional) 
+			throws OperationCancellation {
 		DeeParser_RuleParameters fnParametersParse = new DeeParser_RuleParameters(TplOrFnMode.FN);
 		return fnParametersParse.parse(parse, isOptional).getAsFunctionParameters();
 	}
 	
-	protected final NodeVector<ITemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional) {
+	protected final NodeVector<ITemplateParameter> parseTemplateParameters(ParseHelper parse, boolean isOptional)
+			throws OperationCancellation {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		return tplParametersParse.parse(parse, isOptional).getAsTemplateParameters();
 	}
 	
-	protected final NodeVector<ITemplateParameter> parseTemplateParametersList() {
+	protected final NodeVector<ITemplateParameter> parseTemplateParametersList() throws OperationCancellation {
 		DeeParser_RuleParameters tplParametersParse = new DeeParser_RuleParameters(TplOrFnMode.TPL);
 		tplParametersParse.parseParameterList(false);
 		return tplParametersParse.getAsTemplateParameters();
 	}
 	
-	public IFunctionParameter parseFunctionParameter() {
+	public IFunctionParameter parseFunctionParameter() throws OperationCancellation {
 		return (IFunctionParameter) new DeeParser_RuleParameters(TplOrFnMode.FN).parseParameter();
 	}
 	
-	public ITemplateParameter parseTemplateParameter() {
+	public ITemplateParameter parseTemplateParameter() throws OperationCancellation {
 		return (ITemplateParameter) new DeeParser_RuleParameters(TplOrFnMode.TPL).parseParameter();
 	}
 	
-	protected NodeVector<IFunctionAttribute> parseFunctionAttributes() {
+	protected NodeVector<IFunctionAttribute> parseFunctionAttributes() throws OperationCancellation {
 		ArrayList<IFunctionAttribute> attributes = null;
 		
 		while(true) {
@@ -902,7 +911,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return arrayView(attributes);
 	}
 	
-	protected IFunctionAttribute parseFunctionAttribute() {
+	protected IFunctionAttribute parseFunctionAttribute() throws OperationCancellation {
 		
 		FunctionAttributes functionAttrib = FunctionAttributes.fromToken(lookAhead());
 		if(functionAttrib != null) {
@@ -916,7 +925,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		}
 	}
 	
-	public Expression parseTemplateConstraint(ParseHelper parse) {
+	public Expression parseTemplateConstraint(ParseHelper parse) throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_IF)) {
 			return null;
 		}
@@ -925,7 +934,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public static final ParseRuleDescription RULE_FN_BODY = new ParseRuleDescription("FnBody", "FunctionBody");
 	
-	protected NodeResult<? extends IFunctionBody> parseFunctionBody() {
+	protected NodeResult<? extends IFunctionBody> parseFunctionBody() throws OperationCancellation {
 		if(tryConsume(DeeTokens.SEMICOLON)) { 
 			return resultConclude(false, srOf(lastLexElement(), new EmptyStatement()));
 		}
@@ -981,11 +990,12 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new InOutFunctionBody(isOutIn, inBlock, outBlock, bodyBlock));
 	}
 	
-	public NodeResult<BlockStatement> parseBlockStatement_toMissing(boolean brokenIfMissing) {
+	public NodeResult<BlockStatement> parseBlockStatement_toMissing(boolean brokenIfMissing) 
+			throws OperationCancellation {
 		return thisParser().parseBlockStatement(true, brokenIfMissing);
 	}
 	
-	protected NodeResult<FunctionBodyOutBlock> parseOutBlock() {
+	protected NodeResult<FunctionBodyOutBlock> parseOutBlock() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_OUT))
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
@@ -1005,7 +1015,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new FunctionBodyOutBlock(id, block));
 	}
 	
-	public NodeResult<DefinitionTemplate> parseTemplateDefinition(DefinitionStartInfo defStartInfo) {
+	public NodeResult<DefinitionTemplate> parseTemplateDefinition(DefinitionStartInfo defStartInfo) 
+			throws OperationCancellation {
 		AggregateDefinitionParse adp = new AggregateDefinitionParse(defStartInfo);
 		
 		boolean isMixin = false;
@@ -1037,7 +1048,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			super(defStartInfo == null ? parseDefStartInfo() : defStartInfo);
 		}
 		
-		public void parseAggregate(boolean tplParamsIsOptional) {
+		public void parseAggregate(boolean tplParamsIsOptional) throws OperationCancellation {
 			ParseHelper parse = this;
 			
 			parsing: {
@@ -1057,14 +1068,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			return (DeclBlock) declBody;
 		}
 		
-		public void parseDeclarationBlockBody() {
+		public void parseDeclarationBlockBody() throws OperationCancellation {
 			ParseHelper parse = this;
 			if(parse.ruleBroken == false) {
 				declBody = parse.parseRequiredRule(parseDeclarationBlock(), RULE_DECLARATION_BLOCK);
 			}
 		}
 		
-		public void parseAggregateBody() {
+		public void parseAggregateBody() throws OperationCancellation {
 			ParseHelper parse = this;
 			if(!parse.ruleBroken) {
 				if(tryConsume(DeeTokens.SEMICOLON)) {
@@ -1080,7 +1091,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public static final ParseRuleDescription RULE_DECLARATION_BLOCK = 
 		new ParseRuleDescription("DeclarationBlock", "DeclarationBlock");
 	
-	public NodeResult<DeclBlock> parseDeclarationBlock() {
+	public NodeResult<DeclBlock> parseDeclarationBlock() throws OperationCancellation {
 		if(tryConsume(DeeTokens.OPEN_BRACE) == false) {
 			return nullResult();
 		}
@@ -1091,7 +1102,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclBlock(declDefs));
 	}
 	
-	public final NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) {
+	public final NodeResult<RefTypeFunction> parseRefTypeFunction_afterReturnType(Reference retType) 
+			throws OperationCancellation {
 		boolean isDelegate = lastLexElement().type == DeeTokens.KW_DELEGATE;
 		
 		ParseHelper parse = new ParseHelper(retType);
@@ -1108,7 +1120,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new RefTypeFunction(retType, isDelegate, fnParams, fnAttributes));
 	}
 	
-	public NodeResult<? extends IDeclaration> parseDefinitionAlias(DefinitionStartInfo defStartInfo) {
+	public NodeResult<? extends IDeclaration> parseDefinitionAlias(DefinitionStartInfo defStartInfo) 
+			throws OperationCancellation {
 		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return null;
@@ -1172,7 +1185,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<? extends IDeclaration> parseDefinitionAliasFunctionDecl(DefParseHelper parse, 
-		NodeVector<Attribute> attributes, Reference ref, ProtoDefSymbol defId) {
+		NodeVector<Attribute> attributes, Reference ref, ProtoDefSymbol defId) throws OperationCancellation {
 		
 		NodeVector<IFunctionParameter> fnParams = parseFunctionParameters(parse, true);
 		NodeVector<IFunctionAttribute> fnAttributes = null;
@@ -1187,12 +1200,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			comments, attributes, ref, defId.createDefId(), fnParams, fnAttributes));
 	}
 	
-	protected AliasVarDeclFragment parseAliasVarDeclFragment() {
+	protected AliasVarDeclFragment parseAliasVarDeclFragment() throws OperationCancellation {
 		ProtoDefSymbol fragId = parseDefId();
 		return conclude(fragId.nameSourceRange, new AliasVarDeclFragment(fragId.createDefId()));
 	}
 	
-	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart(DefParseHelper parse) {
+	protected NodeResult<DefinitionAlias> parseDefinitionAlias_atFragmentStart(DefParseHelper parse) 
+			throws OperationCancellation {
 		ArrayList<DefinitionAliasFragment> fragments = new ArrayList<>();
 		
 		while(true) {
@@ -1209,7 +1223,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DefinitionAlias(comments, arrayView(fragments)));
 	}
 	
-	public DefinitionAliasFragment parseAliasFragment() {
+	public DefinitionAliasFragment parseAliasFragment() throws OperationCancellation {
 		ProtoDefSymbol defId = parseDefId();
 		NodeVector<ITemplateParameter> tplParams = null;
 		Reference ref = null;
@@ -1231,7 +1245,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.conclude(new DefinitionAliasFragment(defId.createDefId(), tplParams, ref));
 	}
 	
-	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() {
+	protected NodeResult<DeclarationAliasThis> parseDeclarationAliasThis() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_ALIAS))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1255,7 +1269,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationAliasThis(isAssignSyntax, refId));
 	}
 	
-	protected NodeResult<? extends IDeclaration> parseDefinitionEnum_start(DefinitionStartInfo defStartInfo) {
+	protected NodeResult<? extends IDeclaration> parseDefinitionEnum_start(DefinitionStartInfo defStartInfo) 
+			throws OperationCancellation {
 		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		consumeLookAhead(DeeTokens.KW_ENUM);
 		
@@ -1283,7 +1298,8 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DefinitionEnum(comments, defId.createDefId(), type, body));
 	}
 	
-	protected NodeResult<DefinitionEnumVar> parseDefinitionEnumVar_afterId(DefParseHelper parse) {
+	protected NodeResult<DefinitionEnumVar> parseDefinitionEnumVar_afterId(DefParseHelper parse) 
+			throws OperationCancellation {
 		ArrayList<DefinitionEnumVarFragment> fragments = new ArrayList<>();
 		
 		while(true) {
@@ -1299,7 +1315,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DefinitionEnumVar(arrayView(fragments)));
 	}
 
-	public DefinitionEnumVarFragment parseEnumVarFragment() {
+	public DefinitionEnumVarFragment parseEnumVarFragment() throws OperationCancellation {
 		ProtoDefSymbol defId = parseDefId();
 		NodeVector<ITemplateParameter> tplParams = null;
 		IInitializer initializer = null;
@@ -1320,7 +1336,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.conclude(new DefinitionEnumVarFragment(defId.createDefId(), tplParams, initializer));
 	}
 	
-	protected NodeResult<DeclarationEnum> parseDeclarationEnum_start() {
+	protected NodeResult<DeclarationEnum> parseDeclarationEnum_start() throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_ENUM);
 		ParseHelper parse = new ParseHelper();
 		
@@ -1339,7 +1355,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public static final ParseRuleDescription RULE_ENUM_BODY = new ParseRuleDescription("EnumBody", "EnumBody");
 	
-	public NodeResult<EnumBody> parseEnumBody() {
+	public NodeResult<EnumBody> parseEnumBody() throws OperationCancellation {
 		ParseEnumMember parse = new ParseEnumMember();
 		parse.parseList(DeeTokens.OPEN_BRACE, DeeTokens.COMMA, DeeTokens.CLOSE_BRACE);
 		if(parse.members == null) {
@@ -1352,7 +1368,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	public class ParseEnumMember extends ElementListParseHelper<EnumMember> {
 
 		@Override
-		protected EnumMember parseElement(boolean createMissing) {
+		protected EnumMember parseElement(boolean createMissing) throws OperationCancellation {
 			ParseHelper parse = new ParseHelper(-1);
 			
 			TypeId_or_Id_RuleFragment typeRef_defId = new TypeId_or_Id_RuleFragment();
@@ -1371,15 +1387,18 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 	}
 	
-	public NodeResult<DefinitionStruct> parseDefinitionStruct(DefinitionStartInfo defStartInfo) {
+	public NodeResult<DefinitionStruct> parseDefinitionStruct(DefinitionStartInfo defStartInfo)
+			throws OperationCancellation {
 		return parseDefinition_StructOrUnion(defStartInfo).upcastTypeParam();
 	}
-	public NodeResult<DefinitionUnion> parseDefinitionUnion(DefinitionStartInfo defStartInfo) {
+	
+	public NodeResult<DefinitionUnion> parseDefinitionUnion(DefinitionStartInfo defStartInfo)
+			throws OperationCancellation {
 		return parseDefinition_StructOrUnion(defStartInfo).upcastTypeParam();
 	}
 	
 	protected NodeResult<? extends DefinitionAggregate> parseDefinition_StructOrUnion(
-		DefinitionStartInfo defStartInfo) {
+		DefinitionStartInfo defStartInfo) throws OperationCancellation {
 		AggregateDefinitionParse adp = new AggregateDefinitionParse(defStartInfo);
 		if(!(tryConsume(DeeTokens.KW_STRUCT) || tryConsume(DeeTokens.KW_UNION)))
 			return null;
@@ -1400,15 +1419,18 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			new DefinitionUnion (comments, adp.defId.createDefId(), adp.tplParams, adp.tplConstraint, adp.declBody));
 	}
 	
-	public NodeResult<DefinitionClass> parseDefinitionClass(DefinitionStartInfo defStartInfo) {
+	public NodeResult<DefinitionClass> parseDefinitionClass(DefinitionStartInfo defStartInfo)
+			throws OperationCancellation {
 		return parseDefinition_ClassOrInterface(defStartInfo).upcastTypeParam();
 	}
-	public NodeResult<DefinitionInterface> parseDefinitionInterface(DefinitionStartInfo defStartInfo) {
+	
+	public NodeResult<DefinitionInterface> parseDefinitionInterface(DefinitionStartInfo defStartInfo)
+			throws OperationCancellation {
 		return parseDefinition_ClassOrInterface(defStartInfo).upcastTypeParam();
 	}
 	
 	protected NodeResult<? extends DefinitionClass_Common> parseDefinition_ClassOrInterface(
-		DefinitionStartInfo defStartInfo) {
+		DefinitionStartInfo defStartInfo) throws OperationCancellation {
 		
 		AggregateDefinitionParse adp = new AggregateDefinitionParse(defStartInfo);
 		if(!(tryConsume(DeeTokens.KW_CLASS) || tryConsume(DeeTokens.KW_INTERFACE)))
@@ -1445,19 +1467,20 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	
 	public class TypeReferenceListParse extends ElementListParseHelper<Reference> {
 		@Override
-		protected Reference parseElement(boolean createMissing) {
+		protected Reference parseElement(boolean createMissing) throws OperationCancellation {
 			return parseTypeReference(createMissing, true).node;
 		}
 	}
 	
 	public class TypeReferenceSimpleListParse extends SimpleListParseHelper<Reference> {
 		@Override
-		protected Reference parseElement(boolean createMissing) {
+		protected Reference parseElement(boolean createMissing) throws OperationCancellation {
 			return parseTypeReference(createMissing, true).node;
 		}
 	}
 	
-	public NodeResult<? extends IDeclaration> parseDeclarationMixin(DefinitionStartInfo defStartInfo) {
+	public NodeResult<? extends IDeclaration> parseDeclarationMixin(DefinitionStartInfo defStartInfo)
+			throws OperationCancellation {
 		DefParseHelper parse = createDefParseHelper(defStartInfo);
 		if(!tryConsume(DeeTokens.KW_MIXIN))
 			return null;
@@ -1480,7 +1503,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	/* -------------------- Function-like declarations -------------------- */
 
 	
-	public NodeResult<DeclarationInvariant> parseDeclarationInvariant_start() {
+	public NodeResult<DeclarationInvariant> parseDeclarationInvariant_start() throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_INVARIANT);
 		ParseHelper parse = new ParseHelper();
 		
@@ -1494,7 +1517,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationInvariant(body));
 	}
 	
-	public NodeResult<DeclarationUnitTest> parseDeclarationUnitTest_start() {
+	public NodeResult<DeclarationUnitTest> parseDeclarationUnitTest_start() throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_UNITTEST);
 		ParseHelper parse = new ParseHelper();
 		
@@ -1503,13 +1526,13 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationUnitTest(body));
 	}
 	
-	public NodeResult<DeclarationSpecialFunction> parseDeclarationPostBlit_start() {
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationPostBlit_start() throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_THIS);
 		ParseHelper parse = new ParseHelper();
 		return parseDeclarationSpecialFunction_AtParams(parse, SpecialFunctionKind.POST_BLIT);
 	}
 	
-	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction() {
+	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction() throws OperationCancellation {
 		ParseHelper parse = new ParseHelper(lookAheadElement());
 		if(!tryConsume(DeeTokens.CONCAT, DeeTokens.KW_THIS)) {
 			return null;
@@ -1518,7 +1541,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	}
 	
 	public NodeResult<DeclarationSpecialFunction> parseDeclarationSpecialFunction_AtParams(ParseHelper parse, 
-		SpecialFunctionKind kind) {
+		SpecialFunctionKind kind) throws OperationCancellation {
 		IFunctionBody fnBody = null;
 		NodeVector<IFunctionAttribute> fnAttributes = null;
 		parsing: {
@@ -1535,7 +1558,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		return parse.resultConclude(new DeclarationSpecialFunction(kind, fnAttributes, fnBody));
 	}
 	
-	public NodeResult<DeclarationAllocatorFunction> parseDeclarationAllocatorFunctions() {
+	public NodeResult<DeclarationAllocatorFunction> parseDeclarationAllocatorFunctions() throws OperationCancellation {
 		if((tryConsume(DeeTokens.KW_NEW) || tryConsume(DeeTokens.KW_DELETE)) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();

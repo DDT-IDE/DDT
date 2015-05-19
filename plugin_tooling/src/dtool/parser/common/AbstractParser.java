@@ -23,6 +23,7 @@ import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.collections.ArrayView;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.parser.DeeTokens;
@@ -279,25 +280,27 @@ public abstract class AbstractParser {
 	
 	/* ------------  Node finalization  ------------ */
 	
-	protected final <T extends ASTNode> NodeResult<T> resultConclude(boolean ruleBroken, T node) {
+	protected final <T extends ASTNode> NodeResult<T> resultConclude(boolean ruleBroken, T node) 
+			throws OperationCancellation {
 		return result(ruleBroken, conclude(node));
 	}
 	
-	protected final <T extends ASTNode> T conclude(SourceRange sr, T node) {
+	protected final <T extends ASTNode> T conclude(SourceRange sr, T node) throws OperationCancellation {
 		node.setSourceRange(sr);
 		return concludeDo(null, null, node);
 	}
 	
-	protected final <T extends ASTNode> T concludeNode(T node) {
+	protected final <T extends ASTNode> T concludeNode(T node) throws OperationCancellation {
 		return concludeDo(null, null, node);
 	}
-	protected final <T extends ASTNode> T conclude(T node) {
+	protected final <T extends ASTNode> T conclude(T node) throws OperationCancellation {
 		return concludeDo(null, null, node);
 	}
-	protected final <T extends ASTNode> T conclude(ParserError error, final T node) {
+	protected final <T extends ASTNode> T conclude(ParserError error, final T node) throws OperationCancellation {
 		return concludeDo(error, null, node);
 	}
-	protected final <T extends ASTNode> T concludeDo(ParserError error1, ParserError error2, final T node) {
+	protected final <T extends ASTNode> T concludeDo(ParserError error1, ParserError error2, final T node) 
+			throws OperationCancellation {
 		if(error1 == null) {
 			assertTrue(error2 == null);
 			node.setParsedStatus();
@@ -311,7 +314,7 @@ public abstract class AbstractParser {
 	}
 	
 	@SuppressWarnings("unused")
-	protected void nodeConcluded(final ASTNode node) {
+	protected void nodeConcluded(final ASTNode node) throws OperationCancellation {
 	}
 	
 	/** Temporary node parsing helper class. Designed to be used once per node about to parsed. 
@@ -453,13 +456,13 @@ public abstract class AbstractParser {
 			return error;
 		}
 		
-		public final <T extends ASTNode> T conclude(T node) {
+		public final <T extends ASTNode> T conclude(T node) throws OperationCancellation {
 			initRange(node);
 			nodeStart = -nodeStart; // invalidate
 			return concludeDo(error1, error2, node);
 		}
 		
-		public final <T extends ASTNode> NodeResult<T> resultConclude(T node) {
+		public final <T extends ASTNode> NodeResult<T> resultConclude(T node) throws OperationCancellation {
 			return result(ruleBroken, conclude(node));
 		}
 		

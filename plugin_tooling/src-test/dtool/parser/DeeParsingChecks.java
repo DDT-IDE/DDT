@@ -13,6 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.EArcheType.ArchetypeCastVisitor;
 import dtool.ast.definitions.IFunctionParameter;
@@ -158,17 +160,18 @@ public class DeeParsingChecks extends CommonTestUtils {
 	
 	public static class ParametersReparseCheck {
 		
-		public static Object parseAmbigParameter(String nodeSnippedSource) {
+		public static Object parseAmbigParameter(String nodeSnippedSource) throws OperationCancellation {
 			DeeParser deeParser = new DeeParser(nodeSnippedSource);
 			return deeParser.new DeeParser_RuleParameters(TplOrFnMode.AMBIG).parseParameter();
 		}
 		
-		public static void ambigParameterReparseTest(String nodeSource) {
+		public static void ambigParameterReparseTest(String nodeSource) throws OperationCancellation {
 			paramReparseCheck(nodeSource, true);
 			paramReparseCheck(nodeSource, false);
 		}
 		
-		public static void paramReparseCheck(String nodeSource, boolean reparseAsFunctionParam) {
+		public static void paramReparseCheck(String nodeSource, boolean reparseAsFunctionParam)
+				throws OperationCancellation {
 			DeeParser unambigParser = new DeeParser(nodeSource);
 			IASTNode unambigParsedParameter = reparseAsFunctionParam ? 
 				unambigParser.parseFunctionParameter() : unambigParser.parseTemplateParameter();
@@ -202,9 +205,14 @@ public class DeeParsingChecks extends CommonTestUtils {
 	public static DeeParserResult runSimpleSourceParseTest(String source, String defaultModuleName,
 			Boolean expectErrors, boolean runBasicContractChecks) {
 		
-		DeeParserResult parseResult = runBasicContractChecks ? 
-			new DeeTestsChecksParser(source).parseModuleSource(defaultModuleName, null) :
-			new DeeParser(source).parseModuleSource(defaultModuleName, null);
+		DeeParserResult parseResult;
+		try {
+			parseResult = runBasicContractChecks ? 
+				new DeeTestsChecksParser(source).parseModuleSource(defaultModuleName, null) :
+				new DeeParser(source).parseModuleSource(defaultModuleName, null);
+		} catch(OperationCancellation e) {
+			throw assertUnreachable();
+		}
 		
 		if(expectErrors != null) {
 			assertTrue(parseResult.hasSyntaxErrors() == expectErrors, "expectedErrors is not: " + expectErrors);

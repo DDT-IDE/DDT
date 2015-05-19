@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.definitions.CStyleVarArgsParameter;
 import dtool.ast.definitions.FunctionParameter;
@@ -60,11 +61,11 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			return mode == TplOrFnMode.AMBIG;
 		}
 		
-		public DeeParser_RuleParameters parseParameters(ParseHelper parse) {
+		public DeeParser_RuleParameters parseParameters(ParseHelper parse) throws OperationCancellation {
 			return parse(parse, false);
 		}
 		
-		public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) {
+		public DeeParser_RuleParameters parse(ParseHelper parse, boolean isOptional) throws OperationCancellation {
 			if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, true) == false)
 				return this;
 			parseParameterList(true);
@@ -72,7 +73,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			return this;
 		}
 		
-		public void parseParameterList(boolean first) {
+		public void parseParameterList(boolean first) throws OperationCancellation {
 			params = new ArrayList<Object>();
 			
 			while(true) {
@@ -91,10 +92,10 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			}
 		}
 		
-		public Object parseParameter() {
+		public Object parseParameter() throws OperationCancellation {
 			return parseParameter(false);
 		}
-		public Object parseParameter(boolean returnNullOnMissing) {
+		public Object parseParameter(boolean returnNullOnMissing) throws OperationCancellation {
 			ParseHelper parse = new ParseHelper(lookAheadElement());
 			
 			if(mode != TplOrFnMode.TPL && tryConsume(DeeTokens.TRIPLE_DOT)) {
@@ -134,7 +135,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		}
 		
 		
-		protected void setMode(TplOrFnMode newMode) {
+		protected void setMode(TplOrFnMode newMode) throws OperationCancellation {
 			if(mode == newMode)
 				return;
 			assertTrue(mode == TplOrFnMode.AMBIG);
@@ -155,7 +156,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			return arrayView(CoreUtil.<ArrayList<IFunctionParameter>>blindCast(params));
 		}
 		
-		public final NodeVector<IFunctionParameter> toFunctionParameters() {
+		public final NodeVector<IFunctionParameter> toFunctionParameters() throws OperationCancellation {
 			assertTrue(isAmbiguous());
 			setMode(TplOrFnMode.FN);
 			return getAsFunctionParameters();
@@ -166,7 +167,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			return arrayView(CoreUtil.<ArrayList<ITemplateParameter>>blindCast(params));
 		}
 		
-		public final NodeVector<ITemplateParameter> toTemplateParameters() {
+		public final NodeVector<ITemplateParameter> toTemplateParameters() throws OperationCancellation {
 			assertTrue(isAmbiguous());
 			setMode(TplOrFnMode.TPL);
 			return getAsTemplateParameters();
@@ -187,7 +188,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		SourceRange sr;
 		
 		public Object parseAmbiguousParam(DeeParser_RuleParameters params, boolean returnNullOnMissing, 
-			int nodeStart, ArrayList<LexElement> attribs) {
+			int nodeStart, ArrayList<LexElement> attribs) throws OperationCancellation {
 			this.attribs = attribs;
 			
 			// Possible outcomes from this point
@@ -256,7 +257,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			}
 		}
 		
-		public void parseParamDefault(DeeParser_RuleParameters params) {
+		public void parseParamDefault(DeeParser_RuleParameters params) throws OperationCancellation {
 			if(params.mode == TplOrFnMode.FN || defId != null) {
 				paramDefault = new TypeOrExpResult(null, result(false, parseAssignExpression_toMissing()));
 			} else if(params.mode == TplOrFnMode.TPL) {
@@ -279,7 +280,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 			}
 		}
 		
-		public IFunctionParameter convertToFunction() {
+		public IFunctionParameter convertToFunction() throws OperationCancellation {
 			if(defId == null) {
 				return conclude(sr, new NamelessParameter(FnParameterAttributes.create(arrayViewG(attribs)), ref, 
 					paramDefault.toExpression().node, isVariadic));
@@ -288,7 +289,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 				defId.createDefId(), paramDefault.toExpression().node, isVariadic));
 		}
 		
-		public ITemplateParameter convertToTemplate() {
+		public ITemplateParameter convertToTemplate() throws OperationCancellation {
 			if(attribs != null)  {
 				
 				for (int i = attribs.size()-1; i >= 0 ; i--) {
@@ -316,7 +317,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		return new ProtoDefSymbol("", srAt(position), null);
 	}
 	
-	protected ASTNode parseTemplateAliasParameter_start() {
+	protected ASTNode parseTemplateAliasParameter_start() throws OperationCancellation {
 		consumeLookAhead(DeeTokens.KW_ALIAS);
 		ParseHelper parse = new ParseHelper();
 		

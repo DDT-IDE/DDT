@@ -147,8 +147,8 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			String source = readStringFromFile_PreserveBOM(file);
 			int count = System.getProperty("PerformanceTests") != null ? 5 : 1;
 			for (int i = 0; i < count; i++) {
-				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", 
-					canHaveSyntaxErrors ? null : false, false);
+				Boolean expectErrors = canHaveSyntaxErrors ? null : false;
+				DeeParsingChecks.runSimpleSourceParseTest(source, "_massParse", expectErrors, false);
 			}
 		}
 		

@@ -29,6 +29,7 @@ import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.tests.CommonTestUtils;
@@ -135,7 +136,7 @@ public class DeeParserTester extends CommonTestUtils {
 	}
 	
 	// The funky name here is to help locate this function in stack traces during debugging
-	public void runParserTest______________________() {
+	public void runParserTest______________________() throws OperationCancellation {
 		additionalMD = buildMetadataMap(additionalMetadataOriginal);
 		
 		final DeeTestsChecksParser deeParser = new DeeTestsChecksParser(fullSource);
@@ -335,7 +336,7 @@ public class DeeParserTester extends CommonTestUtils {
 	
 	/* ---------------- Rule specific tests ---------------- */
 	
-	public DeeParserResult parseUsingRule(DeeTestsChecksParser deeParser) {
+	public DeeParserResult parseUsingRule(DeeTestsChecksParser deeParser) throws OperationCancellation {
 		boolean parseAsFnParamOnly = removeTestMetadataFlag("FN_ONLY");
 		boolean parseAsTplParamOnly = removeTestMetadataFlag("TPL_ONLY");
 		
@@ -379,7 +380,8 @@ public class DeeParserTester extends CommonTestUtils {
 		throw assertFail();
 	}
 	
-	public void runAdditionalTests(final DeeParserResult result, final String parsedSource) {
+	public void runAdditionalTests(final DeeParserResult result, final String parsedSource) 
+			throws OperationCancellation {
 		
 		boolean ruleBreakExpected = removeTestMetadataEntries("RULE_BROKEN").isEmpty() == false;
 		if(removeTestMetadata("IGNORE_BREAK_FLAG_CHECK") == null) {
@@ -428,7 +430,7 @@ public class DeeParserTester extends CommonTestUtils {
 	}
 	
 	public static void parameterTest(boolean parseAsFnParamOnly, boolean parseAsTplParamOnly, 
-		String nodeSource, Object ambigParsedResult) {
+		String nodeSource, Object ambigParsedResult) throws OperationCancellation {
 		assertTrue(!(parseAsFnParamOnly == true && parseAsTplParamOnly == true));
 		
 		if(parseAsFnParamOnly) {

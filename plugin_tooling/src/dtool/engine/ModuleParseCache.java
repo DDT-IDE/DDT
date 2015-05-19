@@ -10,12 +10,12 @@
  *******************************************************************************/
 package dtool.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.StringUtil.substringUntilMatch;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -24,6 +24,7 @@ import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileModificationDetectionHelper;
 import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -171,18 +172,22 @@ public class ModuleParseCache {
 			return fileModDetectHelper.isModifiedSinceLastRead();
 		}
 		
-		public synchronized ParsedModule getParsedModule() throws FileNotFoundException, IOException {
-			return getParsedModule(null);
+		public synchronized ParsedModule getParsedModule() throws IOException {
+			try {
+				return getParsedModule(null);
+			} catch(OperationCancellation e) {
+				throw assertFail(); // Not possible
+			}
 		}
 		
-		public ParsedModule getParsedModule(ICancelMonitor cancelMonitor) throws IOException, FileNotFoundException {
+		public ParsedModule getParsedModule(ICancelMonitor cancelMonitor) throws IOException, OperationCancellation {
 			if(isStale()) {
 				readSource();
 			}			
 			return doGetParsedModule(source, cancelMonitor);
 		}
 		
-		protected void readSource() throws IOException, FileNotFoundException {
+		protected void readSource() throws IOException {
 			fileModDetectHelper.markRead(); // Update timestampe before reading contents.
 			String fileContents = FileUtil.readStringFromFile(filePath, StringUtil.UTF8); // TODO: detect encoding
 			setNewSource(fileContents);
@@ -238,10 +243,15 @@ public class ModuleParseCache {
 		}
 		
 		protected ParsedModule doGetParsedModule(String source) {
-			return doGetParsedModule(source, null);
+			try {
+				return doGetParsedModule(source, null);
+			} catch(OperationCancellation e) {
+				throw assertFail();
+			}
 		}
 		
-		protected ParsedModule doGetParsedModule(String source, ICancelMonitor cancelMonitor) {
+		protected ParsedModule doGetParsedModule(String source, ICancelMonitor cancelMonitor) 
+				throws OperationCancellation {
 			
 			if(parsedModule == null) {
 				parsedModule = DeeParser.parseSourceModule(source, filePath, cancelMonitor);
@@ -270,7 +280,7 @@ public class ModuleParseCache {
 		
 	}
 	
-	public ParsedModule parseModuleWithNoLocation(String source, ICancelMonitor cm) {
+	public ParsedModule parseModuleWithNoLocation(String source, ICancelMonitor cm) throws OperationCancellation {
 		statusLogger.logMessage("ParseCache: Parsed module with no location: " + substringUntilMatch(source, "\n"));
 		return DeeParser.parseUnlocatedModule(source, "_unnamed", cm);
 	}

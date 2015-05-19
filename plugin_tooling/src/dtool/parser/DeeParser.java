@@ -13,6 +13,7 @@ package dtool.parser;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserError.ErrorSourceRangeComparator;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;
@@ -40,23 +42,34 @@ public class DeeParser
 {
 	
 	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName) {
-		return parseSourceModule(source, defaultModuleName, null, null);
-	}
-	
-	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName, ICancelMonitor cm) {
-		return parseSourceModule(source, defaultModuleName, null, cm);
+		return parseSourceModule(source, defaultModuleName, null);
 	}
 	
 	public static ParsedModule parseSourceModule(String source, Path modulePath) {
-		return parseSourceModule(source, null, modulePath, null);
+		return parseSourceModule(source, null, modulePath);
 	}
 	
-	public static ParsedModule parseSourceModule(String source, Path modulePath, ICancelMonitor cm) {
+	public static ParsedModule parseSourceModule(String source, String defaultModuleName, Path modulePath) {
+		ICancelMonitor cm = null;
+		try {
+			return new DeeParser(source, cm).parseModuleSource(defaultModuleName, modulePath);
+		} catch(OperationCancellation e) {
+			throw assertUnreachable(); // CM is null
+		}
+	}
+	
+	public static ParsedModule parseUnlocatedModule(String source, String defaultModuleName, ICancelMonitor cm)
+			throws OperationCancellation {
+		return parseSourceModule(source, defaultModuleName, null, cm);
+	}
+	
+	public static ParsedModule parseSourceModule(String source, Path modulePath, ICancelMonitor cm)
+			throws OperationCancellation {
 		return parseSourceModule(source, null, modulePath, cm);
 	}
 	
 	public static ParsedModule parseSourceModule(String source, String defaultModuleName, Path modulePath, 
-			ICancelMonitor cm) {
+			ICancelMonitor cm) throws OperationCancellation {
 		return new DeeParser(source, cm).parseModuleSource(defaultModuleName, modulePath);
 	}
 	
@@ -79,7 +92,6 @@ public class DeeParser
 	}
 	
 	protected DeeParser(DeeLexer deeLexer, ICancelMonitor cancelMonitor) {
-		// FIXME: TO DO enable cancel monitor functionality, to allow parsing to be cancelled/stopped 
 		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : ICancelMonitor._Util.NULL_MONITOR;
 		
 		this.source = deeLexer.getSource();
@@ -102,7 +114,7 @@ public class DeeParser
 		return this;
 	}
 	
-	public ParsedModule parseModuleSource(String defaultModuleName, Path modulePath) {
+	public ParsedModule parseModuleSource(String defaultModuleName, Path modulePath) throws OperationCancellation {
 		if(defaultModuleName == null) {
 			assertNotNull(modulePath);
 			defaultModuleName = getDefaultModuleName(modulePath);
@@ -112,7 +124,15 @@ public class DeeParser
 		return (ParsedModule) prepParseResult(null, nodeResult, modulePath);
 	}
 	
-	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) {
+	@Override
+	protected void nodeConcluded(ASTNode node) throws OperationCancellation {
+		if(cancelMonitor.isCanceled()) {
+			throw new OperationCancellation();
+		}
+		super.nodeConcluded(node);
+	}
+	
+	public DeeParserResult parseUsingRule(ParseRuleDescription parseRule) throws OperationCancellation {
 		NodeResult<? extends ASTNode> nodeResult;
 		assertNotNull(parseRule);
 		

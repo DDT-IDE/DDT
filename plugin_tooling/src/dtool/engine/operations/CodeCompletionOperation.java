@@ -11,6 +11,7 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import static melnorme.utilbox.misc.NumberUtil.isInRange;
 import static melnorme.utilbox.misc.NumberUtil.isInsideRange;
 
@@ -22,6 +23,7 @@ import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import dtool.ast.definitions.Module;
 import dtool.ast.references.CommonQualifiedReference;
@@ -171,15 +173,26 @@ public class CodeCompletionOperation extends AbstractDToolOperation {
 		
 		// We reparse the snipped source as it's the easiest way to determine search prefix
 		String refModuleSnippedSource = source.substring(refModule.getStartPos(), offset);
+		String moduleQualifiedNameCanonicalPrefix = parseModuleQualifiedNamePrefix(refModuleSnippedSource);
+		
+		return new CompletionLocationInfo(offset, moduleQualifiedNameCanonicalPrefix, rplLen);
+	}
+	
+	protected static String parseModuleQualifiedNamePrefix(String refModuleSnippedSource) {
 		DeeParser parser = new DeeParser(refModuleSnippedSource);
-		String moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
+		String moduleQualifiedNameCanonicalPrefix;
+		try {
+			moduleQualifiedNameCanonicalPrefix = parser.parseRefModule().toStringAsCode();
+		} catch(OperationCancellation e) {
+			throw assertUnreachable();
+		}
+		
 		DeeTokens lookAhead = parser.lookAhead();
 		if(lookAhead != DeeTokens.EOF) {
 			assertTrue(lookAhead.isKeyword());
 			moduleQualifiedNameCanonicalPrefix += lookAhead.getSourceValue();
 		}
-		
-		return new CompletionLocationInfo(offset, moduleQualifiedNameCanonicalPrefix, rplLen);
+		return moduleQualifiedNameCanonicalPrefix;
 	}
 	
 	public static DeeSymbolCompletionResult performCompletionSearch(CompletionLocationInfo locationInfo, 

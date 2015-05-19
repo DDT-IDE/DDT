@@ -30,6 +30,7 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Pair;
 import melnorme.utilbox.misc.StringUtil;
@@ -186,8 +187,12 @@ public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {
 			expectedErrors = null;
 		}
 		
-		new DeeParserTester(fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, expectedStructure, 
-			expectedErrors, additionalMetadata).runParserTest______________________();
+		try {
+			new DeeParserTester(fullSource, parseRule, expectedRemainingSource, expectedPrintedSource, 
+				expectedStructure, expectedErrors, additionalMetadata).runParserTest______________________();
+		} catch(OperationCancellation e) {
+			throw assertFail();
+		}
 	}
 	
 	public static MetadataEntry assertNoLength(MetadataEntry mde) {

@@ -12,6 +12,7 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class DeclAttrib_SemanticsTest extends CommonDToolTest {
 			null, null);
 	}
 	
-	protected DeclarationAttrib parseDefinitionAlias(String source) {
+	protected DeclarationAttrib parseDefinitionAlias(String source) throws OperationCancellation {
 		return new DeeTestsChecksParser(source).parseDeclarationAttrib(false).getNode();
 	}
 	

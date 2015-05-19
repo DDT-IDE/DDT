@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
@@ -45,11 +46,11 @@ public abstract class DeeParser_Common extends AbstractParser {
 			nodeStart = -1;
 		}
 		
-		public void parseList(DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE) {
+		public void parseList(DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE) throws OperationCancellation {
 			parseList(true, tkOPEN, tkSEP, tkCLOSE, true);
 		}
 		public void parseList(boolean required, DeeTokens tkOPEN, DeeTokens tkSEP, DeeTokens tkCLOSE, 
-			boolean canHaveEndingSep) {
+			boolean canHaveEndingSep) throws OperationCancellation {
 			ParseHelper parse = this;
 			if(parse.consume(tkOPEN, !required, required) == false) {
 				return;
@@ -82,7 +83,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 			members = nodeListView(membersList, hasEndingSep);
 		}
 		
-		protected abstract T parseElement(boolean createMissing);
+		protected abstract T parseElement(boolean createMissing) throws OperationCancellation;
 		
 	}
 	
@@ -90,7 +91,8 @@ public abstract class DeeParser_Common extends AbstractParser {
 		
 		public NodeVector<T> members; 
 		
-		public NodeVector<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep) {
+		public NodeVector<T> parseSimpleList(DeeTokens tkSEP, boolean canBeEmpty, boolean canHaveEndingSep)
+				throws OperationCancellation {
 			ArrayList<T> membersList = new ArrayList<T>();
 			
 			do {
@@ -103,7 +105,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 			return members;
 		}
 		
-		protected abstract T parseElement(boolean createMissing);
+		protected abstract T parseElement(boolean createMissing) throws OperationCancellation;
 	}
 	
 	/* ----------------------------------------------------------------- */
@@ -144,11 +146,11 @@ public abstract class DeeParser_Common extends AbstractParser {
 		return refId.getData().getNodeErrors().iterator().next();
 	}
 	
-	public final Symbol parseIdSymbol() {
+	public final Symbol parseIdSymbol() throws OperationCancellation {
 		BaseLexElement token = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return createIdSymbol(token);
 	}
-	public final Symbol createIdSymbol(BaseLexElement token) {
+	public final Symbol createIdSymbol(BaseLexElement token) throws OperationCancellation {
 		return conclude(token.getMissingError(), srOf(token, new Symbol(token.getSourceValue())));
 	}
 	
@@ -159,7 +161,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		public Reference type = null;
 		public ProtoDefSymbol defId = null;
 		
-		public void parseRuleFragment(ParseHelper parse, boolean createMissing) {
+		public void parseRuleFragment(ParseHelper parse, boolean createMissing) throws OperationCancellation {
 			type = parse.checkResult(thisParser().parseTypeReference());
 			
 			if(parse.ruleBroken) {
@@ -188,7 +190,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 			type = null;
 		}
 		
-		protected void missingDefIdParse() {
+		protected void missingDefIdParse() throws OperationCancellation {
 			defId = parseDefId(); //This will create a full missing defId, with error
 		}
 		
@@ -202,7 +204,7 @@ public abstract class DeeParser_Common extends AbstractParser {
 		}
 		
 		@Override
-		public void missingDefIdParse() {
+		public void missingDefIdParse() throws OperationCancellation {
 			if(type == null) {
 				type = thisParser().parseMissingTypeReference(true);
 			}

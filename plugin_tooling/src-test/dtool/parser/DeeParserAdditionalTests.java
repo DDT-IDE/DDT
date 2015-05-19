@@ -12,6 +12,7 @@ package dtool.parser;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 import org.junit.Test;
 
@@ -40,7 +41,7 @@ public class DeeParserAdditionalTests extends CommonDToolTest {
 		assertTrue(parseArgumentList("()").ruleBroken == false);
 	}
 	
-	public ParseHelper parseArgumentList(String source) {
+	public ParseHelper parseArgumentList(String source) throws OperationCancellation {
 		DeeParser parser = new DeeParser(source);
 		ParseHelper parse = parser.new ParseHelper();
 		parser.parseParenthesesDelimited_ExpArgumentList(parse);;

@@ -21,6 +21,7 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
@@ -104,16 +105,17 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public static final ParseRuleDescription RULE_TPL_SINGLE_ARG = 
 		new ParseRuleDescription("TplSingleArg", "TemplateSingleArgument");
 	
-	public NodeResult<Reference> parseTypeReference() {
+	public NodeResult<Reference> parseTypeReference() throws OperationCancellation {
 		return parseTypeReference_start(RefParseRestrictions.PARSE_ANY);
 	}
 	
-	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) {
+	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError) 
+			throws OperationCancellation {
 		return parseTypeReference(createMissing, reportMissingError, false);
 	}
 	
 	public NodeResult<Reference> parseTypeReference(boolean createMissing, boolean reportMissingError, 
-		boolean brokenIfMissing) {
+		boolean brokenIfMissing) throws OperationCancellation {
 		NodeResult<Reference> typeRef = parseTypeReference();
 		if(isNull(typeRef) && createMissing) {
 			return result(brokenIfMissing, parseMissingTypeReference(reportMissingError));
@@ -121,26 +123,27 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return typeRef;
 	}
 	
-	public NodeResult<Reference> parseTypeReference_ToMissing() {
+	public NodeResult<Reference> parseTypeReference_ToMissing() throws OperationCancellation {
 		return parseTypeReference(true, true);
 	}
 	
-	public NodeResult<Reference> parseTypeReference_ToMissing(boolean brokenIfMissing) {
+	public NodeResult<Reference> parseTypeReference_ToMissing(boolean brokenIfMissing) throws OperationCancellation {
 		return parseTypeReference(true, true, brokenIfMissing);
 	}
 	
-	public Reference parseMissingTypeReference(boolean reportMissingError) {
+	public Reference parseMissingTypeReference(boolean reportMissingError) throws OperationCancellation {
 		ParseRuleDescription expectedRule = reportMissingError ? RULE_REFERENCE : null;
 		return parseMissingTypeReference(expectedRule);
 	}
 	
-	public Reference parseMissingTypeReference(ParseRuleDescription expectedRule) {
+	public Reference parseMissingTypeReference(ParseRuleDescription expectedRule) throws OperationCancellation {
 		SourceRange sourceRange = consumeSubChannelTokensNoError().getSourceRange();
 		ParserError error = expectedRule != null ? createErrorExpectedRule(expectedRule) : null;
 		return createMissingTypeReferenceNode(sourceRange, error);
 	}
 	
-	public Reference createMissingTypeReferenceNode(SourceRange sourceRange, ParserError error) {
+	public Reference createMissingTypeReferenceNode(SourceRange sourceRange, ParserError error)
+			throws OperationCancellation {
 		RefIdentifier refMissing = new RefIdentifier(null);
 		refMissing.setSourceRange(sourceRange);
 		assertTrue(refMissing.isMissing());
@@ -168,14 +171,16 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		}
 	}
 	
-	public NodeResult<Reference> parseTypeReference_start(RefParseRestrictions refRestrictions) {
+	public NodeResult<Reference> parseTypeReference_start(RefParseRestrictions refRestrictions)
+			throws OperationCancellation {
 		DeeTokens lookAhead = lookAhead();
 		NodeResult<Reference> result = parseTypeReference_start_do(refRestrictions);
 		assertTrue(canParseTypeReferenceStart(lookAhead) == (result.node != null));
 		return result;
 	}
 	
-	protected NodeResult<Reference> parseTypeReference_start_do(RefParseRestrictions refRestrictions) {
+	protected NodeResult<Reference> parseTypeReference_start_do(RefParseRestrictions refRestrictions)
+			throws OperationCancellation {
 
 		NodeResult<? extends Reference> refParseResult;
 		
@@ -246,24 +251,24 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		}
 	}
 	
-	public RefIdentifier attemptParseRefIdentifier() {
+	public RefIdentifier attemptParseRefIdentifier() throws OperationCancellation {
 		if(lookAhead() != DeeTokens.IDENTIFIER) {
 			return null;
 		}
 		return parseRefIdentifier();
 	}
 	
-	public RefIdentifier parseRefIdentifier() {
+	public RefIdentifier parseRefIdentifier() throws OperationCancellation {
 		BaseLexElement id = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		return conclude(id.getMissingError(), srEffective(id, new RefIdentifier(idTokenToString(id))));
 	}
 	
-	protected RefPrimitive parseRefPrimitive_start(DeeTokens primitiveType) {
+	protected RefPrimitive parseRefPrimitive_start(DeeTokens primitiveType) throws OperationCancellation {
 		LexElement primitive = consumeLookAhead(primitiveType);
 		return conclude(srOf(primitive, new RefPrimitive(primitive)));
 	}
 	
-	public NodeResult<RefModuleQualified> parseRefModuleQualified() {
+	public NodeResult<RefModuleQualified> parseRefModuleQualified() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.DOT))
 			return nullResult();
 		int nodeStart = lastLexElement().getStartPos();
@@ -272,7 +277,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return resultConclude(id.isMissing(), srToPosition(nodeStart, new RefModuleQualified(id)));
 	}
 	
-	public NodeResult<RefTypeof> parseRefTypeof() {
+	public NodeResult<RefTypeof> parseRefTypeof() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_TYPEOF))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -291,7 +296,8 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parse.resultConclude(new RefTypeof(exp));
 	}
 	
-	protected NodeResult<RefTypeModifier> parseRefTypeModifier_start(TypeModifierKinds modKind) {
+	protected NodeResult<RefTypeModifier> parseRefTypeModifier_start(TypeModifierKinds modKind)
+			throws OperationCancellation {
 		assertTrue(lookAhead().sourceValue.equals(modKind.sourceValue));
 		consumeLookAhead();
 		ParseHelper parse = new ParseHelper();
@@ -313,7 +319,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	protected NodeResult<Reference> parseTypeReference_withLeftReference(Reference leftRef, 
-		RefParseRestrictions refRestrictions) {
+		RefParseRestrictions refRestrictions) throws OperationCancellation {
 		assertNotNull(leftRef);
 		
 		ParseHelper parse = new ParseHelper(leftRef.getStartPos());
@@ -370,14 +376,14 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parseTypeReference_withLeftReference(leftRef, refRestrictions);
 	}
 	
-	public Reference parseRefQualified(ParseHelper parse, IQualifierNode qualifier) {
+	public Reference parseRefQualified(ParseHelper parse, IQualifierNode qualifier) throws OperationCancellation {
 		LexElement dotToken = consumeLookAhead(DeeTokens.DOT);
 		RefIdentifier qualifiedId = parseRefIdentifier();
 		parse.setRuleBroken(qualifiedId.isMissing());
 		return parse.conclude(new RefQualified(qualifier, dotToken.getStartPos(), qualifiedId));
 	}
 	
-	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) {
+	public Reference parseBracketReference(Reference leftRef, ParseHelper parse) throws OperationCancellation {
 		consumeLookAhead(DeeTokens.OPEN_BRACKET);
 		
 		TypeOrExpResult argTypeOrExp = parseTypeOrExpression(InfixOpType.ASSIGN); 
@@ -407,7 +413,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return leftRef instanceof ITemplateRefNode;
 	}
 	
-	public Reference parseCStyleSuffix(ParseHelper parse) {
+	public Reference parseCStyleSuffix(ParseHelper parse) throws OperationCancellation {
 		if(lookAhead() != DeeTokens.OPEN_BRACKET) {
 			parse.requireBrokenCheck();
 			return null;
@@ -418,7 +424,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return parse.checkResult(cstyleDeclaratorSuffix);
 	}
 	
-	protected NodeResult<Reference> parseCStyleDeclaratorSuffix(Reference leftRef) {
+	protected NodeResult<Reference> parseCStyleDeclaratorSuffix(Reference leftRef) throws OperationCancellation {
 		if(lookAhead() != DeeTokens.OPEN_BRACKET) {
 			return result(false, leftRef);
 		}
@@ -439,58 +445,60 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	public static final InfixOpType ANY_OPERATOR = InfixOpType.COMMA;
 	
 	
-	public final NodeResult<Expression> parseExpression() {
+	public final NodeResult<Expression> parseExpression() throws OperationCancellation {
 		return parseExpression(ANY_OPERATOR);
 	}
 	public final NodeResult<Expression> parseExpression_toMissing(boolean breakOnMissing, 
-		ParseRuleDescription expectedRule) {
+		ParseRuleDescription expectedRule) throws OperationCancellation {
 		return nullExpToParseMissing(parseExpression(), breakOnMissing, expectedRule);
 	}
-	public final Expression parseExpression_toMissing() {
+	public final Expression parseExpression_toMissing() throws OperationCancellation {
 		return nullExpToParseMissing(parseExpression().node);
 	}
 	
 	
-	public final NodeResult<Expression> parseAssignExpression() {
+	public final NodeResult<Expression> parseAssignExpression() throws OperationCancellation {
 		return parseExpression(InfixOpType.ASSIGN);
 	}
 	public final NodeResult<Expression> parseAssignExpression_toMissing(boolean breakOnMissing, 
-		ParseRuleDescription expectedRule) {
+		ParseRuleDescription expectedRule) throws OperationCancellation {
 		return nullExpToParseMissing(parseAssignExpression(), breakOnMissing, expectedRule);
 	}
-	public final Expression parseAssignExpression_toMissing() {
+	public final Expression parseAssignExpression_toMissing() throws OperationCancellation {
 		return nullExpToParseMissing(parseAssignExpression().node);
 	}
 	
 	
-	protected NodeResult<Expression> parseExpression(InfixOpType precedenceLimit) {
+	protected NodeResult<Expression> parseExpression(InfixOpType precedenceLimit) throws OperationCancellation {
 		return new ParseRule_Expression().rule_parseExpression(precedenceLimit);
 	}
-	protected Expression parseExpression_toMissing(InfixOpType precedenceLimit) {
+	protected Expression parseExpression_toMissing(InfixOpType precedenceLimit) throws OperationCancellation {
 		return nullExpToParseMissing(parseExpression(precedenceLimit).node);
 	}
 
 	
 	/* ---------------- Missing stuff ---------------- */
 	
-	protected Expression nullExpToParseMissing(Expression exp) {
+	protected Expression nullExpToParseMissing(Expression exp) throws OperationCancellation {
 		return nullExpToParseMissing(exp, RULE_EXPRESSION);
 	}
-	protected Expression nullExpToParseMissing(Expression exp, ParseRuleDescription expectedRule) {
+	protected Expression nullExpToParseMissing(Expression exp, ParseRuleDescription expectedRule)
+			throws OperationCancellation {
 		return exp != null ? exp : parseMissingExpression(expectedRule);
 	}
 	
 	public final NodeResult<Expression> nullExpToParseMissing(NodeResult<Expression> expResult, 
-		boolean breakOnMissing, ParseRuleDescription expectedRule) {
+		boolean breakOnMissing, ParseRuleDescription expectedRule) throws OperationCancellation {
 		return expResult.node != null ? expResult :
 			result(expResult.ruleBroken || breakOnMissing, parseMissingExpression(expectedRule));
 	}
 	
-	protected Expression parseMissingExpression(ParseRuleDescription expectedRule) {
+	protected Expression parseMissingExpression(ParseRuleDescription expectedRule) throws OperationCancellation {
 		return parseMissingExpression(expectedRule, true);
 	}
 	
-	protected Expression parseMissingExpression(ParseRuleDescription expectedRule, boolean consumeIgnoreTokens) {
+	protected Expression parseMissingExpression(ParseRuleDescription expectedRule, boolean consumeIgnoreTokens)
+			throws OperationCancellation {
 		int nodeStart = getSourcePosition();
 		if(consumeIgnoreTokens) {
 			advanceSubChannelTokens();
@@ -500,7 +508,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 	}
 	
 	protected Expression createMissingExpression(ParseRuleDescription expectedRule, LexElement previousToken,
-		int nodeStart, int nodeEnd) {
+		int nodeStart, int nodeEnd) throws OperationCancellation {
 		
 		ParserError error = expectedRule != null ? 
 			createErrorExpectedRule(expectedRule, previousToken.getSourceRange()) : null;
@@ -512,7 +520,7 @@ public abstract class DeeParser_RefOrExp extends DeeParser_Common {
 		return exp == null || exp instanceof MissingExpression;
 	}
 	
-	public Expression createExpReference(Reference reference) {
+	public Expression createExpReference(Reference reference) throws OperationCancellation {
 		ExpReference node = new ExpReference(reference);
 		node.setSourceRange(reference.getSourceRange());
 		ExpReference expReference = node;
@@ -536,16 +544,16 @@ protected class ParseRule_Expression {
 		breakRule = false;
 	}
 	
-	public NodeResult<Expression> rule_parseExpression(InfixOpType precedenceLimit) {
+	public NodeResult<Expression> rule_parseExpression(InfixOpType precedenceLimit) throws OperationCancellation {
 		return toResult(parseTypeOrExpression_start(precedenceLimit));
 	}
 	
-	public NodeResult<Expression> rule_parseUnaryExpression() {
+	public NodeResult<Expression> rule_parseUnaryExpression() throws OperationCancellation {
 		return toResult(parseUnaryExpression());
 	}
 	
 	public NodeResult<Expression> rule_parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, 
-			Expression unaryExp) {
+			Expression unaryExp) throws OperationCancellation {
 		return toResult(parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp));
 	}
 	
@@ -574,7 +582,7 @@ protected class ParseRule_Expression {
 		return result.node;
 	}
 	
-	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit) {
+	protected Expression parseTypeOrExpression_start(InfixOpType precedenceLimit) throws OperationCancellation {
 		Expression prefixExp;
 		
 		Resolvable prefixExpResolvable = parsePrimaryExpression();
@@ -593,7 +601,8 @@ protected class ParseRule_Expression {
 		return parseTypeOrExpression_fromUnary(precedenceLimit, prefixExp);
 	}
 	
-	public Expression parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
+	public Expression parseTypeOrExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) 
+			throws OperationCancellation {
 		unaryExp = parsePostfixExpression(unaryExp);
 		if(shouldReturnToParseRuleTopLevel(unaryExp)) {
 			return unaryExp;
@@ -602,11 +611,11 @@ protected class ParseRule_Expression {
 		return parseInfixOperators(precedenceLimit, unaryExp);
 	}
 	
-	protected Expression parseUnaryExpression() {
+	protected Expression parseUnaryExpression() throws OperationCancellation {
 		return parseTypeOrExpression_start(InfixOpType.NULL);
 	}
 	
-	protected Resolvable parsePrimaryExpression() {
+	protected Resolvable parsePrimaryExpression() throws OperationCancellation {
 		Expression simpleLiteral = parseSimpleLiteral();
 		if(simpleLiteral != null) {
 			return simpleLiteral;
@@ -676,7 +685,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	protected Expression parsePostfixExpression(Expression exp) {
+	protected Expression parsePostfixExpression(Expression exp) throws OperationCancellation {
 		
 		switch (lookAhead()) {
 		case DECREMENT:
@@ -736,7 +745,8 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	protected Expression parseInfixOperators(InfixOpType precedenceLimit, final Expression leftExp) {
+	protected Expression parseInfixOperators(InfixOpType precedenceLimit, final Expression leftExp) 
+			throws OperationCancellation {
 		DeeTokens gla = lookAheadGrouped();
 		
 		InfixOpType infixOpAhead = InfixOpType.tokenToInfixOpType(gla);
@@ -786,7 +796,8 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-		public Expression parseInfixOperator(final Expression leftExp, final InfixOpType opType) {
+		public Expression parseInfixOperator(final Expression leftExp, final InfixOpType opType) 
+				throws OperationCancellation {
 			ParseHelper parse = new ParseHelper(assertNotNull(leftExp));
 			
 			Expression rightExp = null;
@@ -847,11 +858,11 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	public Expression parseArrayLiteral() {
+	public Expression parseArrayLiteral() throws OperationCancellation {
 		return parseBracketList(null);
 	}
 	
-		protected Expression parseBracketList(Expression calleeExp) {
+		protected Expression parseBracketList(Expression calleeExp) throws OperationCancellation {
 			if(tryConsume(DeeTokens.OPEN_BRACKET) == false)
 				return null;
 			
@@ -960,27 +971,28 @@ protected class ParseRule_Expression {
 	
 	/* ---------------- parse TypeOrExp ----------------*/
 	
-	public NodeResult<Resolvable> parseTypeOrExpression() {
+	public NodeResult<Resolvable> parseTypeOrExpression() throws OperationCancellation {
 		return parseTypeOrExpression(true);
 	}
 	
-	public NodeResult<Resolvable> parseTypeOrExpression(boolean ambiguousToRef) {
+	public NodeResult<Resolvable> parseTypeOrExpression(boolean ambiguousToRef) throws OperationCancellation {
 		return parseTypeOrExpression(ANY_OPERATOR, ambiguousToRef);
 	}
 	
-	public NodeResult<Resolvable> parseTypeOrAssignExpression(boolean ambiguousToRef) {
+	public NodeResult<Resolvable> parseTypeOrAssignExpression(boolean ambiguousToRef) throws OperationCancellation {
 		return parseTypeOrExpression(InfixOpType.ASSIGN, ambiguousToRef);
 	}
 	
-	public NodeResult<Resolvable> parseTypeOrExpression(InfixOpType precedenceLimit, boolean ambiguousToRef) {
+	public NodeResult<Resolvable> parseTypeOrExpression(InfixOpType precedenceLimit, boolean ambiguousToRef) 
+			throws OperationCancellation {
 		return parseTypeOrExpression(precedenceLimit).toFinalResult(ambiguousToRef).upcastTypeParam();
 	}
 	
-	protected Resolvable nullTypeOrExpToParseMissing(Resolvable exp) {
+	protected Resolvable nullTypeOrExpToParseMissing(Resolvable exp) throws OperationCancellation {
 		return exp != null ? exp : parseMissingExpression(RULE_TYPE_OR_EXP);
 	}
 	
-	protected TypeOrExpResult parseTypeOrExpression(InfixOpType precedenceLimit) {
+	protected TypeOrExpResult parseTypeOrExpression(InfixOpType precedenceLimit) throws OperationCancellation {
 		ParserState initialState = saveParserState();
 		
 		NodeResult<Reference> refResult = parseTypeReference();
@@ -1052,7 +1064,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	protected Expression resolvableToExp(Resolvable resolvable) {
+	protected Expression resolvableToExp(Resolvable resolvable) throws OperationCancellation {
 		if(resolvable instanceof Reference) {
 			Reference reference = (Reference) resolvable;
 			return createExpReference(reference);
@@ -1060,16 +1072,17 @@ protected class ParseRule_Expression {
 		return (Expression) resolvable;
 	}
 	
-	public NodeResult<Expression> parseUnaryExpression_toMissing() {
+	public NodeResult<Expression> parseUnaryExpression_toMissing() throws OperationCancellation {
 		NodeResult<Expression> result = new ParseRule_Expression().rule_parseUnaryExpression();
 		return nullExpToParseMissing(result, false, RULE_EXPRESSION);
 	}
 	
-	public NodeResult<Expression> parseExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) {
+	public NodeResult<Expression> parseExpression_fromUnary(InfixOpType precedenceLimit, Expression unaryExp) 
+			throws OperationCancellation {
 		return new ParseRule_Expression().rule_parseTypeOrExpression_fromUnary(precedenceLimit, unaryExp);
 	}
 	
-	public Expression parseSimpleLiteral() {
+	public Expression parseSimpleLiteral() throws OperationCancellation {
 		switch (lookAheadGrouped()) {
 		case KW_TRUE: 
 		case KW_FALSE:
@@ -1104,7 +1117,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	public Expression parseStringLiteral() {
+	public Expression parseStringLiteral() throws OperationCancellation {
 		ArrayList<IToken> stringTokens = new ArrayList<IToken>(1);
 		
 		while(lookAheadGrouped() == DeeTokens.GROUP_STRING) {
@@ -1115,22 +1128,22 @@ protected class ParseRule_Expression {
 		return conclude(srToPosition(tokenStrings[0].getStartPos(), new ExpLiteralString(tokenStrings)));
 	}
 	
-	protected ExpPostfixOperator parsePostfixOpExpression_atOperator(Expression exp) {
+	protected ExpPostfixOperator parsePostfixOpExpression_atOperator(Expression exp) throws OperationCancellation {
 		LexElement op = consumeLookAhead();
 		return conclude(srToPosition(exp, new ExpPostfixOperator(exp, PostfixOpType.tokenToPrefixOpType(op.type))));
 	}
 	
-	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) {
+	protected NodeResult<ExpCall> parseCallExpression_atParenthesis(Expression callee) throws OperationCancellation {
 		ParseHelper parse = new ParseHelper(callee);
 		NodeVector<Expression> args = parseParenthesesDelimited_ExpArgumentList(parse);
 		return parse.resultConclude(new ExpCall(callee, args));
 	}
 	
 	protected NodeVector<Expression> parseExpArgumentList(ParseHelper parse, boolean canBeEmpty, 
-		DeeTokens tokenLISTCLOSE) {
+		DeeTokens tokenLISTCLOSE) throws OperationCancellation {
 		SimpleListParseHelper<Expression> elementListParse = new SimpleListParseHelper<Expression>() {
 			@Override
-			protected Expression parseElement(boolean createMissing) {
+			protected Expression parseElement(boolean createMissing) throws OperationCancellation {
 				Expression arg = parseAssignExpression().node;
 				return createMissing ? nullExpToParseMissing(arg) : arg;
 			}
@@ -1141,7 +1154,8 @@ protected class ParseRule_Expression {
 		return elementListParse.members;
 	}
 	
-	protected final NodeVector<Expression> parseParenthesesDelimited_ExpArgumentList(ParseHelper parse) {
+	protected final NodeVector<Expression> parseParenthesesDelimited_ExpArgumentList(ParseHelper parse) 
+			throws OperationCancellation {
 		if(tryConsume(DeeTokens.OPEN_PARENS)) {
 			return parseExpArgumentList(parse, true, DeeTokens.CLOSE_PARENS);
 		} else {
@@ -1151,14 +1165,14 @@ protected class ParseRule_Expression {
 	
 	protected final class TypeOrExpArgumentListSimpleParse extends SimpleListParseHelper<Resolvable> {
 		@Override
-		protected Resolvable parseElement(boolean createMissing) {
+		protected Resolvable parseElement(boolean createMissing) throws OperationCancellation {
 			Resolvable arg = parseTypeOrAssignExpression(true).node;
 			return createMissing ? nullTypeOrExpToParseMissing(arg) : arg;
 		}
 	}
 	
 	protected final NodeVector<Resolvable> parseTypeOrExpArgumentList(ParseHelper parse, DeeTokens tkSEP, 
-		DeeTokens tkCLOSE) {
+		DeeTokens tkCLOSE) throws OperationCancellation {
 		
 		SimpleListParseHelper<Resolvable> elementListParse = new TypeOrExpArgumentListSimpleParse();
 		elementListParse.parseSimpleList(tkSEP, true, true);
@@ -1166,7 +1180,7 @@ protected class ParseRule_Expression {
 		return elementListParse.members;
 	}
 	
-	protected NodeResult<? extends Expression> matchParenthesesStart() {
+	protected NodeResult<? extends Expression> matchParenthesesStart() throws OperationCancellation {
 		assertTrue(lookAhead() == DeeTokens.OPEN_PARENS);
 		ParseHelper parse = new ParseHelper(lookAheadElement());
 		
@@ -1188,7 +1202,7 @@ protected class ParseRule_Expression {
 		return parseParenthesesExp();
 	}
 	
-	protected NodeResult<ExpSimpleLambda> parseSimpleLambdaLiteral_start() {
+	protected NodeResult<ExpSimpleLambda> parseSimpleLambdaLiteral_start() throws OperationCancellation {
 		ProtoDefSymbol defId = parseDefId();
 		consumeLookAhead(DeeTokens.LAMBDA);
 		
@@ -1199,7 +1213,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpSimpleLambda(lambdaDef, bodyExp));
 	}
 	
-	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() {
+	public NodeResult<ExpFunctionLiteral> parseFunctionLiteral_start() throws OperationCancellation {
 		assertTrue(lookAhead() == DeeTokens.KW_FUNCTION || lookAhead() == DeeTokens.KW_DELEGATE);
 		consumeLookAhead();
 		boolean isFunctionKeyword = lastLexElement().type == DeeTokens.KW_FUNCTION;
@@ -1226,7 +1240,7 @@ protected class ParseRule_Expression {
 	
 	protected NodeResult<ExpFunctionLiteral> parseFunctionLiteral_atFunctionBody(int nodeStart,
 		Boolean isFunctionKeyword, Reference retType, NodeVector<IFunctionParameter> fnParams,
-		NodeVector<IFunctionAttribute> fnAttributes) 
+		NodeVector<IFunctionAttribute> fnAttributes) throws OperationCancellation 
 	{
 		if(tryConsume(DeeTokens.LAMBDA)) {
 			assertTrue(fnParams != null);
@@ -1242,7 +1256,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	public NodeResult<ExpParentheses> parseParenthesesExp() {
+	public NodeResult<ExpParentheses> parseParenthesesExp() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.OPEN_PARENS))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1261,7 +1275,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpParentheses(isDotAfterParensSyntax, resolvable));
 	}
 	
-	public NodeResult<ExpAssert> parseAssertExpression() {
+	public NodeResult<ExpAssert> parseAssertExpression() throws OperationCancellation {
 		if(tryConsume(DeeTokens.KW_ASSERT) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1280,7 +1294,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpAssert(exp, msg));
 	}
 	
-	public NodeResult<ExpImportString> parseImportExpression() {
+	public NodeResult<ExpImportString> parseImportExpression() throws OperationCancellation {
 		if(tryConsume(DeeTokens.KW_IMPORT) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1289,7 +1303,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpImportString(expParentheses));
 	}
 	
-	public NodeResult<ExpMixinString> parseMixinExpression() {
+	public NodeResult<ExpMixinString> parseMixinExpression() throws OperationCancellation {
 		if(tryConsume(DeeTokens.KW_MIXIN) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1299,7 +1313,7 @@ protected class ParseRule_Expression {
 	}
 
 	public Expression parseExpressionAroundParentheses(ParseHelper parse, boolean isRequired, 
-		boolean brokenIfMissing) {
+		boolean brokenIfMissing) throws OperationCancellation {
 		boolean isOptional = !isRequired;
 		if(parse.consume(DeeTokens.OPEN_PARENS, isOptional, brokenIfMissing) == false) {
 			if(!isOptional) {
@@ -1313,7 +1327,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	public NodeResult<ExpTypeId> parseTypeIdExpression() {
+	public NodeResult<ExpTypeId> parseTypeIdExpression() throws OperationCancellation {
 		if(tryConsume(DeeTokens.KW_TYPEID) == false)
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1336,7 +1350,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpTypeId(exp));
 	}
 	
-	public NodeResult<? extends Expression> parseNewExpression() {
+	public NodeResult<? extends Expression> parseNewExpression() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_NEW))
 			return nullResult();
 		ParseHelper parse = new ParseHelper();
@@ -1345,7 +1359,8 @@ protected class ParseRule_Expression {
 		return parseNewExpression_do(parse, outerClass);
 	}
 	
-	public NodeResult<? extends Expression> parseNewExpression_do(ParseHelper parse, Expression outerClass) {
+	public NodeResult<? extends Expression> parseNewExpression_do(ParseHelper parse, Expression outerClass)
+			throws OperationCancellation {
 		NodeVector<Expression> allocArgs = null;
 		Reference type = null;
 		NodeVector<Expression> args = null;
@@ -1370,7 +1385,7 @@ protected class ParseRule_Expression {
 	}
 	
 	protected NodeResult<ExpNewAnonClass> parseNewAnonClassExpression_afterClassKeyword(ParseHelper parse, 
-		NodeVector<Expression> allocArgs) {
+		NodeVector<Expression> allocArgs) throws OperationCancellation {
 		
 		NodeVector<Expression> args = null;
 		SimpleListParseHelper<Reference> baseClasses = thisParser().new TypeReferenceSimpleListParse();
@@ -1388,7 +1403,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpNewAnonClass(allocArgs, args, baseClasses.members, declBody));
 	}
 	
-	public NodeResult<? extends Expression> parseCastExpression() {
+	public NodeResult<? extends Expression> parseCastExpression() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_CAST))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1451,7 +1466,7 @@ protected class ParseRule_Expression {
 	public static final ParseRuleDescription RULE_IS_TYPE_SPEC = 
 		new ParseRuleDescription("IsTypeSpecialization", "IsTypeSpecialization");
 	
-	public NodeResult<? extends Expression> parseIsExpression() {
+	public NodeResult<? extends Expression> parseIsExpression() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW_IS))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1538,7 +1553,7 @@ protected class ParseRule_Expression {
 		}
 	}
 	
-	public NodeResult<ExpTraits> parseTraitsExpression() {
+	public NodeResult<ExpTraits> parseTraitsExpression() throws OperationCancellation {
 		if(!tryConsume(DeeTokens.KW___TRAITS))
 			return null;
 		ParseHelper parse = new ParseHelper();
@@ -1563,7 +1578,7 @@ protected class ParseRule_Expression {
 		return parse.resultConclude(new ExpTraits(traitsId, args));
 	}
 	
-	public Symbol parseTraitsId() {
+	public Symbol parseTraitsId() throws OperationCancellation {
 		BaseLexElement traitsId = consumeExpectedContentToken(DeeTokens.IDENTIFIER);
 		ParserError error = DeeTokenSemantics.checkTraitsId(traitsId);
 		return conclude(error, srOf(traitsId, new Symbol(traitsId.getSourceValue())));

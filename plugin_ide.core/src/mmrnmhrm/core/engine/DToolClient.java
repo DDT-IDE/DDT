@@ -114,14 +114,19 @@ public class DToolClient extends EngineClient {
 			if(isCancelled()) {
 				return null;
 			}
-			return parseModuleFromWorkingCopy(entry);
+			try {
+				return parseModuleFromWorkingCopy(entry);
+			} catch(OperationCancellation e) {
+				return null;
+			}
 		}
 		
 		protected abstract ParsedModule parseModuleWithNoLocation();
 		
 		protected abstract void modifyWorkingSource(CachedModuleEntry lockedEntry);
 		
-		protected abstract ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry);
+		protected abstract ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) 
+				throws OperationCancellation;
 		
 	}
 	
@@ -135,7 +140,11 @@ public class DToolClient extends EngineClient {
 			
 			@Override
 			protected ParsedModule parseModuleWithNoLocation() {
-				return getParseCache().parseModuleWithNoLocation(source, cm);
+				try {
+					return getParseCache().parseModuleWithNoLocation(source, cm);
+				} catch(OperationCancellation e) {
+					return null;
+				}
 			}
 			
 			@Override
@@ -144,7 +153,7 @@ public class DToolClient extends EngineClient {
 			}
 			
 			@Override
-			protected ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) {
+			protected ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) throws OperationCancellation {
 				try {
 					return entry.getParsedModule(cm);
 				} catch(IOException e) {
