@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,9 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
-import melnorme.lang.tooling.data.LocationValidator;
-import melnorme.lang.tooling.data.StatusException;
+import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -44,11 +45,6 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
 	
 	@Override
-	protected LocationValidator getSDKLocationValidator() {
-		return new DubLocationValidator(); // Not actually used at the moment.
-	}
-	
-	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IFolder dubCacheFolder = getProject().getFolder(".dub");
 		if(dubCacheFolder.exists()) {
@@ -63,21 +59,29 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
-	protected String getSDKToolPath() throws CoreException {
+	protected Path getBuildToolPath() throws CommonException {
 		String pathString = DeeCorePreferences.getEffectiveDubPath();
+		return getBuildToolPath(pathString);
+	}
+	
+	protected Path getBuildToolPath_() throws CoreException {
 		try {
-			getSDKLocationValidator().getValidatedField(pathString);
-			return pathString;
-		} catch (StatusException se) {
-			throw LangCore.createCoreException(se);
+			return getBuildToolPath();
+		} catch(CommonException ce) {
+			throw LangCore.createCoreException(ce);
 		}
+	}
+	
+	@Override
+	protected PathValidator getBuildToolPathValidator() {
+		return new DubLocationValidator();
 	}
 	
 	@Override
 	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
 			throws CoreException, OperationCancellation {
 		
-		String validatedDubPath = getSDKToolPath();
+		String validatedDubPath = getBuildToolPath_().toString();
 		
 		ArrayList<String> commands = new ArrayList<String>();
 		commands.add(validatedDubPath);
