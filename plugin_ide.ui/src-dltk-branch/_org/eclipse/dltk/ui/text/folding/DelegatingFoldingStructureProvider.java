@@ -491,7 +491,7 @@ public class DelegatingFoldingStructureProvider {
 			elementListener = new IFieldValueListener() {
 				@Override
 				public void fieldValueChanged() {
-					update(createContext(false, fEditor.getSourceFileStructure()));
+					update(createContext(false, fEditor.getSourceStructure()));
 				}
 			};
 			editor.getStructureField().addListener(elementListener);
@@ -536,7 +536,7 @@ public class DelegatingFoldingStructureProvider {
 		}
 		
 		// don't auto collapse if reinitializing
-		SourceFileStructure structure = editor.getSourceFileStructure();
+		SourceFileStructure structure = editor.getSourceStructure();
 		return createContext((isReinit) ? false : true, structure);
 	}
 	
