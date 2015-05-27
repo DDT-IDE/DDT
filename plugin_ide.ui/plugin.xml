@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-
+	
 	<extension point="org.eclipse.ui.ide.projectNatureImages">
 		<image
 			icon="icons/project_overlay.png"
@@ -180,6 +180,7 @@
 		</key>
 	</extension>
 	
+	<!-- ________ Menu/UI contributions ________ -->
 	
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=edit">
@@ -216,25 +217,6 @@
 		</menuContribution>
 	</extension>
 	
-	<!-- ============ wizards ============= -->
-	
-	<extension point="org.eclipse.ui.newWizards">
-		<category
-			id="org.dsource.ddt.ide.category"
-			name="%LangWizardsCategory.name"/>
-		<wizard
-			category="org.dsource.ddt.ide.category"
-			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
-			icon="icons/action16e/newprj_wiz.gif"
-			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
-			name="%NewProjectWizard.name"
-			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
-			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
-			project="true">
-		</wizard>
-	</extension>
-	
-	
 	<!-- ============ Preference pages ============= -->
 	
 	<extension point="org.eclipse.ui.preferencePages">
@@ -243,12 +225,14 @@
 			class="mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage"
 			name="%LangPreferencePage.name">
 		</page>
+		
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.DeeToolsConsole"
 			class="mmrnmhrm.ui.preferences.DeeToolsConsolePrefPage"
 			name="%LangToolsConsolePreferencePage.name">
 		</page>
+		
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor"
@@ -292,9 +276,30 @@
 			class="mmrnmhrm.ui.preferences.pages.DubOptionsPropertyPage"
 			id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
 			name="%LangBuildOptionsPropertyPage.name">
-			<enabledWhen> <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" /> </enabledWhen>
+			<enabledWhen> 
+				<reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
+			</enabledWhen>
 		</page>
 	</extension>
+	
+	<!-- ============ Wizards ============= -->
+	
+	<extension point="org.eclipse.ui.newWizards">
+		<category
+			id="org.dsource.ddt.ide.category"
+			name="%LangWizardsCategory.name"/>
+		<wizard
+			category="org.dsource.ddt.ide.category"
+			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
+			icon="icons/action16e/newprj_wiz.gif"
+			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
+			name="%NewProjectWizard.name"
+			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
+			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
+			project="true">
+		</wizard>
+	</extension>
+	
 	
 	<!-- ============ Other (TODO cleanup) ============= -->
 	
@@ -306,7 +311,6 @@
    </extension>
    
 	
-	<!-- ============ EDITOR related TODO ============= -->
 	<!-- ============ other extensions ============= -->
    
    <extension point="org.eclipse.ui.navigator.navigatorContent">
