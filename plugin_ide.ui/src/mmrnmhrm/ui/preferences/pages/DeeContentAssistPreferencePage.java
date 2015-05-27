@@ -10,30 +10,27 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.preferences.LangEditorContentAssistConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.preferences.DeeEditorContentAssistConfigurationBlock;
 
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-
-public class DeeEditorContentAssistPreferencePage extends AbstractConfigurationBlockPreferencePage {
+public class DeeContentAssistPreferencePage extends AbstractPreferencesBlockPrefPage {
 	
 	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.ContentAssist";
 	
-	@Override
-	protected void setDescription() {
-		setDescription(null);
+	public DeeContentAssistPreferencePage() {
+		super(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override
-	protected void setPreferenceStore() {
-		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
+	protected LangEditorContentAssistConfigurationBlock createPreferencesComponent() {
+		return new LangEditorContentAssistConfigurationBlock(this);
 	}
 	
 	@Override
-	protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-		return new DeeEditorContentAssistConfigurationBlock(this, overlayPreferenceStore);
+	protected String getHelpId() {
+		return null;
 	}
 	
 }

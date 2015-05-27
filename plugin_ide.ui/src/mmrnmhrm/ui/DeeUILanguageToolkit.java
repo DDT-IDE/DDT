@@ -15,7 +15,7 @@ import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeContentAssistPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
@@ -97,7 +97,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	public String[] getEditorPreferencePages() {
 		return new String[]{ 
 				DeeEditorPreferencePage.PAGE_ID, 
-				DeeEditorContentAssistPreferencePage.PAGE_ID,
+				DeeContentAssistPreferencePage.PAGE_ID,
 				DeeEditorTypingPreferencePage.PAGE_ID,
 				DeeFoldingPreferencePage.PAGE_ID,
 				DeeTemplatePreferencePage.PAGE_ID,

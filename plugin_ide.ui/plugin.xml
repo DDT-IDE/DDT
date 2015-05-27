@@ -279,13 +279,13 @@
 			<keywordReference id="org.dsource.ddt.ide.ui.EditorSyntaxColoringPreferencePage"/>
 		</page>
 		
-      <page
-           category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
-           id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.ContentAssist"
-           class="mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage"
-           name="%ContentAssistPreferencePage.name">
+		<page
+			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
+			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.ContentAssist"
+			class="mmrnmhrm.ui.preferences.pages.DeeContentAssistPreferencePage"
+			name="%ContentAssistPreferencePage.name">
 			<keywordReference id="org.dsource.ddt.ide.ui.ContentAssistPreferencePage"/>
-      </page>
+		</page>
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.CodeTemplates"

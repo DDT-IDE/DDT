@@ -41,12 +41,6 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		
 		DeeDoc_initializeDefaultValues(store);
 		
-		// Explorer
-		// Appearance
-		store.setDefault(PreferenceConstants.APPEARANCE_COMPRESS_PACKAGE_NAMES, false);
-		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE, true);
-		store.setDefault(PreferenceConstants.APPEARANCE_METHOD_TYPEPARAMETERS, true);
-		
 		// Editor
 		store.setDefault(PreferenceConstants.EDITOR_SMART_INDENT, true);
 		store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
@@ -60,10 +54,6 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		CodeFormatterConstants.Helper.initDefaults();
 		
 		LangAutoEditPreferenceConstants.Helper.initDefaults();
-		
-		store.setDefault(PreferenceConstants.EDITOR_SMART_TAB, true); // Not used currently
-		
-		store.setDefault(PreferenceConstants.EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
 		
 		// Content assist
 		store.setDefault(PreferenceConstants.CODEASSIST_INSERT_COMPLETION, false); // CA overwrites by default
@@ -95,10 +85,6 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		// Search
 		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
 
-		// WIZARDS
-		store.setDefault(PreferenceConstants.SRCBIN_FOLDERS_IN_NEWPROJ, true);
-		store.setDefault(PreferenceConstants.SRC_SRCNAME, "src"); //$NON-NLS-1$		
-		
 	}
 	
 	public static void DeeDoc_initializeDefaultValues(IPreferenceStore store) {

@@ -40,7 +40,7 @@ public interface LangAutoEditPreferenceConstants_Actual {
 	
 	
 	class Helper {
-
+		
 		public static void initDefaults() {
 			// Ensure all default values are initialized, in case prefs are accessed by means other
 			// than by referencing the constants above 
