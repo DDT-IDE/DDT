@@ -21,6 +21,8 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Fixed regression: the icon of packages in Content Assist incorrectly showing up as the natives icon.
  * Removed Open D Type action (wasn't implemented correctly).
  * Reconciler thread timer. // TODO reword
+ * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
+
  * Upgraded minimum Java version to Java 8
 
 

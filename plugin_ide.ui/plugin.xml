@@ -219,55 +219,86 @@
 	
 	<!-- ============ Preference pages ============= -->
 	
+	<extension point="org.eclipse.ui.keywords">
+		<keyword id="org.dsource.ddt.ide.ui.RootPreferencePage" 
+		                            label="%RootPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.EditorPreferencePage"
+		                            label="%EditorPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.EditorTypingPreferencePage"
+		                            label="%EditorTypingPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.EditorSyntaxColoringPreferencePage"
+		                            label="%EditorSyntaxColoringPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.ContentAssistPreferencePage"
+		                            label="%ContentAssistPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.CodeTemplatesPreferencePage"
+		                            label="%CodeTemplatesPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.EditorFoldingPreferencePage"
+		                            label="%EditorFoldingPreferencePage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.DaemonToolPrefPage"
+		                            label="%DaemonToolPrefPage.keywords"/>
+		<keyword id="org.dsource.ddt.ide.ui.ToolsConsolePrefPage"
+		                            label="%ToolsConsolePrefPage.keywords"/>
+	</extension>
+	
+	
 	<extension point="org.eclipse.ui.preferencePages">
 		<page
 			id="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			class="mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage"
-			name="%LangPreferencePage.name">
+			name="%RootPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.RootPreferencePage"/>
 		</page>
 		
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.DeeToolsConsole"
 			class="mmrnmhrm.ui.preferences.DeeToolsConsolePrefPage"
-			name="%LangToolsConsolePreferencePage.name">
+			name="%ToolsConsolePrefPage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.ToolsConsolePrefPage"/>
 		</page>
 		
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Root"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor"
 			class="mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage"
-			name="%LangEditorPreferencePage.name">
+			name="%EditorPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.EditorPreferencePage"/>
 		</page>
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.Typing"
 			class="mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage"
-			name="%LangEditorTypingPreferencePage.name">
+			name="%EditorTypingPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.EditorTypingPreferencePage"/>
 		</page>
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.SourceColoring"
 			class="mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage"
-			name="%LangEditorSyntaxColoringPreferencePage.name">
+			name="%EditorSyntaxColoringPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.EditorSyntaxColoringPreferencePage"/>
 		</page>
 		
       <page
            category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
            id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.ContentAssist"
            class="mmrnmhrm.ui.preferences.pages.DeeEditorContentAssistPreferencePage"
-           name="%LangContentAssistPreferencePage.name">
+           name="%ContentAssistPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.ContentAssistPreferencePage"/>
       </page>
 		<page
 			category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
 			id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.CodeTemplates"
 			class="mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage"
-			name="%LangCodeTemplatesPreferencePage.name" />
+			name="%CodeTemplatesPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.CodeTemplatesPreferencePage"/>
+		</page>
       <page
             category="org.dsource.ddt.ide.ui.PreferencePages.Editor"
             id=      "org.dsource.ddt.ide.ui.PreferencePages.Editor.Folding"
             class="mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage"
-            name="%LangEditorFoldingPreferencePage.name">
+            name="%EditorFoldingPreferencePage.name">
+			<keywordReference id="org.dsource.ddt.ide.ui.EditorFoldingPreferencePage"/>
       </page>
 	</extension>
 	
