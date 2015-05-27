@@ -8,10 +8,10 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.workspace.DubWorkspaceModel;
 import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
 import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
 import mmrnmhrm.core.workspace.ProjectInfo;
-import mmrnmhrm.core.workspace.DubWorkspaceModel;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -25,10 +25,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IParent;
-import org.eclipse.dltk.core.IProjectFragment;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
@@ -101,8 +97,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 				return visitDubElement((IDubElement) element);
 			} else if(element instanceof IProject) {
 				return visitProject((IProject) element);
-			} if(element instanceof IModelElement && element instanceof IParent) {
-				return visitModelElement((IModelElement) element, (IParent) element);
 			} else {
 				return visitOther(element);
 			}
@@ -111,8 +105,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		public abstract RET visitDubElement(IDubElement dubElement);
 		
 		public abstract RET visitProject(IProject project);
-		
-		public abstract RET visitModelElement(IModelElement element, IParent elementAsParent);
 		
 		public abstract RET visitOther(Object element);
 		
@@ -131,14 +123,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 				return dubElement.hasChildren();
 			}
 			@Override
-			public Boolean visitModelElement(IModelElement element, IParent elementAsParent) {
-				try {
-					return elementAsParent.hasChildren();
-				} catch (ModelException e) {
-					return false;
-				}
-			}
-			@Override
 			public Boolean visitOther(Object element) {
 				return false;
 			}
@@ -155,14 +139,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 			@Override
 			public Object[] visitDubElement(IDubElement dubElement) {
 				return dubElement.getChildren();
-			}
-			@Override
-			public Object[] visitModelElement(IModelElement element, IParent elementAsParent) {
-				try {
-					return elementAsParent.getChildren();
-				} catch (ModelException e) {
-					return IDubElement.NO_CHILDREN;
-				}
 			}
 			@Override
 			public Object[] visitOther(Object element) {
@@ -206,15 +182,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 				return dubElement.getParent();
 			}
 			@Override
-			public Object visitModelElement(IModelElement element, IParent elementAsParent) {
-				IModelElement parent = element.getParent();
-				if(parent instanceof IProjectFragment) {
-					// TODO: need to map to DepSourceContainer
-					return null;
-				}
-				return parent;
-			}
-			@Override
 			public Object visitOther(Object element) {
 				return null;
 			}
@@ -249,9 +216,6 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		public abstract RET visitErrorElement(DubErrorElement element);
 		public abstract RET visitDepElement(DubDependencyElement element);
 		public abstract RET visitDepSourceFolderElement(DubDepSourceFolderElement element);
-		
-		@Override
-		public abstract RET visitModelElement(IModelElement element, IParent elementAsParent);
 		
 		@Override
 		public RET visitOther(Object element) {

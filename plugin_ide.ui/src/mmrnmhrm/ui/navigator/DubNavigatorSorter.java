@@ -25,8 +25,6 @@ import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSw
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IParent;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 public class DubNavigatorSorter extends ViewerSorter {
@@ -47,12 +45,6 @@ public class DubNavigatorSorter extends ViewerSorter {
 			
 			@Override
 			public Integer visitProject(IProject project) {
-				assertFail();
-				return null;
-			}
-			
-			@Override
-			public Integer visitModelElement(IModelElement element, IParent elementAsParent) {
 				assertFail();
 				return null;
 			}

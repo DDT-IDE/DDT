@@ -23,9 +23,6 @@ import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSw
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IParent;
-import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
@@ -98,8 +95,9 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	@Override
 	public StyledString visitDepElement(DubDependencyElement element) {
 		StyledString baseString = new StyledString(element.getBundleName());
-		baseString = appendVersionString(baseString, element.getDubBundle());
-		return baseString.append(" - " + element.getDubBundle().getLocationString(), fgColor(DUB_LOCATION_ANNOTATION_FG));
+		DubBundle dubBundle = element.getDubBundle();
+		baseString = appendVersionString(baseString, dubBundle);
+		return baseString.append(" - " + dubBundle.getLocationString(), fgColor(DUB_LOCATION_ANNOTATION_FG));
 	}
 	
 	@Override
@@ -133,12 +131,6 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	@Override
 	public StyledString visitDubSourceFolder(IFolder element) {
 		return null; // Use defaults
-	}
-	
-	@Override
-	public StyledString visitModelElement(IModelElement element, IParent elementAsParent) {
-		// TODO
-		return new StyledString(element.getElementName());
 	}
 	
 }
@@ -188,14 +180,6 @@ class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
 	@Override
 	public Image visitDubSourceFolder(IFolder element) {
 		return DeeImages.SOURCE_FOLDER.getImage();
-	}
-	
-	// TODO: review this usage
-	protected final ScriptUILabelProvider scriptLabelProvider = new ScriptUILabelProvider();
-	
-	@Override
-	public Image visitModelElement(IModelElement element, IParent elementAsParent) {
-		return scriptLabelProvider.getImage(element);
 	}
 	
 }
