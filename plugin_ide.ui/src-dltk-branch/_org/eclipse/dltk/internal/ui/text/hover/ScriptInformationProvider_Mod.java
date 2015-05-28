@@ -9,10 +9,11 @@
  *******************************************************************************/
 package _org.eclipse.dltk.internal.ui.text.hover;
 
+import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
+
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptWordFinder;
-import org.eclipse.dltk.internal.ui.text.hover.ScriptTypeHover;
 import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.AbstractReusableInformationControlCreator;
@@ -24,7 +25,6 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
@@ -34,9 +34,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * Mod from DLTK 3.0 that allows a different fImplementation other than a ScriptTypeHover
+ * 
  */
-public class ScriptInformationProvider_Mod implements IInformationProvider,
-		IInformationProviderExtension2 {
+/* FIXME: DLTK review this code*/
+public class ScriptInformationProvider_Mod implements IInformationProvider, IInformationProviderExtension2 {
 
 	class EditorWatcher implements IPartListener {
 
@@ -51,8 +52,7 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 		@Override
 		public void partClosed(IWorkbenchPart part) {
 			if (part == fEditor) {
-				fEditor.getSite().getWorkbenchWindow().getPartService()
-						.removePartListener(fPartListener);
+				fEditor.getSite().getWorkbenchWindow().getPartService().removePartListener(fPartListener);
 				fPartListener = null;
 			}
 		}
@@ -103,8 +103,7 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 			if (perspective != null) {
 				String perspectiveId = perspective.getId();
 
-				if (fCurrentPerspective == null
-						|| fCurrentPerspective != perspectiveId) {
+				if (fCurrentPerspective == null || fCurrentPerspective != perspectiveId) {
 					fCurrentPerspective = perspectiveId;
 
 					fImplementation = createImplementation();
@@ -115,7 +114,7 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 	}
 
 	protected IScriptEditorTextHover createImplementation() {
-		return new ScriptTypeHover();
+		return new DeeDocTextHover();
 	}
 
 	@Override
@@ -145,14 +144,11 @@ public class ScriptInformationProvider_Mod implements IInformationProvider,
 			fPresenterControlCreator = new AbstractReusableInformationControlCreator() {
 
 				@Override
-				public IInformationControl doCreateInformationControl(
-						Shell parent) {
+				public IInformationControl doCreateInformationControl(Shell parent) {
 					if (BrowserInformationControl.isAvailable(parent))
-						return new BrowserInformationControl(parent,
-								JFaceResources.DIALOG_FONT, true);
+						return new BrowserInformationControl(parent, JFaceResources.DIALOG_FONT, true);
 					else
-						return new DefaultInformationControl(parent,
-								new HTMLTextPresenter(false));
+						return new DefaultInformationControl(parent, new HTMLTextPresenter(false));
 				}
 			};
 		}

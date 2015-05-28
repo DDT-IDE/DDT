@@ -39,18 +39,12 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	}
 	
 	@Override
-	public IAnnotationHover getOverviewRulerAnnotationHover(
-			ISourceViewer sourceViewer) {
+	public IAnnotationHover getOverviewRulerAnnotationHover(ISourceViewer sourceViewer) {
 		return null;
 	}
 	
 	@Override
-	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {
-		return null;
-	}
-	
-	@Override
-	public ITextHover getTextHover_do(ISourceViewer sourceViewer, String contentType, int stateMask) {
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
 		return null;
 	}
 	

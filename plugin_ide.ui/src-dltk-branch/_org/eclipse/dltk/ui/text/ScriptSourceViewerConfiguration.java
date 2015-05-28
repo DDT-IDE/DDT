@@ -9,14 +9,12 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.text;
 
-import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import mmrnmhrm.core.text.DeePartitions;
 
 import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
-import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverDescriptor;
-import org.eclipse.dltk.internal.ui.text.hover.EditorTextHoverProxy;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IDocument;
@@ -44,68 +42,19 @@ public abstract class ScriptSourceViewerConfiguration extends AbstractLangSource
 		super(preferenceStore, colorManager, editor);
 	}
 	
-	/* FIXME: DLTK: review text hovers */
-	@Override
-	public int[] getConfiguredTextHoverStateMasks(ISourceViewer sourceViewer, String contentType) {
-		final String natureId = getNatureId();
-		
-		EditorTextHoverDescriptor[] hoverDescs = 
-				DLTKUIPlugin.getDefault().getEditorTextHoverDescriptors(fPreferenceStore, natureId);
-		int stateMasks[] = new int[hoverDescs.length];
-		int stateMasksLength = 0;
-		for (int i = 0; i < hoverDescs.length; i++) {
-			if (hoverDescs[i].isEnabled()) {
-				int j = 0;
-				int stateMask = hoverDescs[i].getStateMask();
-				while (j < stateMasksLength) {
-					if (stateMasks[j] == stateMask)
-						break;
-					j++;
-				}
-				if (j == stateMasksLength)
-					stateMasks[stateMasksLength++] = stateMask;
-			}
-		}
-		if (stateMasksLength == hoverDescs.length)
-			return stateMasks;
-
-		int[] shortenedStateMasks = new int[stateMasksLength];
-		System.arraycopy(stateMasks, 0, shortenedStateMasks, 0, stateMasksLength);
-		return shortenedStateMasks;
-	}
-
-	@Override
-	public final ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		return getTextHover_do(sourceViewer, contentType, stateMask);
-	}
-	
 	@Override
 	public final ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
-		return getTextHover_do(sourceViewer, contentType, ITextViewerExtension2.DEFAULT_HOVER_STATE_MASK);
+		return getTextHover(sourceViewer, contentType, ITextViewerExtension2.DEFAULT_HOVER_STATE_MASK);
 	}
 	
-	@SuppressWarnings("unused")
-	protected ITextHover getTextHover_do(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		final String natureId = getNatureId();
-		if (natureId == null) {
-			return null;
+	@Override
+	public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType, int stateMask) {
+		if(contentType.equals(DeePartitions.DEE_CODE)) {
+			return new BestMatchHover(getEditor(), stateMask);
 		}
-		EditorTextHoverDescriptor[] hoverDescs = DLTKUIPlugin.getDefault()
-				.getEditorTextHoverDescriptors(fPreferenceStore, natureId);
-		int i = 0;
-		while (i < hoverDescs.length) {
-			if (hoverDescs[i].isEnabled() && hoverDescs[i].getStateMask() == stateMask)
-				return new EditorTextHoverProxy(hoverDescs[i], getEditor(), fPreferenceStore);
-			i++;
-		}
-
 		return null;
 	}
-
-	private String getNatureId() {
-		return LangNature.NATURE_ID;
-	}
-
+	
 	/* FIXME: DLTK: review getInformationPresenter */
 	@Override
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {

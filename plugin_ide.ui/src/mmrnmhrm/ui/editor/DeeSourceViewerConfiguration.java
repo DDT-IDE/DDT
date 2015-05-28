@@ -10,26 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
-import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.cdt.ui.text.IColorManager;
-import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
-import org.eclipse.dltk.ui.text.hover.IScriptEditorTextHover;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.quickassist.IQuickAssistAssistant;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
@@ -71,41 +60,15 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	}
 	
 	@Override
-	protected ScriptPresentationReconciler createPresentationReconciler() {
-		return new ScriptPresentationReconciler();
-	}
-	
-	@Override
 	protected String getToggleCommentPrefix() {
 		return "//";
 	}
 	
-	@Override
-	public ITextHover getTextHover_do(ISourceViewer sourceViewer, String contentType, int stateMask) {
-		if(contentType.equals(DeePartitions.DEE_CODE)) {
-			return new BestMatchHover(getEditor(), stateMask);
-		} 
-		return null;
-	}
+	// ================ Information provider
 	
 	@Override
 	protected IInformationProvider getInformationProvider() {
-		return new ScriptInformationProvider_Mod(getEditor()) { 
-			@Override
-			protected IScriptEditorTextHover createImplementation() {
-				return new DeeDocTextHover();
-			}
-		};
-	}
-	
-	@Override
-	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent, false);
-			}
-		};
+		return new ScriptInformationProvider_Mod(getEditor());
 	}
 	
 	// ================ Content Assist
@@ -120,13 +83,6 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 		protected DeeCompletionProposalComputer createDefaultSymbolsProposalComputer() {
 			return new DeeCompletionProposalComputer();
 		}
-	}
-	
-	// ================
-	
-	@Override
-	public IQuickAssistAssistant getQuickAssistAssistant(ISourceViewer sourceViewer) {
-		return super.getQuickAssistAssistant(sourceViewer);
 	}
 	
 }
