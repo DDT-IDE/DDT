@@ -12,7 +12,6 @@
 package _org.eclipse.dltk.internal.ui.editor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import melnorme.lang.ide.core.LangNature;
@@ -21,9 +20,9 @@ import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
+import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
-import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -33,9 +32,6 @@ import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.internal.ui.editor.ISavePolicy;
-import org.eclipse.dltk.internal.ui.editor.ISourceModuleDocumentProvider;
-import org.eclipse.dltk.internal.ui.editor.ScriptAnnotationIterator;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
@@ -43,7 +39,6 @@ import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.actions.DLTKActionConstants;
-import org.eclipse.dltk.ui.editor.IScriptAnnotation;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -54,23 +49,17 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.information.InformationPresenter;
-import org.eclipse.jface.text.source.Annotation;
-import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -79,7 +68,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.editors.text.EditorsUI;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
@@ -91,9 +79,6 @@ import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationContr
 /* FIXME: need to review this class */
 public abstract class ScriptEditor extends AbstractLangStructureEditor implements IScriptLanguageProvider {
 	
-	/** The editor's save policy */
-	protected ISavePolicy fSavePolicy = null;
-
 	/** Preference key for matching brackets */
 	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
 	/** Preference key for matching brackets color */
@@ -144,24 +129,12 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 	@Override
-	protected void initializeEditor() {
-		super.initializeEditor();
-		
-//		changePreferenceStore(createCombinedPreferenceStore(null));
-	}
-
-	@Override
 	protected void alterCombinedPreferenceStores_beforeEditorsUI(List<IPreferenceStore> stores) {
 		stores.add(new PreferencesAdapter(DLTKCore.getDefault().getPluginPreferences()));
 	}
 	
 	public IPreferenceStore getScriptPreferenceStore() {
 		return DeeUIPlugin.getInstance().getPreferenceStore();
-	}
-	
-	@Deprecated
-	public DeeTextTools getTextTools() {
-		return DeeUIPlugin.getDefault().getTextTools();
 	}
 	
 	@Override
@@ -294,151 +267,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return super.getAdapter(required);
 	}
 
-	@Override
-	protected void doSetSelection(ISelection selection) {
-		super.doSetSelection(selection);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Overrides the default implementation to handle {@link IJavaAnnotation}.
-	 * </p>
-	 * 
-	 * @param offset
-	 *            the region offset
-	 * @param length
-	 *            the region length
-	 * @param forward
-	 *            <code>true</code> for forwards, <code>false</code> for
-	 *            backward
-	 * @param annotationPosition
-	 *            the position of the found annotation
-	 * @return the found annotation
-	 */
-	@Override
-	protected Annotation findAnnotation(final int offset, final int length,
-			boolean forward, Position annotationPosition) {
-
-		Annotation nextAnnotation = null;
-		Position nextAnnotationPosition = null;
-		Annotation containingAnnotation = null;
-		Position containingAnnotationPosition = null;
-		boolean currentAnnotation = false;
-
-		IDocument document = getDocumentProvider()
-				.getDocument(getEditorInput());
-		int endOfDocument = document.getLength();
-		int distance = Integer.MAX_VALUE;
-
-		IAnnotationModel model = getDocumentProvider().getAnnotationModel(
-				getEditorInput());
-		Iterator<Annotation> e = new ScriptAnnotationIterator(model, true);
-		while (e.hasNext()) {
-			Annotation a = e.next();
-			if ((a instanceof IScriptAnnotation)
-					&& ((IScriptAnnotation) a).hasOverlay()
-					|| !isNavigationTarget(a))
-				continue;
-
-			Position p = model.getPosition(a);
-			if (p == null)
-				continue;
-
-			if (forward && p.offset == offset || !forward
-					&& p.offset + p.getLength() == offset + length) {// ||
-				// p.includes(offset))
-				// {
-				if (containingAnnotation == null
-						|| (forward
-								&& p.length >= containingAnnotationPosition.length || !forward
-								&& p.length >= containingAnnotationPosition.length)) {
-					containingAnnotation = a;
-					containingAnnotationPosition = p;
-					currentAnnotation = p.length == length;
-				}
-			} else {
-				int currentDistance = 0;
-
-				if (forward) {
-					currentDistance = p.getOffset() - offset;
-					if (currentDistance < 0)
-						currentDistance = endOfDocument + currentDistance;
-
-					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
-						distance = currentDistance;
-						nextAnnotation = a;
-						nextAnnotationPosition = p;
-					}
-				} else {
-					currentDistance = offset + length
-							- (p.getOffset() + p.length);
-					if (currentDistance < 0)
-						currentDistance = endOfDocument + currentDistance;
-
-					if (currentDistance < distance
-							|| currentDistance == distance
-							&& p.length < nextAnnotationPosition.length) {
-						distance = currentDistance;
-						nextAnnotation = a;
-						nextAnnotationPosition = p;
-					}
-				}
-			}
-		}
-		if (containingAnnotationPosition != null
-				&& (!currentAnnotation || nextAnnotation == null)) {
-			annotationPosition.setOffset(containingAnnotationPosition
-					.getOffset());
-			annotationPosition.setLength(containingAnnotationPosition
-					.getLength());
-			return containingAnnotation;
-		}
-		if (nextAnnotationPosition != null) {
-			annotationPosition.setOffset(nextAnnotationPosition.getOffset());
-			annotationPosition.setLength(nextAnnotationPosition.getLength());
-		}
-
-		return nextAnnotation;
-	}
-
-	/**
-	 * Returns the annotation overlapping with the given range or
-	 * <code>null</code>.
-	 * 
-	 * @param offset
-	 *            the region offset
-	 * @param length
-	 *            the region length
-	 * @return the found annotation or <code>null</code>
-	 * @since 3.0
-	 */
-	private Annotation getAnnotation(int offset, int length) {
-		IAnnotationModel model = getDocumentProvider().getAnnotationModel(
-				getEditorInput());
-		Iterator<Annotation> e = new ScriptAnnotationIterator(model, false);
-		while (e.hasNext()) {
-			Annotation a = e.next();
-			Position p = model.getPosition(a);
-			if (p != null && p.overlapsWith(offset, length))
-				return a;
-		}
-		return null;
-	}
-
-	protected void updateStatusLine() {
-		ITextSelection selection = (ITextSelection) getSelectionProvider().getSelection();
-		Annotation annotation = getAnnotation(selection.getOffset(), selection.getLength());
-		setStatusLineErrorMessage(null);
-		setStatusLineMessage(null);
-		if (annotation != null) {
-			updateMarkerViews(annotation);
-			if (annotation instanceof IScriptAnnotation && ((IScriptAnnotation) annotation).isProblem())
-				setStatusLineMessage(annotation.getText());
-		}
-	}
 
 	/**
 	 * The folding runner.
@@ -623,14 +451,9 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			if (sourceViewer == null) {
 				return;
 			}
-			boolean newBooleanValue = false;
-			Object newValue = event.getNewValue();
 
 			if (isEditorHoverProperty(property))
 				updateHoverBehavior();
-
-			if (newValue != null)
-				newBooleanValue = Boolean.valueOf(newValue.toString()).booleanValue();
 
 			if (CodeFormatterConstants.FORMATTER_TAB_SIZE.equals(property)
 					|| CodeFormatterConstants.FORMATTER_INDENTATION_SIZE.equals(property)
@@ -649,39 +472,22 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 				return;
 			}
 			if (PreferenceConstants.EDITOR_SMART_TAB.equals(property)) {
-				if (getPreferenceStore().getBoolean(
-						PreferenceConstants.EDITOR_SMART_TAB)) {
-					setActionActivationCode(DLTKActionConstants.INDENT_ON_TAB,
-							SWT.TAB, -1, SWT.NONE);
+				if (getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_TAB)) {
+					setActionActivationCode(DLTKActionConstants.INDENT_ON_TAB, SWT.TAB, -1, SWT.NONE);
 				} else {
 					removeActionActivationCode(DLTKActionConstants.INDENT_ON_TAB);
 				}
 			}
 
-			if (isFoldingPropertyEvent(property)
-					&& sourceViewer instanceof ProjectionViewer) {
+			if (isFoldingPropertyEvent(property) && sourceViewer instanceof ProjectionViewer) {
 				handleFoldingPropertyEvent(property);
 			}
 
-			final ScriptSourceViewerConfiguration ssvc = (ScriptSourceViewerConfiguration) getSourceViewerConfiguration();
+			final SimpleLangSourceViewerConfiguration ssvc = getSourceViewerConfiguration_asLang();
 			
 			ssvc.handlePropertyChangeEvent(event);
 		} finally {
 			super.handlePreferenceStoreChanged(event);
-		}
-		if (AbstractDecoratedTextEditorPreferenceConstants.SHOW_RANGE_INDICATOR
-				.equals(property)) {
-			// superclass already installed the range indicator
-			Object newValue = event.getNewValue();
-			ISourceViewer viewer = getSourceViewer();
-			if (newValue != null && viewer != null) {
-				if (Boolean.valueOf(newValue.toString()).booleanValue()) {
-					// adjust the highlightrange in order to get the magnet
-					// right after changing the selection
-					Point selection = viewer.getSelectedRange();
-					adjustHighlightRange(selection.x, selection.y);
-				}
-			}
 		}
 	}
 
@@ -837,26 +643,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return DeeUILanguageToolkit.getDefault();
 	}
 
-	/*
-	 * @see AbstractTextEditor#performSave(boolean, IProgressMonitor)
-	 */
-	@Override
-	protected void performSave(boolean overwrite,
-			IProgressMonitor progressMonitor) {
-		IDocumentProvider p = getDocumentProvider();
-		if (p instanceof ISourceModuleDocumentProvider) {
-			ISourceModuleDocumentProvider cp = (ISourceModuleDocumentProvider) p;
-			cp.setSavePolicy(fSavePolicy);
-		}
-		try {
-			super.performSave(overwrite, progressMonitor);
-		} finally {
-			if (p instanceof ISourceModuleDocumentProvider) {
-				ISourceModuleDocumentProvider cp = (ISourceModuleDocumentProvider) p;
-				cp.setSavePolicy(null);
-			}
-		}
-	}
 
 	/*
 	 * @see AbstractTextEditor#doSave(IProgressMonitor)
