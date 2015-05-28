@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
+import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
@@ -22,9 +23,8 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
-import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 
-public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguration {
+public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
 			AbstractDecoratedTextEditor editor) {
@@ -67,8 +67,11 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	// ================ Information provider
 	
 	@Override
-	protected IInformationProvider getInformationProvider() {
-		return new ScriptInformationProvider_Mod(getEditor());
+	protected IInformationProvider getInformationProvider(String contentType) {
+		if(contentType.equals(DeePartitions.DEE_CODE)) {
+			return new ScriptInformationProvider_Mod(getEditor());
+		}
+		return null;
 	}
 	
 	// ================ Content Assist

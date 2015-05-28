@@ -18,6 +18,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Bundle;
 
+import _org.eclipse.jdt.internal.ui.text.HTMLPrinter;
 import dtool.ddoc.IDeeDocColorConstants;
 
 class JDT_PreferenceConstants {
@@ -70,29 +71,24 @@ public class HoverUtil {
 		return null;
 	}
 
-	@SuppressWarnings("restriction")
 	public static String getCompleteHoverInfo(String info, String cssStyle) {
 		
 		if (info != null && info.length() > 0) {
 			StringBuffer buffer= new StringBuffer();
-			org.eclipse.jface.internal.text.html.
 			HTMLPrinter.insertPageProlog(buffer, 0, cssStyle);
 			buffer.append(info);
-			org.eclipse.jface.internal.text.html.
 			HTMLPrinter.addPageEpilog(buffer);
 			info= buffer.toString();
 		}
 		return info;
 	}
 
-	@SuppressWarnings("restriction")
 	static String setupCSSFont(String fgCSSStyles) {
 		String css= fgCSSStyles;
 		if (css != null) {
 			FontData fontData= JFaceResources.getFontRegistry().
 				getFontData(JDT_PreferenceConstants.APPEARANCE_JAVADOC_FONT)[0];
-			css= org.eclipse.jface.internal.text.html.
-				HTMLPrinter.convertTopLevelFont(css, fontData);
+			css= HTMLPrinter.convertTopLevelFont(css, fontData);
 		}
 		return css;
 	}
