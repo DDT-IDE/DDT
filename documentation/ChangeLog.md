@@ -23,6 +23,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Reconciler thread timer. // TODO reword
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
  * Reworked Content Assist preference page. Now has option to auto-activate with alphabet characters.
+ * Fixed #91: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
 
  * Upgraded minimum Java version to Java 8
 

@@ -39,7 +39,7 @@ public class DeeSourceViewerConfiguration extends ScriptSourceViewerConfiguratio
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
 			AbstractDecoratedTextEditor editor) {
-		super(preferenceStore, colorManager, editor, DeePartitions.PARTITIONING_ID);
+		super(preferenceStore, colorManager, editor);
 	}
 	
 	@Override

@@ -14,13 +14,11 @@ package _org.eclipse.dltk.internal.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.LangNature;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
-import melnorme.lang.ide.ui.text.SimpleLangSourceViewerConfiguration;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 import mmrnmhrm.ui.DeeUIPlugin;
 
@@ -33,12 +31,10 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
-import org.eclipse.dltk.ui.actions.DLTKActionConstants;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -57,8 +53,6 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -72,7 +66,6 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 
-import _org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
@@ -107,7 +100,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		setDocumentProvider(DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider());
 	}
 	
-	
 	@Override
 	public void dispose() {
 
@@ -115,16 +107,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			fProjectionModelUpdater.uninstall();
 			fProjectionModelUpdater = null;
 		}
-
-		// ISourceViewer sourceViewer= getSourceViewer();
-		// if (sourceViewer instanceof ITextViewerExtension)
-		// ((ITextViewerExtension)
-		// sourceViewer).removeVerifyKeyListener(fBracketInserter);
-
-		// if (fCorrectionCommands != null) {
-		// fCorrectionCommands.deregisterCommands();
-		// fCorrectionCommands= null;
-		// }
+		
 		super.dispose();
 	}
 
@@ -185,7 +168,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		fInformationPresenter.setSizeConstraints(60, 10, true, true);
 		fInformationPresenter.install(getSourceViewer());
 		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
-		
 	}
 	
 	/* ----------------- set input ----------------- */
@@ -193,14 +175,10 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
 		LangSourceViewer sourceViewer = getSourceViewer_(); // Can be null
-		IPreferenceStore store = getPreferenceStore();
 		
-		if (sourceViewer != null && isFoldingEnabled()
-				&& (store == null || !store.getBoolean(PreferenceConstants.EDITOR_SHOW_SEGMENTS))) {
+		if (sourceViewer != null && isFoldingEnabled()) {
 			sourceViewer.prepareDelayedProjection();
 		}
-
-		// correct connection code here.
 
 		super.internalDoSetInput(input);
 	}
@@ -258,8 +236,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			return fProjectionModelUpdater;
 
 		if (fProjectionSupport != null) {
-			Object adapter = fProjectionSupport.getAdapter(getSourceViewer(),
-					required);
+			Object adapter = fProjectionSupport.getAdapter(getSourceViewer(), required);
 			if (adapter != null)
 				return adapter;
 		}
@@ -454,48 +431,13 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 
 			if (isEditorHoverProperty(property))
 				updateHoverBehavior();
-
-			if (CodeFormatterConstants.FORMATTER_TAB_SIZE.equals(property)
-					|| CodeFormatterConstants.FORMATTER_INDENTATION_SIZE.equals(property)
-					|| CodeFormatterConstants.FORMATTER_TAB_CHAR.equals(property)) {
-				if (CodeFormatterConstants.FORMATTER_TAB_CHAR.equals(property)) {
-					if (isTabsToSpacesConversionEnabled())
-						installTabsToSpacesConverter();
-					else
-						uninstallTabsToSpacesConverter();
-				}
-				updateIndentPrefixes();
-				StyledText textWidget = sourceViewer.getTextWidget();
-				int tabWidth = getSourceViewerConfiguration().getTabWidth(sourceViewer);
-				if (textWidget.getTabs() != tabWidth)
-					textWidget.setTabs(tabWidth);
-				return;
-			}
-			if (PreferenceConstants.EDITOR_SMART_TAB.equals(property)) {
-				if (getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_TAB)) {
-					setActionActivationCode(DLTKActionConstants.INDENT_ON_TAB, SWT.TAB, -1, SWT.NONE);
-				} else {
-					removeActionActivationCode(DLTKActionConstants.INDENT_ON_TAB);
-				}
-			}
-
+			
 			if (isFoldingPropertyEvent(property) && sourceViewer instanceof ProjectionViewer) {
 				handleFoldingPropertyEvent(property);
 			}
-
-			final SimpleLangSourceViewerConfiguration ssvc = getSourceViewerConfiguration_asLang();
-			
-			ssvc.handlePropertyChangeEvent(event);
 		} finally {
 			super.handlePreferenceStoreChanged(event);
 		}
-	}
-
-	@Override
-	protected boolean affectsTextPresentation(PropertyChangeEvent event) {
-		return ((ScriptSourceViewerConfiguration) getSourceViewerConfiguration())
-				.affectsTextPresentation(event)
-				|| super.affectsTextPresentation(event);
 	}
 
 	protected void handleFoldingPropertyEvent(String property) {
@@ -629,10 +571,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		}
 	}
 	
-	public String getNatureId() {
-		return LangNature.NATURE_ID;
-	}
-	
 	@Deprecated
 	@Override
 	public DeeLanguageToolkit getLanguageToolkit() {
@@ -736,16 +674,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 				}
 			}
 		}
-	}
-
-	/*
-	 * @see AbstractDecoratedTextEditor#isTabsToSpacesConversionEnabled()
-	 */
-	@Override
-	protected boolean isTabsToSpacesConversionEnabled() {
-		return getPreferenceStore() != null
-				&& CodeFormatterConstants.SPACE.equals(getPreferenceStore()
-						.getString(CodeFormatterConstants.FORMATTER_TAB_CHAR));
 	}
 
 	private boolean isHandledPropertyEvent(String property, String[] handled) {
