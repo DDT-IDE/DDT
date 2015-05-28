@@ -27,12 +27,7 @@ public class AbstractDocTextHover extends org.eclipse.dltk.internal.ui.text.hove
 	
 	
 	@Override
-	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo2_do(textViewer, hoverRegion);
-	}
-	
-	@Override
-	public String getHoverInfo2_do(ITextViewer textViewer, IRegion hoverRegion) {
+	public String getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
 		return getHoverInfo(textViewer, hoverRegion);
 	}
 	
