@@ -11,7 +11,7 @@ import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.IEditorPart;
 
-//TODO: this class needs some cleanup
+//FIXME: DLTK this class needs some cleanup
 public class AbstractDocTextHover extends org.eclipse.dltk.internal.ui.text.hover.DocumentationHover 
 	implements ITextHoverExtension, ILangEditorTextHover<String> {
 	

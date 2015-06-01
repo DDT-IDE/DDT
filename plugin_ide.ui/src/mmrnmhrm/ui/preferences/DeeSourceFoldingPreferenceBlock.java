@@ -5,11 +5,12 @@ import java.util.List;
 import mmrnmhrm.ui.DeePreferencesMessages;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
-import org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Group;
+
+import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import _org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
 
 public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock {
 	

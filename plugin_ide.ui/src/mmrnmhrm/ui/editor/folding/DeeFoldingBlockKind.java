@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.folding;
 
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
+import _org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 
 public enum DeeFoldingBlockKind implements IFoldingBlockKind {
 	COMMENT(true),

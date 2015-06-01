@@ -10,8 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.downCast;
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 import melnorme.utilbox.tests.CommonTest;
 import mmrnmhrm.core.text.DeePartitions;
@@ -54,13 +57,13 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 			fp = DeeTextTestUtils.installDeePartitioner(document);
 		} else {
 			document.set(docContents);
+			assertNotNull(fp);
 		}
 	}
 	
 	private void installPartitionerOnDocumentWithTextTools() {
-		DeeTextTools textTools = new DeeTextTools(true);
-		textTools.setupDefaultDocumentPartitioner(document);
-		fp = (FastPartitioner) document.getDocumentPartitioner();
+		LangDocumentPartitionerSetup.getInstance().setup(document);
+		fp = (FastPartitioner) document.getDocumentPartitioner(TextSettings_Actual.PARTITIONING_ID);
 	}
 	
 	protected void checkPositions(Position[] positions, String[] expectedPositions) {

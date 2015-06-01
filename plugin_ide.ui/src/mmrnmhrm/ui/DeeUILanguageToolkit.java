@@ -27,6 +27,7 @@ import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
+import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
@@ -35,7 +36,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implements IDLTKUILanguageToolkit {
 	
 	private static final DeeUILanguageToolkit instance = new DeeUILanguageToolkit();
-	private static final DeeScriptElementLabels elementLabels = new DeeScriptElementLabels(); 
+	private static final ScriptElementLabels elementLabels = new ScriptElementLabels() {
+		
+	}; 
 	
 	
 	public static DeeUILanguageToolkit getDefault() {
@@ -89,7 +92,7 @@ public class DeeUILanguageToolkit extends AbstractDLTKUILanguageToolkit implemen
 	}
 	
 	@Override
-	public DeeScriptElementLabels getScriptElementLabels() {
+	public ScriptElementLabels getScriptElementLabels() {
 		return elementLabels; 
 	}
 	

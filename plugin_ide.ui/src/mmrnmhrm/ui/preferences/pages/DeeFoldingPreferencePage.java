@@ -4,12 +4,13 @@ import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeDocFoldingPreferenceBlock;
 import mmrnmhrm.ui.preferences.DeeSourceFoldingPreferenceBlock;
 
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
-import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.dltk.ui.text.folding.DefaultFoldingPreferenceConfigurationBlock;
-import org.eclipse.dltk.ui.text.folding.IFoldingPreferenceBlock;
 import org.eclipse.jface.preference.PreferencePage;
+
+import _org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
+import _org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
+import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import _org.eclipse.dltk.ui.text.folding.DefaultFoldingPreferenceConfigurationBlock;
+import _org.eclipse.dltk.ui.text.folding.IFoldingPreferenceBlock;
 
 public class DeeFoldingPreferencePage extends AbstractConfigurationBlockPreferencePage {
 	

@@ -37,7 +37,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 
+
 @SuppressWarnings("restriction")
+/* FIXME: DLTK review this code*/
 public abstract class AbstractScriptCompletionProposal extends LangCompletionProposal {
 
 	protected char[] fTriggerCharacters;

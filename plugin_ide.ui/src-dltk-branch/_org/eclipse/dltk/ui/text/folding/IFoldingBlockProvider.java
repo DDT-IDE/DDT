@@ -13,8 +13,6 @@ package _org.eclipse.dltk.ui.text.folding;
 
 import melnorme.lang.tooling.structure.SourceFileStructure;
 
-import org.eclipse.dltk.ui.text.folding.AbortFoldingException;
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockRequestor;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;

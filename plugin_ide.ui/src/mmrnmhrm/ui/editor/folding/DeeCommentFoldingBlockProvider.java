@@ -6,13 +6,13 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.text.DeePartitioningProvider;
 
-import org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IRegion;
 
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
+import _org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import _org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import _org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
 import dtool.ast.definitions.Module;

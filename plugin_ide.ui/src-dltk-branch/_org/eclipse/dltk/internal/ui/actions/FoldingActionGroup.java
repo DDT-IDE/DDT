@@ -12,7 +12,6 @@ package _org.eclipse.dltk.internal.ui.actions;
 import java.util.ResourceBundle;
 
 import org.eclipse.dltk.internal.ui.actions.FoldingMessages;
-import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.jface.action.IAction;
@@ -28,6 +27,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
+
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
 /**
  * Groups the folding actions.

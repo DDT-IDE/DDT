@@ -30,8 +30,6 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
-import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
-import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -60,6 +58,8 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
+import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
+import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
 /* FIXME: need to review this class */
@@ -502,8 +502,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			updateState(getEditorInput());
 			validateState(getEditorInput());
 
-			IWorkingCopyManager manager = DLTKUIPlugin.getDefault()
-					.getWorkingCopyManager();
+			IWorkingCopyManager manager = DLTKUIPlugin.getDefault().getWorkingCopyManager();
 			ISourceModule unit = manager.getWorkingCopy(getEditorInput());
 
 			if (unit != null) {
