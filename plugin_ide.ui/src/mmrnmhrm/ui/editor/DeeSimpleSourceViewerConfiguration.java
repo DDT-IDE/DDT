@@ -76,9 +76,4 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 		return null;
 	}
 	
-	@Override
-	public void setupCustomConfiguration(LangSourceViewer sourceViewer) {
-		// Do nothing.
-	}
-	
 }

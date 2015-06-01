@@ -16,7 +16,6 @@ import java.util.List;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
@@ -109,10 +108,10 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	@Override
 	protected AdaptedSourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
 
-		IPreferenceStore store = getPreferenceStore();
 		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
-			isOverviewRulerVisible(), styles, store, this);
+			isOverviewRulerVisible(), styles, this);
 		
+		IPreferenceStore store = getPreferenceStore();
 		installProjectionSupport(store, viewer);
 		
 		// ensure source viewer decoration support has been created and configured
@@ -136,7 +135,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	
 	@Override
 	protected void internalDoSetInput(IEditorInput input) {
-		LangSourceViewer sourceViewer = getSourceViewer_(); // Can be null
+		AdaptedSourceViewer sourceViewer = getSourceViewer_(); // Can be null
 		
 		if (sourceViewer != null && isFoldingEnabled()) {
 			sourceViewer.prepareDelayedProjection();

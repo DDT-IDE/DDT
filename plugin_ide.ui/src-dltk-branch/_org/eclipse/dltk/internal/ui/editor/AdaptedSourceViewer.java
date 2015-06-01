@@ -16,8 +16,8 @@ import java.util.List;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IWidgetTokenKeeper;
@@ -49,15 +49,15 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 	protected final ScriptEditor editor;
 	
 	public AdaptedSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
-			boolean showAnnotationsOverview, int styles, IPreferenceStore store, ScriptEditor editor) {
-		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles, store);
+			boolean showAnnotationsOverview, int styles, ScriptEditor editor) {
+		super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);
 		this.editor = editor;
 	}
-
+	
 	@Override
-	public void configure(SourceViewerConfiguration configuration) {
-		super.configure(configuration);
-
+	public void doConfigure(SourceViewerConfiguration configuration) {
+		super.doConfigure(configuration);
+		
 		final IContentAssistant ca = getContentAssistant();
 		if (ca instanceof IContentAssistantExtension2) {
 			((IContentAssistantExtension2) ca).addCompletionListener(this);
@@ -68,8 +68,7 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 	public void unconfigure() {
 		final IContentAssistant ca = getContentAssistant();
 		if (ca instanceof IContentAssistantExtension2) {
-			((IContentAssistantExtension2) ca)
-					.removeCompletionListener(this);
+			((IContentAssistantExtension2) ca).removeCompletionListener(this);
 		}
 
 		super.unconfigure();
@@ -189,6 +188,58 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 	public IFormattingContext createFormattingContext() {
 		IFormattingContext context = super.createFormattingContext();
 		return context;
+	}
+	
+	/* ----------------- setVisibleDocument optimization ----------------- */
+	
+	/**
+	 * Whether to delay setting the visual document until the projection has been computed.
+	 * <p>
+	 * Added for performance optimization.
+	 * </p>
+	 * @see #prepareDelayedProjection()
+	 * @since 3.1
+	 */
+	private boolean fIsSetVisibleDocumentDelayed= false;
+
+	/**
+	 * Delays setting the visual document until after the projection has been computed.
+	 * This method must only be called before the document is set on the viewer.
+	 * <p>
+	 * This is a performance optimization to reduce the computation of
+	 * the text presentation triggered by <code>setVisibleDocument(IDocument)</code>.
+	 * </p>
+	 *
+	 * @see #setVisibleDocument(IDocument)
+	 * @since 3.1
+	 */
+	public void prepareDelayedProjection() {
+		Assert.isTrue(!fIsSetVisibleDocumentDelayed);
+		fIsSetVisibleDocumentDelayed= true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * This is a performance optimization to reduce the computation of
+	 * the text presentation triggered by {@link #setVisibleDocument(IDocument)}
+	 * </p>
+	 * @see #prepareDelayedProjection()
+	 * @since 3.1
+	 */
+	@Override
+	protected void setVisibleDocument(IDocument document) {
+		if (fIsSetVisibleDocumentDelayed) {
+			fIsSetVisibleDocumentDelayed= false;
+			IDocument previous= getVisibleDocument();
+			enableProjection(); // will set the visible document if anything is folded
+			IDocument current= getVisibleDocument();
+			// if the visible document was not replaced, continue as usual
+			if (current != null && current != previous)
+				return;
+		}
+
+		super.setVisibleDocument(document);
 	}
 	
 }

@@ -27,7 +27,6 @@ import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.dltk.ui.text.templates.TemplateVariableProcessor;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -46,14 +45,11 @@ import org.eclipse.jface.text.templates.TemplateProposal;
 import org.eclipse.jface.text.templates.persistence.TemplateStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.texteditor.templates.AbstractTemplatesPage;
-
-import _org.eclipse.dltk.internal.ui.preferences.ScriptSourcePreviewerUpdater;
 
 /**
  * The templates page for the Script editor.
@@ -183,18 +179,14 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 		IDocument document = new Document();
 		DeeTextTools tools = DeeUIPlugin.getDefault().getTextTools();
 		tools.setupDocumentPartitioner(document);
-		IPreferenceStore store = uiToolkit().getCombinedPreferenceStore();
-		LangSourceViewer viewer = new LangSourceViewer(parent, null, null,
-				false, SWT.V_SCROLL | SWT.H_SCROLL, store);
+		LangSourceViewer viewer = new LangSourceViewer(parent, null, null, false, SWT.V_SCROLL | SWT.H_SCROLL);
 
 		DeeSourceViewerConfiguration configuration = uiToolkit().createSourceViewerConfiguration2();
 		viewer.configure(configuration);
 		viewer.setEditable(false);
 		viewer.setDocument(document);
-
-		Font font = JFaceResources.getFont(fScriptEditor.getFontPropertyPreferenceKey_());
-		viewer.getTextWidget().setFont(font);
-		new ScriptSourcePreviewerUpdater(viewer, configuration, store);
+		
+		configuration.setupViewerForTextPresentationPrefChanges(viewer);
 
 		Control control = viewer.getControl();
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_VERTICAL);
