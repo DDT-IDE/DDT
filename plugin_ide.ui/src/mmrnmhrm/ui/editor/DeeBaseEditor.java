@@ -5,8 +5,10 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 
 import _org.eclipse.dltk.internal.ui.editor.BracketInserter2;
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
-public abstract class DeeBaseEditor extends AbstractLangEditor_DLTK {
+/* FIXME: to do bracket inserter. */
+public abstract class DeeBaseEditor extends ScriptEditor {
 	
 	protected BracketInserter2 fBracketInserter = new DeeBracketInserter(this);
 	

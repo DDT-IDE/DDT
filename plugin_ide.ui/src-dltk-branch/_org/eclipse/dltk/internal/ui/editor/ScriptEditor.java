@@ -47,7 +47,6 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -557,11 +556,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			EditorPrefConstants.ENCLOSING_BRACKETS);
 	}
 	
-	public void updatedTitleImage(Image image) {
-		setTitleImage(image);
-	}
-
-
 	@Override
 	protected String[] collectContextMenuPreferencePages() {
 		final List<String> result = new ArrayList<String>();

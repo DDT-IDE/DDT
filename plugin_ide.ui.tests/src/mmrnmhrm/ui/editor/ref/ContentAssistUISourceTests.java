@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.util.swt.SWTTestUtils;
 import melnorme.utilbox.misc.Location;
@@ -19,7 +20,6 @@ import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.core.engine.CoreResolverSourceTests;
 import mmrnmhrm.core.engine.DToolClient;
 import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.core.resources.IFile;
@@ -44,7 +44,7 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 		super(testUIDescription, file);
 	}
 	
-	protected static AbstractLangEditor_DLTK editor;
+	protected static AbstractLangStructureEditor editor;
 	
 	@Override
 	public void cleanupTestCase() {

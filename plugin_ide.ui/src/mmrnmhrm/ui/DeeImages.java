@@ -10,8 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
-import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.LangElementImages;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -22,8 +22,6 @@ public abstract class DeeImages extends LangImages {
 	protected static final String CAT_ELEMS = "language_elements";
 	
 	protected static final String T_ACTIONS = "action16e";
-	
-	public static final ImageHandle SOURCE_FILE = createManaged("views", "source_file.gif");
 	
 	public static final ImageHandle ELEM_MODULE = LangElementImages.PACKAGE;
 	public static final ImageHandle ELEM_PACKAGE = createManaged(CAT_ELEMS, "dee_package.png");

@@ -35,7 +35,7 @@
 			class="mmrnmhrm.ui.editor.DeeEditor"
 			contributorClass="mmrnmhrm.ui.editor.DeeEditorActionContributor"
 			default="true"
-			icon="icons/views/source_file.gif"
+			icon="icons/views/SourceEditor.png"
 			id="org.dsource.ddt.ide.ui.editors.DeeEditor"
 			name="%LangEditor.name">
 			<contentTypeBinding contentTypeId="org.dsource.ddt.ide.core.content.dsource" />

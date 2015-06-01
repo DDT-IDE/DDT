@@ -18,11 +18,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.editor.AbstractLangEditor_DLTK;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.core.resources.IFile;
@@ -36,7 +36,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
 	protected final ISourceModule srcModule;
-	protected final AbstractLangEditor_DLTK editor;
+	protected final AbstractLangEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.editor = CommonDeeUITest.openDeeEditorForFile(file);
@@ -62,7 +62,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		return ccOffset + markerString.length();
 	}
 	
-	public static void invokeContentAssist(AbstractLangEditor_DLTK editor, int offset) {
+	public static void invokeContentAssist(AbstractLangEditor editor, int offset) {
 		editor.getSourceViewer_().setSelectedRange(offset, 0);
 		ITextOperationTarget target= (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
 		if (target != null && target.canDoOperation(ISourceViewer.CONTENTASSIST_PROPOSALS)) {
@@ -70,7 +70,7 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 		}
 	}
 	
-	public static ContentAssistant getContentAssistant(AbstractLangEditor_DLTK scriptEditor) {
+	public static ContentAssistant getContentAssistant(AbstractLangEditor scriptEditor) {
 		return (ContentAssistant) scriptEditor.getSourceViewer_().getContentAssistant();
 	}
 	
