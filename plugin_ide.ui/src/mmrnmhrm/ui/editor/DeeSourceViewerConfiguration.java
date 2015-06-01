@@ -22,7 +22,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
-import _org.eclipse.dltk.internal.ui.text.hover.ScriptInformationProvider_Mod;
+import _org.eclipse.jdt.internal.ui.text.java.hover.LangInformationProvider;
 
 public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
@@ -69,7 +69,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	@Override
 	protected IInformationProvider getInformationProvider(String contentType) {
 		if(contentType.equals(DeePartitions.DEE_CODE)) {
-			return new ScriptInformationProvider_Mod(getEditor());
+			return new LangInformationProvider(getEditor());
 		}
 		return null;
 	}
