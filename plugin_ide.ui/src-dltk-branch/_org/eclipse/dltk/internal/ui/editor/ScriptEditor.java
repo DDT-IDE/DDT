@@ -17,7 +17,6 @@ import java.util.List;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
@@ -58,7 +57,6 @@ import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
@@ -150,35 +148,9 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 	
-	/**
-	 * The templates page.
-	 * 
-	 * @since 3.0
-	 */
-	private ScriptTemplatesPage fTemplatesPage;
-
-	/**
-	 * Creates the templates page used with this editor.
-	 * 
-	 * @return the created script templates page
-	 * @since 3.0
-	 */
-	protected ScriptTemplatesPage createTemplatesPage() {
-		final TemplateRegistry templateAccess = LangUIPlugin.getTemplateRegistry();
-		try {
-			return new ScriptTemplatesPage(this, templateAccess);
-		} catch (Throwable e) {
-			return null;
-		}
-	}
 
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
-		if (ITemplatesPage.class.equals(required)) {
-			if (fTemplatesPage == null)
-				fTemplatesPage = createTemplatesPage();
-			return fTemplatesPage;
-		}
 		if (required == IFoldingStructureProvider.class)
 			return fProjectionModelUpdater;
 		if (required == IFoldingStructureProviderExtension.class)
