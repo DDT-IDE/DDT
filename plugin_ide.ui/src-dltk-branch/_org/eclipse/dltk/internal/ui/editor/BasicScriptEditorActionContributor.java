@@ -57,8 +57,8 @@ public abstract class BasicScriptEditorActionContributor extends LangEditorActio
 //		fGotoNextMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.NEXT_MEMBER));
 //		fGotoPreviousMemberAction.setAction(getAction(textEditor, GoToNextPreviousMemberAction.PREVIOUS_MEMBER));
 
-		if (part instanceof ScriptEditor_Actions) {
-			ScriptEditor_Actions editor = (ScriptEditor_Actions) part;
+		if (part instanceof ScriptEditor) {
+			ScriptEditor editor = (ScriptEditor) part;
 			final FoldingActionGroup foldingActions = editor.getFoldingActionGroup();
 			if (foldingActions != null)
 				foldingActions.updateActionBars();

@@ -192,13 +192,12 @@ public class ScriptTemplatesPage extends AbstractTemplatesPage {
 		viewer.setEditable(false);
 		viewer.setDocument(document);
 
-		Font font = JFaceResources.getFont(fScriptEditor.getSymbolicFontName());
+		Font font = JFaceResources.getFont(fScriptEditor.getFontPropertyPreferenceKey_());
 		viewer.getTextWidget().setFont(font);
 		new ScriptSourcePreviewerUpdater(viewer, configuration, store);
 
 		Control control = viewer.getControl();
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.FILL_VERTICAL);
+		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_VERTICAL);
 		control.setLayoutData(data);
 
 		viewer.setEditable(false);

@@ -17,14 +17,14 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorInput;
 
+import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditorErrorTickUpdater2;
-import _org.eclipse.dltk.internal.ui.editor.ScriptEditor_Actions;
 
 /**
  * A similar class to {@link AbstractLangEditor}, based on the DLTK hieararchy.
  * Eventually we would like to completely remove the DLTK dependency and just use {@link AbstractLangEditor}.
  */
-public abstract class AbstractLangEditor_DLTK extends ScriptEditor_Actions {
+public abstract class AbstractLangEditor_DLTK extends ScriptEditor {
 	
 	public AbstractLangEditor_DLTK() {
 		super();

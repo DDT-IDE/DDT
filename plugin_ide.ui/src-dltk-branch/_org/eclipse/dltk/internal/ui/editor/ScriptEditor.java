@@ -20,7 +20,6 @@ import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.templates.TemplateRegistry;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
-import mmrnmhrm.ui.DeeUIPlugin;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,28 +27,23 @@ import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.internal.ui.BrowserInformationControl;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.DefaultInformationControl;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
-import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.ITextViewerExtension2;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -62,10 +56,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.templates.ITemplatesPage;
 
+import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
@@ -83,15 +80,9 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT,
 			PreferenceConstants.EDITOR_COMMENT_FOLDING_JOIN_NEWLINES };
 
-	/**
-	 * Text operation code for requesting common prefix completion.
-	 */
-	public static final int CONTENTASSIST_COMPLETE_PREFIX = 60;
-	
 
 	private ProjectionSupport fProjectionSupport;
 	private DelegatingFoldingStructureProvider fProjectionModelUpdater;
-	private InformationPresenter fInformationPresenter;
 	
 	/* -----------------  ----------------- */
 	
@@ -114,10 +105,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	@Override
 	protected void alterCombinedPreferenceStores_beforeEditorsUI(List<IPreferenceStore> stores) {
 		stores.add(new PreferencesAdapter(DLTKCore.getDefault().getPluginPreferences()));
-	}
-	
-	public IPreferenceStore getScriptPreferenceStore() {
-		return DeeUIPlugin.getInstance().getPreferenceStore();
 	}
 	
 	@Override
@@ -146,30 +133,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		getSourceViewer_().hadnleElementContentReplaced();
 	}
 	
-	@Override
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-
-		IInformationControlCreator informationControlCreator = new IInformationControlCreator() {
-			@Override
-			public IInformationControl createInformationControl(Shell shell) {
-				boolean cutDown = false;
-				//int style = cutDown ? SWT.NONE : (SWT.V_SCROLL | SWT.H_SCROLL);
-				// return new DefaultInformationControl(shell, SWT.RESIZE
-				// | SWT.TOOL, style, new HTMLTextPresenter(cutDown));
-				if (BrowserInformationControl.isAvailable(shell))
-					return new BrowserInformationControl(shell, JFaceResources.DIALOG_FONT, true);
-				else
-					return new DefaultInformationControl(shell, new HTMLTextPresenter(cutDown));
-			}
-		};
-
-		fInformationPresenter = new InformationPresenter(informationControlCreator);
-		fInformationPresenter.setSizeConstraints(60, 10, true, true);
-		fInformationPresenter.install(getSourceViewer());
-		fInformationPresenter.setDocumentPartitioning(IDocument.DEFAULT_CONTENT_TYPE);
-	}
-	
 	/* ----------------- set input ----------------- */
 	
 	@Override
@@ -185,22 +148,10 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	
 	/* -----------------  ----------------- */
 	
-	@Override
-	public void setStatusLineErrorMessage(String message) {
-		super.setStatusLineErrorMessage(message);
-	}
-
 	private boolean isFoldingEnabled() {
 		return getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 	
-	@Override
-	protected void setPreferenceStore(IPreferenceStore store) {
-		super.setPreferenceStore(store);
-		
-//		getSourceViewer_().setPreferenceStore(store);
-	}
-
 	/**
 	 * The templates page.
 	 * 
@@ -376,49 +327,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		}
 	}
 
-	private boolean isEditorHoverProperty(String property) {
-		return PreferenceConstants.EDITOR_TEXT_HOVER_MODIFIERS.equals(property);
-	}
-
-	/*
-	 * Update the hovering behavior depending on the preferences.
-	 */
-	private void updateHoverBehavior() {
-		SourceViewerConfiguration configuration = getSourceViewerConfiguration();
-		String[] types = configuration
-				.getConfiguredContentTypes(getSourceViewer());
-
-		for (int i = 0; i < types.length; i++) {
-
-			String t = types[i];
-
-			AdaptedSourceViewer sourceViewer = getSourceViewer_();
-			if (sourceViewer instanceof ITextViewerExtension2) {
-				// Remove existing hovers
-				sourceViewer.removeTextHovers(t);
-
-				int[] stateMasks = configuration
-						.getConfiguredTextHoverStateMasks(getSourceViewer(), t);
-
-				if (stateMasks != null) {
-					for (int j = 0; j < stateMasks.length; j++) {
-						int stateMask = stateMasks[j];
-						ITextHover textHover = configuration.getTextHover(
-								sourceViewer, t, stateMask);
-						sourceViewer.setTextHover(textHover, t, stateMask);
-					}
-				} else {
-					ITextHover textHover = configuration.getTextHover(
-							sourceViewer, t);
-					sourceViewer.setTextHover(
-							textHover, t,
-							ITextViewerExtension2.DEFAULT_HOVER_STATE_MASK);
-				}
-			} else
-				sourceViewer.setTextHover(configuration.getTextHover(sourceViewer, t), t);
-		}
-	}
-
 	@Override
 	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 		String property = event.getProperty();
@@ -428,9 +336,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			if (sourceViewer == null) {
 				return;
 			}
-
-			if (isEditorHoverProperty(property))
-				updateHoverBehavior();
 			
 			if (isFoldingPropertyEvent(property) && sourceViewer instanceof ProjectionViewer) {
 				handleFoldingPropertyEvent(property);
@@ -686,21 +591,65 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return false;
 	}
 
-	protected String getSymbolicFontName() {
+	/* public access */
+	public final String getFontPropertyPreferenceKey_() {
 		return getFontPropertyPreferenceKey();
 	}
-
-	/*
-	 * Increase visibility for this package - called from {@link
-	 * OccurrencesFinder}
-	 */
+	
+	
+	/* ----------------- Folding actions ----------------- */
+	
+	private FoldingActionGroup fFoldingGroup;
+	
+	FoldingActionGroup getFoldingActionGroup() {
+		return fFoldingGroup;
+	}
+	
 	@Override
-	protected IProgressMonitor getProgressMonitor() {
-		return super.getProgressMonitor();
+	protected void createActions() {
+		super.createActions();
+
+		IPreferenceStore store = LangUIPlugin.getInstance().getPreferenceStore();
+		fFoldingGroup = new FoldingActionGroup(this, getSourceViewer_(), store);
 	}
 	
-	public static int widgetOffset2ModelOffset_(ISourceViewer viewer, int widgetOffset) {
-		return widgetOffset2ModelOffset(viewer, widgetOffset);
+	@Override
+	public void editorContextMenuAboutToShow(IMenuManager menu) {
+		super.editorContextMenuAboutToShow(menu);
+		
+		menu.insertAfter(ICommonMenuConstants.GROUP_OPEN, new GroupMarker(ICommonMenuConstants.GROUP_SHOW));
 	}
 	
+	@Override
+	protected void rulerContextMenuAboutToShow(IMenuManager menu) {
+		super.rulerContextMenuAboutToShow(menu);
+		IMenuManager foldingMenu = new MenuManager(
+				DLTKEditorMessages.Editor_FoldingMenu_name, "projection"); //$NON-NLS-1$
+		menu.appendToGroup(ITextEditorActionConstants.GROUP_RULERS, foldingMenu);
+
+		IAction action = getAction("FoldingToggle"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+		action = getAction("FoldingExpandAll"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+		action = getAction("FoldingCollapseAll"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+		action = getAction("FoldingRestore"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+		action = getAction("FoldingCollapseMembers"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+		action = getAction("FoldingCollapseComments"); //$NON-NLS-1$
+		if (action != null) {
+			foldingMenu.add(action);
+		}
+	}
 }
