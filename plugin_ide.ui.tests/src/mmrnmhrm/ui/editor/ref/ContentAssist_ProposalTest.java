@@ -21,6 +21,7 @@ import mmrnmhrm.tests.SampleMainProject;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.junit.Test;
 
@@ -34,7 +35,11 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		new CompletionEngine_Test() {
-			{ this.srcModule = ContentAssist_ProposalTest.this.srcModule; }
+			
+			@Override
+			protected String getSource() throws CoreException {
+				return ContentAssist_ProposalTest.this.editor.getSourceViewer_().getDocument().get();
+			};
 			
 			@Override
 			protected void testCompletionEngine(int offset, int rplLen) throws CommonException {

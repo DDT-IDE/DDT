@@ -85,7 +85,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		// Test project with D nature, but no dub.json
 		taskCount = getModelAgent().getSubmittedTaskCount();
-		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
+		project = createAndOpenDeeProject(DUB_TEST, true);
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
 		assertTrue(model.getBundleInfo(project) == null);
@@ -102,7 +102,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		
 		_awaitModelUpdates_();
 		// Run sequence of workspace model tests
-		project = createAndOpenDeeProject(DUB_TEST, true).getProject();
+		project = createAndOpenDeeProject(DUB_TEST, true);
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
 		assertTrue(model.getBundleInfo(project) == null);
@@ -181,7 +181,7 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 	}
 	
 	public void testProjectBPDependencies() throws Exception {
-		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
+		IProject project = createAndOpenDeeProject(DUB_TEST, true);
 		String dubTestJson = jsObject(jsEntry("name", "dub_test"), 
 			jsEntryValue("dependencies", "{ \"dub_lib\": \"~master\"}"));
 		writeDubJson(project, dubTestJson);

@@ -30,10 +30,10 @@ public class WorkspaceViewModelTest extends AbstractDubModelManagerTest {
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
 		
-		IProject libProject = createAndOpenDeeProject(DUB_LIB, true).getProject();
+		IProject libProject = createAndOpenDeeProject(DUB_LIB, true);
 		libProject.getFolder("src").create(true, true, null);
 		
-		IProject project = createAndOpenDeeProject(DUB_TEST, true).getProject();
+		IProject project = createAndOpenDeeProject(DUB_TEST, true);
 		project.getFolder("source").create(true, true, null);
 		
 		DubBundle mainBundle = new DubBundle(bpath(project), "dub_test", null,

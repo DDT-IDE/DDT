@@ -15,9 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.concurrent.Future;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.bundlemodel.BundleModelManager;
@@ -28,7 +25,6 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -46,10 +42,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ModelException;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
@@ -114,7 +106,6 @@ public class DubModelManager extends BundleModelManager {
 				beginProjectDescribeUpdate(project);
 			}
 		}
-		queueUpdateAllProjectsBuildpath(null);
 	}
 	
 	@Override
@@ -146,25 +137,16 @@ public class DubModelManager extends BundleModelManager {
 	@Override
 	protected void bundleProjectAdded(IProject project) {
 		beginProjectDescribeUpdate(project);
-		queueUpdateAllProjectsBuildpath(project);
 	}
 	
 	@Override
 	protected void bundleProjectRemoved(IProject project) {
 		removeProjectModel(project);
-		queueUpdateAllProjectsBuildpath(project);
 	}
 	
 	@Override
 	protected void bundleManifestFileChanged(final IProject project) {
 		beginProjectDescribeUpdate(project);
-		// TODO: bug here, we should recalculate manifest for all files, not just buildpath
-		queueUpdateAllProjectsBuildpath(project); // We do this because project might have changed name
-	}
-	
-	protected Future<?> queueUpdateAllProjectsBuildpath(IProject project) {
-		// TODO: this could be optimized to prevent duplicate tasks queued
-		return modelAgent.submit(new UpdateAllProjectsBuildpathTask(this, project));
 	}
 	
 	protected void beginProjectDescribeUpdate(final IProject project) {
@@ -373,7 +355,6 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 				assertTrue(!bundleDesc.hasErrors());
 				
 				workspaceModelManager.addProjectInfo(project, bundleDesc);
-				updateBuildpath(project, bundleDesc);
 			}
 		}, null, 0, pm);
 		
@@ -397,75 +378,6 @@ abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 	
 	protected ProjectUpdateBuildpathTask(DubModelManager dubModelManager) {
 		dubModelManager.super();
-	}
-	
-	protected void updateBuildpath(IProject project, DubBundleDescription bundleDesc) {
-		IScriptProject projectElement = DLTKCore.create(project);
-		
-		ArrayList<IBuildpathEntry> entries = new ArrayList<>();
-		
-		for (java.nio.file.Path srcFolder : bundleDesc.getMainBundle().getEffectiveSourceFolders()) {
-			// DUB allows implicit source folders to not exist, so don't add them to buildpath, 
-			// otherwise error markers will appear. Fixes #105
-			IPath srcFolderLocation = project.getLocation().append(srcFolder.toString());
-			if(srcFolderLocation.toFile().exists()) {
-				IPath entryWorkspacePath = projectElement.getPath().append(srcFolder.toString());
-				entries.add(DLTKCore.newSourceEntry(entryWorkspacePath));
-			}
-		}
-		
-		try {
-			projectElement.setRawBuildpath(ArrayUtil.createFrom(entries, IBuildpathEntry.class), null);
-		} catch (ModelException me) {
-			logInternalError(me);
-		}
-	}
-	
-}
-
-class UpdateAllProjectsBuildpathTask extends ProjectUpdateBuildpathTask {
-	
-	protected IProject changedProject;
-
-	protected UpdateAllProjectsBuildpathTask(DubModelManager modelManager, IProject changedProject) {
-		super(modelManager);
-		this.changedProject = changedProject;
-	}
-	
-	@Override
-	public void run() {
-		Set<String> dubProjects = getModel().getDubProjects();
-		for (String projectName : dubProjects) {
-			if(changedProject != null && changedProject.getName().equals(projectName))
-				continue; // changedProject is supposed to be up to date, so no need to update that one.
-			
-			final IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-			final ProjectInfo projectInfo = getModel().getProjectInfo(project);
-			
-			// Check if project info exists, the project, might have been removed in the meanwhile.
-			if(projectInfo == null) {
-				continue;
-			}
-			
-			try {
-				// TODO: review this code for concurrency problems: 
-				// EclipseUtils.getWorkspace().run was added!
-				EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
-					
-					@Override
-					public void run(IProgressMonitor monitor) throws CoreException {
-						if(project.exists() == false) {
-							return;
-						}
-						updateBuildpath(project, projectInfo.getBundleDesc());
-						
-					}
-				}, null);
-			} catch (CoreException ce) {
-				DeeCore.logStatus(ce);
-			}
-			
-		}
 	}
 	
 }

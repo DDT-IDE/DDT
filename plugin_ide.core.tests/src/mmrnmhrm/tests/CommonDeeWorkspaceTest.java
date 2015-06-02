@@ -21,7 +21,6 @@ import dtool.tests.MockCompilerInstalls;
 
 /**
  * Initializes a common Dee test setup:
- * - No autobuild, no DLTK indexer, creates mock compiler installs. 
  * - Creates common sample workspace projects.
  * Statically loads some read only projects, and prepares the workbench, in case it wasn't cleared.
  */
@@ -49,16 +48,16 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 		checkTestSetupInvariants();
 	}
 	
-	public static IScriptProject createAndOpenDeeProject(String name) throws CoreException {
+	public static IProject createAndOpenDeeProject(String name) throws CoreException {
 		return createAndOpenDeeProject(name, false);
 	}
 	
-	public static IScriptProject createAndOpenDeeProject(String name, boolean overwrite) throws CoreException {
+	public static IProject createAndOpenDeeProject(String name, boolean overwrite) throws CoreException {
 		IProject project = createAndOpenProject(name, overwrite);
 		return setupStandardDeeProject(project);
 	}
 	
-	public static IScriptProject setupStandardDeeProject(final IProject project) throws CoreException {
+	public static IProject setupStandardDeeProject(final IProject project) throws CoreException {
 		EnvironmentManager.setEnvironmentId(project, null, false);
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
@@ -66,11 +65,7 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 				setupDeeProject(project);
 			}
 		}, null);
-		IScriptProject scriptProject = DLTKCore.create(project);
-//		scriptProject.setOption(DLTKCore.INDEXER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
-//		scriptProject.setOption(DLTKCore.BUILDER_ENABLED, false ? DLTKCore.ENABLED : DLTKCore.DISABLED);
-		
-		return scriptProject;
+		return project;
 	}
 	
 	public static void setupDeeProject(IProject project) throws CoreException {

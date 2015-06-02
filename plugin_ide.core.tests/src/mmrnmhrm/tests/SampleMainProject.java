@@ -10,10 +10,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IProjectFragment;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ISourceModule;
 
 /**
  * This class creates the main sample project, in which most tests will be based upon.
@@ -22,7 +18,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	
 	public static final String SAMPLEPROJNAME = "SampleProj";
 	
-	public static IScriptProject scriptProject;
+	public static IProject project;
 	
 	public static IFile sampleBigFile;
 	public static IFile sampleOutOfModelFile;
@@ -35,7 +31,7 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	
 	private static void createAndSetupSampleProj() {
 		try {
-			scriptProject = CommonDeeWorkspaceTest.createAndOpenDeeProject(SAMPLEPROJNAME);
+			project = CommonDeeWorkspaceTest.createAndOpenDeeProject(SAMPLEPROJNAME);
 			fillSampleProj();
 		} catch (CoreException e) {
 			throw ExceptionAdapter.unchecked(e);
@@ -45,7 +41,6 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	protected static void fillSampleProj() throws CoreException {
 		// Watch out when changing these values, tests may depend on these paths
 		
-		IProject project = scriptProject.getProject();
 		IFolder folder;
 		
 		createSrcFolderFromCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
@@ -67,27 +62,9 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 	
 	/** Gets a IFile from the sample project. */
 	public static IFile getFile(String filepath) {
-		IFile file = scriptProject.getProject().getFile(filepath);
+		IFile file = project.getFile(filepath);
 		assertTrue(file.exists(), "Test file not found.");
 		return file;
-	}
-	
-	public static ISourceModule getSourceModule(String filepath) {
-		return DLTKCore.createSourceModuleFrom(getFile(filepath));
-	}
-	
-	public static ISourceModule getSourceModule(String srcFolder, String filepath) {
-		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(getFile(srcFolder + "/" + filepath));
-		assertTrue(sourceModule.exists());
-		return sourceModule;
-	}
-	
-	public static IProjectFragment getFolderProjectFragment(String path) {
-		IFolder member = scriptProject.getProject().getFolder(path);
-		assertTrue(member.exists());
-		IProjectFragment element = scriptProject.getProjectFragment(member);
-		assertTrue(element.exists());
-		return element;
 	}
 	
 }

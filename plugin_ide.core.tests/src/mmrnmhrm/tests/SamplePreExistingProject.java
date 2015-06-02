@@ -6,7 +6,6 @@ import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.dltk.core.IScriptProject;
 
 /**
  * This classes creates a sample project that should exist *before*
@@ -22,9 +21,6 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 	
 	private static final boolean REQUIRE_PREEXISTING_PROJ = false;
 	
-	public static IScriptProject sampleDeeProj = null;
-	
-	
 	public static void checkForExistanceOfPreExistingProject() {
 		IWorkspaceRoot workspaceRoot = EclipseUtils.getWorkspaceRoot();
 		IProject project = workspaceRoot.getProject(PREEXISTINGPROJNAME);
@@ -32,8 +28,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 		if(!project.exists()) {
 			// If the preexisting project doesn't exist, create it
 			try {
-				sampleDeeProj = CommonDeeWorkspaceTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
-				project = sampleDeeProj.getProject();
+				project = CommonDeeWorkspaceTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
 				DeeCoreTestResources.createSrcFolderFromCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
 				DeeCore.logInternalError(e);

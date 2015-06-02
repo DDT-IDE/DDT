@@ -54,7 +54,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	@Before
 	public void setUp() throws Exception {
-		IProject project = SampleMainProject.scriptProject.getProject();
+		IProject project = SampleMainProject.project;
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_SRCFILE);
 	}
 	
@@ -118,7 +118,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInSameFile() throws CoreException {
-		IProject project = SampleMainProject.scriptProject.getProject();
+		IProject project = SampleMainProject.project;
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("Foo foo");
 		doTest(offset, null, project, IOutsideBuildpathTestResources.TEST_OUTFILE);
@@ -126,7 +126,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
 	@Test
 	public void testOpenRef_OriginFileOutsideBuildpath_TargetInAnotherFile() throws CoreException {
-		IProject project = SampleMainProject.scriptProject.getProject();
+		IProject project = SampleMainProject.project;
 		setupWithFile(project, IOutsideBuildpathTestResources.TEST_OUTFILE);
 		int offset = getOffsetForString("SampleClass sampleCl");
 		

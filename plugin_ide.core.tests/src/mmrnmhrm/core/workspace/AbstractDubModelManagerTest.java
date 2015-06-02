@@ -11,15 +11,12 @@
 package mmrnmhrm.core.workspace;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -35,12 +32,6 @@ import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
@@ -229,14 +220,14 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	}
 	
 	protected void checkFullyResolvedCode(IProject project, DubBundleDescription dubBundle, 
-			DubBundleChecker expMainBundle) throws ModelException, CoreException {
+			DubBundleChecker expMainBundle) throws CoreException {
 		expMainBundle.checkBundleDescription(dubBundle, true);
 		testDubContainer(project, expMainBundle);
 
-		IScriptProject dubProject = DLTKCore.create(project);
-		checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
+//		IScriptProject dubProject = DLTKCore.create(project);
+//		checkRawBuildpath(dubProject.getRawBuildpath(), expMainBundle.sourceFolders);
 		
-		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders);
+//		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders);
 		
 		IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
 		assertTrue(dubErrorMarkers.length == 0);
@@ -306,59 +297,59 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	
 	/* ----------------- buildpath checking ----------------- */
 	
-	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
-		HashSet<Path> sourcePaths = hashSet(srcFolders);
-		
-		for (IBuildpathEntry bpEntry : rawBuildpath) {
-			IPath entryPath = bpEntry.getPath();
-			
-			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
-				assertFail();
-				continue;
-			}
-			
-			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
-			assertTrue(bpEntry.isExternal() == false);
-			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
-			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
-			continue;
-		}
-		
-		// Ensure we matched every entry
-		assertTrue(sourcePaths.isEmpty());
-	}
-	
-	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, Path[] srcFolders) throws ModelException {
-		HashSet<Path> sourcePaths = hashSet(srcFolders);
-		
-		LinkedList<IBuildpathEntry> buildpathToVerify = CollectionUtil.createLinkedList(buildpath);
-		
-		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
-			IBuildpathEntry bpEntry = iter.next();
-			
-			IPath entryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
-			
-			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY) {
-				String entryPathStr = entryPath.toString();
-				assertTrue(
-						entryPathStr.endsWith("druntime/import") || 
-						entryPathStr.endsWith("phobos") ||
-						entryPathStr.startsWith("#special#builtin"));
-				iter.remove();
-				continue;
-			}
-			
-			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
-			assertTrue(bpEntry.isExternal() == false);
-			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
-			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
-			iter.remove();
-			continue;
-		}
-		
-		// Ensure we matched every entry
-		assertTrue(sourcePaths.isEmpty());
-		assertTrue(buildpathToVerify.isEmpty());
-	}
+//	public static void checkRawBuildpath(IBuildpathEntry[] rawBuildpath, Path[] srcFolders) throws ModelException {
+//		HashSet<Path> sourcePaths = hashSet(srcFolders);
+//		
+//		for (IBuildpathEntry bpEntry : rawBuildpath) {
+//			IPath entryPath = bpEntry.getPath();
+//			
+//			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
+//				assertFail();
+//				continue;
+//			}
+//			
+//			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
+//			assertTrue(bpEntry.isExternal() == false);
+//			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
+//			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
+//			continue;
+//		}
+//		
+//		// Ensure we matched every entry
+//		assertTrue(sourcePaths.isEmpty());
+//	}
+//	
+//	public static void checkResolvedBuildpath(IBuildpathEntry[] buildpath, Path[] srcFolders) throws ModelException {
+//		HashSet<Path> sourcePaths = hashSet(srcFolders);
+//		
+//		LinkedList<IBuildpathEntry> buildpathToVerify = CollectionUtil.createLinkedList(buildpath);
+//		
+//		for (ListIterator<IBuildpathEntry> iter = buildpathToVerify.listIterator(); iter.hasNext(); ) {
+//			IBuildpathEntry bpEntry = iter.next();
+//			
+//			IPath entryPath = EnvironmentPathUtils.getLocalPath(bpEntry.getPath());
+//			
+//			if(bpEntry.getEntryKind() == IBuildpathEntry.BPE_LIBRARY) {
+//				String entryPathStr = entryPath.toString();
+//				assertTrue(
+//						entryPathStr.endsWith("druntime/import") || 
+//						entryPathStr.endsWith("phobos") ||
+//						entryPathStr.startsWith("#special#builtin"));
+//				iter.remove();
+//				continue;
+//			}
+//			
+//			assertTrue(bpEntry.getEntryKind() == IBuildpathEntry.BPE_SOURCE);
+//			assertTrue(bpEntry.isExternal() == false);
+//			IPath folderPath = entryPath.removeFirstSegments(1); // Remove project segment
+//			assertTrue(sourcePaths.remove(folderPath.toFile().toPath()));
+//			iter.remove();
+//			continue;
+//		}
+//		
+//		// Ensure we matched every entry
+//		assertTrue(sourcePaths.isEmpty());
+//		assertTrue(buildpathToVerify.isEmpty());
+//	}
 	
 }
