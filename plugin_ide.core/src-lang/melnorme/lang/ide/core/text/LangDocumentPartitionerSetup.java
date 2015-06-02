@@ -12,6 +12,7 @@ package melnorme.lang.ide.core.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.utilbox.misc.ArrayUtil;
 
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.jface.text.IDocument;
@@ -21,6 +22,9 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
+	
+	public static final String[] LEGAL_CONTENT_TYPES = 
+			ArrayUtil.remove(TextSettings_Actual.PARTITION_TYPES, IDocument.DEFAULT_CONTENT_TYPE);
 	
 	protected static LangDocumentPartitionerSetup instance = new LangDocumentPartitionerSetup();
 	
@@ -42,7 +46,7 @@ public class LangDocumentPartitionerSetup implements IDocumentSetupParticipant {
 	
 	public FastPartitioner createDocumentPartitioner() {
 		IPartitionTokenScanner scanner = TextSettings_Actual.createPartitionScanner();
-		return new FastPartitioner(scanner, TextSettings_Actual.LEGAL_CONTENT_TYPES);
+		return new FastPartitioner(scanner, LEGAL_CONTENT_TYPES);
 	}
 	
 	protected FastPartitioner setupDocumentPartitioner(IDocument document, String partitioning) {

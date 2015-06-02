@@ -1,12 +1,10 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.text.DeeDocumentSetupParticipant;
 import mmrnmhrm.core.text.DeePartitionScanner;
 import mmrnmhrm.core.text.DeePartitions;
 
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 
@@ -21,9 +19,6 @@ public class TextSettings_Actual {
 //		String COMMENT = "comment";
 //		String STRING = "string";
 //	}
-	
-	public static final String[] LEGAL_CONTENT_TYPES = 
-			ArrayUtil.remove(PARTITION_TYPES, IDocument.DEFAULT_CONTENT_TYPE);
 	
 	public static IPartitionTokenScanner createPartitionScanner() {
 		return new DeePartitionScanner();
