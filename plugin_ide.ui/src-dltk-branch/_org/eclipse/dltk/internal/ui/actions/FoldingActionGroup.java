@@ -11,9 +11,6 @@ package _org.eclipse.dltk.internal.ui.actions;
 
 import java.util.ResourceBundle;
 
-import org.eclipse.dltk.internal.ui.actions.FoldingMessages;
-import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -29,6 +26,7 @@ import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import _org.eclipse.dltk.ui.PreferenceConstants;
 
 /**
  * Groups the folding actions.
@@ -36,8 +34,8 @@ import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
  * 
  */
 public class FoldingActionGroup extends ActionGroup {
-	private static abstract class PreferenceAction extends ResourceAction
-			implements IUpdate {
+	
+	private static abstract class PreferenceAction extends ResourceAction implements IUpdate {
 		PreferenceAction(ResourceBundle bundle, String prefix, int style) {
 			super(bundle, prefix, style);
 		}
@@ -118,19 +116,15 @@ public class FoldingActionGroup extends ActionGroup {
 				"Projection.Toggle.", IAction.AS_CHECK_BOX) { //$NON-NLS-1$
 			@Override
 			public void run() {
-				boolean current = fStore
-						.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
-				fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED,
-						!current);
+				boolean current = fStore.getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
+				fStore.setValue(PreferenceConstants.EDITOR_FOLDING_ENABLED, !current);
 			}
 
 			@Override
 			public void update() {
-				ITextOperationTarget target = (ITextOperationTarget) editor
-						.getAdapter(ITextOperationTarget.class);
+				ITextOperationTarget target = (ITextOperationTarget) editor.getAdapter(ITextOperationTarget.class);
 
-				boolean isEnabled = (target != null && target
-						.canDoOperation(ProjectionViewer.TOGGLE));
+				boolean isEnabled = (target != null && target.canDoOperation(ProjectionViewer.TOGGLE));
 				setEnabled(isEnabled);
 			}
 		};
@@ -172,12 +166,10 @@ public class FoldingActionGroup extends ActionGroup {
 				}
 			}
 		};
-		fRestoreDefaults
-				.setActionDefinitionId(IFoldingCommandIds.FOLDING_RESTORE);
+		fRestoreDefaults.setActionDefinitionId(IFoldingCommandIds.FOLDING_RESTORE);
 		editor.setAction("FoldingRestore", fRestoreDefaults); //$NON-NLS-1$
 
-		fCollapseMembers = new FoldingAction(FoldingMessages
-				.getResourceBundle(), "Projection.CollapseMembers.") { //$NON-NLS-1$
+		fCollapseMembers = new FoldingAction(FoldingMessages.getResourceBundle(), "Projection.CollapseMembers.") {
 			@Override
 			public void run() {
 				if (editor instanceof ScriptEditor) {
@@ -186,12 +178,10 @@ public class FoldingActionGroup extends ActionGroup {
 				}
 			}
 		};
-		fCollapseMembers
-				.setActionDefinitionId(IScriptEditorActionDefinitionIds.FOLDING_COLLAPSE_MEMBERS);
+//		fCollapseMembers.setActionDefinitionId(IScriptEditorActionDefinitionIds.FOLDING_COLLAPSE_MEMBERS);
 		editor.setAction("FoldingCollapseMembers", fCollapseMembers); //$NON-NLS-1$
 
-		fCollapseComments = new FoldingAction(FoldingMessages
-				.getResourceBundle(), "Projection.CollapseComments.") { //$NON-NLS-1$
+		fCollapseComments = new FoldingAction(FoldingMessages.getResourceBundle(), "Projection.CollapseComments.") {
 			@Override
 			public void run() {
 				if (editor instanceof ScriptEditor) {
@@ -200,8 +190,7 @@ public class FoldingActionGroup extends ActionGroup {
 				}
 			}
 		};
-		fCollapseComments
-				.setActionDefinitionId(IScriptEditorActionDefinitionIds.FOLDING_COLLAPSE_COMMENTS);
+//		fCollapseComments.setActionDefinitionId(IScriptEditorActionDefinitionIds.FOLDING_COLLAPSE_COMMENTS);
 		editor.setAction("FoldingCollapseComments", fCollapseComments); //$NON-NLS-1$
 	}
 

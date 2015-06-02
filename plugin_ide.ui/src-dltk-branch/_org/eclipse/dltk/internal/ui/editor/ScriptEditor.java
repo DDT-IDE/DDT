@@ -17,24 +17,18 @@ import java.util.List;
 import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.ui.DeeUILanguageToolkit;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.compiler.CharOperation;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.IWorkingCopyManager;
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -52,7 +46,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
-import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
@@ -62,7 +55,6 @@ import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 
-/* FIXME: need to review this class */
 public abstract class ScriptEditor extends AbstractLangStructureEditor implements IScriptLanguageProvider {
 	
 	/** Preference key for matching brackets */
@@ -84,7 +76,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	
 	public ScriptEditor() {
 		super();
-		setDocumentProvider(DLTKUIPlugin.getDefault().getSourceModuleDocumentProvider());
 	}
 	
 	@Override
@@ -99,18 +90,12 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 	@Override
-	protected void alterCombinedPreferenceStores_beforeEditorsUI(List<IPreferenceStore> stores) {
-		stores.add(new PreferencesAdapter(DLTKCore.getDefault().getPluginPreferences()));
-	}
-	
-	@Override
 	protected AdaptedSourceViewer doCreateSourceViewer(Composite parent, IVerticalRuler verticalRuler, int styles) {
 
 		AdaptedSourceViewer viewer = new AdaptedSourceViewer(parent, verticalRuler, getOverviewRuler(), 
 			isOverviewRulerVisible(), styles, this);
 		
-		IPreferenceStore store = getPreferenceStore();
-		installProjectionSupport(store, viewer);
+		installProjectionSupport(getPreferenceStore(), viewer);
 		
 		// ensure source viewer decoration support has been created and configured
 		getSourceViewerDecorationSupport(viewer);
@@ -150,7 +135,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	
 
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class required) {
+	public Object getAdapter(Class required) {
 		if (required == IFoldingStructureProvider.class)
 			return fProjectionModelUpdater;
 		if (required == IFoldingStructureProviderExtension.class)
@@ -166,11 +151,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 
-	/**
-	 * The folding runner.
-	 * 
-	 * 
-	 */
 	private ToggleFoldingRunner fFoldingRunner;
 
 	/**
@@ -189,10 +169,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		public ToggleFoldingRunner() {
 		}
 
-		/**
-		 * The workbench page we registered the part listener with, or
-		 * <code>null</code>.
-		 */
 		private IWorkbenchPage fPage;
 
 		/**
@@ -249,10 +225,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 				fFoldingRunner = null;
 		}
 
-		/*
-		 * @seeorg.eclipse.ui.IPartListener2#partVisible(org.eclipse.ui.
-		 * IWorkbenchPartReference)
-		 */
 		@Override
 		public void partVisible(IWorkbenchPartReference partRef) {
 			if (ScriptEditor.this.equals(partRef.getPart(false))) {
@@ -261,10 +233,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			}
 		}
 
-		/*
-		 * @seeorg.eclipse.ui.IPartListener2#partClosed(org.eclipse.ui.
-		 * IWorkbenchPartReference)
-		 */
 		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
 			if (ScriptEditor.this.equals(partRef.getPart(false))) {
@@ -326,15 +294,13 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 	protected final boolean isFoldingPropertyEvent(String property) {
-		if (isHandledPropertyEvent(property, GLOBAL_FOLDING_PROPERTIES)) {
-			return true;
-		}
-
-		if (isHandledPropertyEvent(property, getFoldingEventPreferenceKeys())) {
-			return true;
-		}
-
-		return false;
+		return 
+				isHandledPropertyEvent(property, GLOBAL_FOLDING_PROPERTIES) || 
+				isHandledPropertyEvent(property, getFoldingEventPreferenceKeys());				
+	}
+	
+	public static boolean isHandledPropertyEvent(String property, String[] handled) {
+		return ArrayUtil.contains(handled, property);
 	}
 
 	/**
@@ -395,10 +361,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 	/**
-	 * Collapses all foldable members if supported by the folding structure
-	 * provider.
-	 * 
-	 * 
+	 * Collapses all foldable members if supported by the folding structure provider.
 	 */
 	public void collapseMembers() {
 		if (fProjectionModelUpdater instanceof IFoldingStructureProviderExtension) {
@@ -408,10 +371,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	}
 
 	/**
-	 * Collapses all foldable comments if supported by the folding structure
-	 * provider.
-	 * 
-	 * 
+	 * Collapses all foldable comments if supported by the folding structure provider.
 	 */
 	public void collapseComments() {
 		if (fProjectionModelUpdater instanceof IFoldingStructureProviderExtension) {
@@ -456,63 +416,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return DeeUILanguageToolkit.getDefault();
 	}
 
-
-	/*
-	 * @see AbstractTextEditor#doSave(IProgressMonitor)
-	 */
-	@Override
-	public void doSave(IProgressMonitor progressMonitor) {
-
-		IDocumentProvider p = getDocumentProvider();
-		if (p == null) {
-			// editor has been closed
-			return;
-		}
-
-		if (p.isDeleted(getEditorInput())) {
-
-			if (isSaveAsAllowed()) {
-
-				/*
-				 * 1GEUSSR: ITPUI:ALL - User should never loose changes made in
-				 * the editors. Changed Behavior to make sure that if called
-				 * inside a regular save (because of deletion of input element)
-				 * there is a way to report back to the caller.
-				 */
-				performSaveAs(progressMonitor);
-
-			} else {
-
-				/*
-				 * 1GF5YOX: ITPJUI:ALL - Save of delete file claims it's still
-				 * there Missing resources.
-				 */
-				Shell shell = getSite().getShell();
-				MessageDialog
-						.openError(
-								shell,
-								DLTKEditorMessages.SourceModuleEditor_error_saving_title1,
-								DLTKEditorMessages.SourceModuleEditor_error_saving_message1);
-			}
-
-		} else {
-
-			setStatusLineErrorMessage(null);
-
-			updateState(getEditorInput());
-			validateState(getEditorInput());
-
-			IWorkingCopyManager manager = DLTKUIPlugin.getDefault().getWorkingCopyManager();
-			ISourceModule unit = manager.getWorkingCopy(getEditorInput());
-
-			if (unit != null) {
-				// synchronized (unit) {
-				performSave(false, progressMonitor);
-				// }
-			} else
-				performSave(false, progressMonitor);
-		}
-	}
+	/* ----------------- bracket matcher ----------------- */
 	
 	@Override
 	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
@@ -535,7 +439,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return result.toArray(new String[result.size()]);
 	}
 
-	private void addPages(final List<String> result, final String[] pages) {
+	protected void addPages(final List<String> result, final String[] pages) {
 		if (pages != null) {
 			for (int i = 0; i < pages.length; ++i) {
 				if (!result.contains(pages[i])) {
@@ -544,28 +448,13 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			}
 		}
 	}
-
-	private boolean isHandledPropertyEvent(String property, String[] handled) {
-		for (int i = 0; i < handled.length; i++) {
-			if (handled[i].equals(property)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/* public access */
-	public final String getFontPropertyPreferenceKey_() {
-		return getFontPropertyPreferenceKey();
-	}
 	
 	
 	/* ----------------- Folding actions ----------------- */
 	
 	private FoldingActionGroup fFoldingGroup;
 	
-	FoldingActionGroup getFoldingActionGroup() {
+	protected FoldingActionGroup getFoldingActionGroup() {
 		return fFoldingGroup;
 	}
 	
