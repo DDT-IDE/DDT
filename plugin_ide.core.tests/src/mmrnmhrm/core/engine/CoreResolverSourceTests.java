@@ -18,16 +18,14 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
-import mmrnmhrm.tests.DeeCoreTestResources;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -71,7 +69,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	protected static HashMap<String, IProject> defaultFixtureProjects = new HashMap<>();
 	
 	protected TestsProjectFileOverlay fixtureSourceOverlay;
-	protected ISourceModule sourceModule;
+	protected IFile overlayedFile;
 	
 	
 	@Override
@@ -98,7 +96,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 		
 		mr = null; // Redundant
 		
-		sourceModule = (ISourceModule) DLTKCore.create(fixtureSourceOverlay.overlayedFile);
+		overlayedFile = fixtureSourceOverlay.overlayedFile;
 		checkModuleSetupConsistency();
 		
 		explicitModuleName = explicitModuleName != null ? explicitModuleName : "_dummy.d";
@@ -121,7 +119,7 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, ".");
 			return project;
 		} else {
-			DeeCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
+			LangCoreTestResources.createFolderFromDirectory(projectSourceDir, project, "src-dtool");
 			CommonDeeWorkspaceTestNew.writeDubManifest(project, projectName, "src-dtool");
 		}
 		return project;
@@ -141,10 +139,10 @@ public abstract class CoreResolverSourceTests extends BaseResolverSourceTests {
 	}
 	
 	public void checkModuleSetupConsistency() {
-		assertTrue(sourceModule != null && sourceModule.getResource().exists());
+		assertTrue(overlayedFile != null && overlayedFile.exists());
 		try {
-			assertTrue(sourceModule.getSource().equals(testCase.source));
-		} catch(ModelException e) {
+			assertEquals(CommonCoreTest.readFileContents(overlayedFile), testCase.source);
+		} catch(IOException | CoreException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}

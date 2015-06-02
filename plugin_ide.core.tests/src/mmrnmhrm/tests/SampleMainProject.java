@@ -2,6 +2,7 @@ package mmrnmhrm.tests;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -14,7 +15,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * This class creates the main sample project, in which most tests will be based upon.
  */
-public abstract class SampleMainProject extends DeeCoreTestResources implements ITestResourcesConstants {
+public abstract class SampleMainProject extends LangCoreTestResources implements ITestResourcesConstants {
 	
 	public static final String SAMPLEPROJNAME = "SampleProj";
 	
@@ -43,13 +44,13 @@ public abstract class SampleMainProject extends DeeCoreTestResources implements 
 		
 		IFolder folder;
 		
-		createSrcFolderFromCoreResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
-		createSrcFolderFromCoreResource(TR_SAMPLE_SRCBIG, folder = project.getFolder(TR_SAMPLE_SRCBIG));
+		createFolderFromCoreTestsResource(TR_SAMPLE_SRC1, project.getFolder(TR_SAMPLE_SRC1));
+		createFolderFromCoreTestsResource(TR_SAMPLE_SRCBIG, folder = project.getFolder(TR_SAMPLE_SRCBIG));
 		sampleBigFile = folder.getFile("bigfile.d");
 		
-		createSrcFolderFromCoreResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));
-		createSrcFolderFromCoreResource(TR_CA, project.getFolder(TR_CA));
-		createSrcFolderFromCoreResource(TR_REFS, project.getFolder(TR_REFS));
+		createFolderFromCoreTestsResource(TR_SAMPLE_SRC3, project.getFolder(TR_SAMPLE_SRC3));
+		createFolderFromCoreTestsResource(TR_CA, project.getFolder(TR_CA));
+		createFolderFromCoreTestsResource(TR_REFS, project.getFolder(TR_REFS));
 		
 		createFolderFromCoreTestsResource(TR_SRC_OUTSIDE_MODEL, folder = project.getFolder(TR_SRC_OUTSIDE_MODEL));
 		sampleOutOfModelFile = folder.getFile("outfile.d");

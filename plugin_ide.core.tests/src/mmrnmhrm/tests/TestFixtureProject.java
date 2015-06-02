@@ -17,8 +17,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ISourceModule;
 
 public class TestFixtureProject implements ITestResourcesConstants {
 	
@@ -69,12 +67,6 @@ public class TestFixtureProject implements ITestResourcesConstants {
 		IFile file = project.getFile(pathString);
 		assertTrue(file.exists());
 		return file;
-	}
-	
-	public ISourceModule getSourceModule(String pathString) {
-		ISourceModule sourceModule = DLTKCore.createSourceModuleFrom(getFile(pathString));
-		assertTrue(sourceModule != null);
-		return sourceModule;
 	}
 	
 }

@@ -1,7 +1,6 @@
 package mmrnmhrm.tests;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.misc.MiscUtil;
 import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
@@ -10,10 +9,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.junit.After;
 import org.junit.Before;
 
@@ -58,23 +53,13 @@ public abstract class CommonDeeWorkspaceTest extends CommonDeeWorkspaceTestNew {
 	}
 	
 	public static IProject setupStandardDeeProject(final IProject project) throws CoreException {
-		EnvironmentManager.setEnvironmentId(project, null, false);
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
-				setupDeeProject(project);
+				setupLangProject(project);
 			}
 		}, null);
 		return project;
-	}
-	
-	public static void setupDeeProject(IProject project) throws CoreException {
-		IScriptProject dltkProj = DLTKCore.create(project);
-		assertTrue(!dltkProj.exists());
-		setupLangProject(project);
-		assertTrue(dltkProj.exists());
-		
-		dltkProj.setRawBuildpath(new IBuildpathEntry[] {}, null);
 	}
 	
 }

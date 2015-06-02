@@ -10,8 +10,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ISourceModule;
 
 /**
  * Builds a simple project with D sources, but that is not a Dee Project
@@ -64,10 +62,6 @@ public abstract class SampleNonDeeProject {
 		IFile file = project.getProject().getFile(filepath);
 		assertTrue(file.exists(), "Test file not found.");
 		return file;
-	}
-	
-	public static ISourceModule getSourceModule(String filepath) {
-		return DLTKCore.createSourceModuleFrom(getFile(filepath));
 	}
 	
 }

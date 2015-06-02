@@ -22,9 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.search.indexing.IndexManager;
 
 import dtool.dub.BundlePath;
@@ -76,10 +73,7 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 		IProject project = createAndOpenProject(name, overwrite);
 		setupLangProject(project, false);
 		
-		IScriptProject scriptProject = DLTKCore.create(project);
-		scriptProject.setRawBuildpath(new IBuildpathEntry[] {}, null);
-		
-		assertTrue(scriptProject.exists());
+		assertTrue(project.exists());
 		return project;
 	}
 	

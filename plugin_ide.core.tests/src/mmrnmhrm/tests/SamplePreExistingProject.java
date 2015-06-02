@@ -1,6 +1,7 @@
 package mmrnmhrm.tests;
 
 
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import mmrnmhrm.core.DeeCore;
 
@@ -29,7 +30,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 			// If the preexisting project doesn't exist, create it
 			try {
 				project = CommonDeeWorkspaceTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
-				DeeCoreTestResources.createSrcFolderFromCoreResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
+				LangCoreTestResources.createFolderFromCoreTestsResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
 				DeeCore.logInternalError(e);
 			}

@@ -26,7 +26,6 @@ import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.tests.DeeCoreTestResources;
 import mmrnmhrm.tests.TestFixtureProject;
 
 import org.eclipse.core.filebuffers.FileBuffers;
@@ -58,16 +57,6 @@ public class DToolClient_Test extends CommonCoreTest {
 	public void testUpdates() throws Exception { testUpdates________________(); }
 	public void testUpdates________________() throws Exception {
 		testsProject = new DToolFixtureProject();
-		doTestUpdates();
-		
-		// Test again with module under a source folder. It should not make much difference, but never know..
-		testsProject = new DToolFixtureProject() {
-			@Override
-			protected void createContents() throws CoreException {
-				super.createContents();
-				DeeCoreTestResources.addSourceFolder(sourceFolder);
-			}
-		};
 		doTestUpdates();
 	}
 	

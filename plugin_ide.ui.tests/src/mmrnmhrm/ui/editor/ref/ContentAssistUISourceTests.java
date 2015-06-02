@@ -58,9 +58,8 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 		throws CoreException, IOException {
 		super.prepareTestCase_do(explicitModuleName, projectFolderName, testCase);
 		
-		IFile file = (IFile) sourceModule.getResource();
+		IFile file = (IFile) overlayedFile;
 		editor = CommonDeeUITest.openDeeEditorForFile(file);
-		sourceModule.discardWorkingCopy(); // XXX: In the future this might not be necessary
 		
 		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
 		ca.enableAutoInsert(false);
