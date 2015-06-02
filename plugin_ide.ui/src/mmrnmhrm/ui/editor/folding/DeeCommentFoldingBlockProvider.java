@@ -4,7 +4,6 @@ import java.util.List;
 
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.ui.text.DeePartitioningProvider;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -20,7 +19,7 @@ import dtool.ast.definitions.Module;
 public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider implements IFoldingBlockProvider {
 	
 	public DeeCommentFoldingBlockProvider() {
-		super(DeePartitioningProvider.getInstance());
+		super();
 	}
 	
 	protected boolean fStringFolding;

@@ -14,9 +14,11 @@ package _org.eclipse.dltk.ui.text.folding;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.text.IPartitioningProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -26,7 +28,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.text.rules.FastPartitioner;
 
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
 
@@ -41,10 +42,7 @@ import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.Fold
  */
 public abstract class PartitioningFoldingBlockProvider {
 
-	private final IPartitioningProvider partitioningProvider;
-
-	public PartitioningFoldingBlockProvider(IPartitioningProvider partitioningProvider) {
-		this.partitioningProvider = partitioningProvider;
+	public PartitioningFoldingBlockProvider() {
 	}
 
 	private int fBlockLinesMin;
@@ -134,14 +132,13 @@ public abstract class PartitioningFoldingBlockProvider {
 		this.requestor = requestor;
 	}
 
-	private List<ITypedRegion> computePartitioning(Document d) {
+	protected List<ITypedRegion> computePartitioning(Document d) {
 		// TODO TextUtilities.computePartitioning() ?
 		List<ITypedRegion> docRegionList = new ArrayList<ITypedRegion>();
 		int offset = 0;
 		for (;;) {
 			try {
-				ITypedRegion region = TextUtilities.getPartition(d,
-						partitioningProvider.getPartitioning(), offset, true);
+				ITypedRegion region = TextUtilities.getPartition(d, TextSettings_Actual.PARTITIONING_ID, offset, true);
 				docRegionList.add(region);
 				offset = region.getLength() + region.getOffset() + 1;
 			} catch (BadLocationException e1) {
@@ -264,31 +261,16 @@ public abstract class PartitioningFoldingBlockProvider {
 		return d.get(offset, length).trim().length() == 0;
 	}
 
-	/**
-	 * Installs a partitioner with <code>document</code>.
-	 * 
-	 * @param document
-	 *            the document
-	 */
-	private void installDocumentStuff(Document document) {
-		final IDocumentPartitioner partitioner = new FastPartitioner(
-				partitioningProvider.createPartitionScanner(),
-				partitioningProvider.getPartitionContentTypes());
-		partitioner.connect(document);
-		document.setDocumentPartitioner(partitioningProvider.getPartitioning(),
-				partitioner);
+	protected void installDocumentStuff(Document document) {
+		LangDocumentPartitionerSetup.getInstance().setup(document);
+		// Note: the original code created a partitioner with TextSettings_Actual.PARTITION_TYPES
+		// not TextSettings_Actual.LEGAL_CONTENT_TYPES
+		// This shouldn't make a different, but this hasn't been verified/checked.
 	}
-
-	/**
-	 * Removes partitioner with <code>document</code>.
-	 * 
-	 * @param document
-	 *            the document
-	 */
-	private void removeDocumentStuff(Document document) {
-		final String partitioning = partitioningProvider.getPartitioning();
-		final IDocumentPartitioner partitioner = document
-				.getDocumentPartitioner(partitioning);
+	
+	protected void removeDocumentStuff(Document document) {
+		final String partitioning = TextSettings_Actual.PARTITIONING_ID;
+		final IDocumentPartitioner partitioner = document.getDocumentPartitioner(partitioning);
 		if (partitioner != null) {
 			document.setDocumentPartitioner(partitioning, null);
 			partitioner.disconnect();

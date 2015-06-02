@@ -54,7 +54,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	private void setupDocument(String docContents) {
 		if(recreateDocSetup){ 
 			document = new Document(docContents);
-			fp = DeeTextTestUtils.installDeePartitioner(document);
+			fp = LangDocumentPartitionerSetup.getInstance().setupDocument(document);
 		} else {
 			document.set(docContents);
 			assertNotNull(fp);

@@ -10,11 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyTest;
 import mmrnmhrm.core.text.DeePartitions;
-import mmrnmhrm.ui.editor.text.DeeAutoEditStrategy;
-import mmrnmhrm.ui.text.DeeTextTestUtils;
 
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	@Override
 	protected Document createDocument() {
 		Document document = super.createDocument();
-		DeeTextTestUtils.installDeePartitioner(document);
+		LangDocumentPartitionerSetup.getInstance().setupDocument(document);
 		return document;
 	}
 	

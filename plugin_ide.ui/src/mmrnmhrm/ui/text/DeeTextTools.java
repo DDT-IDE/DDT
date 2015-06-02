@@ -12,7 +12,6 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import mmrnmhrm.core.text.DeePartitions;
 
 import org.eclipse.dltk.ui.text.ScriptTextTools;
@@ -24,7 +23,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class DeeTextTools extends ScriptTextTools {
 	
 	public DeeTextTools(boolean autoDisposeOnDisplayDispose) {
-		super(DeePartitions.PARTITIONING_ID, LangDocumentPartitionerSetup.LEGAL_CONTENT_TYPES, 
+		super(DeePartitions.PARTITIONING_ID, TextSettings_Actual.LEGAL_CONTENT_TYPES, 
 			autoDisposeOnDisplayDispose);
 	}
 	
