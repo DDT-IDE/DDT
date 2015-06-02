@@ -20,7 +20,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.Launch;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
-import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
 /**
  * D {@link LaunchConfigurationDelegate}, based on DLTK properties. 
@@ -40,8 +39,8 @@ public class DeeLaunchConfigurationDelegate extends AbstractLangLaunchConfigurat
 	
 	public static void cleanDLTKDebugConfig(ILaunchConfigurationWorkingCopy workingCopy) {
 		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
-		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
+//		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
+//		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
 	}
 	
 	@Override

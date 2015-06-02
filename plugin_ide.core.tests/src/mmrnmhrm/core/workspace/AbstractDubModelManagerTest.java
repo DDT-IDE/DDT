@@ -41,7 +41,6 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.eclipse.dltk.launching.ScriptRuntime;
 
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
@@ -312,9 +311,6 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		
 		for (IBuildpathEntry bpEntry : rawBuildpath) {
 			IPath entryPath = bpEntry.getPath();
-			if(entryPath.segment(0).equals(ScriptRuntime.INTERPRETER_CONTAINER)) {
-				continue;
-			}
 			
 			if((bpEntry.getEntryKind() == IBuildpathEntry.BPE_CONTAINER)) {
 				assertFail();
