@@ -2,7 +2,6 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -12,6 +11,8 @@ import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
+
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 
 /**

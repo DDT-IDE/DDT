@@ -14,7 +14,6 @@ import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -31,6 +30,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
+import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.dltk.ui.PreferenceConstants;
 
 

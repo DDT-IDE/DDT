@@ -21,7 +21,6 @@ import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
 import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -29,6 +28,8 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 
 public class EditorSettings_Actual {

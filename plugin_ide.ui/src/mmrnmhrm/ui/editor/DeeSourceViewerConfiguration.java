@@ -19,10 +19,11 @@ import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+
+import _org.eclipse.cdt.ui.text.IColorManager;
 
 public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
