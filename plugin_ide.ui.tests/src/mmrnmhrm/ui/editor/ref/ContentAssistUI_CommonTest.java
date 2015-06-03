@@ -26,8 +26,6 @@ import mmrnmhrm.ui.CommonDeeUITest;
 import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
@@ -35,17 +33,10 @@ import org.eclipse.jface.text.source.ISourceViewer;
 
 public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	
-	protected final ISourceModule srcModule;
 	protected final AbstractLangEditor editor;
 	
 	public ContentAssistUI_CommonTest(IFile file) {
 		this.editor = CommonDeeUITest.openDeeEditorForFile(file);
-		this.srcModule = DLTKCore.createSourceModuleFrom(file);
-	}
-	
-	public ContentAssistUI_CommonTest(ISourceModule sourceModule) {
-		this.srcModule = sourceModule;
-		this.editor = CommonDeeUITest.openDeeEditorForFile((IFile) sourceModule.getResource());
 	}
 	
 	protected int getMarkerStartPos(String markerString) {

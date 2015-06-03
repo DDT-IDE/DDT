@@ -16,8 +16,8 @@ import java.util.List;
 
 import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.ui.LangUIPlugin;
 
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -196,9 +196,7 @@ public abstract class PartitioningFoldingBlockProvider {
 			reportRegions(document, regions, kind, collapse);
 			removeDocumentStuff(document);
 		} catch (BadLocationException e) {
-			if (DLTKCore.DEBUG) {
-				e.printStackTrace();
-			}
+			LangUIPlugin.logInternalError(e);
 		}
 	}
 

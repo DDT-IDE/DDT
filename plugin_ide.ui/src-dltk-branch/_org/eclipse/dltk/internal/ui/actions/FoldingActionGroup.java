@@ -63,7 +63,7 @@ public class FoldingActionGroup extends ActionGroup {
 	private final IProjectionListener fProjectionListener;
 
 	private final PreferenceAction fRestoreDefaults;
-	private final FoldingAction fCollapseMembers;
+//	private final FoldingAction fCollapseMembers;
 	private final FoldingAction fCollapseComments;
 	private final TextOperationAction fCollapseAll;
 
@@ -88,7 +88,7 @@ public class FoldingActionGroup extends ActionGroup {
 			fExpandAll = null;
 			fCollapseAll = null;
 			fRestoreDefaults = null;
-			fCollapseMembers = null;
+//			fCollapseMembers = null;
 			fCollapseComments = null;
 			fProjectionListener = null;
 			return;
@@ -169,17 +169,17 @@ public class FoldingActionGroup extends ActionGroup {
 		fRestoreDefaults.setActionDefinitionId(IFoldingCommandIds.FOLDING_RESTORE);
 		editor.setAction("FoldingRestore", fRestoreDefaults); //$NON-NLS-1$
 
-		fCollapseMembers = new FoldingAction(FoldingMessages.getResourceBundle(), "Projection.CollapseMembers.") {
-			@Override
-			public void run() {
-				if (editor instanceof ScriptEditor) {
-					ScriptEditor javaEditor = (ScriptEditor) editor;
-					javaEditor.collapseMembers();
-				}
-			}
-		};
+//		fCollapseMembers = new FoldingAction(FoldingMessages.getResourceBundle(), "Projection.CollapseMembers.") {
+//			@Override
+//			public void run() {
+//				if (editor instanceof ScriptEditor) {
+//					ScriptEditor javaEditor = (ScriptEditor) editor;
+//					javaEditor.collapseMembers();
+//				}
+//			}
+//		};
 //		fCollapseMembers.setActionDefinitionId(IScriptEditorActionDefinitionIds.FOLDING_COLLAPSE_MEMBERS);
-		editor.setAction("FoldingCollapseMembers", fCollapseMembers); //$NON-NLS-1$
+//		editor.setAction("FoldingCollapseMembers", fCollapseMembers); //$NON-NLS-1$
 
 		fCollapseComments = new FoldingAction(FoldingMessages.getResourceBundle(), "Projection.CollapseComments.") {
 			@Override
@@ -228,7 +228,7 @@ public class FoldingActionGroup extends ActionGroup {
 			fCollapse.update();
 			fCollapseAll.update();
 			fRestoreDefaults.update();
-			fCollapseMembers.update();
+//			fCollapseMembers.update();
 			fCollapseComments.update();
 		}
 	}
@@ -248,7 +248,7 @@ public class FoldingActionGroup extends ActionGroup {
 			manager.add(fCollapse);
 			manager.add(fCollapseAll);
 			manager.add(fRestoreDefaults);
-			manager.add(fCollapseMembers);
+//			manager.add(fCollapseMembers);
 			manager.add(fCollapseComments);
 		}
 	}

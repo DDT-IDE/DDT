@@ -21,14 +21,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.fields.IFieldValueListener;
 import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
 import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.ModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -54,8 +53,9 @@ import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
  * 
  * @noextend This class is not intended to be subclassed by clients.
  */
-/* FIXME: DLTK: review this code */
-public class DelegatingFoldingStructureProvider {
+/* XXX: DLTK: review this code */
+public class DelegatingFoldingStructureProvider implements
+		IFoldingStructureProvider, IFoldingStructureProviderExtension {
 
 	private static final boolean DEBUG = false;
 
@@ -225,6 +225,23 @@ public class DelegatingFoldingStructureProvider {
 	 */
 	private static interface Filter {
 		boolean match(ScriptProjectionAnnotation annotation);
+	}
+
+	/**
+	 * Matches comments.
+	 */
+	private static final class CommentFilter implements Filter {
+		public CommentFilter() {
+		}
+
+		@Override
+		public boolean match(ScriptProjectionAnnotation annotation) {
+			if (annotation.getKind().isComment()
+					&& !annotation.isMarkedDeleted()) {
+				return true;
+			}
+			return false;
+		}
 	}
 
 	/**
@@ -423,7 +440,8 @@ public class DelegatingFoldingStructureProvider {
 	private ScriptEditor fEditor;
 	private IFoldingBlockProvider[] blockProviders;
 	private ProjectionListener fProjectionListener;
-	
+	/** Comment filter, matches comments. */
+	private final Filter fCommentFilter = new CommentFilter();
 	private IPreferenceStore fStore;
 
 	public DelegatingFoldingStructureProvider(ScriptEditor editor) {
@@ -442,6 +460,7 @@ public class DelegatingFoldingStructureProvider {
 		
 	}
 
+	@Override
 	public void uninstall() {
 		internalUninstall();
 	}
@@ -515,10 +534,12 @@ public class DelegatingFoldingStructureProvider {
 		}
 	}
 
+	@Override
 	public final void initialize() {
 		initialize(false);
 	}
 
+	@Override
 	public final void initialize(boolean isReinit) {
 		// don't auto collapse if reinitializing
 		update(createInitialContext(isReinit));
@@ -675,8 +696,6 @@ public class DelegatingFoldingStructureProvider {
 				}
 			}
 			return true;
-		} catch (ModelException e) {
-			return false;
 		} catch (AbortFoldingException e) {
 			return false;
 		} catch (RuntimeException e) {
@@ -828,6 +847,53 @@ public class DelegatingFoldingStructureProvider {
 		return map;
 	}
 
+	@Override
+	public final void collapseMembers() {
+		// Not supported
+//		modifyFiltered(fMemberFilter, false);
+	}
+
+	/*
+	 * @see IScriptFoldingStructureProviderExtension#collapseComments()
+	 */
+	@Override
+	public final void collapseComments() {
+		modifyFiltered(fCommentFilter, false);
+	}
+
+	/**
+	 * Collapses or expands all annotations matched by the passed filter.
+	 * 
+	 * @param filter
+	 *            the filter to use to select which annotations to collapse
+	 * @param expand
+	 *            <code>true</code> to expand the matched annotations,
+	 *            <code>false</code> to collapse them
+	 */
+	private void modifyFiltered(Filter filter, boolean expand) {
+		if (!isInstalled())
+			return;
+		ProjectionAnnotationModel model = getModel();
+		if (model == null)
+			return;
+		List<Annotation> modified = new ArrayList<Annotation>();
+		Iterator<?> iter = model.getAnnotationIterator();
+		while (iter.hasNext()) {
+			Object annotation = iter.next();
+			if (annotation instanceof ScriptProjectionAnnotation) {
+				ScriptProjectionAnnotation annot = (ScriptProjectionAnnotation) annotation;
+				if (expand == annot.isCollapsed() && filter.match(annot)) {
+					if (expand)
+						annot.markExpanded();
+					else
+						annot.markCollapsed();
+					modified.add(annot);
+				}
+			}
+		}
+		model.modifyAnnotations(null, null,
+				modified.toArray(new Annotation[modified.size()]));
+	}
 
 	private static class SourceRangeStamp {
 		final int length;
@@ -866,7 +932,7 @@ public class DelegatingFoldingStructureProvider {
 		protected final String contents;
 		protected final Path filePath;
 
-		public FoldingContent(String contents, Path filePath) throws ModelException {
+		public FoldingContent(String contents, Path filePath) {
 			this.contents = contents;
 			this.filePath = filePath;
 		}
@@ -935,9 +1001,7 @@ public class DelegatingFoldingStructureProvider {
 						new ScriptProjectionAnnotation(ctx.allowCollapsing()
 								&& collapse, kind, element), position);
 			} catch (StringIndexOutOfBoundsException e) {
-				if (DLTKCore.DEBUG) {
-					e.printStackTrace();
-				}
+				LangUIPlugin.logInternalError(e);
 			}
 		}
 	}

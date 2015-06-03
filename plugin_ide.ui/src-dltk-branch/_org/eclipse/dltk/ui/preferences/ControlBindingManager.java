@@ -10,7 +10,6 @@ import java.util.Map;
 import melnorme.lang.ide.ui.LangUIPlugin;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -167,9 +166,6 @@ public class ControlBindingManager<KEY> {
 				final RuntimeException error = new IllegalArgumentException(
 						"Duplicate control " + key); //$NON-NLS-1$
 				LangUIPlugin.logInternalError(error);
-				if (DLTKCore.DEBUG) {
-					throw error;
-				}
 			}
 
 			textControls.put(text, key);

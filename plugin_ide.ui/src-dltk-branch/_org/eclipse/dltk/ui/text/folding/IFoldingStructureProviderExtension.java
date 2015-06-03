@@ -9,7 +9,6 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.text.folding;
 
-import org.eclipse.dltk.core.IModelElement;
 
 /**
  * Extends {@link IFoldingStructureProvider} with the following functions:
@@ -30,7 +29,4 @@ public interface IFoldingStructureProviderExtension {
 	 */
 	void collapseComments();
 
-	void expandElements(IModelElement[] array);
-
-	void collapseElements(IModelElement[] modelElements);
 }

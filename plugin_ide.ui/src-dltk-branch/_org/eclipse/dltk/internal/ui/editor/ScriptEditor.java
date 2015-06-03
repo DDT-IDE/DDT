@@ -25,9 +25,6 @@ import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
 import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 
-import org.dsource.ddt.ide.core.DeeLanguageToolkit;
-import org.eclipse.dltk.compiler.CharOperation;
-import org.eclipse.dltk.core.IScriptLanguageProvider;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -58,8 +55,9 @@ import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
+import dtool.util.NewUtils;
 
-public abstract class ScriptEditor extends AbstractLangStructureEditor implements IScriptLanguageProvider {
+public abstract class ScriptEditor extends AbstractLangStructureEditor {
 	
 	/** Preference key for matching brackets */
 	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
@@ -318,9 +316,9 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	 * </p>
 	 */
 	protected String[] getFoldingEventPreferenceKeys() {
-		return CharOperation.NO_STRINGS;
+		return NewUtils.EMPTY_STRING_ARRAY;
 	}
-
+	
 	protected void installProjectionSupport(IPreferenceStore store, AdaptedSourceViewer viewer) {
 		/*
 		 * This is a performance optimization to reduce the computation of the
@@ -408,12 +406,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		} finally {
 			projectionViewer.setRedraw(true);
 		}
-	}
-	
-	@Deprecated
-	@Override
-	public DeeLanguageToolkit getLanguageToolkit() {
-		return DeeLanguageToolkit.getDefault();
 	}
 	
 	/* ----------------- bracket matcher ----------------- */
