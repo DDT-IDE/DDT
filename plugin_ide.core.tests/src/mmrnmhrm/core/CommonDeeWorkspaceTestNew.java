@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.dltk.core.search.indexing.IndexManager;
 
 import dtool.dub.BundlePath;
 import dtool.tests.utils.MiscJsonUtils;
@@ -34,7 +33,6 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 	
 	static {
 		disableWorkspaceAutoBuild();
-		disableDLTKIndexer();
 	}
 	
 	private static void disableWorkspaceAutoBuild() {
@@ -46,21 +44,6 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 			throw ExceptionAdapter.unchecked(e);
 		}
 		assertTrue(ResourcesPlugin.getWorkspace().isAutoBuilding() == false);
-	}
-	
-	@SuppressWarnings("restriction")
-	protected static void disableDLTKIndexer() {
-		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
-		indexManager.disable();
-	}
-	
-	@SuppressWarnings("restriction")
-	protected static void enableDLTKIndexer(boolean waitUntilReady) {
-		IndexManager indexManager = org.eclipse.dltk.internal.core.ModelManager.getModelManager().getIndexManager();
-		indexManager.enable();
-		if(waitUntilReady) {
-			indexManager.waitUntilReady();
-		}
 	}
 	
 	/* ----------------- ----------------- */
