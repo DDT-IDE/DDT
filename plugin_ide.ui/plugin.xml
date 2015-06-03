@@ -46,7 +46,7 @@
 		<context
 			name="%LangEditContext.name"
 			description="%LangEditContext.description"
-			parentId="org.eclipse.dltk.ui.scriptEditorScope"
+			parentId="org.eclipse.ui.textEditorScope"
 			id="org.dsource.ddt.ide.ui.Contexts.Editor">
 		</context>
 	</extension>
@@ -331,16 +331,6 @@
 		</wizard>
 	</extension>
 	
-	
-	<!-- ============ Other (TODO cleanup) ============= -->
-	
-   <extension point="org.eclipse.dltk.ui.language">
-      <language
-          class="mmrnmhrm.ui.DeeUILanguageToolkit"
-          nature="org.dsource.ddt.ide.core.nature"
-          priority="0"/>
-   </extension>
-   
 	
 	<!-- ============ other extensions ============= -->
    

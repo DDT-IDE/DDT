@@ -16,12 +16,12 @@ import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
 import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
 import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
-import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.editors.text.EditorsUI;
 
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import dtool.ddoc.IDeeDocColorConstants;
 
 public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {

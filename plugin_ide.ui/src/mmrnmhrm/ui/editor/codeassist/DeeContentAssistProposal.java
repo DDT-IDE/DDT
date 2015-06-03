@@ -15,7 +15,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import mmrnmhrm.ui.DeeUI;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ui.PreferenceConstants;
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Image;
 

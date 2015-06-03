@@ -3,8 +3,6 @@ package _org.eclipse.dltk.ui.text.folding;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.dltk.ui.preferences.PreferencesMessages;
-import org.eclipse.dltk.ui.util.SWTFactory;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -15,6 +13,8 @@ import org.eclipse.swt.widgets.Group;
 import _org.eclipse.dltk.ui.preferences.ImprovedAbstractConfigurationBlock;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
+import _org.eclipse.dltk.ui.util.SWTFactory;
 
 /**
  * Abstract base class that may be used to create

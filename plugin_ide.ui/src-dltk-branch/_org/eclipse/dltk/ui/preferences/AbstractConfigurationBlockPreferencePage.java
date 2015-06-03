@@ -10,7 +10,8 @@
 
 package _org.eclipse.dltk.ui.preferences;
 
-import org.eclipse.dltk.ui.DLTKUIPlugin;
+import melnorme.lang.ide.ui.LangUIPlugin;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -100,7 +101,7 @@ public abstract class AbstractConfigurationBlockPreferencePage extends
 		fConfigurationBlock.performOk();
 		fOverlayStore.propagate();
 
-		DLTKUIPlugin.getDefault().savePluginPreferences();
+		LangUIPlugin.getDefault().savePluginPreferences();
 
 		return true;
 	}

@@ -18,13 +18,16 @@ import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.DeeUILanguageToolkit;
+import mmrnmhrm.ui.preferences.pages.DeeContentAssistPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 
 import org.dsource.ddt.ide.core.DeeLanguageToolkit;
 import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.IScriptLanguageProvider;
-import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
-import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -50,6 +53,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
@@ -412,10 +416,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 		return DeeLanguageToolkit.getDefault();
 	}
 	
-	protected DeeUILanguageToolkit getUILanguageToolkit() {
-		return DeeUILanguageToolkit.getDefault();
-	}
-
 	/* ----------------- bracket matcher ----------------- */
 	
 	@Override
@@ -433,12 +433,21 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	@Override
 	protected String[] collectContextMenuPreferencePages() {
 		final List<String> result = new ArrayList<String>();
-		final DeeUILanguageToolkit uiToolkit = getUILanguageToolkit();
-		addPages(result, uiToolkit.getEditorPreferencePages());
+		addPages(result, ScriptEditor.getEditorPreferencePages());
 		addPages(result, super.collectContextMenuPreferencePages());
 		return result.toArray(new String[result.size()]);
 	}
-
+	
+	public static String[] getEditorPreferencePages() {
+		return new String[]{ 
+				DeeEditorPreferencePage.PAGE_ID, 
+				DeeContentAssistPreferencePage.PAGE_ID,
+				DeeEditorTypingPreferencePage.PAGE_ID,
+				DeeFoldingPreferencePage.PAGE_ID,
+				DeeTemplatePreferencePage.PAGE_ID,
+				DeeSourceColoringPreferencePage.PAGE_ID};
+	}
+	
 	protected void addPages(final List<String> result, final String[] pages) {
 		if (pages != null) {
 			for (int i = 0; i < pages.length; ++i) {
@@ -476,8 +485,7 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 	@Override
 	protected void rulerContextMenuAboutToShow(IMenuManager menu) {
 		super.rulerContextMenuAboutToShow(menu);
-		IMenuManager foldingMenu = new MenuManager(
-				DLTKEditorMessages.Editor_FoldingMenu_name, "projection"); //$NON-NLS-1$
+		IMenuManager foldingMenu = new MenuManager("F&olding", "projection"); //$NON-NLS-1$
 		menu.appendToGroup(ITextEditorActionConstants.GROUP_RULERS, foldingMenu);
 
 		IAction action = getAction("FoldingToggle"); //$NON-NLS-1$
@@ -505,4 +513,5 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor implement
 			foldingMenu.add(action);
 		}
 	}
+	
 }

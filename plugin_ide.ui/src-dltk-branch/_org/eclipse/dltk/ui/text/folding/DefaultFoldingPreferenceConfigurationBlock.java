@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.preferences.PreferencesMessages;
-import org.eclipse.dltk.ui.util.PixelConverter;
-import org.eclipse.dltk.ui.util.SWTFactory;
 import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -23,10 +20,13 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.preferences.FieldValidators.MinimumNumberValidator;
 import _org.eclipse.dltk.ui.preferences.ImprovedAbstractConfigurationBlock;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import _org.eclipse.dltk.ui.util.SWTFactory;
 
 /**
  */
@@ -156,16 +156,11 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 
 		int minLines = defaultMinLines();
 
-		SWTFactory
-				.createLabel(
-						composite,
-						NLS
-								.bind(
-										PreferencesMessages.FoldingConfigurationBlock_minLinesToEnableFolding,
-										new Integer(minLines)), 0, 1);
+		SWTFactory.createLabel(composite, 
+			NLS.bind(PreferencesMessages.FoldingConfigurationBlock_minLinesToEnableFolding, new Integer(minLines)), 
+			0, 1);
 
-		Text textBox = SWTFactory.createText(composite, SWT.BORDER, 1,
-				Util.EMPTY_STRING);
+		Text textBox = SWTFactory.createText(composite, SWT.BORDER, 1, Util.EMPTY_STRING);
 		textBox.setTextLimit(4);
 		((GridData) textBox.getLayoutData()).widthHint = new PixelConverter(
 				composite).convertWidthInCharsToPixels(4 + 1);

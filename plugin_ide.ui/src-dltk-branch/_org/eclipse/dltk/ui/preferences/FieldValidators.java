@@ -1,9 +1,10 @@
 package _org.eclipse.dltk.ui.preferences;
 
+import java.text.MessageFormat;
+
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.dltk.internal.corext.util.Messages;
-import org.eclipse.dltk.ui.dialogs.StatusInfo;
-import org.eclipse.dltk.ui.preferences.ValidatorMessages;
+
+import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 
 public final class FieldValidators {
 
@@ -71,10 +72,10 @@ public final class FieldValidators {
 				try {
 					int value = Integer.parseInt(text);
 					if (value < 0) {
-						status.setError(Messages.format(ValidatorMessages.PositiveNumberIsInvalid, text));
+						status.setError(MessageFormat.format(ValidatorMessages.PositiveNumberIsInvalid, text));
 					}
 				} catch (NumberFormatException e) {
-					status.setError(Messages.format(ValidatorMessages.PositiveNumberIsInvalid, text));
+					status.setError(MessageFormat.format(ValidatorMessages.PositiveNumberIsInvalid, text));
 				}
 			}
 
@@ -99,9 +100,7 @@ public final class FieldValidators {
 
 			int value = Integer.parseInt(text);
 			if (value < minValue) {
-				status.setError(Messages.format(
-						ValidatorMessages.MinValueInvalid, String
-								.valueOf(minValue)));
+				status.setError(MessageFormat.format(ValidatorMessages.MinValueInvalid, String.valueOf(minValue)));
 			}
 
 			return status;

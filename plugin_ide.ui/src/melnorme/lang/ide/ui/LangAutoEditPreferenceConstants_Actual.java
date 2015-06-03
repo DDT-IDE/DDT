@@ -12,8 +12,7 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.utils.prefs.BooleanPreference;
 import melnorme.utilbox.misc.MiscUtil;
-
-import org.eclipse.dltk.ui.PreferenceConstants;
+import _org.eclipse.dltk.ui.PreferenceConstants;
 
 
 public interface LangAutoEditPreferenceConstants_Actual {

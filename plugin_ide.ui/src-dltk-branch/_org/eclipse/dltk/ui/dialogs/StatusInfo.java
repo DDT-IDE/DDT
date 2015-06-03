@@ -9,10 +9,11 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.dialogs;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 
 /**
  * A settable IStatus. 
@@ -168,12 +169,9 @@ public class StatusInfo implements IStatus {
 		return fSeverity;
 	}
 
-	/*
-	 * @see IStatus#getPlugin()
-	 */
 	@Override
 	public String getPlugin() {
-		return DLTKUIPlugin.PLUGIN_ID;
+		return LangUIPlugin.PLUGIN_ID;
 	}
 
 	/**

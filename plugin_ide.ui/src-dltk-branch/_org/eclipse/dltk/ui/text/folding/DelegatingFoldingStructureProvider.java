@@ -29,7 +29,6 @@ import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -46,6 +45,7 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
+import _org.eclipse.dltk.ui.DLTKUIPlugin;
 import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 
 /**
@@ -680,7 +680,7 @@ public class DelegatingFoldingStructureProvider {
 		} catch (AbortFoldingException e) {
 			return false;
 		} catch (RuntimeException e) {
-			DLTKUIPlugin.logErrorMessage("Error in FoldingBlockProvider", e);
+			DLTKUIPlugin.logError("Error in FoldingBlockProvider", e);
 			blockProviders = null;
 			return false;
 		}

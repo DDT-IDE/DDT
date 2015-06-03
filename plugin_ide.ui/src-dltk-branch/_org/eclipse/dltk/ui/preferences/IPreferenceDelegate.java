@@ -1,8 +1,5 @@
 package _org.eclipse.dltk.ui.preferences;
 
-import org.eclipse.dltk.ui.preferences.AbstractOptionsBlock;
-import org.eclipse.dltk.ui.preferences.ImprovedAbstractConfigurationBlock;
-import org.eclipse.dltk.ui.preferences.PreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**

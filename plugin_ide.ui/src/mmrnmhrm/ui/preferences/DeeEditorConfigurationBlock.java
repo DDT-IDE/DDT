@@ -16,9 +16,10 @@ import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.util.swt.components.fields.CheckBoxField;
 
-import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+
+import _org.eclipse.dltk.ui.PreferenceConstants;
 
 public class DeeEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	

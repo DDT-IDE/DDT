@@ -13,9 +13,6 @@ package _org.eclipse.dltk.ui.preferences;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
-import org.eclipse.dltk.ui.dialogs.StatusInfo;
-import org.eclipse.dltk.ui.util.IStatusChangeListener;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Button;
@@ -23,7 +20,10 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import _org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
+import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import _org.eclipse.dltk.ui.util.IStatusChangeListener;
 
 /**
  * Configures preferences.

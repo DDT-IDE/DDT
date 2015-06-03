@@ -9,13 +9,13 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.text.completion;
 
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
+import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IRegion;
@@ -112,7 +112,7 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 
 
 	protected IPreferenceStore getPreferenceStore() {
-		return DLTKUIPlugin.getDefault().getPreferenceStore();
+		return LangUIPlugin.getDefault().getPreferenceStore();
 	}
 
 	protected boolean insertCompletion() {
@@ -123,25 +123,16 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 
 		RGB rgb = PreferenceConverter.getColor(getPreferenceStore(),
 				PreferenceConstants.CODEASSIST_REPLACEMENT_FOREGROUND);
-		ScriptTextTools textTools = getTextTools();
-		if (textTools == null) {
-			return null;
-		}
-		return textTools.getColorManager().getColor(rgb);
-	}
-
-	protected ScriptTextTools getTextTools() {
-		return null;
+		IColorManager colorManager = LangUIPlugin.getDefault().getColorManager();
+		return colorManager.getColor(rgb);
 	}
 
 	protected Color getBackgroundColor(StyledText text) {
 
 		RGB rgb = PreferenceConverter.getColor(getPreferenceStore(),
 				PreferenceConstants.CODEASSIST_REPLACEMENT_BACKGROUND);
-		ScriptTextTools textTools = getTextTools();
-		if (textTools != null)
-			return textTools.getColorManager().getColor(rgb);
-		return null;
+		IColorManager colorManager = LangUIPlugin.getDefault().getColorManager();
+		return colorManager.getColor(rgb);
 	}
 
 	private void repairPresentation(ITextViewer viewer) {

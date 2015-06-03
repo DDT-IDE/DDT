@@ -4,7 +4,6 @@ import melnorme.lang.ide.core.ILangOperationsListener_Actual;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
-import mmrnmhrm.ui.text.DeeTextTools;
 
 import org.osgi.framework.BundleContext;
 
@@ -46,17 +45,6 @@ public class DeeUIPlugin extends LangUIPlugin {
 	@Override
 	protected void doCustomStop(BundleContext context) {
 		DeeCore.getDubProcessManager().removeListener(dubProcessListener);
-	}
-	
-	/* --------  -------- */
-	
-	private DeeTextTools fTextTools;
-	
-	public DeeTextTools getTextTools() {
-		if (fTextTools == null) {
-			fTextTools = new DeeTextTools(true);
-		}
-		return fTextTools;
 	}
 	
 }

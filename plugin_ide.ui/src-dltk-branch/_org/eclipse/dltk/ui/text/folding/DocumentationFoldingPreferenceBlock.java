@@ -2,13 +2,13 @@ package _org.eclipse.dltk.ui.text.folding;
 
 import java.util.List;
 
-import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 
 public class DocumentationFoldingPreferenceBlock extends

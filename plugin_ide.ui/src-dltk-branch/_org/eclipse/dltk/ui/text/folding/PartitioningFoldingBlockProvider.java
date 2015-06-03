@@ -18,7 +18,6 @@ import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -29,6 +28,7 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 
+import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
 
 /**
