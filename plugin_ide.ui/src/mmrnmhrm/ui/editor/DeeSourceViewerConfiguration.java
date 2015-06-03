@@ -10,6 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
+import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
+import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import mmrnmhrm.core.text.DeePartitions;
@@ -21,8 +23,6 @@ import org.eclipse.cdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-
-import _org.eclipse.jdt.internal.ui.text.java.hover.LangInformationProvider;
 
 public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
@@ -69,7 +69,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	@Override
 	protected IInformationProvider getInformationProvider(String contentType) {
 		if(contentType.equals(DeePartitions.DEE_CODE)) {
-			return new LangInformationProvider(getEditor());
+			return new HoverInformationProvider(new BestMatchHover(getEditor()));
 		}
 		return null;
 	}

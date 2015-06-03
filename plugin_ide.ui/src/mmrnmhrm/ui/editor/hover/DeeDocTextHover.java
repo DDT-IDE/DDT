@@ -12,7 +12,6 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.ide.ui.editor.BestMatchHover;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -31,18 +30,13 @@ import dtool.ddoc.TextUI;
  * Standard documentation hover for DDoc.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
-public class DeeDocTextHover extends AbstractDocTextHover {
+public class DeeDocTextHover extends AbstractDocumentationHover {
 	
 	public DeeDocTextHover() {
 	}
 	
 	@Override
-	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-		return BestMatchHover.doGetHoverRegion(textViewer, offset);
-	}
-	
-	@Override
-	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+	public String getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
 		ITextEditor editor = tryCast(getEditor(), ITextEditor.class);
 		if(editor == null) {
 			return null;

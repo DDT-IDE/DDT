@@ -10,19 +10,14 @@
 package _org.eclipse.dltk.ui.text.completion;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
-import melnorme.lang.ide.ui.utils.WorkbenchUtils;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.internal.ui.text.hover.DocumentationHover;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
-import org.eclipse.jface.internal.text.html.BrowserInformationControl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.ITextViewerExtension2;
@@ -35,18 +30,16 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Shell;
+
+import _org.eclipse.dltk.ui.PreferenceConstants;
 
 
-@SuppressWarnings("restriction")
 /* FIXME: DLTK review this code*/
 public abstract class AbstractScriptCompletionProposal extends LangCompletionProposal {
 
 	protected char[] fTriggerCharacters;
 
 	protected StyleRange fRememberedStyleRange;
-
-	private IInformationControlCreator fCreator;
 
 
 	public AbstractScriptCompletionProposal(ToolCompletionProposal proposal, String additionalProposalInfo,
@@ -246,17 +239,4 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 		fRememberedStyleRange = null;
 	}
 
-	@Override
-	public IInformationControlCreator getInformationControlCreator() {
-		Shell shell = DLTKUIPlugin.getActiveWorkbenchShell();
-		if (shell == null || !BrowserInformationControl.isAvailable(shell))
-			return null;
-		if (fCreator == null) {
-			DocumentationHover.PresenterControlCreator presenterControlCreator = 
-					new DocumentationHover.PresenterControlCreator(WorkbenchUtils.getActiveSite());
-			fCreator = new DocumentationHover.HoverControlCreator(presenterControlCreator, true);
-		}
-		return fCreator;
-	}
-	
 }

@@ -27,6 +27,7 @@ Require-Bundle: org.dsource.ddt.ide.core,
  org.eclipse.ui.views;bundle-version="3.7.0"
 Export-Package: melnorme.lang.ide.ui;x-friends:="org.dsource.ddt.ide.debug",
  melnorme.lang.ide.ui.editor;x-friends:="org.dsource.ddt.ide.debug",
+ melnorme.lang.ide.ui.editor.hover,
  melnorme.lang.ide.ui.launch,
  org.dsource.ddt.ui.tabgroup
 Bundle-ClassPath: .
