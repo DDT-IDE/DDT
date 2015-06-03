@@ -26,6 +26,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Fixed #91: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
 
  * Upgraded minimum Java version to Java 8
+  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
  * Removed dependency on DLTK feature.
 
 
