@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import mmrnmhrm.core.text.DeePartitions;
@@ -27,7 +28,6 @@ import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 
@@ -45,7 +45,7 @@ public class EditorSettings_Actual {
 	}
 	
 	public static AbstractLangSourceViewerConfiguration createSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, AbstractDecoratedTextEditor editor) {
+			IPreferenceStore preferenceStore, AbstractLangStructureEditor editor) {
 		IColorManager colorManager = LangUIPlugin.getInstance().getColorManager();
 		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
 	}
