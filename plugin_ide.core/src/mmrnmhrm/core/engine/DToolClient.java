@@ -10,12 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import java.io.IOException;
 
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.EngineOperation;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureUpdateTask;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -25,7 +25,6 @@ import mmrnmhrm.core.DeeCorePreferences;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.IDocument;
 
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
@@ -61,11 +60,6 @@ public class DToolClient extends EngineClient {
 		};
 	}
 	
-	@Override
-	public void shutdown() {
-		super.shutdown();
-	}
-	
 	public SemanticManager getServerSemanticManager() {
 		return dtoolServer.getSemanticManager();
 	}
@@ -78,7 +72,7 @@ public class DToolClient extends EngineClient {
 	
 	public abstract class WorkingCopyStructureUpdateTask extends StructureUpdateTask {
 		
-		protected final Location fileLocation;
+		protected final Location fileLocation; // can be null
 		
 		public WorkingCopyStructureUpdateTask(StructureInfo structureInfo, Location fileLocation) {
 			super(structureInfo);
@@ -94,7 +88,7 @@ public class DToolClient extends EngineClient {
 			if(parsedModule == null || isCancelled()) {
 				return null;
 			}
-			return new DeeStructureCreator().createStructure(fileLocation, parsedModule);
+			return new DeeStructureCreator().createStructure(parsedModule, fileLocation);
 		}
 		
 		/**
@@ -131,10 +125,10 @@ public class DToolClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, final Location fileLocation, 
-			IDocument document, boolean isDirty) {
+	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, 
+			Location fileLocation) {
 		
-		final String source = document.get();
+		assertNotNull(source);
 		
 		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
 			
@@ -164,8 +158,10 @@ public class DToolClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
-		final Location location = getLocation(structureInfo.getKey());
+	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
+		if(fileLocation == null) {
+			return null;
+		}
 		
 		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
 			
@@ -176,7 +172,7 @@ public class DToolClient extends EngineClient {
 			
 			@Override
 			protected void modifyWorkingSource(CachedModuleEntry lockedEntry) {
-				getParseCache().discardWorkingCopy(location.toPath());
+				getParseCache().discardWorkingCopy(fileLocation.toPath());
 			}
 			
 			@Override

@@ -10,22 +10,21 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
-import static dtool.engine.CommonSemanticManagerTest.resolutionKey;
-import static dtool.tests.MockCompilerInstalls.DEFAULT_DMD_INSTALL_EXE_PATH;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
-import java.util.HashSet;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.StructureModelManager.MDocumentSynchedAcess;
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.tests.TestFixtureProject;
 
 import org.eclipse.core.filebuffers.FileBuffers;
@@ -34,17 +33,12 @@ import org.eclipse.core.filebuffers.ITextFileBufferManager;
 import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
-import dtool.dub.BundlePath;
-import dtool.engine.BundleResolution;
 import dtool.engine.ModuleParseCache_Test;
-import dtool.engine.SemanticManager;
-import dtool.engine.SemanticManager.ManifestUpdateOptions;
 
 
 public class DToolClient_Test extends CommonCoreTest {
@@ -57,7 +51,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	public void testUpdates() throws Exception { testUpdates________________(); }
 	public void testUpdates________________() throws Exception {
 		testsProject = new DToolFixtureProject();
-		doTestUpdates();
+		testUpdatesToWorkingCopy();
 	}
 	
 	protected class DToolFixtureProject extends TestFixtureProject {
@@ -76,53 +70,9 @@ public class DToolClient_Test extends CommonCoreTest {
 		}
 	}
 	
-	protected void doTestUpdates() throws CoreException, IOException {
-		IFolder SRC_FOLDER = testsProject.getFolder("source");
-		
-		IFile newFile = SRC_FOLDER.getFile("new_file.d");
-		updateFileContents(newFile, "module new_file;"); 
-		checkModuleContains(newFile, "new_file");
-		
-		IFolder newPackage = createFolder(SRC_FOLDER.getFolder("new_package"));
-		IFile newFile2 = newPackage.getFile("new_file2.d");
-		updateFileContents(newFile2, "module new_file2;");
-		checkModuleContains(newFile2, "new_package.new_file2");
-		
-		deleteResource(newPackage);
-		checkModuleExists(newFile2, "new_package.new_package_file", false);
-		
-		deleteResource(newFile);
-		checkModuleExists(newFile, "new_file", false);
-		
-		testUpdatesToWorkingCopy();
-	}
-	
-	protected <T extends IResource> T exists(T resource) {
-		assertTrue(resource.exists());
-		return resource;
-	}
-	
 	public static void updateFileContents(IFile file, String contents) throws IOException, CoreException {
 		ModuleParseCache_Test.writeToFileAndUpdateMTime(path(file.getLocation()), contents);
 		file.refreshLocal(0, null);
-	}
-	
-	protected void checkModuleContains(IFile file, String moduleName) throws CoreException {
-		checkModuleExists(file, moduleName, true);
-	}
-	
-	protected void checkModuleExists(IFile file, String moduleName, boolean exists) {
-		BundlePath bundlePath = BundlePath.create(file.getProject().getLocation().toFile().toPath());
-		BundleResolution sr;
-		try {
-			SemanticManager sm = client.getServerSemanticManager();
-			sr = sm.getUpdatedResolution(resolutionKey(bundlePath, DEFAULT_DMD_INSTALL_EXE_PATH), 
-				new ManifestUpdateOptions(DeeCorePreferences.getEffectiveDubPath()));
-		} catch (CommonException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
-		}
-		HashSet<String> modules = sr.findModules(moduleName);
-		assertTrue(modules.contains(moduleName) == exists);
 	}
 	
 	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
@@ -179,6 +129,13 @@ public class DToolClient_Test extends CommonCoreTest {
 				throws CoreException, IOException {
 			
 			ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
+			EngineClient engineClient = LangCore.getEngineClient();
+			
+			IStructureModelListener structureListener = new IStructureModelListener() {
+				@Override
+				public void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceStructure) {
+				}
+			};
 			
 			// Try connect using LocationKind.IFILE
 			try {
@@ -190,7 +147,19 @@ public class DToolClient_Test extends CommonCoreTest {
 					assertTrue(fileBuffer == fbm.getTextFileBuffer(fullPath, LocationKind.NORMALIZE));
 				}
 				
-				doRun(moduleFile, fileBuffer);
+				IDocument document = fileBuffer.getDocument();
+				StructureInfo structureInfo;
+				
+				Location fileLoc = ResourceUtils.getResourceLocation(moduleFile);
+				structureInfo = engineClient.connectStructureUpdates(fileLoc, document, structureListener);
+				
+				try{
+					doRun(moduleFile, fileBuffer);
+				} finally {
+					engineClient.disconnectStructureUpdates2(structureInfo, structureListener, 
+						new MDocumentSynchedAcess());
+				}
+				
 			} finally {
 				fbm.disconnect(fullPath, locationKind, null);
 			}
@@ -213,13 +182,9 @@ public class DToolClient_Test extends CommonCoreTest {
 		
 	}
 	
-	protected StructureInfo getStructureInfo(Location fileLoc) {
-		return client.getStructureManager().getStructureInfo(fileLoc);
-	}
-	
 	protected SourceFileStructure getCurrentStructure(Location fileLoc) {
 		try {
-			return getStructureInfo(fileLoc).getCurrentStructure();
+			return client.getStoredStructureInfo(fileLoc).getUpdatedStructure();
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}

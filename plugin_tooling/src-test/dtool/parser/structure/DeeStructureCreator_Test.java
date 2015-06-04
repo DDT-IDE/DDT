@@ -87,7 +87,7 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		// dummy loc
 		Location loc = DToolTestResources.getTestResourceLoc().resolve_fromValid("parser-structure/foo.d");
 		ParsedModule parsedModule = DeeParser.parseSourceModule(source, loc.toPath());
-		SourceFileStructure structure = new DeeStructureCreator().createStructure(loc, parsedModule);
+		SourceFileStructure structure = new DeeStructureCreator().createStructure(parsedModule, loc);
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(loc, expectedStructure, (Indexable<ParserError>) null);

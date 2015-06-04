@@ -12,6 +12,7 @@ package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
 import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import mmrnmhrm.core.text.DeePartitions;
@@ -21,14 +22,13 @@ import mmrnmhrm.ui.text.DeeColorPreferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 
 public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
 	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
-			AbstractDecoratedTextEditor editor) {
+			AbstractLangStructureEditor editor) {
 		super(preferenceStore, colorManager, editor);
 	}
 	
