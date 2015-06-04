@@ -1,6 +1,6 @@
 ## DDT release ChangeLog
 
-### DDT 0.11.1+
+### DDT 0.12.0+
  * Added: Automatic insertion of arguments for function proposal in Content Assist.
  * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
  * Added: Editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
@@ -31,7 +31,7 @@ A less intrusive message is shown in the bottom of the workbench window.
 
 
 
-### DDT 0.11.1
+### DDT 0.12.0
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
  * Fixed #101: Assertion failure parsing invalid syntax: `auto x = n. .n;`
 
