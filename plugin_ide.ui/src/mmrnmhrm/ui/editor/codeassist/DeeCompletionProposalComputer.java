@@ -58,19 +58,11 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	/* -----------------  ----------------- */
 	
-	protected final static char[] VAR_TRIGGER = { ' ', '=', ';' };
-	
-	protected static char[] getVarTrigger() {
-		return VAR_TRIGGER;
-	}
-	
 	@Override
 	public DeeContentAssistProposal adaptToolProposal(ToolCompletionProposal proposal) {
 		Image image = getImage(proposal);
 		
-		DeeContentAssistProposal completionProposal = new DeeContentAssistProposal(proposal, image);
-		completionProposal.setTriggerCharacters(getVarTrigger());
-		return completionProposal;
+		return new DeeContentAssistProposal(proposal, image);
 	}
 	
 	@Override

@@ -34,10 +34,8 @@ import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.dltk.ui.PreferenceConstants;
 
 
-/* FIXME: DLTK review this code*/
+/* TODO: DLTK review this code*/
 public abstract class AbstractScriptCompletionProposal extends LangCompletionProposal {
-
-	protected char[] fTriggerCharacters;
 
 	protected StyleRange fRememberedStyleRange;
 
@@ -47,23 +45,6 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 		super(proposal, additionalProposalInfo, image, contextInformation);
 	}
 
-	@Override
-	public char[] getTriggerCharacters() {
-		return fTriggerCharacters;
-	}
-
-	/**
-	 * Sets the trigger characters.
-	 * 
-	 * @param triggerCharacters
-	 *            The set of characters which can trigger the application of
-	 *            this completion proposal
-	 */
-	public void setTriggerCharacters(char[] triggerCharacters) {
-		fTriggerCharacters = triggerCharacters;
-	}
-
-	
 	/* --------------------------------- */
 	
 	/** The CSS used to format javadoc information. */
@@ -79,10 +60,8 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 	
 	@Override
 	public Object getAdditionalProposalInfo(IProgressMonitor monitor) {
-		//if (getProposalInfo() != null) {
-			String info= getProposalInfoString(monitor);
-			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
-		//}
+		String info= getProposalInfoString(monitor);
+		return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
 	}
 	
 	protected abstract String getProposalInfoString(IProgressMonitor monitor);
@@ -92,20 +71,10 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 	/* -----------------  ----------------- */
 	
 
-	/**
-	 * Gets the replacement offset.
-	 * 
-	 * @return Returns a int
-	 */
 	public int getReplacementOffset() {
 		return getReplaceOffset();
 	}
 
-	/**
-	 * Gets the replacement length.
-	 * 
-	 * @return Returns a int
-	 */
 	public int getReplacementLength() {
 		return getReplaceLength();
 	}
