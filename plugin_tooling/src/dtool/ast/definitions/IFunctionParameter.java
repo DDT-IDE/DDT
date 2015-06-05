@@ -33,6 +33,7 @@ public interface IFunctionParameter extends IASTNode {
 		LAZY(DeeTokens.KW_LAZY),
 		OUT(DeeTokens.KW_OUT),
 		REF(DeeTokens.KW_REF),
+		RETURN(DeeTokens.KW_RETURN),
 		SCOPE(DeeTokens.KW_SCOPE),
 		;
 		public final DeeTokens token;
@@ -57,6 +58,7 @@ public interface IFunctionParameter extends IASTNode {
 			case KW_LAZY: return LAZY;
 			case KW_OUT: return OUT;
 			case KW_REF: return REF;
+			case KW_RETURN: return RETURN;
 			case KW_SCOPE: return SCOPE;
 			default: return null;
 			}

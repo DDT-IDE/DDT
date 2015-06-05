@@ -6,7 +6,7 @@
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂  Parameters
 #@BREAK_Pr《 #?STRUCTURE_EXPECTED!【#error(EXP_CLOSE_PARENS) #@BREAK● $ 】  》
 
-#@PARAM_ATTRIB_NOTM《auto●final●in●lazy●out●ref●scope●in lazy ref ●const ref》
+#@PARAM_ATTRIB_NOTM《auto●final●in●lazy●out●ref●return●scope●in lazy ref ●const ref》
 #@PARAM_ATTRIB《#@PARAM_ATTRIB_NOTM #FN_ONLY(test)●#@TYPE_MODIFIERS_NP》
 #@PARAM_ATTRIB_ORNO《/*NONE*/●#@PARAM_ATTRIB》
 #@PARAM_ATTRIB_SAMP《/*NONE*/●in #FN_ONLY(test)●const lazy #FN_ONLY(test)》

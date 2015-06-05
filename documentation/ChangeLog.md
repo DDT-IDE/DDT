@@ -24,6 +24,7 @@ A less intrusive message is shown in the bottom of the workbench window.
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
  * Reworked Content Assist preference page. Now has option to auto-activate with alphabet characters.
  * Fixed #91: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
+ * Added: Parsing of `return ref` added in D 2.067.0. 
 
  * Upgraded minimum Java version to Java 8
   * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
