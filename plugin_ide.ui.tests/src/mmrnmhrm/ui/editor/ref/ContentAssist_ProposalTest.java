@@ -23,6 +23,7 @@ import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
@@ -34,28 +35,30 @@ public class ContentAssist_ProposalTest extends ContentAssistUI_CommonTest {
 	@Test
 	public void testBasic() throws Exception { testBasic$(); }
 	public void testBasic$() throws Exception {
-		new CompletionEngine_Test() {
-			
-			@Override
-			protected String getSource() throws CoreException {
-				return ContentAssist_ProposalTest.this.editor.getSourceViewer_().getDocument().get();
-			};
-			
-			@Override
-			protected void testCompletionEngine(int offset, int rplLen) throws CommonException {
-				
-				DeeCompletionProposalComputer caComputer = new DeeCompletionProposalComputer();
-				List<ICompletionProposal> proposals = caComputer.computeCompletionProposals(
-					new SourceOperationContext(editor.getSourceViewer_(), offset, editor));
-				
-				for (ICompletionProposal completionProposal : proposals) {
-					assertTrue(completionProposal instanceof DeeContentAssistProposal);
-					DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
-					assertTrue(deeProposal.getReplacementOffset() == offset);
-					assertTrue(deeProposal.getReplacementLength() == rplLen);
-				}
-			}
-		}.testBasic();
+		new CompletionEngine_InUI_Test().testBasic();
 	}
 	
+	@Ignore
+	protected class CompletionEngine_InUI_Test extends CompletionEngine_Test {
+		
+		@Override
+		protected String getSource() throws CoreException {
+			return ContentAssist_ProposalTest.this.editor.getSourceViewer_().getDocument().get();
+		};
+		
+		@Override
+		protected void testCompletionEngine(int offset, int rplLen) throws CommonException {
+			
+			DeeCompletionProposalComputer caComputer = new DeeCompletionProposalComputer();
+			List<ICompletionProposal> proposals = caComputer.computeCompletionProposals(
+				new SourceOperationContext(editor.getSourceViewer_(), offset, editor));
+			
+			for (ICompletionProposal completionProposal : proposals) {
+				assertTrue(completionProposal instanceof DeeContentAssistProposal);
+				DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
+				assertTrue(deeProposal.getReplacementOffset() == offset);
+				assertTrue(deeProposal.getReplacementLength() == rplLen);
+			}
+		}
+	}
 }

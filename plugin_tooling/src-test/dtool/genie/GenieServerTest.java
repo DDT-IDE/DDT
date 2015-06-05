@@ -29,6 +29,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import dtool.engine.DToolServer;
@@ -283,6 +284,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		new FindDefinitionOperation_ReuseConnectionTest().testALL();
 	}
 	
+	@Ignore
 	public class FindDefinitionOperation_GenieTest extends FindDefinitionOperation_Test {
 		
 		@Override
@@ -297,7 +299,7 @@ public class GenieServerTest extends JsonWriterTestUtils {
 		}
 		
 	}
-	
+	@Ignore
 	public class FindDefinitionOperation_ReuseConnectionTest extends FindDefinitionOperation_GenieTest {
 		
 		@Override
