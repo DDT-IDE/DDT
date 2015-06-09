@@ -2,7 +2,7 @@
 
 #### Requirements: 
  * Eclipse 4.4.1 (Luna SR1) or later.
- * A **1.7** Java VM or later. Otherwise DDT will silently fail to start.
+ * Java VM version 8 or later.
  * A [DUB](http://code.dlang.org/about) installation and at least one D compiler. GDB for debugging.
 
 #### Instructions:
