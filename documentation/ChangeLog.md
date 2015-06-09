@@ -1,10 +1,28 @@
 ## DDT release ChangeLog
 
-### DDT 0.12.0+
- * Added: Automatic insertion of arguments for function proposal in Content Assist.
- * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
+### DDT 0.12.0
+
+*Important Changes*:
+
+ * Added: Automatic insertion of function arguments for function proposals in Content Assist.
+ * Added: Parsing of `return ref` introduced with D 2.067.0. 
+ * Removed dependency on DLTK (Dynamic Languages Toolkit).
+   * This should improve DDT's startup time and memory footprint a bit, although it is mainly an internal change.
+   * Removed `Open D Type` action (could not be implemented correctly at the moment).
+ * Editor Outline and parse errors now updated immediately after keystrokes occur (the previous 500 ms delay was removed).
  * Added: Editor Go To Matching Bracket action (shortcut: Ctrl+Shift+P).
+ * Reworked Content Assist preference page. Now has option to auto-activate with alphabetic characters.
+ * Upgraded minimum Java version to Java 8.
+  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
+ * Improved transparency/aliasing of D element icons - this improves them for Eclipse dark themes. (more work/testing for dark themes needed though)
+ * Removed `Appearance` preference page and associated options.
+  ▶ Recommended/tested CDT version: 8.6.0
+
+*Other changes:*
+
+ * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
  * Doc - Installation guide: Added note for users in China.
+ * Fixed: Some editor actions (such as Open Definition) are enabled even when no IDE editor is active.
  * Fixed #102. A dialog is no longer shown when invoking content assist in invalid locations. 
 A less intrusive message is shown in the bottom of the workbench window. 
  * Fixed #105: Errors about "project is missing required 'src' folder", when such DUB source/import was not explicitly defined.
@@ -12,28 +30,16 @@ A less intrusive message is shown in the bottom of the workbench window.
   * For DMD: `$DIR/bin/dmd` → `$DIR/include/d2/`  (DMD OSX Homebrew package)
   * For LDC: `$DIR/bin/ldc2` → `$DIR/include/d/•$DIR/include/d/ldc`  (MSCV archive, and LDC built from source)
  * Added #107: allow content assist inside token strings (`q{ ... }`)
- * Cleanup: "Code Templates" preference page renamed to "Code Snippets"
- * Fixed regression: function overloads no longer appear separately in Content Assist
-  ▶ Recommended/tested CDT version: 8.6.0
- * Removed `Appearance` preference page and associated option.
- * Removed internal/deprecated `AST Viewer` view.
- * Improved transparency/aliasing of D element icons - this improves them for dark themes.
+ * Fixed regression: function overloads no longer appear separately in Content Assist.
  * Fixed regression: the icon of packages in Content Assist incorrectly showing up as the natives icon.
- * Removed Open D Type action (wasn't implemented correctly).
- * Reconciler thread timer. // TODO reword
  * Fixed: the preference pages are now searchable in the Preferences dialog search field, by means of relevant keywords.
- * Reworked Content Assist preference page. Now has option to auto-activate with alphabet characters.
  * Fixed #91: `Tab policy: "Spaces Only"` preference ignored when pressing TAB.
- * Added: Parsing of `return ref` added in D 2.067.0. 
  * Fixed #86: ";" doesn't get inserted if Content Assist is open
-
- * Upgraded minimum Java version to Java 8
-  * Added: Show error message dialog if starting Eclipse with a Java version below the minimum.
- * Removed dependency on DLTK feature.
+ * Removed internal/deprecated `AST Viewer` view.
 
 
 
-### DDT 0.12.0
+### DDT 0.11.1
  * Fixed: Either Assertion failure or incorrect results when invoking Content Assist on unsaved editor files. (Fixes #99, #97)
  * Fixed #101: Assertion failure parsing invalid syntax: `auto x = n. .n;`
 
