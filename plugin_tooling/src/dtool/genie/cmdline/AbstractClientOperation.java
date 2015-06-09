@@ -22,9 +22,9 @@ import java.io.StringWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.NumberUtil;
-import melnorme.utilbox.misc.NumberUtil.NumberFormatException_;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.genie.GenieMain.AbstractCmdlineOperation;
 import dtool.genie.GenieServer;
@@ -76,9 +76,9 @@ public abstract class AbstractClientOperation extends AbstractCmdlineOperation {
 			try {
 				portNumber = NumberUtil.parseInt(fileContents);
 				if(portNumber < 0) {
-					throw new NumberFormatException("Negative number");
+					throw new CommonException("Negative number");
 				}
-			} catch (NumberFormatException_ e) {
+			} catch(CommonException e) {
 				throw errorBail("Invalid contents of sentinel file, could not parse port number: " + fileContents, e);
 			}
 		}

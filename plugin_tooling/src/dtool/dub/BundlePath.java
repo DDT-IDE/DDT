@@ -31,7 +31,7 @@ public class BundlePath {
 	
 	public static BundlePath create(String pathStr) {
 		try {
-			Path path = MiscUtil.createPath2(pathStr);
+			Path path = MiscUtil.createPath(pathStr);
 			return BundlePath.create(path);
 		} catch (CommonException e) {
 			return null;

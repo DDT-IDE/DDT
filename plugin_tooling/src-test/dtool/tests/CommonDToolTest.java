@@ -44,7 +44,7 @@ public class CommonDToolTest extends CommonToolingTest {
 	
 	public static Path testsDubPath2() {
 		try {
-			return testsDubPath() == null ? null : PathUtil.createPath2(testsDubPath());
+			return testsDubPath() == null ? null : PathUtil.createPath(testsDubPath());
 		} catch (CommonException e) {
 			throw assertFail();
 		}
