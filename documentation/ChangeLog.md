@@ -1,5 +1,8 @@
 ## DDT release ChangeLog
 
+### (NextVersion)
+ * Fixed: hover for problem errors not showing if error is over a string literal source.
+ 
 ### DDT 0.12.0
 
 *Important Changes*:
