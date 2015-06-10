@@ -138,11 +138,11 @@ public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
 		writeDubJsonAndCheckDubModel("{"+
 			jsEntry("name", "xptobundle")+
 			jsEntry("importPaths", jsArray("src", "src-test"))+
-			jsEntry("version", "2.1")+
+			jsEntry("version", "2.1.0")+
 			jsFileEnd(),
 			
 			project, 
-			main(location, null, "xptobundle", "2.1", srcFolders("src", "src-test"), rawDeps())
+			main(location, null, "xptobundle", "2.1.0", srcFolders("src", "src-test"), rawDeps())
 		);
 		
 		
