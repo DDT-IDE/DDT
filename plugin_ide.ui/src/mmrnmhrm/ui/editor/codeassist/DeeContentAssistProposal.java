@@ -27,7 +27,7 @@ public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	public final INamedElement namedElement; 
 	
 	public DeeContentAssistProposal(ToolCompletionProposal proposal, Image image) {
-		super(proposal, null, image, null);
+		super(proposal, image, null);
 		this.namedElement = proposal.getExtraData();
 	}
 	

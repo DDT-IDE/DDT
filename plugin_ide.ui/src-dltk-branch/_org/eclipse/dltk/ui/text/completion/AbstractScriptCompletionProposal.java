@@ -40,9 +40,9 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 	protected StyleRange fRememberedStyleRange;
 
 
-	public AbstractScriptCompletionProposal(ToolCompletionProposal proposal, String additionalProposalInfo,
+	public AbstractScriptCompletionProposal(ToolCompletionProposal proposal, 
 			Image image, IContextInformation contextInformation) {
-		super(proposal, additionalProposalInfo, image, contextInformation);
+		super(proposal, image, contextInformation);
 	}
 
 	/* --------------------------------- */

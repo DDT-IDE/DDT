@@ -22,10 +22,11 @@ public class ToolCompletionProposal extends LangToolCompletionProposal {
 	protected final INamedElement namedElement;
 	
 	public ToolCompletionProposal(int replaceOffset, int replaceLength, String replaceString, String label,
-			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, 
+			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, String description, 
 			String fullReplaceString, Indexable<SourceRange> sourceSubElements,
 			INamedElement namedElement) {
-		super(replaceOffset, replaceLength, replaceString, label, kind, attributes, moduleName, 
+		super(replaceOffset, replaceLength, replaceString, label, kind, attributes, moduleName,
+			description,
 			fullReplaceString, sourceSubElements);
 		this.namedElement = namedElement;
 	}
