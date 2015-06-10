@@ -328,12 +328,9 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()), project);
 		getProcessManager().notifyOperationStarted(resolveProjectOperation);
 
-//		TODO: when new DUB .22 is released
-//		getProcessManager().submitDubCommandAndWait(resolveProjectOperation.newDubProcessTask(
-//			project, array(dubPath, "upgrade", "--missing-only"), pm));
-		
 		IRunProcessTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
 			project, array(dubPath, "describe"), pm);
+			
 		ExternalProcessResult processHelper;
 		try {
 			processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
