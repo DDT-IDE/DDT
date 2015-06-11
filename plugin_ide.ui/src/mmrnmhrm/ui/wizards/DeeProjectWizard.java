@@ -71,25 +71,6 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	
 	public class DeeProjectCreator extends ProjectCreator_ForWizard {
 		
-		public DeeProjectCreator() {
-			super(DeeProjectWizard.this);
-		}
-		
-		@Override
-		protected void configureCreatedProject(IProgressMonitor monitor) throws CoreException {
-			createSampleHelloWorldBundle(BundlePath.DUB_MANIFEST_FILENAME, "source", "app.d");
-		}
-		
-		@Override
-		protected String getHelloWorldContents() {
-			return HelloWorld_ModuleContents;
-		}
-		
-		@Override
-		protected String getDefaultManifestFileContents() {
-			return HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", getProject().getName());
-		}
-		
 		@Override
 		public boolean revertProjectCreation() {
 			syncPendingModelUpdates();
@@ -116,14 +97,21 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	}
 	
 	@Override
+	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor pm)
+			throws CoreException {
+		String dubManifestContents = HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", getProject().getName());
+		projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_FILENAME), 
+			dubManifestContents, false, pm);
+		
+		IFile mainModule = getProject().getFolder("src").getFile("app.d");
+		projectCreator.createFile(mainModule, HelloWorld_ModuleContents, true, pm);
+	}
+	
+	@Override
 	public boolean performFinish() {
 		boolean res = super.performFinish();
 		if (res) {
 			buildSettingsPage.performOk();
-			
-			IFile file = getProject().getFile(BundlePath.DUB_MANIFEST_FILENAME);
-			openEditorOnFile(file);
-			
 			return true;
 		}
 		return res;
