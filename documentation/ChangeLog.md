@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Fixed: hover for problem errors not showing if error is over a string literal source.
+ * Fixed: build errors no longer removed when editing a source file
  
 ### DDT 0.12.0
 

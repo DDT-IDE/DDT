@@ -29,6 +29,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DubProcessManager;
+import mmrnmhrm.core.workspace.DubModelManager;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -42,8 +43,6 @@ import dtool.dub.DubBuildOutputParser;
 
 public class DubProjectBuilder extends LangProjectBuilder {
 	
-	public static final String DUB_BUILD_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubBuildProblem";
-	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IFolder dubCacheFolder = getProject().getFolder(".dub");
@@ -55,7 +54,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	
 	@Override
 	protected String getBuildProblemId() {
-		return DUB_BUILD_PROBLEM_ID;
+		return LangCore_Actual.BUILD_PROBLEM_ID;
 	}
 	
 	@Override
@@ -133,7 +132,7 @@ public class DubProjectBuilder extends LangProjectBuilder {
 		String errorMessage = 
 				dubErrorLine == null ? DeeCoreMessages.RunningDubBuild_Error : dubErrorLine;
 		
-		IMarker dubMarker = getProject().createMarker(getBuildProblemId());
+		IMarker dubMarker = getProject().createMarker(DubModelManager.DUB_PROBLEM_ID);
 		dubMarker.setAttribute(IMarker.MESSAGE, errorMessage);
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
