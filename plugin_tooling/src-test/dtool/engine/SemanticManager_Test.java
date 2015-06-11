@@ -213,7 +213,8 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 		
 		ResolvedManifest manifest = null;
 		try {
-			manifest = sm.getUpdatedManifest(bundleKey(ERROR_BUNDLE__MISSING_DEP));
+			manifest = sm.super_getUpdatedManifest(bundleKey(ERROR_BUNDLE__MISSING_DEP), 
+				defaultManifestUpdateOptions());
 			assertTrue(manifest != null && manifest.bundle.hasErrors());
 			assertTrue(manifest.bundle.error.getMessage().contains("dub returned non-zero"));
 			
@@ -223,6 +224,9 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			assertTrue(ce.getMessage().equals(SemanticManager.ERROR_UNRESOLVED_DUB_MANIFEST));
 			assertTrue(ce.getCause().getMessage().contains(manifest.bundle.error.getMessage()));
 		}
+		
+		// Test that a DUB error makes manifest remain stale
+		checkStaleStatus(ERROR_BUNDLE__MISSING_DEP, StaleState.MANIFEST_STALE);
 	}
 	
 	@Test

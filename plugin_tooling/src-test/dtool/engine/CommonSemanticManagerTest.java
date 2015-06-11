@@ -136,9 +136,14 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		@Override
 		public ResolvedManifest getUpdatedManifest(BundleKey bundleKey, ManifestUpdateOptions options) 
 				throws CommonException {
-			ResolvedManifest manifest = super.getUpdatedManifest(bundleKey, options);
+			ResolvedManifest manifest = super_getUpdatedManifest(bundleKey, options);
 			assertTrue(checkIsManifestStale(bundleKey) == false);
 			return manifest;
+		}
+		
+		protected ResolvedManifest super_getUpdatedManifest(BundleKey bundleKey, ManifestUpdateOptions options)
+				throws CommonException {
+			return super.getUpdatedManifest(bundleKey, options);
 		}
 		
 		public boolean checkIsResolutionStale(BundlePath bundlePath) {

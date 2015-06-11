@@ -205,6 +205,10 @@ public class SemanticManager {
 						
 					}
 					
+					if(newManifestValue.getBundle().hasErrors()) {
+						entry.markStale(); // If it has errors, leave it as stale 
+					}
+					
 				}
 				sb.append("---");
 				dtoolServer.logMessage(sb.toString());
