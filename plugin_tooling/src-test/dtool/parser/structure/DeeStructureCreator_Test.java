@@ -59,6 +59,11 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		return new SourceRange(offset, length);
 	}
 	
+	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
+		return new ArrayList2<>(expectedElements);
+	}
+	
+	
 	protected String testSource;
 	
 	protected int indexOf(String str) {
@@ -94,10 +99,6 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		assertAreEqualLists(expected.getChildren(), structure.getChildren());
 		
 		assertEquals(structure, expected);
-	}
-	
-	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
-		return new ArrayList2<>(expectedElements);
 	}
 	
 	@Test
