@@ -21,25 +21,12 @@
 |[![sample_ddocView](screenshots/thumbs/sample_ddocView.png)](screenshots/sample_ddocView.png?raw=true)|
 |----|
    * Find Definition (aka Open Definition, Reference Resolving). (`F3` or `Ctrl+mouse-click`)
-   * Content Assist (aka Code Completion, Intellisense). (`Ctrl+Space`) Resolves references to symbols/definitions, has the exact same semantic capabilities as Reference Resolving.
-     * Can only resolve non-qualified named references, or qualified named references whose segments are all names (ie: `std.stdio.writeln`).
-     * Some qualified references with expression segments, like `member` in `(new Foo()).member` work as well, the rest don't.
-     * Can not distinguish between function or template overloads.
-     * There are several other semantic limitations. TODO: describe more precisely which semantic constructs are supported and which are not.
+   * Content Assist (aka Code Completion, Intellisense). (`Ctrl+Space`) Resolves references to symbols/definitions, has the exact same capabilities as Reference Resolving.
+   * Content Assist code snippets (configurable). 
 
 | [![sample_ca1](screenshots/thumbs/sample_ca1.png)](screenshots/sample_ca1.png?raw=true) | [![sample_ca2](screenshots/thumbs/sample_ca2.png)](screenshots/sample_ca2.png?raw=true) |
 |----|----|
- * Semantic Search - searches for elements (variables, functions, types, references, etc.)
-   * Open-Type dialog. Search and open a type (or type-like definition such as templates or aliases) using text pattern. (`Ctrl+Shift+T`)
 
-|[![sample_openType](screenshots/thumbs/sample_openType.png)](screenshots/sample_openType.png?raw=true)|
-|----|
-   * Search Dialog. Search for definitions based on a text pattern. (`Ctrl+H`)
-   * Search Dialog. Search for all references to a given definition. (`Ctrl+Shift+G`)
-     * *Experimental*: Search Dialog feature is experimental and can have several bugs and limitations.
-
-|[![sample_searchReferences](screenshots/thumbs/sample_searchReferences.png)](screenshots/sample_searchReferences.png?raw=true)<br/>`Search results after searching for "writeln" references`|
-|----|
 
 #### Debugging functionality. 
 Fully featured GDB debugger support (uses Eclipse CDT's GDB integration)
