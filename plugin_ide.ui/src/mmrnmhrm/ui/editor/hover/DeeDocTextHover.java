@@ -12,6 +12,7 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -46,7 +47,11 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		
 		GetDDocHTMLViewOperation ddocOp = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
 		try {
-			ddocOp.executeOperation();
+			try {
+				ddocOp.executeOperation();
+			} catch(CommonException e) {
+				throw LangCore.createCoreException(e);
+			}
 		} catch (CoreException ce) {
 			DeeCore.logStatus(ce);
 			String errorInfo = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());

@@ -59,7 +59,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 		this.offset = offset;
 	}
 	
-	public FindDefinitionResult executeWithResult() throws CoreException {
+	public FindDefinitionResult executeWithResult() throws CoreException, CommonException {
 		executeOperation();
 		return findDefResult;
 	}
