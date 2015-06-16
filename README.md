@@ -39,19 +39,13 @@ A release is a web site with an Eclipse p2 update site. The website may contain 
    * For more info on the Release Engineering script, run `ant -f releng/`, this will print the help.
  1. A branch or tag named `latest` should also be created in Github, pointing to the latest release commit. The previous `latest` tag can be deleted/overwritten. The documentation pages use this tag/branch in their links.
 
- * Note that in DDT, the released p2 update site is a composite site. Sometimes the composite structure may need to be updated.
  
 ## Project design info and notes
 
-#### Old source history:
-Old source history of the DDT project can still be found at the [Descent SVN repository](http://svn.dsource.org/projects/descent/!svn/bc/1700/trunk/)
+#### LangEclipseIDE
+This project uses the LangEclipseIDE framework, which is designed to have its source embedded in the host IDE.
+See [this section]( https://github.com/bruno-medeiros/LangEclipseIDE/blob/master/README-LangEclipseIDE.md#langeclipseide-source-embedding) for more info on how this should be managed.
 
-#### About `src-lang/` and `melnorme.lang` code:
-The `melnorme.lang` code, or simply Lang code, is IDE functionality not specific to any language, designed to potentially be used by other language IDEs. To achieve this some constraints need to be observed:
- * Lang code can only depend on other `melnorme` code, or on Eclipse.org plugins (including DLTK). But not on IDE specific code.  The only exception to this are the `_Actual` classes, which contain bindings to IDE-specific code (such as ids or other IDE constants, or even methods)
- * Lang code should be place on its own source folder (`src-lang/` usually). This is to make it easier to compare and update the code with the `src-lang/` of another IDE. If the Lang code is identical, only the `_Actual` classes should show up as differences.
-
-Why not re-use Lang code across IDEs by placing it in its own plugin? For two reasons. There are several points where Lang code needs to be connected/bound to certain IDE specific code. So, if Lang code is compiled into plugins shared by IDEs then this binding can only be done at runtime, as opposed to compile-time (This approach is similar to what DLTK does). Second, and perhaps more importantly, sharing at the source level allows unfettered freedom to customize the code. Sharing at a binary level requires that an API be exposed, and sometimes makes it difficult to extend/change functionality that the API didn't foresee changing. (From experience, this has happened a few times when using DLTK).
 
 #### Unit tests double-method wrapper:
  
