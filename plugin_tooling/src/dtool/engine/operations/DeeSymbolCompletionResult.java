@@ -89,9 +89,11 @@ public class DeeSymbolCompletionResult {
 	
 	public static ToolCompletionProposal createProposal(CompletionLocationInfo invocationInfo, int replaceLength, 
 			INamedElement namedElem) {
-		int rplOffset = invocationInfo.offset;
+		int rplOffset = invocationInfo.offset - invocationInfo.namePrefixLen;
+		replaceLength = replaceLength + invocationInfo.namePrefixLen;
+		
 		String rplName = namedElem.getName();
-		String rplString = rplName.substring(invocationInfo.namePrefixLen);
+		String rplString = rplName;
 		String moduleName = namedElem.getModuleFullName();
 		String baseLabel = DeeNamedElementLabelProvider.getLabelForContentAssistPopup(namedElem);
 		

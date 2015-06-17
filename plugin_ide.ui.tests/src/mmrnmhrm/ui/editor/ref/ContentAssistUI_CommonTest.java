@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import melnorme.lang.ide.ui.editor.AbstractLangEditor;
-import melnorme.lang.ide.ui.templates.LangTemplateProposal;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.misc.ReflectionUtils;
 import mmrnmhrm.ui.CommonDeeUITest;
@@ -78,28 +77,6 @@ public class ContentAssistUI_CommonTest extends CommonDeeUITest {
 	}
 	
 	/* ----------------------------------- */
-	
-	public static final int DONT_CHECK = -666;
-	
-	public static void checkProposals(ICompletionProposal[] proposals, int repOffset, int repLen, int prefixLen) {
-		for(ICompletionProposal completionProposal : proposals) {
-			if(completionProposal instanceof LangTemplateProposal) {
-				continue;
-			}
-			DeeContentAssistProposal proposal = (DeeContentAssistProposal) completionProposal;
-			String defName = proposal.namedElement.getExtendedName();
-			
-			assertTrue(repOffset == proposal.getReplacementOffset());
-			assertTrue(repLen == proposal.getReplacementLength());
-			if(prefixLen != DONT_CHECK) {
-				String repStr = defName.substring(prefixLen);
-				if(repStr.indexOf('(') != -1) {
-					repStr = repStr.substring(0, repStr.indexOf('('));
-				}
-				assertTrue(repStr.equals(proposal.getBaseReplaceString()));				
-			}
-		}
-	}
 	
 	public static List<INamedElement> proposalsToDefUnitResults(ICompletionProposal[] proposals) {
 		List<INamedElement> results = new ArrayList<>();

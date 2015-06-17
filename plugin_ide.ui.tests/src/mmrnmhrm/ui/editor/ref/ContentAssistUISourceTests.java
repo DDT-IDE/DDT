@@ -1,7 +1,7 @@
 package mmrnmhrm.ui.editor.ref;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.listFrom;
 import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.io.File;
@@ -70,14 +70,13 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	@Override
 	public void runRefSearchTest_________(RefSearchOptions options) {
 		try {
-			testComputeProposalsWithRepLen(options.offset, 0, options.rplLen, options.expectedResults);
+			testComputeProposalsWithRepLen(options.offset, options.expectedResults);
 		} catch (NoSuchFieldException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		}
 	}
 	
-	public void testComputeProposalsWithRepLen(int offset, int prefixLen, int repLen,
-		String... expectedResults) throws NoSuchFieldException {
+	public void testComputeProposalsWithRepLen(int offset, String... expectedResults) throws NoSuchFieldException {
 		
 		ContentAssistant ca = ContentAssistUI_CommonTest.getContentAssistant(editor);
 		ReflectionUtils.invokeMethod(ca, "hide"); //ca.hide();
@@ -103,24 +102,13 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 		} else {
 			assertEqualArrays(proposals, filtered);
 		}
-			
-		prefixLen = ContentAssistUI_CommonTest.DONT_CHECK; // Don't check TODO
-		checkProposals(offset, prefixLen, repLen, proposals, expectedResults);
+		
+		checkProposals(proposals, expectedResults);
 	}
 	
-	protected void checkProposals(int repOffset, int prefixLen, int repLen, ICompletionProposal[] proposals, 
-		String... expectedResults) {
-		if(proposals == null) {
-			assertTrue(expectedResults.length == 0);
-			return;
-		}
-		assertNotNull(proposals);
-		
-		if(expectedResults != null) {
-			List<INamedElement> results = proposalResultsToDefUnit(proposals);
-			checkResults(results, expectedResults);
-		}
-		ContentAssistUI_CommonTest.checkProposals(proposals, repOffset, repLen, prefixLen);
+	protected void checkProposals(ICompletionProposal[] proposals, String... expectedResults) {
+		List<INamedElement> results = proposalResultsToDefUnit(proposals);
+		checkResults(results, expectedResults);
 	}
 	
 	@Override
@@ -133,7 +121,7 @@ public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	
 	public List<INamedElement> proposalResultsToDefUnit(ICompletionProposal[] proposals) {
 		ArrayList<INamedElement> results = new ArrayList<>();
-		for (ICompletionProposal completionProposal : proposals) {
+		for(ICompletionProposal completionProposal : listFrom(proposals)) {
 			if(completionProposal instanceof DeeContentAssistProposal) {
 				DeeContentAssistProposal deeProposal = (DeeContentAssistProposal) completionProposal;
 				results.add(deeProposal.namedElement);
