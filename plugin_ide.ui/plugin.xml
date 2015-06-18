@@ -12,7 +12,7 @@
 	<extension point="org.eclipse.ui.perspectives">
 		<perspective
 			class="mmrnmhrm.ui.views.DeePerspective"
-			icon="icons/views/perspective.png"
+			icon="icons/views/Perspective.png"
 			id="org.dsource.ddt.ide.ui.DeePerspective"
 			name="%LangPerspective.name">
 		</perspective>
@@ -332,13 +332,13 @@
 	</extension>
 	
 	
-	<!-- ============ other extensions ============= -->
+	<!-- ============ Navigator extensions ============= -->
 	
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
 		<navigatorContent
 			activeByDefault="true"
 			contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContentProvider"
-			icon="icons/views/perspective.png"
+			icon="icons/views/Perspective.png"
 			id="org.dsource.ddt.ide.ui.DubNavigatorContent"
 			labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
 			name="Dub Elements"
