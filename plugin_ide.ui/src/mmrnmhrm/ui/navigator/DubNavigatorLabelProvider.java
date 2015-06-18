@@ -9,8 +9,9 @@
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
-import static melnorme.lang.ide.ui.views.AbstractLangLabelProvider.fgColor;
-import melnorme.lang.ide.ui.views.AbstractLangLabelProvider;
+
+import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
@@ -31,7 +32,7 @@ import org.eclipse.swt.graphics.RGB;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
-public class DubNavigatorLabelProvider extends AbstractLangLabelProvider implements IStyledLabelProvider {
+public class DubNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
 	public StyledString getStyledText(Object element) {
@@ -39,7 +40,7 @@ public class DubNavigatorLabelProvider extends AbstractLangLabelProvider impleme
 	}
 	
 	@Override
-	public Image getImage(Object element) {
+	protected Image getImageForCustomElements(Object element) {
 		return new DubElementImageProvider().switchElement(element);
 	}
 	

@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.navigator;
+package melnorme.lang.ide.ui.views;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.util.swt.jface.AbstractTreeContentProvider;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -106,7 +106,7 @@ public abstract class AbstractNavigatorContentProvider extends AbstractTreeConte
 		protected final IStatus run(IProgressMonitor monitor) {
 			//System.out.println(getRunningTimeMillis() + " :job#run");
 			runThrottledCode();
-			return DeeCore.createOkStatus("ok");
+			return LangCore.createOkStatus("ok");
 		}
 		
 		public void markRequestFinished() {

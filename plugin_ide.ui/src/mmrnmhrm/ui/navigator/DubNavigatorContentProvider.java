@@ -5,6 +5,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 import java.util.ArrayList;
 
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.util.swt.SWTUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;

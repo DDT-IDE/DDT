@@ -10,8 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.core.workspace.viewmodel;
 
+import melnorme.lang.ide.core.navigator.INavigatorElement;
 
-public interface IDubElement {
+
+public interface IDubElement extends INavigatorElement {
 	
 	public static IDubElement[] NO_CHILDREN = { };
 	

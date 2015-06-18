@@ -347,9 +347,10 @@
 			<!-- 
 			 Priority needs to be highest, because we could be competing with other plugins like JDT or CDT,
 			 which have triggerPoints for any IResource regardless of project nature:
-			 While that doesn't affect the content providers, it affects the common sorter, since we want to sort IResource's.
+			 While that doesn't affect the content providers, it affects the common sorter, 
+			 and that's important since we want to sort IResource's.
 			 Also, triggerPoints has to match the children we want to sort, not just the parent of the children, 
-			 so we can't use just expressions.isDeeProject 
+			 so we can't just use expressions.isLangProject 
 			-->
 			<triggerPoints>
 				<or><reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject"/></or>
@@ -362,7 +363,7 @@
 			 -->
 			<possibleChildren>
 				<or>
-					<instanceof value="mmrnmhrm.core.workspace.viewmodel.IDubElement" />
+					<instanceof value="melnorme.lang.ide.core.navigator.INavigatorElement" />
 					<reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
 				</or>
 			</possibleChildren>
@@ -370,13 +371,8 @@
 			<commonSorter class="mmrnmhrm.ui.navigator.DubNavigatorSorter">
 				<parentExpression>
 					<or>
-						<reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject"/>
-						<and>
-							<instanceof value="mmrnmhrm.core.workspace.viewmodel.IDubElement" />
-							<not>
-								<instanceof value="mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement" />
-							</not>
-						</and>
+						<reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
+						<instanceof value="melnorme.lang.ide.core.navigator.INavigatorElement" />
 					</or>
 				</parentExpression>
 			</commonSorter>
