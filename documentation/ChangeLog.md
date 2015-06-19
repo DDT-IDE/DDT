@@ -3,8 +3,9 @@
 ### (NextVersion)
  * Fixed: hover for problem errors not showing if error is over a string literal source.
  * Fixed #112: build errors no longer removed when editing a source file.
- * Fixed #113: Content Assist proposal has incorrect casing
+ * Fixed #113: Completion proposal insertion text has incorrect casing.
  * Fixed: Error and warning icon decorations sometimes not shown on Project Explorer elements (files/folders).
+ * Fixed: new build for a project not started if only external dependencies have changed.
  
 ### DDT 0.12.0
 

@@ -78,7 +78,8 @@
 	<extension point="org.eclipse.core.resources.builders"
 		id="DubBuilder"
 		name="DUB Build">
-		<builder>
+		<builder 
+			callOnEmptyDelta="true">
 			<run class="mmrnmhrm.core.build.DubProjectBuilder" />
 		</builder>
 	</extension>
