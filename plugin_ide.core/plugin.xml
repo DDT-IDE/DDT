@@ -85,24 +85,24 @@
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.markers"
-		id="DubProblem"
-		name="%DUBProblem">
-		<super type="org.eclipse.core.resources.problemmarker"/>
-		<persistent value="true"/>
-	</extension>
-	
-	<extension point="org.eclipse.core.resources.markers"
 		id="build_problem"
 		name="%ProblemMarker_Name">
-		<super type="org.dsource.ddt.ide.core.DubProblem"/>
+		<super type="org.eclipse.core.resources.problemmarker"/>
 		<persistent value="false"/>
 	</extension>
 	
 	<extension point="org.eclipse.core.resources.markers"
 		id="source_problem"
 		name="%ProblemMarker_Name">
-		<super type="org.dsource.ddt.ide.core.build_problem" />
-		<persistent value="false" />
+		<super type="org.dsource.ddt.ide.core.build_problem"/>
+		<persistent value="false"/>
+	</extension>
+	
+	<extension point="org.eclipse.core.resources.markers"
+		id="DubProblem"
+		name="%DUBProblem">
+		<super type="org.dsource.ddt.ide.core.build_problem"/>
+		<persistent value="false"/>
 	</extension>
 	
 	<!-- ============ Launch configuration type ============= -->
