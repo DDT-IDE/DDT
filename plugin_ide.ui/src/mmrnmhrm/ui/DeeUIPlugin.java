@@ -1,6 +1,6 @@
 package mmrnmhrm.ui;
 
-import melnorme.lang.ide.core.ILangOperationsListener_Actual;
+import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.ui.launch.DubCommandsConsoleListener;
@@ -30,7 +30,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	}
 	
 	@Override
-	protected ILangOperationsListener_Actual createOperationsConsoleListener() {
+	protected ILangOperationsListener createOperationsConsoleListener() {
 		return dubProcessListener; // Already created
 	}
 	

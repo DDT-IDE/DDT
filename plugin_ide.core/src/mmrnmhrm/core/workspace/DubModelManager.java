@@ -29,8 +29,8 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine.DubProcessManager;
-import mmrnmhrm.core.engine.DubProcessManager.DubCompositeOperation;
+import mmrnmhrm.core.engine.DeeToolManager;
+import mmrnmhrm.core.engine.DeeToolManager.DubCompositeOperation;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
 import org.eclipse.core.resources.IMarker;
@@ -62,7 +62,7 @@ public class DubModelManager extends BundleModelManager {
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
 	protected final DubWorkspaceModel model;
-	protected final DubProcessManager dubProcessManager = new DubProcessManager();
+	protected final DeeToolManager dubProcessManager = new DeeToolManager();
 	
 //	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
@@ -70,7 +70,7 @@ public class DubModelManager extends BundleModelManager {
 		this.model = model;
 	}
 	
-	public DubProcessManager getProcessManager() {
+	public DeeToolManager getProcessManager() {
 		return dubProcessManager;
 	}
 	
@@ -232,7 +232,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		unresolvedDescription = unresolvedProjectInfo.getBundleDesc();
 	}
 	
-	protected DubProcessManager getProcessManager() {
+	protected DeeToolManager getProcessManager() {
 		return workspaceModelManager.dubProcessManager;
 	}
 	
@@ -324,12 +324,12 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		String dubPath = DubHelper.getDubPath(DeeCorePreferences.getEffectiveDubPath());
 		
-		DubCompositeOperation resolveProjectOperation = new DubCompositeOperation(
+		DubCompositeOperation resolveProjectOperation = getProcessManager().new DubCompositeOperation(
 			MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()), project);
-		getProcessManager().notifyOperationStarted(resolveProjectOperation);
+		getProcessManager().notifyOperationStarted(resolveProjectOperation, resolveProjectOperation.opInfo);
 
-		IRunProcessTask dubDescribeTask = resolveProjectOperation.newDubProcessTask(
-			project, array(dubPath, "describe"), pm);
+		IRunProcessTask dubDescribeTask = getProcessManager().newDubProcessTask(
+			project, array(dubPath, "describe"), pm, resolveProjectOperation.opInfo);
 			
 		ExternalProcessResult processHelper;
 		try {

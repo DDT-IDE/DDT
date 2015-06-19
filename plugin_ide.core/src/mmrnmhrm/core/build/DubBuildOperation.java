@@ -27,7 +27,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine.DubProcessManager;
+import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 
 import org.eclipse.core.resources.IMarker;
@@ -83,7 +83,7 @@ public class DubBuildOperation extends CommonBuildOperation implements IBuildTar
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, List<String> commandList) 
 			throws CoreException, OperationCancellation {
-		DubProcessManager dubProcessManager = DeeCore.getDubProcessManager();
+		DeeToolManager dubProcessManager = DeeCore.getDubProcessManager();
 		
 		String[] commands = ArrayUtil.createFrom(commandList, String.class);
 		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(

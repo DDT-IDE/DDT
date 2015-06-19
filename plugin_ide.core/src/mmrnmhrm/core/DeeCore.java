@@ -12,7 +12,7 @@ package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.engine.DToolClient;
-import mmrnmhrm.core.engine.DubProcessManager;
+import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 import mmrnmhrm.core.workspace.DubWorkspaceModel;
 
@@ -23,7 +23,7 @@ public class DeeCore extends LangCore {
 	protected static final DubWorkspaceModel dubModel = new DubWorkspaceModel();
 	protected static final DubModelManager modelManager = new DubModelManager(dubModel);
 	
-	public static DubProcessManager getDubProcessManager() {
+	public static DeeToolManager getDubProcessManager() {
 		return getWorkspaceModelManager().getProcessManager();
 	}
 	

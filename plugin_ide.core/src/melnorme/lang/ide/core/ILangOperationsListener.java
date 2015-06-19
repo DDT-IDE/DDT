@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,12 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.engine;
+package melnorme.lang.ide.core;
 
-import mmrnmhrm.core.engine.DubProcessManager.IDubOperation;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 
-public interface IDubProcessListener {
-	
-	void handleDubOperationStarted(IDubOperation dubOperation);
+@LANG_SPECIFIC
+public interface ILangOperationsListener extends ILangOperationsListener_Default {
 	
 }
