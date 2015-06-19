@@ -10,14 +10,16 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -41,7 +43,30 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 
 
-public class DubProjectBuilder extends LangProjectBuilder {
+public class DubProjectBuilder extends LangProjectBuilderExt {
+	
+	@Override
+	protected Path getBuildToolPath() throws CommonException {
+		String pathString = DeeCorePreferences.getEffectiveDubPath();
+		return getBuildToolPath(pathString);
+	}
+	
+	@Override
+	protected PathValidator getBuildToolPathValidator() {
+		return new DubLocationValidator();
+	}
+	
+	@Override
+	protected void handleBeginWorkspaceBuild() {
+		// No notification
+	}
+	
+	@Override
+	protected void handleEndWorkspaceBuild() {
+		// No notification
+	}
+	
+	/* ----------------- clean ----------------- */
 	
 	@Override
 	protected void clean(IProgressMonitor monitor) throws CoreException {
@@ -53,50 +78,39 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	}
 	
 	@Override
-	protected String getBuildProblemId() {
-		return LangCore_Actual.BUILD_PROBLEM_ID;
+	protected ProcessBuilder createCleanPB() throws CoreException, CommonException {
+		throw assertFail();
 	}
+	
+	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected Path getBuildToolPath() throws CommonException {
-		String pathString = DeeCorePreferences.getEffectiveDubPath();
-		return getBuildToolPath(pathString);
-	}
-	
-	protected Path getBuildToolPath_() throws CoreException {
-		try {
-			return getBuildToolPath();
-		} catch(CommonException ce) {
-			throw LangCore.createCoreException(ce);
-		}
-	}
-	
-	@Override
-	protected PathValidator getBuildToolPathValidator() {
-		return new DubLocationValidator();
-	}
-	
-	@Override
-	protected IProject[] doBuild(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor) 
-			throws CoreException, OperationCancellation {
-		
-		String validatedDubPath = getBuildToolPath_().toString();
-		
-		ArrayList<String> commands = new ArrayList<String>();
-		commands.add(validatedDubPath);
-		commands.add("build");
-		
-		if(kind == FULL_BUILD) {
-			commands.add("--force");
-		}
-		
-		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
-		commands.addAll(CollectionUtil.createArrayList(extraCommands));
-		
-		ExternalProcessResult processResult = submitAndAwaitDubCommand(monitor, commands);
-		processBuildOutput(processResult);
-		
-		return null;
+	protected IBuildTargetOperation createBuildOp() {
+		return new IBuildTargetOperation() {
+			
+			@Override
+			public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+					throws CoreException, CommonException, OperationCancellation {
+				String validatedDubPath = getBuildToolPath().toString();
+				
+				ArrayList<String> commands = new ArrayList<String>();
+				commands.add(validatedDubPath);
+				commands.add("build");
+				
+				if(kind == FULL_BUILD) {
+					commands.add("--force");
+				}
+				
+				String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
+				commands.addAll(CollectionUtil.createArrayList(extraCommands));
+				
+				ExternalProcessResult processResult = submitAndAwaitDubCommand(monitor, commands);
+				processBuildOutput(processResult);
+				
+				return null;
+			}
+			
+		};
 	}
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, List<String> commandList) 
