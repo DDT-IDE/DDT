@@ -134,8 +134,8 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				DeeToolManager dubMgr = DeeCore.getWorkspaceModelManager().getProcessManager();
 				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
-				dubMgr.submitDubCommand(dubMgr.newDubOperation(
-					DeeCoreMessages.RunningDubCommand, null, getCommands(project), monitor));
+				dubMgr.submitDubCommand(dubMgr.newRunProcessOperation(
+					null, DeeCoreMessages.RunningDubCommand, getCommands(project), monitor));
 			}
 			
 			protected abstract String[] getCommands(IProject project);

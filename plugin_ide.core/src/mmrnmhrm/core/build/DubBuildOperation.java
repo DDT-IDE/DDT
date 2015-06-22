@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperation;
 import melnorme.lang.ide.core.operations.CommonBuildOperation;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -86,8 +86,8 @@ public class DubBuildOperation extends CommonBuildOperation implements IBuildTar
 		DeeToolManager dubProcessManager = DeeCore.getDubProcessManager();
 		
 		String[] commands = ArrayUtil.createFrom(commandList, String.class);
-		IRunProcessTask runDubProcessOperation = dubProcessManager.newDubOperation(
-			DeeCoreMessages.RunningDubBuild, getProject(), commands, monitor);
+		RunProcessOperation runDubProcessOperation = dubProcessManager.newRunProcessOperation(
+			getProject(), DeeCoreMessages.RunningDubBuild, commands, monitor);
 		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
 	}
 	

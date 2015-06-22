@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.workspace;
 
+import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;
@@ -18,6 +19,7 @@ import java.text.MessageFormat;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.bundlemodel.BundleModelManager;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -30,7 +32,6 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.engine.DeeToolManager.DubCompositeOperation;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
 import org.eclipse.core.resources.IMarker;
@@ -324,13 +325,13 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		String dubPath = DubHelper.getDubPath(DeeCorePreferences.getEffectiveDubPath());
 		
-		DubCompositeOperation resolveProjectOperation = getProcessManager().new DubCompositeOperation(
-			MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()), project);
-		getProcessManager().notifyOperationStarted(resolveProjectOperation, resolveProjectOperation.opInfo);
-
-		IRunProcessTask dubDescribeTask = getProcessManager().newDubProcessTask(
-			project, array(dubPath, "describe"), pm, resolveProjectOperation.opInfo);
-			
+		OperationInfo resolveProjectOperation = new OperationInfo(project, true,
+			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
+		getProcessManager().notifyOperationStarted(resolveProjectOperation);
+		
+		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(
+			resolveProjectOperation, array(dubPath, "describe"), pm);
+		
 		ExternalProcessResult processHelper;
 		try {
 			processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);

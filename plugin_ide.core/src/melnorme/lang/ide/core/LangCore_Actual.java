@@ -30,4 +30,6 @@ public class LangCore_Actual {
 		return new DToolClient();
 	}
 	
+	public static final String LANGUAGE_NAME = "D";
+	
 }
