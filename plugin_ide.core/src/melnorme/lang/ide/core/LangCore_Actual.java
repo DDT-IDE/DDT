@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.engine.DToolClient;
 
 public class LangCore_Actual {
@@ -22,6 +23,8 @@ public class LangCore_Actual {
 	public static final String BUILD_PROBLEM_ID = PLUGIN_ID + ".build_problem";
 	public static final String SOURCE_PROBLEM_ID = PLUGIN_ID + ".source_problem";
 	
+	public static final String LANGUAGE_NAME = "D";
+	
 	public static AbstractToolsManager createToolManagerSingleton() {
 		return new AbstractToolsManager() { };
 	}
@@ -30,6 +33,8 @@ public class LangCore_Actual {
 		return new DToolClient();
 	}
 	
-	public static final String LANGUAGE_NAME = "D";
+	public static DeeBuildManager createBuildManager() {
+		return new DeeBuildManager();
+	}
 	
 }

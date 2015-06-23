@@ -42,13 +42,13 @@ import dtool.dub.DubBuildOutputParser;
 public class DubBuildOperation extends CommonBuildOperation implements IBuildTargetOperation {
 	
 	protected final String configuration;
-	protected final DubBuildType buildType;
+	protected final String buildTargetName; 
 	
 	public DubBuildOperation(IProject project, LangProjectBuilderExt langProjectBuilder, 
-			String configuration, DubBuildType buildType) {
+			String configuration, String buildTargetName) {
 		super(project, langProjectBuilder);
 		this.configuration = configuration;
-		this.buildType = buildType;
+		this.buildTargetName = buildTargetName;
 	}
 	
 	@Override
@@ -68,8 +68,8 @@ public class DubBuildOperation extends CommonBuildOperation implements IBuildTar
 			commands.addElements("-c" , configuration);
 		}
 		
-		if(buildType != null) {
-			commands.addElements("-b" , buildType.getBuildTypeString());
+		if(buildTargetName != null) {
+			commands.addElements("-b" , buildTargetName);
 		}
 		
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);

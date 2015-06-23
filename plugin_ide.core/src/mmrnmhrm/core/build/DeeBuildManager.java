@@ -11,12 +11,15 @@
 package mmrnmhrm.core.build;
 
 import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.BuildManager;
 import melnorme.lang.ide.core.operations.CompositeBuildOperation;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
@@ -26,29 +29,40 @@ import mmrnmhrm.core.DeeCore;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class DeeBuildManager {
+public class DeeBuildManager extends BuildManager {
 	
-	private static final DeeBuildManager instance = new DeeBuildManager();
+	public DeeBuildManager() {
+		super(array(
+			new BuildTarget(true, null),
+			new BuildTarget(true, DubBuildType.UNITTEST.getBuildTypeString())
+		));
+	}
 	
-	public static DeeBuildManager getInstance() {
-		return instance;
+	protected IBuildTargetOperation newBuildOperation(IProject project, DubProjectBuilder projectBuilder,
+			BuildTarget buildConfig) {
+		return new DubBuildOperation(project, projectBuilder, null, buildConfig.getTargetName());
 	}
 	
 	public IBuildTargetOperation getBuildOperation(IProject project, DubProjectBuilder projectBuilder) {
 		
+		ArrayList2<IBuildTargetOperation> operations = ArrayList2.create();
+		
 		String startMsg = headerBIG(" Building " + LangCore_Actual.LANGUAGE_NAME + " project: " + project.getName());
-		String endMsg = headerBIG("Build terminated.");
+		operations.add(newOperationMessageTask(startMsg, true));
 		
-		return new CompositeBuildOperation(project, projectBuilder, ArrayList2.create(
-			getOperationTask(startMsg, true),
-			new DubBuildOperation(project, projectBuilder, null, null),
-			new DubBuildOperation(project, projectBuilder, null, DubBuildType.UNITTEST),
-			getOperationTask(endMsg, false)
-		));
+		for (BuildTarget buildConfig : buildConfigs) {
+			if(buildConfig.isEnabled()) {
+				operations.add(newBuildOperation(project, projectBuilder, buildConfig));
+			}
+		}
 		
+		operations.add(newOperationMessageTask(
+			headerBIG("Build terminated."), false));
+		
+		return new CompositeBuildOperation(project, projectBuilder, operations);
 	}
 	
-	protected IBuildTargetOperation getOperationTask(String msg, boolean clearConsole) {
+	protected IBuildTargetOperation newOperationMessageTask(String msg, boolean clearConsole) {
 		return new IBuildTargetOperation() {
 			
 			@Override
