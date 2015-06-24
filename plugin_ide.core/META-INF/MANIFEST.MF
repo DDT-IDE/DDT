@@ -22,6 +22,7 @@ Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
  melnorme.lang.ide.core.bundlemodel,
  melnorme.lang.ide.core.engine,
+ melnorme.lang.ide.core.navigator,
  melnorme.lang.ide.core.operations,
  melnorme.lang.ide.core.text,
  melnorme.lang.ide.core.utils,

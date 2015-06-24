@@ -8,25 +8,25 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.operations;
+package melnorme.lang.ide.ui.navigator;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public class BuildTarget {
+import melnorme.lang.ide.core.navigator.ElementContainer;
+import melnorme.lang.ide.core.operations.BuildTarget;
+
+public class BuildTargetElement extends ElementContainer<ElementContainer<?>> {
 	
-	protected boolean enabled = false;
-	protected String targetName;
+	protected final BuildTarget buildTarget;
 	
-	public BuildTarget(boolean enabled, String targetName) {
-		this.enabled = enabled;
-		this.targetName = targetName;
-	}
-	
-	public boolean isEnabled() {
-		return enabled;
+	public BuildTargetElement(BuildTarget buildTarget) {
+		super(null);
+		this.buildTarget = assertNotNull(buildTarget);
 	}
 	
 	public String getTargetName() {
-		return targetName;
+		String targetName = buildTarget.getTargetName();
+		return targetName == null ? "<default>" : targetName;
 	}
 	
 }

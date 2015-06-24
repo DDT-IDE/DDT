@@ -68,7 +68,7 @@ public class DubProjectBuilder extends LangProjectBuilderExt {
 	
 	@Override
 	protected IBuildTargetOperation createBuildOp() {
-		return DeeBuildManager.getInstance().getBuildOperation(getProject(), this);
+		return ((DeeBuildManager) DeeBuildManager.getInstance()).getBuildOperation(getProject(), this);
 	}
 	
 }

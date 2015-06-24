@@ -10,24 +10,31 @@
  *******************************************************************************/
 package melnorme.lang.ide.core.operations;
 
+import org.eclipse.core.resources.IProject;
+
 import melnorme.lang.ide.core.LangCore_Actual;
-import mmrnmhrm.core.build.DeeBuildManager;
+import melnorme.utilbox.collections.Indexable;
 
 
 public class BuildManager {
 	
-	private static final DeeBuildManager instance = LangCore_Actual.createBuildManager();
+	private static final BuildManager instance = LangCore_Actual.createBuildManager();
 	
-	public static DeeBuildManager getInstance() {
+	public static BuildManager getInstance() {
 		return instance;
 	}
 	
 	/* -----------------  ----------------- */
 	
-	protected final BuildTarget[] buildConfigs;
+	protected final Indexable<BuildTarget> buildConfigs;
 	
-	public BuildManager(BuildTarget[] buildConfigs) {
+	public BuildManager(Indexable<BuildTarget> buildConfigs) {
 		this.buildConfigs = buildConfigs;
+	}
+	
+	public Indexable<BuildTarget> getTargets(IProject project) {
+		/* TODO */
+		return buildConfigs;
 	}
 	
 }

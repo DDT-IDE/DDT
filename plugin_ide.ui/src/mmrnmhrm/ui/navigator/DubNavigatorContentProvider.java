@@ -1,13 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.Display;
+
+import dtool.dub.BundlePath;
+import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.utils.EclipseUtils;
+import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.util.swt.SWTUtil;
-import melnorme.utilbox.misc.CollectionUtil;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.DubWorkspaceModel;
 import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
@@ -20,17 +39,6 @@ import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
-
-import dtool.dub.BundlePath;
-import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
@@ -91,112 +99,57 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		
 	}
 	
-	public static abstract class DubContentElementsSwitcher<RET> {
-		
-		public RET switchElement(Object element) {
-			if(element instanceof IDubElement) {
-				return visitDubElement((IDubElement) element);
-			} else if(element instanceof IProject) {
-				return visitProject((IProject) element);
-			} else {
-				return visitOther(element);
-			}
-		}
-		
-		public abstract RET visitDubElement(IDubElement dubElement);
-		
-		public abstract RET visitProject(IProject project);
-		
-		public abstract RET visitOther(Object element);
-		
-	}
-	
+	/* -----------------  ----------------- */
 	
 	@Override
-	public boolean hasChildren(Object element) {
-		return new DubContentElementsSwitcher<Boolean>() {
+	protected LangNavigatorSwitcher_HasChildren hasChildren_switcher() {
+		return new LangNavigatorSwitcher_HasChildren() {
+			
 			@Override
 			public Boolean visitProject(IProject project) {
 				return project.isAccessible() && getWorkspaceModel().getBundleInfo(project) != null;
 			}
+			
 			@Override
 			public Boolean visitDubElement(IDubElement dubElement) {
 				return dubElement.hasChildren();
 			}
-			@Override
-			public Boolean visitOther(Object element) {
-				return false;
-			}
-		}.switchElement(element);
+		};
 	}
 	
 	@Override
-	public Object[] getChildren(Object parent) {
-		return new DubContentElementsSwitcher<Object[]>() {
-			@Override
-			public Object[] visitProject(IProject project) {
-				return getProjectChildren(project);
-			}
+	protected LangNavigatorSwitcher_GetChildren getChildren_switcher() {
+		return new LangNavigatorSwitcher_GetChildren() {
 			@Override
 			public Object[] visitDubElement(IDubElement dubElement) {
 				return dubElement.getChildren();
 			}
-			@Override
-			public Object[] visitOther(Object element) {
-				return null;
-			}
-		}.switchElement(parent);
-	}
-	
-	protected Object[] getProjectChildren(IProject project) {
-		ArrayList<Object> arrayList = new ArrayList<>();
-		if(project.isAccessible()) {
-			ProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
-			if(projectInfo != null) {
-				DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
-				arrayList.add(dubContainer);
-				arrayList.add(new StdLibContainer(projectInfo.getCompilerInstall(), project));
-			}
 			
-			// Add project children ourselves: this is so that children will be sorted by our own sorter. 
-			// (otherwise only Platform Navigator sorter will be used)
-			// Navigator ResourceExtension will also add this, but they will not appear duplicated because they
-			// are equal elements.
-			try {
-				arrayList.addAll(CollectionUtil.createArrayList(project.members()));
-			} catch (CoreException e) {
-				// ignore, leave empty
+			@Override
+			public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) {
+				ProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
+				if(projectInfo != null) {
+					DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
+					projectChildren.add(dubContainer);
+					projectChildren.add(new StdLibContainer(projectInfo.getCompilerInstall(), project));
+				}
 			}
-		}
-		return arrayList.toArray();
+		};
 	}
 	
 	@Override
-	public Object getParent(Object element) {
-		return new DubContentElementsSwitcher<Object>() {
-			@Override
-			public Object visitProject(IProject project) {
-				return project.getParent();
-			}
+	protected LangNavigatorSwitcher_GetParent getParent_switcher() {
+		return new LangNavigatorSwitcher_GetParent() {
 			@Override
 			public Object visitDubElement(IDubElement dubElement) {
 				return dubElement.getParent();
 			}
-			@Override
-			public Object visitOther(Object element) {
-				return null;
-			}
-		}.switchElement(element);
+		};
 	}
 	
 	/* ----------------- specific switcher ----------------- */
 	
-	public static abstract class DubAllContentElementsSwitcher<RET> extends DubContentElementsSwitcher<RET> {
-		
-		@Override
-		public RET visitProject(IProject project) {
-			return null;
-		}
+	public static abstract class DeeNavigatorAllElementsSwitcher<RET> implements NavigatorElementsSwitcher<RET> {
 		
 		@Override
 		public RET visitDubElement(IDubElement element) {

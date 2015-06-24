@@ -12,6 +12,8 @@ package mmrnmhrm.ui.navigator;
 
 import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetImageSwitcher;
+import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
@@ -20,7 +22,7 @@ import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
-import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DubAllContentElementsSwitcher;
+import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -35,18 +37,19 @@ import dtool.dub.DubBundleDescription;
 public class DubNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
-	public StyledString getStyledText(Object element) {
-		return new DubElementTextProvider().switchElement(element);
+	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
+		return new DubElementTextProvider();
 	}
 	
 	@Override
-	protected Image getImageForCustomElements(Object element) {
-		return new DubElementImageProvider().switchElement(element);
+	protected DefaultGetImageSwitcher getBaseImage_switcher() {
+		return new DubElementImageProvider();
 	}
 	
 }
 
-class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>{
+class DubElementTextProvider extends DeeNavigatorAllElementsSwitcher<StyledString>
+	implements DefaultGetStyledTextSwitcher {
 	
 	protected static final RGB DUB_LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
 	protected static final RGB DUB_VERSION_ANNOTATION_FG = new RGB(120, 120, 200);
@@ -136,7 +139,7 @@ class DubElementTextProvider extends DubAllContentElementsSwitcher<StyledString>
 	
 }
 
-class DubElementImageProvider extends DubAllContentElementsSwitcher<Image>{
+class DubElementImageProvider extends DeeNavigatorAllElementsSwitcher<Image> implements DefaultGetImageSwitcher {
 	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {

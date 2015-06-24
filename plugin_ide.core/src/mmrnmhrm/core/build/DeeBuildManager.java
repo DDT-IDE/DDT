@@ -11,28 +11,27 @@
 package mmrnmhrm.core.build;
 
 import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
-import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.BuildManager;
+import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.CompositeBuildOperation;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import mmrnmhrm.core.DeeCore;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-
 public class DeeBuildManager extends BuildManager {
 	
 	public DeeBuildManager() {
-		super(array(
+		super(ArrayList2.create(
 			new BuildTarget(true, null),
 			new BuildTarget(true, DubBuildType.UNITTEST.getBuildTypeString())
 		));
