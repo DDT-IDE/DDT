@@ -18,8 +18,8 @@ import static melnorme.utilbox.core.CoreUtil.array;
 import java.text.MessageFormat;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.bundlemodel.BundleModelManager;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -152,7 +152,7 @@ public class DubModelManager extends BundleModelManager {
 	
 	protected void beginProjectDescribeUpdate(final IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
-		ProjectInfo unresolvedProjectInfo = addProjectInfo(project, unresolvedDescription);
+		DubProjectInfo unresolvedProjectInfo = addProjectInfo(project, unresolvedDescription);
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
@@ -173,7 +173,7 @@ public class DubModelManager extends BundleModelManager {
 		}
 	}
 	
-	protected final ProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription) {
+	protected final DubProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription) {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
@@ -222,11 +222,11 @@ public class DubModelManager extends BundleModelManager {
 class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements IRunnableWithJob {
 	
 	protected final IProject project;
-	protected final ProjectInfo unresolvedProjectInfo;
+	protected final DubProjectInfo unresolvedProjectInfo;
 	protected final  DubBundleDescription unresolvedDescription;
 	
 	protected ProjectModelDubDescribeTask(DubModelManager dubModelManager, IProject project, 
-			ProjectInfo unresolvedProjectInfo) {
+			DubProjectInfo unresolvedProjectInfo) {
 		super(dubModelManager);
 		this.project = project;
 		this.unresolvedProjectInfo = unresolvedProjectInfo;

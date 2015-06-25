@@ -23,15 +23,15 @@ import org.eclipse.swt.widgets.Display;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.util.swt.SWTUtil;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.workspace.DubProjectInfo;
 import mmrnmhrm.core.workspace.DubWorkspaceModel;
-import mmrnmhrm.core.workspace.IWorkspaceModel.DubModelUpdateEvent;
-import mmrnmhrm.core.workspace.IWorkspaceModel.IWorkspaceModelListener;
-import mmrnmhrm.core.workspace.ProjectInfo;
+import mmrnmhrm.core.workspace.IDubModelListener;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -46,7 +46,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		return DeeCore.getWorkspaceModel();
 	}
 	
-	protected IWorkspaceModelListener listener;
+	protected IDubModelListener listener;
 	
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
@@ -55,9 +55,9 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		// Remove previous listener, even though I think inputChange is only called once.
 		getWorkspaceModel().removeListener(listener); 
 		
-		listener = new IWorkspaceModelListener() {
+		listener = new IDubModelListener() {
 			@Override
-			public void notifyUpdateEvent(DubModelUpdateEvent updateEvent) {
+			public void notifyUpdateEvent(UpdateEvent<DubProjectInfo> updateEvent) {
 				// we use throttle Job as a workaround to to ensure label is updated, due to bug:
 				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
 				viewerRefreshThrottleJob.scheduleRefreshJob();
@@ -127,7 +127,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 			
 			@Override
 			public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) {
-				ProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
+				DubProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
 				if(projectInfo != null) {
 					DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 					projectChildren.add(dubContainer);

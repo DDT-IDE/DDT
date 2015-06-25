@@ -20,10 +20,10 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.12.0,0.13.0)";visibilit
  org.eclipse.debug.core;bundle-version="3.6.0"
 Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
- melnorme.lang.ide.core.bundlemodel,
  melnorme.lang.ide.core.engine,
  melnorme.lang.ide.core.navigator,
  melnorme.lang.ide.core.operations,
+ melnorme.lang.ide.core.project_model,
  melnorme.lang.ide.core.text,
  melnorme.lang.ide.core.utils,
  melnorme.lang.ide.core.utils.prefs,

@@ -18,12 +18,12 @@ import org.eclipse.core.resources.IProject;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 
-public class ProjectInfo {
+public class DubProjectInfo {
 	
 	protected final CompilerInstall compilerInstall; 
 	protected final DubBundleDescription bundleDesc;
 	
-	public ProjectInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
+	public DubProjectInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
 		this.compilerInstall = assertNotNull(compilerInstall);
 		this.bundleDesc = assertNotNull(bundleDesc);
 	}
