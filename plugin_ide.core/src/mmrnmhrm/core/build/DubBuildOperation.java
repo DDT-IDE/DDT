@@ -13,11 +13,19 @@ package mmrnmhrm.core.build;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperation;
 import melnorme.lang.ide.core.operations.CommonBuildOperation;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -30,21 +38,12 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-
-import dtool.dub.DubBuildOutputParser;
-
 public class DubBuildOperation extends CommonBuildOperation implements IBuildTargetOperation {
 	
 	protected final String configuration;
 	protected final String buildTargetName; 
 	
-	public DubBuildOperation(IProject project, LangProjectBuilderExt langProjectBuilder, 
+	public DubBuildOperation(IProject project, LangProjectBuilder langProjectBuilder, 
 			String configuration, String buildTargetName) {
 		super(project, langProjectBuilder);
 		this.configuration = configuration;

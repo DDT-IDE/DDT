@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.workspace;
 
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.array;

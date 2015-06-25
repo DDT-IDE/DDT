@@ -14,18 +14,18 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.LangProjectBuilderExt;
-import melnorme.lang.tooling.data.PathValidator;
-import melnorme.utilbox.core.CommonException;
-import mmrnmhrm.core.DeeCorePreferences;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.operations.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.tooling.data.PathValidator;
+import melnorme.utilbox.core.CommonException;
+import mmrnmhrm.core.DeeCorePreferences;
 
-public class DubProjectBuilder extends LangProjectBuilderExt {
+
+public class DubProjectBuilder extends LangProjectBuilder {
 	
 	@Override
 	public Path getBuildToolPath() throws CommonException {

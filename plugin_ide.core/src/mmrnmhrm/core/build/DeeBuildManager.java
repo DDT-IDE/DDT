@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
-import static melnorme.lang.ide.core.operations.TextMessageUtils.headerBIG;
+import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
