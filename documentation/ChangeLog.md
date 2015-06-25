@@ -1,6 +1,7 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
  * Fixed: hover for problem errors not showing if error is over a string literal source.
  * Fixed #112: build errors no longer removed when editing a source file.
  * Fixed #113: Completion proposal insertion text has incorrect casing.
