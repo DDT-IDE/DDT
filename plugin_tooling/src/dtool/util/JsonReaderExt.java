@@ -26,6 +26,10 @@ import com.google.gson.stream.MalformedJsonException;
 /** Utility extensions to JsonReader */
 public class JsonReaderExt extends JsonReader {
 	
+	public static JsonReaderExt create(Reader in) {
+		return new JsonReaderExt(in);
+	}
+	
 	protected final JsonReaderExt jsonReader = this; 
 	
 	public JsonReaderExt(Reader in) {

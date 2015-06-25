@@ -98,7 +98,7 @@ public class JsonWriterTestUtils extends CommonTest {
 	
 	public static HashMap<String, Object> readJsonObject(String source) {
 		try {
-			return new JsonReaderExt(new StringReader(source)).readJsonObject();
+			return JsonReaderExt.create(new StringReader(source)).readJsonObject();
 		} catch (IOException e) {
 			throw assertUnreachable();
 		}

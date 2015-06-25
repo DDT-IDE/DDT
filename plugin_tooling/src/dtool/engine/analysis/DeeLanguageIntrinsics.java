@@ -317,7 +317,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	
 	public NamedElementsScope createObjectPropertiesScope(INamedElement type) {
 		
-		return new NamedElementsScope(CollectionUtil.addAll(
+		return new NamedElementsScope(CollectionUtil.addAll2(
 			createCommonProperties(type), 
 			Arrays.asList(
 				new IntrinsicProperty2("classinfo", new ModuleQualifiedReference("object", "TypeInfo_Class"), 
