@@ -39,8 +39,8 @@ public class DubNavigatorSorter extends LangNavigatorSorter {
 		return new DeeSwitcher_Sorter();
 	}
 	
-	protected static class DeeSwitcher_Sorter extends DeeNavigatorAllElementsSwitcher<Integer> 
-		implements LangNavigatorSorter_Switcher {
+	protected static class DeeSwitcher_Sorter extends LangNavigatorSorter_Switcher
+		implements DeeNavigatorAllElementsSwitcher<Integer> {
 		
 		@Override
 		public Integer visitStdLibContainer(StdLibContainer element) {

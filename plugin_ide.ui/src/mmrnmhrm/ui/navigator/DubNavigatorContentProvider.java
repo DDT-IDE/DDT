@@ -149,10 +149,10 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 	
 	/* ----------------- specific switcher ----------------- */
 	
-	public static abstract class DeeNavigatorAllElementsSwitcher<RET> implements NavigatorElementsSwitcher<RET> {
+	public static interface DeeNavigatorAllElementsSwitcher<RET> extends NavigatorElementsSwitcher<RET> {
 		
 		@Override
-		public RET visitDubElement(IDubElement element) {
+		default RET visitDubElement(IDubElement element) {
 			switch (element.getElementType()) {
 			case DUB_DEP_CONTAINER: return visitDepContainer((DubDependenciesContainer) element);
 			case DUB_STD_LIB: return visitStdLibContainer((StdLibContainer) element);
@@ -172,7 +172,7 @@ public class DubNavigatorContentProvider extends AbstractNavigatorContentProvide
 		public abstract RET visitDepSourceFolderElement(DubDepSourceFolderElement element);
 		
 		@Override
-		public RET visitOther(Object element) {
+		default RET visitOther(Object element) {
 			if(isDubManifestFile(element)) {
 				return visitDubManifestFile((IFile) element);
 			}

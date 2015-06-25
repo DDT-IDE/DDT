@@ -11,6 +11,16 @@
 package mmrnmhrm.ui.navigator;
 
 import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+
+import dtool.dub.DubBundle;
+import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
 import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetImageSwitcher;
 import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
@@ -23,16 +33,6 @@ import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
-import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
-
-import dtool.dub.DubBundle;
-import dtool.dub.DubBundleDescription;
 
 public class DubNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
 	
@@ -48,8 +48,8 @@ public class DubNavigatorLabelProvider extends AbstractLangNavigatorLabelProvide
 	
 }
 
-class DubElementTextProvider extends DeeNavigatorAllElementsSwitcher<StyledString>
-	implements DefaultGetStyledTextSwitcher {
+class DubElementTextProvider extends DefaultGetStyledTextSwitcher
+	implements DeeNavigatorAllElementsSwitcher<StyledString> {
 	
 	protected static final RGB DUB_LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
 	protected static final RGB DUB_VERSION_ANNOTATION_FG = new RGB(120, 120, 200);
@@ -139,7 +139,7 @@ class DubElementTextProvider extends DeeNavigatorAllElementsSwitcher<StyledStrin
 	
 }
 
-class DubElementImageProvider extends DeeNavigatorAllElementsSwitcher<Image> implements DefaultGetImageSwitcher {
+class DubElementImageProvider extends DefaultGetImageSwitcher implements DeeNavigatorAllElementsSwitcher<Image> {
 	
 	@Override
 	public Image visitDepContainer(DubDependenciesContainer element) {
