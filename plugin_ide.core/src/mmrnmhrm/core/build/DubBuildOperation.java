@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperation;
-import melnorme.lang.ide.core.operations.CommonBuildOperation;
-import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
+import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -39,18 +39,22 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 
-public class DubBuildOperation extends CommonBuildOperation implements IBuildTargetOperation {
+public class DubBuildOperation extends CommonBuildTargetOperation {
 	
-	protected final OperationInfo parentOpInfo;
-	protected final String configuration;
-	protected final String buildTargetName;
+	protected final IProject project;
 	
-	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, LangProjectBuilder langProjectBuilder, 
-			String configuration, String buildTargetName) {
-		super(project, langProjectBuilder);
-		this.parentOpInfo = parentOpInfo;
-		this.configuration = configuration;
-		this.buildTargetName = buildTargetName;
+	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, 
+			LangBuildManagerProjectBuilder langProjectBuilder, BuildTarget buildTarget) {
+		langProjectBuilder.super(parentOpInfo, buildTarget);
+		this.project = project;
+	}
+	
+	public IProject getProject() {
+		return project;
+	}
+	
+	protected String getConfiguration() {
+		return null; // TODO
 	}
 	
 	@Override
@@ -66,12 +70,12 @@ public class DubBuildOperation extends CommonBuildOperation implements IBuildTar
 			commands.add("--force");
 		}
 		
-		if(configuration != null) {
-			commands.addElements("-c" , configuration);
+		if(getConfiguration() != null) {
+			commands.addElements("-c" , getConfiguration());
 		}
 		
-		if(buildTargetName != null) {
-			commands.addElements("-b" , buildTargetName);
+		if(getBuildTargetName() != null) {
+			commands.addElements("-b" , getBuildTargetName());
 		}
 		
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
