@@ -26,6 +26,7 @@ import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperatio
 import melnorme.lang.ide.core.operations.CommonBuildOperation;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -40,12 +41,14 @@ import mmrnmhrm.core.workspace.DubModelManager;
 
 public class DubBuildOperation extends CommonBuildOperation implements IBuildTargetOperation {
 	
+	protected final OperationInfo parentOpInfo;
 	protected final String configuration;
-	protected final String buildTargetName; 
+	protected final String buildTargetName;
 	
-	public DubBuildOperation(IProject project, LangProjectBuilder langProjectBuilder, 
+	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, LangProjectBuilder langProjectBuilder, 
 			String configuration, String buildTargetName) {
 		super(project, langProjectBuilder);
+		this.parentOpInfo = parentOpInfo;
 		this.configuration = configuration;
 		this.buildTargetName = buildTargetName;
 	}
