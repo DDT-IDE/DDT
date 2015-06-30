@@ -15,17 +15,21 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
 import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.core.CommonException;
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 
 
-public class DubProjectBuilder extends LangProjectBuilder {
+public class DubProjectBuilder extends LangBuildManagerProjectBuilder {
 	
 	@Override
 	public Path getBuildToolPath() throws CommonException {
@@ -67,8 +71,19 @@ public class DubProjectBuilder extends LangProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected IBuildTargetOperation createBuildOp() {
-		return ((DeeBuildManager) DeeBuildManager.getInstance()).getBuildOperation(getProject(), this);
+	protected IBuildTargetOperation newBuildOperation(IProject project, LangProjectBuilder projectBuilder,
+			BuildTarget buildConfig) {
+		return new DubBuildOperation(project, projectBuilder, null, buildConfig.getTargetName());
 	}
 	
+	@Override
+	protected IBuildTargetOperation newOperationMessageTask(String msg, boolean clearConsole) {
+		return new BuildMessageOperation(clearConsole, msg) {
+			@Override
+			protected void executeDo() {
+				// Run message output in dub process manager
+				DeeCore.getDubProcessManager().submitDubCommand(this);
+			}
+		};
+	}
 }

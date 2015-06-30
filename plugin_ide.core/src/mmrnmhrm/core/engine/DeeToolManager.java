@@ -36,6 +36,7 @@ public class DeeToolManager extends AbstractToolsManager {
 	public DeeToolManager() {
 	}
 	
+	@Override
 	public void shutdownNow() {
 		dubProcessAgent.shutdownNow();
 	}

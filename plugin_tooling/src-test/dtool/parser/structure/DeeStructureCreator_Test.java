@@ -96,7 +96,7 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(loc, expectedStructure, (Indexable<ParserError>) null);
-		assertAreEqualLists(expected.getChildren(), structure.getChildren());
+		assertAreEqual(expected.getChildren(), structure.getChildren());
 		
 		assertEquals(structure, expected);
 	}

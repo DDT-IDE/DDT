@@ -227,7 +227,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		DeeSymbolCompletionResult opResult = doOperation(modulePath, offset);
 		
 		LangCompletionResult langResult = opResult.convertToCompletionResult();
-		assertAreEqualLists(expectedResult.getValidatedProposals(), langResult.getValidatedProposals());
+		assertAreEqual(expectedResult.getValidatedProposals(), langResult.getValidatedProposals());
 	}
 	
 }

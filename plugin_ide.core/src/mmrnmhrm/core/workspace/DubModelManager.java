@@ -17,6 +17,22 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.text.MessageFormat;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+
+import dtool.dub.BundlePath;
+import dtool.dub.DubBundle;
+import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubBundleDescription;
+import dtool.dub.DubHelper;
+import dtool.dub.DubManifestParser;
+import dtool.engine.compiler_installs.CompilerInstall;
+import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
@@ -33,25 +49,6 @@ import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
-
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-
-import dtool.dub.BundlePath;
-import dtool.dub.DubBundle;
-import dtool.dub.DubBundle.DubBundleException;
-import dtool.dub.DubBundleDescription;
-import dtool.dub.DubHelper;
-import dtool.dub.DubManifestParser;
-import dtool.engine.compiler_installs.CompilerInstall;
-import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 
 /**
  * Updates a {@link DubWorkspaceModel} when resource changes occur, using 'dub describe'.
@@ -99,40 +96,13 @@ public class DubModelManager extends BundleModelManager {
 	}
 	
 	@Override
-	protected void initializeProjectsInfo(IProgressMonitor monitor) {
-		
-		IProject[] projects = EclipseUtils.getWorkspaceRoot().getProjects();
-		for (IProject project : projects) {
-			if(isEligibleForBundleModelWatch(project) && projectHasBundleManifest(project)) {
-				beginProjectDescribeUpdate(project);
-			}
-		}
-	}
-	
-	@Override
-	public DubBundleDescription getBundleInfo(IProject project) {
+	public DubBundleDescription getProjectInfo(IProject project) {
 		return model.getBundleInfo(project);
 	}
 	
-	protected static final Path DUB_BUNDLE_MANIFEST_FILE = new Path(BundlePath.DUB_MANIFEST_FILENAME);
-	
-	protected static boolean projectHasDubManifestFile(IProject project) {
-		IResource packageFile = project.findMember(DUB_BUNDLE_MANIFEST_FILE);
-		if(packageFile != null && packageFile.getType() == IResource.FILE) {
-			return true;
-		}
-		return false;
-	}
-	
 	@Override
-	public boolean projectHasBundleManifest(IProject project) {
-		return projectHasDubManifestFile(project);
-	}
-	
-	@Override
-	public boolean resourceDeltaIsBundleManifestChange(IResourceDelta resourceDelta) {
-		return resourceDelta.getResource().getType() == IResource.FILE &&
-				resourceDelta.getProjectRelativePath().equals(DUB_BUNDLE_MANIFEST_FILE);
+	protected ManagerResourceListener init_createResourceListener() {
+		return new ManagerResourceListener(EclipseUtils.epath(BundlePath.DUB_MANIFEST_Path));
 	}
 	
 	@Override
@@ -141,13 +111,13 @@ public class DubModelManager extends BundleModelManager {
 	}
 	
 	@Override
-	protected void bundleProjectRemoved(IProject project) {
-		removeProjectModel(project);
+	protected void bundleManifestFileChanged(final IProject project) {
+		beginProjectDescribeUpdate(project);
 	}
 	
 	@Override
-	protected void bundleManifestFileChanged(final IProject project) {
-		beginProjectDescribeUpdate(project);
+	protected void bundleProjectRemoved(IProject project) {
+		removeProjectModel(project);
 	}
 	
 	protected void beginProjectDescribeUpdate(final IProject project) {

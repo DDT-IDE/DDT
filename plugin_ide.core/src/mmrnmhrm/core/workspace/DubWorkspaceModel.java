@@ -58,8 +58,8 @@ public class DubWorkspaceModel extends ProjectBasedModel<DubProjectInfo, IDubMod
 	}
 	
 	@Override
-	public void removeProjectInfo(IProject project) {
-		super.removeProjectInfo(project);
+	public DubProjectInfo removeProjectInfo(IProject project) {
+		return super.removeProjectInfo(project);
 	}
 	
 }
