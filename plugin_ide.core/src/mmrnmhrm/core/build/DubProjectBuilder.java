@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import melnorme.lang.ide.core.operations.BuildTarget;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
+import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.core.CommonException;
@@ -29,7 +29,7 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCorePreferences;
 
 
-public class DubProjectBuilder extends LangBuildManagerProjectBuilder {
+public class DubProjectBuilder extends BuildTargetsProjectBuilder {
 	
 	@Override
 	public Path getBuildToolPath() throws CommonException {

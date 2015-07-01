@@ -24,8 +24,8 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperation;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder;
-import melnorme.lang.ide.core.operations.LangBuildManagerProjectBuilder.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
+import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -44,7 +44,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 	protected final IProject project;
 	
 	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, 
-			LangBuildManagerProjectBuilder langProjectBuilder, BuildTarget buildTarget) {
+			BuildTargetsProjectBuilder langProjectBuilder, BuildTarget buildTarget) {
 		langProjectBuilder.super(parentOpInfo, buildTarget);
 		this.project = project;
 	}
