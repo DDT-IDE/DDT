@@ -19,18 +19,18 @@ import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
-import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
+import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 
-public class DubNavigatorSorter extends LangNavigatorSorter {
+public class DeeNavigatorSorter extends LangNavigatorSorter {
 	
-	public DubNavigatorSorter() {
+	public DeeNavigatorSorter() {
 		super();
 	}
 	
-	public DubNavigatorSorter(Collator collator) {
+	public DeeNavigatorSorter(Collator collator) {
 		super(collator);
 	}
 	

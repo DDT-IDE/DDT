@@ -35,7 +35,7 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
-public class DubNavigatorActionProvider extends CommonActionProvider {
+public class DeeNavigatorActionProvider extends CommonActionProvider {
 	
 	protected ActionGroup dubActionGroup = new ActionGroup() { }; // No-op action group
 	
@@ -119,7 +119,7 @@ public class DubNavigatorActionProvider extends CommonActionProvider {
 				DubDependenciesContainer dubDependenciesContainer = (DubDependenciesContainer) selElement;
 				return dubDependenciesContainer.getParent();
 			}
-			if(DubNavigatorContentProvider.isDubManifestFile(selElement)) {
+			if(DeeNavigatorContentProvider.isDubManifestFile(selElement)) {
 				IFile file = (IFile) selElement;
 				return file.getProject();
 			}

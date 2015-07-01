@@ -32,9 +32,9 @@ import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
-import mmrnmhrm.ui.navigator.DubNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
+import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
 
-public class DubNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
+public class DeeNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
 	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {

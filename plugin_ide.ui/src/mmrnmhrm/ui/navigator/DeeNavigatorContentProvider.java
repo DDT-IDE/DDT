@@ -40,7 +40,7 @@ import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.IDubElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
-public class DubNavigatorContentProvider extends AbstractNavigatorContentProvider {
+public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
 	public static DubWorkspaceModel getWorkspaceModel() {
 		return DeeCore.getWorkspaceModel();

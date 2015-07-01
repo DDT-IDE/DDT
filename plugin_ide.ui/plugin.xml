@@ -337,10 +337,10 @@
 	<extension point="org.eclipse.ui.navigator.navigatorContent">
 		<navigatorContent
 			activeByDefault="true"
-			contentProvider="mmrnmhrm.ui.navigator.DubNavigatorContentProvider"
+			contentProvider="mmrnmhrm.ui.navigator.DeeNavigatorContentProvider"
 			icon="icons/views/Perspective.png"
 			id="org.dsource.ddt.ide.ui.DubNavigatorContent"
-			labelProvider="mmrnmhrm.ui.navigator.DubNavigatorLabelProvider"
+			labelProvider="mmrnmhrm.ui.navigator.DeeNavigatorLabelProvider"
 			name="Dub Elements"
 			priority="highest">
 			
@@ -368,7 +368,7 @@
 				</or>
 			</possibleChildren>
 			
-			<commonSorter class="mmrnmhrm.ui.navigator.DubNavigatorSorter">
+			<commonSorter class="mmrnmhrm.ui.navigator.DeeNavigatorSorter">
 				<parentExpression>
 					<or>
 						<reference definitionId="org.dsource.ddt.ide.core.expressions.isResourceInDeeProject" />
@@ -377,7 +377,7 @@
 				</parentExpression>
 			</commonSorter>
 			
-			<actionProvider class="mmrnmhrm.ui.navigator.DubNavigatorActionProvider"/>
+			<actionProvider class="mmrnmhrm.ui.navigator.DeeNavigatorActionProvider"/>
 		</navigatorContent>
 	</extension>
 	
