@@ -12,12 +12,6 @@
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.engine.DToolClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,6 +20,12 @@ import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.engine.DToolClient;
 
 /**
  * Standard documentation hover for DDoc.
@@ -45,20 +45,18 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		
 		int offset = hoverRegion.getOffset();
 		
-		GetDDocHTMLViewOperation ddocOp = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+		String info;
 		try {
 			try {
-				ddocOp.executeOperation();
+				info = new GetDDocHTMLViewOperation("Get DDoc", editor, offset).executeAndGetValidatedResult();
 			} catch(CommonException e) {
 				throw LangCore.createCoreException(e);
 			}
-		} catch (CoreException ce) {
+		} catch(CoreException ce) {
 			DeeCore.logStatus(ce);
-			String errorInfo = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());
 			// TODO: we could add a nicer HTML formatting:
-			return HoverUtil.getCompleteHoverInfo(errorInfo, getCSSStyles());
+			info = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());
 		}
-		String info = ddocOp.info;
 		
 		if(info != null) {
 			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
@@ -67,10 +65,9 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		return null;
 	}
 	
-	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation {
+	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation2<String> {
 		
 		protected final int offset;
-		protected String info;
 		
 		public GetDDocHTMLViewOperation(String operationName, ITextEditor editor, int offset) {
 			super(operationName, editor);
@@ -78,9 +75,9 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		}
 		
 		@Override
-		protected void performLongRunningComputation(IProgressMonitor monitor) 
-				throws CommonException, CoreException, OperationCancellation {
-			info = DToolClient.getDefault().
+		protected String doBackgroundValueComputation(IProgressMonitor monitor)
+				throws CoreException, CommonException, OperationCancellation {
+			return DToolClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 		}
 		

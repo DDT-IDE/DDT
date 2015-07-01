@@ -39,7 +39,7 @@ public class DeeHyperlinkDetector extends LangHyperlinkDetector {
 		@Override
 		public void open() {
 			new DeeOpenDefinitionOperation(textEditor, OpenNewEditorMode.TRY_REUSING_EXISTING, getOffset())
-				.executeAndHandleResult();
+				.executeAndHandle();
 		}
 		
 	}

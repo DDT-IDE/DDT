@@ -10,19 +10,17 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import _org.eclipse.dltk.internal.ui.editor.BasicScriptEditorActionContributor;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import mmrnmhrm.ui.actions.DeeOpenDefinitionOperation;
 
-import org.eclipse.ui.texteditor.ITextEditor;
-
-import _org.eclipse.dltk.internal.ui.editor.BasicScriptEditorActionContributor;
-
 public class DeeEditorActionContributor extends	BasicScriptEditorActionContributor {
 	
 	@Override
-	protected AbstractEditorOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
+	protected DeeOpenDefinitionOperation createOpenDefinitionOperation(ITextEditor editor, SourceRange range,
 			OpenNewEditorMode newEditorMode) {
 		return new DeeOpenDefinitionOperation(editor, newEditorMode, range.getOffset());
 	}

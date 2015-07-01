@@ -15,11 +15,18 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.ITextEditor;
+
+import dtool.engine.operations.FindDefinitionResult;
+import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -28,22 +35,12 @@ import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine.DToolClient;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.texteditor.ITextEditor;
-
-import dtool.engine.operations.FindDefinitionResult;
-import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
-
-public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
+public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
 	protected static final String OPEN_DEFINITION_OPNAME = "Open Definition";
 	
 	protected final OpenNewEditorMode openNewEditorMode;
 	protected final int offset;
-	
-	protected FindDefinitionResult findDefResult;
 	
 	public DeeOpenDefinitionOperation(ITextEditor editor) {
 		this(editor, OpenNewEditorMode.TRY_REUSING_EXISTING);
@@ -59,22 +56,17 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation {
 		this.offset = offset;
 	}
 	
-	public FindDefinitionResult executeWithResult() throws CoreException, CommonException {
-		executeOperation();
-		return findDefResult;
-	}
-	
 	@Override
-	protected void performLongRunningComputation(IProgressMonitor monitor) 
-			throws CommonException, CoreException, OperationCancellation {
-		findDefResult = DToolClient.getDefault().
+	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
+			throws CoreException, CommonException, OperationCancellation {
+		return DToolClient.getDefault().
 				new FindDefinitionOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 	}
 	
 	@Override
 	protected void handleComputationResult() throws CoreException {
-		assertNotNull(findDefResult);
-		handleOpenDefinitionResult(findDefResult);
+		assertNotNull(result);
+		handleOpenDefinitionResult(result);
 	}
 	
 	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CoreException {
