@@ -2,19 +2,18 @@ package mmrnmhrm.ui.preferences;
 
 import java.util.List;
 
-import mmrnmhrm.ui.DeePreferencesMessages;
-import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
-
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Group;
 
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import mmrnmhrm.ui.DeePreferencesMessages;
+import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
 public class DeeSourceFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock {
 	
-	public DeeSourceFoldingPreferenceBlock(OverlayPreferenceStore store, PreferencePage page) {
+	public DeeSourceFoldingPreferenceBlock(OverlayPreferenceStore store, AbstractComponentsPrefPage page) {
 		super(store, page);
 	}
 	

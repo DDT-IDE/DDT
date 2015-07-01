@@ -24,21 +24,22 @@ import _org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
 import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.util.IStatusChangeListener;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
 
 /**
  * Configures preferences.
  */
-public abstract class ImprovedAbstractConfigurationBlock implements
-		IPreferenceConfigurationBlock, IPreferenceDelegate<String> {
+public abstract class ImprovedAbstractConfigurationBlock extends AbstractPreferencesBlock implements
+		IPreferenceDelegate<String> {
 
-	private PreferencePage page;
 	private OverlayPreferenceStore store;
 
 	private final ControlBindingManager<String> bindManager;
 
 	public ImprovedAbstractConfigurationBlock(OverlayPreferenceStore store,
-			final PreferencePage page) {
-		this.page = page;
+			final AbstractComponentsPrefPage page) {
+		super(page);
 		this.store = store;
 
 		bindManager = new ControlBindingManager<String>(this,
@@ -46,22 +47,18 @@ public abstract class ImprovedAbstractConfigurationBlock implements
 		addOverlayKeys();
 	}
 
-	@Override
 	public void initialize() {
 		initializeFields();
 	}
 
-	@Override
 	public void performOk() {
 		// do nothing
 	}
 
-	@Override
 	public void performDefaults() {
 		initializeFields();
 	}
-
-	@Override
+	
 	public void dispose() {
 		// do nothing
 	}
@@ -158,7 +155,7 @@ public abstract class ImprovedAbstractConfigurationBlock implements
 	}
 
 	protected PreferencePage getPreferencePage() {
-		return page;
+		return prefPage;
 	}
 
 	private IStatusChangeListener getStatusListener() {
@@ -170,8 +167,8 @@ public abstract class ImprovedAbstractConfigurationBlock implements
 					status = new StatusInfo();
 				}
 
-				page.setValid(status.getSeverity() != IStatus.ERROR);
-				StatusUtil.applyToStatusLine(page, status);
+				prefPage.setValid(status.getSeverity() != IStatus.ERROR);
+				StatusUtil.applyToStatusLine(prefPage, status);
 			}
 		};
 	}

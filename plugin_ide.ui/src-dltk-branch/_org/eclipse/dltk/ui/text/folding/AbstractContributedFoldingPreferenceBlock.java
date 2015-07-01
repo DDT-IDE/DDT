@@ -3,7 +3,6 @@ package _org.eclipse.dltk.ui.text.folding;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -15,6 +14,7 @@ import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.util.SWTFactory;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
 /**
  * Abstract base class that may be used to create
@@ -24,14 +24,24 @@ public abstract class AbstractContributedFoldingPreferenceBlock extends
 		ImprovedAbstractConfigurationBlock implements IFoldingPreferenceBlock {
 
 	public AbstractContributedFoldingPreferenceBlock(
-			OverlayPreferenceStore store, PreferencePage page) {
+			OverlayPreferenceStore store, AbstractComponentsPrefPage page) {
 		super(store, page);
 	}
-
+	
+	@Override
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		createControl(topControl);
+	}
+	
 	@Override
 	public Control createControl(Composite parent) {
-		Composite composite = SWTFactory.createComposite(parent, parent
-				.getFont(), 1, 1, GridData.FILL);
+		// TODO: remove redundant topControl creation.
+		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL);
 
 		createOptionsControl(composite);
 

@@ -2,20 +2,20 @@ package _org.eclipse.dltk.ui.text.folding;
 
 import java.util.List;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
+import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
 public class DocumentationFoldingPreferenceBlock extends
 		AbstractContributedFoldingPreferenceBlock {
 
 	public DocumentationFoldingPreferenceBlock(OverlayPreferenceStore store,
-			PreferencePage page) {
+			AbstractComponentsPrefPage page) {
 		super(store, page);
 	}
 

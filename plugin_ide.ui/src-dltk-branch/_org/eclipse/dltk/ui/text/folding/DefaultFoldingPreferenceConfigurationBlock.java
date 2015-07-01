@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.layout.PixelConverter;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,7 +13,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
@@ -26,6 +24,7 @@ import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.util.SWTFactory;
+import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 
 /**
  */
@@ -38,7 +37,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	private IFoldingPreferenceBlock sourceCodeBlock;
 
 	public DefaultFoldingPreferenceConfigurationBlock(
-			OverlayPreferenceStore store, PreferencePage page) {
+			OverlayPreferenceStore store, AbstractComponentsPrefPage page) {
 		super(store, page);
 
 		documentationBlock = createDocumentationBlock(store, page);
@@ -46,11 +45,16 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	}
 
 	private Composite foldingOptionsComposite;
-
+	
 	@Override
-	public Control createControl(Composite parent) {
-		Composite composite = SWTFactory.createComposite(parent, parent
-				.getFont(), 1, 1, GridData.FILL_BOTH);
+	public int getPreferredLayoutColumns() {
+		return 1;
+	}
+	
+	@Override
+	protected void createContents(Composite topControl) {
+		// TODO: remove redundant topControl creation.
+		Composite composite = SWTFactory.createComposite(topControl, topControl.getFont(), 1, 1, GridData.FILL_BOTH);
 
 		Button enableFolding = SWTFactory.createCheckButton(composite,
 				PreferencesMessages.FoldingConfigurationBlock_enable);
@@ -91,8 +95,6 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		bindControl(enableFolding, PreferenceConstants.EDITOR_FOLDING_ENABLED);
 
 		createAdditionalTabs(tabFolder);
-
-		return composite;
 	}
 
 	private ControlEnableState fBlockEnableState;
@@ -110,7 +112,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	}
 
 	protected abstract IFoldingPreferenceBlock createDocumentationBlock(
-			OverlayPreferenceStore store, PreferencePage page);
+			OverlayPreferenceStore store, AbstractComponentsPrefPage page);
 
 	@Override
 	protected List<OverlayKey> createOverlayKeys() {
@@ -127,7 +129,8 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		return keys;
 	}
 
-	protected abstract IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, PreferencePage page);
+	protected abstract IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, 
+			AbstractComponentsPrefPage page);
 
 	protected int defaultMinLines() {
 		return DEFAULT_MIN_LINES;
