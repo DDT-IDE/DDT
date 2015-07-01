@@ -14,4 +14,7 @@ install:
   - ls -l bin-maven/dub64
   - $(pwd)/bin-maven/dub64/dub help
 
-script: mvn clean integration-test -DDTool.DubPath=$(pwd)/bin-maven/dub64/dub
+script:
+  - "export MAVEN_OPTS=-Xmx1024m"
+  - "mvn clean integration-test -DDTool.DubPath=$(pwd)/bin-maven/dub64/dub"
+
