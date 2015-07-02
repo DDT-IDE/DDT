@@ -10,22 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.AbstractToolsManager.RunProcessOperation;
+import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessOperation;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
-import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -42,11 +40,13 @@ import mmrnmhrm.core.workspace.DubModelManager;
 public class DubBuildOperation extends CommonBuildTargetOperation {
 	
 	protected final IProject project;
+	protected final boolean fullBuild;
 	
-	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, 
-			BuildTargetsProjectBuilder langProjectBuilder, BuildTarget buildTarget) {
-		langProjectBuilder.super(parentOpInfo, buildTarget);
+	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
+			BuildTarget buildTarget, boolean fullBuild) {
+		super(parentOpInfo, buildToolPath, buildTarget);
 		this.project = project;
+		this.fullBuild = fullBuild;
 	}
 	
 	public IProject getProject() {
@@ -58,7 +58,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 	}
 	
 	@Override
-	public IProject[] execute(IProject project, int kind, Map<String, String> args, IProgressMonitor monitor)
+	public void execute(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		String validatedDubPath = getBuildToolPath().toString();
 		
@@ -66,7 +66,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 		commands.add(validatedDubPath);
 		commands.add("build");
 		
-		if(kind == IncrementalProjectBuilder.FULL_BUILD) {
+		if(fullBuild) {
 			commands.add("--force");
 		}
 		
@@ -83,8 +83,6 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 		
 		ExternalProcessResult processResult = submitAndAwaitDubCommand(monitor, commands);
 		processBuildOutput(processResult);
-		
-		return null;
 	}
 	
 	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, List<String> commandList) 

@@ -10,26 +10,31 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
+import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.eclipse.core.runtime.CoreException;
+
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolsManager;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
+import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.fields.IValidatedField;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-
-import org.eclipse.core.runtime.CoreException;
+import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
  * Manages launching D tools.
  * Has an executor agent to run external DUB commands.
  */
-public class DeeToolManager extends AbstractToolsManager {
+public class DeeToolManager extends AbstractToolManager {
 	
 	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
@@ -39,6 +44,23 @@ public class DeeToolManager extends AbstractToolsManager {
 	@Override
 	public void shutdownNow() {
 		dubProcessAgent.shutdownNow();
+	}
+	
+	/* -----------------  ----------------- */
+	
+	@Override
+	protected IValidatedField<Path> getSDKToolPathField() {
+		return new SDKToolPathField(getSDKToolPathValidator()) {
+			@Override
+			protected String getRawFieldValue() {
+				return DeeCorePreferences.getEffectiveDubPath();
+			}
+		};
+	}
+	
+	@Override
+	protected PathValidator getSDKToolPathValidator() {
+		return new DubLocationValidator();
 	}
 	
 	/* ----------------------------------- */

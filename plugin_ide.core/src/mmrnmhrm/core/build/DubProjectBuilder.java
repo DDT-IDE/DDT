@@ -12,35 +12,19 @@ package mmrnmhrm.core.build;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
-import java.nio.file.Path;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.IBuildTargetOperation;
-import melnorme.lang.ide.core.operations.BuildTargetsProjectBuilder;
-import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.ide.core.operations.LangProjectBuilder;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.DeeCorePreferences;
 
 
-public class DubProjectBuilder extends BuildTargetsProjectBuilder {
-	
-	@Override
-	public Path getBuildToolPath() throws CommonException {
-		String pathString = DeeCorePreferences.getEffectiveDubPath();
-		return getBuildToolPath(pathString);
-	}
-	
-	@Override
-	protected PathValidator getBuildToolPathValidator() {
-		return new DubLocationValidator();
-	}
+public class DubProjectBuilder extends LangProjectBuilder {
 	
 	/* ----------------- clean ----------------- */
 	
@@ -61,18 +45,17 @@ public class DubProjectBuilder extends BuildTargetsProjectBuilder {
 	/* ----------------- Build ----------------- */
 	
 	@Override
-	protected CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-			BuildTarget buildTarget) {
-		return new DubBuildOperation(parentOpInfo, project, this, buildTarget);
-	}
-	
-	@Override
-	protected IBuildTargetOperation newOperationMessageTask(IProject project, String msg, boolean clearConsole) {
-		return new BuildMessageOperation(workspaceOpInfo.createSubOperation(project, clearConsole, msg)) {
+	protected BuildOperationCreator createBuildOperationCreator(boolean fullBuild) {
+		return new BuildOperationCreator(getProject(), workspaceOpInfo, fullBuild) {
 			@Override
-			protected void executeDo() {
-				// Run message output in dub process manager
-				DeeCore.getDubProcessManager().submitDubCommand(this);
+			protected IBuildTargetOperation newMessageOperation(IProject project, String msg, boolean clearConsole) {
+				return new BuildMessageOperation(parentOpInfo.createSubOperation(project, clearConsole, msg)) {
+					@Override
+					protected void executeDo() {
+						// Run message output in dub process manager
+						DeeCore.getDubProcessManager().submitDubCommand(this);
+					}
+				};
 			}
 		};
 	}

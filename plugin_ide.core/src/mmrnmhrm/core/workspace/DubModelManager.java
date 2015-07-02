@@ -36,6 +36,7 @@ import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
+import melnorme.lang.ide.core.utils.CoreOperationAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -43,10 +44,10 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
 
@@ -60,7 +61,6 @@ public class DubModelManager extends BundleModelManager {
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
 	protected final DubWorkspaceModel model;
-	protected final DeeToolManager dubProcessManager = new DeeToolManager();
 	
 //	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
@@ -69,18 +69,12 @@ public class DubModelManager extends BundleModelManager {
 	}
 	
 	public DeeToolManager getProcessManager() {
-		return dubProcessManager;
+		return (DeeToolManager) LangCore.getToolManager();
 	}
 	
 //	public SearchAndAddCompilersOnPathJob getCompilersSearchJob() {
 //		return compilerSearchJob;
 //	}
-	
-	@Override
-	protected void doShutdown() {
-		super.doShutdown();
-		dubProcessManager.shutdownNow();
-	}
 	
 	@Override
 	protected void initializeModelManager() {
@@ -204,7 +198,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected DeeToolManager getProcessManager() {
-		return workspaceModelManager.dubProcessManager;
+		return workspaceModelManager.getProcessManager();
 	}
 	
 	@Override
@@ -266,8 +260,15 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		try {
-			resolveProjectOperation(monitor);
-		} catch (final CoreException ce) {
+			new CoreOperationAdapter() {
+				@Override
+				public void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation {
+					resolveProjectOperation(pm);
+				}
+			}.coreRun(monitor);
+		} catch(OperationCancellation ce) {
+			return;
+		} catch(CoreException ce) {
 			try {
 				EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
 					@Override
@@ -285,15 +286,15 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		}
 	}
 	
-	protected Void resolveProjectOperation(IProgressMonitor pm) throws CoreException {
+	protected Void resolveProjectOperation(IProgressMonitor pm) throws CoreException, CommonException {
 		IPath projectLocation = project.getLocation();
 		if(projectLocation == null) {
 			return null; // Project no longer exists, or not stored in the local filesystem.
 		}
 		
 		BundlePath bundlePath = BundlePath.create(projectLocation.toFile().toPath());
-		
-		String dubPath = DubHelper.getDubPath(DeeCorePreferences.getEffectiveDubPath());
+			
+		String dubPath = LangCore.getToolManager().getSDKToolPath().toString();
 		
 		OperationInfo resolveProjectOperation = new OperationInfo(project, true,
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));

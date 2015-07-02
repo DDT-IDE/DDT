@@ -10,9 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.operations.AbstractToolsManager;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeToolManager;
 
 public class LangCore_Actual {
 	
@@ -25,8 +25,8 @@ public class LangCore_Actual {
 	
 	public static final String LANGUAGE_NAME = "D";
 	
-	public static AbstractToolsManager createToolManagerSingleton() {
-		return new AbstractToolsManager() { };
+	public static DeeToolManager createToolManagerSingleton() {
+		return new DeeToolManager();
 	}
 	
 	public static DToolClient createEngineClient() {

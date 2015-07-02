@@ -10,11 +10,19 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
+import java.nio.file.Path;
+
+import org.eclipse.core.resources.IProject;
+
 import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.operations.BuildTarget;
+import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
 
 public class DeeBuildManager extends BuildManager {
 	
@@ -28,11 +36,23 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected ArrayList2<BuildTarget> createDefaultProjectBuildInfo() {
-		return ArrayList2.create(
-			new BuildTarget(true, null),
-			new BuildTarget(true, DubBuildType.UNITTEST.getBuildTypeString())
-		);
+	protected ProjectBuildInfo createDefaultProjectBuildInfo(IProject project) {
+		return new ProjectBuildInfo(this, project, ArrayList2.create(
+			createBuildTarget(true, null),
+			createBuildTarget(true, DubBuildType.UNITTEST.getBuildTypeString())
+		));
+	}
+	
+	@Override
+	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
+		return new BuildTarget(enabled, targetName) {
+			@Override
+			public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+					boolean fullBuild) throws CommonException {
+				Path buildToolPath = getSDKToolPath();
+				return new DubBuildOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
+			}
+		};
 	}
 	
 }
