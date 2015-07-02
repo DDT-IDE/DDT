@@ -16,13 +16,12 @@ import org.eclipse.core.resources.IProject;
 
 import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BuildManager;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.core.CommonException;
 
 public class DeeBuildManager extends BuildManager {
 	
@@ -44,15 +43,9 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildTarget createBuildTarget(boolean enabled, String targetName) {
-		return new BuildTarget(enabled, targetName) {
-			@Override
-			public CommonBuildTargetOperation newBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
-					boolean fullBuild) throws CommonException {
-				Path buildToolPath = getSDKToolPath();
-				return new DubBuildOperation(parentOpInfo, project, buildToolPath, this, fullBuild);
-			}
-		};
+	public CommonBuildTargetOperation createBuildTargetOperation(OperationInfo parentOpInfo, IProject project,
+			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
+		return new DubBuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 }

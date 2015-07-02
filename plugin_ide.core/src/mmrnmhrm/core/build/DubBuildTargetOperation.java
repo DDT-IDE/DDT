@@ -23,7 +23,7 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessOperation;
 import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.BuildOperationCreator.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -37,20 +37,11 @@ import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 
-public class DubBuildOperation extends CommonBuildTargetOperation {
+public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
-	protected final IProject project;
-	protected final boolean fullBuild;
-	
-	public DubBuildOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
+	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
 			BuildTarget buildTarget, boolean fullBuild) {
-		super(parentOpInfo, buildToolPath, buildTarget);
-		this.project = project;
-		this.fullBuild = fullBuild;
-	}
-	
-	public IProject getProject() {
-		return project;
+		super(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	protected String getConfiguration() {
@@ -59,7 +50,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 	
 	@Override
 	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		String validatedDubPath = getBuildToolPath().toString();
+		String validatedDubPath = getBuildToolPath2().toString();
 		
 		ArrayList2<String> commands = new ArrayList2<String>();
 		commands.add(validatedDubPath);
