@@ -58,8 +58,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 	}
 	
 	@Override
-	public void execute(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 		String validatedDubPath = getBuildToolPath().toString();
 		
 		ArrayList2<String> commands = new ArrayList2<String>();
@@ -81,7 +80,7 @@ public class DubBuildOperation extends CommonBuildTargetOperation {
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
-		ExternalProcessResult processResult = submitAndAwaitDubCommand(monitor, commands);
+		ExternalProcessResult processResult = submitAndAwaitDubCommand(pm, commands);
 		processBuildOutput(processResult);
 	}
 	
