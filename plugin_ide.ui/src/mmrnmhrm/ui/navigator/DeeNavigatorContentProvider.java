@@ -18,8 +18,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
@@ -27,7 +25,8 @@ import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
-import melnorme.util.swt.SWTUtil;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.DubProjectInfo;
 import mmrnmhrm.core.workspace.DubWorkspaceModel;
@@ -46,56 +45,38 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		return DeeCore.getWorkspaceModel();
 	}
 	
-	protected IDubModelListener listener;
+	protected final DubNavigatorModelListener listener = new DubNavigatorModelListener();
 	
 	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		super.inputChanged(viewer, oldInput, newInput);
+	protected void viewerInitialized() {
+		super.viewerInitialized();
 		
-		// Remove previous listener, even though I think inputChange is only called once.
-		getWorkspaceModel().removeListener(listener); 
-		
-		listener = new IDubModelListener() {
-			@Override
-			public void notifyUpdateEvent(UpdateEvent<DubProjectInfo> updateEvent) {
-				// we use throttle Job as a workaround to to ensure label is updated, due to bug:
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=430005
-				viewerRefreshThrottleJob.scheduleRefreshJob();
-			}
-		};
 		getWorkspaceModel().addListener(listener);
 	}
 	
 	@Override
 	public void dispose() {
 		getWorkspaceModel().removeListener(listener);
+		
+		super.dispose();
 	}
 	
-	protected final ThrottleCodeJob viewerRefreshThrottleJob = new ThrottleCodeJob(1200) {
+	protected class DubNavigatorModelListener extends NavigatorModelListener implements IDubModelListener {
+		
 		@Override
-		protected void runThrottledCode() {
-			postRefreshEventToUI(this);
-		};
-	};
-	
-	protected void postRefreshEventToUI(final ThrottleCodeJob throttleCodeJob) {
-		final ArrayList<IProject> dubProjects = new ArrayList<>();
-		for (String projectName : getWorkspaceModel().getDubProjects()) {
-			IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
-			dubProjects.add(project);
+		public void notifyUpdateEvent(UpdateEvent<DubProjectInfo> updateEvent) {
+			viewerRefreshThrottleJob.scheduleRefreshJob();
 		}
 		
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				throttleCodeJob.markRequestFinished();
-				for (IProject dubProject : dubProjects) {
-					if(SWTUtil.isOkToUse(getViewer().getControl())) {
-						getViewer().refresh(dubProject);
-					}
-				}
+		@Override
+		protected Indexable<Object> getElementsToRefresh() {
+			ArrayList2<Object> elementsToRefresh = new ArrayList2<>();
+			for(String projectName : getWorkspaceModel().getDubProjects()) {
+				IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
+				elementsToRefresh.add(project);
 			}
-		});
+			return elementsToRefresh;
+		}
 		
 	}
 	

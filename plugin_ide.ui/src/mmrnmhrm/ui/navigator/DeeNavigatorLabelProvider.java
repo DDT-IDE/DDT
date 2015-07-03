@@ -14,16 +14,16 @@ import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider;
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetImageSwitcher;
-import melnorme.lang.ide.ui.views.AbstractLangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
@@ -34,7 +34,7 @@ import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
 
-public class DeeNavigatorLabelProvider extends AbstractLangNavigatorLabelProvider implements IStyledLabelProvider {
+public class DeeNavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
 	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
@@ -139,51 +139,52 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	
 }
 
-class DubElementImageProvider extends DefaultGetImageSwitcher implements DeeNavigatorAllElementsSwitcher<Image> {
+class DubElementImageProvider extends DefaultGetImageSwitcher 
+		implements DeeNavigatorAllElementsSwitcher<ImageDescriptor> {
 	
 	@Override
-	public Image visitDepContainer(DubDependenciesContainer element) {
-		return DeeImages.DUB_DEPS_CONTAINER.getImage();
+	public ImageDescriptor visitDepContainer(DubDependenciesContainer element) {
+		return DeeImages.DUB_DEPS_CONTAINER.getDescriptor();
 	}
 	
 	@Override
-	public Image visitStdLibContainer(StdLibContainer element) {
-		return DeeImages.DUB_STD_LIB.getImage();
+	public ImageDescriptor visitStdLibContainer(StdLibContainer element) {
+		return DeeImages.DUB_STD_LIB.getDescriptor();
 	}
 	
 	@Override
-	public Image visitRawDepElement(DubRawDependencyElement element) {
-		return DeeImages.DUB_RAW_DEP.getImage();
+	public ImageDescriptor visitRawDepElement(DubRawDependencyElement element) {
+		return DeeImages.DUB_RAW_DEP.getDescriptor();
 	}
 	
 	@Override
-	public Image visitErrorElement(DubErrorElement element) {
-		return DeeImages.DUB_ERROR_ELEMENT.getImage();
+	public ImageDescriptor visitErrorElement(DubErrorElement element) {
+		return DeeImages.DUB_ERROR_ELEMENT.getDescriptor();
 	}
 	
 	@Override
-	public Image visitDepElement(DubDependencyElement element) {
-		return DeeImages.DUB_BUNDLE_DEP.getImage();
+	public ImageDescriptor visitDepElement(DubDependencyElement element) {
+		return DeeImages.DUB_BUNDLE_DEP.getDescriptor();
 	}
 	
 	@Override
-	public Image visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-		return DeeImages.SOURCE_FOLDER.getImage();
+	public ImageDescriptor visitDepSourceFolderElement(DubDepSourceFolderElement element) {
+		return DeeImages.SOURCE_FOLDER.getDescriptor();
 	}
 	
 	@Override
-	public Image visitDubManifestFile(IFile element) {
-		return DeeImages.DUB_MANIFEST.getImage();
+	public ImageDescriptor visitDubManifestFile(IFile element) {
+		return DeeImages.DUB_MANIFEST.getDescriptor();
 	}
 	
 	@Override
-	public Image visitDubCacheFolder(IFolder element) {
-		return DeeImages.BINARY_FOLDER.getImage();
+	public ImageDescriptor visitDubCacheFolder(IFolder element) {
+		return DeeImages.BINARY_FOLDER.getDescriptor();
 	}
 	
 	@Override
-	public Image visitDubSourceFolder(IFolder element) {
-		return DeeImages.SOURCE_FOLDER.getImage();
+	public ImageDescriptor visitDubSourceFolder(IFolder element) {
+		return DeeImages.SOURCE_FOLDER.getDescriptor();
 	}
 	
 }
