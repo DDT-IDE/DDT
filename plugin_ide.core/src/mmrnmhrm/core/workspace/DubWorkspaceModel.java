@@ -54,7 +54,7 @@ public class DubWorkspaceModel extends ProjectBasedModel<DubProjectInfo, IDubMod
 	protected synchronized DubProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
 			CompilerInstall compilerInstall) {
 		DubProjectInfo newProjectInfo = new DubProjectInfo(compilerInstall, dubBundleDescription);
-		return addProjectInfo(project, newProjectInfo);
+		return setProjectInfo(project, newProjectInfo);
 	}
 	
 	@Override
