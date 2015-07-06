@@ -1,6 +1,8 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+  ▶ Recommended/tested CDT version is now 8.7.0
+
  * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
  * Fixed: hover for problem errors not showing if error is over a string literal source.
  * Fixed #112: build errors no longer removed when editing a source file.
