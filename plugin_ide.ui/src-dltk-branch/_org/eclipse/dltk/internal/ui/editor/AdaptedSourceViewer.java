@@ -122,10 +122,6 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 		super.doOperation(operation);
 	}
 
-	public void insertTextConverter(ITextConverter textConverter, int index) {
-		throw new UnsupportedOperationException();
-	}
-
 	public void addTextConverter(ITextConverter textConverter) {
 		if (fTextConverters == null) {
 			fTextConverters = new ArrayList<ITextConverter>(1);

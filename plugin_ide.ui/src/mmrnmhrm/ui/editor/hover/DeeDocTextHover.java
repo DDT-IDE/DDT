@@ -16,12 +16,15 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
+import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
@@ -31,7 +34,8 @@ import mmrnmhrm.core.engine.DeeEngineClient;
  * Standard documentation hover for DDoc.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
-public class DeeDocTextHover extends AbstractDocumentationHover {
+public class DeeDocTextHover extends BrowserControlHover 
+		implements ITextHoverExtension, ILangEditorTextHover<String> {
 	
 	public DeeDocTextHover() {
 	}
@@ -87,5 +91,9 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		}
 		
 	}
-
+	
+	protected String getCSSStyles() {
+		return HoverUtil.getDDocPreparedCSS();
+	}
+	
 }

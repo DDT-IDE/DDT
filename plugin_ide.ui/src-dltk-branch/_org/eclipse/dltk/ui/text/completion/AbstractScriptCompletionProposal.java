@@ -9,11 +9,6 @@
  *******************************************************************************/
 package _org.eclipse.dltk.ui.text.completion;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
-import melnorme.lang.tooling.ToolCompletionProposal;
-import mmrnmhrm.ui.editor.hover.HoverUtil;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -32,6 +27,10 @@ import org.eclipse.swt.graphics.RGB;
 
 import _org.eclipse.cdt.ui.text.IColorManager;
 import _org.eclipse.dltk.ui.PreferenceConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 
 /* TODO: DLTK review this code*/
@@ -53,7 +52,7 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 	/** Returns the style information for displaying HTML (Javadoc) content. */
 	protected String getCSSStyles() {
 		if (fgCSSStyles == null) {
-			fgCSSStyles= HoverUtil.getDDocPreparedCSS("/JavadocHoverStyleSheet.css");
+			fgCSSStyles= HoverUtil.getDDocPreparedCSS();
 		}
 		return fgCSSStyles;
 	}

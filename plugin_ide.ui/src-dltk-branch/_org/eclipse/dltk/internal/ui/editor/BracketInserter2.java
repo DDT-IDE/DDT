@@ -69,6 +69,7 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 		fCloseAngularBrackets = enabled;
 	}
 
+	@SuppressWarnings("unused") 
 	protected boolean isAngularIntroducer(String identifier) {
 		return false;
 	}

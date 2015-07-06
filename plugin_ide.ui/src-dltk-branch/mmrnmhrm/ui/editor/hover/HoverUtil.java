@@ -1,25 +1,17 @@
 package mmrnmhrm.ui.editor.hover;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
-import mmrnmhrm.ui.DeeUIPlugin;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.osgi.framework.Bundle;
 
 import _org.eclipse.jdt.internal.ui.text.HTMLPrinter;
+import dtool.ddoc.DDocResources;
 import dtool.ddoc.IDeeDocColorConstants;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
+import mmrnmhrm.ui.DeeUIPlugin;
 
 class JDT_PreferenceConstants {
 
@@ -36,11 +28,6 @@ class JDT_PreferenceConstants {
 	
 }
 
-abstract class JavaPlugin extends LangUIPlugin {
-
-
-}
-
 public class HoverUtil {
 	
 	public static class DeePluginPreferences {
@@ -49,28 +36,6 @@ public class HoverUtil {
 		}
 	}
 	
-	public static String loadStyleSheet(String cssfilepath) {
-		Bundle bundle= Platform.getBundle(JavaPlugin.PLUGIN_ID);
-		URL url= bundle.getEntry(cssfilepath); //$NON-NLS-1$
-		if (url != null) {
-			try {
-				url= FileLocator.toFileURL(url);
-				BufferedReader reader= new BufferedReader(new InputStreamReader(url.openStream()));
-				StringBuffer buffer= new StringBuffer(200);
-				String line= reader.readLine();
-				while (line != null) {
-					buffer.append(line);
-					buffer.append('\n');
-					line= reader.readLine();
-				}
-				return buffer.toString();
-			} catch (IOException ex) {
-				JavaPlugin.logInternalError(ex);
-			}
-		}
-		return null;
-	}
-
 	public static String getCompleteHoverInfo(String info, String cssStyle) {
 		
 		if (info != null && info.length() > 0) {
@@ -97,10 +62,13 @@ public class HoverUtil {
 	= ".code		 { font-family: monospace; background-color: #e7e7e8; border: 2px solid #cccccc; padding: 0ex;}";
 
 	
-	public static String getDDocPreparedCSS(String filename) {
-		String str = HoverUtil.loadStyleSheet(filename);
-		str = HoverUtil.setupCSSFont(str);
-		StringBuffer strBuf = new StringBuffer(str);
+	public static String getDDocPreparedCSS() {
+		return getDDocPreparedCSS(DDocResources.defaultDocStyleSheet);
+	}
+	
+	public static String getDDocPreparedCSS(String cssStyles) {
+		String css = setupCSSFont(cssStyles);
+		StringBuffer strBuf = new StringBuffer(css);
 		strBuf.append(CODE_CSS_CLASS);
 		addPreferencesFontsAndColorsToStyleSheet(strBuf);
 		return strBuf.toString();
