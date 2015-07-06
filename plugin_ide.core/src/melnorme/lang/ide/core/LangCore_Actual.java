@@ -11,7 +11,7 @@
 package melnorme.lang.ide.core;
 
 import mmrnmhrm.core.build.DeeBuildManager;
-import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
 
 public class LangCore_Actual {
@@ -29,8 +29,8 @@ public class LangCore_Actual {
 		return new DeeToolManager();
 	}
 	
-	public static DToolClient createEngineClient() {
-		return new DToolClient();
+	public static DeeEngineClient createEngineClient() {
+		return new DeeEngineClient();
 	}
 	
 	public static DeeBuildManager createBuildManager() {

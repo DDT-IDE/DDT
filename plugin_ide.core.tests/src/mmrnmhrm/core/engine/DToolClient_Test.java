@@ -43,7 +43,7 @@ import dtool.engine.ModuleParseCache_Test;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
-	protected static final DToolClient client = DToolClient.getDefault();
+	protected static final DeeEngineClient client = DeeEngineClient.getDefault();
 	
 	protected TestFixtureProject testsProject;
 	

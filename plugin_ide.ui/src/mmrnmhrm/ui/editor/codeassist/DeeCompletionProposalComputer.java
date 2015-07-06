@@ -20,7 +20,7 @@ import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeEngineClient;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
-	protected DToolClient dtoolclient = DToolClient.getDefault();
+	protected DeeEngineClient dtoolclient = DeeEngineClient.getDefault();
 	
 	public DeeCompletionProposalComputer() {
 	}

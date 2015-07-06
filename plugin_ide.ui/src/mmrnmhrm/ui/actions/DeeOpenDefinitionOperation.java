@@ -33,7 +33,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.Function;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeEngineClient;
 
 public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
@@ -59,7 +59,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	@Override
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
-		return DToolClient.getDefault().
+		return DeeEngineClient.getDefault().
 				new FindDefinitionOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 	}
 	

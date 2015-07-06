@@ -38,15 +38,15 @@ import dtool.parser.structure.DeeStructureCreator;
 /**
  * Handle communication with DToolServer.
  */
-public class DToolClient extends EngineClient {
+public class DeeEngineClient extends EngineClient {
 	
-	public static DToolClient getDefault() {
+	public static DeeEngineClient getDefault() {
 		return DeeCore.getDToolClient();
 	}
 	
 	protected final DToolServer dtoolServer;
 	
-	public DToolClient() {
+	public DeeEngineClient() {
 		super();
 		
 		dtoolServer = new DToolServer() {
@@ -191,13 +191,13 @@ public class DToolClient extends EngineClient {
 	public class CodeCompletionOperation extends EngineOperation<DeeSymbolCompletionResult> {
 		
 		public CodeCompletionOperation(Location location, int timeoutMillis, int offset) {
-			super(DToolClient.this, location, offset, timeoutMillis, "Code Completion");
+			super(DeeEngineClient.this, location, offset, timeoutMillis, "Code Completion");
 		}
 		
 		@Override
 		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
 				throws CommonException, CoreException, OperationCancellation {
-			return dtoolServer.doCodeCompletion(location.toPath(), offset, DToolClient.compilerPathOverride, 
+			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeEngineClient.compilerPathOverride, 
 				DeeCorePreferences.getEffectiveDubPath());
 		}
 		
@@ -206,7 +206,7 @@ public class DToolClient extends EngineClient {
 	public class FindDefinitionOperation extends EngineOperation<FindDefinitionResult> {
 		
 		public FindDefinitionOperation(Location location, int offset, int timeoutMillis) {
-			super(DToolClient.this, location, offset, timeoutMillis, "Find Definition");
+			super(DeeEngineClient.this, location, offset, timeoutMillis, "Find Definition");
 		}
 		
 		@Override
@@ -219,7 +219,7 @@ public class DToolClient extends EngineClient {
 	public class FindDDocViewOperation extends EngineOperation<String> {
 		
 		public FindDDocViewOperation(Location location, int offset, int timeoutMillis) {
-			super(DToolClient.this, location, offset, timeoutMillis, "Resolve DDoc");
+			super(DeeEngineClient.this, location, offset, timeoutMillis, "Resolve DDoc");
 		}
 		
 		@Override

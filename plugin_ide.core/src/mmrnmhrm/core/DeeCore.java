@@ -11,7 +11,7 @@
 package mmrnmhrm.core;
 
 import melnorme.lang.ide.core.LangCore;
-import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 import mmrnmhrm.core.workspace.DubWorkspaceModel;
@@ -35,8 +35,8 @@ public class DeeCore extends LangCore {
 		return modelManager;
 	}
 	
-	public static DToolClient getDToolClient() {
-		return (DToolClient) getEngineClient();
+	public static DeeEngineClient getDToolClient() {
+		return (DeeEngineClient) getEngineClient();
 	}
 	
 	@Override

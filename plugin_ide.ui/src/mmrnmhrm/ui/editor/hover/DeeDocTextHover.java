@@ -25,7 +25,7 @@ import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.engine.DToolClient;
+import mmrnmhrm.core.engine.DeeEngineClient;
 
 /**
  * Standard documentation hover for DDoc.
@@ -77,7 +77,7 @@ public class DeeDocTextHover extends AbstractDocumentationHover {
 		@Override
 		protected String doBackgroundValueComputation(IProgressMonitor monitor)
 				throws CoreException, CommonException, OperationCancellation {
-			return DToolClient.getDefault().
+			return DeeEngineClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1).runEngineOperation(monitor);
 		}
 		
