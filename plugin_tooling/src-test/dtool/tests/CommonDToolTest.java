@@ -76,7 +76,7 @@ public class CommonDToolTest extends CommonToolingTest {
 		
 		VoidFunction<File> fileVisitor = new VoidFunction<File>() {
 			@Override
-			public Void evaluate(File file) {
+			public Void apply(File file) {
 				if(file.isFile()) {
 					fileList.add(file);
 				}

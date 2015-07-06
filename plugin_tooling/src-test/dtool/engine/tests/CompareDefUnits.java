@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.StringUtil;
 import dtool.tests.CommonDToolTest;
 
@@ -32,7 +32,7 @@ public class CompareDefUnits extends CommonDToolTest {
 	public static Function<INamedElement, String> fnDefUnitToStringAsElement(final int prefixLen) {
 		return new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement defUnit) {
+			public String apply(INamedElement defUnit) {
 				return defUnit == null ? null : defUnit.getExtendedName().substring(prefixLen);
 			}
 		};
@@ -41,7 +41,7 @@ public class CompareDefUnits extends CommonDToolTest {
 	public static Function<INamedElement, String> fnElementToFullyQualifiedName() {
 		return new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
+			public String apply(INamedElement obj) {
 				return obj == null ? null : obj.getFullyQualifiedName();
 			}
 		};

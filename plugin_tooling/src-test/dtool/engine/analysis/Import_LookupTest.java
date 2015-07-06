@@ -22,7 +22,7 @@ import melnorme.lang.tooling.engine.resolver.ReferenceResult;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -291,7 +291,7 @@ public class Import_LookupTest extends CommonLookupTest {
 	protected Predicate<INamedElement> checkModuleProxy(final String expectedToString) {
 		return new Predicate<INamedElement>() {
 			@Override
-			public boolean evaluate(INamedElement matchedElement) {
+			public boolean test(INamedElement matchedElement) {
 				ModuleProxy moduleProxy = assertInstance(matchedElement, ModuleProxy.class);
 				assertTrue(NamedElementUtil.namedElementToString(moduleProxy).equals(expectedToString));
 				return true;
@@ -380,7 +380,7 @@ public class Import_LookupTest extends CommonLookupTest {
 		return new Predicate<INamedElement>() {
 			
 			@Override
-			public boolean evaluate(INamedElement matchedElement) {
+			public boolean test(INamedElement matchedElement) {
 				PackageNamespace packageNameSpace = assertInstance(matchedElement, PackageNamespace.class);
 				assertEqualSet(
 					hashSet(elementToStringArray(packageNameSpace.getNamespaceElements())), 

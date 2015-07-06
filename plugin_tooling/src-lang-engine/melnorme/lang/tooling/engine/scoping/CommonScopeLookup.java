@@ -27,7 +27,7 @@ import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.lang.tooling.symbols.PackageNamespace;
 import melnorme.lang.tooling.symbols.SymbolTable;
 import melnorme.utilbox.collections.Collection2;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.StringUtil;
 
 public abstract class CommonScopeLookup {
@@ -90,7 +90,7 @@ public abstract class CommonScopeLookup {
 	public String toString_matches() {
 		return StringUtil.toString(matches.getElements(), "\n", new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
+			public String apply(INamedElement obj) {
 				return obj.getFullyQualifiedName();
 			}
 		});

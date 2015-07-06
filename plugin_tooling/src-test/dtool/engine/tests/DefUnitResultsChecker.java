@@ -26,7 +26,7 @@ import melnorme.lang.tooling.ast.SourceElement;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.engine.intrinsics.CommonLanguageIntrinsics.IPrimitiveDefUnit;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.StringUtil;
@@ -208,7 +208,7 @@ public class DefUnitResultsChecker extends CommonTestUtils {
 		@SuppressWarnings("unused")
 		String resultsString = StringUtil.toString(resultElements, "\n", new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement obj) {
+			public String apply(INamedElement obj) {
 				if(obj instanceof SourceElement) {
 					return NamedElementUtil.getElementTypedLabel(obj, true);
 				}

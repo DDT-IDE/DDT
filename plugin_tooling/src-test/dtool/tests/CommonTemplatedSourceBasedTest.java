@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 import melnorme.utilbox.misc.SimpleLogger;
 
 import org.junit.runner.RunWith;
@@ -88,7 +88,7 @@ public abstract class CommonTemplatedSourceBasedTest extends DeeFileBasedTest {
 		boolean filterHeaders = true;
 		
 		@Override
-		public boolean evaluate(File file) {
+		public boolean test(File file) {
 			if(file.getName().endsWith("_TODO")) return true;
 			if(file.getName().endsWith(".txt")) return true;
 			if(file.getParentFile().getName().equals("0_common")) return filterHeaders;

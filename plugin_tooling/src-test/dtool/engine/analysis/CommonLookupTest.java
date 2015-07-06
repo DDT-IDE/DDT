@@ -16,8 +16,8 @@ import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.collections.Collection2;
-import melnorme.utilbox.core.fntypes.Function;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.references.NamedReference;
@@ -47,7 +47,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 		resolvedModule.getSemanticContext()._resetSemantics();
 		
 		INamedElement matchedElement = getReferenceResolvedElement(resolvedModule, offsetMarker);
-		checker.evaluate(matchedElement);
+		checker.test(matchedElement);
 	}
 	
 	public static INamedElement getReferenceResolvedElement(ResolvedModule resolvedModule, String offsetMarker) {
@@ -60,7 +60,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	protected static Object[] elementToStringArray(Collection2<INamedElement> overloadedElements) {
 		Object[] results = ArrayUtil.map(overloadedElements, new Function<INamedElement, String>() {
 			@Override
-			public String evaluate(INamedElement namedElement) {
+			public String apply(INamedElement namedElement) {
 				return NamedElementUtil.namedElementToString(namedElement);
 			}
 		});
@@ -70,7 +70,7 @@ public abstract class CommonLookupTest extends CommonNodeSemanticsTest {
 	protected static Predicate<INamedElement> checkNameConflict(final String... expectedResults) {
 		return new Predicate<INamedElement>() {
 			@Override
-			public boolean evaluate(INamedElement matchedElement) {
+			public boolean test(INamedElement matchedElement) {
 				OverloadedNamedElement overload = assertInstance(matchedElement, OverloadedNamedElement.class);
 				assertEqualSet(
 					hashSet(elementToStringArray(overload.getOverloadedElements())), 

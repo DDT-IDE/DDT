@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -71,7 +71,7 @@ public class DubDescribeParserTest extends CommonDubTest {
 			
 			assertTrue(CollectionUtil.removeElement(bundleFiles, new Predicate<BundleFile>() {
 				@Override
-				public boolean evaluate(BundleFile obj) {
+				public boolean test(BundleFile obj) {
 					return areEqual(MiscUtil.createPathOrNull(obj.filePath), expectedPath);
 				}
 			}));

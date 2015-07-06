@@ -29,7 +29,7 @@ import melnorme.lang.tooling.engine.resolver.ConcreteElementResult;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.INamedElement;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.references.Reference;
 import dtool.dub.BundlePath;
@@ -199,7 +199,7 @@ public class CommonNodeSemanticsTest extends CommonSemanticsTest {
 	public static Predicate<INamedElement> namedElementChecker(final String expectedLabel) {
 		return new Predicate<INamedElement>() {
 			@Override
-			public boolean evaluate(INamedElement matchedElement) {
+			public boolean test(INamedElement matchedElement) {
 				assertTrue(DefUnitResultsChecker.matchesLabel(matchedElement, expectedLabel));
 				return true;
 			}

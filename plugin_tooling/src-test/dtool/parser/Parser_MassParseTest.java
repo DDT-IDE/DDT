@@ -8,15 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import melnorme.lang.utils.MiscFileUtils;
-import melnorme.utilbox.core.fntypes.Predicate;
-import melnorme.utilbox.core.fntypes.VoidFunction;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.tests.CommonTestUtils;
-import melnorme.utilbox.tests.TestsWorkingDir;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -24,6 +15,14 @@ import org.junit.runners.Parameterized.Parameters;
 import dtool.tests.CommonParameterizedTest;
 import dtool.tests.DToolTestResources;
 import dtool.tests.DToolTests;
+import melnorme.lang.utils.MiscFileUtils;
+import java.util.function.Predicate;
+import melnorme.utilbox.core.fntypes.VoidFunction;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.tests.CommonTestUtils;
+import melnorme.utilbox.tests.TestsWorkingDir;
 
 /**
  * Test conversion of common sources (Phobos, Tango)
@@ -58,7 +57,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		final ArrayList<File> fileList = new ArrayList<>();
 		VoidFunction<File> fileVisitor = new VoidFunction<File>() {
 			@Override
-			public Void evaluate(File file) {
+			public Void apply(File file) {
 				if(file.isFile() && file.getName().endsWith(".zip")) {
 					fileList.add(file);
 				}
@@ -121,7 +120,7 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 			String[] exclusions = LINE_SPLITTER.split(exclusionsFileSource);
 			exclusions = ArrayUtil.filter(exclusions, new Predicate<String>() {
 				@Override
-				public boolean evaluate(String obj) {
+				public boolean test(String obj) {
 					return obj.trim().isEmpty() == false;
 				}
 			});

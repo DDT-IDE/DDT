@@ -93,7 +93,7 @@ public class NE_Variables_Test extends NamedElement_CommonTest {
 		INamedElementSemanticData nodeSemantics = pickedElement.element.getSemantics(pickedElement.context);
 		INamedElement effectiveType = nodeSemantics.getTypeForValueContext();
 		
-		namedElementChecker(expectedResult).evaluate(effectiveType);
+		namedElementChecker(expectedResult).test(effectiveType);
 	}
 	
 }

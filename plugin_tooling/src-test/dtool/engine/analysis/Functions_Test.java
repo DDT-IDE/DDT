@@ -12,7 +12,7 @@ package dtool.engine.analysis;
 
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class Functions_Test extends CommonNodeSemanticsTest {
 		
 		IInitializer element = pe.element;
 		INamedElement typeOfUnderlyingValue = element.getTypeOfInitializer(pe.context);
-		checker.evaluate(typeOfUnderlyingValue);
+		checker.test(typeOfUnderlyingValue);
 	}
 	
 }

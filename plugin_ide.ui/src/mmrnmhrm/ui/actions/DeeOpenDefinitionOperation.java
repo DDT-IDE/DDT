@@ -30,7 +30,7 @@ import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.Function;
+import java.util.function.Function;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.engine.DeeEngineClient;
@@ -118,7 +118,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {
 		return StringUtil.toString(nodes, sep, new Function<FindDefinitionResultEntry, String>() {
 			@Override
-			public String evaluate(FindDefinitionResultEntry obj) {
+			public String apply(FindDefinitionResultEntry obj) {
 				return obj.extendedName;
 			}
 		});

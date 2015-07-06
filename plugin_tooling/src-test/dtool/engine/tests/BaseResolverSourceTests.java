@@ -27,7 +27,7 @@ import java.util.Map;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.SimpleLogger;
 import melnorme.utilbox.misc.StringUtil;
@@ -206,7 +206,7 @@ public abstract class BaseResolverSourceTests extends CommonTemplatedSourceBased
 	public static String[] removeEmptyStrings(String[] expectedResults) {
 		expectedResults = ArrayUtil.filter(expectedResults, new Predicate<String>() {
 			@Override
-			public boolean evaluate(String obj) {
+			public boolean test(String obj) {
 				return !obj.isEmpty();
 			}
 		});

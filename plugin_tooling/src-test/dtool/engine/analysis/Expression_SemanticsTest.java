@@ -13,7 +13,7 @@ package dtool.engine.analysis;
 import static melnorme.lang.tooling.engine.ErrorElement.NotAValueErrorElement.ERROR_IS_NOT_A_VALUE;
 import melnorme.lang.tooling.engine.PickedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.core.fntypes.Predicate;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -83,7 +83,7 @@ public class Expression_SemanticsTest extends CommonNodeSemanticsTest {
 		
 		IInitializer element = pe.element;
 		INamedElement typeOfUnderlyingValue = element.getTypeOfInitializer(pe.context);
-		checker.evaluate(typeOfUnderlyingValue);
+		checker.test(typeOfUnderlyingValue);
 	}
 	
 }
