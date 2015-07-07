@@ -15,10 +15,10 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IProject;
 
 import dtool.dub.BundlePath;
-import melnorme.lang.ide.core.operations.BuildTarget;
-import melnorme.lang.ide.core.operations.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.project_model.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.collections.ArrayList2;
