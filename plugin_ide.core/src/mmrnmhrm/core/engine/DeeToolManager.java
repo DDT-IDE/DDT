@@ -20,13 +20,11 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
-import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.fields.IValidatedField;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.build.DubLocationValidator;
 
@@ -35,8 +33,6 @@ import mmrnmhrm.core.build.DubLocationValidator;
  * Has an executor agent to run external DUB commands.
  */
 public class DeeToolManager extends AbstractToolManager {
-	
-	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
 	
 	public DeeToolManager() {
 	}
@@ -65,18 +61,14 @@ public class DeeToolManager extends AbstractToolManager {
 	
 	/* ----------------------------------- */
 	
-	public <T> Future<T> submitDubCommand(Callable<T> task) {
+	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
+	
+	public <T> Future<T> submitTask(Callable<T> task) {
 		return dubProcessAgent.submit(task);
 	}
 	
-	public ExternalProcessResult submitDubCommandAndWait(IRunProcessTask task) 
-			throws CoreException, OperationCancellation  {
-		return submitAndGetTask(task);
-	}
-	
-	public ExternalProcessResult submitAndGetTask(IRunProcessTask task) 
-			throws CoreException, OperationCancellation {
-		Future<ExternalProcessResult> future = dubProcessAgent.submit(task);
+	public <T> T submitTaskAndAwaitResult(Callable<T> task) throws CoreException, OperationCancellation {
+		Future<T> future = dubProcessAgent.submit(task);
 		try {
 			return future.get();
 		} catch (InterruptedException e) {

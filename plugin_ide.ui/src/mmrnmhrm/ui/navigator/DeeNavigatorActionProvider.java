@@ -90,7 +90,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				DeeToolManager dubMgr = DeeCore.getWorkspaceModelManager().getProcessManager();
 				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
-				dubMgr.submitDubCommand(dubMgr.newRunProcessOperation(
+				dubMgr.submitTask(dubMgr.newRunProcessOperation(
 					null, DeeCoreMessages.RunningDubCommand, getCommands(project), monitor));
 			}
 			

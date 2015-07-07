@@ -305,7 +305,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		ExternalProcessResult processHelper;
 		try {
-			processHelper = getProcessManager().submitDubCommandAndWait(dubDescribeTask);
+			processHelper = getProcessManager().submitTaskAndAwaitResult(dubDescribeTask);
 		} catch (OperationCancellation e) {
 			throw LangCore.createCoreException("Error, `describe` cancelled.", null);
 		}

@@ -11,7 +11,6 @@
 package mmrnmhrm.core.build;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -21,20 +20,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.operations.AbstractToolManager.RunProcessOperation;
+import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.DubModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
@@ -71,18 +67,10 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
-		ExternalProcessResult processResult = submitAndAwaitDubCommand(pm, commands);
-		processBuildOutput(processResult);
-	}
-	
-	protected ExternalProcessResult submitAndAwaitDubCommand(IProgressMonitor monitor, List<String> commandList) 
-			throws CoreException, OperationCancellation {
-		DeeToolManager dubProcessManager = DeeCore.getDubProcessManager();
+		ExternalProcessResult processResult = getToolManager().newRunProcessOperation(getProject(), 
+			DeeCoreMessages.RunningDubBuild, commands.toArray(String.class) , pm).runProcess();
 		
-		String[] commands = ArrayUtil.createFrom(commandList, String.class);
-		RunProcessOperation runDubProcessOperation = dubProcessManager.newRunProcessOperation(
-			getProject(), DeeCoreMessages.RunningDubBuild, commands, monitor);
-		return dubProcessManager.submitDubCommandAndWait(runDubProcessOperation);
+		processBuildOutput(processResult);
 	}
 	
 	protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
