@@ -36,11 +36,11 @@ import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
-import melnorme.lang.ide.core.utils.CoreOperationAdapter;
-import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter;
-import melnorme.lang.ide.core.utils.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
+import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter;
+import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -260,12 +260,12 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		try {
-			new CoreOperationAdapter() {
+			new CoreOperationRunnable() {
 				@Override
 				public void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation {
 					resolveProjectOperation(pm);
 				}
-			}.coreRun(monitor);
+			}.coreAdaptedRun(monitor);
 		} catch(OperationCancellation ce) {
 			return;
 		} catch(CoreException ce) {

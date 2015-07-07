@@ -12,7 +12,7 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import java.util.List;
 
-import melnorme.lang.ide.core.utils.TimeoutProgressMonitor;
+import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
