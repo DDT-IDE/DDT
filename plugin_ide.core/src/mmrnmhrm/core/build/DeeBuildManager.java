@@ -14,36 +14,46 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
-import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.workspace.DeeBundleModel;
+import mmrnmhrm.core.workspace.DubBundleInfo;
 
 public class DeeBuildManager extends BuildManager {
 	
-	public DeeBuildManager() {
-		super();
+	public DeeBuildManager(DeeBundleModel bundleModel) {
+		super(bundleModel);
 	}
 	
 	@Override
-	protected ManagerResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(EclipseUtils.epath(BundlePath.DUB_MANIFEST_Path));
+	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
+		DubBundleInfo dubBundleInfo = (DubBundleInfo) bundleInfo;
+		if(dubBundleInfo.getBundleDesc().isResolved()) {
+			// We ignore resolved description, because only unresolved ones have configuration info
+			return;
+		}
+		super.bundleProjectAdded(project, dubBundleInfo);
 	}
 	
 	@Override
-	protected ProjectBuildInfo createDefaultProjectBuildInfo(IProject project) {
-		return new ProjectBuildInfo(this, project, ArrayList2.create(
-			createBuildTarget(true, null),
-			createBuildTarget(true, DubBuildType.UNITTEST.getBuildTypeString())
-		));
+	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
+			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig) {
+		String name = buildConfig.getName();
+		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, name);
+		
+		// Create unittest variant
+		String newName = buildConfig.getName() + ":" + DubBuildType.UNITTEST.getBuildTypeString();
+		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, newName);
 	}
 	
 	@Override

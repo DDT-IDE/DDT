@@ -16,10 +16,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 
-import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
-import mmrnmhrm.core.DeeCore;
+import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 
 public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
@@ -33,16 +35,25 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) {
 		IProject project = (IProject) resource.getProject();
 		
-		resource = getProjectExecutableArtifact(project);
+		try {
+			resource = getProjectExecutableArtifact(project);
+		} catch(CommonException e) {
+			LangCore.logError(e);
+			return null;
+		}
 		if(resource == null) {
 			return null;
 		}
 		return new ResourceLaunchTarget(resource);
 	}
 	
-	protected IFile getProjectExecutableArtifact(IProject project) {
-		DubBundleDescription bundleInfo = DeeCore.getWorkspaceModel().getBundleInfo(project);
-		Path targetFilePath = bundleInfo.getMainBundle().getEffectiveTargetFullPath();
+	protected IFile getProjectExecutableArtifact(IProject project) throws CommonException {
+		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
+		if(buildInfo == null) throw new CommonException("No project build info available.");
+		
+		BuildTarget buildTarget = buildInfo.getDefaultBuildTarget();
+		Path targetFilePath = buildTarget.getBuildConfig().getArtifactPath();
+		if(targetFilePath == null) return null;
 		
 		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}

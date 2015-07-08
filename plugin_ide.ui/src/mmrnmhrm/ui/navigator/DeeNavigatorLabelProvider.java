@@ -112,7 +112,7 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	@Override
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		DubBundleDescription bundleInfo = DeeCore.getWorkspaceModel().getBundleInfo(element.getProject());
+		DubBundleDescription bundleInfo = DeeCore.getDeeBundleModel().getBundleInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}

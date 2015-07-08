@@ -49,23 +49,26 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.workspace.DubModelManager.WorkspaceModelManagerTask;
+import mmrnmhrm.core.workspace.DeeBundleModelManager.WorkspaceModelManagerTask;
 
 /**
- * Updates a {@link DubWorkspaceModel} when resource changes occur, using 'dub describe'.
+ * Updates a {@link DeeBundleModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class DubModelManager extends BundleModelManager {
+public class DeeBundleModelManager extends BundleModelManager {
 	
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
-	protected final DubWorkspaceModel model;
-	
 //	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
 	
-	public DubModelManager(DubWorkspaceModel model) {
-		this.model = model;
+	public DeeBundleModelManager(DeeBundleModel model) {
+		super(model);
+	}
+	
+	@Override
+	public DeeBundleModel getModel() {
+		return (DeeBundleModel) super.getModel();
 	}
 	
 	public DeeToolManager getProcessManager() {
@@ -90,8 +93,8 @@ public class DubModelManager extends BundleModelManager {
 	}
 	
 	@Override
-	public DubBundleDescription getProjectInfo(IProject project) {
-		return model.getBundleInfo(project);
+	public DubBundleInfo getProjectInfo(IProject project) {
+		return getModel().getProjectInfo(project);
 	}
 	
 	@Override
@@ -111,12 +114,13 @@ public class DubModelManager extends BundleModelManager {
 	
 	@Override
 	protected void bundleProjectRemoved(IProject project) {
-		removeProjectModel(project);
+		/* FIXME: BUG here: updates to model should only occur in model agent. */
+		model.removeProjectInfo(project);
 	}
 	
 	protected void beginProjectDescribeUpdate(final IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
-		DubProjectInfo unresolvedProjectInfo = addProjectInfo(project, unresolvedDescription);
+		DubBundleInfo unresolvedProjectInfo = addProjectInfo(project, unresolvedDescription);
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
@@ -137,16 +141,11 @@ public class DubModelManager extends BundleModelManager {
 		}
 	}
 	
-	protected final DubProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription) {
+	protected final DubBundleInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription) {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
-		return model.addProjectInfo(project, dubBundleDescription, compilerInstall);
-	}
-	
-	protected final void removeProjectModel(IProject project) {
-		/*BUG here: updates to model should only occur in model agent. */
-		model.removeProjectInfo(project);
+		return getModel().addProjectInfo(project, dubBundleDescription, compilerInstall);
 	}
 	
 	public void syncPendingUpdates() {
@@ -164,14 +163,15 @@ public class DubModelManager extends BundleModelManager {
 	
 	protected abstract class WorkspaceModelManagerTask implements Runnable {
 		
-		protected final DubModelManager workspaceModelManager;
+		protected final DeeBundleModelManager workspaceModelManager;
 		
 		public WorkspaceModelManagerTask() {
-			this.workspaceModelManager = DubModelManager.this;
+			this.workspaceModelManager = DeeBundleModelManager.this;
 		}
 		
-		protected DubWorkspaceModel getModel() {
-			return model;
+		protected DeeBundleModel getModel() {
+			return getModel(); /*FIXME: BUG here*/
+//			return DeeBundleModelManager.this.getModel();
 		}
 		
 		protected void logInternalError(CoreException ce) {
@@ -186,11 +186,11 @@ public class DubModelManager extends BundleModelManager {
 class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements IRunnableWithJob {
 	
 	protected final IProject project;
-	protected final DubProjectInfo unresolvedProjectInfo;
+	protected final DubBundleInfo unresolvedProjectInfo;
 	protected final  DubBundleDescription unresolvedDescription;
 	
-	protected ProjectModelDubDescribeTask(DubModelManager dubModelManager, IProject project, 
-			DubProjectInfo unresolvedProjectInfo) {
+	protected ProjectModelDubDescribeTask(DeeBundleModelManager dubModelManager, IProject project, 
+			DubBundleInfo unresolvedProjectInfo) {
 		super(dubModelManager);
 		this.project = project;
 		this.unresolvedProjectInfo = unresolvedProjectInfo;
@@ -240,7 +240,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected void deleteDubMarkers(IProject project) throws CoreException {
-		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+		IMarker[] markers = DeeBundleModelManager.getDubErrorMarkers(project);
 		for (IMarker marker : markers) {
 			marker.delete();
 		}
@@ -251,7 +251,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	protected void setDubErrorMarker(IProject project, String message) throws CoreException {
-		IMarker dubMarker = project.createMarker(DubModelManager.DUB_PROBLEM_ID);
+		IMarker dubMarker = project.createMarker(DeeBundleModelManager.DUB_PROBLEM_ID);
 		dubMarker.setAttribute(IMarker.MESSAGE, message);
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}
@@ -336,7 +336,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		DubBundle main = unresolvedDescription.getMainBundle();
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
-		workspaceModelManager.model.addProjectInfo(project, bundleDesc, unresolvedProjectInfo.compilerInstall);
+		workspaceModelManager.getModel().addProjectInfo(project, bundleDesc, unresolvedProjectInfo.compilerInstall);
 		
 		setDubErrorMarker(project, dubError);
 	}
@@ -345,7 +345,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 
 abstract class ProjectUpdateBuildpathTask extends WorkspaceModelManagerTask {
 	
-	protected ProjectUpdateBuildpathTask(DubModelManager dubModelManager) {
+	protected ProjectUpdateBuildpathTask(DeeBundleModelManager dubModelManager) {
 		dubModelManager.super();
 	}
 	

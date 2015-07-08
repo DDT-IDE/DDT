@@ -21,7 +21,7 @@ import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 
-public class WorkspaceViewModelTest extends AbstractDubModelManagerTest {
+public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";

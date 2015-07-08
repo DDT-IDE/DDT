@@ -31,7 +31,7 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 			testBuilder();
 			
 			// Await buildpath update, to prevent logging of error.
-			DeeCore.getWorkspaceModelManager().syncPendingUpdates();
+			DeeCore.getDeeBundleModelManager().syncPendingUpdates();
 		}
 	}
 	

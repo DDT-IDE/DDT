@@ -16,15 +16,6 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.engine.ErrorElement;
-import melnorme.lang.tooling.engine.OverloadedNamedElement;
-import melnorme.lang.tooling.engine.PickedElement;
-import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
-import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.Collection2;
-
 import org.junit.Test;
 
 import dtool.ast.definitions.DefUnit;
@@ -40,6 +31,13 @@ import dtool.engine.analysis.templates.TemplateParameterAnalyser.NotInstantiated
 import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.engine.util.NamedElementUtil;
 import dtool.parser.SourceEquivalenceChecker;
+import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.ErrorElement;
+import melnorme.lang.tooling.engine.OverloadedNamedElement;
+import melnorme.lang.tooling.engine.PickedElement;
+import melnorme.lang.tooling.engine.completion.CompletionScopeLookup;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 
 public class Template_SemanticsTest extends NamedElement_CommonTest {
@@ -77,7 +75,7 @@ public class Template_SemanticsTest extends NamedElement_CommonTest {
 	
 	
 	
-	public static void checkNamedElements(Collection2<INamedElement> originalElements, String... expectedResults) {
+	public static void checkNamedElements(Iterable<INamedElement> originalElements, String... expectedResults) {
 		new DefUnitResultsChecker(originalElements).checkNamedElements(expectedResults);
 	}
 	

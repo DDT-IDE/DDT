@@ -17,19 +17,19 @@ import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
-import melnorme.lang.ide.core.project_model.ProjectBasedModel;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.utilbox.misc.SimpleLogger;
 
 /**
  * DUB model. Holds information about DUB bundles, for the projects in the workspace.
- * Designed to be managed concurrently by some other code (see {@link DubModelManager}).
+ * Designed to be managed concurrently by some other code (see {@link DeeBundleModelManager}).
  * Can notify listeners of updates. 
  */
-public class DubWorkspaceModel extends ProjectBasedModel<DubProjectInfo, IDubModelListener> {
+public class DeeBundleModel extends LangBundleModel<DubBundleInfo> {
 	
-	protected final SimpleLogger log = DubModelManager.log;
+	protected final SimpleLogger log = DeeBundleModelManager.log;
 	
-	public DubWorkspaceModel() {
+	public DeeBundleModel() {
 	}
 	
 	@Override
@@ -38,12 +38,19 @@ public class DubWorkspaceModel extends ProjectBasedModel<DubProjectInfo, IDubMod
 	}
 	
 	@Override
-	public DubProjectInfo getProjectInfo(IProject project) {
+	public DubBundleInfo getProjectInfo(IProject project) {
 		return super.getProjectInfo(project);
 	}
 	
+	@Override
+	public DubBundleInfo removeProjectInfo(IProject project) {
+		return super.removeProjectInfo(project);
+	}
+	
+	/* -----------------  ----------------- */
+	
 	public synchronized DubBundleDescription getBundleInfo(IProject project) {
-		DubProjectInfo projectInfo = getProjectInfo(project);
+		DubBundleInfo projectInfo = getProjectInfo(project);
 		return projectInfo == null ? null : projectInfo.getBundleDesc();
 	}
 	
@@ -51,15 +58,9 @@ public class DubWorkspaceModel extends ProjectBasedModel<DubProjectInfo, IDubMod
 		return new HashSet<>(projectInfos.keySet());
 	}
 	
-	protected synchronized DubProjectInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
+	protected synchronized DubBundleInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription, 
 			CompilerInstall compilerInstall) {
-		DubProjectInfo newProjectInfo = new DubProjectInfo(compilerInstall, dubBundleDescription);
-		return setProjectInfo(project, newProjectInfo);
-	}
-	
-	@Override
-	public DubProjectInfo removeProjectInfo(IProject project) {
-		return super.removeProjectInfo(project);
+		return setProjectInfo(project, new DubBundleInfo(compilerInstall, dubBundleDescription));
 	}
 	
 }

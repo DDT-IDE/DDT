@@ -10,9 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
+import mmrnmhrm.core.workspace.DeeBundleModel;
+import mmrnmhrm.core.workspace.DeeBundleModelManager;
 
 public class LangCore_Actual {
 	
@@ -28,13 +31,14 @@ public class LangCore_Actual {
 	public static DeeToolManager createToolManagerSingleton() {
 		return new DeeToolManager();
 	}
-	
 	public static DeeEngineClient createEngineClient() {
 		return new DeeEngineClient();
 	}
-	
+	public static DeeBundleModelManager createBundleModelManager() {
+		return new DeeBundleModelManager(new DeeBundleModel());
+	}
 	public static DeeBuildManager createBuildManager() {
-		return new DeeBuildManager();
+		return new DeeBuildManager(DeeCore.getDeeBundleModel());
 	}
 	
 }

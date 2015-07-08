@@ -27,21 +27,33 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.workspace.DubModelManager;
+import mmrnmhrm.core.workspace.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
+	
+	protected final String configuration;
+	protected final String buildType;
 	
 	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
 			BuildTarget buildTarget, boolean fullBuild) {
 		super(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+		
+		String targetName = buildTarget.getTargetName();
+		configuration = StringUtil.emptyAsNull(StringUtil.substringUntilMatch(targetName, ":"));
+		buildType = StringUtil.segmentAfterMatch(targetName, ":");
 	}
 	
 	protected String getConfiguration() {
-		return null; // TODO
+		return configuration;
+	}
+	
+	public String getBuildType() {
+		return buildType;
 	}
 	
 	@Override
@@ -60,8 +72,8 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 			commands.addElements("-c" , getConfiguration());
 		}
 		
-		if(getBuildTargetName() != null) {
-			commands.addElements("-b" , getBuildTargetName());
+		if(getBuildType() != null) {
+			commands.addElements("-b" , getBuildType());
 		}
 		
 		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
@@ -96,7 +108,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 		String errorMessage = 
 				dubErrorLine == null ? DeeCoreMessages.RunningDubBuild_Error : dubErrorLine;
 		
-		IMarker dubMarker = getProject().createMarker(DubModelManager.DUB_PROBLEM_ID);
+		IMarker dubMarker = getProject().createMarker(DeeBundleModelManager.DUB_PROBLEM_ID);
 		dubMarker.setAttribute(IMarker.MESSAGE, errorMessage);
 		dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 	}

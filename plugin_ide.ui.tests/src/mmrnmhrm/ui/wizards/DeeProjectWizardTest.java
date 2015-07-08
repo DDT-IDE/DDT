@@ -26,7 +26,7 @@ public class DeeProjectWizardTest extends LangProjectWizardTest {
 	@Override
 	@After
 	public void tearDown() throws Exception {
-		DeeCore.getWorkspaceModelManager().syncPendingUpdates(); // ensure DUB process finished
+		DeeCore.getDeeBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
 		super.tearDown();
 	}
 	

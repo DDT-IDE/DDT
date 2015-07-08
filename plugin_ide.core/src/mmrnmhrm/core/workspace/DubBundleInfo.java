@@ -11,19 +11,24 @@
 package mmrnmhrm.core.workspace;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+
+import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
+import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
-public class DubProjectInfo {
+public class DubBundleInfo extends AbstractBundleInfo {
 	
 	protected final CompilerInstall compilerInstall; 
 	protected final DubBundleDescription bundleDesc;
 	
-	public DubProjectInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
+	public DubBundleInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
 		this.compilerInstall = assertNotNull(compilerInstall);
 		this.bundleDesc = assertNotNull(bundleDesc);
 	}
@@ -39,6 +44,18 @@ public class DubProjectInfo {
 	public DubDependenciesContainer getDubContainer(IProject project) {
 		DubBundleDescription bundleInfo = getBundleDesc();
 		return new DubDependenciesContainer(bundleInfo, project);
+	}
+	
+	@Override
+	public Path getEffectiveTargetFullPath() {
+		return getBundleDesc().getMainBundle().getEffectiveTargetFullPath();
+	}
+	
+	@Override
+	public Indexable<BuildConfiguration> getBuildConfigurations() {
+		return ArrayList2.create(
+			new BuildConfiguration(null, getEffectiveTargetFullPath())
+		);
 	}
 	
 }

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
@@ -28,9 +29,8 @@ import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.DubProjectInfo;
-import mmrnmhrm.core.workspace.DubWorkspaceModel;
-import mmrnmhrm.core.workspace.IDubModelListener;
+import mmrnmhrm.core.workspace.DeeBundleModel;
+import mmrnmhrm.core.workspace.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -41,8 +41,8 @@ import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
 public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
-	public static DubWorkspaceModel getWorkspaceModel() {
-		return DeeCore.getWorkspaceModel();
+	public static DeeBundleModel getWorkspaceModel() {
+		return DeeCore.getDeeBundleModel();
 	}
 	
 	protected final DubNavigatorModelListener listener = new DubNavigatorModelListener();
@@ -61,10 +61,11 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		super.dispose();
 	}
 	
-	protected class DubNavigatorModelListener extends NavigatorModelListener implements IDubModelListener {
+	protected class DubNavigatorModelListener extends NavigatorModelListener 
+		implements IProjectModelListener<DubBundleInfo> {
 		
 		@Override
-		public void notifyUpdateEvent(UpdateEvent<DubProjectInfo> updateEvent) {
+		public void notifyUpdateEvent(UpdateEvent<DubBundleInfo> updateEvent) {
 			viewerRefreshThrottleJob.scheduleRefreshJob();
 		}
 		
@@ -108,7 +109,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 			
 			@Override
 			public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) {
-				DubProjectInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
+				DubBundleInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
 				if(projectInfo != null) {
 					DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 					projectChildren.add(dubContainer);

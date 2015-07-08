@@ -10,33 +10,30 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
+import org.osgi.framework.BundleContext;
+
 import melnorme.lang.ide.core.LangCore;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.workspace.DubModelManager;
-import mmrnmhrm.core.workspace.DubWorkspaceModel;
-
-import org.osgi.framework.BundleContext;
+import mmrnmhrm.core.workspace.DeeBundleModel;
+import mmrnmhrm.core.workspace.DeeBundleModelManager;
 
 public class DeeCore extends LangCore {
 	
-	protected static final DubWorkspaceModel dubModel = new DubWorkspaceModel();
-	protected static final DubModelManager modelManager = new DubModelManager(dubModel);
-	
-	public static DeeToolManager getDubProcessManager() {
-		return getWorkspaceModelManager().getProcessManager();
-	}
-	
-	public static DubWorkspaceModel getWorkspaceModel() {
-		return dubModel;
-	}
-	
-	public static DubModelManager getWorkspaceModelManager() {
-		return modelManager;
-	}
-	
 	public static DeeEngineClient getDToolClient() {
 		return (DeeEngineClient) getEngineClient();
+	}
+	
+	public static DeeBundleModelManager getDeeBundleModelManager() {
+		return (DeeBundleModelManager) getBundleModelManager();
+	}
+	
+	public static DeeToolManager getDubProcessManager() {
+		return getDeeBundleModelManager().getProcessManager();
+	}
+	
+	public static DeeBundleModel getDeeBundleModel() {
+		return getDeeBundleModelManager().getModel();
 	}
 	
 	@Override
@@ -44,13 +41,7 @@ public class DeeCore extends LangCore {
 	}
 	
 	@Override
-	public void doInitializeAfterUIStart() {
-		modelManager.startManager(); // Start this after UI, to allow UI listener to register.
-	}
-	
-	@Override
 	protected void doCustomStop(BundleContext context) {
-		modelManager.shutdownManager();
 	}
 	
 }

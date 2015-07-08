@@ -95,7 +95,7 @@ abstract class JsHelpers extends CommonDeeWorkspaceTest {
 /**
  * Utilities for manipulation of Dub projects
  */
-public abstract class AbstractDubModelManagerTest extends JsHelpers {
+public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	
 	protected static final Location ECLIPSE_WORKSPACE_PATH = ResourceUtils.getWorkspaceLocation();
 	
@@ -131,17 +131,17 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	}
 	
 	protected static ITaskAgent getModelAgent() {
-		return DeeCore.getWorkspaceModelManager().internal_getModelAgent();
+		return DeeCore.getDeeBundleModelManager().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		DeeCore.getWorkspaceModelManager().syncPendingUpdates();
+		DeeCore.getDeeBundleModelManager().syncPendingUpdates();
 	}
 	
-	protected static final DubWorkspaceModel model = getModelManager().model;
+	protected static final DeeBundleModel model = getModelManager().getModel();
 	
-	protected static DubModelManager getModelManager() {
-		return DeeCore.getWorkspaceModelManager();
+	protected static DeeBundleModelManager getModelManager() {
+		return DeeCore.getDeeBundleModelManager();
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
@@ -180,7 +180,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		DeeCore.getWorkspaceModelManager().syncPendingUpdates();
+		DeeCore.getDeeBundleModelManager().syncPendingUpdates();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		if(unresolvedDubBundle.hasErrors()) {
@@ -205,7 +205,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 	/* ----------------- result checking code ----------------- */
 	
 	protected IMarker getDubErrorMarker(IProject project) throws CoreException {
-		IMarker[] markers = DubModelManager.getDubErrorMarkers(project);
+		IMarker[] markers = DeeBundleModelManager.getDubErrorMarkers(project);
 		if(markers.length == 0)
 			return null;
 		
@@ -229,7 +229,7 @@ public abstract class AbstractDubModelManagerTest extends JsHelpers {
 		
 //		checkResolvedBuildpath(dubProject.getResolvedBuildpath(false), expMainBundle.sourceFolders);
 		
-		IMarker[] dubErrorMarkers = DubModelManager.getDubErrorMarkers(project);
+		IMarker[] dubErrorMarkers = DeeBundleModelManager.getDubErrorMarkers(project);
 		assertTrue(dubErrorMarkers.length == 0);
 	}
 	

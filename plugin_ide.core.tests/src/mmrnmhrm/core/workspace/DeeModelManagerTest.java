@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
 package mmrnmhrm.core.workspace;
 
 import static dtool.dub.CommonDubTest.ERROR_DUB_RETURNED_NON_ZERO;
@@ -25,12 +35,12 @@ import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
 import dtool.tests.CommonDToolTest;
 
-public class WorkspaceModelManagerTest extends AbstractDubModelManagerTest {
+public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 	
 	@Test
 	public void testShutdown() throws Exception { testShutdown$(); }
 	public void testShutdown$() throws Exception {
-		DubModelManager dmm = new DubModelManager(new DubWorkspaceModel()); 
+		DeeBundleModelManager dmm = new DeeBundleModelManager(new DeeBundleModel()); 
 		dmm.initializeModelManager();
 		final CountDownLatch latch = new CountDownLatch(1);
 		

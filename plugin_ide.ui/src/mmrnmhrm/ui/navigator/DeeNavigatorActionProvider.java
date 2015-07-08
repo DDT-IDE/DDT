@@ -66,7 +66,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 			Object selElement = getSelectionFirstElement();
 			if(selElement instanceof IProject) {
 				IProject project = (IProject) selElement;
-				if(DeeCore.getWorkspaceModel().getBundleInfo(project) != null) {
+				if(DeeCore.getBundleModel().getProjectInfo(project) != null) {
 					return project;
 				}
 				return null;
@@ -87,7 +87,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 			@Override
 			public void run() {
 				IProject project = getDubProjectFromSelection();
-				DeeToolManager dubMgr = DeeCore.getWorkspaceModelManager().getProcessManager();
+				DeeToolManager dubMgr = DeeCore.getDeeBundleModelManager().getProcessManager();
 				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
 				dubMgr.submitTask(dubMgr.newRunProcessOperation(
