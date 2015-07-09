@@ -11,20 +11,16 @@
 package mmrnmhrm.core.launch;
 
 
-import melnorme.lang.ide.launching.AbstractLangLaunchConfigurationDelegate;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.Launch;
-import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
-/**
- * D {@link LaunchConfigurationDelegate}, based on DLTK properties. 
- */
-public class DeeLaunchConfigurationDelegate extends AbstractLangLaunchConfigurationDelegate {
+import melnorme.lang.ide.launching.LangLaunchConfigurationDelegate;
+
+public class DeeLaunchConfigurationDelegate extends LangLaunchConfigurationDelegate {
 	
 	@Override
 	protected ILaunch getLaunchForRunMode(ILaunchConfiguration configuration, String mode) throws CoreException {
@@ -41,11 +37,6 @@ public class DeeLaunchConfigurationDelegate extends AbstractLangLaunchConfigurat
 		workingCopy.removeAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID);
 //		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_DEBUG_CONSOLE, false);
 //		workingCopy.setAttribute(ScriptLaunchConfigurationConstants.ATTR_USE_INTERACTIVE_CONSOLE, false);
-	}
-	
-	@Override
-	protected ILaunch getLaunchForDebugMode(ILaunchConfiguration configuration, String mode) throws CoreException {
-		throw abort_UnsupportedMode(mode);
 	}
 	
 }
