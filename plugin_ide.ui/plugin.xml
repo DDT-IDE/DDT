@@ -393,7 +393,7 @@
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
 		<launchConfigurationTypeImage
 			configTypeID="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
-			icon="$nl$/icons/action16e/d_app_launch.png"
+			icon="icons/actions/application_launch.png"
 			id="org.dsource.ddt.ide.ui.launchConfigurationTypeImage1">
 		</launchConfigurationTypeImage>
 	</extension>
@@ -401,9 +401,9 @@
 	<extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
 		<launchConfigurationTabGroup
 			class="org.dsource.ddt.ui.tabgroup.DeeTabGroup"
-			description="%LangTabGroup.description"
 			id="org.dsource.ddt.ide.ui.launchConfigurationTabGroup1"
-			type="org.dsource.ddt.ide.core.deeLaunchConfigurationType">
+			type="org.dsource.ddt.ide.core.deeLaunchConfigurationType"
+			description="%LangTabGroup.description">
 		</launchConfigurationTabGroup>
 	</extension>
 	
@@ -411,7 +411,7 @@
       <shortcut
             class="mmrnmhrm.ui.launch.DeeLaunchShortcut"
             description="%LangLaunchShortcut.description"
-            icon="$nl$/icons/action16e/d_app_launch.png"
+            icon="icons/actions/application_launch.png"
             id="org.dsource.ddt.ide.ui.launch.launchShortcut"
             label="%LangLaunchShortcut.name"
             modes="run, debug">

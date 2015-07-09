@@ -157,7 +157,7 @@ public class OverlayPreferenceStore implements IPreferenceStore {
 			propagateProperty(fStore, fOverlayKeys[i], fParent);
 	}
 
-	private void loadProperty(IPreferenceStore orgin, OverlayKey key,
+	protected void loadProperty(IPreferenceStore orgin, OverlayKey key,
 			IPreferenceStore target, boolean forceInitialization) {
 		TypeDescriptor d = key.fDescriptor;
 		if (BOOLEAN == d) {
