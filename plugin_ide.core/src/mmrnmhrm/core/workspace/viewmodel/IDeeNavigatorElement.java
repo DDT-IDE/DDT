@@ -8,9 +8,8 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.navigator;
+package mmrnmhrm.core.workspace.viewmodel;
 
+public interface IDeeNavigatorElement {
 
-public interface INavigatorElement {
-	
 }

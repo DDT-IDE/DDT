@@ -12,8 +12,6 @@ package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -107,7 +105,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 			}
 			
 			@Override
-			public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) {
+			public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) {
 				DubBundleInfo projectInfo = getBundleModel().getProjectInfo(project);
 				if(projectInfo != null) {
 					DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);

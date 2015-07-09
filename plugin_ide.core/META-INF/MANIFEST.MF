@@ -21,7 +21,6 @@ Require-Bundle: org.dsource.ddt.dtool;bundle-version="[0.12.0,0.13.0)";visibilit
 Bundle-ClassPath: .
 Export-Package: melnorme.lang.ide.core,
  melnorme.lang.ide.core.engine,
- melnorme.lang.ide.core.navigator,
  melnorme.lang.ide.core.operations,
  melnorme.lang.ide.core.operations.build,
  melnorme.lang.ide.core.project_model,

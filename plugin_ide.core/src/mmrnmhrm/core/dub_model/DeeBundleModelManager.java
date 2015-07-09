@@ -57,7 +57,7 @@ import mmrnmhrm.core.engine.DeeToolManager;
  * Updates a {@link DeeBundleModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
+public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, DeeBundleModel> {
 	
 	public static class DeeBundleModel extends LangBundleModel<DubBundleInfo> {
 		
@@ -96,9 +96,14 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		model.removeProjectInfo(project);
 	}
 	
-	protected void beginProjectDescribeUpdate(final IProject project) {
+	@Override
+	protected DubBundleInfo createNewInfo(IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
-		DubBundleInfo unresolvedProjectInfo = addProjectInfo(project, unresolvedDescription);
+		return addProjectInfo(project, unresolvedDescription);
+	}
+	
+	protected void beginProjectDescribeUpdate(final IProject project) {
+		DubBundleInfo unresolvedProjectInfo = createNewInfo(project);
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
