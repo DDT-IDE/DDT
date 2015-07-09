@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace;
+package mmrnmhrm.core.dub_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -16,11 +16,13 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
 
+import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
 public class DubBundleInfo extends AbstractBundleInfo {
@@ -41,20 +43,29 @@ public class DubBundleInfo extends AbstractBundleInfo {
 		return bundleDesc;
 	}
 	
+	public DubBundle getMainBundle() {
+		return getBundleDesc().getMainBundle();
+	}
+	
 	public DubDependenciesContainer getDubContainer(IProject project) {
 		DubBundleDescription bundleInfo = getBundleDesc();
 		return new DubDependenciesContainer(bundleInfo, project);
 	}
 	
 	@Override
-	public Path getEffectiveTargetFullPath() {
+	public Path getEffectiveTargetFullPath() throws CommonException {
 		return getBundleDesc().getMainBundle().getEffectiveTargetFullPath();
 	}
 	
 	@Override
 	public Indexable<BuildConfiguration> getBuildConfigurations() {
 		return ArrayList2.create(
-			new BuildConfiguration(null, getEffectiveTargetFullPath())
+			new BuildConfiguration(null, null) {
+				@Override
+				public Path getArtifactPath() throws CommonException {
+					return getEffectiveTargetFullPath();
+				};
+			}
 		);
 	}
 	

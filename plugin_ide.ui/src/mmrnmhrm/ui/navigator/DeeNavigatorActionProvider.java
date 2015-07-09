@@ -21,6 +21,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -66,7 +67,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 			Object selElement = getSelectionFirstElement();
 			if(selElement instanceof IProject) {
 				IProject project = (IProject) selElement;
-				if(DeeCore.getBundleModel().getProjectInfo(project) != null) {
+				if(LangCore.getBundleModel().getProjectInfo(project) != null) {
 					return project;
 				}
 				return null;

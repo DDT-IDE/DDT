@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace;
+package mmrnmhrm.core.dub_model;
 
 import static dtool.dub.CommonDubTest.ERROR_DUB_RETURNED_NON_ZERO;
 import static dtool.dub.CommonDubTest.bundle;
@@ -17,13 +17,6 @@ import static dtool.dub.CommonDubTest.paths;
 import static dtool.dub.CommonDubTest.rawDeps;
 import static dtool.dub.DubBundle.DEFAULT_VERSION;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-
-import melnorme.utilbox.concurrency.LatchRunnable;
-import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
 
 import org.eclipse.core.resources.IProject;
 import org.junit.Test;
@@ -34,28 +27,10 @@ import dtool.dub.DubBundleDescription;
 import dtool.dub.DubManifestParser;
 import dtool.dub.DubManifestParserTest;
 import dtool.tests.CommonDToolTest;
+import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.misc.Location;
 
 public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
-	
-	@Test
-	public void testShutdown() throws Exception { testShutdown$(); }
-	public void testShutdown$() throws Exception {
-		DeeBundleModelManager dmm = new DeeBundleModelManager(new DeeBundleModel()); 
-		dmm.initializeModelManager();
-		final CountDownLatch latch = new CountDownLatch(1);
-		
-		dmm.getModelAgent().submit(new Callable<Void>() {
-			@Override
-			public Void call() throws Exception {
-				latch.countDown();
-				new CountDownLatch(1).await(); // wait until interrupted
-				throw DeeCore.createCoreException("error", new Exception());
-			}
-		});
-		latch.await();
-		// Test that shutdown happens successfully even with pending task, and no log entries are made.
-		dmm.shutdownManager(); 
-	}
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
@@ -73,7 +48,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		deleteProject(DUB_TEST); // In case drop-to-frame is used during debugging.
 		_awaitModelUpdates_();
 		
-		assertTrue(model.getBundleInfo(project(DUB_TEST)) == null);
+		assertTrue(model.getProjectInfo(project(DUB_TEST)) == null);
 		
 		IProject project;
 		long taskCount;
@@ -86,7 +61,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
-		assertTrue(model.getBundleInfo(project) == null);
+		assertTrue(model.getProjectInfo(project) == null);
 		latchRunnable.releaseAll();
 		
 		// Ensure non-d projects dont provoke updates
@@ -98,24 +73,23 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		project = createAndOpenDeeProject(DUB_TEST, true);
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(model.getBundleInfo(project) == null);
+		assertTrue(model.getProjectInfo(project) == null);
 		
 		// Test concurrency: updating a project that was removed in the meantime
 		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, 
 			"{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
-		assertTrue(model.getBundleInfo(project) != null);
+		assertTrue(model.getProjectInfo(project) != null);
 		project.delete(true, null);
 		preUpdateLatch.releaseAll();
 		_awaitModelUpdates_();
-		assertTrue(model.getBundleInfo(project) == null);
+		assertTrue(model.getProjectInfo(project) == null);
 		
 		_awaitModelUpdates_();
 		// Run sequence of workspace model tests
 		project = createAndOpenDeeProject(DUB_TEST, true);
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
-		assertTrue(model.getBundleInfo(project) == null);
 		assertTrue(model.getProjectInfo(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.

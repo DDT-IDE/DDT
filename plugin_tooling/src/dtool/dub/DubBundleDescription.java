@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import melnorme.lang.tooling.IBundleInfo;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundle.DubDependecyRef;
 
@@ -25,7 +24,7 @@ import dtool.dub.DubBundle.DubDependecyRef;
  * A resolved DUB bundle description. 
  * This is usually derived from running the DUB describe tool, and as such it can be incomplete and have errors.  
  */
-public class DubBundleDescription implements IBundleInfo {
+public class DubBundleDescription {
 	
 	public static final String BUNDLE_NAME_ERROR = "<error_undefined>";
 	

@@ -33,10 +33,10 @@ Export-Package: melnorme.lang.ide.core,
  melnorme.lang.ide.launching,
  mmrnmhrm.core,
  mmrnmhrm.core.build,
+ mmrnmhrm.core.dub_model,
  mmrnmhrm.core.engine,
  mmrnmhrm.core.launch,
  mmrnmhrm.core.text,
- mmrnmhrm.core.workspace,
  mmrnmhrm.core.workspace.viewmodel,
  org.dsource.ddt.ide.core
 Eclipse-ExtensibleAPI: true

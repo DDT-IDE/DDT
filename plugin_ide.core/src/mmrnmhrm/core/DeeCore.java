@@ -13,10 +13,10 @@ package mmrnmhrm.core;
 import org.osgi.framework.BundleContext;
 
 import melnorme.lang.ide.core.LangCore;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.workspace.DeeBundleModel;
-import mmrnmhrm.core.workspace.DeeBundleModelManager;
 
 public class DeeCore extends LangCore {
 	

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace;
+package mmrnmhrm.core.dub_model;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -17,17 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedList;
-
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.utilbox.concurrency.ITaskAgent;
-import melnorme.utilbox.concurrency.LatchRunnable;
-import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
-import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
-import mmrnmhrm.core.workspace.viewmodel.IDubElement;
-import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -39,6 +28,17 @@ import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.Location;
+import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
+import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
+import mmrnmhrm.core.workspace.viewmodel.IDubElement;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 
 abstract class JsHelpers extends CommonDeeWorkspaceTest {
@@ -106,7 +106,6 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	private static void initDubRepositoriesPath() {
 		DubDescribeParserTest.initDubRepositoriesPath();
 		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
-		DeeCore.getInstance().doInitializeAfterUIStart();
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
@@ -145,7 +144,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
-		return assertNotNull(model.getBundleInfo(project));
+		return assertNotNull(model.getProjectInfo(project)).getBundleDesc();
 	}
 	
 	public static DubDependenciesContainer getDubContainer(IProject project) {

@@ -10,8 +10,11 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static dtool.dub.DubBundle.DEFAULT_VERSION;
+
 import java.nio.file.Path;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
@@ -41,15 +44,15 @@ public class DubManifestParserTest extends CommonDubTest {
 			rawDeps("foo_lib", "other_lib")));
 		
 		
-		testPath(DUB_TEST_BUNDLES.resolve_fromValid("XptoBundle"), 
+		testPath(parseDubBundle(DUB_TEST_BUNDLES.resolve_fromValid("XptoBundle")), 
 			"bin", path("bin/xptobundle" + DubBundle.getExecutableSuffix()));
-
-		testPath(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"), 
+		
+		testPath(parseDubBundle(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib")), 
 			null, path("bar_lib" + DubBundle.getExecutableSuffix()));
 	}
 	
-	protected void testPath(Location location, String targetPath, Path expectedEffectiveFullPath) {
-		DubBundle xptoBundle = parseDubBundle(location);
+	protected void testPath(DubBundle xptoBundle, String targetPath, Path expectedEffectiveFullPath) 
+			throws CommonException {
 		assertAreEqual(xptoBundle.getTargetPath(), targetPath);
 		assertAreEqual(xptoBundle.getEffectiveTargetFullPath(), expectedEffectiveFullPath);
 	}
@@ -68,6 +71,22 @@ public class DubManifestParserTest extends CommonDubTest {
 	public void testNonExistant$() throws Exception {
 		testBundle(bundle(DToolTestResources.getTestResourceLoc("dub").resolve_fromValid("nonExistent"), 
 			"java.io.FileNotFoundException", IGNORE_STR, IGNORE_STR, null));
+	}
+	
+	protected static final BundlePath SAMPLE_BUNDLE_PATH = new BundlePath(DUB_TEST_BUNDLES);
+	
+	@Test
+	public void testBadPath() throws Exception { testBadPath$(); }
+	public void testBadPath$() throws Exception {
+		DubBundle bundle = new DubBundle(SAMPLE_BUNDLE_PATH, "<undefined>", null, DEFAULT_VERSION, 
+			strings("s:rc??>"), null, null, null, null, null);
+		
+		verifyThrows(() -> bundle.getEffectiveTargetFullPath(), CommonException.class, "Invalid");
+		
+		DubBundle bundle2 = new DubBundle(SAMPLE_BUNDLE_PATH, "<undefined>", null, DEFAULT_VERSION, 
+			null, paths("src"), null, null, null, "<invalid:_path>");
+		
+		verifyThrows(() -> bundle2.getEffectiveTargetFullPath(), CommonException.class, "Invalid");
 	}
 	
 }

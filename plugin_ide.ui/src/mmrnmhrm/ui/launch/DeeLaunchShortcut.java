@@ -21,6 +21,7 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 
@@ -32,15 +33,11 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 	}
 	
 	@Override
-	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) {
+	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) 
+			throws CommonException, OperationCancellation {
 		IProject project = (IProject) resource.getProject();
 		
-		try {
-			resource = getProjectExecutableArtifact(project);
-		} catch(CommonException e) {
-			LangCore.logError(e);
-			return null;
-		}
+		resource = getProjectExecutableArtifact(project);
 		if(resource == null) {
 			return null;
 		}

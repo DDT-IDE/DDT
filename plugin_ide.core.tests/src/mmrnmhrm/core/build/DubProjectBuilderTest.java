@@ -10,13 +10,17 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
-import melnorme.lang.ide.core.tests.CommonCoreTest;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.tests.SampleProject;
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.tests.CommonCoreTest;
+import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.tests.SampleProject;
 
 public class DubProjectBuilderTest extends CommonCoreTest {
 	
@@ -25,9 +29,12 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		try(SampleProject project = new SampleProject(getClass().getSimpleName())) {
-			sampleProj = project;
+		try(SampleProject sampleProj_ = new SampleProject(getClass().getSimpleName())) {
+			sampleProj = sampleProj_;
+			IProject project = sampleProj.getProject();
 			
+			assertTrue(LangCore.getBundleModel().getProjectInfo(project) != null);
+			assertTrue(LangCore.getBuildManager().getBuildInfo(project) != null);
 			testBuilder();
 			
 			// Await buildpath update, to prevent logging of error.

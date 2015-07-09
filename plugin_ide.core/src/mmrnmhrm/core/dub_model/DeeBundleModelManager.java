@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace;
+package mmrnmhrm.core.dub_model;
 
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
@@ -36,6 +36,7 @@ import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
@@ -48,53 +49,30 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.WorkspaceModelManagerTask;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.workspace.DeeBundleModelManager.WorkspaceModelManagerTask;
 
 /**
  * Updates a {@link DeeBundleModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class DeeBundleModelManager extends BundleModelManager {
+public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
+	public static class DeeBundleModel extends LangBundleModel<DubBundleInfo> {
+		
+	}
+	
+	/* -----------------  ----------------- */
 	
 	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
 	
-//	protected final SearchAndAddCompilersOnPathJob compilerSearchJob = new SearchAndAddCompilersOnPathJob();
-	
-	public DeeBundleModelManager(DeeBundleModel model) {
-		super(model);
-	}
-	
-	@Override
-	public DeeBundleModel getModel() {
-		return (DeeBundleModel) super.getModel();
+	public DeeBundleModelManager() {
+		super(new DeeBundleModel());
 	}
 	
 	public DeeToolManager getProcessManager() {
 		return (DeeToolManager) LangCore.getToolManager();
-	}
-	
-//	public SearchAndAddCompilersOnPathJob getCompilersSearchJob() {
-//		return compilerSearchJob;
-//	}
-	
-	@Override
-	protected void initializeModelManager() {
-//		// First of all, search for compilers on the path
-//		compilerSearchJob.schedule();
-//		try {
-//			compilerSearchJob.join();
-//		} catch (InterruptedException ie) {
-//			// continue, we should still run rest of initialization
-//		}
-		
-		super.initializeModelManager();
-	}
-	
-	@Override
-	public DubBundleInfo getProjectInfo(IProject project) {
-		return getModel().getProjectInfo(project);
 	}
 	
 	@Override
@@ -145,7 +123,7 @@ public class DeeBundleModelManager extends BundleModelManager {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
-		return getModel().addProjectInfo(project, dubBundleDescription, compilerInstall);
+		return getModel().setProjectInfo(project, new DubBundleInfo(compilerInstall, dubBundleDescription));
 	}
 	
 	public void syncPendingUpdates() {
@@ -167,11 +145,6 @@ public class DeeBundleModelManager extends BundleModelManager {
 		
 		public WorkspaceModelManagerTask() {
 			this.workspaceModelManager = DeeBundleModelManager.this;
-		}
-		
-		protected DeeBundleModel getModel() {
-			return getModel(); /*FIXME: BUG here*/
-//			return DeeBundleModelManager.this.getModel();
 		}
 		
 		protected void logInternalError(CoreException ce) {
@@ -336,7 +309,8 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		DubBundle main = unresolvedDescription.getMainBundle();
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
-		workspaceModelManager.getModel().addProjectInfo(project, bundleDesc, unresolvedProjectInfo.compilerInstall);
+		DubBundleInfo newProjectInfo = new DubBundleInfo(unresolvedProjectInfo.compilerInstall, bundleDesc);
+		workspaceModelManager.getModel().setProjectInfo(project, newProjectInfo);
 		
 		setDubErrorMarker(project, dubError);
 	}

@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
-import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.project_model.IProjectModelListener;
 import melnorme.lang.ide.core.project_model.UpdateEvent;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -29,8 +28,8 @@ import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.DeeBundleModel;
-import mmrnmhrm.core.workspace.DubBundleInfo;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
+import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -41,7 +40,7 @@ import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
 public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvider {
 	
-	public static DeeBundleModel getWorkspaceModel() {
+	public static DeeBundleModel getBundleModel() {
 		return DeeCore.getDeeBundleModel();
 	}
 	
@@ -51,12 +50,12 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 	protected void viewerInitialized() {
 		super.viewerInitialized();
 		
-		getWorkspaceModel().addListener(listener);
+		getBundleModel().addListener(listener);
 	}
 	
 	@Override
 	public void dispose() {
-		getWorkspaceModel().removeListener(listener);
+		getBundleModel().removeListener(listener);
 		
 		super.dispose();
 	}
@@ -72,7 +71,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		@Override
 		protected Indexable<Object> getElementsToRefresh() {
 			ArrayList2<Object> elementsToRefresh = new ArrayList2<>();
-			for(String projectName : getWorkspaceModel().getDubProjects()) {
+			for(String projectName : getBundleModel().getModelProjects()) {
 				IProject project = EclipseUtils.getWorkspaceRoot().getProject(projectName);
 				elementsToRefresh.add(project);
 			}
@@ -89,7 +88,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 			
 			@Override
 			public Boolean visitProject(IProject project) {
-				return project.isAccessible() && getWorkspaceModel().getBundleInfo(project) != null;
+				return project.isAccessible() && getBundleModel().getProjectInfo(project) != null;
 			}
 			
 			@Override
@@ -109,7 +108,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 			
 			@Override
 			public void addFirstProjectChildren(IProject project, ArrayList<Object> projectChildren) {
-				DubBundleInfo projectInfo = getWorkspaceModel().getProjectInfo(project);
+				DubBundleInfo projectInfo = getBundleModel().getProjectInfo(project);
 				if(projectInfo != null) {
 					DubDependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 					projectChildren.add(dubContainer);
@@ -202,12 +201,12 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		} 
 		IFolder folder = (IFolder) element;
 		IProject project = folder.getProject();
-		DubBundleDescription bundleInfo = getWorkspaceModel().getBundleInfo(project);
-		if(bundleInfo == null) {
+		DubBundleInfo projectInfo = getBundleModel().getProjectInfo(project);
+		if(projectInfo == null) {
 			return false;
 		}
 		
-		java.nio.file.Path[] sourceFolders = bundleInfo.getMainBundle().getEffectiveSourceFolders();
+		java.nio.file.Path[] sourceFolders = projectInfo.getMainBundle().getEffectiveSourceFolders();
 		for (java.nio.file.Path srcFolderPath : sourceFolders) {
 			if(folder.getProjectRelativePath().toFile().toPath().equals(srcFolderPath)) {
 				return true;

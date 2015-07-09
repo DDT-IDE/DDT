@@ -20,9 +20,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
 public class DubBundle {
@@ -149,12 +151,12 @@ public class DubBundle {
 		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
 	}
 	
-	public Path getEffectiveTargetFullPath() {
+	public Path getEffectiveTargetFullPath() throws CommonException {
 		Path path = MiscUtil.createPathOrNull(getTargetPath() == null ? "" : getTargetPath());
 		if(path == null) {
 			path = Paths.get("");
 		}
-		return path.resolve(getEffectiveTargetName());
+		return path.resolve(PathUtil.createPath(getEffectiveTargetName()));
 	}
 	
 	@Override

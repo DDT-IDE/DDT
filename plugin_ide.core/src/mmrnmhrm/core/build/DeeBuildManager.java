@@ -26,8 +26,8 @@ import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.workspace.DeeBundleModel;
-import mmrnmhrm.core.workspace.DubBundleInfo;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
+import mmrnmhrm.core.dub_model.DubBundleInfo;
 
 public class DeeBuildManager extends BuildManager {
 	

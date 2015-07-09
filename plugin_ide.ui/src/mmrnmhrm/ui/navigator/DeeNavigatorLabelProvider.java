@@ -25,6 +25,7 @@ import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
 import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
@@ -112,7 +113,7 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	@Override
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		DubBundleDescription bundleInfo = DeeCore.getDeeBundleModel().getBundleInfo(element.getProject());
+		DubBundleInfo bundleInfo = DeeCore.getDeeBundleModel().getProjectInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}

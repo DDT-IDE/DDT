@@ -32,7 +32,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.workspace.DeeBundleModelManager;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
