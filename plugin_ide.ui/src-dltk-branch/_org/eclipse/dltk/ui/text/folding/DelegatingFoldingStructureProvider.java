@@ -249,7 +249,7 @@ public class DelegatingFoldingStructureProvider implements
 	 * away the region from after the '/**' to the beginning of the content, the
 	 * other from after the first content line until after the comment.
 	 */
-	private static final class CommentPosition extends Position implements
+	protected static class CommentPosition extends Position implements
 			IProjectionPosition {
 		CommentPosition(int offset, int length) {
 			super(offset, length);
@@ -307,7 +307,7 @@ public class DelegatingFoldingStructureProvider implements
 		 * @return the first index of a unicode identifier part, or zero if none
 		 *         can be found
 		 */
-		private int findFirstContent(final CharSequence content, int prefixEnd) {
+		protected int findFirstContent(final CharSequence content, int prefixEnd) {
 			int lenght = content.length();
 			for (int i = prefixEnd; i < lenght; i++) {
 				if (Character.isUnicodeIdentifierPart(content.charAt(i)))
@@ -817,7 +817,7 @@ public class DelegatingFoldingStructureProvider implements
 		return provider.getDocument(fEditor.getEditorInput());
 	}
 
-	private Map<AnnotationKey, List<Tuple>> computeCurrentStructure(FoldingStructureComputationContext ctx) {
+	protected Map<AnnotationKey, List<Tuple>> computeCurrentStructure(FoldingStructureComputationContext ctx) {
 		Map<AnnotationKey, List<Tuple>> map = new HashMap<AnnotationKey, List<Tuple>>();
 		ProjectionAnnotationModel model = ctx.getModel();
 		Iterator<?> e = model.getAnnotationIterator();

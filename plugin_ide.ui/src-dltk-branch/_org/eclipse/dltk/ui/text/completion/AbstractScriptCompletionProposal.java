@@ -86,7 +86,8 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 	protected boolean insertCompletion() {
 		return getPreferenceStore().getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
 	}
-
+	
+	@SuppressWarnings("unused") 
 	protected Color getForegroundColor(StyledText text) {
 
 		RGB rgb = PreferenceConverter.getColor(getPreferenceStore(),
@@ -95,6 +96,7 @@ public abstract class AbstractScriptCompletionProposal extends LangCompletionPro
 		return colorManager.getColor(rgb);
 	}
 
+	@SuppressWarnings("unused") 
 	protected Color getBackgroundColor(StyledText text) {
 
 		RGB rgb = PreferenceConverter.getColor(getPreferenceStore(),

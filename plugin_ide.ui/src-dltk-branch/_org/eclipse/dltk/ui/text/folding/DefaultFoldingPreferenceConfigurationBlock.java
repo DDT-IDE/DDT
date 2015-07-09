@@ -107,6 +107,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected void createAdditionalTabs(TabFolder tabFolder) {
 		// empty implementation
 	}

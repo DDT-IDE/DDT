@@ -596,7 +596,7 @@ public class SWTFactory {
 		return ex;
 	}
 
-
+	@SuppressWarnings("unused") 
 	private static void makeScrollableCompositeAware(Control control) {
 //		ScrolledPageContent parentScrolledComposite = getParentScrolledComposite(control);
 //		if (parentScrolledComposite != null) {
