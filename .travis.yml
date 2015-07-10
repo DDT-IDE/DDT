@@ -1,5 +1,7 @@
 language: java
 
+sudo: false
+
 jdk:
   - oraclejdk8
 
@@ -15,6 +17,5 @@ install:
   - $(pwd)/bin-maven/dub64/dub help
 
 script:
-  - sudo rm /etc/mavenrc
-  - export MAVEN_OPTS="-Xmx1500m"
+  - export MAVEN_OPTS="-Xmx2g"
   - mvn clean integration-test -DDTool.DubPath=$(pwd)/bin-maven/dub64/dub
