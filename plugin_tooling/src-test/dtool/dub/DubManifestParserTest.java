@@ -78,8 +78,8 @@ public class DubManifestParserTest extends CommonDubTest {
 	@Test
 	public void testBadPath() throws Exception { testBadPath$(); }
 	public void testBadPath$() throws Exception {
-		DubBundle bundle = new DubBundle(SAMPLE_BUNDLE_PATH, "<undefined>", null, DEFAULT_VERSION, 
-			strings("s:rc??>"), null, null, null, null, null);
+		DubBundle bundle = new DubBundle(SAMPLE_BUNDLE_PATH, "<und:??efined>", null, DEFAULT_VERSION, 
+			strings("src"), null, null, null, null, null);
 		
 		verifyThrows(() -> bundle.getEffectiveTargetFullPath(), CommonException.class, "Invalid");
 		
