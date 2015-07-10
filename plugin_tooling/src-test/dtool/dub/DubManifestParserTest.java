@@ -83,7 +83,7 @@ public class DubManifestParserTest extends CommonDubTest {
 		
 		verifyThrows(() -> bundle.getEffectiveTargetFullPath(), CommonException.class, "Invalid");
 		
-		DubBundle bundle2 = new DubBundle(SAMPLE_BUNDLE_PATH, "<undefined>", null, DEFAULT_VERSION, 
+		DubBundle bundle2 = new DubBundle(SAMPLE_BUNDLE_PATH, "sample", null, DEFAULT_VERSION, 
 			null, paths("src"), null, null, null, "<invalid:_\0path>");
 		
 		verifyThrows(() -> bundle2.getEffectiveTargetFullPath(), CommonException.class, "Invalid");

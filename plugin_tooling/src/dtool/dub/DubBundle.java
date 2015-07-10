@@ -16,7 +16,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,10 +151,7 @@ public class DubBundle {
 	}
 	
 	public Path getEffectiveTargetFullPath() throws CommonException {
-		Path path = MiscUtil.createPathOrNull(getTargetPath() == null ? "" : getTargetPath());
-		if(path == null) {
-			path = Paths.get("");
-		}
+		Path path = MiscUtil.createPath(getTargetPath() == null ? "" : getTargetPath());
 		return path.resolve(PathUtil.createPath(getEffectiveTargetName()));
 	}
 	
