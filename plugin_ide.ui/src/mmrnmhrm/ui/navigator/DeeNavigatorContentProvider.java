@@ -117,6 +117,12 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 	}
 	
 	@Override
+	protected void addBuildTargetsContainer(IProject project, ArrayList2<Object> projectChildren) {
+		// Temporarily disabled
+//		super.addBuildTargetsContainer(project, projectChildren);
+	}
+	
+	@Override
 	protected LangNavigatorSwitcher_GetParent getParent_switcher() {
 		return new LangNavigatorSwitcher_GetParent() {
 			@Override

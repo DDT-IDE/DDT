@@ -1,14 +1,17 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
-  ▶ Recommended/tested CDT version is now 8.7.0
 
- * Fixed: PATH of external tools bungled if original PATH not set (Windows) 
+### 0.12.1
+  ▶ Recommended/tested CDT version is now 8.7
+ * Fixed: Debugging not working on Eclipse 4.5 Mars (CDT 8.7), for certain platform/GDB combinations.
+ * Fixed: PATH of external tools bungled if original PATH not set (Windows).
  * Fixed: hover for problem errors not showing if error is over a string literal source.
  * Fixed #112: build errors no longer removed when editing a source file.
  * Fixed #113: Completion proposal insertion text has incorrect casing.
  * Fixed: Error and warning icon decorations sometimes not shown on Project Explorer elements (files/folders).
  * Fixed: new build for a project not started if only external dependencies have changed.
+ * Doc: added note about Cygwin GDB not being recommended for debugging.
  
 ### DDT 0.12.0
 
