@@ -311,20 +311,20 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
    * Clicking on named elements correctly selects their name in the editor (previously it just revealed the element).
    * Added context menu to the outline elements, added some filter actions to the toolbar of the view.
  * Constructor/Desctructors/Allocators/Deallocators now show up in Outline view and quick Outline.
- * Implemented [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=52 issue@ELabs #52]: function/delegate literals can now be folded. And also anonymous classes.
+ * Implemented [issue@ELabs #52](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=52): function/delegate literals can now be folded. And also anonymous classes.
  * Fix in Documentation hovers: removed redudant text, and now displays concrete archetype (Class, Interface, Struct, Union), instead of "Aggregate".
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=47 issue@ELabs #47]: NPE while parsing is expression. Source ranges will still be missing though.
+ * Fixed [issue@ELabs #47](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=47): NPE while parsing is expression. Source ranges will still be missing though.
  * Fixed some minor NPE and assertion failure bugs.
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=51 issue@ELabs #51], parsing AssertFailedException.
  * Resolved #19 in a definite and proper way (instead of with a workaround hack).
  * Fixed some issues relate to completion of imports, including [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=53 issue@ELabs #53]. 
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=58 issue@ELabs #58]: typing the dot causes selected completion proposal to be applied.
+ * Fixed [issue@ELabs #58](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=58): typing the dot causes selected completion proposal to be applied.
 
 ### DDT 0.4.3 (2011-06-02)
  * Resolved [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=12 issue@ELabs #12], added Content Assist preference page. 
    * Options: Completion insert/override; Single proposals automatic insert; Auto-Activation enable and delay;
    * Added Content Assist proposal auto-insertion trigger characters: ' ', '=', ';', '.'.  
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=31 issue@ELabs #31]: Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
+ * Fixed [issue@ELabs #31](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=31): Indent auto edit: full indent deletion is incorrectly triggered on certain positions.
  * Fixed some shortcomings related to auto indent in lines that started with comments.
  * Resolved [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=30 issue@ELabs #30], changed implementation of editor folding to a newer API:
    * Now the editor can fold non-DDoc comments as well (a previous limitation).
@@ -341,12 +341,12 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=33 issue@ELabs #33], bug with spaces in projects names: made all variables in DMD response file resolve to quote escaped values.
  * Fixed bug where all D comments where considered DDoc comments for documentation hover.
  * Fixed limitation where problem hovers where not more prioritary than documentation hovers.
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=37 issue@ELabs #37]: F2 always brings up empty documentation hover.
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=38 issue@ELabs #38]: autocomplete crashing / very slow. (Content Assist takes very long to show up when many completion options are available)
+ * Fixed [issue@ELabs #37](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=37): F2 always brings up empty documentation hover.
+ * Fixed [issue@ELabs #38](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=38): autocomplete crashing / very slow. (Content Assist takes very long to show up when many completion options are available)
  * Added support for editor code templates in Content Assist. 
  * Fixed bug in cast expression, where the cast type reference was ignored by the parser/semantic-engine; 
  * Fixed bug where DDoc comments where not associated with the corresponding symbol definition if that definition had protection, storage, linkage, or certain other kinds of attributes;
- * Implemented [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=35 issue@ELabs #35]: format immutable keyword and @annotations.
+ * Implemented [issue@ELabs #35](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=35: format immutable keyword and @annotations.
     * Added (nothrow, pure, shared, immutable) keywords to syntax coloring
     * Added @annotations to syntax coloring (spaces after @ not supported, any identifier accepted)
     * Changed syntax coloring example in preferences
@@ -354,11 +354,11 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
 
 ### DDT 0.4.1 (2011-03-04)
  * Fixed some parser bugs. (mostly relating to Template Instance references and source with invalid syntax)
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=25 issue@ELabs #25] and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
+ * Fixed [issue@ELabs #25](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=25) and other source highlighting bugs (like nested comments being lexed as non-nested comments). 
    * Also added additional syntax highlighting options for WYSIWYG strings, delimited strings, and character literals.
  * Fixed a bug due to reuse of a single instance of the editor source-highlighting & folding parser. 
    * This bug may have been manifested in obscure, unknown, and/or hard to replicate ways.
- * Fixed [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=17 issue@ELabs #17], [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=18 issue@ELabs #18], [http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=20 issue@ELabs #20], all related to editor auto edits. Properly implemented:
+ * Fixed [issue@ELabs #17](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=17), [issue@ELabs #18](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=18), [issue@ELabs #20](http://code.google.com/a/eclipselabs.org/p/ddt/issues/detail?id=20), all related to editor auto edits. Properly implemented:
    * Editor auto-edits (smart indenting/deindenting according to block structure), added "Typing" preference page.
 
 ### DDT 0.4.0 (2010-11-17)
@@ -398,4 +398,4 @@ class Foo { char intro } auto x = Foo.in♦ // CC invoked here will offer 【int
  * Improved name lookup: statement blocks and enum bodies are now supported correctly (they don't see forward definitions anymore).
  * Improved Code completion: duplicates or occluded names are no longer presented.
  * Can now set, view, and remove Descent-compatible breakpoints in Mmrnmhrm's editor (these will work with Descent's debugger).
- * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser. ([pic](http://svn.d
+ * DDoc text and code completion hovers are now processed and presented as HTML instead of raw characters, thanks to Ary Mazana's Descent DDoc parser.
