@@ -10,19 +10,19 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
-import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
-import melnorme.util.swt.components.AbstractComponentExt;
-import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.ui.DeeUIMessages;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class DubProjectOptionsBlock extends AbstractComponentExt {
+import melnorme.lang.ide.ui.fields.ArgumentsGroupField;
+import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.util.swt.components.AbstractComponent;
+import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.ui.DeeUIMessages;
+
+public class DubProjectOptionsBlock extends AbstractComponent {
 	
 	protected IProject project;
 	

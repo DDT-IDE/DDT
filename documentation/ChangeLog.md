@@ -1,6 +1,8 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Fixed: Arguments field in launch configuration is not multi-line.
+ 
 
 ### 0.12.1
   ▶ Recommended/tested CDT version is now 8.7
