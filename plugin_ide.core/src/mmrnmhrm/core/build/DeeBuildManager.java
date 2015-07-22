@@ -51,10 +51,9 @@ public class DeeBuildManager extends BuildManager {
 		String name = buildConfig.getName();
 		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, name);
 		
-//		/* FIXME: temporarily disabled for release. */		
-//		// Create unittest variant
-//		String newName = buildConfig.getName() + ":" + DubBuildType.UNITTEST.getBuildTypeString();
-//		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, newName);
+		// Create unittest variant
+		String newName = buildConfig.getName() + ":" + DubBuildType.UNITTEST.getBuildTypeString();
+		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, newName);
 	}
 	
 	@Override
