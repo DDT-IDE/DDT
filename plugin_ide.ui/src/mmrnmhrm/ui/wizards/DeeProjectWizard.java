@@ -43,7 +43,7 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	
 	
 	protected final DeeProjectWizardFirstPage firstPage = new DeeProjectWizardFirstPage();
-	protected final DeeProjectWizardBuildSettingsPage buildSettingsPage = new DeeProjectWizardBuildSettingsPage(this);
+//	protected final DeeProjectWizardBuildSettingsPage buildSettingsPage = new DeeProjectWizardBuildSettingsPage(this);
 	
 	public DeeProjectWizard() {
 	}
@@ -55,13 +55,14 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	
 	@Override
 	public WizardPage getSecondPage() {
-		return buildSettingsPage;
+		return null;
+//		return buildSettingsPage;
 	}
 	
 	@Override
 	public void addPages() {
 		addPage(firstPage);
-		addPage(buildSettingsPage);
+//		addPage(buildSettingsPage);
 	}
 	
 	@Override
@@ -110,10 +111,10 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	@Override
 	public boolean performFinish() {
 		boolean res = super.performFinish();
-		if (res) {
-			buildSettingsPage.performOk();
-			return true;
-		}
+//		if(res) {
+//			buildSettingsPage.performOk();
+//			return true;
+//		}
 		return res;
 	}
 	

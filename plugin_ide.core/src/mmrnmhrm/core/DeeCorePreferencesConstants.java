@@ -10,12 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
-import melnorme.lang.ide.core.utils.prefs.ProgramArgumentsPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
 
 public interface DeeCorePreferencesConstants {
 	
 	static StringPreference PREF_DUB_PATH = new StringPreference("DUB_PATH", "dub");
-	static ProgramArgumentsPreference DUB_BUILD_OPTIONS = new ProgramArgumentsPreference("DUB_BUILD_OPTIONS", "");
 	
 }

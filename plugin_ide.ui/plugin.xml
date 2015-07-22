@@ -304,11 +304,11 @@
 	
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
-			class="mmrnmhrm.ui.preferences.pages.DubOptionsPropertyPage"
+			class="mmrnmhrm.ui.preferences.pages.DeeBuildConfigurationPropertyPage"
 			id="org.dsource.ddt.ide.ui.properties.DeeCompileOptionsProperties"
 			name="%LangBuildOptionsPropertyPage.name">
 			<enabledWhen> 
-				<reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
+				<reference definitionId="org.dsource.ddt.ide.core.expressions.isNatureProject" />
 			</enabledWhen>
 		</page>
 	</extension>
@@ -444,7 +444,7 @@
                            <test property="org.eclipse.core.resources.name" value="*.exe" />
                         </adapt>
                         <adapt type="org.eclipse.core.resources.IProject">
-                           <reference definitionId="org.dsource.ddt.ide.core.expressions.isDeeNature" />
+                           <reference definitionId="org.dsource.ddt.ide.core.expressions.isNatureProject" />
                         </adapt>
                      </or>
                   </iterate>

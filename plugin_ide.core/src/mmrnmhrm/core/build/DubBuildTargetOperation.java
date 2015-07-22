@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
@@ -31,7 +32,6 @@ import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
@@ -76,7 +76,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 			commands.addElements("-b" , getBuildType());
 		}
 		
-		String[] extraCommands = DeeCorePreferences.DUB_BUILD_OPTIONS.getParsedArguments(project);
+		String[] extraCommands = LaunchUtils.getParsedArguments(buildTarget.getBuildOptions());
 		commands.addAll(CollectionUtil.createArrayList(extraCommands));
 		
 		ExternalProcessResult processResult = getToolManager().newRunProcessOperation(getProject(), 
