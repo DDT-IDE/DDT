@@ -22,6 +22,7 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.utilbox.collections.ArrayList2;
@@ -39,9 +40,9 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	protected final String configuration;
 	protected final String buildType;
 	
-	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
-			BuildTarget buildTarget, boolean fullBuild) {
-		super(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	public DubBuildTargetOperation(BuildManager buildManager, OperationInfo parentOpInfo, IProject project, 
+			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
+		super(buildManager, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 		
 		String targetName = buildTarget.getTargetName();
 		configuration = StringUtil.emptyAsNull(StringUtil.substringUntilMatch(targetName, ":"));
@@ -58,7 +59,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
 	@Override
 	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		String validatedDubPath = getBuildToolPath2().toString();
+		String validatedDubPath = getBuildToolPath().toString();
 		
 		ArrayList2<String> commands = new ArrayList2<String>();
 		commands.add(validatedDubPath);

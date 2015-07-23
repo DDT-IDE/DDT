@@ -49,7 +49,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 		if(buildInfo == null) throw new CommonException("No project build info available.");
 		
 		BuildTarget buildTarget = buildInfo.getDefaultBuildTarget();
-		Path targetFilePath = buildTarget.getBuildConfig().getArtifactPath();
+		Path targetFilePath = buildTarget.getArtifactPath(project);
 		if(targetFilePath == null) return null;
 		
 		return project.getFile(EclipseUtils.epath(targetFilePath));

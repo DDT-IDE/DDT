@@ -12,16 +12,16 @@ package mmrnmhrm.ui.preferences.pages;
 
 import org.eclipse.core.resources.IProject;
 
-import melnorme.lang.ide.ui.dialogs.AbstractProjectPropertyPage;
-import melnorme.lang.ide.ui.preferences.LangProjectOptionsBlock;
+import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
+import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 import mmrnmhrm.ui.DeeUIMessages;
 
 
-public class DeeBuildConfigurationPropertyPage extends AbstractProjectPropertyPage {
+public class DeeBuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
 	
 	@Override
-	protected LangProjectOptionsBlock createProjectOptionsComponent(IProject project) {
-		return new LangProjectOptionsBlock(project) {
+	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {
+		return new LangProjectBuildConfigurationComponent(project) {
 			@Override
 			protected String init_getArgumentsField_Label() {
 				return DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions;

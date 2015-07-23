@@ -58,15 +58,16 @@ public class DubBundleInfo extends AbstractBundleInfo {
 	}
 	
 	@Override
-	public Indexable<BuildConfiguration> getBuildConfigurations() {
-		return ArrayList2.create(
-			new BuildConfiguration(null, null) {
-				@Override
-				public Path getArtifactPath() throws CommonException {
-					return getEffectiveTargetFullPath();
-				};
-			}
-		);
+	public Indexable<String> getBuildConfigurations() {
+		return ArrayList2.create("");
+//		return ArrayList2.create(
+//			new BuildConfiguration(null, null) {
+//				@Override
+//				public Path getArtifactPath() throws CommonException {
+//					return getEffectiveTargetFullPath();
+//				};
+//			}
+//		);
 	}
 	
 }

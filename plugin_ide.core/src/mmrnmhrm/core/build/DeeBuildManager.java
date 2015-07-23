@@ -18,12 +18,12 @@ import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTarget.BuildType;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo.BuildConfiguration;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
@@ -46,14 +46,11 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected void addBuildTargetFromConfig(ArrayList2<BuildTarget> buildTargets, BuildConfiguration buildConfig,
-			ProjectBuildInfo currentBuildInfo, boolean isFirstConfig) {
-		String name = buildConfig.getName();
-		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, name);
-		
-		// Create unittest variant
-		String newName = buildConfig.getName() + ":" + DubBuildType.UNITTEST.getBuildTypeString();
-		addBuildTargetFromConfig(buildTargets, buildConfig, currentBuildInfo, isFirstConfig, newName);
+	protected Indexable<BuildType> getBuildTypes_do() {
+		return ArrayList2.<BuildType>create(
+			new DeeBuildType("<default>"),
+			new DeeBuildType(DubBuildType.UNITTEST.getBuildTypeString())
+		);
 	}
 	
 	@Override
@@ -85,7 +82,26 @@ public class DeeBuildManager extends BuildManager {
 	@Override
 	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
 			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-		return new DubBuildTargetOperation(parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+		return new DubBuildTargetOperation(this, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
+	/* -----------------  ----------------- */
+	
+	protected class DeeBuildType extends BuildType {
+		public DeeBuildType(String name) {
+			super(name);
+		}
+		
+		@Override
+		public String getDefaultBuildOptions(BuildTarget buildTarget, IProject project) throws CommonException {
+			return "";
+		}
+		
+		@Override
+		public Path getArtifactPath(BuildTarget buildTarget, IProject project) throws CommonException {
+			/* FIXME: to do*/
+			throw new CommonException("No default program path available");
+		}
+	}
+
 }
