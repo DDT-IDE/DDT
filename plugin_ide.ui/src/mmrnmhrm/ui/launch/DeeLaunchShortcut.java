@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
@@ -37,20 +38,24 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 			throws CommonException, OperationCancellation {
 		IProject project = (IProject) resource.getProject();
 		
-		resource = getProjectExecutableArtifact(project);
+		try {
+			resource = getProjectExecutableArtifact(project);
+		} catch(CoreException e) {
+			throw new CommonException(e.getMessage(), e.getCause());
+		}
 		if(resource == null) {
 			return null;
 		}
 		return new ResourceLaunchTarget(resource);
 	}
 	
-	protected IFile getProjectExecutableArtifact(IProject project) throws CommonException {
+	protected IFile getProjectExecutableArtifact(IProject project) throws CommonException, CoreException {
 		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
 		if(buildInfo == null) throw new CommonException("No project build info available.");
 		
 		BuildTargetRunner buildTarget = LangCore.getBuildManager()
 				.getBuildTargetOperation(project, buildInfo.getDefaultBuildTarget());
-		Path targetFilePath = buildTarget.getValidArtifactPath3();
+		Path targetFilePath = buildTarget.getValidArtifactPath();
 		
 		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}

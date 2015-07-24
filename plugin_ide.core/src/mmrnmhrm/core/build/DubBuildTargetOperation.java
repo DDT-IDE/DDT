@@ -23,9 +23,11 @@ import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -36,6 +38,12 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
 			BuildTargetRunner buildTarget, boolean fullBuild) {
 		super(buildTarget.getBuildManager(), parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	}
+	
+	@Override
+	protected void addToolCommand(ArrayList2<String> commands)
+			throws CoreException, CommonException, OperationCancellation {
+		//super.addToolCommand(commands);
 	}
 	
 	@Override
@@ -56,10 +64,21 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	}
 	
 	@Override
-	protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
+	protected ProcessBuilder getProcessBuilder(ArrayList2<String> commands)
+			throws CommonException, OperationCancellation, CoreException {
+		Location projectLocation = ResourceUtils.getProjectLocation(getProject());
+		return getToolManager().createToolProcessBuilder(getBuildToolPath(), projectLocation, 
+			commands.toArray(String.class));
+	}
+	
+	@Override
+	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb)
 			throws CommonException, OperationCancellation {
+		
+		String[] commandLine = new ArrayList2<>(pb.command()).toArray(String.class);
+		
 		return getToolManager().newRunProcessOperation(getProject(), 
-			DeeCoreMessages.RunningDubBuild, commands.toArray(String.class), pm).runProcess();
+			DeeCoreMessages.RunningDubBuild, commandLine, monitor).runProcess();
 	}
 	
 	@Override
