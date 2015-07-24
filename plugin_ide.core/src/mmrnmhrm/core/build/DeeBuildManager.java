@@ -17,8 +17,10 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTarget.BuildType;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildConfiguration;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner.BuildType;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
@@ -30,6 +32,8 @@ import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.dub_model.DubBundleInfo;
 
 public class DeeBuildManager extends BuildManager {
+	
+	public static final String BuildType_Default = "<default>";
 	
 	public DeeBuildManager(DeeBundleModel bundleModel) {
 		super(bundleModel);
@@ -48,7 +52,7 @@ public class DeeBuildManager extends BuildManager {
 	@Override
 	protected Indexable<BuildType> getBuildTypes_do() {
 		return ArrayList2.<BuildType>create(
-			new DeeBuildType("<default>"),
+			new DeeBuildType(BuildType_Default),
 			new DeeBuildType(DubBuildType.UNITTEST.getBuildTypeString())
 		);
 	}
@@ -80,9 +84,16 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public CommonBuildTargetOperation createBuildTargetSubOperation(OperationInfo parentOpInfo, IProject project,
-			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-		return new DubBuildTargetOperation(this, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	public BuildTargetRunner createBuildTargetOperation(IProject project, BuildConfiguration buildConfig,
+			String buildType, BuildTarget buildSettings) {
+		return new BuildTargetRunner(project, buildConfig, buildType, buildSettings.getBuildOptions()) {
+			@Override
+			public CommonBuildTargetOperation getBuildOperation(OperationInfo parentOpInfo, Path buildToolPath,
+					boolean fullBuild) {
+				return new DubBuildTargetOperation(parentOpInfo, project, buildToolPath, 
+					this, fullBuild);
+			}
+		};
 	}
 	
 	/* -----------------  ----------------- */
@@ -93,15 +104,10 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTarget buildTarget, IProject project) throws CommonException {
+		public String getDefaultBuildOptions(BuildTargetRunner buildTarget) throws CommonException {
 			return "";
 		}
 		
-		@Override
-		public Path getArtifactPath(BuildTarget buildTarget, IProject project) throws CommonException {
-			/* FIXME: to do*/
-			throw new CommonException("No default program path available");
-		}
 	}
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,16 +20,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.core.launch.LaunchUtils;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildTarget;
+import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -37,55 +33,36 @@ import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
-	protected final String configuration;
-	protected final String buildType;
-	
-	public DubBuildTargetOperation(BuildManager buildManager, OperationInfo parentOpInfo, IProject project, 
-			Path buildToolPath, BuildTarget buildTarget, boolean fullBuild) {
-		super(buildManager, parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
-		
-		String targetName = buildTarget.getTargetName();
-		configuration = StringUtil.emptyAsNull(StringUtil.substringUntilMatch(targetName, ":"));
-		buildType = StringUtil.segmentAfterMatch(targetName, ":");
-	}
-	
-	protected String getConfiguration() {
-		return configuration;
-	}
-	
-	public String getBuildType() {
-		return buildType;
+	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
+			BuildTargetRunner buildTarget, boolean fullBuild) {
+		super(buildTarget.getBuildManager(), parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
 	}
 	
 	@Override
-	public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-		String validatedDubPath = getBuildToolPath().toString();
-		
-		ArrayList2<String> commands = new ArrayList2<String>();
-		commands.add(validatedDubPath);
+	protected void addMainArguments(ArrayList2<String> commands) {
 		commands.add("build");
 		
 		if(fullBuild) {
 			commands.add("--force");
 		}
 		
-		if(getConfiguration() != null) {
+		if(!getConfiguration().isEmpty()) {
 			commands.addElements("-c" , getConfiguration());
 		}
 		
-		if(getBuildType() != null) {
+		if(!getBuildType().isEmpty() && !(getBuildType().equals(DeeBuildManager.BuildType_Default))) {
 			commands.addElements("-b" , getBuildType());
 		}
-		
-		String[] extraCommands = LaunchUtils.getParsedArguments(buildTarget.getBuildOptions());
-		commands.addAll(CollectionUtil.createArrayList(extraCommands));
-		
-		ExternalProcessResult processResult = getToolManager().newRunProcessOperation(getProject(), 
-			DeeCoreMessages.RunningDubBuild, commands.toArray(String.class) , pm).runProcess();
-		
-		processBuildOutput(processResult);
 	}
 	
+	@Override
+	protected ExternalProcessResult startProcess(IProgressMonitor pm, ArrayList2<String> commands)
+			throws CommonException, OperationCancellation {
+		return getToolManager().newRunProcessOperation(getProject(), 
+			DeeCoreMessages.RunningDubBuild, commands.toArray(String.class), pm).runProcess();
+	}
+	
+	@Override
 	protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
 		new DubBuildOutputParser<CoreException>() {
 			@Override
