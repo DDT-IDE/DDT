@@ -1,6 +1,7 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Fixed #108: Auto-Complete doesn't find D modules in symlink source folders.
  * Fixed: Arguments field in launch configuration is not multi-line.
  * Added support for Build Configurations.
    * Available build targets are displayed in the Project Explorer. 
