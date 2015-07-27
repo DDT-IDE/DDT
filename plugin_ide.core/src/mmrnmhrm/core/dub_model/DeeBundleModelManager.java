@@ -34,6 +34,8 @@ import dtool.dub.DubManifestParser;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -264,6 +266,10 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		}
 	}
 	
+	protected AbstractToolManager getToolManager() {
+		return LangCore.getToolManager();
+	}
+	
 	protected Void resolveProjectOperation(IProgressMonitor pm) throws CoreException, CommonException {
 		IPath projectLocation = project.getLocation();
 		if(projectLocation == null) {
@@ -272,14 +278,14 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		BundlePath bundlePath = BundlePath.create(projectLocation.toFile().toPath());
 			
-		String dubPath = LangCore.getToolManager().getSDKToolPath().toString();
+		String dubPath = getToolManager().getSDKToolPath().toString();
 		
-		OperationInfo resolveProjectOperation = new OperationInfo(project, true,
-			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
-		getProcessManager().notifyOperationStarted(resolveProjectOperation);
+		OperationInfo opInfo = getToolManager().startNewToolOperation();
+		getProcessManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
+			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName()))));
 		
-		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(
-			resolveProjectOperation, array(dubPath, "describe"), pm);
+		ProcessBuilder pb = AbstractToolManager.createProcessBuilder(project, array(dubPath, "describe"));
+		IRunProcessTask dubDescribeTask = getProcessManager().newRunToolTask(opInfo, pb, pm);
 		
 		ExternalProcessResult processHelper;
 		try {

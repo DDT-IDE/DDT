@@ -58,9 +58,9 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public IBuildTargetOperation newProjectBuildOperation(IProject project, OperationInfo parentOpInfo,
-			boolean fullBuild) throws CommonException {
-		return new DeeBuildOperationCreator(project, parentOpInfo, fullBuild).newProjectBuildOperation();
+	public IBuildTargetOperation newProjectBuildOperation(OperationInfo opInfo, IProject project, boolean fullBuild)
+			throws CommonException {
+		return new DeeBuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
 	}
 	
 	public static class DeeBuildOperationCreator extends BuildOperationCreator {

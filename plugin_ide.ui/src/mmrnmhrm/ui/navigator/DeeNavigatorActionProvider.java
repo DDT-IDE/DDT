@@ -22,6 +22,10 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.MessageEventInfo;
+import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.utils.TextMessageUtils;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -91,8 +95,16 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				DeeToolManager dubMgr = DeeCore.getDeeBundleModelManager().getProcessManager();
 				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
 				
-				dubMgr.submitTask(dubMgr.newRunProcessOperation(
-					null, DeeCoreMessages.RunningDubCommand, getCommands(project), monitor));
+				OperationInfo opInfo = getToolManager().startNewToolOperation();
+				
+				getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
+					TextMessageUtils.headerBIG(DeeCoreMessages.RunningDubCommand)));
+				ProcessBuilder pb = AbstractToolManager.createProcessBuilder(null, getCommands(project));
+				dubMgr.submitTask(getToolManager().newRunToolTask(opInfo, pb, monitor));
+			}
+			
+			private AbstractToolManager getToolManager() {
+				return LangCore.getToolManager();
 			}
 			
 			protected abstract String[] getCommands(IProject project);

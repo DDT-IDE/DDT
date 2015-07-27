@@ -72,13 +72,9 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	}
 	
 	@Override
-	protected ExternalProcessResult runBuildTool(IProgressMonitor monitor, ProcessBuilder pb)
+	protected ExternalProcessResult runBuildTool(OperationInfo opInfo, ProcessBuilder pb, IProgressMonitor pm)
 			throws CommonException, OperationCancellation {
-		
-		String[] commandLine = new ArrayList2<>(pb.command()).toArray(String.class);
-		
-		return getToolManager().newRunProcessOperation(getProject(), 
-			DeeCoreMessages.RunningDubBuild, commandLine, monitor).runProcess();
+		return getToolManager().newRunToolTask(opInfo, pb, pm).runProcess();
 	}
 	
 	@Override
