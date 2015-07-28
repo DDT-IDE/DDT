@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -34,8 +34,9 @@ import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
-	public DubBuildTargetOperation(BuildTargetValidator3 buildTargetValidator, 
-			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+	public DubBuildTargetOperation(BuildTargetValidator buildTargetValidator, 
+			OperationInfo opInfo, Path buildToolPath, boolean fullBuild
+	) throws CommonException, CoreException {
 		super(buildTargetValidator.getBuildManager(), buildTargetValidator, opInfo, buildToolPath, fullBuild);
 	}
 	
@@ -53,12 +54,13 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 			commands.add("--force");
 		}
 		
-		if(getConfiguration().isEmpty()) {
-			commands.addElements("-c" , getConfiguration());
+		if(!getConfigurationName().isEmpty()) {
+			commands.addElements("-c" , getConfigurationName());
 		}
 		
-		if(!getBuildType().isEmpty() && !(getBuildType().equals(DeeBuildManager.BuildType_Default))) {
-			commands.addElements("-b" , getBuildType());
+		String buildTypeName = getBuildType().getName();
+		if(!buildTypeName.equals(DeeBuildManager.BuildType_Default)) {
+			commands.addElements("-b" , buildTypeName);
 		}
 	}
 	

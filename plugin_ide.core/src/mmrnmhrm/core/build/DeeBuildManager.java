@@ -13,13 +13,14 @@ package mmrnmhrm.core.build;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.build.IBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
@@ -55,7 +56,7 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public IBuildTargetOperation newProjectBuildOperation(OperationInfo opInfo, IProject project, boolean fullBuild)
+	public IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project, boolean fullBuild)
 			throws CommonException {
 		return new DeeBuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
 	}
@@ -67,8 +68,8 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public IBuildTargetOperation newProjectBuildOperation() throws CommonException {
-			IBuildTargetOperation projectBuildOp = super.newProjectBuildOperation();
+		public IToolOperation newProjectBuildOperation() throws CommonException {
+			IToolOperation projectBuildOp = super.newProjectBuildOperation();
 			
 			return (pm) -> {
 				DeeCore.getDubProcessManager().submitTaskAndAwaitResult(() -> {
@@ -81,9 +82,9 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public BuildTargetValidator3 createBuildTargetValidator(IProject project, BuildConfiguration buildConfig,
-			String buildTypeName, String buildOptions) {
-		return new BuildTargetValidator3(project, buildConfig, buildTypeName, buildOptions);
+	public BuildTargetValidator createBuildTargetValidator(IProject project, String buildConfigName,
+			String buildTypeName, String buildOptions) throws CommonException {
+		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildOptions);
 	}
 	
 	/* -----------------  ----------------- */
@@ -94,13 +95,13 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTargetValidator3 buildTargetValidator) throws CommonException {
+		public String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator) throws CommonException {
 			return "";
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator3 buildTargetValidator,
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator,
+				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
 			return new DubBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
 		}
 		
