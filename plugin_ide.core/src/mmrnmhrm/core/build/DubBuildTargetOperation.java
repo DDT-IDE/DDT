@@ -13,7 +13,6 @@ package mmrnmhrm.core.build;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.collections.ArrayList2;
@@ -35,9 +34,9 @@ import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
-	public DubBuildTargetOperation(OperationInfo parentOpInfo, IProject project, Path buildToolPath, 
-			BuildTargetRunner buildTarget, boolean fullBuild) {
-		super(buildTarget.getBuildManager(), parentOpInfo, project, buildToolPath, buildTarget, fullBuild);
+	public DubBuildTargetOperation(BuildTargetValidator3 buildTargetValidator, 
+			OperationInfo opInfo, Path buildToolPath, boolean fullBuild) {
+		super(buildTargetValidator.getBuildManager(), buildTargetValidator, opInfo, buildToolPath, fullBuild);
 	}
 	
 	@Override
@@ -54,7 +53,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 			commands.add("--force");
 		}
 		
-		if(!getConfiguration().isEmpty()) {
+		if(getConfiguration().isEmpty()) {
 			commands.addElements("-c" , getConfiguration());
 		}
 		

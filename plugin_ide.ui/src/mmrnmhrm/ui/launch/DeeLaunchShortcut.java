@@ -18,7 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTargetRunner;
+import melnorme.lang.ide.core.operations.build.BuildTargetValidator3;
 import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
@@ -53,9 +53,9 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
 		if(buildInfo == null) throw new CommonException("No project build info available.");
 		
-		BuildTargetRunner buildTarget = LangCore.getBuildManager()
-				.getBuildTargetOperation(project, buildInfo.getDefaultBuildTarget());
-		Path targetFilePath = buildTarget.getValidArtifactPath();
+		BuildTargetValidator3 buildTarget = LangCore.getBuildManager()
+				.createBuildTargetValidator(project, buildInfo.getDefaultBuildTarget());
+		Path targetFilePath = buildTarget.getValidArtifactPath3(null);
 		
 		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}
