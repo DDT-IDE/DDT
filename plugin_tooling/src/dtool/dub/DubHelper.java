@@ -10,12 +10,9 @@
  *******************************************************************************/
 package dtool.dub;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
-
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 import dtool.dub.DubBundle.DubBundleException;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -61,12 +58,7 @@ public class DubHelper {
 		
 		pb.directory(bundlePath.getLocation().toFile());
 		
-		ExternalProcessResult processResult;
-		try {
-			processResult = new ExternalProcessHelper(pb).strictAwaitTermination();
-		} catch (TimeoutException e) {
-			throw assertFail(); // Cannot happen because there is no cancel monitor
-		}
+		ExternalProcessResult processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult();
 		
 		return parseDubDescribe(bundlePath, processResult);
 	}
