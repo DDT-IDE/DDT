@@ -186,7 +186,7 @@ public class CommonDubTest extends CommonDToolTest {
 	/* ------------------------------ */
 	
 	protected String runDubDescribe(BundlePath workingDir) throws Exception {
-		ExternalProcessResult processResult = startDubProcess(workingDir, "describe").strictAwaitTermination(2000);
+		ExternalProcessResult processResult = startDubProcess(workingDir, "describe").awaitTerminationAndResult(2000);
 		
 		return processResult.getStdOutBytes().toString(StringUtil.UTF8);
 	}
@@ -208,7 +208,7 @@ public class CommonDubTest extends CommonDToolTest {
 		try {
 			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "add-path", packageRootDirStr);
-			processHelper.strictAwaitTermination(2000);
+			processHelper.awaitTerminationAndResult(2000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw assertFail();
@@ -221,7 +221,7 @@ public class CommonDubTest extends CommonDToolTest {
 		try {
 			ExternalProcessHelper processHelper;
 			processHelper = startDubProcess(null, "remove-path", packageRootDirStr);
-			processHelper.strictAwaitTermination(5000);
+			processHelper.awaitTerminationAndResult(5000);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
