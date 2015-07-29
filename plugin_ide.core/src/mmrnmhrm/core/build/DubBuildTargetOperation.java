@@ -47,7 +47,8 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	}
 	
 	@Override
-	protected void addMainArguments(ArrayList2<String> commands) {
+	protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
+		ArrayList2<String> commands = new ArrayList2<>();
 		commands.add("build");
 		
 		if(fullBuild) {
@@ -62,6 +63,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 		if(!buildTypeName.equals(DeeBuildManager.BuildType_Default)) {
 			commands.addElements("-b" , buildTypeName);
 		}
+		return commands.toArray(String.class);
 	}
 	
 	@Override

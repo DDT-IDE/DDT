@@ -11,18 +11,17 @@
 package dtool.engine.tests;
 
 import static dtool.engine.tests.DefUnitResultsChecker.strmap;
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-
-import melnorme.lang.tooling.symbols.INamedElement;
 import java.util.function.Function;
-import melnorme.utilbox.misc.StringUtil;
+
 import dtool.tests.CommonDToolTest;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.tests.CommonTestUtils;
 
 /**
  * This is an old version of what {@link DefUnitResultsChecker} does now
@@ -63,21 +62,7 @@ public class CompareDefUnits extends CommonDToolTest {
 	}
 	
 	public static void assertEqualSet(Set<?> result, Set<?> expected) {
-		boolean equals = result.equals(expected);
-		if(equals) {
-			return;
-		}
-		HashSet<?> resultExtra = removeAllCopy(result, expected);
-		HashSet<?> expectedMissing = removeAllCopy(expected, result);
-		if(!resultExtra.isEmpty()) {
-			System.out.println("--- Unexpected elements ("+resultExtra.size()+") : ---\n" +
-				StringUtil.collToString(resultExtra, "\n") );
-		}
-		if(!expectedMissing.isEmpty()) {
-			System.out.println("--- Missing elements ("+expectedMissing.size()+") : ---\n" +
-				StringUtil.collToString(expectedMissing, "\n") );
-		}
-		assertFail();
+		CommonTestUtils.assertEqualSet(result, expected);
 	}
 	
 }
