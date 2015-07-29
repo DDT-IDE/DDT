@@ -22,9 +22,8 @@ import org.eclipse.debug.core.model.ISourceLocator;
 public class DeeDebugLaunchConfigurationDelegate extends AbstractLangDebugLaunchConfigurationDelegate {
 	
 	@Override
-	protected void setAttributes(ILaunchConfiguration configuration, ILaunchConfigurationWorkingCopy workingCopy)
-			throws CoreException {
-		super.setAttributes(configuration, workingCopy);
+	protected void setAttributes(ILaunchConfigurationWorkingCopy workingCopy) throws CoreException {
+		super.setAttributes(workingCopy);
 		
 		// Remove some DLTK attributes that affect how our launch runs
 		cleanDLTKDebugConfig(workingCopy);

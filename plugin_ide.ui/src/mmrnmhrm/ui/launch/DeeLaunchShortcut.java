@@ -24,6 +24,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.PathUtil;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 
 public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
@@ -55,7 +56,7 @@ public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
 		
 		BuildTargetValidator buildTarget = LangCore.getBuildManager()
 				.createBuildTargetValidator(project, buildInfo.getDefaultBuildTarget());
-		Path targetFilePath = buildTarget.getValidArtifactPath3(null);
+		Path targetFilePath = PathUtil.createPath(buildTarget.getArtifactPath());
 		
 		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}
