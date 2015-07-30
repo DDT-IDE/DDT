@@ -31,6 +31,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
+import mmrnmhrm.core.dub_model.DubBundleInfo;
 
 public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 	
@@ -55,7 +56,7 @@ public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 			commands.add("--force");
 		}
 		
-		if(!getConfigurationName().isEmpty()) {
+		if(!buildConfiguration.getName().equals(DubBundleInfo.DEFAULT_CONFIGURATION)) {
 			commands.addElements("-c" , getConfigurationName());
 		}
 		

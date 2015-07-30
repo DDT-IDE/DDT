@@ -10,55 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.ui.launch;
 
-import java.nio.file.Path;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
-import melnorme.lang.ide.core.project_model.ProjectBuildInfo;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.ui.launch.AbstractLaunchShortcut2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.PathUtil;
+import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import mmrnmhrm.core.launch.DeeLaunchConstants;
 
-public class DeeLaunchShortcut extends AbstractLaunchShortcut2 {
+public class DeeLaunchShortcut extends LangLaunchShortcut {
 	
 	@Override
 	protected String getLaunchTypeId() {
 		return DeeLaunchConstants.ID_DEE_LAUNCH_TYPE;
-	}
-	
-	@Override
-	protected ResourceLaunchTarget getLaunchTargetForResource(IResource resource) 
-			throws CommonException, OperationCancellation {
-		IProject project = (IProject) resource.getProject();
-		
-		try {
-			resource = getProjectExecutableArtifact(project);
-		} catch(CoreException e) {
-			throw new CommonException(e.getMessage(), e.getCause());
-		}
-		if(resource == null) {
-			return null;
-		}
-		return new ResourceLaunchTarget(resource);
-	}
-	
-	protected IFile getProjectExecutableArtifact(IProject project) throws CommonException, CoreException {
-		ProjectBuildInfo buildInfo = LangCore.getBuildManager().getBuildInfo(project);
-		if(buildInfo == null) throw new CommonException("No project build info available.");
-		
-		BuildTargetValidator buildTarget = LangCore.getBuildManager()
-				.createBuildTargetValidator(project, buildInfo.getDefaultBuildTarget());
-		Path targetFilePath = PathUtil.createPath(buildTarget.getArtifactPath());
-		
-		return project.getFile(EclipseUtils.epath(targetFilePath));
 	}
 	
 }

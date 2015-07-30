@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,13 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
+import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
@@ -31,7 +33,7 @@ import mmrnmhrm.core.dub_model.DubBundleInfo;
 
 public class DeeBuildManager extends BuildManager {
 	
-	public static final String BuildType_Default = "<default>";
+	public static final String BuildType_Default = "";
 	
 	public DeeBuildManager(DeeBundleModel bundleModel) {
 		super(bundleModel);
@@ -56,9 +58,9 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public IToolOperation newProjectBuildOperation(OperationInfo opInfo, IProject project, boolean fullBuild)
-			throws CommonException {
-		return new DeeBuildOperationCreator(project, opInfo, fullBuild).newProjectBuildOperation();
+	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,
+			boolean fullBuild) {
+		return new DeeBuildOperationCreator(project, opInfo, fullBuild);
 	}
 	
 	public static class DeeBuildOperationCreator extends BuildOperationCreator {
@@ -68,8 +70,9 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public IToolOperation newProjectBuildOperation() throws CommonException {
-			IToolOperation projectBuildOp = super.newProjectBuildOperation();
+		public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
+				throws CommonException {
+			IToolOperation projectBuildOp = super.newProjectBuildOperation(targetsToBuild);
 			
 			return (pm) -> {
 				DeeCore.getDubProcessManager().submitTaskAndAwaitResult(() -> {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,8 @@ import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
 public class DubBundleInfo extends AbstractBundleInfo {
+	
+	public static final String DEFAULT_CONFIGURATION = "(default)";
 	
 	protected final CompilerInstall compilerInstall; 
 	protected final DubBundleDescription bundleDesc;
@@ -70,7 +72,7 @@ public class DubBundleInfo extends AbstractBundleInfo {
 		}
 		
 		return ArrayList2.create(
-			new BuildConfiguration("", StringUtil.asString(effectiveTargetFullPath))
+			new BuildConfiguration(DEFAULT_CONFIGURATION, StringUtil.asString(effectiveTargetFullPath))
 		);
 	}
 	
