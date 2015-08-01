@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.ui.dialogs.LangBuildConfigurationPropertyPage;
 import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
-import mmrnmhrm.ui.DeeUIMessages;
 
 
 public class DeeBuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
@@ -22,10 +21,6 @@ public class DeeBuildConfigurationPropertyPage extends LangBuildConfigurationPro
 	@Override
 	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {
 		return new LangProjectBuildConfigurationComponent(project) {
-			@Override
-			protected String init_getArgumentsField_Label() {
-				return DeeUIMessages.DUB_PROJECT_OPTIONS__ExtraBuildOptions;
-			}
 		};
 	}
 	
