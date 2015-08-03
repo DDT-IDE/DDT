@@ -10,21 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import java.util.List;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.contentassist.IContextInformation;
+import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine.DeeEngineClient;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.text.contentassist.IContextInformation;
-import org.eclipse.swt.graphics.Image;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
@@ -46,7 +45,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	public List<IContextInformation> computeContextInformation(SourceOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(SourceOperationContext context) {
 		return super.computeContextInformation(context);
 	}
 	
