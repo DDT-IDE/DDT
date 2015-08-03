@@ -3,7 +3,6 @@
 #### Requirements: 
  * Eclipse 4.5 (Mars) or later.
  * Java VM version 8 or later.
- * A [DUB](http://code.dlang.org/about) installation and at least one D compiler. GDB for debugging.
 
 #### Instructions:
  1. Use your existing Eclipse, or download a new Eclipse package from http://www.eclipse.org/downloads/. 
@@ -13,7 +12,8 @@
  1. Select the recently added update site in the `Work with:` dropdown. Type `DDT` in the filter box. Now the DDT feature should appear below.
  1. Select the `DDT - D Development Tools` feature, and complete the wizard. 
   * DDT dependencies such as CDT and DLTK will automatically be added during installation.
- 1. Restart Eclipse. After that take a look at the setup section in the [User Guide](UserGuide.md#user-guide).
+ 1. Restart Eclipse. 
+ 1. For initial setup, follow the instructions at the configuration section in the [User Guide](UserGuide.md). It is recommended you read the rest of the guide too.
   
 
 #### Updating:

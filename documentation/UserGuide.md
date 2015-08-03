@@ -1,7 +1,15 @@
 ## User Guide
 
 *Note:* For an overview of DDT features, see [Features](Features.md#ddt-features). This also serves to document 
-the major functionalities available.
+what overall functionalities are available.
+
+### Configuration
+
+A [D installation](http://dlang.org/download.html) is required for most IDE functionality, as well as the [DUB tool](http://code.dlang.org/about). 
+
+* The D compiler from the D installation should be found in the `PATH` environment variable. This is so the standard library source modules can be found and used (for code completion, etc.).
+
+ * The path to the `dub` executable should be configured in the `DDT` preference page, which can be accessed from the menu `Window / Preferences`. The path can be an absolute path, or just the executable name, in which case the executable will be searched in the PATH environment variable.
 
 ### Eclipse basics
 
@@ -11,9 +19,6 @@ If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE w
 
 Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
 
-### DDT Prerequisites and Configuration
-
-The [DUB tool](http://code.dlang.org/about) is required to fully enable all DDT functionality. DDT will automatically find DUB if it is on the `PATH` environment variable. If it's not, the DUB path can be configured in the `DDT` preference page. A D compiler is also required. This is so the standard library source modules can be found and used (for code completion, etc.).
 
 ##### Compiler setup:
 Every time DUB is invoked to resolve the `dub.json` file (see DUB manifest section below), DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables (`DUB_COMPILERS_PATH` is treated by DDT the same way as the `PATH` variable). Most compiler standard-library directory layouts, relative to the compiler executable, should be recognized (be it DMD, GDC, or LDC). 
