@@ -11,6 +11,7 @@
 package dtool.dub;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -185,19 +186,21 @@ public class CommonDubTest extends CommonDToolTest {
 	/* ------------------------------ */
 	
 	protected String runDubDescribe(BundlePath workingDir) throws Exception {
-		ExternalProcessResult processResult = startDubProcess(workingDir, "describe").awaitTerminationAndResult(2000);
+		ExternalProcessResult processResult = startDubProcess(workingDir, false, "describe")
+				.awaitTerminationAndResult(2000);
 		
 		return processResult.getStdOutBytes().toString(StringUtil.UTF8);
 	}
 	
-	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, String... arguments) 
+	public static ExternalProcessHelper startDubProcess(BundlePath bundlePath, 
+			boolean redirectStdErr, String... arguments) 
 			throws IOException {
 		String[] command = ArrayUtil.prepend(testsDubPath(), arguments);
 		ProcessBuilder pb = new ProcessBuilder(command);
 		if(bundlePath != null) {
 			pb.directory(bundlePath.getLocation().toFile());
 		}
-		pb.redirectErrorStream(true);
+		pb.redirectErrorStream(redirectStdErr);
 		return new ExternalProcessHelper(pb);
 	}
 	
@@ -217,12 +220,12 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	public static void runDubCommand(String[] arguments) {
 		try {
-			ExternalProcessHelper processHelper = startDubProcess(null, arguments);
+			ExternalProcessHelper processHelper = startDubProcess(null, true, arguments);
 			ExternalProcessResult result = processHelper.awaitTerminationAndResult(3000);
 			System.out.println(result.getStdOutBytes().toString(StringUtil.UTF8));
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
-			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+			throw assertFail();
 		}
 	}
 	
