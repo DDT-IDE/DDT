@@ -12,7 +12,6 @@
 
 FIXME TODO:
 *Console for dub describe?
-*Project properties bug
 *-vcolumns 
 
 ### 0.12.1
