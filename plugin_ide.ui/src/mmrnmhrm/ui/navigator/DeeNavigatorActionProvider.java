@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and other contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
+import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
+import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
@@ -33,6 +35,7 @@ import mmrnmhrm.core.engine.DeeToolManager;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
+import mmrnmhrm.ui.launch.DeeLaunchShortcut;
 
 public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 	
@@ -40,6 +43,16 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 	protected void initActionGroups(IViewPart viewPart) {
 		super.initActionGroups(viewPart);
 		actionGroups.add(new DubPathActionGroup(viewPart));
+	}
+	
+	@Override
+	protected BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart) {
+		return new BuildTargetsActionGroup(viewPart) {
+			@Override
+			protected LangLaunchShortcut createLaunchShortcut() {
+				return new DeeLaunchShortcut();
+			}
+		};
 	}
 	
 	public static class DubPathActionGroup extends ViewPartActionGroup {
@@ -145,5 +158,5 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 		}
 		
 	}
-	
+
 }
