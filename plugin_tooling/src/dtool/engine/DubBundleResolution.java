@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,8 +36,7 @@ public class DubBundleResolution extends BundleResolution {
 		ResolvedManifest manifest, 
 		StandardLibraryResolution stdLibResolution) {
 		ArrayList2<BundleResolution> depSRs = new ArrayList2<>();
-		for (ResolvedManifest depManifest : manifest.getBundleDeps()) {
-			/*FIXME: BUG here replace dep bundle resolutions?*/
+		for(ResolvedManifest depManifest : manifest.getBundleDeps()) {
 			depSRs.add(new DubBundleResolution(manager, depManifest, stdLibResolution));
 		}
 		return depSRs;

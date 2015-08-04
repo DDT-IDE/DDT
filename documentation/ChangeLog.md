@@ -5,12 +5,15 @@
  * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
  * Fixed #108: Auto-Complete doesn't find D modules in symlink source folders.
  * Fixed: Arguments field in launch configuration is not multi-line.
- * Added support for Build Configurations.
+ * Added support for Build Targets, based on DUB configurations.
    * Available build targets are displayed in the Project Explorer. 
-   You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
-   * Default build targets are: #TODO
+   * You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
    * Project Build Configuration property page update to configure build targets.
- 
+
+FIXME TODO:
+*Console for dub describe?
+*Project properties bug
+*-vcolumns 
 
 ### 0.12.1
   ▶ Recommended/tested CDT version is now 8.7

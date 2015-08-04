@@ -11,21 +11,19 @@
 package mmrnmhrm.core.dub_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import java.nio.file.Path;
+import static melnorme.utilbox.misc.StringUtil.asString;
 
 import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundle;
+import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
 public class DubBundleInfo extends AbstractBundleInfo {
@@ -58,22 +56,35 @@ public class DubBundleInfo extends AbstractBundleInfo {
 	}
 	
 	@Override
-	public Path getEffectiveTargetFullPath() throws CommonException {
-		return getBundleDesc().getMainBundle().getEffectiveTargetFullPath();
-	}
-	
-	@Override
 	public Indexable<BuildConfiguration> getBuildConfigurations() {
-		Path effectiveTargetFullPath = null;
-		try {
-			effectiveTargetFullPath = getEffectiveTargetFullPath();
-		} catch(CommonException e) {
-			LangCore.logWarning("Invalid getEffectiveTargetFullPath: ", e);
+		DubBundle mainBundle = getMainBundle();
+		
+		ArrayList2<BuildConfiguration> buildConfigs = ArrayList2.create();
+		
+		for(DubConfiguration config : mainBundle.getConfigurations()) {
+			buildConfigs.add(
+				new BuildConfiguration(config.name, null) {
+					@Override
+					public String getArtifactPath() throws CommonException {
+						return asString(config.getEffectiveTargetFullPath(mainBundle));
+					};
+				}
+			);
 		}
 		
-		return ArrayList2.create(
-			new BuildConfiguration(DEFAULT_CONFIGURATION, StringUtil.asString(effectiveTargetFullPath))
-		);
+		if(buildConfigs.isEmpty()) {
+			buildConfigs.add(
+				new BuildConfiguration(DEFAULT_CONFIGURATION, null) {
+					@Override
+					public String getArtifactPath() throws CommonException {
+						DubConfiguration defaulConfig = new DubConfiguration("", null, null, null);
+						return asString(defaulConfig.getEffectiveTargetFullPath(mainBundle));
+					}
+				}
+			);
+		}
+		
+		return buildConfigs;
 	}
 	
 }

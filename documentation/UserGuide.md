@@ -5,7 +5,7 @@ what overall functionalities are available.
 
 ### Configuration
 
-A [D installation](http://dlang.org/download.html) is required for most IDE functionality, as well as the [DUB tool](http://code.dlang.org/about). 
+A [D installation](http://dlang.org/download.html) is required for most IDE functionality, as well as the [DUB tool](http://code.dlang.org/about).
 
 * The D compiler from the D installation should be found in the `PATH` environment variable. This is so the standard library source modules can be found and used (for code completion, etc.).
 
@@ -20,37 +20,43 @@ If you are new to Eclipse, you can learn some of the basics of the Eclipse IDE w
 Also, to improve Eclipse performance and startup time, it is recommended you tweak the JVM parameters. There is a tool called Eclipse Optimizer that can do that automatically, it is recommended you use it. Read more about it [here](http://www.infoq.com/news/2015/03/eclipse-optimizer). (Installing/enabling the JRebel optimization is not necessary as that only applies to Java developers)
 
 
-##### Compiler setup:
-Every time DUB is invoked to resolve the `dub.json` file (see DUB manifest section below), DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables (`DUB_COMPILERS_PATH` is treated by DDT the same way as the `PATH` variable). Most compiler standard-library directory layouts, relative to the compiler executable, should be recognized (be it DMD, GDC, or LDC). 
-
-> If DDT does not find the standard library locations, it is not possible to manually configure them at the moment. As a workaround, download and unpack the official DMD release archive (to use as a mock compiler installation), and put the *binaries directory* in the `DUB_COMPILERS_PATH` environment variable. This way DDT will find the standard library locations, although the compiler used actual for compilation will be another. (You can also replace the standard library source folders of this compiler installation with symbolic links to you actual, up-to-date compiler installation)
-
 ### Project setup
 
-##### Project creation:
+##### Project creation
 A new D project can be created in the Project Explorer view. Open `New / Project...` and then `D / DUB Project`. The D perspective should open after creation, if it's not open already.
 
+##### Project configuration
+Most project settings (such as source folders, or build configurations) are specified in the DUB package manifest file (typically `dub.json`). You will need to be familiar with the format of this file, see [here](http://code.dlang.org/package-format).
+DDT will detect any changes to the file automatically, and subsequently run `dub describe` to resolve DUB dependencies, and obtain other DUB package information. If an error occurs in during this operation, you can view the output of the command in the `D Build` console page in the Console view. TODO other console   
 
-##### DUB manifest and Import Path:
-A project has an import path: a list of directories that are D import path roots. The import path is derived from the import roots of the project itself (usually the same as the _source folders_), and the import paths of the dependency DUB packages. Only the modules contained in the import path will be visible to semantic features (such as code completion).
+##### D Standard Library setup
+Every time `dub describe` is invoked, DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables. (`DUB_COMPILERS_PATH` is examined in the same way as the `PATH` variable). Most compiler standard-library directory layouts, relative to the compiler executable, should be recognized (be it DMD, GDC, or LDC). 
 
-The configuration of the import path and source folders, as well as dependencies and other settings is done in the `dub.json` manifest file. Edit this file in Eclipse and save it after applying the desired changes. On startup, or whenever DDT detects the `dub.json` file has been modified, `dub describe` will be run to resolve dependencies and to supply the fully resolved import path for the project (as well as some other DUB package information). The output of this DUB command (as well as any other DUB command) will be displayed in a DUB console in the Console view.
+> If DDT does not find the standard library locations, it is not possible to manually configure them at the moment. As a workaround, download and unpack the official DMD release archive (to use as a mock compiler installation), and put the *binaries directory* in the `DUB_COMPILERS_PATH` environment variable. This way DDT will find the standard library locations, although the compiler used for actual compilation may be a differnt one. (You can also replace the standard library source folders of this compiler installation with symbolic links to you actual, up-to-date compiler installation)
 
-If an error occurs during this process, an error will placed in the project. For more details on what caused the error, view the DUB console contents.
+##### DUB Package Search Paths
 
-Note also, if you created a DUB project in the default workspace location, and want to use it as a dependency in 
-another project/package, DUB must be able to find it in the packages search path. In the Project Explorer, under 
-the project context menu (or in the `dub.json` file context menu), there are a few commands to add or remove the project as a DUB local package.
+In a project's context menu, there is DUB submenu with a few DUB commands, in particular some to add or remove a project's location to the list of DUB package paths:
 
 <div align="center">
 <a href="screenshots/UserGuide_DubCtxMenu.png?raw=true"><img src="screenshots/UserGuide_DubCtxMenu.png" /><a/> 
 </div> 
 
-##### Build configuration:
+This may be necessary since D projects will not be visible as dependencies to other DUB packages unless they have been placed on the local packages path list.
 
-The project is built using DUB, which will be run whenever an Eclipse workspace build is requested. Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
+##### Project Building
 
-The build is performed by running `dub build`, the output of which will also be presented in the DUB console. Additional command-line options to this process can be configured in the `DUB Options` project property page. Also, it is possible to configure arbitrary external processes to run before of after the DUB build, in the `Builders` property page. (if desired, the DUB builder itself can also be disabled).
+D projects are built using DUB. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the D editor and the Problems view.
+
+Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
+
+D projects have Build Targets derived from DUB configurations. These can be viewed and configured in the Project Explorer:
+
+<div align="center">
+<a href="screenshots/UserGuide_BuildTargets.png?raw=true"><img src="screenshots/UserGuide_BuildTargets.png" /><a/> 
+</div>
+
+Each target can be enabled or disabled individually when performing Eclipse project builds. 
 
 ### Editor and Navigation
 

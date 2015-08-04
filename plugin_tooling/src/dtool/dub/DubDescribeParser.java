@@ -60,7 +60,7 @@ public class DubDescribeParser extends CommonDubParser {
 	}
 
 	@Override
-	protected void readData(JsonReaderExt jsonParser) throws IOException {
+	protected void readData(JsonReaderExt jsonParser) throws IOException, DubBundleException {
 		
 		jsonParser.consumeExpected(JsonToken.BEGIN_OBJECT);
 		
@@ -85,7 +85,8 @@ public class DubDescribeParser extends CommonDubParser {
 		jsonParser.consumeExpected(JsonToken.END_OBJECT);
 	}
 	
-	protected static ArrayList<DubBundle> readDescribedBundles(JsonReaderExt jsonParser) throws IOException {
+	protected static ArrayList<DubBundle> readDescribedBundles(JsonReaderExt jsonParser) 
+			throws IOException, DubBundleException {
 		jsonParser.consumeExpected(JsonToken.BEGIN_ARRAY);
 		
 		ArrayList<DubBundle> bundles = new ArrayList<>();

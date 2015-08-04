@@ -13,16 +13,19 @@ package dtool.dub;
 import static java.util.Collections.unmodifiableList;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+import static melnorme.utilbox.core.CoreUtil.areEqual;
 import static melnorme.utilbox.misc.ArrayUtil.nullToEmpty;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -46,6 +49,8 @@ public class DubBundle {
 	public final String targetName;
 	public final String targetPath;
 	
+	public final Indexable<DubConfiguration> configurations;
+	
 	public DubBundle(
 			BundlePath bundlePath, 
 			String name, 
@@ -56,7 +61,8 @@ public class DubBundle {
 			List<BundleFile> bundleFiles,
 			DubDependecyRef[] dependencies, 
 			String targetName, 
-			String targetPath) {
+			String targetPath,
+			ArrayList2<DubConfiguration> configurations) {
 		this.bundlePath = bundlePath;
 		this.name = assertNotNull(name);
 		this.error = error;
@@ -69,13 +75,20 @@ public class DubBundle {
 		this.targetName = targetName;
 		this.targetPath = targetPath;
 		
+		this.configurations = CollectionUtil.nullToEmpty(configurations);
+		
 		if(!hasErrors()) {
 			assertTrue(bundlePath != null);
 		}
 	}
 	
 	public DubBundle(BundlePath bundlePath, String name, DubBundleException error) {
-		this(bundlePath, name, error, null, null, null, null, null, null, null);
+		this(bundlePath, name, error, null, null, null, null, null, null, null, null);
+	}
+	
+	@Override
+	public String toString() {
+		return name + " ("+version+") @" + (bundlePath == null ? "<null>" : bundlePath);
 	}
 	
 	/** @return the bundle name, not null. */
@@ -141,23 +154,23 @@ public class DubBundle {
 		return targetPath;
 	}
 	
-	public String getEffectiveTargetName() {
-		String baseName = targetName != null ? targetName : name;
-		return baseName + getExecutableSuffix();
+	public String getEffectiveTargetName2() {
+		return targetName != null ? targetName : name;
 	}
 	
-	protected static String getExecutableSuffix() {
-		return MiscUtil.OS_IS_WINDOWS ? ".exe" : "";
+	public Path getValidTargetName() throws CommonException {
+		String rawTargetName = getEffectiveTargetName2();
+		if(rawTargetName == null) {
+			throw new CommonException("Target Name not specified");
+		}
+		return PathUtil.createPath(rawTargetName);
 	}
 	
-	public Path getEffectiveTargetFullPath() throws CommonException {
-		Path path = MiscUtil.createPath(getTargetPath() == null ? "" : getTargetPath());
-		return path.resolve(PathUtil.createPath(getEffectiveTargetName()));
-	}
-	
-	@Override
-	public String toString() {
-		return name + " ("+version+") @" + (bundlePath == null ? "<null>" : bundlePath);
+	public Path getValidTargetPath() throws CommonException {
+		if(targetPath == null) {
+			return PathUtil.createPath("");
+		}
+		return PathUtil.createPath(targetPath);
 	}
 	
 	public static class DubDependecyRef {
@@ -222,6 +235,69 @@ public class DubBundle {
 			}
 		}
 		return null;
+	}
+	
+	/* ----------------- Build Config ----------------- */
+	
+	public Indexable<DubConfiguration> getConfigurations() {
+		return configurations;
+	}
+	
+	public static class DubConfiguration {
+		
+		public final String name;
+		
+		public final String targetType;
+		public final String targetName;
+		public final String targetPath;
+		
+		public DubConfiguration(String name, String targetType, String targetName, String targetPath) {
+			this.name = assertNotNull(name);
+			this.targetType = targetType;
+			this.targetName = targetName;
+			this.targetPath = targetPath;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(this == obj) return true;
+			if(!(obj instanceof DubConfiguration)) return false;
+			
+			DubConfiguration other = (DubConfiguration) obj;
+			
+			return 
+					areEqual(name, other.name) &&
+					areEqual(targetType, other.targetType) &&
+					areEqual(targetName, other.targetName) &&
+					areEqual(targetPath, other.targetPath);
+		}
+		
+		@Override
+		public int hashCode() {
+			return HashcodeUtil.combinedHashCode(name, targetType, targetPath);
+		}
+		
+		/* -----------------  ----------------- */
+		
+		public Path getEffectiveTargetPath(DubBundle dubBundle) throws CommonException {
+			if(targetPath != null) {
+				return PathUtil.createPath(targetPath);
+			}
+			return dubBundle.getValidTargetPath();
+		}
+		
+		
+		public Path getEffectiveTargetName(DubBundle dubBundle) throws CommonException {
+			if(targetName != null) {
+				return PathUtil.createPath(targetName);
+			}
+			return dubBundle.getValidTargetName();
+		}
+		
+		public Path getEffectiveTargetFullPath(DubBundle dubBundle) throws CommonException {
+			return getEffectiveTargetPath(dubBundle).resolve(getEffectiveTargetName(dubBundle));
+		}
+		
 	}
 	
 }

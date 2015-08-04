@@ -17,21 +17,21 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
-
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.PathUtil;
 
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
 import dtool.dub.DubBundle.BundleFile;
+import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.util.JsonReaderExt;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.PathUtil;
 
 /**
  * Parse a Dub bundle in a filesystem location into an in-memory description of the bundle.
@@ -52,10 +52,12 @@ public class DubManifestParser extends CommonDubParser {
 	
 	protected String version = null;
 	protected String[] sourceFolders = null;
-	protected List<BundleFile> bundleFiles = null;
+	protected ArrayList2<BundleFile> bundleFiles = null;
 	protected DubDependecyRef[] dependencies = null;
 	protected String targetName = null;
 	protected String targetPath = null;
+	
+	protected ArrayList2<DubConfiguration> configurations = null;
 	
 	protected DubManifestParser() {
 	}
@@ -110,7 +112,7 @@ public class DubManifestParser extends CommonDubParser {
 		return new DubBundle(bundlePath, bundleName, dubError, version, 
 			sourceFolders, effectiveSourceFolders, 
 			bundleFiles,
-			dependencies, targetName, targetPath);
+			dependencies, targetName, targetPath, configurations);
 	}
 	
 	protected Path[] createPaths(String[] paths) {
@@ -154,11 +156,11 @@ public class DubManifestParser extends CommonDubParser {
 	}
 	
 	@Override
-	protected void readData(JsonReaderExt jsonParser) throws IOException {
+	protected void readData(JsonReaderExt jsonParser) throws IOException, DubBundleException {
 		readBundle(jsonParser);
 	}
 	
-	protected DubManifestParser readBundle(JsonReaderExt jsonReader) throws IOException {
+	protected DubManifestParser readBundle(JsonReaderExt jsonReader) throws IOException, DubBundleException {
 		jsonReader.consumeExpected(JsonToken.BEGIN_OBJECT);
 		
 		while(jsonReader.hasNext()) {
@@ -183,6 +185,8 @@ public class DubManifestParser extends CommonDubParser {
 					targetName = jsonReader.consumeStringValue();
 				} else if(propertyName.equals("targetPath")) {
 					targetPath = jsonReader.consumeStringValue();
+				} else if(propertyName.equals("configurations")) {
+					configurations = parseConfigurations(jsonReader);
 				} else {
 					jsonReader.skipValue();
 				}
@@ -201,10 +205,10 @@ public class DubManifestParser extends CommonDubParser {
 	}
 	
 	
-	protected ArrayList<BundleFile> parseFiles(JsonReaderExt jsonReader) throws IOException {
+	protected ArrayList2<BundleFile> parseFiles(JsonReaderExt jsonReader) throws IOException {
 		jsonReader.consumeExpected(JsonToken.BEGIN_ARRAY);
 		
-		ArrayList<BundleFile> bundleFiles = new ArrayList<>();
+		ArrayList2<BundleFile> bundleFiles = new ArrayList2<>();
 		
 		while(jsonReader.hasNext()) {
 			BundleFile bundleFile = parseFile(jsonReader);
@@ -288,6 +292,60 @@ public class DubManifestParser extends CommonDubParser {
 			jsonReader.consumeExpected(JsonToken.END_ARRAY);
 			return ArrayUtil.createFrom(deps, DubDependecyRef.class);
 		}
+	}
+	
+	protected ArrayList2<DubConfiguration> parseConfigurations(JsonReaderExt jsonReader) 
+			throws IOException, DubBundleException {
+		jsonReader.consumeExpected(JsonToken.BEGIN_ARRAY);
+		
+		ArrayList2<DubConfiguration> bundleFiles = new ArrayList2<>();
+		
+		while(jsonReader.hasNext()) {
+			DubConfiguration element = parseConfiguration(jsonReader);
+			bundleFiles.add(element);
+		}
+		
+		jsonReader.consumeExpected(JsonToken.END_ARRAY);
+		return bundleFiles;
+	}
+	
+	protected DubConfiguration parseConfiguration(JsonReaderExt jsonReader) 
+			throws IOException, DubBundleException {
+		jsonReader.consumeExpected(JsonToken.BEGIN_OBJECT);
+		
+		String name = null;
+		String targetType = null;
+		String targetName = null;
+		String targetPath = null;
+		
+		while(jsonReader.hasNext()) {
+			String propName = jsonReader.consumeExpectedPropName();
+			
+			switch(propName) {
+			case "name":
+				name = jsonReader.consumeStringValue();
+				break;
+			case "targetType":
+				targetType = jsonReader.consumeStringValue();
+				break;
+			case "targetName":
+				targetName = jsonReader.consumeStringValue();
+				break;
+			case "targetPath":
+				targetPath = jsonReader.consumeStringValue();
+				break;
+				
+			default:
+				jsonReader.skipValue();
+			}
+		}
+		jsonReader.consumeExpected(JsonToken.END_OBJECT);
+		
+		if(name == null) {
+			throw new DubBundleException("Build configuration has no name attribute");
+		}
+		
+		return new DubConfiguration(name, targetType, targetName, targetPath);
 	}
 	
 }

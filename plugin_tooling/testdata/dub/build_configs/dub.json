@@ -1,0 +1,25 @@
+{
+	"name": "build_configs",
+	"dependencies": {
+	},
+	
+	"targetName" : "default_name",
+	"targetPath" : "default_path",
+	
+	"configurations": [
+          {
+                 "name": "metro-app",
+                 "targetType": "executable",
+                 "platforms": ["windows"],
+                 "versions": ["MetroApp"],
+                 "targetName2" : "foo_metro"
+          },
+          {
+                 "name": "glut-app",
+                 "targetType": "library",
+                 "versions": ["GlutApp"],
+                 "targetName" : "foo_glut_app",
+                 "targetPath" : "bin/lib"
+          }
+	]
+}

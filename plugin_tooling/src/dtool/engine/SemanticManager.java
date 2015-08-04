@@ -299,8 +299,8 @@ public class SemanticManager {
 		
 		protected BundleResolutionEntry setNewBundleResolutionEntry(BundleResolution bundleRes) {
 			synchronized(entriesLock) {
-				for(BundleResolution newDepBundleRes : bundleRes.getDirectDependencies()) {
-					setNewBundleResolutionEntry(newDepBundleRes);
+				for(BundleResolution newDepedencyBundleRes : bundleRes.getDirectDependencies()) {
+					setNewBundleResolutionEntry(newDepedencyBundleRes);
 				}
 				BundleResolutionEntry newInfo = getEntry(bundleRes.getResKey());
 				newInfo.bundleResolution = bundleRes;

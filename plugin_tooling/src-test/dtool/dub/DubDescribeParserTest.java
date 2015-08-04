@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2013 IBM Corporation and others.
+ * Copyright (c) 2013 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.function.Predicate;
-import melnorme.utilbox.misc.CollectionUtil;
-import melnorme.utilbox.misc.MiscUtil;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,6 +24,8 @@ import org.junit.Test;
 
 import dtool.dub.DubBundle.BundleFile;
 import dtool.tests.DToolTestResources;
+import melnorme.utilbox.misc.CollectionUtil;
+import melnorme.utilbox.misc.MiscUtil;
 
 
 public class DubDescribeParserTest extends CommonDubTest {

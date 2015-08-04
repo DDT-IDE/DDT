@@ -40,13 +40,13 @@ public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 			"~master", array("source"), CommonDubTest.paths("source"), 
 			null,
 			array(new DubBundle.DubDependecyRef("dub_lib", null)), 
-			null, null);
+			null, null, null);
 		
 		DubBundle[] bundleDeps = array(new DubBundle(bpath(libProject), "dub_lib", null,
 			"~master", array("src"), CommonDubTest.paths("src"), 
 			null,
 			null, 
-			null, null));
+			null, null, null));
 		
 		DubBundleDescription bundleDesc = new DubBundleDescription(mainBundle, bundleDeps);
 		

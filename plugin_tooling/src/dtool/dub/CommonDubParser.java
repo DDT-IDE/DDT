@@ -55,6 +55,6 @@ public abstract class CommonDubParser {
 		}
 	}
 	
-	protected abstract void readData(JsonReaderExt jsonParser) throws IOException;
+	protected abstract void readData(JsonReaderExt jsonParser) throws IOException, DubBundleException;
 	
 }
