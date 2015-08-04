@@ -11,7 +11,6 @@
 package dtool.dub;
 
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
@@ -19,15 +18,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
+import dtool.dub.DubBundle.BundleFile;
+import dtool.dub.DubBundle.DubDependecyRef;
+import dtool.tests.CommonDToolTest;
+import dtool.tests.DToolTestResources;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import dtool.dub.DubBundle.BundleFile;
-import dtool.dub.DubBundle.DubDependecyRef;
-import dtool.tests.CommonDToolTest;
-import dtool.tests.DToolTestResources;
 
 public class CommonDubTest extends CommonDToolTest {
 	
@@ -198,30 +197,29 @@ public class CommonDubTest extends CommonDToolTest {
 		if(bundlePath != null) {
 			pb.directory(bundlePath.getLocation().toFile());
 		}
-		
+		pb.redirectErrorStream(true);
 		return new ExternalProcessHelper(pb);
 	}
 	
 	public static void dubAddPath(Location packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Adding DUB package root path: " + packageRootDirStr);
-		try {
-			ExternalProcessHelper processHelper;
-			processHelper = startDubProcess(null, "add-path", packageRootDirStr);
-			processHelper.awaitTerminationAndResult(2000);
-			assertTrue(processHelper.getProcess().exitValue() == 0);
-		} catch (TimeoutException | InterruptedException | IOException e) {
-			throw assertFail();
-		}
+		String[] arguments = array("add-path", packageRootDirStr);
+		runDubCommand(arguments);
 	}
 	
 	public static void dubRemovePath(Location packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Removing DUB package root path: " + packageRootDirStr);
+		String[] arguments = array("remove-path", packageRootDirStr);
+		runDubCommand(arguments);
+	}
+	
+	public static void runDubCommand(String[] arguments) {
 		try {
-			ExternalProcessHelper processHelper;
-			processHelper = startDubProcess(null, "remove-path", packageRootDirStr);
-			processHelper.awaitTerminationAndResult(5000);
+			ExternalProcessHelper processHelper = startDubProcess(null, arguments);
+			ExternalProcessResult result = processHelper.awaitTerminationAndResult(3000);
+			System.out.println(result.getStdOutBytes().toString(StringUtil.UTF8));
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
