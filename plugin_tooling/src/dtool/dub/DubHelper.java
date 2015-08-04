@@ -68,7 +68,8 @@ public class DubHelper {
 		
 		int exitValue = processResult.exitValue;
 		if(exitValue != 0) {
-			DubBundleException error = new DubBundleException("dub returned non-zero status: " + exitValue);
+			DubBundleException error = new DubBundleException("dub returned non-zero status: " + exitValue + 
+				" --  STDERR: \n" + processResult.stderr.toString());
 			return new DubBundleDescription(new DubBundle(bundlePath, DubBundleDescription.BUNDLE_NAME_ERROR, error));
 		}
 		
