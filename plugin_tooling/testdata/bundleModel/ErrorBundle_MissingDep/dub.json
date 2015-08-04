@@ -1,8 +1,8 @@
 {
 	"name": "ErrorBundle_MissingDep",
 	"dependencies": {
-		"foo_lib": "~master",
-		"NonExistantDep": "~master"
+		"foo_lib": ">=0.0.0",
+		"NonExistantDep": ">=0.0.0"
 	},
 	"sourcePaths": [ "src" ],
 	"importPaths": [ "src" ],

@@ -1,0 +1,9 @@
+{
+	"versions": {
+		"basic_lib2": "~master",
+		"complex_lib": "~master",
+		"smtest_foo": "~master",
+		"basic_lib": "~master"
+	},
+	"fileVersion": 1
+}

@@ -1,0 +1,7 @@
+{
+	"versions": {
+		"bar_lib": "~master",
+		"foo_lib": "~master"
+	},
+	"fileVersion": 1
+}

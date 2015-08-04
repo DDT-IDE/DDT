@@ -1,8 +1,8 @@
 {
 	"name": "complex_bundle",
 	"dependencies": {
-		"complex_lib" : "~master",
-		"smtest_foo" : "~master"
+		"complex_lib" : ">=0.0.0",
+		"smtest_foo" : ">=0.0.0"
 	},
 	"targetPath": ".dub"
 }

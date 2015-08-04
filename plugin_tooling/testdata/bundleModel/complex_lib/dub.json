@@ -2,7 +2,7 @@
 	"name": "complex_lib",
 	"dependencies": {
 		"basic_lib" : "~master",
-		"basic_lib2" : "~master"
+		"basic_lib2" : ">=0.0.0"
 	},
 	"targetPath": ".dub"
 }

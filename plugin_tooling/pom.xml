@@ -41,10 +41,10 @@
 							<phase>pre-integration-test</phase>
 							<goals><goal>wget</goal></goals>
 							<configuration>
-								<url>http://code.dlang.org/files/dub-0.9.21-windows-x86.zip</url>
+								<url>http://code.dlang.org/files/dub-0.9.24-rc.2-windows-x86.zip</url>
 								<unpack>true</unpack>
 								<outputDirectory>${rootBuildDirectory}/dub</outputDirectory>
-								<md5>684f652b83ecbb1d4afdc26a98e06b5d</md5>
+								<md5>a7e4f0c3078aa61d84642858b17034c2</md5>
 							</configuration>
 						</execution>
 					</executions>
@@ -68,10 +68,10 @@
 							<phase>pre-integration-test</phase>
 							<goals><goal>wget</goal></goals>
 							<configuration>
-								<url>http://code.dlang.org/files/dub-0.9.21-linux-x86.tar.gz</url>
+								<url>http://code.dlang.org/files/dub-0.9.24-rc.2-linux-x86.tar.gz</url>
 								<unpack>true</unpack>
 								<outputDirectory>${rootBuildDirectory}/dub</outputDirectory>
-								<md5>e19ef418c1a4c04dcf5fed06695274dd</md5>
+								<md5>f7829e9fc1a0c9575e29a76fc3a270aa</md5>
 							</configuration>
 						</execution>
 					</executions>

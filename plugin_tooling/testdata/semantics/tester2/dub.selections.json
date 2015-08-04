@@ -1,0 +1,7 @@
+{
+	"versions": {
+		"tpl_sample_1": "~master",
+		"lib_foo": "~master"
+	},
+	"fileVersion": 1
+}

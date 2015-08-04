@@ -1,0 +1,7 @@
+{
+	"versions": {
+		"basic_lib2": "~master",
+		"basic_lib": "~master"
+	},
+	"fileVersion": 1
+}

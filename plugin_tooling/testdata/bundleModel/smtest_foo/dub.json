@@ -4,7 +4,7 @@
 	with regards to import folders (nesting, nonexisting, invalid, etc)",
 	
 	"dependencies": {
-		"basic_lib": "~master"
+		"basic_lib": ">=0.0.0"
 	},
 	"sourcePaths": [ "src", "src2" ],
 	"sourceFiles": [ "src-extra/modA_src_extra.d"],
