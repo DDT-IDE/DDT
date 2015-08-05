@@ -37,6 +37,7 @@ import org.junit.BeforeClass;
 import dtool.ast.definitions.Module;
 import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
+import dtool.dub.DubHelper.DubDescribeFailure;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.compiler_installs.CompilerInstall;
 
@@ -164,7 +165,19 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			boolean manifestStale = checkIsManifestStale(resKey.bundleKey);
 			ResolvedManifest previousManifest = getStoredManifest(resKey.bundleKey);
 			
-			DubBundleResolution bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey, options);
+			DubBundleResolution bundleResolution;
+			try {
+				bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey, options);
+			} catch(CommonException e) {
+				if(e.getCause() instanceof DubDescribeFailure) {
+					DubDescribeFailure dubDescribeFailure = (DubDescribeFailure) e.getCause();
+					System.out.println("---> DUB DESCRIBE FAILURE --- StdOut:");
+					System.out.println(dubDescribeFailure.getStdOut());
+					System.out.println("\n --- StdErr: " + dubDescribeFailure.getStdErr());
+					System.out.println("\n ---------------");
+				}
+				throw e;
+			}
 			assertEquals(bundleResolution.resKey, resKey);
 			
 			assertEquals(bundleResolution.manifest == previousManifest, !manifestStale);

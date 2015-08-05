@@ -68,8 +68,7 @@ public class DubHelper {
 		
 		int exitValue = processResult.exitValue;
 		if(exitValue != 0) {
-			DubBundleException error = new DubBundleException("dub returned non-zero status: " + exitValue + 
-				" --  STDERR: \n" + processResult.stderr.toString());
+			DubBundleException error = new DubDescribeFailure(processResult);
 			return new DubBundleDescription(new DubBundle(bundlePath, DubBundleDescription.BUNDLE_NAME_ERROR, error));
 		}
 		
@@ -80,6 +79,25 @@ public class DubHelper {
 		return DubDescribeParser.parseDescription(bundlePath, describeOutput);
 	}
 	
+	@SuppressWarnings("serial")
+	public static class DubDescribeFailure extends DubBundleException {
+		
+		protected final ExternalProcessResult processResult;
+		
+		public DubDescribeFailure(ExternalProcessResult processResult) {
+			super("dub returned non-zero status: " + processResult.exitValue);
+			this.processResult = processResult;
+		}
+		
+		public String getStdOut() {
+			return processResult.getStdOutBytes().toString();
+		}
+		
+		public String getStdErr() {
+			return processResult.getStdErrBytes().toString();
+		}
+		
+	}
 	
 	public static class RunDubDescribeCallable implements ICallable<DubBundleDescription, Exception> {
 		

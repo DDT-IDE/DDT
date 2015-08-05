@@ -154,12 +154,12 @@ public class DubBundle {
 		return targetPath;
 	}
 	
-	public String getEffectiveTargetName2() {
+	protected String getEffectiveTargetName() {
 		return targetName != null ? targetName : name;
 	}
 	
 	public Path getValidTargetName() throws CommonException {
-		String rawTargetName = getEffectiveTargetName2();
+		String rawTargetName = getEffectiveTargetName();
 		if(rawTargetName == null) {
 			throw new CommonException("Target Name not specified");
 		}
