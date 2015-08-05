@@ -69,7 +69,9 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	/* ----------------- working dir setup ----------------- */
 	
 	public static void prepSMTestsWorkingDir() throws IOException {
+		System.out.println("-- Prepping SemanticManagerTest bundles.");
 		prepSMTestsWorkingDir(BUNDLEMODEL_TEST_BUNDLES);
+		CommonDubTest.runDubList();
 	}
 	
 	protected static void prepSMTestsWorkingDir(Location pathToCopy) throws IOException {
@@ -169,15 +171,19 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 			DubBundleResolution bundleResolution;
 			try {
 				bundleResolution = (DubBundleResolution) super.getUpdatedResolution(resKey, options);
-			} catch(CommonException e) {
-				if(e.getCause() instanceof DubDescribeFailure) {
-					DubDescribeFailure dubDescribeFailure = (DubDescribeFailure) e.getCause();
+			} catch(CommonException ce) {
+				if(ce.getCause() instanceof DubDescribeFailure) {
+					DubDescribeFailure dubDescribeFailure = (DubDescribeFailure) ce.getCause();
 					System.out.println("---> DUB DESCRIBE FAILURE --- StdOut:");
 					System.out.println(dubDescribeFailure.getStdOut());
 					System.out.println(" --- StdErr: \n" + dubDescribeFailure.getStdErr());
 					CommonDubTest.runDubList();
+					
+					System.out.println(" ------ ");
+					System.out.println(ce);
+					ce.printStackTrace(System.out);
 				}
-				throw e;
+				throw ce;
 			}
 			assertEquals(bundleResolution.resKey, resKey);
 			

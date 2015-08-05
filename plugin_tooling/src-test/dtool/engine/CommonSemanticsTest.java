@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import org.junit.BeforeClass;
+
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.BundlePath;
@@ -37,22 +40,36 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	/* -----------------  ----------------- */
 	
 	static {
-		if(!DToolTests.TESTS_LITE_MODE) {
-			// workaround to cleanup state of abruptly-terminated tests
-			CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); 
-			CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
-			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
-		}
-		
-		// init
-		CommonDubTest.dubAddPath(SEMANTICS_TEST_BUNDLES);
-		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES);
+				removeSemanticsBundlesDubPath();
 			}
 		});
+	}
+	
+	public static boolean isSemanticsBundlesInDubPath = false;
+	
+	@BeforeClass
+	public static synchronized void initSemanticsBundlesDubPath() {
+		if(isSemanticsBundlesInDubPath == false) {
+			if(!DToolTests.TESTS_LITE_MODE) {
+				// workaround to cleanup state of abruptly-terminated tests
+				CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); 
+				CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES); 
+				CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES); 
+			}
+			
+			CommonDubTest.dubAddPath(SEMANTICS_TEST_BUNDLES);
+			isSemanticsBundlesInDubPath = true;
+		}
+	}
+	
+	public static synchronized void removeSemanticsBundlesDubPath() {
+		if(isSemanticsBundlesInDubPath) {
+			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES);
+			isSemanticsBundlesInDubPath = false;
+		}
 	}
 	
 	/* -----------------  ----------------- */
