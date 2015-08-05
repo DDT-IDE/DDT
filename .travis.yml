@@ -10,7 +10,14 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 # Prevent Travis's default of: mvn install -DskipTests=true
-install: ""
+install:
+ - mkdir -p bin-maven
+ - wget https://github.com/ldc-developers/ldc/releases/download/v0.15.1/ldc2-0.15.1-linux-x86_64.tar.xz -O - | tar -xvJ -C bin-maven
+ - ls -l bin-maven
+ - ls -l bin-maven/ldc2-0.15.1-linux-x86_64
+ - ./bin-maven/ldc2-0.15.1-linux-x86_64/bin/ldc2 --version
+ - export PATH="$PATH:$(pwd)/bin-maven/ldc2-0.15.1-linux-x86_64/bin"
+ - which ldc2
 
 script:
   - export MAVEN_OPTS="-Xmx2g"
