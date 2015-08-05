@@ -9,10 +9,10 @@
    * Available build targets are displayed in the Project Explorer. 
    * You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
    * Project Build Configuration property page update to configure build targets.
+ * Fixed #84: Support for `-vcolumns` build output error information.
 
 FIXME TODO:
 *Console for dub describe?
-*-vcolumns 
 
 ### 0.12.1
   ▶ Recommended/tested CDT version is now 8.7
