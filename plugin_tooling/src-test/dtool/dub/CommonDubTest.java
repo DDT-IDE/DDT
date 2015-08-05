@@ -218,7 +218,7 @@ public class CommonDubTest extends CommonDToolTest {
 		runDubCommand(arguments);
 	}
 	
-	public static void runDubCommand(String[] arguments) {
+	public static void runDubCommand(String... arguments) {
 		try {
 			ExternalProcessHelper processHelper = startDubProcess(null, true, arguments);
 			ExternalProcessResult result = processHelper.awaitTerminationAndResult(3000);
