@@ -45,7 +45,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	public static void initDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
 		CommonDubTest.dubAddPath(SMTEST_WORKING_DIR_BUNDLES);
-		runDubList();
+		CommonDubTest.runDubList();
 	}
 	
 	@AfterClass

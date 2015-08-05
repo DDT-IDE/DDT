@@ -58,17 +58,12 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); // cleanup stale entries
 		
 		CommonDubTest.dubAddPath(BUNDLEMODEL_TEST_BUNDLES);
-		runDubList();
+		CommonDubTest.runDubList();
 	}
 	
 	@AfterClass
 	public static void cleanupDubRepositoriesPath() {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
-	}
-	
-	protected static void runDubList() {
-		System.out.println(":::: -------- `dub list`");
-		CommonDubTest.runDubCommand("list");
 	}
 	
 	/* ----------------- working dir setup ----------------- */
@@ -180,7 +175,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 					System.out.println("---> DUB DESCRIBE FAILURE --- StdOut:");
 					System.out.println(dubDescribeFailure.getStdOut());
 					System.out.println(" --- StdErr: \n" + dubDescribeFailure.getStdErr());
-					runDubList();
+					CommonDubTest.runDubList();
 				}
 				throw e;
 			}

@@ -208,24 +208,42 @@ public class CommonDubTest extends CommonDToolTest {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Adding DUB package root path: " + packageRootDirStr);
 		String[] arguments = array("add-path", packageRootDirStr);
-		runDubCommand(arguments);
+		runDubCommand(3000, arguments);
 	}
 	
 	public static void dubRemovePath(Location packageRootDir) {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Removing DUB package root path: " + packageRootDirStr);
 		String[] arguments = array("remove-path", packageRootDirStr);
-		runDubCommand(arguments);
+		runDubCommand(3000, arguments);
 	}
 	
-	public static void runDubCommand(String... arguments) {
+	public static void runDubCommand(int timeout, String... arguments) {
 		try {
-			ExternalProcessHelper processHelper = startDubProcess(null, true, arguments);
-			ExternalProcessResult result = processHelper.awaitTerminationAndResult(3000);
-			System.out.println(result.getStdOutBytes().toString(StringUtil.UTF8));
+			ExternalProcessHelper processHelper = doRunDubCommand(timeout, arguments);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
 		} catch (TimeoutException | InterruptedException | IOException e) {
 			throw assertFail();
+		}
+	}
+	
+	public static ExternalProcessHelper doRunDubCommand(int timeout, String... arguments)
+			throws IOException, InterruptedException, TimeoutException {
+		ExternalProcessHelper processHelper = startDubProcess(null, true, arguments);
+		ExternalProcessResult result = processHelper.awaitTerminationAndResult(timeout);
+		System.out.println(result.getStdOutBytes().toString(StringUtil.UTF8));
+		System.err.println(result.getStdErrBytes().toString(StringUtil.UTF8));
+		return processHelper;
+	}
+	
+	public static void runDubList() {
+		System.out.println(":::: -------- `dub list`");
+		try {
+			CommonDubTest.doRunDubCommand(3000, "list");
+		} catch(IOException | InterruptedException e) {
+			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
+		} catch(TimeoutException e) {
+			assertFail(e.toString());
 		}
 	}
 	
