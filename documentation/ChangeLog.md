@@ -1,7 +1,7 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
- * Updated [Configuration](UserGuide.md#configuration) section in the User Guide.
+ * Updated [Configuration](documentation/UserGuide.md#configuration) section in the User Guide.
  * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
  * Fixed #108: Auto-Complete doesn't find D modules in symlink source folders.
  * Fixed: Arguments field in launch configuration is not multi-line.
