@@ -10,12 +10,8 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 
 # Prevent Travis's default of: mvn install -DskipTests=true
-install:
-  - mkdir -p bin-maven/dub64
-  - wget http://code.dlang.org/files/dub-0.9.21-linux-x86_64.tar.gz -O - | tar -xvz -C bin-maven/dub64
-  - ls -l bin-maven/dub64
-  - $(pwd)/bin-maven/dub64/dub help
+install: ""
 
 script:
   - export MAVEN_OPTS="-Xmx2g"
-  - mvn clean integration-test -DDTool.DubPath=$(pwd)/bin-maven/dub64/dub
+  - mvn clean integration-test

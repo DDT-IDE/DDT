@@ -68,10 +68,10 @@
 							<phase>pre-integration-test</phase>
 							<goals><goal>wget</goal></goals>
 							<configuration>
-								<url>http://code.dlang.org/files/dub-0.9.21-linux-x86.tar.gz</url>
+								<url>http://code.dlang.org/files/dub-0.9.24-rc.2-linux-x86_64.tar.gz</url>
 								<unpack>true</unpack>
 								<outputDirectory>${rootBuildDirectory}/dub</outputDirectory>
-								<md5>e19ef418c1a4c04dcf5fed06695274dd</md5>
+								<md5>b902a5404bbd40b55497c7ebd8e4ae92</md5>
 							</configuration>
 						</execution>
 					</executions>
