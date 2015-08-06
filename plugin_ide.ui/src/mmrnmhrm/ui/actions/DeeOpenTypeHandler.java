@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
-import melnorme.lang.ide.ui.utils.UIOperationExceptionHandler;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.utilbox.core.CommonException;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -24,7 +24,7 @@ public class DeeOpenTypeHandler extends AbstractHandler {
 		try {
 			throw new CommonException("Not supported");
 		} catch(CommonException ce) {
-			UIOperationExceptionHandler.handleOperationStatus("Open Type", ce);
+			UIOperationsStatusHandler.handleOperationError("Open Type", ce);
 			return null;
 		}
 	}

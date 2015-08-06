@@ -79,7 +79,7 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 	
 	@Override
 	protected ManagerResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(EclipseUtils.epath(BundlePath.DUB_MANIFEST_Path));
+		return new ManagerResourceListener(ResourceUtils.epath(BundlePath.DUB_MANIFEST_Path));
 	}
 	
 	@Override
@@ -299,7 +299,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			throw LangCore.createCoreException("Error resolving bundle: ", bundleDesc.getError());
 		}
 		
-		EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
+		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				if(project.exists() == false) {

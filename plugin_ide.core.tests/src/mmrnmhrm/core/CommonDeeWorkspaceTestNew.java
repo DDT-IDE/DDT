@@ -12,11 +12,6 @@ package mmrnmhrm.core;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.utilbox.core.ExceptionAdapter;
-import melnorme.utilbox.misc.StringUtil;
-import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceDescription;
@@ -25,6 +20,11 @@ import org.eclipse.core.runtime.CoreException;
 
 import dtool.dub.BundlePath;
 import dtool.tests.utils.MiscJsonUtils;
+import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 /***
  * Future replacement for {@link CommonDeeWorkspaceTest}
@@ -49,7 +49,7 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 	/* ----------------- ----------------- */
 	
 	public static IProject project(String name) {
-		return EclipseUtils.getProject(name);
+		return ResourceUtils.getProject(name);
 	}
 	
 	public static IProject createLangProject(String name, boolean overwrite) throws CoreException {

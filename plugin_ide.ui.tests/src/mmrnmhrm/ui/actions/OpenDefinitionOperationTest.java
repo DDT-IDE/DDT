@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 IBM Corporation and others.
+ * Copyright (c) 2008 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,9 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-
 package mmrnmhrm.ui.actions;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.ide.ui.EditorSettings_Actual;
-import melnorme.lang.ide.ui.actions.UIUserInteractionsHelper;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.utils.WorkbenchUtils;
-import melnorme.utilbox.core.CommonException;
-import mmrnmhrm.tests.IOutsideBuildpathTestResources;
-import mmrnmhrm.tests.ITestResourcesConstants;
-import mmrnmhrm.tests.SampleMainProject;
-import mmrnmhrm.tests.SampleNonDeeProject;
-import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.editor.DeeEditor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -35,12 +23,25 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
+import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.ide.ui.utils.UIOperationErrorHandlerImpl;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
+import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.utilbox.core.CommonException;
+import mmrnmhrm.tests.IOutsideBuildpathTestResources;
+import mmrnmhrm.tests.ITestResourcesConstants;
+import mmrnmhrm.tests.SampleMainProject;
+import mmrnmhrm.tests.SampleNonDeeProject;
+import mmrnmhrm.ui.CommonDeeUITest;
+import mmrnmhrm.ui.editor.DeeEditor;
 
 public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	
@@ -48,9 +49,17 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	protected IEditorPart editor;
 	protected ITextEditor srcEditor;
 	
+	protected static UIOperationErrorHandlerImpl originalHandler;
+	
 	@BeforeClass
 	public static void commonSetUp() throws Exception {
-		UIUserInteractionsHelper.unitTestsMode = true;
+		originalHandler = UIOperationsStatusHandler.handler;
+		UIOperationsStatusHandler.handler = new UIOperationsStatusHandler.Null_UIOperationErrorHandlerImpl();
+	}
+	
+	@AfterClass
+	public static void tearDownUp() throws Exception {
+		UIOperationsStatusHandler.handler = originalHandler;
 	}
 	
 	@Before
