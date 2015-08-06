@@ -221,9 +221,9 @@ public class DeeBuildManager extends BuildManager {
 			} catch (NumberFormatException e) {
 			}
 			
-			/* FIXME: SourceLineColumnRange path*/
-			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(PathUtil.createValidPath(""), line, column, endLine, endColumn);
-			ToolSourceMessage toolMessage = new ToolSourceMessage(sourceLinePos, StatusLevel.ERROR, errorMsg);
+			Path path = PathUtil.createValidPath("");
+			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(line, column, endLine, endColumn);
+			ToolSourceMessage toolMessage = new ToolSourceMessage(path, sourceLinePos, StatusLevel.ERROR, errorMsg);
 			/* FIXME: end position*/
 			ToolMarkersUtil.addErrorMarker(resource, toolMessage, LangCore_Actual.BUILD_PROBLEM_ID);
 		}

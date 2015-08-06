@@ -15,14 +15,6 @@ import static melnorme.utilbox.misc.MiscUtil.getClassResourceAsString;
 
 import java.lang.reflect.InvocationTargetException;
 
-import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
-import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
-import melnorme.lang.ide.ui.dialogs.WizardMessages;
-import melnorme.lang.tooling.data.AbstractValidator.ValidationException;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.DeeCorePreferences;
-import mmrnmhrm.core.build.DubLocationValidator;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,6 +22,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 
 import dtool.dub.BundlePath;
+import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
+import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
+import melnorme.lang.ide.ui.dialogs.WizardMessages;
+import melnorme.lang.tooling.data.ValidationException;
+import mmrnmhrm.core.DeeCore;
+import mmrnmhrm.core.DeeCorePreferences;
+import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
  * D New Project Wizard.
