@@ -24,7 +24,7 @@ public class DeeOpenTypeHandler extends AbstractHandler {
 		try {
 			throw new CommonException("Not supported");
 		} catch(CommonException ce) {
-			UIOperationsStatusHandler.handleOperationError("Open Type", ce);
+			UIOperationsStatusHandler.handleOperationStatus2("Open Type", ce);
 			return null;
 		}
 	}
