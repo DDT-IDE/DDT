@@ -25,9 +25,9 @@ import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.BuildTargetValidator;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
+import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
@@ -110,10 +110,10 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(BuildTargetValidator buildTargetValidator) throws CommonException {
+		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
 			
-			String buildConfigName = buildTargetValidator.getBuildConfigName();
-			String buildTypeName = buildTargetValidator.getBuildTypeName();
+			String buildConfigName = validatedBuildTarget.getBuildConfigName();
+			String buildTypeName = validatedBuildTarget.getBuildTypeName();
 			
 			ArrayList2<String> commands = new ArrayList2<>();
 			commands.add("build");
@@ -129,19 +129,19 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTargetValidator buildTargetValidator,
+		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
-			return new DubBuildTargetOperation(buildTargetValidator, opInfo, buildToolPath, fullBuild);
+			return new DubBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath, fullBuild);
 		}
 		
 	}
 	
 	public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public DubBuildTargetOperation(BuildTargetValidator buildTargetValidator, 
+		public DubBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, 
 				OperationInfo opInfo, Path buildToolPath, boolean fullBuild
 		) throws CommonException, CoreException {
-			super(buildTargetValidator.getBuildManager(), buildTargetValidator, opInfo, buildToolPath, fullBuild);
+			super(validatedBuildTarget.getBuildManager(), validatedBuildTarget, opInfo, buildToolPath, fullBuild);
 		}
 		
 		@Override
