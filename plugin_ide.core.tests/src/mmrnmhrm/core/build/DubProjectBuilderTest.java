@@ -20,16 +20,16 @@ import org.junit.Test;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.tests.SampleProject;
+import mmrnmhrm.tests.SampleDeeProject;
 
 public class DubProjectBuilderTest extends CommonCoreTest {
 	
-	protected static SampleProject sampleProj;
+	protected static SampleDeeProject sampleProj;
 	
 	@Test
 	public void test() throws Exception { test$(); }
 	public void test$() throws Exception {
-		try(SampleProject sampleProj_ = new SampleProject(getClass().getSimpleName())) {
+		try(SampleDeeProject sampleProj_ = new SampleDeeProject(getClass().getSimpleName())) {
 			sampleProj = sampleProj_;
 			IProject project = sampleProj.getProject();
 			

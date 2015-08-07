@@ -21,11 +21,11 @@ import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-public class SampleProject implements AutoCloseable {
+public class SampleDeeProject implements AutoCloseable {
 	
 	public final IProject project;
 	
-	public SampleProject(String name) throws CoreException {
+	public SampleDeeProject(String name) throws CoreException {
 		project = CommonCoreTest.createAndOpenProject(name, true);
 		fillProject();
 		CommonDeeWorkspaceTestNew.setupLangProject(project, false);

@@ -101,12 +101,6 @@ public class DeeBuildManager extends BuildManager {
 		
 	}
 	
-	@Override
-	public BuildTargetValidator createBuildTargetValidator2(IProject project, String buildConfigName,
-			String buildTypeName, String buildArguments) throws CommonException {
-		return new BuildTargetValidator(project, buildConfigName, buildTypeName, buildArguments);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	protected class DeeBuildType extends BuildType {
@@ -219,13 +213,14 @@ public class DeeBuildManager extends BuildManager {
 				line = Integer.valueOf(lineStr);
 				column = Integer.valueOf(columnStr);
 			} catch (NumberFormatException e) {
+				
 			}
 			
 			Path path = PathUtil.createValidPath("");
 			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(line, column, endLine, endColumn);
 			ToolSourceMessage toolMessage = new ToolSourceMessage(path, sourceLinePos, StatusLevel.ERROR, errorMsg);
-			/* FIXME: end position*/
-			ToolMarkersUtil.addErrorMarker(resource, toolMessage, LangCore_Actual.BUILD_PROBLEM_ID);
+			
+			new ToolMarkersUtil(true).addErrorMarker(resource, toolMessage, LangCore_Actual.BUILD_PROBLEM_ID);
 		}
 		
 	}
