@@ -88,11 +88,6 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 	}
 	
 	@Override
-	protected void bundleProjectRemoved(IProject project) {
-		model.removeProjectInfo(project);
-	}
-	
-	@Override
 	protected DubBundleInfo createNewInfo(IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		/* XXX: Could it be a problem to run a possibly long-running operation here? */

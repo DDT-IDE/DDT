@@ -26,6 +26,7 @@
 						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
 					</systemProperties>
 					<useUIHarness>false</useUIHarness>
+					<showEclipseLog>true</showEclipseLog>
 				</configuration>
 			</plugin>
 		</plugins>
