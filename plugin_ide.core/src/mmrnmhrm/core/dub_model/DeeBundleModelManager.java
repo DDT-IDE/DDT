@@ -84,28 +84,24 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 	
 	@Override
 	protected void bundleProjectAdded(IProject project) {
-		beginProjectDescribeUpdate(project);
-	}
-	
-	@Override
-	protected void bundleManifestFileChanged(final IProject project) {
-		beginProjectDescribeUpdate(project);
+		handleBundleManifestChanged(project);
 	}
 	
 	@Override
 	protected void bundleProjectRemoved(IProject project) {
-		/* FIXME: BUG here: updates to model should only occur in model agent. */
 		model.removeProjectInfo(project);
 	}
 	
 	@Override
 	protected DubBundleInfo createNewInfo(IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
-		return addProjectInfo(project, unresolvedDescription);
+		/* XXX: Could it be a problem to run a possibly long-running operation here? */
+		return createProjectInfo(unresolvedDescription);
 	}
 	
-	protected void beginProjectDescribeUpdate(final IProject project) {
+	protected void handleBundleManifestChanged(final IProject project) {
 		DubBundleInfo unresolvedProjectInfo = createNewInfo(project);
+		getModel().setProjectInfo(project, unresolvedProjectInfo); 
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
@@ -117,6 +113,11 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 		return new DubBundleDescription(unresolvedBundle);
 	}
 	
+	protected final DubBundleInfo updateProjectInfo(IProject project, DubBundleInfo oldInfo, 
+			DubBundleDescription dubBundleDescription) {
+		return getModel().updateProjectInfo(project, oldInfo, createProjectInfo(dubBundleDescription));
+	}
+	
 	/* ----------------------------------- */
 	
 	protected class SearchCompilersOnPathOperation_Eclipse extends SearchCompilersOnPathOperation {
@@ -126,11 +127,11 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 		}
 	}
 	
-	protected final DubBundleInfo addProjectInfo(IProject project, DubBundleDescription dubBundleDescription) {
+	protected DubBundleInfo createProjectInfo(DubBundleDescription dubBundleDescription) {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
-		return getModel().setProjectInfo(project, new DubBundleInfo(compilerInstall, dubBundleDescription));
+		return new DubBundleInfo(compilerInstall, dubBundleDescription);
 	}
 	
 	public void syncPendingUpdates() {
@@ -167,7 +168,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	
 	protected final IProject project;
 	protected final DubBundleInfo unresolvedProjectInfo;
-	protected final  DubBundleDescription unresolvedDescription;
+	protected final DubBundleDescription unresolvedDescription;
 	
 	protected ProjectModelDubDescribeTask(DeeBundleModelManager dubModelManager, IProject project, 
 			DubBundleInfo unresolvedProjectInfo) {
@@ -307,7 +308,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 				}
 				assertTrue(!bundleDesc.hasErrors());
 				
-				workspaceModelManager.addProjectInfo(project, bundleDesc);
+				workspaceModelManager.updateProjectInfo(project, unresolvedProjectInfo, bundleDesc);
 			}
 		}, null, 0, pm);
 		
