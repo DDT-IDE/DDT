@@ -12,9 +12,9 @@ package mmrnmhrm.ui.launch;
 
 import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
 
-public class DubCommandsConsoleListener extends AbstractToolsConsoleHandler {
+public class DeeToolOperationsConsoleListener extends AbstractToolsConsoleHandler {
 	
-	public DubCommandsConsoleListener() {
+	public DeeToolOperationsConsoleListener() {
 	}
 	
 }

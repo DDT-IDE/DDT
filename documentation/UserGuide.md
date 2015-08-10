@@ -27,7 +27,7 @@ A new D project can be created in the Project Explorer view. Open `New / Project
 
 ##### Project configuration
 Most project settings (such as source folders, or build configurations) are specified in the DUB package manifest file (typically `dub.json`). You will need to be familiar with the format of this file, see [here](http://code.dlang.org/package-format).
-DDT will detect any changes to the file automatically, and subsequently run `dub describe` to resolve DUB dependencies, and obtain other DUB package information. If an error occurs in during this operation, you can view the output of the command in the `D Build` console page in the Console view. TODO other console   
+DDT will detect any changes to the file automatically, and subsequently run `dub describe` to resolve DUB dependencies, and obtain other DUB package information. If an error occurs during this operation, you can view the output of the command in the `D Build` console page in the Console view.   
 
 ##### D Standard Library setup
 Every time `dub describe` is invoked, DDT will also search for a compiler in the `DUB_COMPILERS_PATH` and `PATH` environment variables. (`DUB_COMPILERS_PATH` is examined in the same way as the `PATH` variable). Most compiler standard-library directory layouts, relative to the compiler executable, should be recognized (be it DMD, GDC, or LDC). 

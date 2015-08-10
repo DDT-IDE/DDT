@@ -14,12 +14,12 @@ import java.nio.file.Path;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 
 import dtool.dub.DubBuildOutputParser;
-import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -87,16 +87,32 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild) 
+		public IToolOperation newClearBuildMarkersOperation() {
+			return new RunInDubAgentWrapper(super.newClearBuildMarkersOperation());
+		}
+		
+		@Override
+		public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers)
 				throws CommonException {
-			IToolOperation projectBuildOp = super.newProjectBuildOperation(targetsToBuild);
-			
-			return (pm) -> {
-				DeeCore.getDubProcessManager().submitTaskAndAwaitResult(() -> {
-					projectBuildOp.execute(pm);
-					return null;
-				});
-			};
+			return new RunInDubAgentWrapper(super.newProjectBuildOperation(targetsToBuild, clearMarkers));
+		}
+		
+	}
+	
+	protected static class RunInDubAgentWrapper implements IToolOperation {
+		
+		protected final IToolOperation toolOp;
+		
+		public RunInDubAgentWrapper(IToolOperation toolOp) {
+			this.toolOp = toolOp;
+		}
+		
+		@Override
+		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			DeeCore.getDubProcessManager().submitTaskAndAwaitResult(() -> {
+				toolOp.execute(pm);
+				return null;
+			});
 		}
 		
 	}
@@ -176,9 +192,16 @@ public class DeeBuildManager extends BuildManager {
 				};
 				
 				@Override
-				protected void processCompilerError(String file, String lineStr, String errorMsg) {
+				protected void processCompilerError(String filePathStr, String startPosStr, String errorMsg) {
+					Path filePath;
 					try {
-						addCompilerErrorMarker(file, lineStr, errorMsg);
+						filePath = PathUtil.createPath(filePathStr);
+					} catch(CommonException e) {
+						LangCore.logError("Invalid path for tool message: ", e);
+						return;
+					}
+					try {
+						addCompilerErrorMarker(filePath, startPosStr, errorMsg);
 					} catch (CoreException e) {
 						// log, but otherwise ignore & continue
 						DeeCore.logStatus(e);
@@ -196,12 +219,7 @@ public class DeeBuildManager extends BuildManager {
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		}
 		
-		protected void addCompilerErrorMarker(String file, String startPosStr, String errorMsg) throws CoreException {
-			IResource resource = getProject().findMember(file);
-			if(resource == null || !resource.exists()) {
-				return; /* FIXME: errors for other projects */
-			}
-			
+		protected void addCompilerErrorMarker(Path filePath, String startPosStr, String errorMsg) throws CoreException {
 			int line = -1;
 			int column = -1;
 			int endLine = -1;
@@ -216,11 +234,10 @@ public class DeeBuildManager extends BuildManager {
 				
 			}
 			
-			Path path = PathUtil.createValidPath("");
 			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(line, column, endLine, endColumn);
-			ToolSourceMessage toolMessage = new ToolSourceMessage(path, sourceLinePos, StatusLevel.ERROR, errorMsg);
+			ToolSourceMessage toolMessage = new ToolSourceMessage(filePath, sourceLinePos, StatusLevel.ERROR, errorMsg);
 			
-			new ToolMarkersUtil(true).addErrorMarker(resource, toolMessage, LangCore_Actual.BUILD_PROBLEM_ID);
+			new ToolMarkersUtil(true).addErrorMarkers(toolMessage, getProjectLocation());
 		}
 		
 	}
