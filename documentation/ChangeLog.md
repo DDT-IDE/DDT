@@ -1,16 +1,19 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+
+### 0.13.0
+ * Added support for Build Targets, based on DUB configurations (with the default and `unittest` build types).
+   * Available Build Targets are displayed in the Project Explorer. 
+   * You can configure which targets are enabled or disabled for a workspace build. Or run/debug a specific target.
+   * Project Build Configuration property page updated to enable configuring Build Targets.
+   * Build Targets support requires a `dub.json` file, SDL is not currently supported.
+ * Added support for compiler `-vcolumns` build output error information. (#84)
  * Updated [Configuration](documentation/UserGuide.md#configuration) section in the User Guide.
+ * Fixed: Auto-Complete doesn't find D modules in symlink source folders. (#108)
+ * Fixed: Displaying build errors when errors occur in dependent projects from the one where the build originated.
  * Fixed: Occasional AssertionFailure when creating new projects in nested locations (project would not show up in Explorer).
- * Fixed #108: Auto-Complete doesn't find D modules in symlink source folders.
  * Fixed: Arguments field in launch configuration is not multi-line.
- * Added support for Build Targets, based on DUB configurations.
-   * Available build targets are displayed in the Project Explorer. 
-   * You can configure which targets are enabled for a workspace build or not. Or run/debug a specific target.
-   * Project Build Configuration property page update to configure build targets.
- * Fixed #84: Support for `-vcolumns` build output error information.
- * Fixed error reporting of build messages when errors occur in dependent projects.
 
 ### 0.12.1
   ▶ Recommended/tested CDT version is now 8.7
