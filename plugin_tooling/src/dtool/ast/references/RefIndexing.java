@@ -27,7 +27,7 @@ import dtool.engine.analysis.DeeLanguageIntrinsics;
  * but sometimes semantic analysis is necessary 
  * (example foo[bar] - is bar a number or a type? is foo a type or a tuple?)
  */
-public class RefIndexing extends Reference {
+public class RefIndexing extends Reference implements IQualifierNode {
 	
 	public final Reference elemType;
 	public final Resolvable indexArg;

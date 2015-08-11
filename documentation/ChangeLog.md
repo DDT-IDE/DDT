@@ -9,6 +9,7 @@
    * Project Build Configuration property page updated to enable configuring Build Targets.
    * Build Targets support requires a `dub.json` file, SDL is not currently supported.
  * Added support for compiler `-vcolumns` build output error information. (#84)
+ * Added parser support for new D 2.068 type reference syntax: `Types[0].T a;` (dot after indexing).
  * Updated [Configuration](documentation/UserGuide.md#configuration) section in the User Guide.
  * Fixed: Auto-Complete doesn't find D modules in symlink source folders. (#108)
  * Fixed: Displaying build errors when errors occur in dependent projects from the one where the build originated.

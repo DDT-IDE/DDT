@@ -30,23 +30,20 @@ RefTemplateInstance(
   ►#?STRUCTURE_EXPECTED!【const(foo)●RefTypeModifier(RefIdentifier)】●
   ►#?STRUCTURE_EXPECTED!【typeof(Bar.foo)●RefTypeof(ExpReference(RefQualified(RefIdentifier RefIdentifier)))】●
   ►#?STRUCTURE_EXPECTED!【bar. foo!this #TYPE_REF_TPL_SIMPLE_ARG(flag)●RefTemplateInstance(RefQualified(RefIdentifier ?) ExpThis)】●
+
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) arrayElem[12]●RefIndexing(RefIdentifier Integer)】●
+  ►#?STRUCTURE_EXPECTED!【#_EXP_AMBIG(flag) arrayElem[int]●RefIndexing(RefIdentifier RefPrimitive)】●
 ¤》
 #@TYPE_REFS__QUALIFIER_ForDot《
   ►#@TYPE_REFS__QUALIFIER_ForTplOrDot●
   ►#@TYPE_REFS__QUALIFIER_ForDotOnly●
 ¤》
 
-// In the future it may be that RefIndexing and RefSlice are allowed as qualifier, as this makes sense semantically
 #@TYPE_REFS__NO_BROKEN__INVALID_QUALIFIER《
   ►#?STRUCTURE_EXPECTED!【int* #TYPE_REF_POINTER(flag)●RefTypePointer(RefPrimitive)】●
   ►#?STRUCTURE_EXPECTED!【foo*[]●RefTypeDynArray(RefTypePointer(RefIdentifier))】●
-  ►#?STRUCTURE_EXPECTED!【arrayElem[int]●RefIndexing(RefIdentifier RefPrimitive)】●
 
-  ►#?STRUCTURE_EXPECTED!【dai[foo*] *[bar][foo**bar]●
-    RefIndexing(RefIndexing(RefTypePointer(*) ?) ExpInfix(* ExpPrefix(ExpReference(?))))】●
   ►#?STRUCTURE_EXPECTED!【dai[int*[]] *** #TYPE_REF_POINTER(flag)●RefTypePointer(?(RefTypePointer(RefIndexing(? *))))】●
-  
-  ►#?STRUCTURE_EXPECTED!【foo[foo*[2 : #@NO_EXP]/*EXP*/]●RefIndexing(RefIdentifier ExpInfix(* *))】●
   
   ►#?STRUCTURE_EXPECTED!【dai[bar .. 123]●RefSlice(RefIdentifier #@ExpIdentifier Integer)】●
   ►#?STRUCTURE_EXPECTED!【dai * [bar .. 123] ●RefSlice(#@_FOO_PTR #@ExpIdentifier Integer)】●
