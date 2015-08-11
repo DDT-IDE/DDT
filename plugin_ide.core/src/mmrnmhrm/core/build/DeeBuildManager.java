@@ -23,7 +23,6 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
@@ -75,28 +74,16 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project,
-			boolean fullBuild) {
-		return new DeeBuildOperationCreator(project, opInfo, fullBuild);
+	public IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
+		return new RunInDubAgentWrapper(
+			super.newProjectClearMarkersOperation(opInfo, project));
 	}
 	
-	public static class DeeBuildOperationCreator extends BuildOperationCreator {
-		
-		public DeeBuildOperationCreator(IProject project, OperationInfo parentOpInfo, boolean fullBuild) {
-			super(project, parentOpInfo, fullBuild);
-		}
-		
-		@Override
-		public IToolOperation newClearBuildMarkersOperation() {
-			return new RunInDubAgentWrapper(super.newClearBuildMarkersOperation());
-		}
-		
-		@Override
-		public IToolOperation newProjectBuildOperation(Collection2<BuildTarget> targetsToBuild, boolean clearMarkers)
-				throws CommonException {
-			return new RunInDubAgentWrapper(super.newProjectBuildOperation(targetsToBuild, clearMarkers));
-		}
-		
+	@Override
+	public IToolOperation newBuildOperation(OperationInfo opInfo, IProject project, boolean clearMarkers,
+			Collection2<BuildTarget> targetsToBuild) throws CommonException {
+		return new RunInDubAgentWrapper(
+			super.newBuildOperation(opInfo, project, clearMarkers, targetsToBuild));
 	}
 	
 	protected static class RunInDubAgentWrapper implements IToolOperation {
@@ -146,18 +133,18 @@ public class DeeBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild) throws CommonException, CoreException {
-			return new DubBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath, fullBuild);
+				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
+			return new DubBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
 		}
 		
 	}
 	
 	public class DubBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public DubBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, 
-				OperationInfo opInfo, Path buildToolPath, boolean fullBuild
+		public DubBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo, 
+				Path buildToolPath
 		) throws CommonException, CoreException {
-			super(validatedBuildTarget.getBuildManager(), validatedBuildTarget, opInfo, buildToolPath, fullBuild);
+			super(validatedBuildTarget.getBuildManager(), validatedBuildTarget, opInfo, buildToolPath);
 		}
 		
 		@Override
