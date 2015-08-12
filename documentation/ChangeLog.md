@@ -4,7 +4,7 @@
 
 ### 0.13.0 RC2
  * Fix missing ".exe" suffix in Windows
- * Fixed: "null" text inserted when cancel pressed in Variables dialog.
+ * Fixed: "null" text inserted when cancel pressed in "Variables..." and other dialogs.
  * Fixed: project not being refreshed when Build Target build invoked directly from Project Explorer.
 
 ### 0.13.0
