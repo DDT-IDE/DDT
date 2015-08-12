@@ -34,7 +34,7 @@ import mmrnmhrm.core.build.DubLocationValidator;
  */
 public class DeeToolManager extends AbstractToolManager {
 	
-	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent(getClass().getSimpleName());
+	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent("DDT.DubProcessAgent");
 	
 	public DeeToolManager() {
 	}

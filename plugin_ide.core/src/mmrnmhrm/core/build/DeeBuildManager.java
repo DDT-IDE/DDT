@@ -23,6 +23,7 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
@@ -33,7 +34,6 @@ import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Collection2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -74,16 +74,22 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	public IToolOperation newProjectClearMarkersOperation(OperationInfo opInfo, IProject project) {
-		return new RunInDubAgentWrapper(
-			super.newProjectClearMarkersOperation(opInfo, project));
-	}
-	
-	@Override
-	public IToolOperation newBuildOperation(OperationInfo opInfo, IProject project, boolean clearMarkers,
-			Collection2<BuildTarget> targetsToBuild) throws CommonException {
-		return new RunInDubAgentWrapper(
-			super.newBuildOperation(opInfo, project, clearMarkers, targetsToBuild));
+	protected BuildOperationCreator createBuildOperationCreator(OperationInfo opInfo, IProject project) {
+		return new BuildOperationCreator(project, opInfo) {
+			
+			@Override
+			protected IToolOperation doCreateClearBuildMarkersOperation() {
+				return new RunInDubAgentWrapper(super.doCreateClearBuildMarkersOperation());
+			}
+			
+			@Override
+			public IToolOperation doCreateBuildTargetOperation(OperationInfo opInfo, IProject project,
+					Path buildToolPath, BuildTarget buildTarget) throws CommonException, CoreException {
+				return new RunInDubAgentWrapper(
+					super.doCreateBuildTargetOperation(opInfo, project, buildToolPath, buildTarget));
+			}
+			
+		};
 	}
 	
 	protected static class RunInDubAgentWrapper implements IToolOperation {
