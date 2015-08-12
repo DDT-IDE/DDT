@@ -4,6 +4,7 @@
 
 ### 0.13.0 RC2
  * Fix missing ".exe" suffix in Windows
+ * Fixed: "null" text inserted when cancel pressed in Variables dialog.
 
 ### 0.13.0
  * Added support for Build Targets, based on DUB configurations (with the default and `unittest` build types).
