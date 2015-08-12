@@ -19,6 +19,7 @@ import dtool.tests.DToolTestResources;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 
 public class DubManifestParserTest extends CommonDubTest {
 	
@@ -102,15 +103,15 @@ public class DubManifestParserTest extends CommonDubTest {
 		));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, null).getEffectiveTargetFullPath(dubBundle), 
-			path("default_path/default_name"));
+			path("default_path/default_name" + MiscUtil.getExecutableSuffix()));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, "xxx").getEffectiveTargetFullPath(dubBundle), 
-			path("xxx/default_name"));
+			path("xxx/default_name"  + MiscUtil.getExecutableSuffix()));
 		
 		DubBundle barLibBundle = parseDubBundle(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, null).getEffectiveTargetFullPath(barLibBundle), 
-			path("bar_lib"));
+			path("bar_lib"  + MiscUtil.getExecutableSuffix()));
 	}
 	
 }
