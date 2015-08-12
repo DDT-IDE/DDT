@@ -2,6 +2,9 @@
 
 ### (NextVersion)
 
+### 0.13.0 RC2
+ * Fix missing ".exe" suffix in Windows
+
 ### 0.13.0
  * Added support for Build Targets, based on DUB configurations (with the default and `unittest` build types).
    * Available Build Targets are displayed in the Project Explorer. 

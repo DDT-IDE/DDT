@@ -26,6 +26,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 
@@ -154,16 +155,12 @@ public class DubBundle {
 		return targetPath;
 	}
 	
-	protected String getEffectiveTargetName() {
-		return targetName != null ? targetName : name;
-	}
-	
 	public Path getValidTargetName() throws CommonException {
-		String rawTargetName = getEffectiveTargetName();
-		if(rawTargetName == null) {
-			throw new CommonException("Target Name not specified");
+		String effectiveTargetName = targetName != null ? targetName : name;
+		if(effectiveTargetName == null) {
+			throw new CommonException("Target name not specified");
 		}
-		return PathUtil.createPath(rawTargetName);
+		return PathUtil.createPath(effectiveTargetName + MiscUtil.getExecutableSuffix());
 	}
 	
 	public Path getValidTargetPath() throws CommonException {
@@ -289,7 +286,7 @@ public class DubBundle {
 		
 		public Path getEffectiveTargetName(DubBundle dubBundle) throws CommonException {
 			if(targetName != null) {
-				return PathUtil.createPath(targetName);
+				return PathUtil.createPath(targetName + MiscUtil.getExecutableSuffix());
 			}
 			return dubBundle.getValidTargetName();
 		}
