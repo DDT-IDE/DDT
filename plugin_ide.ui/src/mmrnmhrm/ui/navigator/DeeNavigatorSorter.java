@@ -12,11 +12,11 @@ package mmrnmhrm.ui.navigator;
 
 import java.text.Collator;
 
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
-import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
@@ -58,7 +58,7 @@ public class DeeNavigatorSorter extends LangNavigatorSorter {
 		}
 		
 		@Override
-		public Integer visitErrorElement(DubErrorElement element) {
+		public Integer visitErrorElement(BundleErrorElement element) {
 			return -10;
 		}
 		

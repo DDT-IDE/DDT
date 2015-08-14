@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,32 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace.viewmodel;
+package melnorme.lang.ide.core.project_model.view;
 
-public interface IDubElement extends IDeeNavigatorElement {
-	
-	public static IDubElement[] NO_CHILDREN = { };
+import melnorme.lang.ide.core.BundleModelElementKind;
+import melnorme.lang.ide.core.INavigatorElement_Actual;
+
+public interface IBundleModelElement extends INavigatorElement_Actual {
 	
 	Object getParent();
 	
 	boolean hasChildren();
-
+	
 	/** Returns the node's children. */
 	Object[] getChildren();
 	
-	public static enum DubElementType {
-		DUB_DEP_CONTAINER,
-		DUB_STD_LIB,
-		DUB_RESOLVED_DEP,
-		DUB_RAW_DEP,
-		DUB_ERROR_ELEMENT,
-		DUB_DEP_SRC_FOLDER,
-	}
-	
-	public DubElementType getElementType();
-	
 	public String getElementName();
 	
-	public String getPathString();
+	public BundleModelElementKind getElementType();
 	
+	public String getPathString();
+
 }

@@ -16,8 +16,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import dtool.dub.DubBundle;
+import melnorme.lang.ide.core.BundleModelElementKind;
+import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
 
-public class DubDependencyElement extends CommonDubElement<DubDependenciesContainer> {
+public class DubDependencyElement extends AbstractBundleModelElement<DubDependenciesContainer> {
 	
 	protected final DubBundle dubBundle;
 	protected final DubDepSourceFolderElement[] children;
@@ -29,8 +31,8 @@ public class DubDependencyElement extends CommonDubElement<DubDependenciesContai
 	}
 	
 	@Override
-	public DubElementType getElementType() {
-		return DubElementType.DUB_RESOLVED_DEP;
+	public BundleModelElementKind getElementType() {
+		return BundleModelElementKind.RESOLVED_DEP;
 	}
 	
 	public String getBundleName() {

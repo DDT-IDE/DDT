@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package melnorme.lang.ide.core;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
+import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
 
@@ -35,6 +36,9 @@ public class LangCore_Actual {
 	}
 	public static DeeBundleModelManager createBundleModelManager() {
 		return new DeeBundleModelManager();
+	}
+	public static DeeBundleModel getBundleModel() {
+		return (DeeBundleModel) LangCore.getBundleModel();
 	}
 	public static DeeBuildManager createBuildManager() {
 		return new DeeBuildManager(DeeCore.getDeeBundleModel());

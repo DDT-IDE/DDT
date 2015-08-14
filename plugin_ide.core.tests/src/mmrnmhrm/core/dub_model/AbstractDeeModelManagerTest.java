@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
@@ -36,8 +38,6 @@ import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
-import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
-import mmrnmhrm.core.workspace.viewmodel.IDubElement;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 
@@ -235,7 +235,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle, 
 			boolean expectedError) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
-		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
+		LinkedList<IBundleModelElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
 			checkAndRemoveRawDep(depChildren, rawDep);
 		}
@@ -245,14 +245,14 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 		assertTrue(depChildren.isEmpty());
 	}
 	
-	protected void checkAndRemoveRawDep(Collection<IDubElement> children, String depName) {
+	protected void checkAndRemoveRawDep(Collection<IBundleModelElement> children, String depName) {
 		assertNotNull(removeChildDep(children, depName));
 	}
 	
-	protected IDubElement removeChildDep(Collection<IDubElement> children, String depName) {
-		for (IDubElement dubElement : children) {
-			if(dubElement instanceof IDubElement) {
-				IDubElement depElement = (IDubElement) dubElement;
+	protected IBundleModelElement removeChildDep(Collection<IBundleModelElement> children, String depName) {
+		for (IBundleModelElement dubElement : children) {
+			if(dubElement instanceof IBundleModelElement) {
+				IBundleModelElement depElement = (IBundleModelElement) dubElement;
 				if(depElement.getElementName().equals(depName)) {
 					assertTrue(children.remove(dubElement));
 					return depElement;
@@ -264,10 +264,10 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	
 	protected void testDubContainer(IProject project, DubBundleChecker expMainBundle) {
 		DubDependenciesContainer dubContainer = getDubContainer(project);
-		assertTrue(dubContainer.getBundleInfo().isResolved());
+		assertTrue(dubContainer.getBundleInfo().getBundleDesc().isResolved());
 		
-		IDubElement[] children = dubContainer.getChildren();
-		LinkedList<IDubElement> depChildren = CollectionUtil.createLinkedList(children);
+		IBundleModelElement[] children = dubContainer.getChildren();
+		LinkedList<IBundleModelElement> depChildren = CollectionUtil.createLinkedList(children);
 		for (DubBundleChecker dep : expMainBundle.expectedDeps) {
 			checkAndRemoveChildDep(depChildren, dep);
 		}
@@ -275,18 +275,18 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 		assertTrue(depChildren.isEmpty());
 	}
 	
-	protected void removeErrorElement(DubBundleChecker expMainBundle, LinkedList<IDubElement> depChildren) {
+	protected void removeErrorElement(DubBundleChecker expMainBundle, LinkedList<IBundleModelElement> depChildren) {
 		if(expMainBundle.errorMsgStart != null) {
 			assertTrue(depChildren.size() > 0);
-			IDubElement removed = depChildren.remove(0);
-			DubErrorElement dubErrorElement = assertCast(removed, DubErrorElement.class);
+			IBundleModelElement removed = depChildren.remove(0);
+			BundleErrorElement dubErrorElement = assertCast(removed, BundleErrorElement.class);
 			assertTrue(dubErrorElement.errorDescription.contains(expMainBundle.errorMsgStart));
 		}
 	}
 	
-	protected void checkAndRemoveChildDep(Collection<IDubElement> children, DubBundleChecker dep) {
+	protected void checkAndRemoveChildDep(Collection<IBundleModelElement> children, DubBundleChecker dep) {
 		String depName = dep.bundleName;
-		IDubElement depElement = removeChildDep(children, depName);
+		IBundleModelElement depElement = removeChildDep(children, depName);
 		assertNotNull(depElement);
 		if(dep.sourceFolders == null) {
 			return;

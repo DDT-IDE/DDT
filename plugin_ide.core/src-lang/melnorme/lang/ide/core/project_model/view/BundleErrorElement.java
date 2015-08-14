@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace.viewmodel;
+package melnorme.lang.ide.core.project_model.view;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-public class DubErrorElement extends CommonDubElement<IDubElement> {
+import melnorme.lang.ide.core.BundleModelElementKind;
+
+public class BundleErrorElement extends AbstractBundleModelElement<IBundleModelElement> {
 	
 	public final String errorDescription;
 	
-	public DubErrorElement(IDubElement parent, String errorDescription) {
+	public BundleErrorElement(IBundleModelElement parent, String errorDescription) {
 		super(parent);
 		this.errorDescription = assertNotNull(errorDescription);
 	}
 	
 	@Override
-	public DubElementType getElementType() {
-		return DubElementType.DUB_ERROR_ELEMENT;
+	public BundleModelElementKind getElementType() {
+		return BundleModelElementKind.ERROR_ELEMENT;
 	}
 	
 	@Override

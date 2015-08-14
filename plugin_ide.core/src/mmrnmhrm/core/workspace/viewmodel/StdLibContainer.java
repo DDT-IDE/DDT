@@ -15,6 +15,9 @@ import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 
 import java.util.ArrayList;
 
+import melnorme.lang.ide.core.BundleModelElementKind;
+import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.utilbox.misc.Location;
 
 import org.eclipse.core.resources.IProject;
@@ -22,10 +25,10 @@ import org.eclipse.core.resources.IProject;
 import dtool.engine.StandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 
-public class StdLibContainer extends CommonDubElement<IProject> {
+public class StdLibContainer extends AbstractBundleModelElement<IProject> {
 	
 	protected final CompilerInstall compilerInstall;
-	protected final IDubElement[] depElements;
+	protected final IBundleModelElement[] depElements;
 	
 	public StdLibContainer(CompilerInstall compilerInstall, IProject project) {
 		super(project);
@@ -51,8 +54,8 @@ public class StdLibContainer extends CommonDubElement<IProject> {
 	}
 	
 	@Override
-	public DubElementType getElementType() {
-		return DubElementType.DUB_STD_LIB;
+	public BundleModelElementKind getElementType() {
+		return BundleModelElementKind.STANDARD_LIB;
 	}
 	
 	public IProject getProject() {
@@ -75,7 +78,7 @@ public class StdLibContainer extends CommonDubElement<IProject> {
 	}
 	
 	@Override
-	public IDubElement[] getChildren() {
+	public IBundleModelElement[] getChildren() {
 		return depElements;
 	}
 	

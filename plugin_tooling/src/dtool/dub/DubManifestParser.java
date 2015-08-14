@@ -24,8 +24,8 @@ import com.google.gson.stream.MalformedJsonException;
 import dtool.dub.DubBundle.BundleFile;
 import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundle.DubBundleException;
-import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.util.JsonReaderExt;
+import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
@@ -53,7 +53,7 @@ public class DubManifestParser extends CommonDubParser {
 	protected String version = null;
 	protected String[] sourceFolders = null;
 	protected ArrayList2<BundleFile> bundleFiles = null;
-	protected DubDependecyRef[] dependencies = null;
+	protected DependencyRef[] dependencies = null;
 	protected String targetName = null;
 	protected String targetPath = null;
 	
@@ -246,7 +246,7 @@ public class DubManifestParser extends CommonDubParser {
 		return new DubBundle.BundleFile(path, importOnly);
 	}
 	
-	protected DubDependecyRef[] parseDependencies(JsonReaderExt jsonParser) throws IOException {
+	protected DependencyRef[] parseDependencies(JsonReaderExt jsonParser) throws IOException {
 		return new BundleDependenciesSegmentParser(jsonParser).parse();
 	}
 	
@@ -258,39 +258,39 @@ public class DubManifestParser extends CommonDubParser {
 			this.jsonReader = jsonParser;
 		}
 		
-		public DubDependecyRef[] parse() throws IOException {
+		public DependencyRef[] parse() throws IOException {
 			if(jsonReader.peek() == JsonToken.BEGIN_OBJECT) 
 				return parseRawDeps();
 			
 			return parseResolvedDeps();
 		}
 		
-		public DubDependecyRef[] parseRawDeps() throws IOException, MalformedJsonException {
+		public DependencyRef[] parseRawDeps() throws IOException, MalformedJsonException {
 			jsonReader.consumeExpected(JsonToken.BEGIN_OBJECT);
 			
-			ArrayList<DubDependecyRef> deps = new ArrayList<>();
+			ArrayList<DependencyRef> deps = new ArrayList<>();
 			
 			while(jsonReader.hasNext()) {
 				String depName = jsonReader.consumeExpectedPropName();
 				jsonReader.skipValue(); // Ignore value for now, TODO
 				
-				deps.add(new DubDependecyRef(depName, null));
+				deps.add(new DependencyRef(depName, null));
 			}
 			jsonReader.consumeExpected(JsonToken.END_OBJECT);
-			return ArrayUtil.createFrom(deps, DubDependecyRef.class);
+			return ArrayUtil.createFrom(deps, DependencyRef.class);
 		}
 		
-		public DubDependecyRef[] parseResolvedDeps() throws IOException, MalformedJsonException {
+		public DependencyRef[] parseResolvedDeps() throws IOException, MalformedJsonException {
 			jsonReader.consumeExpected(JsonToken.BEGIN_ARRAY);
 			
-			ArrayList<DubDependecyRef> deps = new ArrayList<>();
+			ArrayList<DependencyRef> deps = new ArrayList<>();
 			
 			while(jsonReader.hasNext()) {
 				String depName = jsonReader.nextString();
-				deps.add(new DubDependecyRef(depName, null));
+				deps.add(new DependencyRef(depName, null));
 			}
 			jsonReader.consumeExpected(JsonToken.END_ARRAY);
-			return ArrayUtil.createFrom(deps, DubDependecyRef.class);
+			return ArrayUtil.createFrom(deps, DependencyRef.class);
 		}
 	}
 	

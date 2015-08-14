@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
@@ -30,7 +31,6 @@ import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
-import mmrnmhrm.core.workspace.viewmodel.DubErrorElement;
 import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
@@ -71,7 +71,7 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	public StyledString visitDepContainer(DubDependenciesContainer element) {
 		StyledString baseText = new StyledString("DUB Dependencies");
 		
-		DubBundleDescription bundleInfo = element.getBundleInfo();
+		DubBundleDescription bundleInfo = element.getBundleInfo().getBundleDesc();
 		if(bundleInfo.hasErrors()) {
 			// TODO: present more details about origin of error (json or dub describre)
 			if(bundleInfo.isResolved()) {
@@ -94,7 +94,7 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	}
 	
 	@Override
-	public StyledString visitErrorElement(DubErrorElement element) {
+	public StyledString visitErrorElement(BundleErrorElement element) {
 		return new StyledString(element.errorDescription);
 	}
 	
@@ -160,7 +160,7 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 	}
 	
 	@Override
-	public ImageDescriptor visitErrorElement(DubErrorElement element) {
+	public ImageDescriptor visitErrorElement(BundleErrorElement element) {
 		return DeeImages.DUB_ERROR_ELEMENT.getDescriptor();
 	}
 	

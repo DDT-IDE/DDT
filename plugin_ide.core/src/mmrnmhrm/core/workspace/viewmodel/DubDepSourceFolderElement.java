@@ -11,21 +11,26 @@
 package mmrnmhrm.core.workspace.viewmodel;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
 
-public class DubDepSourceFolderElement extends CommonDubElement<IDubElement> {
+import melnorme.lang.ide.core.BundleModelElementKind;
+import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+
+public class DubDepSourceFolderElement extends AbstractBundleModelElement<IBundleModelElement> {
 	
 	protected final Path srcFolderPath;
 	
-	public DubDepSourceFolderElement(IDubElement parent, Path srcFolderPath) {
+	public DubDepSourceFolderElement(IBundleModelElement parent, Path srcFolderPath) {
 		super(parent);
 		this.srcFolderPath = assertNotNull(srcFolderPath);
 	}
 	
 	@Override
-	public DubElementType getElementType() {
-		return DubElementType.DUB_DEP_SRC_FOLDER;
+	public BundleModelElementKind getElementType() {
+		return BundleModelElementKind.DEP_SRC_FOLDER;
 	}
 	
 	public Path getSourceFolderLocalPath() {
@@ -49,7 +54,7 @@ public class DubDepSourceFolderElement extends CommonDubElement<IDubElement> {
 	
 	@Override
 	public Object[] getChildren() {
-		return NO_CHILDREN;
+		return array();
 	}
 	
 }

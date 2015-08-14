@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
@@ -46,7 +47,7 @@ public class DubBundle {
 	public final Path[] effectiveSourceFolders;
 	public final List<BundleFile> bundleFiles;
 	
-	public final DubDependecyRef[] dependencies; // not null
+	public final DependencyRef[] dependencies; // not null
 	public final String targetName;
 	public final String targetPath;
 	
@@ -60,7 +61,7 @@ public class DubBundle {
 			String[] srcFolders,
 			Path[] effectiveSrcFolders, 
 			List<BundleFile> bundleFiles,
-			DubDependecyRef[] dependencies, 
+			DependencyRef[] dependencies, 
 			String targetName, 
 			String targetPath,
 			ArrayList2<DubConfiguration> configurations) {
@@ -71,7 +72,7 @@ public class DubBundle {
 		this.version = version == null ? DEFAULT_VERSION : version;
 		this.srcFolders = srcFolders;
 		this.effectiveSourceFolders = nullToEmpty(effectiveSrcFolders, Path.class);
-		this.dependencies = nullToEmpty(dependencies, DubDependecyRef.class);
+		this.dependencies = nullToEmpty(dependencies, DependencyRef.class);
 		this.bundleFiles = unmodifiableList(CollectionUtil.nullToEmpty(bundleFiles));
 		this.targetName = targetName;
 		this.targetPath = targetPath;
@@ -143,7 +144,7 @@ public class DubBundle {
 		
 	}
 	
-	public DubDependecyRef[] getDependencyRefs() {
+	public DependencyRef[] getDependencyRefs() {
 		return dependencies;
 	}
 	
@@ -168,22 +169,6 @@ public class DubBundle {
 			return PathUtil.createPath("");
 		}
 		return PathUtil.createPath(targetPath);
-	}
-	
-	public static class DubDependecyRef {
-		
-		public final String bundleName;
-		public final String version; // not implemented yet, not really important.
-		
-		public DubDependecyRef(String bundleName, String version) {
-			this.bundleName = assertNotNull(bundleName);
-			this.version = version;
-		}
-		
-		public String getBundleName() {
-			return bundleName;
-		}
-		
 	}
 	
 	@SuppressWarnings("serial")

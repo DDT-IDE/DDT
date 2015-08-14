@@ -51,8 +51,7 @@ public class DubBundleInfo extends AbstractBundleInfo {
 	}
 	
 	public DubDependenciesContainer getDubContainer(IProject project) {
-		DubBundleDescription bundleInfo = getBundleDesc();
-		return new DubDependenciesContainer(bundleInfo, project);
+		return new DubDependenciesContainer(this, project);
 	}
 	
 	@Override

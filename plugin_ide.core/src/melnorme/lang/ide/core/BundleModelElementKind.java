@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,19 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace.viewmodel;
+package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.project_model.view.AbstractRawDependencyElement;
-import melnorme.lang.tooling.bundle.DependencyRef;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 
-public class DubRawDependencyElement extends AbstractRawDependencyElement<DubDependenciesContainer> {
+@LANG_SPECIFIC
+public enum BundleModelElementKind {
+	DEP_CONTAINER,
+	DEP_REFERENCE,
 	
-	public DubRawDependencyElement(DubDependenciesContainer parent, DependencyRef dependencyRef) {
-		super(parent, dependencyRef);
-	}
+	RESOLVED_DEP,
+	STANDARD_LIB,
 	
+	ERROR_ELEMENT,
+	
+	DEP_SRC_FOLDER,
 }

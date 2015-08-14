@@ -20,6 +20,7 @@ import org.junit.Test;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.tooling.bundle.DependencyRef;
 
 public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 	
@@ -39,7 +40,7 @@ public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 		DubBundle mainBundle = new DubBundle(bpath(project), "dub_test", null,
 			"~master", array("source"), CommonDubTest.paths("source"), 
 			null,
-			array(new DubBundle.DubDependecyRef("dub_lib", null)), 
+			array(new DependencyRef("dub_lib", null)), 
 			null, null, null);
 		
 		DubBundle[] bundleDeps = array(new DubBundle(bpath(libProject), "dub_lib", null,

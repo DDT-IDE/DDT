@@ -20,9 +20,9 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
 import dtool.dub.DubBundle.BundleFile;
-import dtool.dub.DubBundle.DubDependecyRef;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
+import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -115,7 +115,7 @@ public class CommonDubTest extends CommonDToolTest {
 			assertEquals(bundle.getDependencyRefs().length, rawDeps.length);
 			for (int i = 0; i < rawDeps.length; i++) {
 				String expRawDep = rawDeps[i];
-				DubDependecyRef depRef = bundle.getDependencyRefs()[i];
+				DependencyRef depRef = bundle.getDependencyRefs()[i];
 				checkAreEqual(depRef.bundleName, expRawDep);
 			}
 		}

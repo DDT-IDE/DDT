@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import dtool.dub.DubBundle.DubBundleException;
-import dtool.dub.DubBundle.DubDependecyRef;
+import melnorme.lang.tooling.bundle.DependencyRef;
 
 /**
  * A resolved DUB bundle description. 
@@ -149,7 +149,7 @@ public class DubBundleDescription {
 		protected ArrayList<ResolvedManifest> calculateDirectDependencies(DubBundle bundle) {
 			ArrayList<ResolvedManifest> directDeps = new ArrayList<>(bundle.getDependencyRefs().length);
 			
-			for (DubDependecyRef directDependencyRef : bundle.getDependencyRefs()) {
+			for (DependencyRef directDependencyRef : bundle.getDependencyRefs()) {
 				String depName = directDependencyRef.getBundleName();
 				DubBundle depBundle = bundlesMap.get(depName);
 				if(depBundle == null) {
