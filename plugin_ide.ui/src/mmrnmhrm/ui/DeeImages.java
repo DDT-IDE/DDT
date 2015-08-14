@@ -54,8 +54,6 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageHandle DUB_BUNDLE_DEP = createManaged(T_OBJ_DUB, "DubBundleDep.png");
 	public static final ImageHandle DUB_RAW_DEP = createManaged(T_OBJ_DUB, "DubRawDep.png");
 	public static final ImageHandle DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
-	public static final ImageHandle SOURCE_FOLDER = createManaged(T_OBJ_DUB, "SourceFolder.png");
-	public static final ImageHandle BINARY_FOLDER = createManaged(T_OBJ_DUB, "BinaryFolder.png");
 	
 	public static final ImageHandle DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
 		ISharedImages.IMG_OBJS_ERROR_TSK);

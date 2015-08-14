@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
@@ -170,7 +171,7 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 	
 	@Override
 	public ImageDescriptor visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-		return DeeImages.SOURCE_FOLDER.getDescriptor();
+		return LangImages.NAV_SourceFolder;
 	}
 	
 	@Override
@@ -180,12 +181,12 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 	
 	@Override
 	public ImageDescriptor visitDubCacheFolder(IFolder element) {
-		return DeeImages.BINARY_FOLDER.getDescriptor();
+		return LangImages.NAV_OutputFolder;
 	}
 	
 	@Override
 	public ImageDescriptor visitDubSourceFolder(IFolder element) {
-		return DeeImages.SOURCE_FOLDER.getDescriptor();
+		return LangImages.NAV_SourceFolder;
 	}
 	
 }
