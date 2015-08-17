@@ -39,7 +39,7 @@ public enum BundleModelElementKind {
 			case DEP_CONTAINER: return visitDepContainer((DependenciesContainer) element);
 			case STANDARD_LIB: return visitStdLibContainer((StdLibContainer) element);
 			case DEP_REFERENCE: return visitRawDepElement((RawDependencyElement) element);
-			case ERROR_ELEMENT: return visitErrorElement((BundleErrorElement) element);
+			case ERROR_ELEMENT: return visitErrorElement2((BundleErrorElement) element);
 			case RESOLVED_DEP: return visitDepElement((DubDependencyElement) element);
 			case DEP_SRC_FOLDER: return visitDepSourceFolderElement((DubDepSourceFolderElement) element);
 			}
@@ -49,7 +49,7 @@ public enum BundleModelElementKind {
 		public abstract RET visitDepContainer(DependenciesContainer element);
 		public abstract RET visitStdLibContainer(StdLibContainer element);
 		public abstract RET visitRawDepElement(RawDependencyElement element);
-		public abstract RET visitErrorElement(BundleErrorElement element);
+		public abstract RET visitErrorElement2(BundleErrorElement element);
 		public abstract RET visitDepElement(DubDependencyElement element);
 		public abstract RET visitDepSourceFolderElement(DubDepSourceFolderElement element);
 		

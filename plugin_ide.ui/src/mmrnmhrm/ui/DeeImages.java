@@ -10,12 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+
 import melnorme.lang.ide.ui.LangElementImages;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.utils.PluginImagesHelper.ImageHandle;
-
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.ISharedImages;
 
 public abstract class DeeImages extends LangImages {
 	
@@ -53,9 +52,6 @@ public abstract class DeeImages extends LangImages {
 	public static final ImageDescriptor DUB_BUNDLE_DEP = createUnmanaged(T_OBJ_DUB, "DubBundleDep.png");
 	public static final ImageDescriptor DUB_RAW_DEP = createUnmanaged(T_OBJ_DUB, "DubRawDep.png");
 	public static final ImageDescriptor DUB_MANIFEST = createUnmanaged(T_OBJ_DUB, "DubManifest.png");
-	
-	public static final ImageDescriptor DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
-		ISharedImages.IMG_OBJS_ERROR_TSK).getDescriptor();
 	
 	/* ------------------------------------------- */
 	

@@ -116,7 +116,7 @@ public class CommonDubTest extends CommonDToolTest {
 			for (int i = 0; i < rawDeps.length; i++) {
 				String expRawDep = rawDeps[i];
 				DependencyRef depRef = bundle.getDependencyRefs()[i];
-				checkAreEqual(depRef.bundleName, expRawDep);
+				checkAreEqual(depRef.getBundleName(), expRawDep);
 			}
 		}
 		

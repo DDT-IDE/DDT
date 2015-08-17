@@ -19,11 +19,13 @@ import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.project_model.view.AbstractDependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 
+@LANG_SPECIFIC
 public class DependenciesContainer extends AbstractDependenciesContainer<DubBundleInfo> {
 	
 	public DependenciesContainer(DubBundleInfo bundleInfo, IProject project) {

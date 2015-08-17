@@ -27,10 +27,6 @@ import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.BundleModelGetImageSwitcher;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.BundleModelGetStyledTextSwitcher;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
@@ -42,7 +38,7 @@ import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElements
 public class DeeNavigatorLabelProvider extends LangNavigatorLabelProvider implements IStyledLabelProvider {
 	
 	@Override
-	protected DefaultGetStyledTextSwitcher getStyledText_switcher() {
+	protected DefaultGetStyledStringSwitcher getStyledString_switcher() {
 		return new DubElementTextProvider();
 	}
 	
@@ -51,19 +47,19 @@ public class DeeNavigatorLabelProvider extends LangNavigatorLabelProvider implem
 		return new DubElementImageProvider();
 	}
 	
-}
 
-class DubElementTextProvider extends DefaultGetStyledTextSwitcher
+
+class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	implements DeeNavigatorAllElementsSwitcher<StyledString> {
 	
-	protected static final RGB DUB_LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
-	protected static final RGB DUB_VERSION_ANNOTATION_FG = new RGB(120, 120, 200);
-	protected static final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
-	protected static final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
+	protected final RGB DUB_LOCATION_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected final RGB DUB_VERSION_ANNOTATION_FG = new RGB(120, 120, 200);
+	protected final RGB DUB_DEPCONTAINER_ANNOTATION_FG = new RGB(128, 128, 128);
+	protected final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
 	
 	@Override
 	public StyledString visitBundleElement(IBundleModelElement bundleElement) {
-		return new BundleModelGetStyledTextSwitcher() {
+		return new BundleModelGetStyledStringSwitcher() {
 			
 	@Override
 	public StyledString visitStdLibContainer(StdLibContainer element) {
@@ -95,11 +91,6 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 				return baseText.append(" <dub describing>", fgColor(DUB_DEPCONTAINER_ANNOTATION_FG));
 			}
 		}
-	}
-	
-	@Override
-	public StyledString visitErrorElement(BundleErrorElement element) {
-		return new StyledString(element.errorDescription);
 	}
 	
 	@Override
@@ -165,8 +156,8 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 			}
 			
 			@Override
-			public ImageDescriptor visitErrorElement(BundleErrorElement element) {
-				return DeeImages.DUB_ERROR_ELEMENT;
+			public ImageDescriptor visitErrorElement2(BundleErrorElement element) {
+				return LangImages.NAV_Error;
 			}
 			
 			@Override
@@ -197,4 +188,6 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 		return LangImages.NAV_SourceFolder;
 	}
 	
+}
+
 }
