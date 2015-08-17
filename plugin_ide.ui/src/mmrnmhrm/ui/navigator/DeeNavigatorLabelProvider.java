@@ -58,7 +58,7 @@ class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	protected final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
 	
 	@Override
-	public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+	public StyledString visitBundleElement2(IBundleModelElement bundleElement) {
 		return new BundleModelGetStyledStringSwitcher() {
 			
 	@Override
@@ -143,7 +143,7 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 		implements DeeNavigatorAllElementsSwitcher<ImageDescriptor> {
 	
 	@Override
-	public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+	public ImageDescriptor visitBundleElement2(IBundleModelElement bundleElement) {
 		return new BundleModelGetImageSwitcher() {
 			@Override
 			public ImageDescriptor visitStdLibContainer(StdLibContainer element) {
