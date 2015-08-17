@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace.viewmodel;
+package melnorme.lang.ide.core.project_model.view;
 
 import java.util.ArrayList;
 
@@ -22,10 +22,11 @@ import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.misc.ArrayUtil;
 import mmrnmhrm.core.dub_model.DubBundleInfo;
+import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 
-public class DubDependenciesContainer extends AbstractDependenciesContainer<DubBundleInfo> {
+public class DependenciesContainer extends AbstractDependenciesContainer<DubBundleInfo> {
 	
-	public DubDependenciesContainer(DubBundleInfo bundleInfo, IProject project) {
+	public DependenciesContainer(DubBundleInfo bundleInfo, IProject project) {
 		super(bundleInfo, project);
 	}
 	
@@ -43,7 +44,7 @@ public class DubDependenciesContainer extends AbstractDependenciesContainer<DubB
 			}
 		} else {
 			for (DependencyRef dubBundleRef : bundleInfo.getMainBundle().getDependencyRefs()) {
-				newChildren.add(new DubRawDependencyElement(this, dubBundleRef));
+				newChildren.add(new RawDependencyElement(this, dubBundleRef));
 			}
 		}
 		if(getBundleDesc().getError() != null) {

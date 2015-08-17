@@ -29,6 +29,7 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -37,7 +38,6 @@ import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
 
@@ -147,7 +147,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 		return assertNotNull(model.getProjectInfo(project)).getBundleDesc();
 	}
 	
-	public static DubDependenciesContainer getDubContainer(IProject project) {
+	public static DependenciesContainer getDubContainer(IProject project) {
 		return assertNotNull(model.getProjectInfo(project)).getDubContainer(project);
 	}
 	
@@ -234,7 +234,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	
 	protected void testDubContainerUnresolved(IProject project, DubBundleChecker expMainBundle, 
 			boolean expectedError) {
-		DubDependenciesContainer dubContainer = getDubContainer(project);
+		DependenciesContainer dubContainer = getDubContainer(project);
 		LinkedList<IBundleModelElement> depChildren = CollectionUtil.createLinkedList(dubContainer.getChildren());
 		for (String rawDep : expMainBundle.rawDeps) {
 			checkAndRemoveRawDep(depChildren, rawDep);
@@ -263,7 +263,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected void testDubContainer(IProject project, DubBundleChecker expMainBundle) {
-		DubDependenciesContainer dubContainer = getDubContainer(project);
+		DependenciesContainer dubContainer = getDubContainer(project);
 		assertTrue(dubContainer.getBundleInfo().getBundleDesc().isResolved());
 		
 		IBundleModelElement[] children = dubContainer.getChildren();

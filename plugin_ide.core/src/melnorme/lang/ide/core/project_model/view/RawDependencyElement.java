@@ -8,14 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.workspace.viewmodel;
+package melnorme.lang.ide.core.project_model.view;
 
 import melnorme.lang.ide.core.project_model.view.AbstractRawDependencyElement;
 import melnorme.lang.tooling.bundle.DependencyRef;
 
-public class DubRawDependencyElement extends AbstractRawDependencyElement<DubDependenciesContainer> {
+public class RawDependencyElement extends AbstractRawDependencyElement<DependenciesContainer> {
 	
-	public DubRawDependencyElement(DubDependenciesContainer parent, DependencyRef dependencyRef) {
+	public RawDependencyElement(DependenciesContainer parent, DependencyRef dependencyRef) {
 		super(parent, dependencyRef);
 	}
 	

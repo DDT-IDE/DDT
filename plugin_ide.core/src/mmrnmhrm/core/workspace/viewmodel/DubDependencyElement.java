@@ -16,15 +16,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import dtool.dub.DubBundle;
-import melnorme.lang.ide.core.BundleModelElementKind;
 import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 
-public class DubDependencyElement extends AbstractBundleModelElement<DubDependenciesContainer> {
+public class DubDependencyElement extends AbstractBundleModelElement<DependenciesContainer> {
 	
 	protected final DubBundle dubBundle;
 	protected final DubDepSourceFolderElement[] children;
 	
-	public DubDependencyElement(DubDependenciesContainer parent, DubBundle dubBundle) {
+	public DubDependencyElement(DependenciesContainer parent, DubBundle dubBundle) {
 		super(parent);
 		this.dubBundle = dubBundle;
 		this.children = createChildren();

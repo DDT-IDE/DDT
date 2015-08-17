@@ -11,7 +11,7 @@
 package mmrnmhrm.core.dub_model;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
+
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 
 import org.eclipse.core.resources.IProject;
@@ -20,6 +20,7 @@ import org.junit.Test;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.tooling.bundle.DependencyRef;
 
 public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
@@ -53,7 +54,7 @@ public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 		
 		getModelManager().updateProjectInfo(project, getModelManager().getProjectInfo(project), bundleDesc);
 		
-		DubDependenciesContainer dubContainer = getDubContainer(project);
+		DependenciesContainer dubContainer = getDubContainer(project);
 		assertTrue(dubContainer.getChildren().length == 1);
 		
 		DubDependencyElement libDepElement = 

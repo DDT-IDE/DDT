@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.CoreUtil.arrayFrom;
 
 import java.util.ArrayList;
 
-import melnorme.lang.ide.core.BundleModelElementKind;
 import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.utilbox.misc.Location;
 

@@ -49,14 +49,13 @@ public abstract class DeeImages extends LangImages {
 	
 	protected static final String T_OBJ_DUB = "obj16_dub";
 	
-	public static final ImageHandle DUB_DEPS_CONTAINER = createManaged(T_OBJ_DUB, "DubDependenciesContainer.png");
-	public static final ImageHandle DUB_STD_LIB = createManaged(T_OBJ_DUB, "StandardLibrary.png");
-	public static final ImageHandle DUB_BUNDLE_DEP = createManaged(T_OBJ_DUB, "DubBundleDep.png");
-	public static final ImageHandle DUB_RAW_DEP = createManaged(T_OBJ_DUB, "DubRawDep.png");
-	public static final ImageHandle DUB_MANIFEST = createManaged(T_OBJ_DUB, "DubManifest.png");
+	public static final ImageDescriptor DUB_STD_LIB = NAV_LibraryNative;
+	public static final ImageDescriptor DUB_BUNDLE_DEP = createUnmanaged(T_OBJ_DUB, "DubBundleDep.png");
+	public static final ImageDescriptor DUB_RAW_DEP = createUnmanaged(T_OBJ_DUB, "DubRawDep.png");
+	public static final ImageDescriptor DUB_MANIFEST = createUnmanaged(T_OBJ_DUB, "DubManifest.png");
 	
-	public static final ImageHandle DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
-		ISharedImages.IMG_OBJS_ERROR_TSK);
+	public static final ImageDescriptor DUB_ERROR_ELEMENT = createFromPlatformSharedImage(T_OBJ_DUB, "DubErrorElement", 
+		ISharedImages.IMG_OBJS_ERROR_TSK).getDescriptor();
 	
 	/* ------------------------------------------- */
 	

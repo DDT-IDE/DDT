@@ -12,17 +12,15 @@ package mmrnmhrm.ui.navigator;
 
 import java.text.Collator;
 
-import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
-import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
-import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
-import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
-import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
-import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
-import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
+import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
+import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
+import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
+import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
 
 public class DeeNavigatorSorter extends LangNavigatorSorter {
 	
@@ -43,33 +41,23 @@ public class DeeNavigatorSorter extends LangNavigatorSorter {
 		implements DeeNavigatorAllElementsSwitcher<Integer> {
 		
 		@Override
-		public Integer visitStdLibContainer(StdLibContainer element) {
-			return -20;
-		}
-		
-		@Override
-		public Integer visitDepContainer(DubDependenciesContainer element) {
-			return -10;
-		}
-		
-		@Override
-		public Integer visitRawDepElement(DubRawDependencyElement element) {
-			return 0;
-		}
-		
-		@Override
-		public Integer visitErrorElement(BundleErrorElement element) {
-			return -10;
-		}
-		
-		@Override
-		public Integer visitDepElement(DubDependencyElement element) {
-			return 0;
-		}
-		
-		@Override
-		public Integer visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-			return 0;
+		public Integer visitBundleElement(IBundleModelElement bundleElement) {
+			return new BundleModelElementsSorterSwitcher() {
+				@Override
+				public Integer visitStdLibContainer(StdLibContainer element) {
+					return -20;
+				}
+				
+				@Override
+				public Integer visitDepElement(DubDependencyElement element) {
+					return 0;
+				}
+				
+				@Override
+				public Integer visitDepSourceFolderElement(DubDepSourceFolderElement element) {
+					return 0;
+				}
+			}.switchBundleElement(bundleElement);
 		}
 		
 		@Override

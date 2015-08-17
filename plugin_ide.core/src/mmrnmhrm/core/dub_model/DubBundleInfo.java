@@ -21,10 +21,10 @@ import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
 import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 
 public class DubBundleInfo extends AbstractBundleInfo {
 	
@@ -50,8 +50,16 @@ public class DubBundleInfo extends AbstractBundleInfo {
 		return getBundleDesc().getMainBundle();
 	}
 	
-	public DubDependenciesContainer getDubContainer(IProject project) {
-		return new DubDependenciesContainer(this, project);
+	public boolean hasErrors() {
+		return bundleDesc.hasErrors();
+	}
+	
+	public boolean isResolved() {
+		return bundleDesc.isResolved();
+	}
+	
+	public DependenciesContainer getDubContainer(IProject project) {
+		return new DependenciesContainer(this, project);
 	}
 	
 	@Override

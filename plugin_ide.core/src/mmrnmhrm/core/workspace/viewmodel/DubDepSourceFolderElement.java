@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.nio.file.Path;
 
-import melnorme.lang.ide.core.BundleModelElementKind;
 import melnorme.lang.ide.core.project_model.view.AbstractBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 
 public class DubDepSourceFolderElement extends AbstractBundleModelElement<IBundleModelElement> {

@@ -22,16 +22,19 @@ import org.eclipse.swt.graphics.RGB;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
+import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.BundleModelGetImageSwitcher;
+import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.BundleModelGetStyledTextSwitcher;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetImageSwitcher;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider.DefaultGetStyledTextSwitcher;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
-import mmrnmhrm.core.workspace.viewmodel.DubRawDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.navigator.DeeNavigatorContentProvider.DeeNavigatorAllElementsSwitcher;
@@ -59,6 +62,10 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	protected static final RGB DUB_DEPCONTAINER_ERROR_ANNOTATION_FG = new RGB(196, 64, 64);
 	
 	@Override
+	public StyledString visitBundleElement(IBundleModelElement bundleElement) {
+		return new BundleModelGetStyledTextSwitcher() {
+			
+	@Override
 	public StyledString visitStdLibContainer(StdLibContainer element) {
 		StyledString baseText = new StyledString("D Standard Library");
 		if(element.isMissingStdLib()) {
@@ -68,13 +75,15 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	}
 	
 	@Override
-	public StyledString visitDepContainer(DubDependenciesContainer element) {
+	public StyledString visitDepContainer(DependenciesContainer element) {
 		StyledString baseText = new StyledString("DUB Dependencies");
 		
-		DubBundleDescription bundleInfo = element.getBundleInfo().getBundleDesc();
+		DubBundleInfo bundleInfo = element.getBundleInfo();
+		
+		DubBundleDescription bundleDesc = bundleInfo.getBundleDesc();
 		if(bundleInfo.hasErrors()) {
 			// TODO: present more details about origin of error (json or dub describre)
-			if(bundleInfo.isResolved()) {
+			if(bundleDesc.isResolved()) {
 				return baseText.append(" [DUB error]", fgColor(DUB_DEPCONTAINER_ERROR_ANNOTATION_FG)); 
 			} else {
 				return baseText.append(" [DUB error]", fgColor(DUB_DEPCONTAINER_ERROR_ANNOTATION_FG));
@@ -86,11 +95,6 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 				return baseText.append(" <dub describing>", fgColor(DUB_DEPCONTAINER_ANNOTATION_FG));
 			}
 		}
-	}
-	
-	@Override
-	public StyledString visitRawDepElement(DubRawDependencyElement element) {
-		return new StyledString(element.getBundleName());
 	}
 	
 	@Override
@@ -109,6 +113,9 @@ class DubElementTextProvider extends DefaultGetStyledTextSwitcher
 	@Override
 	public StyledString visitDepSourceFolderElement(DubDepSourceFolderElement element) {
 		return new StyledString(element.getSourceFolderLocalPath().toString());
+	}
+		
+		}.switchBundleElement(bundleElement);
 	}
 	
 	@Override
@@ -145,38 +152,39 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 		implements DeeNavigatorAllElementsSwitcher<ImageDescriptor> {
 	
 	@Override
-	public ImageDescriptor visitDepContainer(DubDependenciesContainer element) {
-		return DeeImages.DUB_DEPS_CONTAINER.getDescriptor();
-	}
-	
-	@Override
-	public ImageDescriptor visitStdLibContainer(StdLibContainer element) {
-		return DeeImages.DUB_STD_LIB.getDescriptor();
-	}
-	
-	@Override
-	public ImageDescriptor visitRawDepElement(DubRawDependencyElement element) {
-		return DeeImages.DUB_RAW_DEP.getDescriptor();
-	}
-	
-	@Override
-	public ImageDescriptor visitErrorElement(BundleErrorElement element) {
-		return DeeImages.DUB_ERROR_ELEMENT.getDescriptor();
-	}
-	
-	@Override
-	public ImageDescriptor visitDepElement(DubDependencyElement element) {
-		return DeeImages.DUB_BUNDLE_DEP.getDescriptor();
-	}
-	
-	@Override
-	public ImageDescriptor visitDepSourceFolderElement(DubDepSourceFolderElement element) {
-		return LangImages.NAV_SourceFolder;
+	public ImageDescriptor visitBundleElement(IBundleModelElement bundleElement) {
+		return new BundleModelGetImageSwitcher() {
+			@Override
+			public ImageDescriptor visitStdLibContainer(StdLibContainer element) {
+				return DeeImages.DUB_STD_LIB;
+			}
+			
+			@Override
+			public ImageDescriptor visitRawDepElement(RawDependencyElement element) {
+				return DeeImages.DUB_RAW_DEP;
+			}
+			
+			@Override
+			public ImageDescriptor visitErrorElement(BundleErrorElement element) {
+				return DeeImages.DUB_ERROR_ELEMENT;
+			}
+			
+			@Override
+			public ImageDescriptor visitDepElement(DubDependencyElement element) {
+				return DeeImages.DUB_BUNDLE_DEP;
+			}
+			
+			@Override
+			public ImageDescriptor visitDepSourceFolderElement(DubDepSourceFolderElement element) {
+				return LangImages.NAV_SourceFolder;
+			}
+			
+		}.switchBundleElement(bundleElement);
 	}
 	
 	@Override
 	public ImageDescriptor visitDubManifestFile(IFile element) {
-		return DeeImages.DUB_MANIFEST.getDescriptor();
+		return DeeImages.DUB_MANIFEST;
 	}
 	
 	@Override

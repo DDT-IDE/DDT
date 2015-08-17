@@ -25,15 +25,15 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
 import melnorme.lang.ide.core.operations.OperationInfo;
+import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.utils.TextMessageUtils;
+import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.engine.DeeToolManager;
-import mmrnmhrm.core.workspace.viewmodel.DubDependenciesContainer;
-import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.launch.DeeLaunchShortcut;
 
@@ -72,7 +72,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				return;
 			
 			MenuManager dubMenu = new MenuManager(DeeUIMessages.DubActionMenu, 
-				DeeImages.DUB_DEPS_CONTAINER.getDescriptor(), "dubMenu");
+				LangImages.NAV_Library, "dubMenu");
 			dubMenu.add(action1);
 			dubMenu.add(action2);
 			dubMenu.add(action3);
@@ -89,8 +89,8 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				}
 				return null;
 			}
-			if(selElement instanceof DubDependenciesContainer) {
-				DubDependenciesContainer dubDependenciesContainer = (DubDependenciesContainer) selElement;
+			if(selElement instanceof DependenciesContainer) {
+				DependenciesContainer dubDependenciesContainer = (DependenciesContainer) selElement;
 				return dubDependenciesContainer.getParent();
 			}
 			if(DeeNavigatorContentProvider.isDubManifestFile(selElement)) {
