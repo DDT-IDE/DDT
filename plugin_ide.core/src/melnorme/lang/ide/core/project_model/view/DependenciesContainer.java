@@ -16,19 +16,19 @@ import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.project_model.view.AbstractDependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 
 @LANG_SPECIFIC
-public class DependenciesContainer extends AbstractDependenciesContainer<DubBundleInfo> {
+public class DependenciesContainer extends AbstractDependenciesContainer<BundleInfo> {
 	
-	public DependenciesContainer(DubBundleInfo bundleInfo, IProject project) {
+	public DependenciesContainer(BundleInfo bundleInfo, IProject project) {
 		super(bundleInfo, project);
 	}
 	

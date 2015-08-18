@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 
 import dtool.dub.DubBuildOutputParser;
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
@@ -28,7 +29,6 @@ import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.StatusLevel;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
@@ -45,7 +45,6 @@ import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
-import mmrnmhrm.core.dub_model.DubBundleInfo;
 
 public class DeeBuildManager extends BuildManager {
 	
@@ -56,13 +55,12 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected void bundleProjectAdded(IProject project, AbstractBundleInfo bundleInfo) {
-		DubBundleInfo dubBundleInfo = (DubBundleInfo) bundleInfo;
-		if(dubBundleInfo.getBundleDesc().isResolved()) {
+	protected void bundleProjectAdded(IProject project, BundleInfo bundleInfo) {
+		if(bundleInfo.getBundleDesc().isResolved()) {
 			// We ignore resolved description, because only unresolved ones have configuration info
 			return;
 		}
-		super.bundleProjectAdded(project, dubBundleInfo);
+		super.bundleProjectAdded(project, bundleInfo);
 	}
 	
 	@Override
@@ -127,7 +125,7 @@ public class DeeBuildManager extends BuildManager {
 			ArrayList2<String> commands = new ArrayList2<>();
 			commands.add("build");
 			
-			if(!buildConfigName.equals(DubBundleInfo.DEFAULT_CONFIGURATION)) {
+			if(!buildConfigName.equals(BundleInfo.DEFAULT_CONFIGURATION)) {
 				commands.addElements("-c" , buildConfigName);
 			}
 			

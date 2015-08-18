@@ -33,6 +33,7 @@ import dtool.dub.DubHelper;
 import dtool.dub.DubManifestParser;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.MessageEventInfo;
@@ -59,9 +60,9 @@ import mmrnmhrm.core.engine.DeeToolManager;
  * Updates a {@link DeeBundleModel} when resource changes occur, using 'dub describe'.
  * Also creates problem markers on the Eclipse workspace. 
  */
-public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, DeeBundleModel> {
+public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
-	public static class DeeBundleModel extends LangBundleModel<DubBundleInfo> {
+	public static class DeeBundleModel extends LangBundleModel {
 		
 	}
 	
@@ -88,14 +89,14 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 	}
 	
 	@Override
-	protected DubBundleInfo createNewInfo(IProject project) {
+	protected BundleInfo createNewInfo(IProject project) {
 		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
 		/* XXX: Could it be a problem to run a possibly long-running operation here? */
 		return createProjectInfo(unresolvedDescription);
 	}
 	
 	protected void handleBundleManifestChanged(final IProject project) {
-		DubBundleInfo unresolvedProjectInfo = createNewInfo(project);
+		BundleInfo unresolvedProjectInfo = createNewInfo(project);
 		getModel().setProjectInfo(project, unresolvedProjectInfo); 
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
@@ -108,7 +109,7 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 		return new DubBundleDescription(unresolvedBundle);
 	}
 	
-	protected final DubBundleInfo updateProjectInfo(IProject project, DubBundleInfo oldInfo, 
+	protected final BundleInfo updateProjectInfo(IProject project, BundleInfo oldInfo, 
 			DubBundleDescription dubBundleDescription) {
 		return getModel().updateProjectInfo(project, oldInfo, createProjectInfo(dubBundleDescription));
 	}
@@ -122,11 +123,11 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 		}
 	}
 	
-	protected DubBundleInfo createProjectInfo(DubBundleDescription dubBundleDescription) {
+	protected BundleInfo createProjectInfo(DubBundleDescription dubBundleDescription) {
 		CompilerInstall compilerInstall = new SearchCompilersOnPathOperation_Eclipse().
 				searchForCompilersInDefaultPathEnvVars().getPreferredInstall();
 		
-		return new DubBundleInfo(compilerInstall, dubBundleDescription);
+		return new BundleInfo(compilerInstall, dubBundleDescription);
 	}
 	
 	public void syncPendingUpdates() {
@@ -162,11 +163,11 @@ public class DeeBundleModelManager extends BundleModelManager<DubBundleInfo, Dee
 class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements IRunnableWithJob {
 	
 	protected final IProject project;
-	protected final DubBundleInfo unresolvedProjectInfo;
+	protected final BundleInfo unresolvedProjectInfo;
 	protected final DubBundleDescription unresolvedDescription;
 	
 	protected ProjectModelDubDescribeTask(DeeBundleModelManager dubModelManager, IProject project, 
-			DubBundleInfo unresolvedProjectInfo) {
+			BundleInfo unresolvedProjectInfo) {
 		super(dubModelManager);
 		this.project = project;
 		this.unresolvedProjectInfo = unresolvedProjectInfo;
@@ -316,7 +317,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		DubBundle main = unresolvedDescription.getMainBundle();
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
-		DubBundleInfo newProjectInfo = new DubBundleInfo(unresolvedProjectInfo.compilerInstall, bundleDesc);
+		BundleInfo newProjectInfo = new BundleInfo(unresolvedProjectInfo.getCompilerInstall(), bundleDesc);
 		workspaceModelManager.getModel().setProjectInfo(project, newProjectInfo);
 		
 		setDubErrorMarker(project, dubError);

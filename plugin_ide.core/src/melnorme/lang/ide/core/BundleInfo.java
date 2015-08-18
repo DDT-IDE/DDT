@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.dub_model;
+package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.misc.StringUtil.asString;
@@ -26,14 +26,14 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.core.CommonException;
 
-public class DubBundleInfo extends AbstractBundleInfo {
+public class BundleInfo extends AbstractBundleInfo {
 	
 	public static final String DEFAULT_CONFIGURATION = "(default)";
 	
 	protected final CompilerInstall compilerInstall; 
 	protected final DubBundleDescription bundleDesc;
 	
-	public DubBundleInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
+	public BundleInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
 		this.compilerInstall = assertNotNull(compilerInstall);
 		this.bundleDesc = assertNotNull(bundleDesc);
 	}

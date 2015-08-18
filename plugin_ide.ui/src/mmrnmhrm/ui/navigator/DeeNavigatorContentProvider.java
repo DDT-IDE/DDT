@@ -16,12 +16,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
+import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
 import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
-import mmrnmhrm.core.dub_model.DubBundleInfo;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
 public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvider {
@@ -37,7 +37,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		return new LangNavigatorSwitcher_GetChildren() {
 			@Override
 			public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) {
-				DubBundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
+				BundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
 				if(projectInfo != null) {
 					DependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 					projectChildren.add(dubContainer);
@@ -106,7 +106,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		} 
 		IFolder folder = (IFolder) element;
 		IProject project = folder.getProject();
-		DubBundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
+		BundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
 		if(projectInfo == null) {
 			return false;
 		}
