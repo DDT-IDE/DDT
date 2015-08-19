@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
@@ -117,22 +116,21 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildOptions(ValidatedBuildTarget validatedBuildTarget) throws CommonException {
+		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
+				throws CommonException {
 			
-			String buildConfigName = validatedBuildTarget.getBuildConfigName();
-			String buildTypeName = validatedBuildTarget.getBuildTypeName();
+			String buildConfigName = vbt.getBuildConfigName();
+			String buildTypeName = vbt.getBuildTypeName();
 			
-			ArrayList2<String> commands = new ArrayList2<>();
-			commands.add("build");
+			buildArgs.add("build");
 			
 			if(!buildConfigName.equals(BundleInfo.DEFAULT_CONFIGURATION)) {
-				commands.addElements("-c" , buildConfigName);
+				buildArgs.addElements("-c" , buildConfigName);
 			}
 			
 			if(!buildTypeName.equals(DeeBuildManager.BuildType_Default)) {
-				commands.addElements("-b" , buildTypeName);
+				buildArgs.addElements("-b" , buildTypeName);
 			}
-			return DebugPlugin.renderArguments(commands.toArray(String.class), null);
 		}
 		
 		@Override
@@ -155,15 +153,6 @@ public class DeeBuildManager extends BuildManager {
 		protected void addToolCommand(ArrayList2<String> commands)
 				throws CoreException, CommonException, OperationCancellation {
 //			super.addToolCommand(commands);
-		}
-		
-		@Override
-		protected String[] getMainArguments() throws CoreException, CommonException, OperationCancellation {
-			ArrayList2<String> commands = new ArrayList2<>();
-//			if(fullBuild) {
-//				commands.add("--force");
-//			}
-			return commands.toArray(String.class);
 		}
 		
 		@Override

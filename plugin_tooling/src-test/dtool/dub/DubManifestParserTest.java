@@ -72,7 +72,7 @@ public class DubManifestParserTest extends CommonDubTest {
 			"java.io.FileNotFoundException", IGNORE_STR, IGNORE_STR, null));
 	}
 	
-	protected static final BundlePath SAMPLE_BUNDLE_PATH = new BundlePath(DUB_TEST_BUNDLES);
+	public static final BundlePath SAMPLE_BUNDLE_PATH = new BundlePath(DUB_TEST_BUNDLES);
 	
 	@Test
 	public void testBadPath() throws Exception { testBadPath$(); }
