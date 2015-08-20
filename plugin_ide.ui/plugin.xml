@@ -305,7 +305,7 @@
 	<extension point="org.eclipse.ui.propertyPages">
 		<page
 			class="mmrnmhrm.ui.preferences.pages.DeeBuildConfigurationPropertyPage"
-			id="org.dsource.ddt.ide.ui.properties.ProjectBuildConfiguration"
+			id="org.dsource.ddt.ide.ui.propertyPages.ProjectBuildConfiguration"
 			name="%LangBuildOptionsPropertyPage.name">
 			<enabledWhen> 
 				<reference definitionId="org.dsource.ddt.ide.core.expressions.isNatureProject" />
