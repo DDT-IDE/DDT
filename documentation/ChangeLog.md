@@ -1,6 +1,8 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
+ * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults)
 
 ### 0.13.0 RC2
  * Fix missing ".exe" suffix in Windows, in Program Path field for Build/Launch.
