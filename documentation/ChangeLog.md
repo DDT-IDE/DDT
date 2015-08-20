@@ -1,6 +1,7 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
  * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults)
 
