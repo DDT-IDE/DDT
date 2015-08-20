@@ -23,7 +23,6 @@ import java.util.List;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.HashcodeUtil;
 import melnorme.utilbox.misc.Location;
@@ -156,19 +155,15 @@ public class DubBundle {
 		return targetPath;
 	}
 	
-	public Path getValidTargetName() throws CommonException {
-		String effectiveTargetName = targetName != null ? targetName : name;
-		if(effectiveTargetName == null) {
-			throw new CommonException("Target name not specified");
-		}
-		return PathUtil.createPath(effectiveTargetName + MiscUtil.getExecutableSuffix());
+	public String getValidTargetName() {
+		return targetName != null ? targetName : name;
 	}
 	
-	public Path getValidTargetPath() throws CommonException {
+	public String getValidTargetPath() {
 		if(targetPath == null) {
-			return PathUtil.createPath("");
+			return "";
 		}
-		return PathUtil.createPath(targetPath);
+		return targetPath;
 	}
 	
 	@SuppressWarnings("serial")
@@ -261,23 +256,26 @@ public class DubBundle {
 		
 		/* -----------------  ----------------- */
 		
-		public Path getEffectiveTargetPath(DubBundle dubBundle) throws CommonException {
+		public String getEffectiveTargetPath(DubBundle dubBundle) {
 			if(targetPath != null) {
-				return PathUtil.createPath(targetPath);
+				return targetPath;
 			}
 			return dubBundle.getValidTargetPath();
 		}
 		
 		
-		public Path getEffectiveTargetName(DubBundle dubBundle) throws CommonException {
+		public String getEffectiveTargetName(DubBundle dubBundle) {
 			if(targetName != null) {
-				return PathUtil.createPath(targetName + MiscUtil.getExecutableSuffix());
+				return targetName + MiscUtil.getExecutableSuffix();
 			}
-			return dubBundle.getValidTargetName();
+			return dubBundle.getValidTargetName() + MiscUtil.getExecutableSuffix();
 		}
 		
-		public Path getEffectiveTargetFullPath(DubBundle dubBundle) throws CommonException {
-			return getEffectiveTargetPath(dubBundle).resolve(getEffectiveTargetName(dubBundle));
+		public String getEffectiveTargetFullPath(DubBundle dubBundle) {
+			String effectiveTargetPath = getEffectiveTargetPath(dubBundle);
+			String effectiveTargetName = getEffectiveTargetName(dubBundle);
+			
+			return PathUtil.concatenatePath(effectiveTargetPath, effectiveTargetName);
 		}
 		
 	}

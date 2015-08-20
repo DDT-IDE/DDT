@@ -10,8 +10,6 @@
  *******************************************************************************/
 package dtool.dub;
 
-import static dtool.dub.DubBundle.DEFAULT_VERSION;
-
 import org.junit.Test;
 
 import dtool.dub.DubBundle.DubConfiguration;
@@ -74,20 +72,6 @@ public class DubManifestParserTest extends CommonDubTest {
 	
 	public static final BundlePath SAMPLE_BUNDLE_PATH = new BundlePath(DUB_TEST_BUNDLES);
 	
-	@Test
-	public void testBadPath() throws Exception { testBadPath$(); }
-	public void testBadPath$() throws Exception {
-		DubBundle bundle = new DubBundle(SAMPLE_BUNDLE_PATH, "<und:??ef\0ined>", null, DEFAULT_VERSION, 
-			strings("src"), null, null, null, null, null, null);
-		
-		verifyThrows(() -> bundle.getValidTargetName(), CommonException.class, "Invalid");
-		
-		DubBundle bundle2 = new DubBundle(SAMPLE_BUNDLE_PATH, "sample", null, DEFAULT_VERSION, 
-			null, paths("src"), null, null, null, "<invalid:_\0path>", null);
-		
-		verifyThrows(() -> bundle2.getValidTargetPath(), CommonException.class, "Invalid");
-	}
-	
 	
 	@Test
 	public void testBuildConfigs() throws Exception { testBuildConfigs$(); }
@@ -103,15 +87,15 @@ public class DubManifestParserTest extends CommonDubTest {
 		));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, null).getEffectiveTargetFullPath(dubBundle), 
-			path("default_path/default_name" + MiscUtil.getExecutableSuffix()));
+			path("default_path/default_name" + MiscUtil.getExecutableSuffix()).toString());
 		
 		assertEquals(new DubConfiguration("m", "executable", null, "xxx").getEffectiveTargetFullPath(dubBundle), 
-			path("xxx/default_name"  + MiscUtil.getExecutableSuffix()));
+			path("xxx/default_name"  + MiscUtil.getExecutableSuffix()).toString());
 		
 		DubBundle barLibBundle = parseDubBundle(DUB_TEST_BUNDLES.resolve_fromValid("bar_lib"));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, null).getEffectiveTargetFullPath(barLibBundle), 
-			path("bar_lib"  + MiscUtil.getExecutableSuffix()));
+			"bar_lib"  + MiscUtil.getExecutableSuffix());
 	}
 	
 }

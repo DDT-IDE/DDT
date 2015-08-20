@@ -11,7 +11,6 @@
 package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-import static melnorme.utilbox.misc.StringUtil.asString;
 
 import org.eclipse.core.resources.IProject;
 
@@ -19,12 +18,11 @@ import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
-import melnorme.lang.ide.core.operations.build.BuildManager.BuildConfiguration;
 import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.core.CommonException;
 
 public class BundleInfo extends AbstractBundleInfo {
 	
@@ -72,8 +70,8 @@ public class BundleInfo extends AbstractBundleInfo {
 			buildConfigs.add(
 				new BuildConfiguration(config.name, null) {
 					@Override
-					public String getArtifactPath() throws CommonException {
-						return asString(config.getEffectiveTargetFullPath(mainBundle));
+					public String getArtifactPath() {
+						return config.getEffectiveTargetFullPath(mainBundle);
 					};
 				}
 			);
@@ -83,9 +81,9 @@ public class BundleInfo extends AbstractBundleInfo {
 			buildConfigs.add(
 				new BuildConfiguration(DEFAULT_CONFIGURATION, null) {
 					@Override
-					public String getArtifactPath() throws CommonException {
+					public String getArtifactPath() {
 						DubConfiguration defaulConfig = new DubConfiguration("", null, null, null);
-						return asString(defaulConfig.getEffectiveTargetFullPath(mainBundle));
+						return defaulConfig.getEffectiveTargetFullPath(mainBundle);
 					}
 				}
 			);
