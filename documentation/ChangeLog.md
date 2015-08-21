@@ -4,7 +4,7 @@
  * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish. (#26)
  * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
- * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults)
+ * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults) 
 
 ### 0.13.0 RC2
  * Fix missing ".exe" suffix in Windows, in Program Path field for Build/Launch.
