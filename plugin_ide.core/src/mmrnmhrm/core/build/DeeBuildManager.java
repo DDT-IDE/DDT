@@ -164,7 +164,8 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult processResult) throws CoreException {
+		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
+				throws CoreException {
 			new DubBuildOutputParser<CoreException>() {
 				@Override
 				protected void processDubFailure(String dubErrorLine) throws CoreException {
