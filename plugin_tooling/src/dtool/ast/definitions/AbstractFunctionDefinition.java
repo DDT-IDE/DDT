@@ -52,7 +52,7 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		return CoreUtil.blindCast(fnParams);
 	}
 	
-	public static ArrayView<IFunctionParameter> NO_PARAMS = new ArrayView<>(new IFunctionParameter[0]);
+	public static ArrayView<IFunctionParameter> NO_PARAMS = ArrayView.create(new IFunctionParameter[0]);
 	
 	protected void visitChildren_common(IASTVisitor visitor) {
 		acceptVisitor(visitor, defName);
