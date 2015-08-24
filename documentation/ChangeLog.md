@@ -1,6 +1,8 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+
+### 0.13.1
  * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: when invoking toolchain programs, add tool directory to beginning of PATH, not end.
  * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short.
