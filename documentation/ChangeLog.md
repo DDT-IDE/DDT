@@ -1,9 +1,10 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Added UserGuide note about using Homebrew GDB in OS X.
+ * Fixed: when invoking toolchain programs, add tool directory to beginning of PATH, not end.
  * Fixed: In Linux, the "Build Target" group UI widget height is broken, too short.
  * Fixed: if build tool reports many error messages, the Eclipse project build will take too long to finish.
- * Added UserGuide note about using Homebrew GDB in OS X.
  * Fixed: "Run As"/"Debug As" launch shortcut incorrectly matching pre-existing launch configurations.
  * Fixed: Launch Configuration Main tab fields incorrectly modified when a new Build Target is selected (if Build Target is not using defaults) 
 
