@@ -136,15 +136,15 @@ public class DeeBuildManager extends BuildManager {
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
 				OperationInfo opInfo, Path buildToolPath) throws CommonException, CoreException {
-			return new DubBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
+			return new DeeBuildTargetOperation(validatedBuildTarget, opInfo, buildToolPath);
 		}
 		
 	}
 	
-	public class DubBuildTargetOperation extends CommonBuildTargetOperation {
+	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
 		
-		public DubBuildTargetOperation(ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo, 
-				Path buildToolPath
+		public DeeBuildTargetOperation(
+				ValidatedBuildTarget validatedBuildTarget, OperationInfo opInfo, Path buildToolPath
 		) throws CommonException, CoreException {
 			super(validatedBuildTarget.getBuildManager(), validatedBuildTarget, opInfo, buildToolPath);
 		}
