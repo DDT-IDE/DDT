@@ -502,10 +502,15 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 			typeMod = consumeLookAhead();
 		}
 		
+		boolean isRefSuffix = false;
+		if(tryConsume(DeeTokens.KW_REF)) {
+			isRefSuffix = true;
+		}
+		
 		typeRef_defId.parseRuleFragment(parse, true);
 		
 		return parse.conclude(new ForeachVariableDef(
-			isRef, typeMod, typeRef_defId.type, typeRef_defId.defId.createDefId()));
+			isRef, typeMod, isRefSuffix, typeRef_defId.type, typeRef_defId.defId.createDefId()));
 	}
 	
 	public Expression parseForeachIterableExpression() throws OperationCancellation {

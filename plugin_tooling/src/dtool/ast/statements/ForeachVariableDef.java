@@ -29,12 +29,15 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	
 	public final boolean isRef;
 	public final LexElement typeMod;
+	public final boolean isRefSuffix;
 	public final Reference type;
 	
-	public ForeachVariableDef(boolean isRef, LexElement typeMod, Reference type, DefSymbol defName) {
+	public ForeachVariableDef(boolean isRef, LexElement typeMod, boolean isRefSuffix, Reference type, 
+			DefSymbol defName) {
 		super(defName);
 		this.isRef = isRef;
 		this.typeMod = typeMod;
+		this.isRefSuffix = isRefSuffix;
 		this.type = parentize(type);
 	}
 	
@@ -51,13 +54,14 @@ public class ForeachVariableDef extends DefUnit implements IConcreteNamedElement
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new ForeachVariableDef(isRef, typeMod, clone(type), clone(defName));
+		return new ForeachVariableDef(isRef, typeMod, isRefSuffix, clone(type), clone(defName));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(isRef, "ref ");
 		cp.appendToken(typeMod, " ");
+		cp.append(isRefSuffix, "ref ");
 		cp.append(type, " ");
 		cp.append(defName);
 	}

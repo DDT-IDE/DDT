@@ -2,13 +2,16 @@
 #@FOREACH_KEYWD《foreach●foreach_reverse》
 
 #@REF_OPT《 ►#?STRUCTURE_EXPECTED!【ref● 】 ● 》
-#@TYPEMODS_OPT《 #?STRUCTURE_EXPECTED!【const● 】 ● #?STRUCTURE_EXPECTED!【immutable● 】 ● 》
-
+#@TYPEMODS_OPT《
+ ►#?STRUCTURE_EXPECTED!【shared ● 】 ●
+ ►#@REF_OPT #?STRUCTURE_EXPECTED!【const● 】●
+ ►#?STRUCTURE_EXPECTED!【immutable ref ● 】 ●
+¤》
 
 #@FOREACH_SINGLE_VAR《#@REF_OPT #?STRUCTURE_EXPECTED!【const● 】 #NO_BROKEN_PARENS(flag) #@SIMPLE_VAR_PAT》
 #@FOREACH_VARS《
  ►#?STRUCTURE_EXPECTED!【#@FOREACH_SINGLE_VAR● ForeachVariableDef(#@FOREACH_SINGLE_VAR)】●
- ►#?STRUCTURE_EXPECTED!【#@REF_OPT #@TYPEMODS_OPT defId, #@FOREACH_SINGLE_VAR● ForeachVariableDef(?) ForeachVariableDef(#@FOREACH_SINGLE_VAR)】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEMODS_OPT defId, #@FOREACH_SINGLE_VAR● ForeachVariableDef(?) ForeachVariableDef(#@FOREACH_SINGLE_VAR)】●
  ►#?STRUCTURE_EXPECTED!【defA, defB, #@REF_OPT #@DEFID_OrNO● * ForeachVariableDef(?) ForeachVariableDef(#@DEFID_OrNO)】●
 ¤》
 

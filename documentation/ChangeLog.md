@@ -1,6 +1,7 @@
 ## DDT release ChangeLog
 
 ### (NextVersion)
+ * Fixed: `foreach(const ref x; y)` is invalid syntax. (#117)
 
 ### 0.13.1
  * Added UserGuide note about using Homebrew GDB in OS X.
