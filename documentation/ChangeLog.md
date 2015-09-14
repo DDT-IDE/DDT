@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Fixed: `foreach(const ref x; y)` is invalid syntax. (#117)
+ * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection. (#116)
 
 ### 0.13.1
  * Added UserGuide note about using Homebrew GDB in OS X.
