@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2011 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,18 @@
  *******************************************************************************/
 package mmrnmhrm.core.text;
 
-import melnorme.lang.ide.core.text.RuleBasedPartitionScannerExt;
-import melnorme.utilbox.collections.ArrayList2;
-
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
-public class DeePartitionScanner extends RuleBasedPartitionScannerExt implements DeePartitions {
+import melnorme.lang.ide.core.text.LangPartitionScanner;
+import melnorme.utilbox.collections.ArrayList2;
+
+public class DeePartitionScanner extends LangPartitionScanner implements DeePartitions {
 	
 	// See: http://www.digitalmars.com/d/2.0/lex.html
 	@Override
-	protected void addRules(ArrayList2<IPredicateRule> rules) {
+	protected void initPredicateRules(ArrayList2<IPredicateRule> rules) {
 		
 		rules.add(new PatternRule("`", "`", new Token(DEE_RAW_STRING), NO_ESCAPE_CHAR, false, true));
 		rules.add(new PatternRule("r\"", "\"", new Token(DEE_RAW_STRING2), NO_ESCAPE_CHAR, false, true));

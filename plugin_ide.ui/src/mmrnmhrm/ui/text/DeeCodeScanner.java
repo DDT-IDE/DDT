@@ -12,11 +12,7 @@ package mmrnmhrm.ui.text;
 
 import static melnorme.utilbox.core.CoreUtil.array;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import melnorme.lang.ide.core.text.FullPatternRule;
-import melnorme.lang.ide.ui.text.coloring.AbstractLangScanner;
 
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -26,6 +22,9 @@ import org.eclipse.jface.text.rules.WordRule;
 import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
+import melnorme.lang.ide.core.text.FullPatternRule;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class DeeCodeScanner extends AbstractLangScanner {
 	
@@ -40,11 +39,10 @@ public class DeeCodeScanner extends AbstractLangScanner {
 	
 	public DeeCodeScanner(ITokenStoreFactory factory) {
 		super(factory.createTokenStore(COLOR_TOKENS__PROPERTY_KEYS));
-		setRules(createRules());
 	}
 	
-	protected List<IRule> createRules() {
-		List<IRule> rules = new ArrayList<IRule>();
+	@Override
+	protected void initRules(ArrayList2<IRule> rules) {
 		
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
@@ -71,7 +69,6 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		rules.add(annotationsRule);
 		
 		setDefaultReturnToken(tkDefault);
-		return rules;
 	}
 	
 	protected void addWordsFromTokens(WordRule wordRule, List<DeeTokens> tokenTypes, IToken token) {
