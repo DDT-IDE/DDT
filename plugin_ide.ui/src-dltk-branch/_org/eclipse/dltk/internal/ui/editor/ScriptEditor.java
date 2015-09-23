@@ -14,17 +14,6 @@ package _org.eclipse.dltk.internal.ui.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.ui.EditorSettings_Actual.EditorPrefConstants;
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.ui.preferences.pages.DeeContentAssistPreferencePage;
-import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
-import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
-import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
-import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
-import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
-
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -47,7 +36,6 @@ import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import _org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import _org.eclipse.dltk.ui.PreferenceConstants;
@@ -56,14 +44,18 @@ import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import _org.eclipse.dltk.ui.text.folding.IFoldingStructureProviderExtension;
 import _org.eclipse.jdt.internal.ui.text.java.hover.SourceViewerInformationControl;
 import dtool.util.NewUtils;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.utilbox.misc.ArrayUtil;
+import mmrnmhrm.ui.preferences.pages.DeeContentAssistPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeEditorTypingPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeFoldingPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeSourceColoringPreferencePage;
+import mmrnmhrm.ui.preferences.pages.DeeTemplatePreferencePage;
 
 public abstract class ScriptEditor extends AbstractLangStructureEditor {
 	
-	/** Preference key for matching brackets */
-	protected final static String MATCHING_BRACKETS = PreferenceConstants.EDITOR_MATCHING_BRACKETS;
-	/** Preference key for matching brackets color */
-	protected final static String MATCHING_BRACKETS_COLOR = PreferenceConstants.EDITOR_MATCHING_BRACKETS_COLOR;
-
 	private static String[] GLOBAL_FOLDING_PROPERTIES = {
 			PreferenceConstants.EDITOR_FOLDING_ENABLED,
 			PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED,
@@ -409,18 +401,6 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor {
 	}
 	
 	/* ----------------- bracket matcher ----------------- */
-	
-	@Override
-	protected void configureBracketMatcher(SourceViewerDecorationSupport support) {
-		support.setCharacterPairMatcher(fBracketMatcher);
-		
-		// TODO: use our own preferences
-		support.setMatchingCharacterPainterPreferenceKeys(
-			MATCHING_BRACKETS, 
-			MATCHING_BRACKETS_COLOR, 
-			EditorPrefConstants.HIGHLIGHT_BRACKET_AT_CARET_LOCATION, 
-			EditorPrefConstants.ENCLOSING_BRACKETS);
-	}
 	
 	@Override
 	protected String[] collectContextMenuPreferencePages() {

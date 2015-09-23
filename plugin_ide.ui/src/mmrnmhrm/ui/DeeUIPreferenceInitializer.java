@@ -10,12 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui;
 
-import melnorme.lang.ide.ui.CodeFormatterConstants;
-import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditPreferenceConstants;
-import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
-import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
@@ -23,6 +17,12 @@ import org.eclipse.ui.editors.text.EditorsUI;
 
 import _org.eclipse.dltk.ui.PreferenceConstants;
 import dtool.ddoc.IDeeDocColorConstants;
+import melnorme.lang.ide.ui.CodeFormatterConstants_Actual;
+import melnorme.lang.ide.ui.LangAutoEditPreferenceConstants;
+import melnorme.lang.ide.ui.LangUIPreferencesInitializer;
+import melnorme.lang.ide.ui.text.coloring.TextColoringConstants;
+import melnorme.utilbox.misc.MiscUtil;
+import mmrnmhrm.ui.editor.folding.DeeFoldingPreferenceConstants;
 
 public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 	
@@ -34,33 +34,13 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		EditorsUI.useAnnotationsPreferencePage(store);
 		EditorsUI.useQuickDiffPreferencePage(store);
 		
-		// DTLK default init
-		PreferenceConstants.initializeDefaultValues(store);
-		// Fix DLTK bug
-		store.setDefault(PreferenceConstants.EDITOR_SOURCE_HOVER_BACKGROUND_COLOR_SYSTEM_DEFAULT, true);
-		
 		DeeDoc_initializeDefaultValues(store);
-		
-		// Editor
-		store.setDefault(PreferenceConstants.EDITOR_SMART_INDENT, true);
-		store.setDefault(PreferenceConstants.EDITOR_SMART_HOME_END, true);
-		store.setDefault(PreferenceConstants.EDITOR_SUB_WORD_NAVIGATION, true);		
-		store.setDefault(PreferenceConstants.EDITOR_TAB_ALWAYS_INDENT, true);
-		store.setDefault(PreferenceConstants.EDITOR_TAB_WIDTH, 4);
-		// TODO: cleanup redundancy in tab preferences keys
 		
 		
 		// Formatter
-		CodeFormatterConstants.Helper.initDefaults();
+		MiscUtil.loadClass(CodeFormatterConstants_Actual.class);
 		
-		LangAutoEditPreferenceConstants.Helper.initDefaults();
-		
-		// Content assist
-		store.setDefault(PreferenceConstants.CODEASSIST_INSERT_COMPLETION, false); // CA overwrites by default
-		store.setDefault(PreferenceConstants.CODEASSIST_PREFIX_COMPLETION, true);
-		store.setDefault(PreferenceConstants.CODEASSIST_AUTOINSERT, true);
-		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".");
-		
+		MiscUtil.loadClass(LangAutoEditPreferenceConstants.class);
 		
 		// Folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
@@ -82,9 +62,6 @@ public class DeeUIPreferenceInitializer extends LangUIPreferencesInitializer {
 		store.setDefault(DeeFoldingPreferenceConstants.EDITOR_FOLDING_INIT_ANONCLASSES, false);
 		
 		
-		// Search
-		store.setDefault(PreferenceConstants.SEARCH_USE_REDUCED_MENU, true);
-
 	}
 	
 	public static void DeeDoc_initializeDefaultValues(IPreferenceStore store) {

@@ -2,7 +2,6 @@ package melnorme.lang.ide.ui;
 
 import melnorme.lang.ide.core.utils.prefs.IntPreference;
 import melnorme.lang.ide.core.utils.prefs.StringPreference;
-import melnorme.utilbox.misc.MiscUtil;
 
 
 public interface CodeFormatterConstants_Actual {
@@ -21,14 +20,4 @@ public interface CodeFormatterConstants_Actual {
 	IntPreference FORMATTER_INDENTATION_SPACES_SIZE = 
 			new IntPreference(QUALIFIER, "CodeFormatterConstants.FORMATTER_INDENTATION_SIZE", 4);
 	
-	class Helper {
-		
-		public static void initDefaults() {
-			// Ensure all default values are initialized, in case prefs are accessed by means other
-			// than by referencing the constants above 
-			MiscUtil.loadClass(CodeFormatterConstants_Actual.class);
-		}
-		
-	}
-
 }

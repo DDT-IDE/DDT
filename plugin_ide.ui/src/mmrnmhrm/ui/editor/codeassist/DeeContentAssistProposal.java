@@ -10,17 +10,13 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.symbols.INamedElement;
-import mmrnmhrm.ui.DeeUI;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import _org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Image;
 
 import _org.eclipse.dltk.ui.text.completion.AbstractScriptCompletionProposal;
 import dtool.ddoc.TextUI;
+import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	
@@ -34,12 +30,6 @@ public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	@Override
 	public String getProposalInfoString(IProgressMonitor monitor) {
 		return TextUI.getDDocHTMLRender(namedElement); /* FIXME: remove dependency on namedElement */
-	}
-	
-	@Override
-	protected boolean insertCompletion() {
-		IPreferenceStore preference = DeeUI.getInstance().getPreferenceStore();
-		return preference.getBoolean(PreferenceConstants.CODEASSIST_INSERT_COMPLETION);
 	}
 	
 }

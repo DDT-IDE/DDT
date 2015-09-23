@@ -14,14 +14,6 @@ import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 
 import org.eclipse.swt.graphics.RGB;
 
-interface ColorConstants {
-	
-	RGB COLOR_BLACK_RGB       = new RGB(0x00, 0x00, 0x00);
-	RGB COLOR_CYAN_RGB        = new RGB(0x00, 0xFF, 0xFF); 
-	RGB COLOR_DARK_YELLOW_RGB = new RGB(0x80, 0x80, 0x00); 
-	
-}
-
 public interface DeeColorPreferences {
 	
 	/** Prefix for the color preference keys. */
@@ -34,7 +26,7 @@ public interface DeeColorPreferences {
 		true, new RGB(63, 95, 191), false, false, false);
 	
 	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
-		true, ColorConstants.COLOR_BLACK_RGB, false, false, false);
+		true, new RGB(0x00, 0x00, 0x00), false, false, false);
 	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
 		true, new RGB(0, 0, 127), true, false, false);
 	ColoringItemPreference BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
@@ -44,18 +36,16 @@ public interface DeeColorPreferences {
 	ColoringItemPreference LITERALS = new ColoringItemPreference(PREFIX + "literals",
 		true, new RGB(127, 64, 64), false, false, false);
 	ColoringItemPreference OPERATORS = new ColoringItemPreference(PREFIX + "operators",
-		true, ColorConstants.COLOR_BLACK_RGB, false, false, false); // Not supported yet  
-	ColoringItemPreference SPECIAL = new ColoringItemPreference(PREFIX + "special",
-		false, ColorConstants.COLOR_CYAN_RGB, false, false, true); // For debug purposes only
+		true, new RGB(0x00, 0x00, 0x00), false, false, false); // Not supported yet  
 	
 	
 	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
-		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
+		true, new RGB(0x80, 0x80, 0x00), false, false, false);
 	
 	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
-		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
+		true, new RGB(0x80, 0x80, 0x00), false, false, false);
 	
 	ColoringItemPreference CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
-		true, ColorConstants.COLOR_DARK_YELLOW_RGB, false, false, false);
+		true, new RGB(0x80, 0x80, 0x00), false, false, false);
 	
 }
