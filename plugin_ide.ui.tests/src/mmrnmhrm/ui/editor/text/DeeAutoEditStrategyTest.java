@@ -10,13 +10,13 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.text;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategy;
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyTest;
-import mmrnmhrm.core.text.DeePartitions;
-
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
+
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
+import mmrnmhrm.core.text.DeePartitions;
 
 public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	
