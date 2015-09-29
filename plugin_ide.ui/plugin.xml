@@ -322,7 +322,7 @@
 		<wizard
 			category="org.dsource.ddt.ide.category"
 			class="mmrnmhrm.ui.wizards.DeeProjectWizard"
-			icon="icons/action16e/newprj_wiz.gif"
+			icon="icons/action16e/newprj_wiz.png"
 			id="org.dsource.ddt.ide.ui.wizards.NewProjectWizard"
 			name="%NewProjectWizard.name"
 			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
