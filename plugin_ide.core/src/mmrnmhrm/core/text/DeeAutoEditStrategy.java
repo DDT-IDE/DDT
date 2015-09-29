@@ -8,17 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.editor.text;
-
-import melnorme.lang.ide.ui.editor.text.LangAutoEditStrategyExt;
-import mmrnmhrm.core.text.DeePartitions;
+package mmrnmhrm.core.text;
 
 import org.eclipse.jface.text.ITextViewer;
 
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt;
+
 public class DeeAutoEditStrategy extends LangAutoEditStrategyExt {
 	
-	public DeeAutoEditStrategy(String contentType, ITextViewer viewer) {
-		super(DeePartitions.PARTITIONING_ID, contentType, viewer);
+	public DeeAutoEditStrategy(String contentType, ITextViewer viewer, 
+			ILangAutoEditsPreferencesAccessExt preferences) {
+		super(DeePartitions.PARTITIONING_ID, contentType, viewer, preferences);
 	}
 	
 }

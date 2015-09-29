@@ -8,22 +8,67 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.editor.text;
+package mmrnmhrm.core.text;
 
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
+import melnorme.lang.ide.core.text.format.FormatterIndentMode;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
+import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt.ILangAutoEditsPreferencesAccessExt;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
-import mmrnmhrm.core.text.DeePartitions;
 
 public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
+	
+	public static class Mock_LangAutoEditsPreferencesAccess implements ILangAutoEditsPreferencesAccessExt {
+		@Override
+		public boolean isSmartIndent() {
+			return true;
+		}
+		
+		@Override
+		public boolean isSmartDeIndent() {
+			return true;
+		}
+		
+		@Override
+		public boolean closeBraces() {
+			return true;
+		}
+		
+		@Override
+		public boolean closeBlocks() {
+			return true;
+		}
+		
+		@Override
+		public boolean isSmartPaste() {
+			return true;
+		}
+		
+		@Override
+		public FormatterIndentMode getTabStyle() {
+			return FormatterIndentMode.TAB;
+		}
+		
+		@Override
+		public int getIndentSize() {
+			return 4;
+		}
+		
+		@Override
+		public boolean parenthesesAsBlocks() {
+			return false;
+		}
+	}
 	
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			autoEditStrategy = new DeeAutoEditStrategy(DeePartitions.DEE_CODE, null);
+			/* FIXME: move to LANG */
+			autoEditStrategy = new DeeAutoEditStrategy(DeePartitions.DEE_CODE, null, 
+				new Mock_LangAutoEditsPreferencesAccess());
 		}
 		return autoEditStrategy;
 	}
