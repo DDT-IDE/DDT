@@ -99,7 +99,8 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	@Override
 	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor pm)
 			throws CoreException {
-		String dubManifestContents = HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", getProject().getName());
+		String bundleName = getProject().getName().toLowerCase();
+		String dubManifestContents = HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", bundleName);
 		projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_FILENAME), 
 			dubManifestContents, false, pm);
 		
