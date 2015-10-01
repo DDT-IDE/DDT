@@ -31,9 +31,9 @@ public class DeeCodeScanner extends AbstractLangScanner {
 	public static String COLOR_TOKENS__PROPERTY_KEYS[] = new String[] {
 		DeeColorPreferences.DEFAULT.key,
 		DeeColorPreferences.KEYWORDS.key,
-		DeeColorPreferences.BASICTYPES.key,
+		DeeColorPreferences.KW_BASICTYPES.key,
 		DeeColorPreferences.ANNOTATIONS.key,
-		DeeColorPreferences.LITERALS.key,
+		DeeColorPreferences.KW_LITERALS.key,
 		DeeColorPreferences.OPERATORS.key,
 	};
 	
@@ -49,8 +49,8 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		
 		IToken tkDefault = getToken(DeeColorPreferences.DEFAULT.key);
 		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS.key);
-		IToken tkBasics = getToken(DeeColorPreferences.BASICTYPES.key);
-		IToken tkLiterals = getToken(DeeColorPreferences.LITERALS.key);
+		IToken tkBasics = getToken(DeeColorPreferences.KW_BASICTYPES.key);
+		IToken tkLiterals = getToken(DeeColorPreferences.KW_LITERALS.key);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add word rule for keywords, types, and constants.

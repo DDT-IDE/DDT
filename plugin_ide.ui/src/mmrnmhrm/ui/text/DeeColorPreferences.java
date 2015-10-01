@@ -20,32 +20,28 @@ public interface DeeColorPreferences {
 	String PREFIX = "editor.coloring."; 
 	
 	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
-		true, new RGB(63, 127, 95), false, false, false);
-	
+		true, new RGB(144, 144, 144), false, false, false);
 	ColoringItemPreference DOCCOMMENT = new ColoringItemPreference(PREFIX + "doccomment",
-		true, new RGB(63, 95, 191), false, false, false);
+		true, new RGB(65, 95, 185), false, false, false);
 	
 	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
-		true, new RGB(0x00, 0x00, 0x00), false, false, false);
+		true, new RGB(0, 0, 0), false, false, false);
 	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
-		true, new RGB(0, 0, 127), true, false, false);
-	ColoringItemPreference BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
-		true, new RGB(0, 0, 127), false, false, false);
+		true, new RGB(127, 0, 85), true, false, false);
+	ColoringItemPreference KW_BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
+		true, new RGB(150, 40, 210), false, false, false);
+	ColoringItemPreference KW_LITERALS = new ColoringItemPreference(PREFIX + "kw_literals",
+		true, new RGB(160, 120, 70), false, false, false);
 	ColoringItemPreference ANNOTATIONS = new ColoringItemPreference(PREFIX + "annotations",
-		true, new RGB(100, 100, 100), false, false, false);
-	ColoringItemPreference LITERALS = new ColoringItemPreference(PREFIX + "literals",
-		true, new RGB(127, 64, 64), false, false, false);
+		true, new RGB(230, 75, 0), false, false, false);
 	ColoringItemPreference OPERATORS = new ColoringItemPreference(PREFIX + "operators",
-		true, new RGB(0x00, 0x00, 0x00), false, false, false); // Not supported yet  
-	
-	
-	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
-		true, new RGB(0x80, 0x80, 0x00), false, false, false);
-	
-	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
-		true, new RGB(0x80, 0x80, 0x00), false, false, false);
+		true, new RGB(0, 0, 0), false, false, false); // Not supported yet  
 	
 	ColoringItemPreference CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
-		true, new RGB(0x80, 0x80, 0x00), false, false, false);
+		true, new RGB(0, 170, 10), false, false, false);
+	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
+		true, new RGB(126, 164, 0), false, false, false);
+	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
+		true, new RGB(175, 175, 0), false, false, false);
 	
 }

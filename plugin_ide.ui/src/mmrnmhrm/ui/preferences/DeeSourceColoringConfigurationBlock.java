@@ -28,8 +28,8 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 		new SourceColoringCategory("Source", array(
 			new SourceColoringElement("Default", DeeColorPreferences.DEFAULT.key),
 			new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS.key),
-			new SourceColoringElement("Keywords - Basic Types", DeeColorPreferences.BASICTYPES.key),
-			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.LITERALS.key),
+			new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES.key),
+			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS.key),
 			new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS.key),
 			new SourceColoringElement("Strings", DeeColorPreferences.STRING.key),
 			new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING.key),
