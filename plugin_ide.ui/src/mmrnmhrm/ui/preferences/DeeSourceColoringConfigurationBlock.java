@@ -37,7 +37,7 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 		)),
 		new SourceColoringCategory("Comments", array(
 			new SourceColoringElement("Comment", DeeColorPreferences.COMMENT.key),
-			new SourceColoringElement("Doc Comment", DeeColorPreferences.DOCCOMMENT.key)
+			new SourceColoringElement("Doc Comment", DeeColorPreferences.DOC_COMMENT.key)
 		))
 	);
 	

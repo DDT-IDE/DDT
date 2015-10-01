@@ -43,7 +43,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 				DeePartitions.DEE_MULTI_COMMENT, 
 				DeePartitions.DEE_NESTED_COMMENT);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DOCCOMMENT.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DOC_COMMENT.key), 
 				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
 				DeePartitions.DEE_MULTI_DOCCOMMENT, 
 				DeePartitions.DEE_NESTED_DOCCOMMENT);

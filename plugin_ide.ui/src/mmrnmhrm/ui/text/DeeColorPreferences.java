@@ -14,18 +14,20 @@ import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
 
 import org.eclipse.swt.graphics.RGB;
 
+//Note: the file /resources/e4-dark_sourcehighlighting.css needs to updated with changes made here, 
+//such as key name changes, or the color defaults
 public interface DeeColorPreferences {
 	
-	/** Prefix for the color preference keys. */
 	String PREFIX = "editor.coloring."; 
-	
-	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
-		true, new RGB(144, 144, 144), false, false, false);
-	ColoringItemPreference DOCCOMMENT = new ColoringItemPreference(PREFIX + "doccomment",
-		true, new RGB(65, 95, 185), false, false, false);
 	
 	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
 		true, new RGB(0, 0, 0), false, false, false);
+	
+	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
+		true, new RGB(144, 144, 144), false, false, false);
+	ColoringItemPreference DOC_COMMENT = new ColoringItemPreference(PREFIX + "doc_comment",
+		true, new RGB(65, 95, 185), false, false, false);
+	
 	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
 		true, new RGB(127, 0, 85), true, false, false);
 	ColoringItemPreference KW_BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
