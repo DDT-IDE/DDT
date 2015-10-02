@@ -19,7 +19,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import _org.eclipse.cdt.ui.text.ITokenStoreFactory;
+import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
 import melnorme.lang.ide.core.text.FullPatternRule;
@@ -28,17 +28,8 @@ import melnorme.utilbox.collections.ArrayList2;
 
 public class DeeCodeScanner extends AbstractLangScanner {
 	
-	public static String COLOR_TOKENS__PROPERTY_KEYS[] = new String[] {
-		DeeColorPreferences.DEFAULT.key,
-		DeeColorPreferences.KEYWORDS.key,
-		DeeColorPreferences.KW_BASICTYPES.key,
-		DeeColorPreferences.ANNOTATIONS.key,
-		DeeColorPreferences.KW_LITERALS.key,
-		DeeColorPreferences.OPERATORS.key,
-	};
-	
-	public DeeCodeScanner(ITokenStoreFactory factory) {
-		super(factory.createTokenStore(COLOR_TOKENS__PROPERTY_KEYS));
+	public DeeCodeScanner(TokenStore tokenStore) {
+		super(tokenStore);
 	}
 	
 	@Override
@@ -47,10 +38,10 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new LangWhitespaceDetector()));
 		
-		IToken tkDefault = getToken(DeeColorPreferences.DEFAULT.key);
-		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS.key);
-		IToken tkBasics = getToken(DeeColorPreferences.KW_BASICTYPES.key);
-		IToken tkLiterals = getToken(DeeColorPreferences.KW_LITERALS.key);
+		IToken tkDefault = getToken(DeeColorPreferences.DEFAULT);
+		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS);
+		IToken tkBasics = getToken(DeeColorPreferences.KW_BASICTYPES);
+		IToken tkLiterals = getToken(DeeColorPreferences.KW_LITERALS);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add word rule for keywords, types, and constants.
@@ -64,7 +55,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
 		
 		
-		IToken tkAnnotation = getToken(DeeColorPreferences.ANNOTATIONS.key);
+		IToken tkAnnotation = getToken(DeeColorPreferences.ANNOTATIONS);
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
 		rules.add(annotationsRule);
 		

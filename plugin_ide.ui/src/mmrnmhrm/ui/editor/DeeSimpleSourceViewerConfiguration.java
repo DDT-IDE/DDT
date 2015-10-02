@@ -1,7 +1,5 @@
 package mmrnmhrm.ui.editor;
 
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IInformationControlCreator;
@@ -12,7 +10,8 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import _org.eclipse.cdt.ui.text.IColorManager;
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 
 /**
@@ -23,7 +22,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	
 	private boolean fConfigureFormatter;
 	
-	public DeeSimpleSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
+	public DeeSimpleSourceViewerConfiguration(ColorManager2 colorManager, IPreferenceStore preferenceStore, 
 			boolean configureFormatter) {
 		super(colorManager, preferenceStore, null);
 		fConfigureFormatter = configureFormatter;

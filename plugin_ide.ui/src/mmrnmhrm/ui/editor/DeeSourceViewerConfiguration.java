@@ -10,53 +10,53 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.information.IInformationProvider;
+import org.eclipse.swt.widgets.Display;
+
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
 import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
+import melnorme.util.swt.jface.text.ColorManager2;
 import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.information.IInformationProvider;
-
-import _org.eclipse.cdt.ui.text.IColorManager;
-
 public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public DeeSourceViewerConfiguration(IColorManager colorManager, IPreferenceStore preferenceStore, 
+	public DeeSourceViewerConfiguration(ColorManager2 colorManager, IPreferenceStore preferenceStore, 
 			AbstractLangStructureEditor editor) {
 		super(preferenceStore, colorManager, editor);
 	}
 	
 	@Override
-	protected void createScanners() {
+	protected void createScanners(Display currentDisplay) {
 		
-		addScanner(new DeeCodeScanner(getTokenStoreFactory()), 
+		addScanner(new DeeCodeScanner(getTokenStore()), 
 				DeePartitions.DEE_CODE);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.COMMENT.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.COMMENT), 
 				DeePartitions.DEE_SINGLE_COMMENT, 
 				DeePartitions.DEE_MULTI_COMMENT, 
 				DeePartitions.DEE_NESTED_COMMENT);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DOC_COMMENT.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DOC_COMMENT), 
 				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
 				DeePartitions.DEE_MULTI_DOCCOMMENT, 
 				DeePartitions.DEE_NESTED_DOCCOMMENT);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.STRING.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.STRING), 
 				DeePartitions.DEE_STRING,
 				DeePartitions.DEE_RAW_STRING,
 				DeePartitions.DEE_RAW_STRING2);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DELIM_STRING.key), 
+		addScanner(createSingleTokenScanner(DeeColorPreferences.DELIM_STRING), 
 				DeePartitions.DEE_DELIM_STRING);
 		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.CHARACTER_LITERALS.key),
+		addScanner(createSingleTokenScanner(DeeColorPreferences.CHARACTER_LITERALS),
 				DeePartitions.DEE_CHARACTER);
 	}
 	
