@@ -26,18 +26,18 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	
 	protected static final LabeledTreeElement[] treeElements = array(
 		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Default", DeeColorPreferences.DEFAULT.key),
-			new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS.key),
-			new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES.key),
-			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS.key),
-			new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS.key),
-			new SourceColoringElement("Strings", DeeColorPreferences.STRING.key),
-			new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING.key),
-			new SourceColoringElement("@Annotations", DeeColorPreferences.ANNOTATIONS.key)
+			new SourceColoringElement("Default", DeeColorPreferences.DEFAULT),
+			new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS),
+			new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES),
+			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS),
+			new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS),
+			new SourceColoringElement("Strings", DeeColorPreferences.STRING),
+			new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING),
+			new SourceColoringElement("@Annotations", DeeColorPreferences.ANNOTATIONS)
 		)),
 		new SourceColoringCategory("Comments", array(
-			new SourceColoringElement("Comment", DeeColorPreferences.COMMENT.key),
-			new SourceColoringElement("Doc Comment", DeeColorPreferences.DOC_COMMENT.key)
+			new SourceColoringElement("Comment", DeeColorPreferences.COMMENT),
+			new SourceColoringElement("Doc Comment", DeeColorPreferences.DOC_COMMENT)
 		))
 	);
 	

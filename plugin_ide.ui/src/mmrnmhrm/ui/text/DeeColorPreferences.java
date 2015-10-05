@@ -21,29 +21,29 @@ public interface DeeColorPreferences {
 	String PREFIX = "editor.coloring."; 
 	
 	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
-		true, new RGB(0, 0, 0), false, false, false);
+		new RGB(0, 0, 0), false, false);
 	
 	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
-		true, new RGB(144, 144, 144), false, false, false);
+		new RGB(144, 144, 144), false, false);
 	ColoringItemPreference DOC_COMMENT = new ColoringItemPreference(PREFIX + "doc_comment",
-		true, new RGB(65, 95, 185), false, false, false);
+		new RGB(65, 95, 185), false, false);
 	
 	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
-		true, new RGB(127, 0, 85), true, false, false);
+		new RGB(127, 0, 85), true, false);
 	ColoringItemPreference KW_BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
-		true, new RGB(150, 40, 210), false, false, false);
+		new RGB(150, 40, 210), false, false);
 	ColoringItemPreference KW_LITERALS = new ColoringItemPreference(PREFIX + "kw_literals",
-		true, new RGB(160, 120, 70), false, false, false);
+		new RGB(160, 120, 70), false, false);
 	ColoringItemPreference ANNOTATIONS = new ColoringItemPreference(PREFIX + "annotations",
-		true, new RGB(230, 75, 0), false, false, false);
+		new RGB(230, 75, 0), false, false);
 	ColoringItemPreference OPERATORS = new ColoringItemPreference(PREFIX + "operators",
-		true, new RGB(0, 0, 0), false, false, false); // Not supported yet  
+		new RGB(0, 0, 0), false, false); // Not supported yet  
 	
 	ColoringItemPreference CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
-		true, new RGB(0, 170, 10), false, false, false);
+		new RGB(0, 170, 10), false, false);
 	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
-		true, new RGB(126, 164, 0), false, false, false);
+		new RGB(126, 164, 0), false, false);
 	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
-		true, new RGB(175, 175, 0), false, false, false);
+		new RGB(175, 175, 0), false, false);
 	
 }

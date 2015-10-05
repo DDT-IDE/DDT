@@ -19,16 +19,16 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
-import _org.eclipse.cdt.internal.ui.text.TokenStore;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
 import melnorme.lang.ide.core.text.FullPatternRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class DeeCodeScanner extends AbstractLangScanner {
 	
-	public DeeCodeScanner(TokenStore tokenStore) {
+	public DeeCodeScanner(TokenRegistry tokenStore) {
 		super(tokenStore);
 	}
 	
