@@ -19,12 +19,12 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.services.IServiceLocator;
 
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.util.swt.jface.text.ColorManager2;
-import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
@@ -57,13 +57,13 @@ public class EditorSettings_Actual {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(
-					DeePartitions.DEE_CODE,
-					DeePartitions.DEE_MULTI_COMMENT,
-					DeePartitions.DEE_MULTI_DOCCOMMENT,
-					DeePartitions.DEE_NESTED_COMMENT,
-					DeePartitions.DEE_NESTED_DOCCOMMENT,
-					DeePartitions.DEE_SINGLE_COMMENT,
-					DeePartitions.DEE_SINGLE_DOCCOMMENT
+					LangPartitionTypes.DEE_CODE.getId(),
+					LangPartitionTypes.DEE_MULTI_COMMENT.getId(),
+					LangPartitionTypes.DEE_MULTI_DOCCOMMENT.getId(),
+					LangPartitionTypes.DEE_NESTED_COMMENT.getId(),
+					LangPartitionTypes.DEE_NESTED_DOCCOMMENT.getId(),
+					LangPartitionTypes.DEE_SINGLE_COMMENT.getId(),
+					LangPartitionTypes.DEE_SINGLE_DOCCOMMENT.getId()
 					));
 			}
 		};

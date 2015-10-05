@@ -12,13 +12,14 @@ package mmrnmhrm.core.text;
 
 import org.eclipse.jface.text.ITextViewer;
 
+import melnorme.lang.ide.core.TextSettings_Actual;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyExt;
 
 public class DeeAutoEditStrategy extends LangAutoEditStrategyExt {
 	
 	public DeeAutoEditStrategy(String contentType, ITextViewer viewer, 
 			ILangAutoEditsPreferencesAccessExt preferences) {
-		super(DeePartitions.PARTITIONING_ID, contentType, viewer, preferences);
+		super(TextSettings_Actual.PARTITIONING_ID, contentType, viewer, preferences);
 	}
 	
 }

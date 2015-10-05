@@ -10,17 +10,22 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
 import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
+import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import melnorme.util.swt.jface.text.ColorManager2;
-import mmrnmhrm.core.text.DeePartitions;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
@@ -33,31 +38,33 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	}
 	
 	@Override
-	protected void createScanners(Display currentDisplay) {
-		
-		addScanner(new DeeCodeScanner(getTokenStore()), 
-				DeePartitions.DEE_CODE);
-		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.COMMENT), 
-				DeePartitions.DEE_SINGLE_COMMENT, 
-				DeePartitions.DEE_MULTI_COMMENT, 
-				DeePartitions.DEE_NESTED_COMMENT);
-		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DOC_COMMENT), 
-				DeePartitions.DEE_SINGLE_DOCCOMMENT, 
-				DeePartitions.DEE_MULTI_DOCCOMMENT, 
-				DeePartitions.DEE_NESTED_DOCCOMMENT);
-		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.STRING), 
-				DeePartitions.DEE_STRING,
-				DeePartitions.DEE_RAW_STRING,
-				DeePartitions.DEE_RAW_STRING2);
-		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.DELIM_STRING), 
-				DeePartitions.DEE_DELIM_STRING);
-		
-		addScanner(createSingleTokenScanner(DeeColorPreferences.CHARACTER_LITERALS),
-				DeePartitions.DEE_CHARACTER);
+	protected AbstractLangScanner createScannerFor(Display current, LangPartitionTypes partitionType,
+			TokenRegistry tokenStore) {
+		switch (partitionType) {
+		case DEE_CODE:
+			return new DeeCodeScanner(tokenStore);
+			
+		case DEE_SINGLE_COMMENT:
+		case DEE_MULTI_COMMENT:
+		case DEE_NESTED_COMMENT:
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.COMMENT);
+			
+		case DEE_SINGLE_DOCCOMMENT:
+		case DEE_MULTI_DOCCOMMENT:
+		case DEE_NESTED_DOCCOMMENT:
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.DOC_COMMENT);
+			
+		case DEE_STRING:
+		case DEE_RAW_STRING:
+		case DEE_RAW_STRING2:
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.STRING);
+			
+		case DEE_DELIM_STRING:
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.DELIM_STRING);
+		case DEE_CHARACTER:
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.CHARACTER_LITERALS);
+		}
+		throw assertFail();
 	}
 	
 	@Override
@@ -69,7 +76,7 @@ public class DeeSourceViewerConfiguration extends AbstractLangSourceViewerConfig
 	
 	@Override
 	protected IInformationProvider getInformationProvider(String contentType) {
-		if(contentType.equals(DeePartitions.DEE_CODE)) {
+		if(contentType.equals(LangPartitionTypes.DEE_CODE.getId())) {
 			return new HoverInformationProvider(new BestMatchHover(getEditor()));
 		}
 		return null;

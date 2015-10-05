@@ -2,9 +2,6 @@ package mmrnmhrm.ui.editor.folding;
 
 import java.util.List;
 
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import mmrnmhrm.core.text.DeePartitions;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -15,6 +12,8 @@ import _org.eclipse.dltk.ui.text.folding.IFoldingBlockKind;
 import _org.eclipse.dltk.ui.text.folding.IFoldingBlockProvider;
 import _org.eclipse.dltk.ui.text.folding.PartitioningFoldingBlockProvider;
 import dtool.ast.definitions.Module;
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
+import melnorme.lang.tooling.structure.SourceFileStructure;
 
 public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProvider implements IFoldingBlockProvider {
 	
@@ -51,23 +50,23 @@ public class DeeCommentFoldingBlockProvider extends PartitioningFoldingBlockProv
 			}
 			
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_MULTI_COMMENT, DeeFoldingBlockKind.COMMENT, isCollapseComments());
+					LangPartitionTypes.DEE_MULTI_COMMENT.getId(), DeeFoldingBlockKind.COMMENT, isCollapseComments());
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_NESTED_COMMENT, DeeFoldingBlockKind.COMMENT, isCollapseComments());
+					LangPartitionTypes.DEE_NESTED_COMMENT.getId(), DeeFoldingBlockKind.COMMENT, isCollapseComments());
 		}
 		if(isFoldingDocs()) {
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_MULTI_DOCCOMMENT, DeeFoldingBlockKind.DOCCOMMENT, isCollapseDocs());
+					LangPartitionTypes.DEE_MULTI_DOCCOMMENT.getId(), DeeFoldingBlockKind.DOCCOMMENT, isCollapseDocs());
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_NESTED_DOCCOMMENT, DeeFoldingBlockKind.DOCCOMMENT, isCollapseDocs());
+					LangPartitionTypes.DEE_NESTED_DOCCOMMENT.getId(), DeeFoldingBlockKind.DOCCOMMENT, isCollapseDocs());
 		}
 		if(fStringFolding) {
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_STRING, DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
+					LangPartitionTypes.DEE_STRING.getId(), DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_RAW_STRING, DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
+					LangPartitionTypes.DEE_RAW_STRING.getId(), DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
 			computeBlocksForPartitionType(content,
-					DeePartitions.DEE_DELIM_STRING, DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
+					LangPartitionTypes.DEE_DELIM_STRING.getId(), DeeFoldingBlockKind.MULTILINESTRING, isCollapseStrings());
 		}
 	}
 	

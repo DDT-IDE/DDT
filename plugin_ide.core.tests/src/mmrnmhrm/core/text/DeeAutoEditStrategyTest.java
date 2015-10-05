@@ -13,6 +13,7 @@ package mmrnmhrm.core.text;
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
+import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
@@ -22,7 +23,7 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			autoEditStrategy = new DeeAutoEditStrategy(DeePartitions.DEE_CODE, null, 
+			autoEditStrategy = new DeeAutoEditStrategy(LangPartitionTypes.DEE_CODE.getId(), null, 
 				new Mock_LangAutoEditsPreferencesAccess());
 		}
 		return autoEditStrategy;

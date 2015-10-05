@@ -10,9 +10,9 @@
  *******************************************************************************/
 package mmrnmhrm.ui.text;
 
-import melnorme.lang.ide.ui.text.coloring.ColoringItemPreference;
-
 import org.eclipse.swt.graphics.RGB;
+
+import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
 
 //Note: the file /resources/e4-dark_sourcehighlighting.css needs to updated with changes made here, 
 //such as key name changes, or the color defaults
@@ -20,30 +20,30 @@ public interface DeeColorPreferences {
 	
 	String PREFIX = "editor.coloring."; 
 	
-	ColoringItemPreference DEFAULT = new ColoringItemPreference(PREFIX + "default",
+	TextStylingPreference DEFAULT = new TextStylingPreference(PREFIX + "default",
 		new RGB(0, 0, 0), false, false);
 	
-	ColoringItemPreference COMMENT = new ColoringItemPreference(PREFIX + "comment",
+	TextStylingPreference COMMENT = new TextStylingPreference(PREFIX + "comment",
 		new RGB(144, 144, 144), false, false);
-	ColoringItemPreference DOC_COMMENT = new ColoringItemPreference(PREFIX + "doc_comment",
+	TextStylingPreference DOC_COMMENT = new TextStylingPreference(PREFIX + "doc_comment",
 		new RGB(65, 95, 185), false, false);
 	
-	ColoringItemPreference KEYWORDS = new ColoringItemPreference(PREFIX + "keyword",
+	TextStylingPreference KEYWORDS = new TextStylingPreference(PREFIX + "keyword",
 		new RGB(127, 0, 85), true, false);
-	ColoringItemPreference KW_BASICTYPES = new ColoringItemPreference(PREFIX + "basictypes",
+	TextStylingPreference KW_BASICTYPES = new TextStylingPreference(PREFIX + "basictypes",
 		new RGB(150, 40, 210), false, false);
-	ColoringItemPreference KW_LITERALS = new ColoringItemPreference(PREFIX + "kw_literals",
+	TextStylingPreference KW_LITERALS = new TextStylingPreference(PREFIX + "kw_literals",
 		new RGB(160, 120, 70), false, false);
-	ColoringItemPreference ANNOTATIONS = new ColoringItemPreference(PREFIX + "annotations",
+	TextStylingPreference ANNOTATIONS = new TextStylingPreference(PREFIX + "annotations",
 		new RGB(230, 75, 0), false, false);
-	ColoringItemPreference OPERATORS = new ColoringItemPreference(PREFIX + "operators",
+	TextStylingPreference OPERATORS = new TextStylingPreference(PREFIX + "operators",
 		new RGB(0, 0, 0), false, false); // Not supported yet  
 	
-	ColoringItemPreference CHARACTER_LITERALS = new ColoringItemPreference(PREFIX + "character",
+	TextStylingPreference CHARACTER_LITERALS = new TextStylingPreference(PREFIX + "character",
 		new RGB(0, 170, 10), false, false);
-	ColoringItemPreference STRING = new ColoringItemPreference(PREFIX + "string",
+	TextStylingPreference STRING = new TextStylingPreference(PREFIX + "string",
 		new RGB(126, 164, 0), false, false);
-	ColoringItemPreference DELIM_STRING = new ColoringItemPreference(PREFIX + "delimstring",
+	TextStylingPreference DELIM_STRING = new TextStylingPreference(PREFIX + "delimstring",
 		new RGB(175, 175, 0), false, false);
 	
 }
