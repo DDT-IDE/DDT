@@ -1,4 +1,14 @@
-package mmrnmhrm.ui.editor;
+/*******************************************************************************
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Bruno Medeiros - initial API and implementation
+ *******************************************************************************/
+package melnorme.lang.ide.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
@@ -10,22 +20,22 @@ import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
+import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
+import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.util.swt.jface.text.ColorManager2;
 
-
-/**
- * This simple source viewer configuration basically provides syntax coloring
- * and disables all other features like code assist, quick outlines, hyperlinking, etc.
- */
-public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfiguration {
+@LANG_SPECIFIC
+public class SimpleSourceViewerConfiguration extends LangSourceViewerConfiguration {
 	
-	private boolean fConfigureFormatter;
+	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager) {
+		this(preferenceStore, colorManager, EditorSettings_Actual.getStylingPreferences());
+	}
 	
-	public DeeSimpleSourceViewerConfiguration(ColorManager2 colorManager, IPreferenceStore preferenceStore, 
-			boolean configureFormatter) {
-		super(colorManager, preferenceStore, null);
-		fConfigureFormatter = configureFormatter;
+	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager, 
+			StylingPreferences stylingPrefs) {
+		super(preferenceStore, colorManager, null, stylingPrefs);
 	}
 	
 	@Override
@@ -50,10 +60,7 @@ public class DeeSimpleSourceViewerConfiguration extends DeeSourceViewerConfigura
 	
 	@Override
 	public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
-		if (fConfigureFormatter)
-			return super.getContentFormatter(sourceViewer);
-		else
-			return null;
+		return null;
 	}
 	
 	@Override

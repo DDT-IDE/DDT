@@ -30,7 +30,7 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPre
 	
 	@Override
 	protected DeeSourceColoringConfigurationBlock createPreferencesComponent() {
-		return new DeeSourceColoringConfigurationBlock(getPreferenceStore());
+		return new DeeSourceColoringConfigurationBlock();
 	}
 	
 }

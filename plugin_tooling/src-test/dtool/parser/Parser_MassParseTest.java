@@ -57,11 +57,10 @@ public class Parser_MassParseTest extends CommonParameterizedTest {
 		final ArrayList<File> fileList = new ArrayList<>();
 		VoidFunction<File> fileVisitor = new VoidFunction<File>() {
 			@Override
-			public Void apply(File file) {
+			public void accept(File file) {
 				if(file.isFile() && file.getName().endsWith(".zip")) {
 					fileList.add(file);
 				}
-				return null;
 			}
 		};
 		MiscFileUtils.traverseFiles(folder, false, fileVisitor);

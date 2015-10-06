@@ -76,11 +76,10 @@ public class CommonDToolTest extends CommonToolingTest {
 		
 		VoidFunction<File> fileVisitor = new VoidFunction<File>() {
 			@Override
-			public Void apply(File file) {
+			public void accept(File file) {
 				if(file.isFile()) {
 					fileList.add(file);
 				}
-				return null;
 			}
 		};
 		

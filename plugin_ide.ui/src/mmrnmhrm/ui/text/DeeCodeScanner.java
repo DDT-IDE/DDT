@@ -23,13 +23,14 @@ import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
 import melnorme.lang.ide.core.text.FullPatternRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class DeeCodeScanner extends AbstractLangScanner {
 	
-	public DeeCodeScanner(TokenRegistry tokenStore) {
-		super(tokenStore);
+	public DeeCodeScanner(TokenRegistry tokenStore, StylingPreferences stylingPrefs) {
+		super(tokenStore, stylingPrefs);
 	}
 	
 	@Override

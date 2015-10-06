@@ -21,14 +21,12 @@ import org.eclipse.ui.services.IServiceLocator;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.ui.editor.LangEditorContextMenuContributor;
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.util.swt.jface.text.ColorManager2;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
-import mmrnmhrm.ui.editor.DeeSimpleSourceViewerConfiguration;
-import mmrnmhrm.ui.editor.DeeSourceViewerConfiguration;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
 
@@ -39,21 +37,29 @@ public class EditorSettings_Actual {
 	
 	public static final String EDITOR_CODE_TARGET = LangUIPlugin.PLUGIN_ID + ".texteditor.deeCodeTarget";
 	
-	public static DeeSimpleSourceViewerConfiguration createSimpleSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, ColorManager2 colorManager) {
-		return new DeeSimpleSourceViewerConfiguration(colorManager, preferenceStore, false);
-	}
-	
-	public static AbstractLangSourceViewerConfiguration createSourceViewerConfiguration(
-			IPreferenceStore preferenceStore, AbstractLangStructureEditor editor) {
-		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new DeeSourceViewerConfiguration(colorManager, preferenceStore, editor);
+	public static StylingPreferences getStylingPreferences() {
+		return new StylingPreferences(
+			DeeColorPreferences.DEFAULT,
+			
+			DeeColorPreferences.COMMENT,
+			DeeColorPreferences.DOC_COMMENT,
+			
+			DeeColorPreferences.KEYWORDS,
+			DeeColorPreferences.KW_BASICTYPES,
+			DeeColorPreferences.KW_LITERALS,
+			DeeColorPreferences.ANNOTATIONS,
+			DeeColorPreferences.OPERATORS,
+			
+			DeeColorPreferences.CHARACTER_LITERALS,
+			DeeColorPreferences.STRING,
+			DeeColorPreferences.DELIM_STRING
+		);
 	}
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
 		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new DeeSimpleSourceViewerConfiguration(colorManager, store, false) {
+		return new SimpleSourceViewerConfiguration(store, colorManager) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(

@@ -11,8 +11,11 @@
 package mmrnmhrm.ui.editor;
 
 import melnorme.lang.ide.ui.EditorSettings_Actual;
+import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
 import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
+import melnorme.lang.ide.ui.text.LangSourceViewerConfiguration;
+import melnorme.util.swt.jface.text.ColorManager2;
 
 public class DeeEditor extends DeeBaseEditor {
 	
@@ -23,7 +26,9 @@ public class DeeEditor extends DeeBaseEditor {
 	
 	@Override
 	protected AbstractLangSourceViewerConfiguration createSourceViewerConfiguration() {
-		return EditorSettings_Actual.createSourceViewerConfiguration(getPreferenceStore(), this);
+		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
+		return new LangSourceViewerConfiguration(getPreferenceStore(), colorManager, this, 
+			EditorSettings_Actual.getStylingPreferences());
 	}
 	
 }

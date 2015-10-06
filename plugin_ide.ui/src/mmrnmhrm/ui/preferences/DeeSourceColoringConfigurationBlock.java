@@ -18,31 +18,12 @@ import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlo
 import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-import org.eclipse.jface.preference.IPreferenceStore;
-
 public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringConfigurationBlock {
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
 	
-	protected static final LabeledTreeElement[] treeElements = array(
-		new SourceColoringCategory("Source", array(
-			new SourceColoringElement("Default", DeeColorPreferences.DEFAULT),
-			new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS),
-			new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES),
-			new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS),
-			new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS),
-			new SourceColoringElement("Strings", DeeColorPreferences.STRING),
-			new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING),
-			new SourceColoringElement("@Annotations", DeeColorPreferences.ANNOTATIONS)
-		)),
-		new SourceColoringCategory("Comments", array(
-			new SourceColoringElement("Comment", DeeColorPreferences.COMMENT),
-			new SourceColoringElement("Doc Comment", DeeColorPreferences.DOC_COMMENT)
-		))
-	);
-	
-	public DeeSourceColoringConfigurationBlock(IPreferenceStore store) {
-		super(store);
+	public DeeSourceColoringConfigurationBlock() {
+		super();
 	}
 	
 	@Override
@@ -52,7 +33,22 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	
 	@Override
 	protected LabeledTreeElement[] getTreeElements() {
-		return treeElements;
+		return array(
+			new SourceColoringCategory("Source", array(
+				new SourceColoringElement("Default", DeeColorPreferences.DEFAULT),
+				new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS),
+				new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES),
+				new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS),
+				new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS),
+				new SourceColoringElement("Strings", DeeColorPreferences.STRING),
+				new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING),
+				new SourceColoringElement("@Annotations", DeeColorPreferences.ANNOTATIONS)
+			)),
+			new SourceColoringCategory("Comments", array(
+				new SourceColoringElement("Comment", DeeColorPreferences.COMMENT),
+				new SourceColoringElement("Doc Comment", DeeColorPreferences.DOC_COMMENT)
+			))
+		);
 	}
 	
 	@Override
