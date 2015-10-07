@@ -12,22 +12,6 @@
 IEclipsePreferences#org-dsource-ddt-ide-ui {
 	preferences:
 		
-		'editor.coloring.default=230,230,230'
-		
-		'editor.coloring.comment=144, 144, 144'
-		'editor.coloring.doc_comment=110,135,205'
-		
-		'editor.coloring.keyword=127, 0, 85'
-		'editor.coloring.basictypes=150, 40, 210'
-		'editor.coloring.literals=160, 120, 70'
-		'editor.coloring.annotations=230, 75, 0'
-		'editor.coloring.operators=230,230,230'
-		
-		'editor.coloring.character=0, 170, 10'
-		'editor.coloring.string=126, 164, 0'
-		'editor.coloring.delimstring=175, 175, 0'
-		
-		
 		'matchingBracketsColor=102,112,125'
 				
 		'content_assist_proposals_background=52,57,61'

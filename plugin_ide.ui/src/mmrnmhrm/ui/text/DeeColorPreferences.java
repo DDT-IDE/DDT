@@ -12,38 +12,48 @@ package mmrnmhrm.ui.text;
 
 import org.eclipse.swt.graphics.RGB;
 
-import melnorme.lang.ide.ui.text.coloring.TextStylingPreference;
+import melnorme.lang.ide.ui.text.coloring.TextStyling;
+import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
 
-//Note: the file /resources/e4-dark_sourcehighlighting.css needs to updated with changes made here, 
-//such as key name changes, or the color defaults
 public interface DeeColorPreferences {
 	
 	String PREFIX = "editor.coloring."; 
 	
-	TextStylingPreference DEFAULT = new TextStylingPreference(PREFIX + "default",
-		new RGB(0, 0, 0), false, false);
+	ThemedTextStylingPreference DEFAULT = new ThemedTextStylingPreference(PREFIX + "default",
+		new TextStyling(new RGB(  0,   0, 0), false, false),
+		new TextStyling(new RGB(230,230,230), false, false));
 	
-	TextStylingPreference COMMENT = new TextStylingPreference(PREFIX + "comment",
-		new RGB(144, 144, 144), false, false);
-	TextStylingPreference DOC_COMMENT = new TextStylingPreference(PREFIX + "doc_comment",
-		new RGB(65, 95, 185), false, false);
+	ThemedTextStylingPreference COMMENT = new ThemedTextStylingPreference(PREFIX + "comment",
+		new TextStyling(new RGB(144, 144, 144), false, false),
+		new TextStyling(new RGB(144, 144, 144), false, false));
+	ThemedTextStylingPreference DOC_COMMENT = new ThemedTextStylingPreference(PREFIX + "doc_comment",
+		new TextStyling(new RGB( 65,  95, 185), false, false),
+		new TextStyling(new RGB(110, 135, 205), false, false));
 	
-	TextStylingPreference KEYWORDS = new TextStylingPreference(PREFIX + "keyword",
-		new RGB(127, 0, 85), true, false);
-	TextStylingPreference KW_BASICTYPES = new TextStylingPreference(PREFIX + "basictypes",
-		new RGB(150, 40, 210), false, false);
-	TextStylingPreference KW_LITERALS = new TextStylingPreference(PREFIX + "kw_literals",
-		new RGB(160, 120, 70), false, false);
-	TextStylingPreference ANNOTATIONS = new TextStylingPreference(PREFIX + "annotations",
-		new RGB(230, 75, 0), false, false);
-	TextStylingPreference OPERATORS = new TextStylingPreference(PREFIX + "operators",
-		new RGB(0, 0, 0), false, false); // Not supported yet  
+	ThemedTextStylingPreference KEYWORDS = new ThemedTextStylingPreference(PREFIX + "keyword",
+		new TextStyling(new RGB(127, 0, 85), true, false),
+		new TextStyling(new RGB(127, 0, 85), true, false));
+	ThemedTextStylingPreference KW_BASICTYPES = new ThemedTextStylingPreference(PREFIX + "basictypes",
+		new TextStyling(new RGB(150, 40, 210), false, false),
+		new TextStyling(new RGB(150, 40, 210), false, false));
+	ThemedTextStylingPreference KW_LITERALS = new ThemedTextStylingPreference(PREFIX + "kw_literals",
+		new TextStyling(new RGB(160, 120, 70), false, false),
+		new TextStyling(new RGB(160, 120, 70), false, false));
+	ThemedTextStylingPreference ANNOTATIONS = new ThemedTextStylingPreference(PREFIX + "annotations",
+		new TextStyling(new RGB(230, 75, 0), false, false),
+		new TextStyling(new RGB(230, 75, 0), false, false));
+	ThemedTextStylingPreference OPERATORS = new ThemedTextStylingPreference(PREFIX + "operators",
+		new TextStyling(new RGB(  0,  0,  0), false, false),
+		new TextStyling(new RGB(230,230,230), false, false)); // Not supported yet  
 	
-	TextStylingPreference CHARACTER_LITERALS = new TextStylingPreference(PREFIX + "character",
-		new RGB(0, 170, 10), false, false);
-	TextStylingPreference STRING = new TextStylingPreference(PREFIX + "string",
-		new RGB(126, 164, 0), false, false);
-	TextStylingPreference DELIM_STRING = new TextStylingPreference(PREFIX + "delimstring",
-		new RGB(175, 175, 0), false, false);
+	ThemedTextStylingPreference CHARACTER_LITERALS = new ThemedTextStylingPreference(PREFIX + "character",
+		new TextStyling(new RGB(0, 170, 10), false, false),
+		new TextStyling(new RGB(0, 170, 10), false, false));
+	ThemedTextStylingPreference STRING = new ThemedTextStylingPreference(PREFIX + "string",
+		new TextStyling(new RGB(126, 164, 0), false, false),
+		new TextStyling(new RGB(126, 164, 0), false, false));
+	ThemedTextStylingPreference DELIM_STRING = new ThemedTextStylingPreference(PREFIX + "delimstring",
+		new TextStyling(new RGB(175, 175, 0), false, false),
+		new TextStyling(new RGB(175, 175, 0), false, false));
 	
 }

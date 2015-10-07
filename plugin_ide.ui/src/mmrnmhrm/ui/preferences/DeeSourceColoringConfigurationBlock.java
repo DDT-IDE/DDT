@@ -32,7 +32,7 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	}
 	
 	@Override
-	protected LabeledTreeElement[] getTreeElements() {
+	protected LabeledTreeElement[] createTreeElements() {
 		return array(
 			new SourceColoringCategory("Source", array(
 				new SourceColoringElement("Default", DeeColorPreferences.DEFAULT),
