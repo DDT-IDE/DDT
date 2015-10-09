@@ -14,15 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.engine.EngineOperation;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.DeeCorePreferences;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -34,6 +25,13 @@ import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.structure.DeeStructureCreator;
+import melnorme.lang.ide.core.engine.EngineClient;
+import melnorme.lang.ide.core.engine.EngineOperation;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import mmrnmhrm.core.DeeCore;
 
 /**
  * Handle communication with DToolServer.
@@ -190,42 +188,51 @@ public class DeeEngineClient extends EngineClient {
 	
 	public class CodeCompletionOperation extends EngineOperation<DeeSymbolCompletionResult> {
 		
-		public CodeCompletionOperation(Location location, int timeoutMillis, int offset) {
+		protected final String effectiveDubPath;
+		
+		public CodeCompletionOperation(Location location, int timeoutMillis, int offset, String effectiveDubPath) {
 			super(DeeEngineClient.this, location, offset, timeoutMillis, "Code Completion");
+			this.effectiveDubPath = effectiveDubPath;
 		}
 		
 		@Override
 		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
 				throws CommonException, CoreException, OperationCancellation {
 			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeEngineClient.compilerPathOverride, 
-				DeeCorePreferences.getEffectiveDubPath());
+				effectiveDubPath);
 		}
 		
 	}
 	
 	public class FindDefinitionOperation extends EngineOperation<FindDefinitionResult> {
 		
-		public FindDefinitionOperation(Location location, int offset, int timeoutMillis) {
+		protected final String effectiveDubPath;
+		
+		public FindDefinitionOperation(Location location, int offset, int timeoutMillis, String effectiveDubPath) {
 			super(DeeEngineClient.this, location, offset, timeoutMillis, "Find Definition");
+			this.effectiveDubPath = effectiveDubPath;
 		}
 		
 		@Override
 		protected FindDefinitionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
 				throws CommonException, CoreException, OperationCancellation {
-			return dtoolServer.doFindDefinition(location.toPath(), offset, DeeCorePreferences.getEffectiveDubPath());
+			return dtoolServer.doFindDefinition(location.toPath(), offset, effectiveDubPath);
 		}
 	}
 	
 	public class FindDDocViewOperation extends EngineOperation<String> {
 		
-		public FindDDocViewOperation(Location location, int offset, int timeoutMillis) {
+		protected final String effectiveDubPath;
+		
+		public FindDDocViewOperation(Location location, int offset, int timeoutMillis, String effectiveDubPath) {
 			super(DeeEngineClient.this, location, offset, timeoutMillis, "Resolve DDoc");
+			this.effectiveDubPath = effectiveDubPath;
 		}
 		
 		@Override
 		protected String doRunOperationWithWorkingCopy(IProgressMonitor pm) 
 				throws CommonException, CoreException, OperationCancellation {
-			return dtoolServer.getDDocHTMLView(location.toPath(), offset, DeeCorePreferences.getEffectiveDubPath());
+			return dtoolServer.getDDocHTMLView(location.toPath(), offset, effectiveDubPath);
 		}
 	}
 	

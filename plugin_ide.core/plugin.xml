@@ -3,11 +3,11 @@
 <plugin>
 	
 	<extension point="org.eclipse.core.resources.natures"
-		id="nature"
-		name="Dee nature">
+		id="nature">
 		<runtime>
 			<run class="org.dsource.ddt.ide.core.DeeNature"/>
 		</runtime>
+		<builder id="org.dsource.ddt.ide.core.DubBuilder" />
 	</extension>
 	
 	<extension point="org.eclipse.core.expressions.definitions">

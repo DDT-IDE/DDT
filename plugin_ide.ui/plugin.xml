@@ -311,6 +311,14 @@
 				<reference definitionId="org.dsource.ddt.ide.core.expressions.isNatureProject" />
 			</enabledWhen>
 		</page>
+		<page
+			class="melnorme.lang.ide.ui.preferences.DeeToolchainConfigurationPage"
+			id="org.dsource.ddt.ide.ide.ui.propertyPages.ToolchainConfiguration"
+			name="%LangToolchainPropertyPage.name">
+			<enabledWhen> 
+				<reference definitionId="org.dsource.ddt.ide.core.expressions.isNatureProject" />
+			</enabledWhen>
+		</page>
 	</extension>
 	
 	<!-- ============ Wizards ============= -->

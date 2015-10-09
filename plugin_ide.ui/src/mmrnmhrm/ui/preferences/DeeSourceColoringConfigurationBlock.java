@@ -27,11 +27,6 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	}
 	
 	@Override
-	public void dispose() {
-		super.dispose();
-	}
-	
-	@Override
 	protected LabeledTreeElement[] createTreeElements() {
 		return array(
 			new SourceColoringCategory("Source", array(

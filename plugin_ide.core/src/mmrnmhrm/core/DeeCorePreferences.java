@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,23 @@
  *******************************************************************************/
 package mmrnmhrm.core;
 
-import dtool.dub.DubHelper;
+import org.eclipse.core.resources.IProject;
 
-public class DeeCorePreferences implements DeeCorePreferencesConstants {
+import dtool.dub.DubHelper;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.StringPreference;
+
+public interface DeeCorePreferences {
 	
-	public static String getEffectiveDubPath() {
-		return DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : PREF_DUB_PATH.get();
+	public static StringPreference PREF_DUB_PATH = new StringPreference(LangCore.PLUGIN_ID, "DUB_PATH", "dub",
+		ToolchainPreferences.USE_PROJECT_SETTINGS);
+	
+	
+	public static String getEffectiveDubPath(IProject project) {
+		return DubHelper.DUB_PATH_OVERRIDE != null ? 
+				DubHelper.DUB_PATH_OVERRIDE : 
+				PREF_DUB_PATH.getProjectPreference().getEffectiveValue(project);
 	}
 	
 }

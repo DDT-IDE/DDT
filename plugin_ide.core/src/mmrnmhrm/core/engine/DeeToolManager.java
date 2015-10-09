@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
@@ -47,11 +48,11 @@ public class DeeToolManager extends AbstractToolManager {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IValidatedField<Path> getSDKToolPathField() {
-		return new SDKToolPathField(getSDKToolPathValidator()) {
+	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
+		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
 			protected String getRawFieldValue() {
-				return DeeCorePreferences.getEffectiveDubPath();
+				return DeeCorePreferences.getEffectiveDubPath(project);
 			}
 		};
 	}

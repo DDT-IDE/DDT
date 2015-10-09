@@ -23,6 +23,7 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
+import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
@@ -38,8 +39,10 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
+		String dubPath = DeeCorePreferences.getEffectiveDubPath(context.getProject());
+		
 		int timeoutMillis = pm.getTimeoutMillis();
-		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset)
+		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
 			.runEngineOperation(pm)
 			.convertToCompletionResult();
 	}

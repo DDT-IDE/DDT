@@ -19,7 +19,7 @@ import melnorme.lang.ide.ui.preferences.LangProjectBuildConfigurationComponent;
 public class DeeBuildConfigurationPropertyPage extends LangBuildConfigurationPropertyPage {
 	
 	@Override
-	protected LangProjectBuildConfigurationComponent createProjectBuildConfigComponent(IProject project) {
+	protected LangProjectBuildConfigurationComponent createProjectConfigComponent(IProject project) {
 		return new LangProjectBuildConfigurationComponent(project) {
 		};
 	}

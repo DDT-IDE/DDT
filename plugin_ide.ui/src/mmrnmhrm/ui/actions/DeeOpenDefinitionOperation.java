@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 import java.util.List;
 import java.util.function.Function;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
@@ -33,6 +34,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
+import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDefinitionResult> {
@@ -56,11 +58,16 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		this.offset = offset;
 	}
 	
+	protected IProject getAssociatedProject() {
+		return EditorUtils.getAssociatedProject(editor.getEditorInput());
+	}
+	
 	@Override
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
+		String dubPath = DeeCorePreferences.getEffectiveDubPath(getAssociatedProject());
 		return DeeEngineClient.getDefault().
-				new FindDefinitionOperation(inputLoc, offset, -1).runEngineOperation(monitor);
+				new FindDefinitionOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 	}
 	
 	@Override

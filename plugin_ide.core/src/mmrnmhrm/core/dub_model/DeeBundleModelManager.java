@@ -275,7 +275,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		BundlePath bundlePath = BundlePath.create(projectLocation.toFile().toPath());
 			
-		String dubPath = getToolManager().getSDKToolPath().toString();
+		String dubPath = getToolManager().getSDKToolPath(project).toString();
 		
 		OperationInfo opInfo = getToolManager().startNewToolOperation();
 		getProcessManager().notifyMessageEvent(new MessageEventInfo(opInfo, 

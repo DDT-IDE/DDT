@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2014 IBM Corporation and others.
+ * Copyright (c) 2015 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,12 +8,22 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core;
+package melnorme.lang.ide.core.utils.prefs;
 
-import melnorme.lang.ide.core.utils.prefs.StringPreference;
+import org.eclipse.core.resources.IProject;
+import org.osgi.service.prefs.BackingStoreException;
 
-public interface DeeCorePreferencesConstants {
+
+public interface IProjectPreference<T> {
 	
-	static StringPreference PREF_DUB_PATH = new StringPreference("DUB_PATH", "dub");
+	PreferenceHelper<T> getGlobalPreference();
+	
+	T getDefault();
+	
+	T getStoredValue(IProject project);
+	
+	void setValue(IProject project, T value) throws BackingStoreException;
+	
+	T getEffectiveValue(IProject project);
 	
 }
