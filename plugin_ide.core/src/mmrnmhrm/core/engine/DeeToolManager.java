@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
 import melnorme.lang.tooling.data.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.fields.IValidatedField;
-import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
@@ -52,7 +52,7 @@ public class DeeToolManager extends AbstractToolManager {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
 			protected String getRawFieldValue2() {
-				return DeeCorePreferences.getEffectiveDubPath(project);
+				return ToolchainPreferences.SDK_PATH.getProjectPreference().getEffectiveValue(project);
 			}
 		};
 	}

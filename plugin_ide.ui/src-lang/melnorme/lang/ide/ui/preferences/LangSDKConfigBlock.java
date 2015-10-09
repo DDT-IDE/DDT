@@ -22,7 +22,7 @@ import melnorme.util.swt.components.fields.DirectoryTextField;
 
 public class LangSDKConfigBlock extends AbstractComponent {
 	
-	protected final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
+	public final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
 	
 	public LangSDKConfigBlock() {
 	}

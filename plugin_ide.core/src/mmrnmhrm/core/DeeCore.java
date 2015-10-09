@@ -12,7 +12,9 @@ package mmrnmhrm.core;
 
 import org.osgi.framework.BundleContext;
 
+import dtool.dub.DubHelper;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.engine.DeeEngineClient;
@@ -38,6 +40,8 @@ public class DeeCore extends LangCore {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
+		ToolchainPreferences.SDK_PATH.setDefaultValue(
+			DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
 	}
 	
 	@Override

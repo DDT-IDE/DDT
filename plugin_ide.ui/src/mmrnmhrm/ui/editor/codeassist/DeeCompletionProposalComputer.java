@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -23,7 +24,6 @@ import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCorePreferences;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
@@ -39,7 +39,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		String dubPath = DeeCorePreferences.getEffectiveDubPath(context.getProject());
+		String dubPath = ToolchainPreferences.SDK_PATH.getProjectPreference().getEffectiveValue(context.getProject());
 		
 		int timeoutMillis = pm.getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
