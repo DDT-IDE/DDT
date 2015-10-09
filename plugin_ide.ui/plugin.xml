@@ -312,7 +312,7 @@
 			</enabledWhen>
 		</page>
 		<page
-			class="melnorme.lang.ide.ui.preferences.DeeToolchainConfigurationPage"
+			class="mmrnmhrm.ui.preferences.pages.DeeToolchainConfigurationPage"
 			id="org.dsource.ddt.ide.ide.ui.propertyPages.ToolchainConfiguration"
 			name="%LangToolchainPropertyPage.name">
 			<enabledWhen> 

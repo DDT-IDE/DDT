@@ -8,12 +8,13 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.ui.preferences;
+package mmrnmhrm.ui.preferences.pages;
 
 import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
 import mmrnmhrm.core.DeeCorePreferences;
 
