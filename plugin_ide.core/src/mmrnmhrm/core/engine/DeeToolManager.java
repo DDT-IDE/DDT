@@ -51,7 +51,7 @@ public class DeeToolManager extends AbstractToolManager {
 	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
-			protected String getRawFieldValue() {
+			protected String getRawFieldValue2() {
 				return DeeCorePreferences.getEffectiveDubPath(project);
 			}
 		};
