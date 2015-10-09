@@ -14,10 +14,9 @@ import org.eclipse.core.resources.IProject;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
-import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock.LanguageSDKLocationGroup;
+import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
 import melnorme.lang.ide.ui.preferences.common.IPreferencesWidgetComponent;
-import mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage.DeeSDKLocationGroup;
 
 public class DeeToolchainConfigurationPage extends AbstractLangPropertyPage {
 	
@@ -28,7 +27,7 @@ public class DeeToolchainConfigurationPage extends AbstractLangPropertyPage {
 			ToolchainPreferences.SDK_PATH.getProjectPreference()) {
 			@Override
 			protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
-				return new DeeSDKLocationGroup();
+				return new LanguageSDKLocationGroup();
 			}
 		};
 	}

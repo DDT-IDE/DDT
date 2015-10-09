@@ -10,10 +10,8 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock.LanguageSDKLocationGroup;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
@@ -33,25 +31,18 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	}
 	
 	@Override
-	protected LangSDKConfigBlock createLangSDKConfigBlock() {
-		LangSDKConfigBlock langSDKConfigBlock = new LangSDKConfigBlock() {
+	protected LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+		return new LangSDKConfigBlock() {
 			@Override
 			protected LanguageSDKLocationGroup createSDKLocationGroup() {
-				return new DeeSDKLocationGroup();
+				return new LanguageSDKLocationGroup() {
+					@Override
+					protected ButtonTextField createSdkLocationField() {
+						return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
+					}
+				};
 			}
 		};
-		
-		connectStringField(ToolchainPreferences.SDK_PATH.key, langSDKConfigBlock.getLocationField(), 
-			getSDKValidator());
-		
-		return langSDKConfigBlock;
-	}
-	
-	public static class DeeSDKLocationGroup extends LanguageSDKLocationGroup {
-		@Override
-		protected ButtonTextField createSdkLocationField() {
-			return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
-		}
 	}
 	
 	@Override

@@ -20,7 +20,7 @@ import melnorme.util.swt.components.FieldComponent;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.DirectoryTextField;
 
-public class LangSDKConfigBlock extends AbstractComponent {
+public abstract class LangSDKConfigBlock extends AbstractComponent {
 	
 	public final LangSDKConfigBlock.LanguageSDKLocationGroup sdkLocationGroup = createSDKLocationGroup();
 	
