@@ -32,17 +32,19 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	
 	@Override
 	protected LangSDKConfigBlock doCreateLangSDKConfigBlock() {
-		return new LangSDKConfigBlock() {
-			@Override
-			protected LanguageSDKLocationGroup createSDKLocationGroup() {
-				return new LanguageSDKLocationGroup() {
-					@Override
-					protected ButtonTextField createSdkLocationField() {
-						return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
-					}
-				};
-			}
-		};
+		return new DeeSDKConfigBlock();
+	}
+	
+	public static class DeeSDKConfigBlock extends LangSDKConfigBlock {
+		@Override
+		protected LanguageSDKLocationGroup createSDKLocationGroup() {
+			return new LanguageSDKLocationGroup() {
+				@Override
+				protected ButtonTextField createSdkLocationField() {
+					return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
+				}
+			};
+		}
 	}
 	
 	@Override
