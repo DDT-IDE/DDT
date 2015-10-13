@@ -36,8 +36,14 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	}
 	
 	public static class DeeSDKConfigBlock extends LangSDKConfigBlock {
+		
 		@Override
-		protected LanguageSDKLocationGroup createSDKLocationGroup() {
+		protected DubLocationValidator getSDKValidator() {
+			return new DubLocationValidator();
+		}
+		
+		@Override
+		protected LanguageSDKLocationGroup createSDKLocationGroup2() {
 			return new LanguageSDKLocationGroup() {
 				@Override
 				protected ButtonTextField createSdkLocationField() {
@@ -45,11 +51,6 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 				}
 			};
 		}
-	}
-	
-	@Override
-	protected DubLocationValidator getSDKValidator() {
-		return new DubLocationValidator();
 	}
 	
 }

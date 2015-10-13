@@ -8,15 +8,20 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.build;
+package melnorme.lang.tooling.data;
 
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
-import mmrnmhrm.core.DeeCoreMessages;
-
-public class DubLocationValidator extends LocationOrSinglePathValidator {
+public interface IStatusMessage {
 	
-	public DubLocationValidator() {
-		super(DeeCoreMessages.DUB_PATH_Label);
+	StatusLevel getStatusLevel();
+	
+	default int getStatusLevelOrdinal() {
+		return getStatusLevel().ordinal();
 	}
+	
+	default boolean isOkStatus() {
+		return getStatusLevel() == StatusLevel.OK;
+	}
+	
+	String getMessage();
 	
 }

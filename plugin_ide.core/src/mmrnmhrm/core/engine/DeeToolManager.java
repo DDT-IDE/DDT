@@ -22,11 +22,11 @@ import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.CoreTaskAgent;
-import melnorme.lang.tooling.data.PathValidator;
+import melnorme.lang.tooling.data.IValidatedField;
+import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.ExceptionAdapter;
-import melnorme.utilbox.fields.IValidatedField;
 import mmrnmhrm.core.build.DubLocationValidator;
 
 /**

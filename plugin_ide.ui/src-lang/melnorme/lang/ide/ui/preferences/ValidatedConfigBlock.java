@@ -8,15 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.build;
+package melnorme.lang.ide.ui.preferences;
 
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
-import mmrnmhrm.core.DeeCoreMessages;
 
-public class DubLocationValidator extends LocationOrSinglePathValidator {
+import melnorme.lang.tooling.data.MultipleFieldValidation;
+import melnorme.util.swt.components.AbstractComponentExt;
+
+public abstract class ValidatedConfigBlock extends AbstractComponentExt {
 	
-	public DubLocationValidator() {
-		super(DeeCoreMessages.DUB_PATH_Label);
+	public final MultipleFieldValidation validation = new MultipleFieldValidation();
+	
+	public ValidatedConfigBlock() {
+		super();
 	}
 	
 }
