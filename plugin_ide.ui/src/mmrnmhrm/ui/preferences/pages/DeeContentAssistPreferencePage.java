@@ -24,7 +24,7 @@ public class DeeContentAssistPreferencePage extends AbstractPreferencesBlockPref
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock createPreferencesComponent() {
+	protected LangEditorContentAssistConfigurationBlock createPreferencesBlock() {
 		return new LangEditorContentAssistConfigurationBlock(this);
 	}
 	

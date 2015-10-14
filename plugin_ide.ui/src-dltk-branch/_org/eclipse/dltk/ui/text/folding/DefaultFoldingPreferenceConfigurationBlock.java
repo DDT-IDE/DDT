@@ -24,7 +24,7 @@ import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.util.SWTFactory;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 /**
  */
@@ -37,7 +37,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	private IFoldingPreferenceBlock sourceCodeBlock;
 
 	public DefaultFoldingPreferenceConfigurationBlock(
-			OverlayPreferenceStore store, AbstractComponentsPrefPage page) {
+			OverlayPreferenceStore store, AbstractPreferencesEditorsPrefPage page) {
 		super(store, page);
 
 		documentationBlock = createDocumentationBlock(store, page);
@@ -113,7 +113,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	}
 
 	protected abstract IFoldingPreferenceBlock createDocumentationBlock(
-			OverlayPreferenceStore store, AbstractComponentsPrefPage page);
+			OverlayPreferenceStore store, AbstractPreferencesEditorsPrefPage page);
 
 	@Override
 	protected List<OverlayKey> createOverlayKeys() {
@@ -131,7 +131,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	}
 
 	protected abstract IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, 
-			AbstractComponentsPrefPage page);
+			AbstractPreferencesEditorsPrefPage page);
 
 	protected int defaultMinLines() {
 		return DEFAULT_MIN_LINES;

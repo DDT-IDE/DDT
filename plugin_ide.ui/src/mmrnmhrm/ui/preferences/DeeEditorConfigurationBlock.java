@@ -11,11 +11,11 @@
 package mmrnmhrm.ui.preferences;
 
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 public class DeeEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public DeeEditorConfigurationBlock(AbstractComponentsPrefPage mainPreferencePage) {
+	public DeeEditorConfigurationBlock(AbstractPreferencesEditorsPrefPage mainPreferencePage) {
 		super(mainPreferencePage);
 	}
 	

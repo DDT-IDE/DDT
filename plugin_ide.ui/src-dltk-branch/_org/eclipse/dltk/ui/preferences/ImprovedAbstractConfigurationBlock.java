@@ -24,8 +24,8 @@ import _org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
 import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.util.IStatusChangeListener;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 /**
  * Configures preferences.
@@ -38,7 +38,7 @@ public abstract class ImprovedAbstractConfigurationBlock extends AbstractPrefere
 	private final ControlBindingManager<String> bindManager;
 
 	public ImprovedAbstractConfigurationBlock(OverlayPreferenceStore store,
-			final AbstractComponentsPrefPage page) {
+			AbstractPreferencesEditorsPrefPage page) {
 		super(page);
 		this.store = store;
 

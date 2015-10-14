@@ -2,13 +2,13 @@ package mmrnmhrm.ui.preferences;
 
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.text.folding.DocumentationFoldingPreferenceBlock;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 import mmrnmhrm.ui.DeePreferencesMessages;
 
 public class DeeDocFoldingPreferenceBlock extends DocumentationFoldingPreferenceBlock {
 	
 	public DeeDocFoldingPreferenceBlock(OverlayPreferenceStore store,
-			AbstractComponentsPrefPage page) {
+			AbstractPreferencesEditorsPrefPage page) {
 		super(store, page);
 	}
 	

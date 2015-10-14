@@ -25,7 +25,7 @@ public class DeeEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	@Override
-	protected DeeEditorConfigurationBlock createPreferencesComponent() {
+	protected DeeEditorConfigurationBlock createPreferencesBlock() {
 		return new DeeEditorConfigurationBlock(this);
 	}
 	

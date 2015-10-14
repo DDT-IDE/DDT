@@ -25,7 +25,7 @@ public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected LangEditorTypingConfigurationBlock createPreferencesComponent() {
+	protected LangEditorTypingConfigurationBlock createPreferencesBlock() {
 		return new LangEditorTypingConfigurationBlock(this);
 	}
 	

@@ -14,7 +14,7 @@ import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import _org.eclipse.dltk.ui.util.SWTFactory;
-import melnorme.lang.ide.ui.preferences.common.AbstractComponentsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 /**
  * Abstract base class that may be used to create
@@ -24,7 +24,7 @@ public abstract class AbstractContributedFoldingPreferenceBlock extends
 		ImprovedAbstractConfigurationBlock implements IFoldingPreferenceBlock {
 
 	public AbstractContributedFoldingPreferenceBlock(
-			OverlayPreferenceStore store, AbstractComponentsPrefPage page) {
+			OverlayPreferenceStore store, AbstractPreferencesEditorsPrefPage page) {
 		super(store, page);
 	}
 	

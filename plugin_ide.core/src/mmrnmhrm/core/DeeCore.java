@@ -40,7 +40,7 @@ public class DeeCore extends LangCore {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		ToolchainPreferences.SDK_PATH.setDefaultValue(
+		ToolchainPreferences.SDK_PATH.setPreferencesDefaultValue(
 			DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
 	}
 	
