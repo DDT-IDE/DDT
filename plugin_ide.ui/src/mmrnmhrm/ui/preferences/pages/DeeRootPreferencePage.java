@@ -31,7 +31,7 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	}
 	
 	@Override
-	protected LangSDKConfigBlock doCreateLangSDKConfigBlock() {
+	protected LangSDKConfigBlock init_createLangSDKConfigBlock() {
 		return new DeeSDKConfigBlock();
 	}
 	

@@ -39,7 +39,7 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 	
 	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ColorManager2 colorManager,  
 			AbstractLangStructureEditor editor, StylingPreferences stylingPrefs) {
-		super(preferenceStore, colorManager, editor);
+		super(preferenceStore, colorManager, stylingPrefs, editor);
 		this.stylingPrefs = stylingPrefs;
 	}
 	
@@ -48,7 +48,7 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 			TokenRegistry tokenStore) {
 		switch (partitionType) {
 		case DEE_CODE:
-			return new DeeCodeScanner(tokenStore, stylingPrefs);
+			return new DeeCodeScanner(tokenStore);
 			
 		case DEE_SINGLE_COMMENT:
 		case DEE_MULTI_COMMENT:

@@ -23,11 +23,9 @@ public class DeeToolchainConfigurationPage extends AbstractLangPropertyPage {
 	
 	@Override
 	protected IPreferencesWidget createProjectConfigWidget(IProject project) {
-		return new ProjectSDKSettingsBlock(project, 
-			ToolchainPreferences.USE_PROJECT_SETTINGS, 
-			ToolchainPreferences.SDK_PATH.getProjectPreference()) {
+		return new ProjectSDKSettingsBlock(project, ToolchainPreferences.USE_PROJECT_SETTINGS) {
 			@Override
-			protected LangSDKConfigBlock init_createSDKLocationGroup() {
+			protected LangSDKConfigBlock init_createLangSDKBlock() {
 				return new DeeSDKConfigBlock();
 			}
 		};
