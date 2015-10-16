@@ -10,8 +10,6 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import dtool.dub.DubHelper;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 
 public class PreferencesOverride {
@@ -19,17 +17,6 @@ public class PreferencesOverride {
 	@SuppressWarnings("unused")
 	public static String getKeyIdentifer(String key, PreferenceHelper<?> helper) {
 		return key;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T getDefaultValue(T defaultValue, PreferenceHelper<?> helper) {
-		if(helper == ToolchainPreferences.SDK_PATH) {
-//			ToolchainPreferences.SDK_PATH.setPreferencesDefaultValue(
-//				DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
-			return (T) (DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
-		}
-		
-		return defaultValue;
 	}
 	
 }
