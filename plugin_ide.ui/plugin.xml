@@ -336,6 +336,7 @@
 			finalPerspective="org.dsource.ddt.ide.ui.DeePerspective"
 			preferredPerspectives="org.dsource.ddt.ide.ui.DeePerspective"
 			project="true">
+			<description>%NewProjectWizard.description</description>
 		</wizard>
 	</extension>
 	

@@ -23,7 +23,7 @@ Also, to improve Eclipse performance and startup time, it is recommended you twe
 ### Project setup
 
 ##### Project creation
-A new D project can be created in the Project Explorer view. Open `New / Project...` and then `D / DUB Project`. The D perspective should open after creation, if it's not open already.
+A new D project is created with the New Project Wizard: from the Project Explorer context menu, select `New / Project...` and then `D / DUB Project`. The same wizard can be used to add a pre-existing DUB package: simply use the location field to select a pre-existing directory.
 
 ##### Project configuration
 Most project settings (such as source folders, or build configurations) are specified in the DUB package manifest file (typically `dub.json`). You will need to be familiar with the format of this file, see [here](http://code.dlang.org/package-format).
