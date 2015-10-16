@@ -10,7 +10,7 @@
  *******************************************************************************/
 package melnorme.utilbox.fields;
 
-public interface IDomainField<VALUE> extends IFieldView<VALUE>, IProperty<VALUE> {
+public interface IModelField<VALUE> extends IFieldView<VALUE>, IProperty<VALUE> {
 	
 	@Override
 	default VALUE getValue() {
