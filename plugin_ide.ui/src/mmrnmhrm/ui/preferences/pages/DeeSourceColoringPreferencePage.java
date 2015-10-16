@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
@@ -20,7 +19,7 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPre
 	public final static String PAGE_ID = DeeUIPlugin.PLUGIN_ID + ".PreferencePages.Editor.SourceColoring";
 	
 	public DeeSourceColoringPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
@@ -29,7 +28,7 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPre
 	}
 	
 	@Override
-	protected DeeSourceColoringConfigurationBlock createPreferencesBlock() {
+	protected DeeSourceColoringConfigurationBlock init_createPreferencesBlock() {
 		return new DeeSourceColoringConfigurationBlock();
 	}
 	

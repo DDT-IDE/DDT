@@ -13,6 +13,7 @@ package mmrnmhrm.ui.preferences.pages;
 import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import mmrnmhrm.core.build.DubLocationValidator;
@@ -32,10 +33,14 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 	
 	@Override
 	protected LangSDKConfigBlock init_createLangSDKConfigBlock() {
-		return new DeeSDKConfigBlock();
+		return new DeeSDKConfigBlock(null);
 	}
 	
 	public static class DeeSDKConfigBlock extends LangSDKConfigBlock {
+		
+		public DeeSDKConfigBlock(PreferencesPageContext prefContext) {
+			super(prefContext);
+		}
 		
 		@Override
 		protected DubLocationValidator getSDKValidator() {
@@ -43,7 +48,7 @@ public class DeeRootPreferencePage extends LangRootPreferencePage {
 		}
 		
 		@Override
-		protected LanguageSDKLocationGroup createSDKLocationGroup2() {
+		protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
 			return new LanguageSDKLocationGroup() {
 				@Override
 				protected ButtonTextField createSdkLocationField() {

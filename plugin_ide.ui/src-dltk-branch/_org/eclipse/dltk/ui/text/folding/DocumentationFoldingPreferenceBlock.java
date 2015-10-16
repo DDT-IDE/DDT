@@ -9,13 +9,13 @@ import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.preferences.PreferencesMessages;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
+import melnorme.lang.ide.ui.preferences.common.AbstractLangPreferencesPage;
 
 public class DocumentationFoldingPreferenceBlock extends
 		AbstractContributedFoldingPreferenceBlock {
 
 	public DocumentationFoldingPreferenceBlock(OverlayPreferenceStore store,
-			AbstractPreferencesEditorsPrefPage page) {
+			AbstractLangPreferencesPage page) {
 		super(store, page);
 	}
 

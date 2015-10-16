@@ -21,12 +21,12 @@ public class DeeEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + ".PreferencePages.Editor";
 	
 	public DeeEditorPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
-	protected DeeEditorConfigurationBlock createPreferencesBlock() {
-		return new DeeEditorConfigurationBlock(this);
+	protected DeeEditorConfigurationBlock init_createPreferencesBlock() {
+		return new DeeEditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

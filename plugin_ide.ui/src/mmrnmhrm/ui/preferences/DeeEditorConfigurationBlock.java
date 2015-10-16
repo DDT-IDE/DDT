@@ -10,13 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences;
 
+import org.eclipse.jface.preference.IPreferenceStore;
+
 import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 public class DeeEditorConfigurationBlock extends LangEditorConfigurationBlock {
 	
-	public DeeEditorConfigurationBlock(AbstractPreferencesEditorsPrefPage mainPreferencePage) {
-		super(mainPreferencePage);
+	public DeeEditorConfigurationBlock(IPreferenceStore store) {
+		super(store);
 	}
 	
 }

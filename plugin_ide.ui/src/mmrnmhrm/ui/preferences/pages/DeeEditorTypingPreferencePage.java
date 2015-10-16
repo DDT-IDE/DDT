@@ -21,12 +21,12 @@ public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefP
 	public final static String PAGE_ID = LangUIPlugin.PLUGIN_ID + "PreferencePages.Editor.Typing";
 	
 	public DeeEditorTypingPreferencePage() {
-		super(LangUIPlugin.getInstance().getPreferenceStore());
+		super();
 	}
 	
 	@Override
-	protected LangEditorTypingConfigurationBlock createPreferencesBlock() {
-		return new LangEditorTypingConfigurationBlock(this);
+	protected LangEditorTypingConfigurationBlock init_createPreferencesBlock() {
+		return new LangEditorTypingConfigurationBlock();
 	}
 	
 	@Override

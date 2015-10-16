@@ -24,8 +24,8 @@ import _org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
 import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.util.IStatusChangeListener;
+import melnorme.lang.ide.ui.preferences.common.AbstractLangPreferencesPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPage;
 
 /**
  * Configures preferences.
@@ -33,14 +33,16 @@ import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesEditorsPrefPag
 public abstract class ImprovedAbstractConfigurationBlock extends AbstractPreferencesBlock implements
 		IPreferenceDelegate<String> {
 
-	private OverlayPreferenceStore store;
+	protected final OverlayPreferenceStore store;
+	protected final AbstractLangPreferencesPage page;
 
 	private final ControlBindingManager<String> bindManager;
 
 	public ImprovedAbstractConfigurationBlock(OverlayPreferenceStore store,
-			AbstractPreferencesEditorsPrefPage page) {
-		super(page);
+			AbstractLangPreferencesPage page) {
+		super();
 		this.store = store;
+		this.page = page;
 
 		bindManager = new ControlBindingManager<String>(this,
 				getStatusListener());
@@ -155,7 +157,7 @@ public abstract class ImprovedAbstractConfigurationBlock extends AbstractPrefere
 	}
 
 	protected PreferencePage getPreferencePage() {
-		return prefPage;
+		return page;
 	}
 
 	private IStatusChangeListener getStatusListener() {
@@ -167,8 +169,8 @@ public abstract class ImprovedAbstractConfigurationBlock extends AbstractPrefere
 					status = new StatusInfo();
 				}
 
-				prefPage.setValid(status.getSeverity() != IStatus.ERROR);
-				StatusUtil.applyToStatusLine(prefPage, status);
+				page.setValid(status.getSeverity() != IStatus.ERROR);
+				StatusUtil.applyToStatusLine(page, status);
 			}
 		};
 	}
