@@ -81,7 +81,7 @@ public class StandardLibraryResolution extends AbstractBundleResolution implemen
 		NULL_COMPILER_INSTALL_PATH, ECompilerType.OTHER);
 	
 	protected static final String SYNTHETIC_Module_Object =
-			MiscUtil.getClassResourceAsString(MissingStandardLibraryResolution.class, "object.di");
+			MiscUtil.getClassResource(MissingStandardLibraryResolution.class, "object.di");
 	
 	/**
 	 * Fall-back synthetic StandardLibraryResolution for when no real compiler installs could be found.

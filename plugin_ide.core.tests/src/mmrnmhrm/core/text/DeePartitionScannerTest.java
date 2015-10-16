@@ -10,68 +10,20 @@
  *******************************************************************************/
 package mmrnmhrm.core.text;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.downCast;
-import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.utilbox.core.DevelopmentCodeMarkers;
-import melnorme.utilbox.tests.CommonTest;
-import mmrnmhrm.core.text.DeePartitions;
 
 import org.eclipse.jface.text.BadPositionCategoryException;
-import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.TypedPosition;
-import org.eclipse.jface.text.rules.FastPartitioner;
 import org.junit.Test;
 
+import melnorme.lang.ide.core.text.LangPartitionScannerTest;
+import melnorme.utilbox.core.DevelopmentCodeMarkers;
+
 // BM: a lot more could done in terms of test, this is just basic example
-public class DeePartitionScannerTest extends CommonTest implements DeePartitions {
-	
-	private static final String NL = "\n";
-	private Document document;
-	private FastPartitioner fp;
-	private boolean recreateDocSetup = true;
+public class DeePartitionScannerTest extends LangPartitionScannerTest implements DeePartitions {
 	
 	public void testBasic() throws Exception {
 		testPartitions("foo = \"asdf\"; ", array(DEE_STRING));
-	}
-	
-	private void testPartitions(String source, String... expectedPositions) throws BadPositionCategoryException {
-		Position[] positions = calculatePositions(source);
-		checkPositions(positions, expectedPositions);
-	}
-	
-	private Position[] calculatePositions(String docContents) throws BadPositionCategoryException {
-		setupDocument(docContents);
-		Position[] positions = getPartitionPositions();
-		return positions;
-	}
-	private Position[] getPartitionPositions() throws BadPositionCategoryException {
-		return document.getPositions(fp.getManagingPositionCategories()[0]);
-	}
-	private void setupDocument(String docContents) {
-		if(recreateDocSetup){ 
-			document = new Document(docContents);
-			fp = LangDocumentPartitionerSetup.getInstance().setupDocument(document);
-		} else {
-			document.set(docContents);
-			assertNotNull(fp);
-		}
-	}
-	
-	private void installPartitionerOnDocumentWithTextTools() {
-		LangDocumentPartitionerSetup.getInstance().setup(document);
-		fp = (FastPartitioner) document.getDocumentPartitioner(TextSettings_Actual.PARTITIONING_ID);
-	}
-	
-	protected void checkPositions(Position[] positions, String[] expectedPositions) {
-		assertTrue(positions.length == expectedPositions.length);
-		for (int i = 0; i < positions.length; i++) {
-			TypedPosition position = downCast(positions[i], TypedPosition.class);
-			assertTrue(position.getType() == expectedPositions[i]);
-		}
 	}
 	
 	@Test
@@ -108,7 +60,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		
 		testPartitions("foo = r\"foo \n", array(DEE_RAW_STRING2)); // incomplete string
 		testPartitions("foo = r\"foo ", array(DEE_RAW_STRING2)); // incomplete string
-		testPartitions("foo = r"); // incomplete string start - Regression test
+		testPartitions("foo = r", strings()); // incomplete string start - Regression test
 		testPartitions("foo = r\"as\0\"df\"; /+ +/", array(DEE_RAW_STRING2, DEE_STRING));
 		testPartitions("foo = r\"as \n df\"; /+ +/", array(DEE_RAW_STRING2, DEE_NESTED_COMMENT));
 	}
@@ -118,7 +70,7 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 	public void testDelimitedStrings$() throws Exception {
 		testPartitions("foo = q\"(foo(xxx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
 		testPartitions("foo = q\"(foo(xx\nx))\"; /+ +/", array(DEE_DELIM_STRING, DEE_NESTED_COMMENT));
-		testPartitions("foo = q"); // incomplete string start - Regression test
+		testPartitions("foo = q", strings()); // incomplete string start - Regression test
 		
 		if(!DevelopmentCodeMarkers.UNIMPLEMENTED_FUNCTIONALITY) return;
 		
@@ -155,16 +107,16 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		
 		testPartitions("foo = /`asdf`; ", array(DEE_RAW_STRING));
 		// Test nesting
-		Position[] positions1 = calculatePositions("a =  /+ /+ blah   +/  'a +/ 1;");
+		Position[] positions1 = calculatePartitions("a =  /+ /+ blah   +/  'a +/ 1;");
 		checkPositions(positions1, array(DEE_NESTED_COMMENT));
 		assertTrue(positions1[0].length == 22);
-		Position[] positions2 = calculatePositions("a =  /+ /++ bla \n +/ \n +/ 1;");
+		Position[] positions2 = calculatePartitions("a =  /+ /++ bla \n +/ \n +/ 1;");
 		checkPositions(positions2, array(DEE_NESTED_COMMENT));
 		assertTrue(positions2[0].length == 22 - 2);
 	}
 
 	public void testComments_Common(String START, String CLOSE, String tokenType) throws BadPositionCategoryException {
-		testPartitions("a /");
+		testPartitions("a /", strings());
 		testPartitions("a "+START+"", tokenType);
 		
 		testPartitions("a/ `S` "+START+" // "+CLOSE+" 1; ", DEE_RAW_STRING, tokenType);
@@ -185,16 +137,6 @@ public class DeePartitionScannerTest extends CommonTest implements DeePartitions
 		testRawString();
 		testSLComments();
 		testComments();
-	}
-	
-	@Test
-	public void testAll_withTextTools() throws Exception { testAll_withTextTools$(); }
-	public void testAll_withTextTools$() throws Exception {
-		document = new Document("");
-		installPartitionerOnDocumentWithTextTools();
-		recreateDocSetup = false;
-		
-		testAll_withSamePartitioner();
 	}
 	
 }

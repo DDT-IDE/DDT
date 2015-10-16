@@ -10,10 +10,10 @@
  *******************************************************************************/
 package dtool.ddoc;
 
-import static melnorme.utilbox.misc.MiscUtil.getClassResourceAsString;
+import static melnorme.utilbox.misc.MiscUtil.getClassResource;
 
 public class DDocResources {
 	
-	public static final String defaultDocStyleSheet = getClassResourceAsString(DDocResources.class, "DocStyleSheet.css");
+	public static final String defaultDocStyleSheet = getClassResource(DDocResources.class, "DocStyleSheet.css");
 	
 }

@@ -11,7 +11,7 @@
 package mmrnmhrm.ui.wizards;
 
 
-import static melnorme.utilbox.misc.MiscUtil.getClassResourceAsString;
+import static melnorme.utilbox.misc.MiscUtil.getClassResource;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -35,9 +35,9 @@ import mmrnmhrm.core.build.DubLocationValidator;
  */
 public class DeeProjectWizard extends LangNewProjectWizard {
 	
-	protected static final String HelloWorld_DubJsonTemplate = getClassResourceAsString(
+	protected static final String HelloWorld_DubJsonTemplate = getClassResource(
 		DeeProjectWizard.class, "hello_world.dub.json");
-	protected static final String HelloWorld_ModuleContents = getClassResourceAsString(
+	protected static final String HelloWorld_ModuleContents = getClassResource(
 		DeeProjectWizard.class, "hello_world.d");
 	
 	
