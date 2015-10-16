@@ -17,6 +17,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
@@ -49,15 +50,25 @@ public abstract class ImprovedAbstractConfigurationBlock extends AbstractPrefere
 		addOverlayKeys();
 	}
 
+	@Override
+	protected final void createContents(Composite topControl) {
+		store.load();
+		doCreateContents(topControl);
+		initializeFields();
+	}
+	
+	protected abstract void doCreateContents(Composite topControl);
+	
 	public void initialize() {
 		initializeFields();
 	}
 
 	public void performOk() {
-		// do nothing
+		store.propagate();
 	}
-
+	
 	public void performDefaults() {
+		store.loadDefaults();
 		initializeFields();
 	}
 	

@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.service.prefs.BackingStoreException;
 
 import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.preferences.FieldValidators.MinimumNumberValidator;
@@ -33,8 +34,8 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 
 	private static int DEFAULT_MIN_LINES = 2;
 
-	private IFoldingPreferenceBlock documentationBlock;
-	private IFoldingPreferenceBlock sourceCodeBlock;
+	private AbstractContributedFoldingPreferenceBlock documentationBlock;
+	private AbstractContributedFoldingPreferenceBlock sourceCodeBlock;
 
 	public DefaultFoldingPreferenceConfigurationBlock(
 			OverlayPreferenceStore store, AbstractLangPreferencesPage page) {
@@ -52,7 +53,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
+	protected void doCreateContents(Composite topControl) {
 		// TODO: remove redundant topControl creation.
 		Composite composite = SWTFactory.createComposite(topControl, topControl.getFont(), 1, 1, GridData.FILL_BOTH);
 
@@ -112,7 +113,7 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		// empty implementation
 	}
 
-	protected abstract IFoldingPreferenceBlock createDocumentationBlock(
+	protected abstract AbstractContributedFoldingPreferenceBlock createDocumentationBlock(
 			OverlayPreferenceStore store, AbstractLangPreferencesPage page);
 
 	@Override
@@ -130,8 +131,8 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		return keys;
 	}
 
-	protected abstract IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, 
-			AbstractLangPreferencesPage page);
+	protected abstract AbstractContributedFoldingPreferenceBlock createSourceCodeBlock(
+			OverlayPreferenceStore store, AbstractLangPreferencesPage page);
 
 	protected int defaultMinLines() {
 		return DEFAULT_MIN_LINES;
@@ -151,7 +152,19 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 			disableFoldingControls();
 		}
 	}
-
+	
+	@Override
+	public void loadDefaults() {
+		super.loadDefaults();
+		performDefaults();
+	}
+	
+	@Override
+	public void doSaveSettings() throws BackingStoreException {
+		super.doSaveSettings();
+		performOk();
+	}
+	
 	private void createMinLines(Composite parent) {
 		Composite composite = SWTFactory.createComposite(parent, parent
 				.getFont(), 2, 1, GridData.FILL);

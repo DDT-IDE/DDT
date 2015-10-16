@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import _org.eclipse.dltk.ui.text.folding.DefaultFoldingPreferenceConfigurationBlock;
-import _org.eclipse.dltk.ui.text.folding.IFoldingPreferenceBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractLangPreferencesPage;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 import mmrnmhrm.ui.DeeUIPlugin;
@@ -38,19 +37,18 @@ public class DeeFoldingPreferencePage extends AbstractPreferencesBlockPrefPage {
 	protected DefaultFoldingPreferenceConfigurationBlock init_createPreferencesBlock() {
 		setPreferenceStore(DeeUIPlugin.getInstance().getPreferenceStore());
 		
-		/*FIXME: BUG here*/
 		OverlayPreferenceStore overlayStore = new OverlayPreferenceStore(getPreferenceStore(), array());
 		
 		return new DefaultFoldingPreferenceConfigurationBlock(overlayStore, this) {
 			
 			@Override
-			protected IFoldingPreferenceBlock createDocumentationBlock(OverlayPreferenceStore store, 
+			protected DeeDocFoldingPreferenceBlock createDocumentationBlock(OverlayPreferenceStore store, 
 					AbstractLangPreferencesPage page) {
 				return new DeeDocFoldingPreferenceBlock(store, page);
 			}
 			
 			@Override
-			protected IFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, 
+			protected DeeSourceFoldingPreferenceBlock createSourceCodeBlock(OverlayPreferenceStore store, 
 					AbstractLangPreferencesPage page) {
 				return new DeeSourceFoldingPreferenceBlock(store, page);
 			}

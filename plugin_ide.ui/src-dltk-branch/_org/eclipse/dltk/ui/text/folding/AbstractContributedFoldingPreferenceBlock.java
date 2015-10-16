@@ -21,7 +21,7 @@ import melnorme.lang.ide.ui.preferences.common.AbstractLangPreferencesPage;
  * <code>IFoldingPreferenceBlock</code> implenentations.
  */
 public abstract class AbstractContributedFoldingPreferenceBlock extends
-		ImprovedAbstractConfigurationBlock implements IFoldingPreferenceBlock {
+		ImprovedAbstractConfigurationBlock {
 
 	public AbstractContributedFoldingPreferenceBlock(
 			OverlayPreferenceStore store, AbstractLangPreferencesPage page) {
@@ -34,11 +34,10 @@ public abstract class AbstractContributedFoldingPreferenceBlock extends
 	}
 	
 	@Override
-	protected void createContents(Composite topControl) {
+	protected void doCreateContents(Composite topControl) {
 		createControl(topControl);
 	}
 	
-	@Override
 	public Control createControl(Composite parent) {
 		// TODO: remove redundant topControl creation.
 		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL);
