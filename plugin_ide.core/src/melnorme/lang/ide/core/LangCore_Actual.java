@@ -10,6 +10,10 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Path;
+
+import dtool.dub.BundlePath;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
@@ -42,6 +46,10 @@ public class LangCore_Actual {
 	}
 	public static DeeBuildManager createBuildManager() {
 		return new DeeBuildManager(DeeCore.getDeeBundleModel());
+	}
+	
+	public static boolean isBundleManifestFile(IFile file) {
+		return file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME));
 	}
 	
 }

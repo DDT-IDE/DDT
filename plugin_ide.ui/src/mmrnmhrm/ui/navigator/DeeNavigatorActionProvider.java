@@ -10,30 +10,16 @@
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
 
-import static melnorme.utilbox.core.CoreUtil.array;
+import static melnorme.utilbox.core.CoreUtil.list;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.navigator.ICommonMenuConstants;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.MessageEventInfo;
-import melnorme.lang.ide.core.operations.OperationInfo;
-import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
-import melnorme.lang.ide.core.utils.TextMessageUtils;
-import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
-import mmrnmhrm.core.DeeCore;
-import mmrnmhrm.core.DeeCoreMessages;
-import mmrnmhrm.core.engine.DeeToolManager;
+import melnorme.lang.ide.ui.operations.RunToolOperation.RunSDKToolOperation;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.launch.DeeLaunchShortcut;
 
@@ -55,105 +41,42 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 		};
 	}
 	
-	public static class DubPathActionGroup extends ViewPartActionGroup {
-		
-		protected final AddDubProjectToLocalPath action1 = new AddDubProjectToLocalPath();
-		protected final RemoveDubProjectFromLocalPath action2 = new RemoveDubProjectFromLocalPath();
-		protected final RunDubList action3 = new RunDubList();
+	public static class DubPathActionGroup extends BundleOperationsActionGroup {
 		
 		public DubPathActionGroup(IViewPart viewPart) {
 			super(viewPart);
 		}
 		
 		@Override
-		public void fillContextMenu(IMenuManager menu) {
-			IProject project = getDubProjectFromSelection();
-			if(project == null)
-				return;
-			
-			MenuManager dubMenu = new MenuManager(DeeUIMessages.DubActionMenu, 
-				LangImages.NAV_Library, "dubMenu");
-			dubMenu.add(action1);
-			dubMenu.add(action2);
-			dubMenu.add(action3);
-			
-			menu.prependToGroup(ICommonMenuConstants.GROUP_BUILD, dubMenu);
+		protected void initActions(MenuManager bundleOpsMenu, IProject project) {
+			addRunOperationAction(bundleOpsMenu, new AddDubProjectToLocalPath(project));
+			addRunOperationAction(bundleOpsMenu, new RemoveDubProjectFromLocalPath(project));
+			addRunOperationAction(bundleOpsMenu, new RunDubList(project));
 		}
 		
-		public IProject getDubProjectFromSelection() {
-			Object selElement = getSelectionFirstElement();
-			if(selElement instanceof IProject) {
-				IProject project = (IProject) selElement;
-				if(LangCore.getBundleModel().getProjectInfo(project) != null) {
-					return project;
-				}
-				return null;
-			}
-			if(selElement instanceof DependenciesContainer) {
-				DependenciesContainer dubDependenciesContainer = (DependenciesContainer) selElement;
-				return dubDependenciesContainer.getParent();
-			}
-			if(DeeNavigatorContentProvider.isDubManifestFile(selElement)) {
-				IFile file = (IFile) selElement;
-				return file.getProject();
-			}
-			return null;
+		@Override
+		protected String getMenuName() {
+			return DeeUIMessages.DubActionMenu;
 		}
 		
-		public abstract class CommonDubAction extends Action {
-			
-			@Override
-			public void run() {
-				IProject project = getDubProjectFromSelection();
-				DeeToolManager dubMgr = DeeCore.getDeeBundleModelManager().getProcessManager();
-				NullProgressMonitor monitor = new NullProgressMonitor(); // TODO: should create Job for this
-				
-				OperationInfo opInfo = getToolManager().startNewToolOperation();
-				
-				getToolManager().notifyMessageEvent(new MessageEventInfo(opInfo, 
-					TextMessageUtils.headerBIG(DeeCoreMessages.RunningDubCommand)));
-				ProcessBuilder pb = AbstractToolManager.createProcessBuilder(null, getCommands(project));
-				dubMgr.submitTask(getToolManager().newRunToolTask(opInfo, pb, monitor));
-			}
-			
-			private AbstractToolManager getToolManager() {
-				return LangCore.getToolManager();
-			}
-			
-			protected abstract String[] getCommands(IProject project);
-
-		}
-		
-		public class AddDubProjectToLocalPath extends CommonDubAction {
-			{
-				setText(DeeUIMessages.DubAction_AddLocalPath);
-			}
-			
-			@Override
-			protected String[] getCommands(IProject project) {
-				return array("dub", "add-local", project.getLocation().toFile().toString());
+		public class AddDubProjectToLocalPath extends RunSDKToolOperation {
+			public AddDubProjectToLocalPath(IProject project) {
+				super(DeeUIMessages.DubAction_AddLocalPath, project,
+					list("add-local", project.getLocation().toFile().toString()));
 			}
 		}
 		
-		public class RemoveDubProjectFromLocalPath extends CommonDubAction {
-			{
-				setText(DeeUIMessages.DubAction_RemoveLocalPath);
-			}
-			
-			@Override
-			protected String[] getCommands(IProject project) {
-				return array("dub", "remove-local", project.getLocation().toFile().toString());
+		public class RemoveDubProjectFromLocalPath extends RunSDKToolOperation {
+			public RemoveDubProjectFromLocalPath(IProject project) {
+				super(DeeUIMessages.DubAction_RemoveLocalPath, project, 
+					list("remove-local", project.getLocation().toFile().toString()));
 			}
 		}
 		
-		public class RunDubList extends CommonDubAction {
-			{
-				setText(DeeUIMessages.DubAction_RunDubList);
-			}
-			
-			@Override
-			protected String[] getCommands(IProject project) {
-				return array("dub", "list");
+		public class RunDubList extends RunSDKToolOperation {
+			public RunDubList(IProject project) {
+				super(DeeUIMessages.DubAction_RunDubList, project, 
+					list("list"));
 			}
 		}
 		
