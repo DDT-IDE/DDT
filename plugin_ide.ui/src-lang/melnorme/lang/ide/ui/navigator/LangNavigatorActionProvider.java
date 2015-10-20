@@ -27,7 +27,7 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 
-import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.actions.AbstractUIOperation;
@@ -123,7 +123,7 @@ public abstract class LangNavigatorActionProvider extends CommonActionProvider {
 			}
 			if(selElement instanceof IFile) {
 				IFile file = (IFile) selElement;
-				if(LangCore_Actual.isBundleManifestFile(file)) {
+				if(LangCore.getBundleModelManager().isBundleManifestFile(file)) {
 					return file.getProject();
 				}
 			}

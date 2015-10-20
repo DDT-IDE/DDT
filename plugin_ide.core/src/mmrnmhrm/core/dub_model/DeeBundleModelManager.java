@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
@@ -80,7 +81,12 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	@Override
 	protected ManagerResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(ResourceUtils.epath(BundlePath.DUB_MANIFEST_Path));
+		return new ManagerResourceListener(getDefaultBundleManifestPath());
+	}
+	
+	@Override
+	protected Path getDefaultBundleManifestPath() {
+		return ResourceUtils.epath(BundlePath.DUB_MANIFEST_Path);
 	}
 	
 	@Override

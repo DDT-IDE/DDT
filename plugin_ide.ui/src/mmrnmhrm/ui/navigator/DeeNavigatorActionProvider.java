@@ -26,12 +26,6 @@ import mmrnmhrm.ui.launch.DeeLaunchShortcut;
 public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 	
 	@Override
-	protected void initActionGroups(IViewPart viewPart) {
-		super.initActionGroups(viewPart);
-		actionGroups.add(new DubPathActionGroup(viewPart));
-	}
-	
-	@Override
 	protected BuildTargetsActionGroup createBuildTargetsActionGroup(IViewPart viewPart) {
 		return new BuildTargetsActionGroup(viewPart) {
 			@Override
@@ -39,6 +33,12 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				return new DeeLaunchShortcut();
 			}
 		};
+	}
+	
+	@Override
+	protected void initActionGroups(IViewPart viewPart) {
+		super.initActionGroups(viewPart);
+		actionGroups.add(new DubPathActionGroup(viewPart));
 	}
 	
 	public static class DubPathActionGroup extends BundleOperationsActionGroup {
