@@ -47,8 +47,8 @@ public interface DeeColorPreferences {
 		new TextStyling(new RGB(230,230,230), false, false)); // Not supported yet  
 	
 	ThemedTextStylingPreference NUMBER = new ThemedTextStylingPreference(PREFIX + "number",
-		new TextStyling(new RGB(126, 160, 0), false, false),
-		new TextStyling(new RGB(126, 160, 0), false, false));
+		new TextStyling(new RGB(  0,   0, 0), false, false),
+		new TextStyling(new RGB(230,230,230), false, false));
 	ThemedTextStylingPreference CHARACTER_LITERALS = new ThemedTextStylingPreference(PREFIX + "character",
 		new TextStyling(new RGB(0, 170, 10), false, false),
 		new TextStyling(new RGB(0, 170, 10), false, false));
