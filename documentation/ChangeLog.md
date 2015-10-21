@@ -1,7 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Fixed regression: Folding preference page broken. ### TODO
+ * Added number literals syntax highlighting.
+ * Fixed regression: Folding preference page broken.
  * Added per-project DUB installation preferences.
  * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
  * Added Content Assist support of name-only proposal insertion by pressing `Ctrl+Enter`. (only applicable to proposals that insert arguments)

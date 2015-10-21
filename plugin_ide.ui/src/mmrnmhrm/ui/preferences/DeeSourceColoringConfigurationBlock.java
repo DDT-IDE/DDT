@@ -34,9 +34,10 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 				new SourceColoringElement("Keywords", DeeColorPreferences.KEYWORDS),
 				new SourceColoringElement("Keywords - Primitives", DeeColorPreferences.KW_BASICTYPES),
 				new SourceColoringElement("Keywords - Literals", DeeColorPreferences.KW_LITERALS),
-				new SourceColoringElement("Character Literals", DeeColorPreferences.CHARACTER_LITERALS),
+				new SourceColoringElement("Characters", DeeColorPreferences.CHARACTER_LITERALS),
 				new SourceColoringElement("Strings", DeeColorPreferences.STRING),
-				new SourceColoringElement("Delimited String", DeeColorPreferences.DELIM_STRING),
+				new SourceColoringElement("Delimited Strings", DeeColorPreferences.DELIM_STRING),
+				new SourceColoringElement("Numbers", DeeColorPreferences.NUMBER),
 				new SourceColoringElement("@Annotations", DeeColorPreferences.ANNOTATIONS)
 			)),
 			new SourceColoringCategory("Comments", array(

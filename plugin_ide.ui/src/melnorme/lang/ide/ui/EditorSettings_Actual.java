@@ -51,6 +51,7 @@ public class EditorSettings_Actual {
 			DeeColorPreferences.ANNOTATIONS,
 			DeeColorPreferences.OPERATORS,
 			
+			DeeColorPreferences.NUMBER,
 			DeeColorPreferences.CHARACTER_LITERALS,
 			DeeColorPreferences.STRING,
 			DeeColorPreferences.DELIM_STRING

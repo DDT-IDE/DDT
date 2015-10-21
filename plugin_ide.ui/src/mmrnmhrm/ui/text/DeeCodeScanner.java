@@ -19,11 +19,14 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+import dtool.parser.DeeNumberLexingRule;
 import dtool.parser.DeeTokenHelper;
 import dtool.parser.DeeTokens;
 import melnorme.lang.ide.core.text.FullPatternRule;
 import melnorme.lang.ide.ui.text.AbstractLangScanner;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
+import melnorme.lang.tooling.parser.lexer.ILexingRule2;
+import melnorme.lang.utils.parse.ICharacterReader;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class DeeCodeScanner extends AbstractLangScanner {
@@ -54,6 +57,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		// These need special treament because of the '!' character
 		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
 		
+		rules.add(new LexingRule_RuleAdapter(new DeeSubLexer(getToken(DeeColorPreferences.NUMBER))));
 		
 		IToken tkAnnotation = getToken(DeeColorPreferences.ANNOTATIONS);
 		WordRule annotationsRule = new WordRule(new AnnotationsWordDetector(), tkAnnotation);
@@ -72,6 +76,24 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		@Override
 		public boolean isWordStart(char character) {
 			return character == '@';
+		}
+	}
+	
+	protected final class DeeSubLexer implements ILexingRule2<IToken> {
+		
+		protected final DeeNumberLexingRule numberRule = new DeeNumberLexingRule();
+		protected final IToken numberToken;
+		
+		public DeeSubLexer(IToken numberToken) {
+			this.numberToken = numberToken;
+		}
+		
+		@Override
+		public IToken doEvaluateToken(ICharacterReader subReader) {
+			if(numberRule.doEvaluate(subReader)) {
+				return numberToken; 
+			}
+			return null;
 		}
 	}
 	
