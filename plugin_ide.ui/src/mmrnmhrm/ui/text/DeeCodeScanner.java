@@ -48,14 +48,14 @@ public class DeeCodeScanner extends AbstractLangScanner {
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
 		// Add word rule for keywords, types, and constants.
-		WordRule wordRule = new WordRule(new JavaWordDetector(), tkDefault);
+		WordRule wordRule = new WordRule(new JavaWordDetector2(), tkDefault);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_control, tkKeyword);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_nativeTypes, tkBasics);
 		addWordsFromTokens(wordRule, DeeTokenHelper.keyWords_literalValues, tkLiterals);
 		rules.add(wordRule);
 		
 		// These need special treament because of the '!' character
-		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector()));
+		rules.add(new FullPatternRule(tkKeyword, array("!in", "!is"), new JavaWordDetector2()));
 		
 		rules.add(new LexingRule_RuleAdapter(new DeeSubLexer(getToken(DeeColorPreferences.NUMBER))));
 		
@@ -72,7 +72,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		}
 	}
 	
-	public static class AnnotationsWordDetector extends JavaWordDetector {
+	public static class AnnotationsWordDetector extends JavaWordDetector2 {
 		@Override
 		public boolean isWordStart(char character) {
 			return character == '@';

@@ -13,12 +13,12 @@ package dtool.parser;
 
 
 import melnorme.lang.tests.NumberRuleTest;
-import melnorme.lang.tooling.parser.lexer.ILexingRule;
+import melnorme.lang.tooling.parser.lexer.IPredicateLexingRule;
 
 public class DeeNumberRuleTest extends NumberRuleTest {
 	
 	@Override
-	protected ILexingRule createLexingRule() {
+	protected IPredicateLexingRule createLexingRule() {
 		return new DeeNumberLexingRule();
 	}
 	
