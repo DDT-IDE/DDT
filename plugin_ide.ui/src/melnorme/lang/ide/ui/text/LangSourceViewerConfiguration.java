@@ -68,7 +68,7 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 		case DEE_DELIM_STRING:
 			return new SingleTokenScanner(tokenStore, DeeColorPreferences.DELIM_STRING);
 		case DEE_CHARACTER:
-			return new SingleTokenScanner(tokenStore, DeeColorPreferences.CHARACTER_LITERALS);
+			return new SingleTokenScanner(tokenStore, DeeColorPreferences.CHARACTER);
 		}
 		throw assertFail();
 	}

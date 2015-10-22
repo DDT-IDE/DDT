@@ -6,11 +6,10 @@ import std.stdio;
  */
 public class Foo {
 	
-	@safe
-	pure bool func(immutable int[] anArray) nothrow {
+	/// Single line doc comment
+	@safe pure bool func(immutable int[] anArray) nothrow {
 		int a = 1234; // Single line comment
-		string str = "Hello" /// Single line doc comment
-			~ 'z' ~ q"(foo(xxx))"; 
+		string str = "Hello" ~ 'z' ~ q"(foo(xxx))"; 
 		
 		if(anArray is null) 
 			return false;

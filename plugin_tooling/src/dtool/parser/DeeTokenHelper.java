@@ -210,6 +210,8 @@ public class DeeTokenHelper {
 			
 		case KW_THIS: 
 		case KW_SUPER:
+			return TokensCategory.CONTROL;
+			
 		case KW_TRUE:
 		case KW_FALSE: 
 		case KW_NULL:

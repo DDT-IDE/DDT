@@ -46,13 +46,13 @@ public class EditorSettings_Actual {
 			DeeColorPreferences.DOC_COMMENT,
 			
 			DeeColorPreferences.KEYWORDS,
-			DeeColorPreferences.KW_BASICTYPES,
+			DeeColorPreferences.KW_NATIVE_TYPES,
 			DeeColorPreferences.KW_LITERALS,
 			DeeColorPreferences.ANNOTATIONS,
 			DeeColorPreferences.OPERATORS,
 			
 			DeeColorPreferences.NUMBER,
-			DeeColorPreferences.CHARACTER_LITERALS,
+			DeeColorPreferences.CHARACTER,
 			DeeColorPreferences.STRING,
 			DeeColorPreferences.DELIM_STRING
 		);

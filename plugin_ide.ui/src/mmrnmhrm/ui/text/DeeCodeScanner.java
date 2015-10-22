@@ -43,7 +43,7 @@ public class DeeCodeScanner extends AbstractLangScanner {
 		
 		IToken tkDefault = getToken(DeeColorPreferences.DEFAULT);
 		IToken tkKeyword = getToken(DeeColorPreferences.KEYWORDS);
-		IToken tkBasics = getToken(DeeColorPreferences.KW_BASICTYPES);
+		IToken tkBasics = getToken(DeeColorPreferences.KW_NATIVE_TYPES);
 		IToken tkLiterals = getToken(DeeColorPreferences.KW_LITERALS);
 //		IToken tkOperators = getToken(DeeColorConstants.DEE_OPERATORS);
 		
