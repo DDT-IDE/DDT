@@ -1,17 +1,20 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Syntax highlighting now works on the source compare editor/viewer.
- * Added number literals syntax highlighting.
- * Fixed regression: Folding preference page broken.
- * Added per-project DUB installation preferences.
- * Newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
- * Added Content Assist support of name-only proposal insertion by pressing `Ctrl+Enter`. (only applicable to proposals that insert arguments)
- * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
+
+### 0.14.0
  * Added support for Eclipse dark theme. Namely:  
    * Syntax/source coloring now have different settings for dark theme.
-   * Fixed tools console colors, as well as content assist pop-up colors.
- * Changed default settings for syntax/source highlighting (non-dark themes).
+   * Fixed Tools Console colors, as well as content assist pop-up colors.
+ * Added number literals syntax highlighting.
+ * Syntax highlighting now works on the source compare editor.
+ * Added support for Content Assist name-only proposal insertion by pressing `Ctrl+Enter`. (only applicable to proposals that insert arguments)
+ * Added per-project DUB installation preferences.
+ * Changed: newly created launch configurations now have the debug option "Stop on startup at:" set to false by default. This way debugging won't stop on the C `main`, which is essentially useless outside of C/C++.
+
+--
+ * Fixed: AssertionFailureException pressing Enter after source with more closing braces than opening ones.
+ * Fixed regression: Folding preference page broken.
  * Fixed: `foreach(const ref x; y)` is invalid syntax. (#117)
  * Fixed: Unindent (Shift-Tab) broken, does nothing after empty lines in selection. (#116)
 
