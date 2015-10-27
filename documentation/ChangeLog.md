@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Syntax highlighting now works on the source compare editor/viewer.
  * Added number literals syntax highlighting.
  * Fixed regression: Folding preference page broken.
  * Added per-project DUB installation preferences.

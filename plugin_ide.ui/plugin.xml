@@ -397,6 +397,18 @@
 	</extension>
 	
 	
+	<extension point="org.eclipse.compare.contentMergeViewers">
+		<viewer
+	        id="org.dsource.ddt.ide.ui.compare.ViewerCreator"
+	        class="mmrnmhrm.ui.editor.CompareViewerCreator"
+	        label="%LangSourceCompare">
+		</viewer>
+		<contentTypeBinding
+			contentMergeViewerId="org.dsource.ddt.ide.ui.compare.ViewerCreator"
+			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
+		</contentTypeBinding>
+	</extension>
+	
 	<!-- ============ Launch ============= -->
 	
 	<extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
