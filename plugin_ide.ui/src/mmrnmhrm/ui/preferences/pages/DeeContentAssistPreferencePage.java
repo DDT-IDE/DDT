@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.lang.ide.ui.preferences.LangEditorContentAssistConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorContentAssistConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
 import mmrnmhrm.ui.DeeUIPlugin;
 
@@ -23,8 +23,8 @@ public class DeeContentAssistPreferencePage extends AbstractPreferencesBlockPref
 	}
 	
 	@Override
-	protected LangEditorContentAssistConfigurationBlock init_createPreferencesBlock() {
-		return new LangEditorContentAssistConfigurationBlock();
+	protected EditorContentAssistConfigurationBlock init_createPreferencesBlock() {
+		return new EditorContentAssistConfigurationBlock();
 	}
 	
 	@Override

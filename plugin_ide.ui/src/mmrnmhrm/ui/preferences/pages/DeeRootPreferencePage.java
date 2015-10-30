@@ -10,10 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.preferences.pages;
 
-import melnorme.lang.ide.ui.preferences.LangRootPreferencePage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.PreferencesMessages;
 import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
+import melnorme.lang.ide.ui.preferences.pages.RootPreferencePage;
 import melnorme.util.swt.components.fields.ButtonTextField;
 import melnorme.util.swt.components.fields.FileTextField;
 import mmrnmhrm.core.build.DubLocationValidator;
@@ -21,14 +21,9 @@ import mmrnmhrm.core.build.DubLocationValidator;
 /**
  * The root preference page for D
  */
-public class DeeRootPreferencePage extends LangRootPreferencePage {
+public class DeeRootPreferencePage extends RootPreferencePage {
 	
 	public DeeRootPreferencePage() {
-	}
-	
-	@Override
-	protected String getHelpId() {
-		return null;
 	}
 	
 	@Override

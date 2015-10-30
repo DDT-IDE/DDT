@@ -12,9 +12,9 @@ package mmrnmhrm.ui.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import melnorme.lang.ide.ui.preferences.LangEditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
 
-public class DeeEditorConfigurationBlock extends LangEditorConfigurationBlock {
+public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	
 	public DeeEditorConfigurationBlock(IPreferenceStore store) {
 		super(store);
