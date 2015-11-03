@@ -43,8 +43,8 @@ public class DeeRootPreferencePage extends RootPreferencePage {
 		}
 		
 		@Override
-		protected LanguageSDKLocationGroup2 init_createSDKLocationGroup() {
-			return new LanguageSDKLocationGroup2() {
+		protected LanguageSDKLocationGroup init_createSDKLocationGroup() {
+			return new LanguageSDKLocationGroup() {
 				@Override
 				protected ButtonTextField createSdkLocationField() {
 					return new FileTextField(PreferencesMessages.ROOT_SDKGroup_path_Label);
