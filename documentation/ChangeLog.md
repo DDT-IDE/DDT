@@ -1,7 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
-
+ * Fixed: project Build Targets settings pages shows wrong default for Program Path field
+ 
 ### 0.14.0
  * Added support for Eclipse dark theme. Namely:  
    * Syntax/source coloring now have different settings for dark theme.
