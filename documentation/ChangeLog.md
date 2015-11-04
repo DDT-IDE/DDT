@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Fixed: project Build Targets settings pages shows wrong default for Program Path field
  
 ### 0.14.0

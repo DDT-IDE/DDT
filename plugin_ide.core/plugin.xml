@@ -60,7 +60,8 @@
 		id="DubBuilder"
 		name="DUB Build">
 		<builder 
-			callOnEmptyDelta="true">
+			callOnEmptyDelta="true"
+			isConfigurable="true">
 			<run class="mmrnmhrm.core.build.DeeProjectBuilder" />
 		</builder>
 	</extension>
