@@ -52,7 +52,7 @@ public class DeeToolManager extends AbstractToolManager {
 		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
 			@Override
 			protected String getRawFieldValue2() {
-				return ToolchainPreferences.SDK_PATH.getProjectPreference().getEffectiveValue(project);
+				return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
 			}
 		};
 	}

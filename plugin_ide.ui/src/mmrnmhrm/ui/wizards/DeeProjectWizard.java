@@ -23,6 +23,7 @@ import org.eclipse.jface.wizard.WizardPage;
 
 import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
@@ -129,7 +130,8 @@ class DeeProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	
 	@Override
 	protected void validatePreferences() throws ValidationException {
-		 new DubLocationValidator().getValidatedField(ToolchainPreferences.SDK_PATH.get());
+		PreferenceHelper<String> globalPref = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
+		new DubLocationValidator().getValidatedField(globalPref.get());
 	}
 	
 }
