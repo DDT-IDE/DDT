@@ -48,8 +48,6 @@ This may be necessary since D projects will not be visible as dependencies to ot
 
 D projects are built using DUB. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the D editor and the Problems view.
 
-Note that if the `Project / Build Automatically` option in the main menu is enabled (the default), a workspace build will be requested whenever any file is saved. Turn this on or off as desired.
-
 D projects have Build Targets derived from DUB configurations. These can be viewed and configured in the Project Explorer:
 
 <div align="center">
