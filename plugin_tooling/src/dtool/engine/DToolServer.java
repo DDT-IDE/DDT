@@ -13,10 +13,6 @@ package dtool.engine;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 
-import melnorme.lang.utils.ISimpleStatusLogger;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.CompilerInstallDetector;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
@@ -25,6 +21,9 @@ import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionOperation;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.ResolveDocViewOperation;
+import melnorme.lang.utils.ISimpleStatusLogger;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 public class DToolServer implements ISimpleStatusLogger {
 	
@@ -67,20 +66,6 @@ public class DToolServer implements ISimpleStatusLogger {
 	public void handleInternalError(Throwable throwable) {
 		logError("!!!! INTERNAL ERRROR: ", throwable);
 		throwable.printStackTrace(System.err);
-	}
-	
-	
-	/* -----------------  ----------------- */
-	
-	public class DToolTaskAgent extends ExecutorTaskAgent {
-		public DToolTaskAgent(String name) {
-			super(name);
-		}
-		
-		@Override
-		protected void handleUnexpectedException(Throwable throwable) {
-			handleInternalError(throwable);
-		}
 	}
 	
 	/* ----------------- Operations ----------------- */

@@ -24,6 +24,7 @@ import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileCachingEntry;
 import melnorme.lang.utils.EntryMapTS;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -66,7 +67,9 @@ public class SemanticManager {
 	protected SemanticManager(DToolServer dtoolServer) {
 		this.dtoolServer = dtoolServer;
 		this.parseCache = new ModuleParseCache(dtoolServer);
-		this.dubProcessAgent = dtoolServer.new DToolTaskAgent("DToolServer.DubProcessAgent");
+		this.dubProcessAgent = new ExecutorTaskAgent("DToolServer.DubProcessAgent", 
+			(throwable) -> dtoolServer.handleInternalError(throwable)
+		);
 	}
 	
 	public void shutdown() {

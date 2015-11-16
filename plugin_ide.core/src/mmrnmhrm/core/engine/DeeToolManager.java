@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.core.utils.CoreTaskAgent;
+import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.tooling.data.IValidatedField;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -35,7 +35,7 @@ import mmrnmhrm.core.build.DubLocationValidator;
  */
 public class DeeToolManager extends AbstractToolManager {
 	
-	protected final ITaskAgent dubProcessAgent = new CoreTaskAgent("DDT.DubProcessAgent");
+	protected final ITaskAgent dubProcessAgent = CoreExecutors.newExecutorTaskAgent("DDT.DubProcessAgent");
 	
 	public DeeToolManager() {
 	}
