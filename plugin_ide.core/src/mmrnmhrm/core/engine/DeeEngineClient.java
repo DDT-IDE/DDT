@@ -78,7 +78,7 @@ public class DeeEngineClient extends EngineClient {
 		}
 		
 		@Override
-		protected SourceFileStructure createSourceFileStructure() {
+		protected SourceFileStructure createNewData() {
 			ParsedModule parsedModule = (fileLocation == null) ? 
 					parseModuleWithNoLocation() :
 					setWorkingSourceAndParseModule(fileLocation);
@@ -156,28 +156,12 @@ public class DeeEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
-		if(fileLocation == null) {
-			return null;
-		}
-		
-		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
-			
+	protected DisconnectUpdatesTask createDisconnectTask(StructureInfo structureInfo) {
+		return new DisconnectUpdatesTask(structureInfo) {
 			@Override
-			protected ParsedModule parseModuleWithNoLocation() {
-				return null;
+			protected void handleDisconnectForLocation(Location location) {
+				getParseCache().discardWorkingCopy(location.toPath());
 			}
-			
-			@Override
-			protected void modifyWorkingSource(CachedModuleEntry lockedEntry) {
-				getParseCache().discardWorkingCopy(fileLocation.toPath());
-			}
-			
-			@Override
-			protected ParsedModule parseModuleFromWorkingCopy(CachedModuleEntry entry) {
-				return null;
-			}
-			
 		};
 	}
 	
