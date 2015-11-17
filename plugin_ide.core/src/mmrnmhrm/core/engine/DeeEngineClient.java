@@ -123,7 +123,7 @@ public class DeeEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask2(StructureInfo structureInfo, String source, 
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, 
 			Location fileLocation) {
 		
 		assertNotNull(source);
@@ -156,7 +156,7 @@ public class DeeEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createDisposeTask2(StructureInfo structureInfo, Location fileLocation) {
+	protected StructureUpdateTask createDisposeTask(StructureInfo structureInfo, Location fileLocation) {
 		if(fileLocation == null) {
 			return null;
 		}

@@ -18,7 +18,7 @@ import java.io.IOException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
-import melnorme.lang.ide.core.engine.StructureModelManager.MDocumentSynchedAcess;
+import melnorme.lang.ide.core.engine.StructureModelManager.SourceModelRegistration;
 import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
@@ -133,7 +133,7 @@ public class DToolClient_Test extends CommonCoreTest {
 			
 			IStructureModelListener structureListener = new IStructureModelListener() {
 				@Override
-				public void structureChanged(StructureInfo lockedStructureInfo, SourceFileStructure sourceStructure) {
+				public void structureChanged(StructureInfo lockedStructureInfo) {
 				}
 			};
 			
@@ -147,17 +147,17 @@ public class DToolClient_Test extends CommonCoreTest {
 					assertTrue(fileBuffer == fbm.getTextFileBuffer(fullPath, LocationKind.NORMALIZE));
 				}
 				
-				IDocument document = fileBuffer.getDocument();
-				StructureInfo structureInfo;
+				IDocument doc = fileBuffer.getDocument();
 				
 				Location fileLoc = ResourceUtils.getResourceLocation(moduleFile);
-				structureInfo = engineClient.connectStructureUpdates(fileLoc, document, structureListener);
+				
+				SourceModelRegistration updateRegistration = 
+						engineClient.connectStructureUpdates3(fileLoc, doc, structureListener);
 				
 				try{
 					doRun(moduleFile, fileBuffer);
 				} finally {
-					engineClient.disconnectStructureUpdates2(structureInfo, structureListener, 
-						new MDocumentSynchedAcess());
+					updateRegistration.dispose();
 				}
 				
 			} finally {
@@ -184,7 +184,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	protected SourceFileStructure getCurrentStructure(Location fileLoc) {
 		try {
-			return client.getStoredStructureInfo(fileLoc).getUpdatedStructure();
+			return client.getStoredStructureInfo(fileLoc).awaitUpdatedData();
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}
