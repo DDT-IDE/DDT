@@ -23,7 +23,7 @@ import mmrnmhrm.core.engine.DeeToolManager;
 public class DeeCore extends LangCore {
 	
 	public static DeeEngineClient getDToolClient() {
-		return (DeeEngineClient) getEngineClient();
+		return (DeeEngineClient) getSourceModelManager();
 	}
 	
 	public static DeeBundleModelManager getDeeBundleModelManager() {

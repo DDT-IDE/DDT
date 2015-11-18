@@ -15,18 +15,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.io.IOException;
 
-import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.EngineClient;
-import melnorme.lang.ide.core.engine.IStructureModelListener;
-import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
-import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
-import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.ide.core.tests.LangCoreTestResources;
-import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.misc.Location;
-import mmrnmhrm.tests.TestFixtureProject;
-
 import org.eclipse.core.filebuffers.FileBuffers;
 import org.eclipse.core.filebuffers.ITextFileBuffer;
 import org.eclipse.core.filebuffers.ITextFileBufferManager;
@@ -39,6 +27,17 @@ import org.eclipse.jface.text.IDocument;
 import org.junit.Test;
 
 import dtool.engine.ModuleParseCache_Test;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.SourceModelManager;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
+import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.misc.Location;
+import mmrnmhrm.tests.TestFixtureProject;
 
 
 public class DToolClient_Test extends CommonCoreTest {
@@ -129,11 +128,11 @@ public class DToolClient_Test extends CommonCoreTest {
 				throws CoreException, IOException {
 			
 			ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
-			EngineClient engineClient = LangCore.getEngineClient();
+			SourceModelManager sourceModelMgr = LangCore.getSourceModelManager();
 			
 			IStructureModelListener structureListener = new IStructureModelListener() {
 				@Override
-				public void structureChanged(StructureInfo lockedStructureInfo) {
+				public void dataChanged(StructureInfo lockedStructureInfo) {
 				}
 			};
 			
@@ -152,7 +151,7 @@ public class DToolClient_Test extends CommonCoreTest {
 				Location fileLoc = ResourceUtils.getResourceLocation(moduleFile);
 				
 				StructureModelRegistration updateRegistration = 
-						engineClient.connectStructureUpdates(fileLoc, doc, structureListener);
+						sourceModelMgr.connectStructureUpdates(fileLoc, doc, structureListener);
 				
 				try{
 					doRun(moduleFile, fileBuffer);

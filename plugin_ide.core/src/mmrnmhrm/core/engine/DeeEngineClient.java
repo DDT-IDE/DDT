@@ -25,8 +25,8 @@ import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.structure.DeeStructureCreator;
-import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.EngineOperation;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -36,7 +36,7 @@ import mmrnmhrm.core.DeeCore;
 /**
  * Handle communication with DToolServer.
  */
-public class DeeEngineClient extends EngineClient {
+public class DeeEngineClient extends SourceModelManager {
 	
 	public static DeeEngineClient getDefault() {
 		return DeeCore.getDToolClient();

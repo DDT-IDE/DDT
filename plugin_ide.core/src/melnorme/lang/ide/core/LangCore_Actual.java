@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
@@ -35,7 +36,7 @@ public class LangCore_Actual {
 	public static DeeToolManager createToolManagerSingleton() {
 		return new DeeToolManager();
 	}
-	public static DeeEngineClient createEngineClient() {
+	public static SourceModelManager createSourceModelManager() {
 		return new DeeEngineClient();
 	}
 	public static DeeBundleModelManager createBundleModelManager() {
