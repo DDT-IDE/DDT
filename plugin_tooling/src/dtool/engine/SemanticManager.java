@@ -22,7 +22,7 @@ import java.util.List;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileCachingEntry;
-import melnorme.lang.utils.EntryMapTS;
+import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -229,7 +229,7 @@ public class SemanticManager {
 	
 	protected final StdLibResolutionsCache stdLibResolutions = new StdLibResolutionsCache();
 	
-	protected class StdLibResolutionsCache extends EntryMapTS<CompilerInstall, StandardLibraryResolution> {
+	protected class StdLibResolutionsCache extends SynchronizedEntryMap<CompilerInstall, StandardLibraryResolution> {
 		@Override
 		public synchronized StandardLibraryResolution getEntry(CompilerInstall key) {
 			if(key == null) {

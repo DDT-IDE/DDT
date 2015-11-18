@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutionException;
 import dtool.dub.DubBundle.DubBundleException;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.ICallable;
+import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -99,7 +99,7 @@ public class DubHelper {
 		
 	}
 	
-	public static class RunDubDescribeCallable implements ICallable<DubBundleDescription, Exception> {
+	public static class RunDubDescribeCallable implements CallableX<DubBundleDescription, Exception> {
 		
 		protected final BundlePath bundlePath;
 		protected final String dubPath;

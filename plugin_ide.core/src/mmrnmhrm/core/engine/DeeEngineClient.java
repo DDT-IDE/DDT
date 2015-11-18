@@ -72,9 +72,9 @@ public class DeeEngineClient extends EngineClient {
 		
 		protected final Location fileLocation; // can be null
 		
-		public WorkingCopyStructureUpdateTask(StructureInfo structureInfo, Location fileLocation) {
+		public WorkingCopyStructureUpdateTask(StructureInfo structureInfo) {
 			super(structureInfo);
-			this.fileLocation = fileLocation;
+			this.fileLocation = structureInfo.getLocation();
 		}
 		
 		@Override
@@ -123,12 +123,11 @@ public class DeeEngineClient extends EngineClient {
 	}
 	
 	@Override
-	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source, 
-			Location fileLocation) {
+	protected StructureUpdateTask createUpdateTask(StructureInfo structureInfo, String source) {
 		
 		assertNotNull(source);
 		
-		return new WorkingCopyStructureUpdateTask(structureInfo, fileLocation) {
+		return new WorkingCopyStructureUpdateTask(structureInfo) {
 			
 			@Override
 			protected ParsedModule parseModuleWithNoLocation() {

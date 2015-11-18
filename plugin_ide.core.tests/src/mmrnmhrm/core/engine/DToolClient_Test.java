@@ -18,8 +18,8 @@ import java.io.IOException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineClient;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
-import melnorme.lang.ide.core.engine.StructureModelManager.SourceModelRegistration;
-import melnorme.lang.ide.core.engine.StructureModelManager.StructureInfo;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
+import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -151,8 +151,8 @@ public class DToolClient_Test extends CommonCoreTest {
 				
 				Location fileLoc = ResourceUtils.getResourceLocation(moduleFile);
 				
-				SourceModelRegistration updateRegistration = 
-						engineClient.connectStructureUpdates3(fileLoc, doc, structureListener);
+				StructureModelRegistration updateRegistration = 
+						engineClient.connectStructureUpdates(fileLoc, doc, structureListener);
 				
 				try{
 					doRun(moduleFile, fileBuffer);
