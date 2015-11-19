@@ -16,9 +16,11 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
@@ -55,7 +57,8 @@ public class DeeDocTextHover extends BrowserControlHover
 		String info;
 		try {
 			try {
-				info = new GetDDocHTMLViewOperation("Get DDoc", editor, offset).executeAndGetValidatedResult();
+				GetDDocHTMLViewOperation op = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+				info = op.executeAndGetValidatedResult2();
 			} catch(CommonException e) {
 				throw LangCore.createCoreException(e);
 			}
@@ -82,6 +85,24 @@ public class DeeDocTextHover extends BrowserControlHover
 			this.offset = offset;
 			
 			this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
+		}
+		
+		@Override
+		public String executeAndGetValidatedResult2() throws CoreException, CommonException {
+//			assertTrue(Display.getCurrent() != null);
+			
+			execute2();
+			return getResultValue();
+		}
+		
+		@Override
+		protected void performBackgroundComputation() throws OperationCancellation, CoreException {
+			if(Display.getCurrent() == null) {
+				// Perform computation directly in this thread, cancellation won't be possible.
+				computationRunnable.doRun_toCoreException(new NullProgressMonitor());
+				return;
+			}
+			super.performBackgroundComputation();
 		}
 		
 		@Override
