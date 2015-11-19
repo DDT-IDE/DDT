@@ -8,7 +8,6 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-
 package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
@@ -27,9 +26,9 @@ import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.actions.AbstractEditorOperation2;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
+import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.DeeCore;
@@ -58,7 +57,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		try {
 			try {
 				GetDDocHTMLViewOperation op = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
-				info = op.executeAndGetValidatedResult2();
+				info = op.executeAndGetValidatedResult();
 			} catch(CommonException e) {
 				throw LangCore.createCoreException(e);
 			}
@@ -88,10 +87,10 @@ public class DeeDocTextHover extends BrowserControlHover
 		}
 		
 		@Override
-		public String executeAndGetValidatedResult2() throws CoreException, CommonException {
+		public String executeAndGetValidatedResult() throws CoreException, CommonException {
 //			assertTrue(Display.getCurrent() != null);
 			
-			execute2();
+			execute();
 			return getResultValue();
 		}
 		
