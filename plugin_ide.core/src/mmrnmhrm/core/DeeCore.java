@@ -15,28 +15,8 @@ import org.osgi.framework.BundleContext;
 import dtool.dub.DubHelper;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import mmrnmhrm.core.dub_model.DeeBundleModelManager;
-import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
-import mmrnmhrm.core.engine.DeeEngineClient;
-import mmrnmhrm.core.engine.DeeToolManager;
 
 public class DeeCore extends LangCore {
-	
-	public static DeeEngineClient getDToolClient() {
-		return (DeeEngineClient) getSourceModelManager();
-	}
-	
-	public static DeeBundleModelManager getDeeBundleModelManager() {
-		return (DeeBundleModelManager) getBundleModelManager();
-	}
-	
-	public static DeeToolManager getDubProcessManager() {
-		return getDeeBundleModelManager().getProcessManager();
-	}
-	
-	public static DeeBundleModel getDeeBundleModel() {
-		return getDeeBundleModelManager().getModel();
-	}
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {

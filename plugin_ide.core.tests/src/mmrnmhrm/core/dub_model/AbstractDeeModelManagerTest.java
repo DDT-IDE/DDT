@@ -28,6 +28,7 @@ import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
@@ -36,7 +37,6 @@ import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
 
@@ -130,17 +130,17 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static ITaskAgent getModelAgent() {
-		return DeeCore.getDeeBundleModelManager().internal_getModelAgent();
+		return LangCore2.getBundleModelManager().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		DeeCore.getDeeBundleModelManager().syncPendingUpdates();
+		LangCore2.getBundleModelManager().syncPendingUpdates();
 	}
 	
 	protected static final DeeBundleModel model = getModelManager().getModel();
 	
 	protected static DeeBundleModelManager getModelManager() {
-		return DeeCore.getDeeBundleModelManager();
+		return LangCore2.getBundleModelManager();
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
@@ -179,7 +179,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		DeeCore.getDeeBundleModelManager().syncPendingUpdates();
+		LangCore2.getBundleModelManager().syncPendingUpdates();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		if(unresolvedDubBundle.hasErrors()) {

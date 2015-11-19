@@ -22,6 +22,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 
 import dtool.dub.BundlePath;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
@@ -84,7 +85,7 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					DeeCore.getDeeBundleModelManager().syncPendingUpdates();
+					LangCore2.getBundleModelManager().syncPendingUpdates();
 				}
 			};
 			try {

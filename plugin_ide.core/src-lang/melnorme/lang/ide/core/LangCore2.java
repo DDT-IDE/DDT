@@ -8,26 +8,26 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.wizards;
+package melnorme.lang.ide.core;
 
-import org.junit.After;
-
-import melnorme.lang.ide.core.LangCore2;
-import melnorme.lang.ide.ui.dialogs.LangProjectWizardTest;
-
-
-public class DeeProjectWizardTest extends LangProjectWizardTest {
+public class LangCore2 extends LangCore_Actual {
 	
-	@Override
-	protected DeeProjectWizard createNewProjectWizard() {
-		return new DeeProjectWizard();
+	public LangCore2() {
 	}
 	
-	@Override
-	@After
-	public void tearDown() throws Exception {
-		LangCore2.getBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
-		super.tearDown();
+	protected void shutdown() {
+		buildManager.dispose();
+		bundleManager.shutdownManager();
+		sourceModelManager.dispose();
+		toolManager.shutdownNow();
+	}
+	
+	/** 
+	 * Start core agents, and do other initizaliation after UI is started.
+	 * @param langCore TODO
+	 */
+	public void startAgentsAfterUIStart(LangCore langCore) {
+		bundleManager.startManager();
 	}
 	
 }

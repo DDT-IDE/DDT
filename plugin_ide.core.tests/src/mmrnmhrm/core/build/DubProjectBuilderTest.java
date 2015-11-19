@@ -18,8 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.tests.SampleDeeProject;
 
 public class DubProjectBuilderTest extends CommonCoreTest {
@@ -38,7 +38,7 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 			testBuilder();
 			
 			// Await buildpath update, to prevent logging of error.
-			DeeCore.getDeeBundleModelManager().syncPendingUpdates();
+			LangCore2.getBundleModelManager().syncPendingUpdates();
 		}
 	}
 	

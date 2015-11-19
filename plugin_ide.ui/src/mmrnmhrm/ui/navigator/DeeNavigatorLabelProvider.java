@@ -22,13 +22,13 @@ import org.eclipse.swt.graphics.RGB;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.BundleInfo;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
 import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
@@ -112,7 +112,7 @@ class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	@Override
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		BundleInfo bundleInfo = DeeCore.getDeeBundleModel().getProjectInfo(element.getProject());
+		BundleInfo bundleInfo = LangCore2.getBundleModel().getProjectInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}

@@ -25,6 +25,7 @@ import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.structure.DeeStructureCreator;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.engine.EngineOperation;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
@@ -39,7 +40,7 @@ import mmrnmhrm.core.DeeCore;
 public class DeeEngineClient extends SourceModelManager {
 	
 	public static DeeEngineClient getDefault() {
-		return DeeCore.getDToolClient();
+		return LangCore2.getDToolClient();
 	}
 	
 	protected final DToolServer dtoolServer;

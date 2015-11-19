@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -98,7 +99,7 @@ public class DeeBuildManager extends BuildManager {
 		
 		@Override
 		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			DeeCore.getDubProcessManager().submitTaskAndAwaitResult(() -> {
+			LangCore2.getToolManager().submitTaskAndAwaitResult(() -> {
 				toolOp.execute(pm);
 				return null;
 			});

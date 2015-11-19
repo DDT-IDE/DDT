@@ -14,8 +14,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Path;
 
 import dtool.dub.BundlePath;
-import melnorme.lang.ide.core.engine.SourceModelManager;
-import mmrnmhrm.core.DeeCore;
+import melnorme.lang.ide.core.operations.build.BuildManager;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
@@ -33,21 +32,54 @@ public class LangCore_Actual {
 	
 	public static final String LANGUAGE_NAME = "D";
 	
-	public static DeeToolManager createToolManagerSingleton() {
-		return new DeeToolManager();
+	
+	public static LangCore2 instance;
+	
+	/* ----------------- Owned singletons: ----------------- */
+	
+	protected final DeeToolManager toolManager;
+	protected final DeeBundleModelManager bundleManager;
+	protected final BuildManager buildManager;
+	protected final DeeEngineClient sourceModelManager;
+	
+	public LangCore_Actual() {
+		instance = (LangCore2) this;
+		LangCore.pluginInstance.langCore = instance;
+		
+		toolManager = new DeeToolManager();
+		bundleManager = createBundleModelManager();
+		buildManager = new DeeBuildManager(bundleManager.getModel());
+		sourceModelManager = createSourceModelManager();
 	}
-	public static SourceModelManager createSourceModelManager() {
+	
+	/* -----------------  ----------------- */
+	
+	public static DeeEngineClient createSourceModelManager() {
 		return new DeeEngineClient();
 	}
+	
 	public static DeeBundleModelManager createBundleModelManager() {
 		return new DeeBundleModelManager();
 	}
+	
+	/* -----------------  ----------------- */ 
+	
+	public static DeeEngineClient getDToolClient() {
+		return instance.sourceModelManager;
+	}
+	
+	public static DeeToolManager getToolManager() {
+		return instance.toolManager;
+	}
+	
+	public static DeeBundleModelManager getBundleModelManager() {
+		return instance.bundleManager;
+	}
 	public static DeeBundleModel getBundleModel() {
-		return (DeeBundleModel) LangCore.getBundleModel();
+		return getBundleModelManager().getModel();
 	}
-	public static DeeBuildManager createBuildManager() {
-		return new DeeBuildManager(DeeCore.getDeeBundleModel());
-	}
+	
+	/* -----------------  ----------------- */
 	
 	public static boolean isBundleManifestFile(IFile file) {
 		return file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME));
