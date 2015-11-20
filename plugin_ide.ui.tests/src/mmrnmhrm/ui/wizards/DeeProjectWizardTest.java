@@ -12,7 +12,7 @@ package mmrnmhrm.ui.wizards;
 
 import org.junit.After;
 
-import melnorme.lang.ide.core.LangCore2;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardTest;
 
 
@@ -26,7 +26,7 @@ public class DeeProjectWizardTest extends LangProjectWizardTest {
 	@Override
 	@After
 	public void tearDown() throws Exception {
-		LangCore2.getBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
+		LangCore.getBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
 		super.tearDown();
 	}
 	

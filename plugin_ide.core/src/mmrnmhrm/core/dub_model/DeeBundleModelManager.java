@@ -51,7 +51,6 @@ import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.WorkspaceModelManagerTask;
@@ -69,7 +68,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	/* -----------------  ----------------- */
 	
-	public static final String DUB_PROBLEM_ID = DeeCore.PLUGIN_ID + ".DubProblem";
+	public static final String DUB_PROBLEM_ID = LangCore.PLUGIN_ID + ".DubProblem";
 	
 	public DeeBundleModelManager() {
 		super(new DeeBundleModel());
@@ -125,7 +124,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	protected class SearchCompilersOnPathOperation_Eclipse extends SearchCompilersOnPathOperation {
 		@Override
 		protected void handleWarning(String message) {
-			DeeCore.logWarning(message);
+			LangCore.logWarning(message);
 		}
 	}
 	
@@ -158,7 +157,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		}
 		
 		protected void logInternalError(CoreException ce) {
-			DeeCore.logInternalError(ce);
+			LangCore.logInternalError(ce);
 		}
 		
 	}

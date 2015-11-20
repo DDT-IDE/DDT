@@ -1,12 +1,12 @@
 package mmrnmhrm.tests;
 
 
-import melnorme.lang.ide.core.tests.LangCoreTestResources;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import mmrnmhrm.core.DeeCore;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
+
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 
 /**
  * This classes creates a sample project that should exist *before*
@@ -32,7 +32,7 @@ public abstract class SamplePreExistingProject implements ITestResourcesConstant
 				project = CommonDeeWorkspaceTest.createAndOpenDeeProject(PREEXISTINGPROJNAME);
 				LangCoreTestResources.createFolderFromCoreTestsResource(TR_SRC_SIMPLE, project.getFolder(PROJ_SRC));
 			} catch (Exception e) {
-				DeeCore.logInternalError(e);
+				LangCore.logInternalError(e);
 			}
 			// And throw up, to force restarting the unit tests
 			if(REQUIRE_PREEXISTING_PROJ)

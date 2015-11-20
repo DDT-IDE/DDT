@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
+import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
@@ -81,7 +82,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 	public static boolean isDubManifestFile(Object element) {
 		if(element instanceof IFile) {
 			IFile file = (IFile) element;
-			return LangCore_Actual.isBundleManifestFile(file);
+			return file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME));
 		}
 		return false;
 	}

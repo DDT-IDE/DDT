@@ -22,14 +22,13 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 
 import dtool.dub.BundlePath;
-import melnorme.lang.ide.core.LangCore2;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
 import melnorme.lang.tooling.data.ValidationException;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
@@ -85,13 +84,13 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					LangCore2.getBundleModelManager().syncPendingUpdates();
+					LangCore.getBundleModelManager().syncPendingUpdates();
 				}
 			};
 			try {
 				getContainer().run(true, true, op);
 			} catch (InvocationTargetException e) {
-				DeeCore.logError("Error synching with ModelManager", e);
+				LangCore.logError("Error synching with ModelManager", e);
 			} catch (InterruptedException e) {
 			}
 		}

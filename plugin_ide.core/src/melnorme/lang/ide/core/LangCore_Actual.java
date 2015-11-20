@@ -10,10 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Path;
-
-import dtool.dub.BundlePath;
+import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
@@ -33,7 +30,7 @@ public class LangCore_Actual {
 	public static final String LANGUAGE_NAME = "D";
 	
 	
-	public static LangCore2 instance;
+	public static LangCore instance;
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
@@ -43,8 +40,7 @@ public class LangCore_Actual {
 	protected final DeeEngineClient sourceModelManager;
 	
 	public LangCore_Actual() {
-		instance = (LangCore2) this;
-		LangCore.pluginInstance.langCore = instance;
+		instance = (LangCore) this;
 		
 		toolManager = new DeeToolManager();
 		bundleManager = createBundleModelManager();
@@ -79,10 +75,11 @@ public class LangCore_Actual {
 		return getBundleModelManager().getModel();
 	}
 	
-	/* -----------------  ----------------- */
-	
-	public static boolean isBundleManifestFile(IFile file) {
-		return file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME));
+	public static BuildManager getBuildManager() {
+		return instance.buildManager;
+	}
+	public static SourceModelManager getSourceModelManager() {
+		return instance.sourceModelManager;
 	}
 	
 }

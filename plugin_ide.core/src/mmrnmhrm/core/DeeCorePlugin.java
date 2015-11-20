@@ -13,10 +13,10 @@ package mmrnmhrm.core;
 import org.osgi.framework.BundleContext;
 
 import dtool.dub.DubHelper;
-import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 
-public class DeeCore extends LangCore {
+public class DeeCorePlugin extends LangCorePlugin {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {

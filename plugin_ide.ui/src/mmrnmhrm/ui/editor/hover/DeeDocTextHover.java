@@ -31,7 +31,6 @@ import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 /**
@@ -62,7 +61,7 @@ public class DeeDocTextHover extends BrowserControlHover
 				throw LangCore.createCoreException(e);
 			}
 		} catch(CoreException ce) {
-			DeeCore.logStatus(ce);
+			LangCore.logStatus(ce);
 			// TODO: we could add a nicer HTML formatting:
 			info = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());
 		}

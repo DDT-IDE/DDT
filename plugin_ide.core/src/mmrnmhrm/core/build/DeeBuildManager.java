@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.LangCore2;
 import melnorme.lang.ide.core.operations.OperationInfo;
 import melnorme.lang.ide.core.operations.ToolMarkersUtil;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -40,7 +39,6 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import mmrnmhrm.core.DeeCore;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
@@ -99,7 +97,7 @@ public class DeeBuildManager extends BuildManager {
 		
 		@Override
 		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			LangCore2.getToolManager().submitTaskAndAwaitResult(() -> {
+			LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
 				toolOp.execute(pm);
 				return null;
 			});
@@ -171,7 +169,7 @@ public class DeeBuildManager extends BuildManager {
 						addCompilerErrorMarker(filePath, startPosStr, errorMsg);
 					} catch (CoreException e) {
 						// log, but otherwise ignore & continue
-						DeeCore.logStatus(e);
+						LangCore.logStatus(e);
 					}
 				}
 			}.handleResult(processResult);

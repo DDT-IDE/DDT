@@ -25,14 +25,13 @@ import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.structure.DeeStructureCreator;
-import melnorme.lang.ide.core.LangCore2;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineOperation;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.DeeCore;
 
 /**
  * Handle communication with DToolServer.
@@ -40,7 +39,7 @@ import mmrnmhrm.core.DeeCore;
 public class DeeEngineClient extends SourceModelManager {
 	
 	public static DeeEngineClient getDefault() {
-		return LangCore2.getDToolClient();
+		return LangCore.getDToolClient();
 	}
 	
 	protected final DToolServer dtoolServer;
@@ -54,7 +53,7 @@ public class DeeEngineClient extends SourceModelManager {
 				super.logError(message, throwable);
 				// Note: the error logging is important not just logging in normal usage, 
 				// but also for tests detecting errors. It's not the best way, but works for now.
-				DeeCore.logError(message, throwable);
+				LangCore.logError(message, throwable);
 			}
 		};
 	}

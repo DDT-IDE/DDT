@@ -4,7 +4,7 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: org.dsource.ddt.ide.core;singleton:=true
 Bundle-Version: 0.14.0.qualifier
 Bundle-Vendor: %pluginProvider
-Bundle-Activator: mmrnmhrm.core.DeeCore
+Bundle-Activator: mmrnmhrm.core.DeeCorePlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

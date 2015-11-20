@@ -28,7 +28,7 @@ import dtool.dub.CommonDubTest.DubBundleChecker;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubDescribeParserTest;
-import melnorme.lang.ide.core.LangCore2;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
@@ -130,17 +130,17 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static ITaskAgent getModelAgent() {
-		return LangCore2.getBundleModelManager().internal_getModelAgent();
+		return LangCore.getBundleModelManager().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		LangCore2.getBundleModelManager().syncPendingUpdates();
+		LangCore.getBundleModelManager().syncPendingUpdates();
 	}
 	
 	protected static final DeeBundleModel model = getModelManager().getModel();
 	
 	protected static DeeBundleModelManager getModelManager() {
-		return LangCore2.getBundleModelManager();
+		return LangCore.getBundleModelManager();
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
@@ -179,7 +179,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		LangCore2.getBundleModelManager().syncPendingUpdates();
+		LangCore.getBundleModelManager().syncPendingUpdates();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		if(unresolvedDubBundle.hasErrors()) {

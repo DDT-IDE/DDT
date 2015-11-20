@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.RGB;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundleDescription;
 import melnorme.lang.ide.core.BundleInfo;
-import melnorme.lang.ide.core.LangCore2;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
@@ -112,7 +112,7 @@ class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	@Override
 	public StyledString visitDubManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		BundleInfo bundleInfo = LangCore2.getBundleModel().getProjectInfo(element.getProject());
+		BundleInfo bundleInfo = LangCore.getBundleModel().getProjectInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}
