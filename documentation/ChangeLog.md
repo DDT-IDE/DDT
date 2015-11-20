@@ -2,7 +2,9 @@
 
 ### (NextVersion)
  * Minimum and recommended CDT version is now `8.8`.
- * When debugging, fixed opening source files that are not in the workspace.
+ * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
+ * When debugging, fixed opening source files that are are outside the workspace.
+ * Fixed line breakpoint icon.
  
  * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Fixed: project Build Targets settings pages shows wrong default for Program Path field
