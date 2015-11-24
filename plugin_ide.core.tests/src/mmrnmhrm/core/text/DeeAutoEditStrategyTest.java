@@ -44,30 +44,30 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 		String s;
 		int indent = 0;
 		
-		s = mklast(indent, "abc{ /+}+/"); 
-		testEnterAutoEdit(s, NL+line("//{")+line("}")+NEUTRAL_SRC1, expectInd(indent+1));
+		s = TABn(indent) + "abc{ /+}+/"; 
+		testEnterAutoEdit(s, NL+line("//{")+line("}")+NEUTRAL_SRC1, TABn(indent+1));
 		
-		s = mkline(indent+0, "def {")+
-			mklast(indent+7, "/+{+/ }"); 
-		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, expectInd(indent+0));
+		s = line("def {")+
+			TABn(indent+7) + "/+{+/ }"; 
+		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, TABn(indent+0));
 		
-		s = mkline(indent+0, "def {")+
-			mklast(indent+7, "{ `}` ( `)`"); 
-		testEnterAutoEdit(s, NL +")}"+ NEUTRAL_SRC1, expectInd(indent+7+2));
+		s = line("def {")+
+			TABn(indent+7) + "{ `}` ( `)`"; 
+		testEnterAutoEdit(s, NL +")}"+ NEUTRAL_SRC1, TABn(indent+7+2));
 		
 		
-		s = mkline(indent+0, "def {")+
-			mklast(indent+1, "func('blah ({ ' "); 
-		testEnterAutoEdit(s, NL +NEUTRAL_SRC1+"//)", expectInd(indent+2), expectClose(indent+2, ")"));
+		s = line("def {")+
+			TABn(indent+1) + "func('blah ({ ' "; 
+		testEnterEdit(s, NL +NEUTRAL_SRC1+"//)", TABn(indent+2), expectClose(indent+2, ")"));
 		
-		s = mkline(indent+7, "def { func/+({")+
-			mklast(indent+0, "  {blah+/ } "); 
-		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, expectInd(indent+7));
+		s = line(TABn(7) + "def { func/+({")+
+			TABn(indent+0) + "  {blah+/ } "; 
+		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, TABn(indent+7));
 		
-		s = mkline(indent+7, "deffunc{{")+
-			mkline(indent+0, "deffunc/+{{")+
-			mklast(indent+0, "+/blah}} "); 
-		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, expectInd(indent+7));
+		s = line(TABn(7) + "deffunc{{")+
+			line("deffunc/+{{")+
+			TABn(indent+0) + "+/blah}} "; 
+		testEnterAutoEdit(s, NL + NEUTRAL_SRC1, TABn(indent+7));
 		
 	}
 	
