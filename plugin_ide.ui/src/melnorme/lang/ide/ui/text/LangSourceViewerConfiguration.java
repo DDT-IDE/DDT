@@ -13,15 +13,10 @@ package melnorme.lang.ide.ui.text;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.swt.widgets.Display;
 
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.ui.editor.hover.BestMatchHover;
-import melnorme.lang.ide.ui.editor.hover.HoverInformationProvider;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.ide.ui.text.AbstractLangScanner;
-import melnorme.lang.ide.ui.text.AbstractLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.SingleTokenScanner;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
@@ -76,16 +71,6 @@ public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfi
 	@Override
 	protected String getToggleCommentPrefix() {
 		return "//";
-	}
-	
-	// ================ Information provider
-	
-	@Override
-	protected IInformationProvider getInformationProvider(String contentType) {
-		if(contentType.equals(LangPartitionTypes.DEE_CODE.getId())) {
-			return new HoverInformationProvider(new BestMatchHover(getEditor()));
-		}
-		return null;
 	}
 	
 	// ================ Content Assist
