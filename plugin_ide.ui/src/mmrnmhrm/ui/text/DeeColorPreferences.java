@@ -51,7 +51,7 @@ public interface DeeColorPreferences {
 		new TextStyling(new RGB(230,230,230), false, false));
 	ThemedTextStylingPreference CHARACTER = new ThemedTextStylingPreference(PREFIX + "character",
 		new TextStyling(new RGB(140, 175, 0), false, false),
-    	new TextStyling(new RGB(150, 190, 0), false, false));
+		new TextStyling(new RGB(150, 190, 0), false, false));
 	ThemedTextStylingPreference STRING = new ThemedTextStylingPreference(PREFIX + "string",
 		new TextStyling(new RGB(175, 175, 0), false, false),
 		new TextStyling(new RGB(220, 220, 0), false, false));
