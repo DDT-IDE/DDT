@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed regression: Console view always activates when a build is invoked.
  * Improvement to Auto-Indent when Enter pressed before a closing brace. 
  * Minimum and recommended CDT version is now `8.8`.
  * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
