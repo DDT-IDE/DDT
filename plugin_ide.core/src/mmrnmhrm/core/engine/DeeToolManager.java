@@ -10,19 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
-import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.AbstractToolManager;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.CoreExecutors;
-import melnorme.lang.tooling.data.IValidatedField;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -48,17 +44,7 @@ public class DeeToolManager extends AbstractToolManager {
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected IValidatedField<Path> getSDKToolPathField(IProject project) {
-		return new ValidatedSDKToolPath(project, getSDKToolPathValidator()) {
-			@Override
-			protected String getRawFieldValue2() {
-				return ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
-			}
-		};
-	}
-	
-	@Override
-	protected PathValidator getSDKToolPathValidator() {
+	public PathValidator getSDKToolPathValidator() {
 		return new DubLocationValidator();
 	}
 	
