@@ -37,7 +37,7 @@ public interface DeeColorPreferences {
 		new TextStyling(new RGB(127,   0,  85), false, false),
 		new TextStyling(new RGB(255, 150,  55), false, false));
 	ThemedTextStylingPreference KW_NATIVE_TYPES = new ThemedTextStylingPreference(PREFIX + "basictypes",
-		new TextStyling(new RGB(140,  90, 168), false, false),
+		new TextStyling(new RGB(160,  90, 170), false, false),
 		new TextStyling(new RGB(170, 130, 190), false, false));
 	ThemedTextStylingPreference ANNOTATIONS = new ThemedTextStylingPreference(PREFIX + "annotations",
 		new TextStyling(new RGB(200, 40, 20), false, false),
@@ -53,10 +53,10 @@ public interface DeeColorPreferences {
 		new TextStyling(new RGB(140, 175, 0), false, false),
 		new TextStyling(new RGB(150, 190, 0), false, false));
 	ThemedTextStylingPreference STRING = new ThemedTextStylingPreference(PREFIX + "string",
-		new TextStyling(new RGB(175, 175, 0), false, false),
+		new TextStyling(new RGB(150, 150, 0), false, false),
 		new TextStyling(new RGB(220, 220, 0), false, false));
 	ThemedTextStylingPreference DELIM_STRING = new ThemedTextStylingPreference(PREFIX + "delimstring",
-		new TextStyling(new RGB(175, 175, 0), false, false),
+		new TextStyling(new RGB(150, 150, 0), false, false),
 		new TextStyling(new RGB(220, 220, 0), false, false));
 	
 }
