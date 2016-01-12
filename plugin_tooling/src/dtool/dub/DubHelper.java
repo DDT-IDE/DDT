@@ -15,6 +15,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.concurrent.ExecutionException;
 
 import dtool.dub.DubBundle.DubBundleException;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CallableX;

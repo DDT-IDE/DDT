@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.misc.FileUtil;
@@ -28,7 +29,6 @@ import melnorme.utilbox.tests.TestsWorkingDir;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.parser.DeeParserResult.ParsedModule;

@@ -22,12 +22,12 @@ import java.util.Collection;
 import java.util.List;
 
 import melnorme.lang.tests.CommonToolingTest;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
-import dtool.dub.BundlePath;
 import dtool.dub.DubHelper;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.util.NewUtils;

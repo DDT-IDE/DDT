@@ -16,6 +16,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.nio.file.Path;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.ast.ASTNodeFinder;
 import melnorme.lang.tooling.ast.ASTVisitor;
 import melnorme.lang.tooling.ast.ILanguageElement;
@@ -32,7 +33,6 @@ import melnorme.utilbox.core.CommonException;
 import java.util.function.Predicate;
 import melnorme.utilbox.misc.Location;
 import dtool.ast.references.Reference;
-import dtool.dub.BundlePath;
 import dtool.engine.CommonSemanticsTest;
 import dtool.engine.ResolvedModule;
 import dtool.engine.StandardLibraryResolution;

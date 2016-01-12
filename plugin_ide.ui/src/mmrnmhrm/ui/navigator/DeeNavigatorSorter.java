@@ -12,7 +12,6 @@ package mmrnmhrm.ui.navigator;
 
 import java.text.Collator;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 
 import melnorme.lang.ide.ui.navigator.LangNavigatorSorter;
@@ -44,11 +43,6 @@ public class DeeNavigatorSorter extends LangNavigatorSorter {
 		@Override
 		public Integer visitDubCacheFolder(IFolder element) {
 			return -4;
-		}
-		
-		@Override
-		public Integer visitDubManifestFile(IFile element) {
-			return 0;
 		}
 		
 	}

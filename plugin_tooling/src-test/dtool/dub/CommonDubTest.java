@@ -22,6 +22,7 @@ import java.util.concurrent.TimeoutException;
 import dtool.dub.DubBundle.BundleFile;
 import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;

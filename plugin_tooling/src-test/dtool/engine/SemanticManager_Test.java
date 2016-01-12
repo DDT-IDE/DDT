@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.ops.util.FileCachingEntry;
 import melnorme.lang.utils.MiscFileUtils;
 import melnorme.utilbox.core.CommonException;
@@ -32,7 +33,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
@@ -119,7 +119,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			assertTrue(entry.isStale() == false);
 			
 			// This tests for a case we actually had as a bug undetected for a long time.  
-			Location manifestFilePath = BASIC_LIB.getLocation().resolve_fromValid(BundlePath.DUB_MANIFEST_FILENAME);
+			Location manifestFilePath = BASIC_LIB.getLocation().resolve_fromValid(BundlePath.DUB_MANIFEST_NAME_JSON);
 			assertTrue(entry.getFileLocation().equals(manifestFilePath));
 			
 			makeManifestFileStale(manifestFilePath);

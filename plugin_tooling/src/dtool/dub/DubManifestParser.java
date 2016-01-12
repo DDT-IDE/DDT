@@ -11,6 +11,7 @@
 package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.misc.StringUtil.nullAsEmpty;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -22,16 +23,19 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
 import dtool.dub.DubBundle.BundleFile;
-import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundle.DubBundleException;
+import dtool.dub.DubBundle.DubConfiguration;
 import dtool.util.JsonReaderExt;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.MiscUtil;
 import melnorme.utilbox.misc.PathUtil;
+import melnorme.utilbox.misc.StringUtil;
 
 /**
  * Parse a Dub bundle in a filesystem location into an in-memory description of the bundle.
@@ -40,9 +44,13 @@ public class DubManifestParser extends CommonDubParser {
 	
 	public static final String ERROR_BUNDLE_NAME_UNDEFINED = "Bundle name not defined.";
 	
-	public static DubBundle parseDubBundleFromLocation(BundlePath bundlePath) {
+	public static DubBundle parseDubBundleFromLocation2(BundlePath bundlePath) {
 		assertNotNull(bundlePath);
-		return new DubManifestParser().parseDubBundle(bundlePath);
+		Location manifestLocation = bundlePath.getManifestLocation(true);
+		if(manifestLocation != null && nullAsEmpty(manifestLocation.getFileName()).endsWith(".sdl")) {
+			return null; // We only know how to parse JSON
+		}
+		return new DubManifestParser().parseDubBundle(bundlePath, manifestLocation);
 	}
 	
 	protected String source;
@@ -62,21 +70,18 @@ public class DubManifestParser extends CommonDubParser {
 	protected DubManifestParser() {
 	}
 	
-	protected DubBundle parseDubBundle(BundlePath bundlePath) {
-		assertNotNull(bundlePath);
+	protected DubBundle parseDubBundle(BundlePath bundlePath, Location manifestLocation) {
 		try {
-			parseFromLocation(bundlePath);
+			parseFromLocation(manifestLocation);
 		} catch (DubBundleException e) {
 			dubError = e;
 		}
 		return createBundle(bundlePath, true);
 	}
 	
-	protected void parseFromLocation(BundlePath bundlePath) throws DubBundleException {
-		File jsonLocation = bundlePath.getManifestLocation().toFile();
-		
+	protected void parseFromLocation(Location jsonManifestLocation) throws DubBundleException {
 		try {
-			source = readStringFromFile(jsonLocation);
+			source = FileUtil.readStringFromFile(jsonManifestLocation.toFile(), StringUtil.UTF8);
 		} catch (IOException e) {
 			throw new DubBundleException(e);
 		}

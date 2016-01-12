@@ -110,7 +110,7 @@ class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	}
 	
 	@Override
-	public StyledString visitDubManifestFile(IFile element) {
+	public StyledString visitManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
 		BundleInfo bundleInfo = LangCore.getBundleModel().getProjectInfo(element.getProject());
 		if(bundleInfo == null) {
@@ -174,7 +174,7 @@ class DubElementImageProvider extends DefaultGetImageSwitcher
 	}
 	
 	@Override
-	public ImageDescriptor visitDubManifestFile(IFile element) {
+	public ImageDescriptor visitManifestFile(IFile element) {
 		return DeeImages.DUB_MANIFEST;
 	}
 	

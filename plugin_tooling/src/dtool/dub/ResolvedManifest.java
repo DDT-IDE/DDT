@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dtool.engine.BundleKey;
+import melnorme.lang.tooling.BundlePath;
 
 /**
  * A {@link ResolvedManifest} has manifest info for a bundle, 

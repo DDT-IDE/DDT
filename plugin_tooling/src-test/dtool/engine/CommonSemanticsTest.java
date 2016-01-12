@@ -16,9 +16,9 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import org.junit.BeforeClass;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
-import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.engine.CommonSemanticManagerTest.Tests_DToolServer;
 import dtool.engine.CommonSemanticManagerTest.Tests_SemanticManager;

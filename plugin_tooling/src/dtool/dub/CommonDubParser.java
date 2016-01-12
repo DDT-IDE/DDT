@@ -12,13 +12,8 @@ package dtool.dub;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
-
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.StringUtil;
 
 import com.google.gson.stream.JsonToken;
 
@@ -26,10 +21,6 @@ import dtool.dub.DubBundle.DubBundleException;
 import dtool.util.JsonReaderExt;
 
 public abstract class CommonDubParser {
-	
-	protected static String readStringFromFile(File file) throws IOException, FileNotFoundException {
-		return FileUtil.readStringFromFile(file, StringUtil.UTF8);
-	}
 	
 	protected DubBundleException dubError;
 	

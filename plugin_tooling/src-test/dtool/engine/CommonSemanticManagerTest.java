@@ -23,6 +23,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.utils.MiscFileUtils;
@@ -35,7 +36,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 import dtool.ast.definitions.Module;
-import dtool.dub.BundlePath;
 import dtool.dub.CommonDubTest;
 import dtool.dub.DubHelper.DubDescribeFailure;
 import dtool.dub.ResolvedManifest;

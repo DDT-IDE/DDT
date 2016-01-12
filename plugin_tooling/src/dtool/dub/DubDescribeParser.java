@@ -15,6 +15,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.misc.ArrayUtil;
 
 import com.google.gson.stream.JsonToken;

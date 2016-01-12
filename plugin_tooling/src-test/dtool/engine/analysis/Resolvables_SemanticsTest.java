@@ -12,6 +12,8 @@ package dtool.engine.analysis;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.ErrorElement.NotFoundErrorElement;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -28,7 +30,6 @@ import dtool.ast.references.NamedReference;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.RefModule;
 import dtool.ast.references.RefPrimitive;
-import dtool.dub.BundlePath;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 
 public class Resolvables_SemanticsTest extends CommonNodeSemanticsTest {

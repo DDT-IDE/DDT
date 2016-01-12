@@ -12,11 +12,12 @@ package dtool.engine;
 
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.dub.BundlePath;
 
 public class BundleResolution extends AbstractBundleResolution {
 	

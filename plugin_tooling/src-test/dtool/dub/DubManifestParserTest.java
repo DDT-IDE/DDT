@@ -10,10 +10,13 @@
  *******************************************************************************/
 package dtool.dub;
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
 import org.junit.Test;
 
 import dtool.dub.DubBundle.DubConfiguration;
 import dtool.tests.DToolTestResources;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -55,7 +58,9 @@ public class DubManifestParserTest extends CommonDubTest {
 	}
 	
 	public DubBundle parseDubBundle(Location location) {
-		return DubManifestParser.parseDubBundleFromLocation(BundlePath.create(location));
+		return assertNotNull(
+			DubManifestParser.parseDubBundleFromLocation2(BundlePath.create(location))
+		);
 	}
 	
 	public void testBundle(DubBundleChecker bundle) {

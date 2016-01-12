@@ -18,6 +18,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.ModuleFullName;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.utilbox.core.CommonException;
@@ -26,7 +27,6 @@ import melnorme.utilbox.misc.PathUtil;
 
 import org.junit.Test;
 
-import dtool.dub.BundlePath;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall.ECompilerType;
 

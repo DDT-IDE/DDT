@@ -10,12 +10,10 @@
  *******************************************************************************/
 package mmrnmhrm.ui.navigator;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
-import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
@@ -58,20 +56,15 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 	public static interface DeeNavigatorAllElementsSwitcher<RET> extends NavigatorElementsSwitcher<RET> {
 		
 		@Override
-		default RET visitOther(Object element) {
-			if(isDubManifestFile(element)) {
-				return visitDubManifestFile((IFile) element);
+		default RET visitFolder(IFolder folder) {
+			if(isDubCacheFolder(folder)) {
+				return visitDubCacheFolder(folder);
 			}
-			if(isDubCacheFolder(element)) {
-				return visitDubCacheFolder((IFolder) element);
-			}
-			if(isDubSourceFolder(element)) {
-				return visitDubSourceFolder((IFolder) element);
+			if(isDubSourceFolder(folder)) {
+				return visitDubSourceFolder(folder);
 			}
 			return null;
 		}
-		
-		public abstract RET visitDubManifestFile(IFile element);
 		
 		public abstract RET visitDubCacheFolder(IFolder element);
 		
@@ -79,30 +72,14 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		
 	}
 	
-	public static boolean isDubManifestFile(Object element) {
-		if(element instanceof IFile) {
-			IFile file = (IFile) element;
-			return file.getProjectRelativePath().equals(new Path(BundlePath.DUB_MANIFEST_FILENAME));
-		}
-		return false;
-	}
-	
-	public static boolean isDubCacheFolder(Object element) {
-		if(!(element instanceof IFolder)) {
-			return false;
-		} 
-		IFolder folder = (IFolder) element;
+	public static boolean isDubCacheFolder(IFolder folder) {
 		if(folder.getProjectRelativePath().equals(new Path(".dub"))) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isDubSourceFolder(Object element) {
-		if(!(element instanceof IFolder)) {
-			return false;
-		} 
-		IFolder folder = (IFolder) element;
+	public static boolean isDubSourceFolder(IFolder folder) {
 		IProject project = folder.getProject();
 		BundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
 		if(projectInfo == null) {

@@ -24,9 +24,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 
-import dtool.dub.BundlePath;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
@@ -47,6 +45,7 @@ import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -80,12 +79,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	@Override
 	protected ManagerResourceListener init_createResourceListener() {
-		return new ManagerResourceListener(getDefaultBundleManifestPath());
-	}
-	
-	@Override
-	protected Path getDefaultBundleManifestPath() {
-		return ResourceUtils.epath(BundlePath.DUB_MANIFEST_Path);
+		return new ManagerResourceListener();
 	}
 	
 	@Override
@@ -109,7 +103,13 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
 		java.nio.file.Path location = project.getLocation().toFile().toPath();
-		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation(BundlePath.create(location));
+		BundlePath bundlePath = BundlePath.create(location);
+		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation2(bundlePath);
+		if(unresolvedBundle == null) {
+			// Can happen if using SDL format, which we don't know how to parse. Provide dummy bundle
+			unresolvedBundle = new DubBundle(bundlePath, "(UNKNOW)", null, null, null, 
+				null, null, null, null, null, null);
+		}
 		
 		return new DubBundleDescription(unresolvedBundle);
 	}
@@ -195,7 +195,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 					}
 					deleteDubMarkers(project);
 					
-					if(unresolvedDescription.hasErrors() != false) {
+					if(unresolvedDescription.hasErrors() == true) {
 						DubBundleException error = unresolvedDescription.getError();
 						setDubErrorMarker(project, error);
 						return; // only run dub describe if unresolved description had no errors
@@ -311,6 +311,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 				assertTrue(!bundleDesc.hasErrors());
 				
 				workspaceModelManager.updateProjectInfo(project, unresolvedProjectInfo, bundleDesc);
+				project.refreshLocal(1, monitor);
 			}
 		}, null, 0, pm);
 		

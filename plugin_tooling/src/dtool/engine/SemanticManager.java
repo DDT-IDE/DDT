@@ -19,6 +19,7 @@ import java.nio.file.attribute.FileTime;
 import java.text.MessageFormat;
 import java.util.List;
 
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.lang.tooling.context.ModuleSourceException;
 import melnorme.lang.tooling.ops.util.FileCachingEntry;
@@ -28,7 +29,6 @@ import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import dtool.dub.BundlePath;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubHelper.RunDubDescribeCallable;
@@ -113,7 +113,8 @@ public class SemanticManager {
 		
 		@Override
 		protected FileCachingEntry<ResolvedManifest> doCreateEntry(BundleKey bundleKey) {
-			return new FileCachingEntry<ResolvedManifest>(bundleKey.getBundleLocation().getManifestLocation()) {
+			Location manifestLoc = bundleKey.getBundleLocation().getManifestLocation(true);
+			return new FileCachingEntry<ResolvedManifest>(manifestLoc) {
 				
 				@Override
 				protected void handleWarning_ModifiedTimeInTheFuture(FileTime lastModifiedTime) {

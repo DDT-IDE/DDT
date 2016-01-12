@@ -1,6 +1,9 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added (partial) support for `dub.sdl` DUB projects. (Fixes #122)
+   * Changing a project from DUB's JSON format to SDL (and vice-versa) during an Eclipse session is not supported. You will need to restart Eclipse for changes to be recognized/refreshed.
+   * Build Targets display in the Project Explorer is not supported with the SDL format.
  * Fixed regression: Console view always activates when a build is invoked.
  * Improvement to Auto-Indent when Enter pressed before a closing brace. 
  * Minimum and recommended CDT version is now `8.8`.

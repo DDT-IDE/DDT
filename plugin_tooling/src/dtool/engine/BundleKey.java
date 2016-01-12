@@ -12,8 +12,9 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
+
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.misc.HashcodeUtil;
-import dtool.dub.BundlePath;
 
 public final class BundleKey {
 	

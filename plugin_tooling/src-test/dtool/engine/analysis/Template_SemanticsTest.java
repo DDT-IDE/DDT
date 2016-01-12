@@ -22,7 +22,6 @@ import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.ITemplatableElement;
 import dtool.ast.references.RefTemplateInstance;
 import dtool.ast.references.Reference;
-import dtool.dub.BundlePath;
 import dtool.engine.ResolvedModule;
 import dtool.engine.analysis.templates.InstantiatedDefUnit;
 import dtool.engine.analysis.templates.RefTemplateInstanceSemantics;
@@ -31,6 +30,7 @@ import dtool.engine.analysis.templates.TemplateParameterAnalyser.NotInstantiated
 import dtool.engine.tests.DefUnitResultsChecker;
 import dtool.engine.util.NamedElementUtil;
 import dtool.parser.SourceEquivalenceChecker;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.engine.ErrorElement;

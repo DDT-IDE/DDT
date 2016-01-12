@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import dtool.dub.DubBundle.BundleFile;
 import dtool.tests.DToolTestResources;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.MiscUtil;
 

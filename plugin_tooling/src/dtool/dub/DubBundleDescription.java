@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import dtool.dub.DubBundle.DubBundleException;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
 
 /**

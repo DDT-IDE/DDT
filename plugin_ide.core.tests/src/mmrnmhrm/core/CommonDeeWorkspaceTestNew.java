@@ -18,10 +18,10 @@ import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
-import dtool.dub.BundlePath;
 import dtool.tests.utils.MiscJsonUtils;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.core.ExceptionAdapter;
 import melnorme.utilbox.misc.StringUtil;
 import mmrnmhrm.tests.CommonDeeWorkspaceTest;
@@ -64,7 +64,7 @@ public abstract class CommonDeeWorkspaceTestNew extends CommonCoreTest {
 			throws CoreException {
 		String sourceFoldersStr = '"' + StringUtil.collToString(sourceFolders, "\", \"") + '"';
 		
-		CommonDeeWorkspaceTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_FILENAME, MiscJsonUtils.jsDocument(
+		CommonDeeWorkspaceTest.writeStringToFile(project, BundlePath.DUB_MANIFEST_NAME_JSON, MiscJsonUtils.jsDocument(
 			MiscJsonUtils.jsStringEntry("name", bundleName),
 			MiscJsonUtils.jsEntryValue("sourcePaths", "[ " + sourceFoldersStr + " ]"),
 			MiscJsonUtils.jsEntryValue("importPaths", "[ " + sourceFoldersStr + " ]")

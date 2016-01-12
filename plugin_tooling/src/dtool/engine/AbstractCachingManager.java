@@ -22,7 +22,6 @@ public abstract class AbstractCachingManager<KEY, VALUE, UPDATE_OPTIONS> {
 	}
 	
 	protected final SynchronizedEntryMap<KEY, VALUE> infos = new SynchronizedEntryMap<KEY, VALUE>() {
-		
 		@Override
 		protected VALUE createEntry(KEY key) {
 			return doCreateEntry(key);

@@ -21,13 +21,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 
-import dtool.dub.BundlePath;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
+import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.data.ValidationException;
 import mmrnmhrm.core.build.DubLocationValidator;
 
@@ -102,8 +103,12 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 			throws CoreException {
 		String bundleName = getProject().getName().toLowerCase();
 		String dubManifestContents = HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", bundleName);
-		projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_FILENAME), 
-			dubManifestContents, false, pm);
+		
+		BundlePath bundlePath = new BundlePath(ResourceUtils.getProjectLocation(getProject()));
+		if(!bundlePath.hasBundleManifest()) {
+			projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_NAME_JSON), 
+				dubManifestContents, false, pm);
+		}
 		
 		IFile mainModule = getProject().getFolder("src").getFile("app.d");
 		projectCreator.createFile(mainModule, HelloWorld_ModuleContents, true, pm);
