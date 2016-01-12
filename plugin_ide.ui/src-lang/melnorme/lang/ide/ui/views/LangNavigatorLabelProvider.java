@@ -25,8 +25,8 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import _org.eclipse.jdt.ui.ProblemsLabelDecorator;
-import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
 import melnorme.lang.ide.core.project_model.view.BundleErrorElement;
+import melnorme.lang.ide.core.project_model.view.BundleModelElementKind.BundleModelElementsSwitcher;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
@@ -152,11 +152,6 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 	protected abstract DefaultGetImageSwitcher getBaseImage_switcher();
 	
 	public static abstract class DefaultGetImageSwitcher implements NavigatorElementsSwitcher<ImageDescriptor> {
-		
-		@Override
-		public ImageDescriptor visitProject(IProject project) {
-			return null;
-		}
 		
 		@Override
 		public ImageDescriptor visitBuildTargetsElement(BuildTargetsContainer buildTargetsElement) {
