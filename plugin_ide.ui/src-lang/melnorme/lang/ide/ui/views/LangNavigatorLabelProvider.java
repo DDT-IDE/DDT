@@ -12,6 +12,7 @@ package melnorme.lang.ide.ui.views;
 
 import static melnorme.lang.ide.ui.views.StylerHelpers.fgColor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -82,6 +83,11 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 		
 		@Override
 		public StyledString visitProject(IProject project) {
+			return null;
+		}
+		
+		@Override
+		public StyledString visitManifestFile(IFile element) {
 			return null;
 		}
 		
@@ -165,6 +171,11 @@ public abstract class LangNavigatorLabelProvider extends AbstractLangLabelProvid
 				return new DecoratedImageDescriptor(baseImage, LangImages.OVR_CHECKED, Corner.BOTTOM_RIGHT);
 			}
 			return baseImage;
+		}
+		
+		@Override
+		public ImageDescriptor visitManifestFile(IFile element) {
+			return null;
 		}
 		
 	}
