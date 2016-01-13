@@ -4,7 +4,7 @@ import org.osgi.framework.BundleContext;
 
 import melnorme.lang.ide.core.ILangOperationsListener;
 import melnorme.lang.ide.ui.LangUIPlugin;
-import mmrnmhrm.ui.launch.DeeToolOperationsConsoleListener;
+import mmrnmhrm.ui.launch.DeeOperationsConsoleUIHandler;
 
 
 public class DeeUIPlugin extends LangUIPlugin {
@@ -28,7 +28,7 @@ public class DeeUIPlugin extends LangUIPlugin {
 	
 	@Override
 	protected ILangOperationsListener createOperationsConsoleListener() {
-		return new DeeToolOperationsConsoleListener();
+		return new DeeOperationsConsoleUIHandler();
 	}
 	
 	@Override

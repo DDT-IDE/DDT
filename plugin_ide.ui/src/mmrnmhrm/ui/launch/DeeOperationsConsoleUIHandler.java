@@ -10,11 +10,11 @@
  *******************************************************************************/
 package mmrnmhrm.ui.launch;
 
-import melnorme.lang.ide.ui.tools.console.AbstractToolsConsoleHandler;
+import melnorme.lang.ide.ui.tools.console.LangOperationsConsoleUIHandler;
 
-public class DeeToolOperationsConsoleListener extends AbstractToolsConsoleHandler {
+public class DeeOperationsConsoleUIHandler extends LangOperationsConsoleUIHandler {
 	
-	public DeeToolOperationsConsoleListener() {
+	public DeeOperationsConsoleUIHandler() {
 	}
 	
 }
