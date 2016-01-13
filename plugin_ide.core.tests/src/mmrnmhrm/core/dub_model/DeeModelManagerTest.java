@@ -71,9 +71,8 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		// Test project with D nature, but no dub.json
 		taskCount = getModelAgent().getSubmittedTaskCount();
 		project = createAndOpenDeeProject(DUB_TEST, true);
-		// check no changes or updates submitted:
-		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount); 
-		assertTrue(model.getProjectInfo(project) == null);
+		// There should be an error bundle info
+		assertTrue(model.getProjectInfo(project).hasErrors());
 		
 		// Test concurrency: updating a project that was removed in the meantime
 		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, 
