@@ -80,21 +80,6 @@ Content Assist can also present Code Templates. These are predefined parameteriz
 ##### Text Hover:
 Text hover shows a text popup over the reference or definition under the mouse cursor. The hover will display the signature of the definition, as well as DDoc, if available. DDoc will be rendered in a graphical way, similar to a standard HTML presentation.
 
-##### Open-Type dialog:
-Invoked with Ctrl-Shift-T. This is a dialog that allows one to search for any definitions (types or meta-types) and open an editor on the source of the selected definition. Search works the same as JDT, a simple text filter can be used, or camel-case matching can be used to match the desired element (for example: the `FEx` text will match `FiberException`, `FileException`, `FormatException`, etc.). Wildcards can also be used in the filter text.
- 
-##### Hierarchy View:
-These are not currently supported/implemented, even though they are present in the UI.
-
-##### Semantic Search:
-The search dialog allows searching for definitions based on a text pattern. Available in the main menu, under 'Search' / 'D...':
-
-<div align="center">
-<a href="screenshots/UserGuide_SearchDialog.png?raw=true"><img src="screenshots/UserGuide_SearchDialog.png" /><a/> 
-</div>
-
-It is also possible to search for all references to a given definition. In the editor, select the name of a definition, and use the editor context menu to search for references (shortcut: Ctrl-Shift-G). This can also be invoked on references, invoking a search for all references to the same definition the selected reference resolves to.
-
 
 ### Launch and Debug:
 To run a D project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'D Application" to create a new D launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
