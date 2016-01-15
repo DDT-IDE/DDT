@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added "headerbar", "BUG", "FIXME", "apl" code snippets.  
  * Added (partial) support for `dub.sdl` DUB projects. (Fixes #122)
    * Changing a project from DUB's JSON format to SDL (and vice-versa) during an Eclipse session is not supported. You will need to restart Eclipse for changes to be recognized/refreshed.
    * Build Targets display in the Project Explorer is not supported with the SDL format.
