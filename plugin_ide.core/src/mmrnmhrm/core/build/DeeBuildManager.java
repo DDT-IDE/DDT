@@ -21,7 +21,7 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.ToolMarkersUtil;
+import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -29,7 +29,7 @@ import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.IToolOperation;
 import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.tooling.data.StatusLevel;
+import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
@@ -184,7 +184,8 @@ public class DeeBuildManager extends BuildManager {
 			dubMarker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 		}
 		
-		protected void addCompilerErrorMarker(Path filePath, String startPosStr, String errorMsg) throws CoreException {
+		protected void addCompilerErrorMarker(Path filePath, String startPosStr, String errorMsg) 
+				throws CoreException {
 			int line = -1;
 			int column = -1;
 			int endLine = -1;
@@ -200,9 +201,9 @@ public class DeeBuildManager extends BuildManager {
 			}
 			
 			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(line, column, endLine, endColumn);
-			ToolSourceMessage toolMessage = new ToolSourceMessage(filePath, sourceLinePos, StatusLevel.ERROR, errorMsg);
+			ToolSourceMessage toolMessage = new ToolSourceMessage(filePath, sourceLinePos, Severity.ERROR, errorMsg);
 			
-			new ToolMarkersUtil(true).addErrorMarkers(toolMessage, ResourceUtils.getProjectLocation(project));
+			new ToolMarkersHelper(true).addErrorMarkers(toolMessage, ResourceUtils.getProjectLocation(project));
 		}
 		
 	}
