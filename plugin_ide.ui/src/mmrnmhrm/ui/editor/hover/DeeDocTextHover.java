@@ -94,13 +94,13 @@ public class DeeDocTextHover extends BrowserControlHover
 		}
 		
 		@Override
-		protected void performBackgroundComputation() throws CommonException, OperationCancellation, CoreException {
+		protected void doOperation() throws CoreException, CommonException, OperationCancellation {
 			if(Display.getCurrent() == null) {
 				// Perform computation directly in this thread, cancellation won't be possible.
-				doBackgroundComputation_prepare(new NullProgressMonitor());
+				runBackgroundComputation(new NullProgressMonitor());
 				return;
 			}
-			super.performBackgroundComputation();
+			super.doOperation();
 		}
 		
 		@Override
