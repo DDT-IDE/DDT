@@ -89,15 +89,15 @@ public class DeeDocTextHover extends BrowserControlHover
 		public String executeAndGetValidatedResult() throws CoreException, CommonException {
 //			assertTrue(Display.getCurrent() != null);
 			
-			execute();
+			execute0();
 			return getResultValue();
 		}
 		
 		@Override
-		protected void performBackgroundComputation() throws OperationCancellation, CoreException {
+		protected void performBackgroundComputation() throws CommonException, OperationCancellation, CoreException {
 			if(Display.getCurrent() == null) {
 				// Perform computation directly in this thread, cancellation won't be possible.
-				computationRunnable.doRun_toCoreException(new NullProgressMonitor());
+				doBackgroundComputation_prepare(new NullProgressMonitor());
 				return;
 			}
 			super.performBackgroundComputation();
