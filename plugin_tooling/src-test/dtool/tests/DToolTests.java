@@ -12,6 +12,6 @@ package dtool.tests;
 
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
 
-public class DToolTests implements DevelopmentCodeMarkers {
+public class DToolTests extends DevelopmentCodeMarkers {
 	
 }

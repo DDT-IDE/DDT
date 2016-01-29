@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
+ * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
  * Added "headerbar", "BUG", "FIXME", "apl" code snippets.  
  * Added (partial) support for `dub.sdl` DUB projects. (Fixes #122)
    * Changing a project from DUB's JSON format to SDL (and vice-versa) during an Eclipse session is not supported. You will need to restart Eclipse for changes to be recognized/refreshed.

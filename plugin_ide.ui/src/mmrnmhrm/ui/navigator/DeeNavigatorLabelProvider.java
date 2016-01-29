@@ -28,7 +28,7 @@ import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.project_model.view.RawDependencyElement;
 import melnorme.lang.ide.ui.LangImages;
-import melnorme.lang.ide.ui.views.LangNavigatorLabelProvider;
+import melnorme.lang.ide.ui.navigator.LangNavigatorLabelProvider;
 import mmrnmhrm.core.workspace.viewmodel.DubDepSourceFolderElement;
 import mmrnmhrm.core.workspace.viewmodel.DubDependencyElement;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;

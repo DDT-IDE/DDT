@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.Path;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
+import melnorme.lang.ide.ui.navigator.AbstractNavigatorContentProvider;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
-import melnorme.lang.ide.ui.views.AbstractNavigatorContentProvider;
 import melnorme.utilbox.collections.ArrayList2;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
