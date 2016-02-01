@@ -22,26 +22,28 @@ import static melnorme.lang.tooling.structure.StructureElementKind.FUNCTION;
 import static melnorme.lang.tooling.structure.StructureElementKind.STRUCT;
 import static melnorme.lang.tooling.structure.StructureElementKind.VARIABLE;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tests.CommonToolingTest;
-import melnorme.lang.tooling.EAttributeFlag;
-import melnorme.lang.tooling.EProtection;
-import melnorme.lang.tooling.ElementAttributes;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Location;
 
 import org.junit.Test;
 
 import dtool.parser.DeeParser;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.tests.DToolTestResources;
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.AbstractStructureParser;
+import melnorme.lang.tooling.ops.AbstractStructureParser_Test;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Location;
 
-public class DeeStructureCreator_Test extends CommonToolingTest {
+public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 	
 	public static ElementAttributes attrib(EProtection protection, EAttributeFlag... flags) {
 		return new ElementAttributes(protection, flags);
@@ -53,10 +55,6 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 	
 	protected static ElementAttributes eat(EAttributeFlag... flags) {
 		return att(ArrayUtil.concat(flags, EAttributeFlag.TEMPLATED));
-	}
-	
-	protected SourceRange sr(int offset, int length) {
-		return new SourceRange(offset, length);
 	}
 	
 	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
@@ -88,17 +86,33 @@ public class DeeStructureCreator_Test extends CommonToolingTest {
 		return new SourceRange(startOf(start), length);
 	}
 	
-	protected void testParseStructure(String source, StructureElement... expectedElements) {
-		// dummy loc
-		Location loc = DToolTestResources.getTestResourceLoc().resolve_fromValid("parser-structure/foo.d");
-		ParsedModule parsedModule = DeeParser.parseSourceModule(source, loc.toPath());
-		SourceFileStructure structure = new DeeStructureCreator().createStructure(parsedModule, loc);
+	protected String langSource;
+	
+	protected void testParseStructure(String source, StructureElement... expectedElements) throws CommonException {
+		langSource = source;
+		SourceFileStructure structure = createStructureParser().parse("XXXXX NOT_APPLICABLE");
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
-		SourceFileStructure expected = new SourceFileStructure(loc, expectedStructure, (Indexable<ParserError>) null);
-		assertAreEqual(expected.getChildren(), structure.getChildren());
+		SourceFileStructure expected = new SourceFileStructure(structure.getLocation(), expectedStructure, 
+			(Indexable<ParserError>) null);
 		
+		assertAreEqual(expected.getElementsContainer().getChildren(), structure.getElementsContainer().getChildren());
 		assertEquals(structure, expected);
+	}
+	
+	@Override
+	protected AbstractStructureParser createStructureParser() {
+		// dummy loc
+		Location loc = DToolTestResources.getTestResourceLoc().resolve_fromValid("parser-structure/foo.d");
+		return new AbstractStructureParser(loc, defaultSource) {
+			String source = langSource;
+			
+			@Override
+			public SourceFileStructure parse(String outputParseSource) throws CommonException {
+				ParsedModule parsedModule = DeeParser.parseSourceModule(source, loc.toPath());
+				return new DeeStructureCreator().createStructure(parsedModule, loc);
+			}
+		};
 	}
 	
 	@Test
