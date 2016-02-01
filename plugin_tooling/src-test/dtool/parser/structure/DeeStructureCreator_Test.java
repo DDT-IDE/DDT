@@ -96,7 +96,7 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		SourceFileStructure expected = new SourceFileStructure(structure.getLocation(), expectedStructure, 
 			(Indexable<ParserError>) null);
 		
-		assertAreEqual(expected.getElementsContainer().getChildren(), structure.getElementsContainer().getChildren());
+		assertAreEqual(expected.getChildren(), structure.getChildren());
 		assertEquals(structure, expected);
 	}
 	
