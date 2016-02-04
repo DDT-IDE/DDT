@@ -62,10 +62,8 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 	}
 	
 	
-	protected String testSource;
-	
 	protected int indexOf(String str) {
-		int indexOf = testSource.indexOf(str);
+		int indexOf = source.indexOf(str);
 		assertTrue(indexOf != -1);
 		return indexOf;
 	}
@@ -86,10 +84,8 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		return new SourceRange(startOf(start), length);
 	}
 	
-	protected String langSource;
-	
 	protected void testParseStructure(String source, StructureElement... expectedElements) throws CommonException {
-		langSource = source;
+		this.source = source;
 		SourceFileStructure structure = createStructureParser().parse("XXXXX NOT_APPLICABLE");
 		
 		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
@@ -104,8 +100,8 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 	protected AbstractStructureParser createStructureParser() {
 		// dummy loc
 		Location loc = DToolTestResources.getTestResourceLoc().resolve_fromValid("parser-structure/foo.d");
-		return new AbstractStructureParser(loc, defaultSource) {
-			String source = langSource;
+		return new AbstractStructureParser(loc, source) {
+			String source = DeeStructureCreator_Test.this.source;
 			
 			@Override
 			public SourceFileStructure parse(String outputParseSource) throws CommonException {
@@ -118,9 +114,9 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 	@Test
 	public void testname() throws Exception { testname$(); }
 	public void testname$() throws Exception {
-		testSource = "int foo; string[] func() {/*2*/} this() {/*3*/}";
+		source = "int foo; string[] func() {/*2*/} this() {/*3*/}";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("foo", sr(4,3), sr(0,8), VARIABLE, att(), "int", null),
 			new StructureElement("func", sr("func()", 4), sr("string[] f","2*/}"), FUNCTION, att(), "string[]", null),
 			new StructureElement("this", sr("this()", 4), sr("this()","3*/}"), CONSTRUCTOR, att(), null, null)
@@ -128,22 +124,22 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		
 		
 		// Test attributes
-		testSource = "public: static const(int) foo; private abstract immutable int bar; ";
+		source = "public: static const(int) foo; private abstract immutable int bar; ";
 		ElementAttributes fooAttribs = attrib(EProtection.PUBLIC, STATIC);
 		ElementAttributes barAttribs = attrib(EProtection.PRIVATE, ABSTRACT, IMMUTABLE);
 		
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("foo", sr("foo", 3), sr("const(","foo;"), VARIABLE, fooAttribs, "const(int)", null),
 			new StructureElement("bar", sr("bar", 3), sr("int bar","bar;"), VARIABLE, barAttribs, "int", null)
 		);
 		
 		
-		testSource = 
+		source = 
 			"struct Xpto { int foo2; void func(int a){}  /*Xpto*/} \n " +
 			"class Foo { int fox;  class Inner(T) { int xxx; }  /*Foo*/} \n ";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("Xpto", sr("Xpto", 4), sr("struct Xpto","/*Xpto*/}"), STRUCT, att(), null, elems(
 				new StructureElement("foo2", sr("foo2;", 4), sr("int foo2;","foo2;"), VARIABLE, att(), "int", null),
 				new StructureElement("func", sr("func", 4), sr("void func","a){}"), FUNCTION, att(), "void", null)
@@ -157,9 +153,9 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		);
 		
 		// Test multiple var decl.
-		testSource = "static int foo, bar; ";
+		source = "static int foo, bar; ";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("foo", sr("foo", 3), sr("int foo","bar;"), VARIABLE, att(STATIC), "int", elems(
 				new StructureElement("bar", sr("bar", 3), sr("bar;","bar"), VARIABLE, attrib(null), "int", null)
 			)
@@ -167,37 +163,36 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		/*FIXME: attribute of fragmentDefUnits*/
 		
 		// Test enum.
-		testSource = "enum Foo : int { ONE, TWO }";
+		source = "enum Foo : int { ONE, TWO }";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("Foo", sr("Foo", 3), sr("enum","}"), ENUM_TYPE, att(), "int", elems(
 				new StructureElement("ONE", sr("ONE", 3), sr("ONE","ONE"), VARIABLE, attrib(null), null, null),
 				new StructureElement("TWO", sr("TWO", 3), sr("TWO","TWO"), VARIABLE, attrib(null), null, null)
 			))
 		);
-		testSource = "enum Foo = 123, Bar = 'abc'";
+		source = "enum Foo = 123, Bar = 'abc'";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("Foo", sr("Foo", 3), sr("Foo","123"), VARIABLE, attrib(null), null, null),
 			new StructureElement("Bar", sr("Bar", 3), sr("Bar","'abc'"), VARIABLE, attrib(null), null, null)
 		);
 		
 		
 		// Test aliases:
-		testSource = "alias Foo = Bar;";
+		source = "alias Foo = Bar;";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null, ALIASED), "Bar", null)
 		);
 		
-		testSource = "alias Foo = Bar, XXX = XPTO;";
+		source = "alias Foo = Bar, XXX = XPTO;";
 		testParseStructure(
-			testSource, 
+			source, 
 			new StructureElement("Foo", sr("Foo", 3), sr("Foo","Bar"), ALIAS, attrib(null, ALIASED), "Bar", null),
 			new StructureElement("XXX", sr("XXX", 3), sr("XXX","XPTO"), ALIAS, attrib(null, ALIASED), "XPTO", null)
 		);
 
-		
 	}
 	
 }
