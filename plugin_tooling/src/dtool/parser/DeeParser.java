@@ -92,7 +92,7 @@ public class DeeParser
 	}
 	
 	protected DeeParser(DeeLexer deeLexer, ICancelMonitor cancelMonitor) {
-		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : ICancelMonitor._Util.NULL_MONITOR;
+		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : ICancelMonitor.NULL_MONITOR;
 		
 		this.source = deeLexer.getSource();
 		DeeLexElementProducer deeLexElementProducer = new DeeLexElementProducer();
