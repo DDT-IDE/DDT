@@ -129,6 +129,13 @@
 			description="%QuickOutlineAction.description"
 		/>
 		
+		<command 
+			categoryId="org.dsource.ddt.ide.ui.commands.Category"
+			id="org.dsource.ddt.ide.ui.commands.Format"
+			name="%FormatAction.name"
+			description="%FormatAction.description"
+		/>		
+		
 		<command
 			categoryId="org.dsource.ddt.ide.ui.commands.Category"
 			defaultHandler="mmrnmhrm.ui.actions.DeeOpenTypeHandler"
@@ -170,6 +177,12 @@
 			contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
 			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
 			sequence="M1+O">
+		</key>
+		<key
+			commandId="org.dsource.ddt.ide.ui.commands.Format"
+			contextId="org.dsource.ddt.ide.ui.Contexts.Editor"
+			sequence="M1+M2+F"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
 		</key>
 		
 		<key
