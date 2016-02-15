@@ -1,25 +1,27 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Fixed incorrect icon for errors and warnings in preference page status.
- * Fixed: can't save preference pages with empty fields.
- 
- * Fixed bug with Content Assist snippets using the `${word_selection}` variable.
- * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
- * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
- * Added "headerbar", "BUG", "FIXME", "apl" code snippets.  
+
+
+### 0.14.1
  * Added (partial) support for `dub.sdl` DUB projects. (Fixes #122)
    * Changing a project from DUB's JSON format to SDL (and vice-versa) during an Eclipse session is not supported. You will need to restart Eclipse for changes to be recognized/refreshed.
    * Build Targets display in the Project Explorer is not supported with the SDL format.
- * Fixed regression: Console view always activates when a build is invoked.
+ * Dirty editors are now automatically saved if a build is invoked directly from a Build Target in the Project Explorer. (if the workspace "Save automatically before build" option is enabled).
  * Improvement to Auto-Indent when Enter pressed before a closing brace. 
+ * Added "headerbar", "BUG", "FIXME", "apl" code snippets.  
+ * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Minimum and recommended CDT version is now `8.8`.
+
+ * Fixed bug with Content Assist snippets using the `${word_selection}` variable.
+ * Fixed workspace resource locking when a build is invoked directly from a Build Target in the Project Explorer.
+ * Fixed regression: Console view always activates when a build is invoked.
  * When debugging, fixed toggling breakpoints on and off for files that are outside the workspace.
  * When debugging, fixed opening source files that are are outside the workspace.
  * Fixed line breakpoint icon.
- 
- * Project builder is no longer invoked when workspace "Build Automatically" setting is enabled and a file is saved. (this was considered a misfeature anyways)
  * Fixed: project Build Targets settings pages shows wrong default for Program Path field
+ * Fixed incorrect icon for errors and warnings in preference page status.
+ * Fixed: can't save preference pages with empty fields.
  
 ### 0.14.0
  * Added support for Eclipse dark theme. Namely:  
