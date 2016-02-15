@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
-import melnorme.lang.ide.core.operations.IToolOperation;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
@@ -73,12 +73,12 @@ public class DeeBuildManager extends BuildManager {
 		return new BuildOperationCreator(project, opHandler) {
 			
 			@Override
-			protected IToolOperation doCreateClearBuildMarkersOperation() {
+			protected ICoreOperation doCreateClearBuildMarkersOperation() {
 				return new RunInDubAgentWrapper(super.doCreateClearBuildMarkersOperation());
 			}
 			
 			@Override
-			public IToolOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler, IProject project,
+			public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler, IProject project, 
 					Path buildToolPath, BuildTarget buildTarget) throws CommonException, CoreException {
 				return new RunInDubAgentWrapper(
 					super.doCreateBuildTargetOperation(opHandler, project, buildToolPath, buildTarget));
@@ -87,11 +87,11 @@ public class DeeBuildManager extends BuildManager {
 		};
 	}
 	
-	protected static class RunInDubAgentWrapper implements IToolOperation {
+	protected static class RunInDubAgentWrapper implements ICoreOperation {
 		
-		protected final IToolOperation toolOp;
+		protected final ICoreOperation toolOp;
 		
-		public RunInDubAgentWrapper(IToolOperation toolOp) {
+		public RunInDubAgentWrapper(ICoreOperation toolOp) {
 			this.toolOp = toolOp;
 		}
 		
