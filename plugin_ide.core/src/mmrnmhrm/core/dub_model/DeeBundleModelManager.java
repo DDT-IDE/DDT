@@ -287,7 +287,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
 		
 		// TODO: add --skip-registry to dub command
-		ProcessBuilder pb = AbstractToolManager.createProcessBuilder(project, array(dubPath, "describe"));
+		ProcessBuilder pb = getToolManager().createSimpleProcessBuilder(project, array(dubPath, "describe"));
 		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(opHandler, pb, pm);
 		
 		ExternalProcessResult processHelper;
