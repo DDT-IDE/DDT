@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Added signing to releases.
 
 
 ### 0.14.1
