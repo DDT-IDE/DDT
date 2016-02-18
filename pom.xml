@@ -4,14 +4,13 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.dsource</groupId>
-	<artifactId>ddt.aggregator</artifactId>
+	<groupId>org.dsource.ddt</groupId>
+	<artifactId>ide-aggregator</artifactId>
 	<version>1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
 		<tycho-version>0.24.0</tycho-version>
-		<project_version>0.14.1-SNAPSHOT</project_version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<parentBaseDir>${project.parent.basedir}</parentBaseDir>
@@ -145,7 +144,7 @@
 					<target>
 						<artifact>
 							<groupId>${project.groupId}</groupId>
-							<artifactId>ddt.aggregator</artifactId>
+							<artifactId>ide-aggregator</artifactId>
 							<version>1-SNAPSHOT</version>
 							<classifier>${ide.targetPlatform}</classifier>
 						</artifact>

@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.dsource</groupId>
-		<artifactId>ddt.aggregator</artifactId>
+		<groupId>org.dsource.ddt</groupId>
+		<artifactId>ide-aggregator</artifactId>
 		<version>1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.dsource.ddt.base</artifactId>
-	<version>${project_version}</version>
+	<version>0.14.1-SNAPSHOT</version>
 	<packaging>eclipse-feature</packaging>
 
 </project>
