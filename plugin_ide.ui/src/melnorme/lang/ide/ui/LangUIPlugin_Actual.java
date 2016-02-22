@@ -5,8 +5,10 @@ import java.util.List;
 import org.eclipse.jface.text.source.ISourceViewer;
 
 import melnorme.lang.ide.core.LangCore_Actual;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
+import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import mmrnmhrm.core.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.DeeImages;
@@ -50,5 +52,18 @@ public final class LangUIPlugin_Actual {
 	public static final String ENGINE_TOOLS_ConsoleName = LangCore_Actual.LANGUAGE_NAME + " Tools Log";
 	
 	public static final String DAEMON_TOOL_Name = "DCD";
+	
+	
+	/* -----------------  ----------------- */
+	
+	@SuppressWarnings("unused")
+	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
+		return new BasicUIOperation() {
+			@Override
+			protected void doOperation() {
+				// TODO: Lang Format operation
+			}
+		};
+	}
 	
 }
