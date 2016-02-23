@@ -153,15 +153,11 @@ public abstract class DefaultFoldingPreferenceConfigurationBlock extends
 		}
 	}
 	
-	@Override
 	public void loadDefaults() {
-		super.loadDefaults();
 		performDefaults();
 	}
 	
-	@Override
 	public void doSaveSettings() throws BackingStoreException {
-		super.doSaveSettings();
 		performOk();
 	}
 	
