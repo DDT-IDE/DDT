@@ -26,12 +26,13 @@ import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import _org.eclipse.dltk.ui.util.IStatusChangeListener;
 import melnorme.lang.ide.ui.preferences.common.AbstractLangPreferencesPage;
-import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlock2;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 /**
  * Configures preferences.
  */
-public abstract class ImprovedAbstractConfigurationBlock extends AbstractPreferencesBlock implements
+public abstract class ImprovedAbstractConfigurationBlock extends AbstractPreferencesBlock2 implements
 		IPreferenceDelegate<String> {
 
 	protected final OverlayPreferenceStore store;
@@ -41,7 +42,8 @@ public abstract class ImprovedAbstractConfigurationBlock extends AbstractPrefere
 
 	public ImprovedAbstractConfigurationBlock(OverlayPreferenceStore store,
 			AbstractLangPreferencesPage page) {
-		super();
+		// TODO 
+		super(new PreferencesPageContext());
 		this.store = store;
 		this.page = page;
 

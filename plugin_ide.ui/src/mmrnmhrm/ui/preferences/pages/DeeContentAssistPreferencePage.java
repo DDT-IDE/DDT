@@ -12,6 +12,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.preferences.EditorContentAssistConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import mmrnmhrm.ui.DeeUIPlugin;
 
 public class DeeContentAssistPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -23,8 +24,8 @@ public class DeeContentAssistPreferencePage extends AbstractPreferencesBlockPref
 	}
 	
 	@Override
-	protected EditorContentAssistConfigurationBlock init_createPreferencesBlock() {
-		return new EditorContentAssistConfigurationBlock();
+	protected EditorContentAssistConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new EditorContentAssistConfigurationBlock(prefContext);
 	}
 	
 	@Override

@@ -27,8 +27,8 @@ public class DeeRootPreferencePage extends RootPreferencePage {
 	}
 	
 	@Override
-	protected LangSDKConfigBlock init_createLangSDKConfigBlock() {
-		return new DeeSDKConfigBlock(null);
+	protected LangSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new DeeSDKConfigBlock(prefContext);
 	}
 	
 	public static class DeeSDKConfigBlock extends LangSDKConfigBlock {

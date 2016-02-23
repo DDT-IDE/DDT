@@ -12,22 +12,23 @@ package mmrnmhrm.ui.preferences.pages;
 
 import org.eclipse.core.resources.IProject;
 
+import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
+
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
-import melnorme.lang.ide.ui.dialogs.AbstractLangPropertyPage;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
-import melnorme.lang.ide.ui.preferences.common.IPreferencesWidget;
 import mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage.DeeSDKConfigBlock;
 
-public class DeeToolchainConfigurationPage extends AbstractLangPropertyPage {
+public class DeeToolchainConfigurationPage extends AbstractProjectToolchainSettingsPage {
 	
 	@Override
-	protected IPreferencesWidget createProjectConfigWidget(IProject project) {
+	protected ProjectSDKSettingsBlock createProjectConfigWidget(IProject project) {
 		return new ProjectSDKSettingsBlock(project, ToolchainPreferences.USE_PROJECT_SETTINGS) {
 			@Override
-			protected LangSDKConfigBlock init_createLangSDKBlock() {
+			protected LangSDKConfigBlock init_createProjectSettingsBlock2() {
 				return new DeeSDKConfigBlock(prefContext);
 			}
+
 		};
 	}
 	

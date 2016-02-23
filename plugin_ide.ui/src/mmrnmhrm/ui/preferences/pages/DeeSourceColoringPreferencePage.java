@@ -11,6 +11,7 @@
 package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import mmrnmhrm.ui.DeeUIPlugin;
 import mmrnmhrm.ui.preferences.DeeSourceColoringConfigurationBlock;
 
@@ -28,8 +29,8 @@ public class DeeSourceColoringPreferencePage extends AbstractPreferencesBlockPre
 	}
 	
 	@Override
-	protected DeeSourceColoringConfigurationBlock init_createPreferencesBlock() {
-		return new DeeSourceColoringConfigurationBlock();
+	protected DeeSourceColoringConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new DeeSourceColoringConfigurationBlock(prefContext);
 	}
 	
 }

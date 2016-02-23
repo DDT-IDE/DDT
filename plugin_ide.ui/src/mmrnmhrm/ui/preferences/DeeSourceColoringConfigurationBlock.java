@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.io.InputStream;
 
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import melnorme.lang.ide.ui.text.coloring.AbstractSourceColoringConfigurationBlock;
 import melnorme.util.swt.jface.LabeledTreeElement;
 import mmrnmhrm.ui.text.DeeColorPreferences;
@@ -22,8 +23,8 @@ public class DeeSourceColoringConfigurationBlock extends AbstractSourceColoringC
 	
 	private static final String PREVIEW_FILE_NAME = "SourceColoringPreviewFile.d";
 	
-	public DeeSourceColoringConfigurationBlock() {
-		super();
+	public DeeSourceColoringConfigurationBlock(PreferencesPageContext prefContext) {
+		super(prefContext);
 	}
 	
 	@Override

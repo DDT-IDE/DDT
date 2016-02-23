@@ -13,11 +13,12 @@ package mmrnmhrm.ui.preferences;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import melnorme.lang.ide.ui.preferences.EditorConfigurationBlock;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 public class DeeEditorConfigurationBlock extends EditorConfigurationBlock {
 	
-	public DeeEditorConfigurationBlock(IPreferenceStore store) {
-		super(store);
+	public DeeEditorConfigurationBlock(PreferencesPageContext prefContext, IPreferenceStore store) {
+		super(prefContext, store);
 	}
 	
 }

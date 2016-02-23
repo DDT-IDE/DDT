@@ -13,6 +13,7 @@ package mmrnmhrm.ui.preferences.pages;
 
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 import mmrnmhrm.ui.preferences.DeeEditorConfigurationBlock;
 
 
@@ -25,8 +26,8 @@ public class DeeEditorPreferencePage extends AbstractPreferencesBlockPrefPage {
 	}
 	
 	@Override
-	protected DeeEditorConfigurationBlock init_createPreferencesBlock() {
-		return new DeeEditorConfigurationBlock(LangUIPlugin.getInstance().getPreferenceStore());
+	protected DeeEditorConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new DeeEditorConfigurationBlock(prefContext, LangUIPlugin.getInstance().getPreferenceStore());
 	}
 	
 	@Override

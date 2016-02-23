@@ -14,6 +14,7 @@ package mmrnmhrm.ui.preferences.pages;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.preferences.EditorTypingConfigurationBlock;
 import melnorme.lang.ide.ui.preferences.common.AbstractPreferencesBlockPrefPage;
+import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
 
 
 public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefPage {
@@ -25,8 +26,8 @@ public class DeeEditorTypingPreferencePage extends AbstractPreferencesBlockPrefP
 	}
 	
 	@Override
-	protected EditorTypingConfigurationBlock init_createPreferencesBlock() {
-		return new EditorTypingConfigurationBlock();
+	protected EditorTypingConfigurationBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
+		return new EditorTypingConfigurationBlock(prefContext);
 	}
 	
 	@Override
