@@ -12,11 +12,10 @@ package mmrnmhrm.ui.preferences.pages;
 
 import org.eclipse.core.resources.IProject;
 
-import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage;
-
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
+import melnorme.lang.ide.ui.preferences.common.AbstractProjectToolchainSettingsPage;
 
 public class DeeToolchainConfigurationPage extends AbstractProjectToolchainSettingsPage {
 	

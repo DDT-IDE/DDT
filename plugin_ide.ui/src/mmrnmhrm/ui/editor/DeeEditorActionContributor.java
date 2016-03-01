@@ -13,7 +13,6 @@ package mmrnmhrm.ui.editor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.BasicScriptEditorActionContributor;
-import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.tooling.ast.SourceRange;
 import mmrnmhrm.ui.actions.DeeOpenDefinitionOperation;
@@ -28,11 +27,6 @@ public class DeeEditorActionContributor extends	BasicScriptEditorActionContribut
 	
 	@Override
 	protected void registerOtherEditorHandlers() {
-	}
-	
-	@Override
-	protected IEditorOperationCreator getOpCreator_Format() {
-		return LangUIPlugin_Actual::getFormatOperation;
 	}
 	
 }
