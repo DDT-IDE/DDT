@@ -18,7 +18,7 @@ public abstract class DeeCoreMessages extends LangCoreMessages {
 	public static final String SearchAndAddCompilersOnPath_JobName = 
 			"Searching for D compilers...";
 	
-	public static final String DUB_PATH_Label = "DUB path:";
+	public static final String DUB_PATH_Label = "Path:";
 	
 	public static final String RunningDubDescribe = 
 			"Resolving DUB project: {0}";

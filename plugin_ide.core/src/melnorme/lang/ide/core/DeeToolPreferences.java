@@ -8,23 +8,18 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.preferences.pages;
+package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
-import melnorme.lang.ide.ui.preferences.common.PreferencesPageContext;
-import melnorme.lang.ide.ui.preferences.pages.RootPreferencePage;
+import java.nio.file.Path;
 
-/**
- * The root preference page for D
- */
-public class DeeRootPreferencePage extends RootPreferencePage {
+import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
+import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+
+public interface DeeToolPreferences extends ToolchainPreferences {
 	
-	public DeeRootPreferencePage() {
-	}
-	
-	@Override
-	protected LangSDKConfigBlock init_createPreferencesBlock(PreferencesPageContext prefContext) {
-		return new DeeSDKConfigBlock(prefContext);
-	}
+	public static final DerivedValuePreference<Path> DFMT_PATH = new DerivedValuePreference<>(LangCore.PLUGIN_ID, 
+			"dfmt_path", "", ToolchainPreferences.USE_PROJECT_SETTINGS,
+		new LocationOrSinglePathValidator("dfmt:"));
 	
 }

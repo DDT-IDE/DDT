@@ -12,14 +12,22 @@ package mmrnmhrm.ui.navigator;
 
 import static melnorme.utilbox.core.CoreUtil.list;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IViewPart;
 
+import melnorme.lang.ide.core.DeeToolPreferences;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
 import melnorme.lang.ide.ui.operations.RunToolOperation.RunSDKToolOperation;
+import melnorme.lang.ide.ui.operations.ToolSourceModifyingOperation;
+import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.launch.DeeLaunchShortcut;
 
@@ -51,7 +59,8 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 		protected void initActions(MenuManager bundleOpsMenu, IProject project) {
 			addRunOperationAction(bundleOpsMenu, new AddDubProjectToLocalPath(project));
 			addRunOperationAction(bundleOpsMenu, new RemoveDubProjectFromLocalPath(project));
-			addRunOperationAction(bundleOpsMenu, new RunDubList(project));
+			addRunOperationAction(bundleOpsMenu, new DubList(project));
+			addRunOperationAction(bundleOpsMenu, new FormatBundleOperation(project));
 		}
 		
 		@Override
@@ -73,11 +82,31 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 			}
 		}
 		
-		public class RunDubList extends RunSDKToolOperation {
-			public RunDubList(IProject project) {
+		public class DubList extends RunSDKToolOperation {
+			public DubList(IProject project) {
 				super(DeeUIMessages.DubAction_RunDubList, project, 
 					list("list"));
 			}
+		}
+		
+	}
+	
+	public static class FormatBundleOperation extends ToolSourceModifyingOperation {
+		public FormatBundleOperation(IProject project) {
+			super(
+				"Format DUB package (dfmt)", 
+				project, 
+				list(), 
+				new StartOperationOptions(ProcessStartKind.BUILD, true, true)
+			);
+		}
+		
+		@Override
+		protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
+			Path fmtPath = DeeToolPreferences.DFMT_PATH.getDerivedValue();
+			
+			return getToolManager().createToolProcessBuilder(project, fmtPath, 
+				commands.toArrayList().addElements("--inplace", ".").toArray(String.class));
 		}
 		
 	}

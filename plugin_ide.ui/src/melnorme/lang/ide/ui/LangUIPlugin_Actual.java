@@ -3,9 +3,9 @@ package melnorme.lang.ide.ui;
 import java.util.List;
 
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore_Actual;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
 import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
@@ -13,6 +13,7 @@ import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import mmrnmhrm.core.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.DeeImages;
 import mmrnmhrm.ui.DeeUIPlugin;
+import mmrnmhrm.ui.editor.DeeFmtOperation;
 import mmrnmhrm.ui.editor.hover.DeeDocTextHover;
 
 /**
@@ -56,14 +57,8 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	@SuppressWarnings("unused")
-	public static BasicUIOperation getFormatOperation(AbstractLangEditor editor) {
-		return new BasicUIOperation() {
-			@Override
-			protected void doOperation() {
-				// TODO: Lang Format operation
-			}
-		};
+	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
+		return new DeeFmtOperation(editor);
 	}
 	
 }

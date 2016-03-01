@@ -10,15 +10,12 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import _org.eclipse.dltk.internal.ui.editor.BasicScriptEditorActionContributor;
+import melnorme.lang.ide.ui.LangUIPlugin_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.ui.actions.DeeOpenDefinitionOperation;
 
 public class DeeEditorActionContributor extends	BasicScriptEditorActionContributor {
@@ -35,12 +32,7 @@ public class DeeEditorActionContributor extends	BasicScriptEditorActionContribut
 	
 	@Override
 	protected IEditorOperationCreator getOpCreator_Format() {
-		return editor -> new BasicUIOperation("Format") {
-			@Override
-			protected void doOperation() throws CoreException, CommonException, OperationCancellation {
-				throw new CommonException("Not implemented");
-			}
-		};
+		return LangUIPlugin_Actual::getFormatOperation;
 	}
 	
 }

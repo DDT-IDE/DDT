@@ -17,7 +17,6 @@ import com.github.rustdt.ide.ui.preferences.AbstractProjectToolchainSettingsPage
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.preferences.LangSDKConfigBlock;
 import melnorme.lang.ide.ui.preferences.ProjectSDKSettingsBlock;
-import mmrnmhrm.ui.preferences.pages.DeeRootPreferencePage.DeeSDKConfigBlock;
 
 public class DeeToolchainConfigurationPage extends AbstractProjectToolchainSettingsPage {
 	
