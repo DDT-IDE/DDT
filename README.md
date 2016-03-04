@@ -1,7 +1,8 @@
+[![Build Status](https://travis-ci.org/DDT-IDE/DDT.svg?branch=master)](https://travis-ci.org/DDT-IDE/DDT)
+[![Gitter](https://badges.gitter.im/DDT-IDE/DDT.svg)](https://gitter.im/DDT-IDE/DDT?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Developers Guide
 ================
-
-[![Build Status](https://bruno-medeiros.ci.cloudbees.com/buildStatus/icon?job=DDT)](https://bruno-medeiros.ci.cloudbees.com/job/DDT/)
 
 #### Setting up the development environment:
  * You need [Eclipse PDE](https://eclipse.org/pde/) to develop Eclipse plugins. Download and start it.
