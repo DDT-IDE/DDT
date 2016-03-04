@@ -1,5 +1,3 @@
-See project page ( http://ddt-ide.github.io/ ) for user information.
-
 Developers Guide
 ================
 
