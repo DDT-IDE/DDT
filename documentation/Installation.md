@@ -11,7 +11,7 @@
  1. Click the `Add...` button to add a new update site, enter the URL: **http://ddt-ide.github.io/releases/** in the Location field, click OK.
  1. Select the recently added update site in the `Work with:` dropdown. Type `DDT` in the filter box. Now the DDT feature should appear below.
  1. Select the `DDT - D Development Tools` feature, and complete the wizard. 
-  * DDT dependencies such as CDT and DLTK will automatically be added during installation.
+  * DDT dependencies such as CDT will automatically be added during installation.
  1. Restart Eclipse. 
  1. For initial setup, follow the instructions at the configuration section in the [User Guide](UserGuide.md). It is recommended you read the rest of the guide too.
   
