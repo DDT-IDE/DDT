@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`). #TODO doc
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
