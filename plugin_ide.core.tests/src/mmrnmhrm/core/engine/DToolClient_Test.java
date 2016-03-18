@@ -29,6 +29,7 @@ import org.junit.Test;
 import dtool.engine.ModuleParseCache_Test;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.IStructureModelListener;
+import melnorme.lang.ide.core.engine.LocationKey;
 import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.engine.SourceModelManager.StructureModelRegistration;
@@ -148,10 +149,10 @@ public class DToolClient_Test extends CommonCoreTest {
 				
 				IDocument doc = fileBuffer.getDocument();
 				
-				Location fileLoc = ResourceUtils.getResourceLocation(moduleFile);
+				LocationKey fileLocKey = new LocationKey(ResourceUtils.getResourceLocation(moduleFile));
 				
 				StructureModelRegistration updateRegistration = 
-						sourceModelMgr.connectStructureUpdates(fileLoc, doc, structureListener);
+						sourceModelMgr.connectStructureUpdates(fileLocKey, doc, structureListener);
 				
 				try{
 					doRun(moduleFile, fileBuffer);
@@ -183,7 +184,7 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	protected SourceFileStructure getCurrentStructure(Location fileLoc) {
 		try {
-			return client.getStoredStructureInfo(fileLoc).awaitUpdatedData();
+			return client.getStoredStructureInfo(new LocationKey(fileLoc)).awaitUpdatedData();
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}
