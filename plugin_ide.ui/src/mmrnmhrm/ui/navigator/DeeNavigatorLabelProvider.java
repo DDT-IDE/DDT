@@ -112,7 +112,7 @@ class DubElementTextProvider extends DefaultGetStyledStringSwitcher
 	@Override
 	public StyledString visitManifestFile(IFile element) {
 		StyledString baseString = new StyledString(element.getName());
-		BundleInfo bundleInfo = LangCore.getBundleModel().getProjectInfo(element.getProject());
+		BundleInfo bundleInfo = LangCore.getBundleModel().getBundleInfo(element.getProject());
 		if(bundleInfo == null) {
 			return null;
 		}

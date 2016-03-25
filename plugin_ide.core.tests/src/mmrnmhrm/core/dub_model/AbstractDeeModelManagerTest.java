@@ -144,11 +144,11 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
-		return assertNotNull(model.getProjectInfo(project)).getBundleDesc();
+		return assertNotNull(model.getBundleInfo(project)).getBundleDesc();
 	}
 	
 	public static DependenciesContainer getDubContainer(IProject project) {
-		return assertNotNull(model.getProjectInfo(project)).getDubContainer(project);
+		return assertNotNull(model.getBundleInfo(project)).getDubContainer(project);
 	}
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) throws CoreException {

@@ -35,7 +35,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 		return new LangNavigatorSwitcher_GetChildren() {
 			@Override
 			public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) {
-				BundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
+				BundleInfo projectInfo = LangCore_Actual.getBundleModel().getBundleInfo(project);
 				if(projectInfo != null) {
 					DependenciesContainer dubContainer = projectInfo.getDubContainer(project);
 					projectChildren.add(dubContainer);
@@ -81,7 +81,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 	
 	public static boolean isDubSourceFolder(IFolder folder) {
 		IProject project = folder.getProject();
-		BundleInfo projectInfo = LangCore_Actual.getBundleModel().getProjectInfo(project);
+		BundleInfo projectInfo = LangCore_Actual.getBundleModel().getBundleInfo(project);
 		if(projectInfo == null) {
 			return false;
 		}

@@ -27,7 +27,6 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
-import melnorme.lang.ide.core.operations.build.ValidatedBuildTarget;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
@@ -78,10 +77,10 @@ public class DeeBuildManager extends BuildManager {
 			}
 			
 			@Override
-			public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler, IProject project, 
+			public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler, 
 					Path buildToolPath, BuildTarget buildTarget) throws CommonException, CoreException {
 				return new RunInDubAgentWrapper(
-					super.doCreateBuildTargetOperation(opHandler, project, buildToolPath, buildTarget));
+					super.doCreateBuildTargetOperation(opHandler, buildToolPath, buildTarget));
 			}
 			
 		};
@@ -114,11 +113,11 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(ValidatedBuildTarget vbt, ArrayList2<String> buildArgs) 
+		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
 				throws CommonException {
 			
-			String buildConfigName = vbt.getBuildConfigName();
-			String buildTypeName = vbt.getBuildTypeName();
+			String buildConfigName = bt.getBuildConfigName();
+			String buildTypeName = bt.getBuildTypeName();
 			
 			buildArgs.add("build");
 			
@@ -132,9 +131,9 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(ValidatedBuildTarget validatedBuildTarget,
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
 				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new DeeBuildTargetOperation(validatedBuildTarget, opHandler, buildToolPath);
+			return new DeeBuildTargetOperation(buildTarget, opHandler, buildToolPath);
 		}
 		
 	}
@@ -142,9 +141,9 @@ public class DeeBuildManager extends BuildManager {
 	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public DeeBuildTargetOperation(
-				ValidatedBuildTarget validatedBuildTarget, IOperationConsoleHandler opHandler, Path buildToolPath
+				BuildTarget buildTarget, IOperationConsoleHandler opHandler, Path buildToolPath
 		) throws CommonException, CoreException {
-			super(validatedBuildTarget.getBuildManager(), validatedBuildTarget, opHandler, buildToolPath);
+			super(buildTarget.getBuildManager(), buildTarget, opHandler, buildToolPath);
 		}
 		
 		@Override

@@ -96,7 +96,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	protected void handleBundleManifestChanged(final IProject project) {
 		BundleInfo unresolvedProjectInfo = createNewInfo(project);
-		getModel().setProjectInfo(project, unresolvedProjectInfo); 
+		getModel().setBundleInfo(project, unresolvedProjectInfo); 
 		
 		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
@@ -325,7 +325,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		DubBundle main = unresolvedDescription.getMainBundle();
 		DubBundleDescription bundleDesc = new DubBundleDescription(main, dubError);
 		BundleInfo newProjectInfo = new BundleInfo(unresolvedProjectInfo.getCompilerInstall(), bundleDesc);
-		workspaceModelManager.getModel().setProjectInfo(project, newProjectInfo);
+		workspaceModelManager.getModel().setBundleInfo(project, newProjectInfo);
 		
 		setDubErrorMarker(project, dubError);
 	}

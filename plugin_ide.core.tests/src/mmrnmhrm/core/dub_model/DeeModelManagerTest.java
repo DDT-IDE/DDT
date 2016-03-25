@@ -48,7 +48,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		deleteProject(DUB_TEST); // In case drop-to-frame is used during debugging.
 		_awaitModelUpdates_();
 		
-		assertTrue(model.getProjectInfo(project(DUB_TEST)) == null);
+		assertTrue(model.getBundleInfo(project(DUB_TEST)) == null);
 		
 		IProject project;
 		long taskCount;
@@ -61,7 +61,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));
 		// check no changes or updates submitted:
 		assertTrue(getModelAgent().getSubmittedTaskCount() == taskCount);
-		assertTrue(model.getProjectInfo(project) == null);
+		assertTrue(model.getBundleInfo(project) == null);
 		latchRunnable.releaseAll();
 		
 		// Ensure non-d projects dont provoke updates
@@ -72,24 +72,24 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		taskCount = getModelAgent().getSubmittedTaskCount();
 		project = createAndOpenDeeProject(DUB_TEST, true);
 		// There should be an error bundle info
-		assertTrue(model.getProjectInfo(project).hasErrors());
+		assertTrue(model.getBundleInfo(project).hasErrors());
 		
 		// Test concurrency: updating a project that was removed in the meantime
 		LatchRunnable preUpdateLatch = writeDubJsonWithModelLatch(project, 
 			"{"+ jsEntry("name", "xptobundle")+ jsFileEnd());
 		DubBundleDescription unresolvedBundleDesc = getExistingDubBundleInfo(project);
-		assertTrue(model.getProjectInfo(project) != null);
+		assertTrue(model.getBundleInfo(project) != null);
 		project.delete(true, null);
 		preUpdateLatch.releaseAll();
 		_awaitModelUpdates_();
-		assertTrue(model.getProjectInfo(project) == null);
+		assertTrue(model.getBundleInfo(project) == null);
 		
 		_awaitModelUpdates_();
 		// Run sequence of workspace model tests
 		project = createAndOpenDeeProject(DUB_TEST, true);
 		runBasicTestSequence______________(project);
 		project.delete(true, null); // cleanup
-		assertTrue(model.getProjectInfo(project) == null);
+		assertTrue(model.getBundleInfo(project) == null);
 		
 		// Verify code path where a non-D project that already has dub manifest is made a D project.
 		_awaitModelUpdates_();

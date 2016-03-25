@@ -32,7 +32,7 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 			sampleProj = sampleProj_;
 			IProject project = sampleProj.getProject();
 			
-			assertTrue(LangCore.getBundleModel().getProjectInfo(project) != null);
+			assertTrue(LangCore.getBundleModel().getBundleInfo(project) != null);
 			assertTrue(LangCore.getBuildManager().getBuildInfo(project) != null);
 			testBuilder();
 			
