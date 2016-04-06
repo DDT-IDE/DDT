@@ -15,7 +15,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 
 /**
  * Factory class to create SWT resources.
@@ -565,36 +564,36 @@ public class SWTFactory {
 				items);
 	}
 
-	/**
-	 * Creates an ExpandibleComposite widget
-	 * 
-	 * @param parent
-	 *            the parent to add this widget to
-	 * @param style
-	 *            the style for ExpandibleComposite expanding handle, and layout
-	 * @param label
-	 *            the label for the widget
-	 * @param hspan
-	 *            how many columns to span in the parent
-	 * @param fill
-	 *            the fill style for the widget Can be one of
-	 *            <code>GridData.FILL_HORIZONAL</code>,
-	 *            <code>GridData.FILL_BOTH</code> or
-	 *            <code>GridData.FILL_VERTICAL</code>
-	 * @return a new ExpandibleComposite widget
-	 */
-	public static ExpandableComposite createExpandibleComposite(
-			Composite parent, int style, String label, int hspan, int fill) {
-		ExpandableComposite ex = new ExpandableComposite(parent, SWT.NONE,
-				style);
-		ex.setText(label);
-		ex.setFont(JFaceResources.getFontRegistry().getBold(
-				JFaceResources.DIALOG_FONT));
-		GridData gd = new GridData(fill);
-		gd.horizontalSpan = hspan;
-		ex.setLayoutData(gd);
-		return ex;
-	}
+//	/**
+//	 * Creates an ExpandibleComposite widget
+//	 * 
+//	 * @param parent
+//	 *            the parent to add this widget to
+//	 * @param style
+//	 *            the style for ExpandibleComposite expanding handle, and layout
+//	 * @param label
+//	 *            the label for the widget
+//	 * @param hspan
+//	 *            how many columns to span in the parent
+//	 * @param fill
+//	 *            the fill style for the widget Can be one of
+//	 *            <code>GridData.FILL_HORIZONAL</code>,
+//	 *            <code>GridData.FILL_BOTH</code> or
+//	 *            <code>GridData.FILL_VERTICAL</code>
+//	 * @return a new ExpandibleComposite widget
+//	 */
+//	public static ExpandableComposite createExpandibleComposite(
+//			Composite parent, int style, String label, int hspan, int fill) {
+//		ExpandableComposite ex = new ExpandableComposite(parent, SWT.NONE,
+//				style);
+//		ex.setText(label);
+//		ex.setFont(JFaceResources.getFontRegistry().getBold(
+//				JFaceResources.DIALOG_FONT));
+//		GridData gd = new GridData(fill);
+//		gd.horizontalSpan = hspan;
+//		ex.setLayoutData(gd);
+//		return ex;
+//	}
 
 	@SuppressWarnings("unused") 
 	private static void makeScrollableCompositeAware(Control control) {
