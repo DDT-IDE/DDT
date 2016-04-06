@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
 Bundle-SymbolicName: org.dsource.ddt.ide.core;singleton:=true
 Bundle-Version: 0.14.1.qualifier
+Bundle-Name: %pluginName
 Bundle-Vendor: %pluginProvider
-Bundle-Activator: mmrnmhrm.core.DeeCorePlugin
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: mmrnmhrm.core.DeeCorePlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.dsource.ddt.dtool;visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="[3.9.0,4.0.0)";visibility:=reexport,

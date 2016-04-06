@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-Vendor: %pluginProvider
 Bundle-SymbolicName: org.dsource.ddt.ide.ui;singleton:=true
 Bundle-Version: 0.14.1.qualifier
-Bundle-Activator: mmrnmhrm.ui.DeeUIPlugin
+Bundle-Name: %pluginName
+Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: mmrnmhrm.ui.DeeUIPlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.dsource.ddt.ide.core,
  org.eclipse.core.runtime;bundle-version="3.6.0",
