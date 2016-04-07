@@ -77,10 +77,10 @@ public class DeeBuildManager extends BuildManager {
 			}
 			
 			@Override
-			public ICoreOperation doCreateBuildTargetOperation(IOperationConsoleHandler opHandler, 
-					Path buildToolPath, BuildTarget buildTarget) throws CommonException, CoreException {
+			protected ICoreOperation newBuildTargetOperation(BuildTarget buildTarget) throws CommonException {
 				return new RunInDubAgentWrapper(
-					super.doCreateBuildTargetOperation(opHandler, buildToolPath, buildTarget));
+					super.newBuildTargetOperation(buildTarget)
+				);
 			}
 			
 		};
@@ -113,8 +113,8 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void getDefaultBuildOptions(BuildTarget bt, ArrayList2<String> buildArgs) 
-				throws CommonException {
+		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+			ArrayList2<String> buildArgs = new ArrayList2<>();
 			
 			String buildConfigName = bt.getBuildConfigName();
 			String buildTypeName = bt.getBuildTypeName();
@@ -128,12 +128,20 @@ public class DeeBuildManager extends BuildManager {
 			if(!buildTypeName.equals(DeeBuildManager.BuildType_Default)) {
 				buildArgs.addElements("-b" , buildTypeName);
 			}
+			
+			return StringUtil.collToString(buildArgs, " ");
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget buildTarget,
-				IOperationConsoleHandler opHandler, Path buildToolPath) throws CommonException, CoreException {
-			return new DeeBuildTargetOperation(buildTarget, opHandler, buildToolPath);
+		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
+			// TODO: check mode
+			return getDefaultBuildArguments(bt);
+		}
+		
+		@Override
+		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
+				Path buildToolPath, String buildArguments) throws CommonException {
+			return new DeeBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
 		}
 		
 	}
@@ -141,9 +149,9 @@ public class DeeBuildManager extends BuildManager {
 	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public DeeBuildTargetOperation(
-				BuildTarget buildTarget, IOperationConsoleHandler opHandler, Path buildToolPath
-		) throws CommonException, CoreException {
-			super(buildTarget.getBuildManager(), buildTarget, opHandler, buildToolPath);
+				BuildTarget buildTarget, IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
+		) throws CommonException {
+			super(buildTarget.getBuildManager(), buildTarget, opHandler, buildToolPath, buildArguments);
 		}
 		
 		@Override
