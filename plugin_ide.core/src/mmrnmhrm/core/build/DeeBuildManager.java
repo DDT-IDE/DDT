@@ -24,7 +24,6 @@ import melnorme.lang.ide.core.operations.ICoreOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.operations.build.BuildOperationCreator;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
 import melnorme.lang.ide.core.utils.ResourceUtils;
@@ -67,37 +66,20 @@ public class DeeBuildManager extends BuildManager {
 		);
 	}
 	
-	@Override
-	protected BuildOperationCreator createBuildOperationCreator(IOperationConsoleHandler opHandler, IProject project) {
-		return new BuildOperationCreator(project, opHandler) {
-			
-			@Override
-			protected ICoreOperation doCreateClearBuildMarkersOperation() {
-				return new RunInDubAgentWrapper(super.doCreateClearBuildMarkersOperation());
-			}
-			
-			@Override
-			protected ICoreOperation newBuildTargetOperation(BuildTarget buildTarget) throws CommonException {
-				return new RunInDubAgentWrapper(
-					super.newBuildTargetOperation(buildTarget)
-				);
-			}
-			
-		};
-	}
+	/* FIXME: review removed used of RunInDubAgentWrapper */
 	
 	protected static class RunInDubAgentWrapper implements ICoreOperation {
 		
-		protected final ICoreOperation toolOp;
+		protected final ICoreOperation coreOp;
 		
 		public RunInDubAgentWrapper(ICoreOperation toolOp) {
-			this.toolOp = toolOp;
+			this.coreOp = toolOp;
 		}
 		
 		@Override
 		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
 			LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
-				toolOp.execute(pm);
+				coreOp.execute(pm);
 				return null;
 			});
 		}
