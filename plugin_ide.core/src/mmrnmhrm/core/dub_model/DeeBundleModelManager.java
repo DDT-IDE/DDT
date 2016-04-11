@@ -35,8 +35,8 @@ import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
@@ -268,7 +268,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		}
 	}
 	
-	protected AbstractToolManager getToolManager() {
+	protected ToolManager getToolManager() {
 		return LangCore.getToolManager();
 	}
 	

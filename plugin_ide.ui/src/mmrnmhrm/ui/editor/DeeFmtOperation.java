@@ -19,7 +19,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.DeeToolPreferences;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ToolingMessages;
@@ -31,7 +31,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 
 public class DeeFmtOperation extends AbstractEditorOperation2<String> {
 	
-	protected final AbstractToolManager toolMgr = LangCore.getToolManager();
+	protected final ToolManager toolMgr = LangCore.getToolManager();
 	
 	protected boolean fmtFailureAsHardFailure = true;
 	

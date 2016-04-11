@@ -138,11 +138,15 @@ public class DeeBuildManager extends BuildManager {
 		
 		@Override
 		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
-				throws CoreException {
-			new DubBuildOutputParser<CoreException>() {
+				throws CommonException {
+			new DubBuildOutputParser<CommonException>() {
 				@Override
-				protected void processDubFailure(String dubErrorLine) throws CoreException {
-					addDubFailureMarker(dubErrorLine);
+				protected void processDubFailure(String dubErrorLine) throws CommonException {
+					try {
+						addDubFailureMarker(dubErrorLine);
+					} catch(CoreException e) {
+						throw LangCore.createCommonException(e);
+					}
 				};
 				
 				@Override

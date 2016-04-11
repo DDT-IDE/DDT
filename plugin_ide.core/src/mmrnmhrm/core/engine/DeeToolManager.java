@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
 import org.eclipse.core.runtime.CoreException;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.AbstractToolManager;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
@@ -29,7 +29,7 @@ import mmrnmhrm.core.build.DubLocationValidator;
  * Manages launching D tools.
  * Has an executor agent to run external DUB commands.
  */
-public class DeeToolManager extends AbstractToolManager {
+public class DeeToolManager extends ToolManager {
 	
 	protected final ITaskAgent dubProcessAgent = CoreExecutors.newExecutorTaskAgent("DDT.DubProcessAgent");
 	
