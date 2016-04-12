@@ -115,12 +115,6 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultCheckArguments(BuildTarget bt) throws CommonException {
-			// TODO: check mode
-			return getDefaultBuildArguments(bt);
-		}
-		
-		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
 				Path buildToolPath, String buildArguments) throws CommonException {
 			return new DeeBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
