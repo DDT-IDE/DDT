@@ -31,6 +31,8 @@ public class LangCore_Actual {
 	// or it will interfere with MelnormeEclipse templating
 	public static final String NAME_OF_LANGUAGE = "D";
 	
+	public static final String VAR_NAME_SdkToolPath = "DUB_TOOL_PATH";
+	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the DUB tool";
 	
 	public static LangCore instance;
 	
@@ -46,7 +48,7 @@ public class LangCore_Actual {
 		
 		toolManager = new DeeToolManager();
 		bundleManager = createBundleModelManager();
-		buildManager = new DeeBuildManager(bundleManager.getModel());
+		buildManager = new DeeBuildManager(bundleManager.getModel(), toolManager);
 		sourceModelManager = createSourceModelManager();
 	}
 	

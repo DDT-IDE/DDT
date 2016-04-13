@@ -114,9 +114,9 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		return new DubBundleDescription(unresolvedBundle);
 	}
 	
-	protected final BundleInfo updateProjectInfo(IProject project, BundleInfo oldInfo, 
+	protected final void updateProjectInfo(IProject project, BundleInfo oldInfo, 
 			DubBundleDescription dubBundleDescription) {
-		return getModel().updateProjectInfo(project, oldInfo, createProjectInfo(dubBundleDescription));
+		getModel().updateProjectInfo(project, oldInfo, createProjectInfo(dubBundleDescription));
 	}
 	
 	/* ----------------------------------- */

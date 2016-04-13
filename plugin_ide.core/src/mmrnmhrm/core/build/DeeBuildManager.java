@@ -40,13 +40,14 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
+import mmrnmhrm.core.engine.DeeToolManager;
 
 public class DeeBuildManager extends BuildManager {
 	
 	public static final String BuildType_Default = "";
 	
-	public DeeBuildManager(DeeBundleModel bundleModel) {
-		super(bundleModel);
+	public DeeBuildManager(DeeBundleModel bundleModel, DeeToolManager toolManager) {
+		super(bundleModel, toolManager);
 	}
 	
 	@Override
@@ -95,7 +96,7 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public String getDefaultBuildArguments(BuildTarget bt) throws CommonException {
+		public String getDefaultCommandArguments(BuildTarget bt) throws CommonException {
 			ArrayList2<String> buildArgs = new ArrayList2<>();
 			
 			String buildConfigName = bt.getBuildConfigName();
@@ -116,8 +117,8 @@ public class DeeBuildManager extends BuildManager {
 		
 		@Override
 		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				Path buildToolPath, String buildArguments) throws CommonException {
-			return new DeeBuildTargetOperation(bt, opHandler, buildToolPath, buildArguments);
+				String buildArguments) {
+			return new DeeBuildTargetOperation(bt, opHandler, buildArguments);
 		}
 		
 	}
@@ -125,9 +126,9 @@ public class DeeBuildManager extends BuildManager {
 	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public DeeBuildTargetOperation(
-				BuildTarget buildTarget, IOperationConsoleHandler opHandler, Path buildToolPath, String buildArguments
-		) throws CommonException {
-			super(buildTarget.getBuildManager(), buildTarget, opHandler, buildToolPath, buildArguments);
+				BuildTarget buildTarget, IOperationConsoleHandler opHandler, String buildArguments
+		) {
+			super(DeeBuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
 		}
 		
 		@Override
