@@ -21,6 +21,7 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
@@ -116,9 +117,10 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(BuildTarget bt, IOperationConsoleHandler opHandler,
-				String buildArguments) {
-			return new DeeBuildTargetOperation(bt, opHandler, buildArguments);
+		public CommonBuildTargetOperation getBuildOperation(
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			return new DeeBuildTargetOperation(toolManager, bt, opHandler);
 		}
 		
 	}
@@ -126,9 +128,9 @@ public class DeeBuildManager extends BuildManager {
 	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
 		
 		public DeeBuildTargetOperation(
-				BuildTarget buildTarget, IOperationConsoleHandler opHandler, String buildArguments
-		) {
-			super(DeeBuildManager.this.toolManager, buildTarget, opHandler, buildArguments);
+				ToolManager toolManager, BuildTarget bt, IOperationConsoleHandler opHandler
+		) throws CommonException {
+			super(toolManager, bt, opHandler);
 		}
 		
 		@Override
