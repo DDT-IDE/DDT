@@ -35,7 +35,7 @@ import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationConsoleHandler;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -282,13 +282,13 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			
 		String dubPath = getToolManager().getSDKToolPath(project).toString();
 		
-		IOperationConsoleHandler opHandler = getToolManager().startNewOperation(ENGINE_TOOLS, true, false);
-		opHandler.writeInfoMessage(
+		IOperationMonitor opMonitor = getToolManager().startNewOperation(ENGINE_TOOLS, true, false);
+		opMonitor.writeInfoMessage(
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
 		
 		// TODO: add --skip-registry to dub command
 		ProcessBuilder pb = getToolManager().createSimpleProcessBuilder(project, array(dubPath, "describe"));
-		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(opHandler, pb, pm);
+		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(opMonitor, pb, pm);
 		
 		ExternalProcessResult processHelper;
 		try {
