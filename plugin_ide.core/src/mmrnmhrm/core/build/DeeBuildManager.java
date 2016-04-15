@@ -21,13 +21,11 @@ import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ICoreOperation;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
-import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
-import melnorme.lang.ide.core.operations.build.CommandInvocation;
-import melnorme.lang.ide.core.operations.build.CommonBuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
+import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.data.Severity;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
@@ -118,19 +116,16 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public CommonBuildTargetOperation getBuildOperation(IOperationMonitor opMonitor,
-				ToolManager toolMgr, BuildTarget bt, CommandInvocation buildCommand
-		) throws CommonException {
-			return new DeeBuildTargetOperation(opMonitor, toolMgr, bt.getBuildTargetName(), buildCommand);
+		public BuildTargetOperation getBuildOperation(BuildOperationParameters buildOpParams) throws CommonException {
+			return new DeeBuildTargetOperation(buildOpParams);
 		}
 		
 	}
 	
-	public class DeeBuildTargetOperation extends CommonBuildTargetOperation {
+	public class DeeBuildTargetOperation extends BuildTargetOperation {
 		
-		public DeeBuildTargetOperation(IOperationMonitor opMonitor, ToolManager toolManager, String buildTargetName,
-				CommandInvocation buildCommand) {
-			super(opMonitor, toolManager, buildTargetName, buildCommand);
+		public DeeBuildTargetOperation(BuildOperationParameters buildOpParams) {
+			super(buildOpParams);
 		}
 		
 		@Override
