@@ -11,7 +11,6 @@ import dtool.sourcegen.TemplatedSourceProcessor.StandardErrors;
 import dtool.sourcegen.TemplatedSourceProcessor.TemplatedSourceProcessingException;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
 import dtool.tests.CommonDToolTest;
-import melnorme.utilbox.collections.ArrayList2;
 
 public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 	
@@ -30,12 +29,12 @@ public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 		GeneratedSourceChecker... checkers) {
 		TemplatedSourceProcessor tsp = new TestsTemplatedSourceProcessor();
 		AnnotatedSource[] annotatedSources = tsp.processSource_unchecked(defaultMarker, source);
-		new ArrayList2<>(annotatedSources).forEach((annSource) -> {
-			for (GeneratedSourceChecker generatedSourceChecker : checkers) {
-				generatedSourceChecker.accept(annSource);
-			}
-			source.toString();
-		});
+		
+		for(int i = 0; i < annotatedSources.length; i++) {
+			AnnotatedSource annotatedSource = annotatedSources[i];
+			GeneratedSourceChecker checker = checkers[i];
+			checker.accept(annotatedSource);
+		};
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
