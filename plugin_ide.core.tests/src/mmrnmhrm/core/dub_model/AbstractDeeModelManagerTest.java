@@ -33,6 +33,7 @@ import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.core.project_model.view.IBundleModelElement;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.BundlePath;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.CollectionUtil;
@@ -148,7 +149,8 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	public static DependenciesContainer getDubContainer(IProject project) {
-		return assertNotNull(model.getBundleInfo(project)).getDubContainer(project);
+		BundleInfo bundleInfo = assertNotNull(model.getBundleInfo(project));
+		return new DependenciesContainer(bundleInfo, project);
 	}
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) throws CoreException {

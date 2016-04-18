@@ -14,11 +14,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
 
-import melnorme.lang.ide.core.BundleInfo;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
 import melnorme.lang.ide.ui.navigator.AbstractNavigatorContentProvider;
 import melnorme.lang.ide.ui.navigator.NavigatorElementsSwitcher;
+import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.collections.ArrayList2;
 import mmrnmhrm.core.workspace.viewmodel.StdLibContainer;
 
@@ -37,7 +37,7 @@ public class DeeNavigatorContentProvider extends AbstractNavigatorContentProvide
 			public void addFirstProjectChildren(IProject project, ArrayList2<Object> projectChildren) {
 				BundleInfo projectInfo = LangCore_Actual.getBundleModel().getBundleInfo(project);
 				if(projectInfo != null) {
-					DependenciesContainer dubContainer = projectInfo.getDubContainer(project);
+					DependenciesContainer dubContainer = new DependenciesContainer(projectInfo, project);
 					projectChildren.add(dubContainer);
 					projectChildren.add(new StdLibContainer(projectInfo.getCompilerInstall(), project));
 				}

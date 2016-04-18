@@ -8,15 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.tests;
+package melnorme.lang.tooling.bundle;
 
-import melnorme.lang.tooling.LANG_SPECIFIC;
-import melnorme.utilbox.misc.Location;
+import java.text.MessageFormat;
 
-@LANG_SPECIFIC
-public class LangCoreTests_Actual {
+public interface BuildConfigMessages {
 	
-	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("mock_sdk")
-			.resolve_fromValid("bin/dub");
+	public static String BuildConfig_NotFound(String buildConfigName) {
+		return MessageFormat.format("Build configuration `{0}` not found.", buildConfigName);
+	}
 	
 }

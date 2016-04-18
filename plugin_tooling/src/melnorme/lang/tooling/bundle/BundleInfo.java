@@ -8,19 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core;
+package melnorme.lang.tooling.bundle;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
-
-import org.eclipse.core.resources.IProject;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubConfiguration;
 import dtool.dub.DubBundleDescription;
 import dtool.engine.compiler_installs.CompilerInstall;
-import melnorme.lang.ide.core.project_model.AbstractBundleInfo;
-import melnorme.lang.ide.core.project_model.view.DependenciesContainer;
-import melnorme.lang.tooling.bundle.BuildConfiguration;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 
@@ -54,10 +49,6 @@ public class BundleInfo extends AbstractBundleInfo {
 	
 	public boolean isResolved() {
 		return bundleDesc.isResolved();
-	}
-	
-	public DependenciesContainer getDubContainer(IProject project) {
-		return new DependenciesContainer(this, project);
 	}
 	
 	@Override

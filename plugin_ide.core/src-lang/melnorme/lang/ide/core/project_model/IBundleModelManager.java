@@ -12,6 +12,8 @@ package melnorme.lang.ide.core.project_model;
 
 import org.eclipse.core.resources.IProject;
 
+import melnorme.lang.tooling.bundle.AbstractBundleInfo;
+
 
 public interface IBundleModelManager {
 	
