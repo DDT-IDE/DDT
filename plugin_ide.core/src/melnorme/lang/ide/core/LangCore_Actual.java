@@ -10,9 +10,9 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.engine.SourceModelManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import mmrnmhrm.core.build.DeeBuildManager;
+import mmrnmhrm.core.build.DubLocationValidator;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.engine.DeeEngineClient;
@@ -38,6 +38,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
+	protected final CorePreferences corePrefs;
 	protected final DeeToolManager toolManager;
 	protected final DeeBundleModelManager bundleManager;
 	protected final BuildManager buildManager;
@@ -46,10 +47,20 @@ public class LangCore_Actual {
 	public LangCore_Actual() {
 		instance = (LangCore) this;
 		
+		corePrefs = createCorePreferences();
 		toolManager = new DeeToolManager();
 		bundleManager = createBundleModelManager();
 		buildManager = new DeeBuildManager(bundleManager.getModel(), toolManager);
 		sourceModelManager = createSourceModelManager();
+	}
+	
+	protected CorePreferences createCorePreferences() {
+		return new CorePreferences() {
+			@Override
+			public DubLocationValidator getSDKLocationValidator() {
+				return new DubLocationValidator();
+			}
+		};
 	}
 	
 	/* -----------------  ----------------- */
@@ -64,9 +75,10 @@ public class LangCore_Actual {
 	
 	/* -----------------  ----------------- */ 
 	
-	public static DeeEngineClient getDToolClient() {
-		return instance.sourceModelManager;
+	public static CorePreferences preferences() {
+		return instance.corePrefs;
 	}
+	
 	
 	public static DeeToolManager getToolManager() {
 		return instance.toolManager;
@@ -82,7 +94,7 @@ public class LangCore_Actual {
 	public static BuildManager getBuildManager() {
 		return instance.buildManager;
 	}
-	public static SourceModelManager getSourceModelManager() {
+	public static DeeEngineClient getSourceModelManager() {
 		return instance.sourceModelManager;
 	}
 	

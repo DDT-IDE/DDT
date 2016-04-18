@@ -10,11 +10,14 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
+import java.util.Optional;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -39,7 +42,8 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		String dubPath = ToolchainPreferences.SDK_PATH2.getEffectiveValue(context.getProject());
+		IProject project = context.getProject();
+		String dubPath = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.of(project)).toString();
 		
 		int timeoutMillis = pm.getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)

@@ -22,15 +22,11 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.prefs.PreferenceHelper;
 import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
 import melnorme.lang.tooling.BundlePath;
-import melnorme.lang.tooling.data.ValidationException;
-import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
  * D New Project Wizard.
@@ -131,12 +127,6 @@ class DeeProjectWizardFirstPage extends LangProjectWizardFirstPage {
 	public DeeProjectWizardFirstPage() {
 		setTitle(WizardMessages.LangNewProject_Page1_pageTitle);
 		setDescription(WizardMessages.LangNewProject_Page1_pageDescription);
-	}
-	
-	@Override
-	protected void validatePreferences() throws ValidationException {
-		PreferenceHelper<String> globalPref = ToolchainPreferences.SDK_PATH2.getGlobalPreference();
-		new DubLocationValidator().getValidatedField(globalPref.get());
 	}
 	
 }

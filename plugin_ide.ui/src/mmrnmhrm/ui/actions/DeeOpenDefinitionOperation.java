@@ -14,6 +14,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IProject;
@@ -25,7 +26,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -66,7 +66,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
-		String dubPath = ToolchainPreferences.SDK_PATH2.getEffectiveValue(associatedProject);
+		String dubPath = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.of(associatedProject));
 		return DeeEngineClient.getDefault().
 				new FindDefinitionOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 	}

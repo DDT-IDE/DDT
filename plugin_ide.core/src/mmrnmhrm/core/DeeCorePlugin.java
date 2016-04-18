@@ -20,7 +20,7 @@ public class DeeCorePlugin extends LangCorePlugin {
 	
 	@Override
 	protected void doCustomStart(BundleContext context) {
-		ToolchainPreferences.SDK_PATH2.getGlobalPreference().setPreferencesDefaultValue(
+		ToolchainPreferences.SDK_PATH.getGlobalPreference().setPreferencesDefaultValue(
 			DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
 	}
 	

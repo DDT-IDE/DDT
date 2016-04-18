@@ -12,6 +12,8 @@ package mmrnmhrm.ui.editor.hover;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,7 +26,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
@@ -106,7 +107,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		@Override
 		protected String doBackgroundValueComputation(IProgressMonitor monitor)
 				throws CoreException, CommonException, OperationCancellation {
-			String dubPath = ToolchainPreferences.SDK_PATH2.getEffectiveValue(project);
+			String dubPath = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.of(project));
 			return DeeEngineClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 		}
