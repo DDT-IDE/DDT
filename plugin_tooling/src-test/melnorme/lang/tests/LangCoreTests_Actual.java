@@ -16,7 +16,7 @@ import melnorme.utilbox.misc.Location;
 @LANG_SPECIFIC
 public class LangCoreTests_Actual {
 	
-	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("default_SDK")
+	public static Location SAMPLE_SDK_PATH = LangToolingTestResources.getTestResourceLoc("mock_sdk")
 			.resolve_fromValid("bin/dub");
 	
 }
