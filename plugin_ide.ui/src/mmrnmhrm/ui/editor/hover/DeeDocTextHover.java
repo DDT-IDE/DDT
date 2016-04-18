@@ -105,7 +105,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		@Override
 		protected String doBackgroundValueComputation(IProgressMonitor monitor)
 				throws CoreException, CommonException, OperationCancellation {
-			String dubPath = LangCore.preferences().SDK_LOCATION.getValue2(project).toString();
+			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 			return DeeEngineClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 		}

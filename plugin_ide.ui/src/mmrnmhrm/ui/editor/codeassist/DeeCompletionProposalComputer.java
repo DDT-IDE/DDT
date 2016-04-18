@@ -41,7 +41,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		Location editoInputFile = context.getEditorInputLocation();
 		
 		IProject project = context.getProject();
-		String dubPath = LangCore.preferences().SDK_LOCATION.getValue2(project).toString();
+		String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 		
 		int timeoutMillis = pm.getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)

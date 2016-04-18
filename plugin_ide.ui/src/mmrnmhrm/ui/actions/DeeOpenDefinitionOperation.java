@@ -65,7 +65,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
-		String dubPath = LangCore.preferences().SDK_LOCATION.getValue2(associatedProject).toString();
+		String dubPath = LangCore.settings().SDK_LOCATION.getValue(associatedProject).toString();
 		return DeeEngineClient.getDefault().
 				new FindDefinitionOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 	}

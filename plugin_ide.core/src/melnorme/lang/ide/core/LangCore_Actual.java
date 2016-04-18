@@ -38,7 +38,7 @@ public class LangCore_Actual {
 	
 	/* ----------------- Owned singletons: ----------------- */
 	
-	protected final CorePreferences corePrefs;
+	protected final CoreSettings coreSettings;
 	protected final DeeToolManager toolManager;
 	protected final DeeBundleModelManager bundleManager;
 	protected final BuildManager buildManager;
@@ -47,15 +47,15 @@ public class LangCore_Actual {
 	public LangCore_Actual() {
 		instance = (LangCore) this;
 		
-		corePrefs = createCorePreferences();
+		coreSettings = createCoreSettings();
 		toolManager = new DeeToolManager();
 		bundleManager = createBundleModelManager();
 		buildManager = new DeeBuildManager(bundleManager.getModel(), toolManager);
 		sourceModelManager = createSourceModelManager();
 	}
 	
-	protected CorePreferences createCorePreferences() {
-		return new CorePreferences() {
+	protected CoreSettings createCoreSettings() {
+		return new CoreSettings() {
 			@Override
 			public DubLocationValidator getSDKLocationValidator() {
 				return new DubLocationValidator();
@@ -75,8 +75,8 @@ public class LangCore_Actual {
 	
 	/* -----------------  ----------------- */ 
 	
-	public static CorePreferences preferences() {
-		return instance.corePrefs;
+	public static CoreSettings settings() {
+		return instance.coreSettings;
 	}
 	
 	
