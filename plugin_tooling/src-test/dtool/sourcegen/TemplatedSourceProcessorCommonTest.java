@@ -3,11 +3,15 @@ package dtool.sourcegen;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import java.util.function.Consumer;
+
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.sourcegen.TemplatedSourceProcessor.StandardErrors;
 import dtool.sourcegen.TemplatedSourceProcessor.TemplatedSourceProcessingException;
 import dtool.sourcegen.TemplatedSourceProcessorParser.TemplatedSourceException;
 import dtool.tests.CommonDToolTest;
+import melnorme.utilbox.collections.ArrayList2;
 
 public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 	
@@ -26,7 +30,12 @@ public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 		GeneratedSourceChecker... checkers) {
 		TemplatedSourceProcessor tsp = new TestsTemplatedSourceProcessor();
 		AnnotatedSource[] annotatedSources = tsp.processSource_unchecked(defaultMarker, source);
-		visitContainer(annotatedSources, checkers);
+		new ArrayList2<>(annotatedSources).forEach((annSource) -> {
+			for (GeneratedSourceChecker generatedSourceChecker : checkers) {
+				generatedSourceChecker.accept(annSource);
+			}
+			source.toString();
+		});
 	}
 	
 	public void testSourceProcessing(String marker, String source, int errorOffset) {
@@ -51,11 +60,11 @@ public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 		}
 	}
 	
-	protected abstract class GeneratedSourceChecker implements Visitor<AnnotatedSource> {} 
+	protected abstract class GeneratedSourceChecker implements Consumer<AnnotatedSource> {} 
 	protected GeneratedSourceChecker checkMD(final String expSource, final MetadataEntry... expMetadataArray) {
 		return new GeneratedSourceChecker () {
 			@Override
-			public void visit(AnnotatedSource genSource) {
+			public void accept(AnnotatedSource genSource) {
 				assertEquals(genSource.source, expSource);
 				assertEquals(genSource.metadata.size(), expMetadataArray.length);
 				for (int i = 0; i < expMetadataArray.length; i++) {
@@ -68,7 +77,7 @@ public class TemplatedSourceProcessorCommonTest extends CommonDToolTest {
 	protected GeneratedSourceChecker checkSourceOnly(final String expSource, final int mdSize) {
 		return new GeneratedSourceChecker () {
 			@Override
-			public void visit(AnnotatedSource genSource) {
+			public void accept(AnnotatedSource genSource) {
 				assertEquals(genSource.source, expSource);
 				assertEquals(genSource.metadata.size(), mdSize);
 			}
