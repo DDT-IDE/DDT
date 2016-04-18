@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IProject;
@@ -66,7 +65,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
 			throws CoreException, CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
-		String dubPath = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.of(associatedProject));
+		String dubPath = LangCore.preferences().SDK_LOCATION.getValue2(associatedProject).toString();
 		return DeeEngineClient.getDefault().
 				new FindDefinitionOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 	}

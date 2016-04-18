@@ -21,4 +21,4 @@ install:
 
 script:
   - export MAVEN_OPTS="-Xmx2g"
-  - mvn clean integration-test
+  - mvn clean package

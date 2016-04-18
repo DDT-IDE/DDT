@@ -11,6 +11,7 @@
 package melnorme.lang.ide.core;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+import static melnorme.utilbox.core.CoreUtil.optional;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import melnorme.lang.tooling.data.StatusException;
 import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.misc.Location;
 
+/* FIXME: rename? */
 public abstract class CorePreferences {
 	
 	public final PreferenceField<Path> SDK_LOCATION;
@@ -64,16 +66,11 @@ public abstract class CorePreferences {
 			this.validator_toString = (value) -> backToString.apply(validator.getValidatedField(value));
 		}
 		
-		public TYPE getValue(IProject project) throws StatusException {
-			return validator.getValidatedField(preference.getStoredValue(Optional.ofNullable(project)));
+		public IProjectPreference<String> getProjectPreference() {
+			return preference;
 		}
-		
-		public TYPE getValue() throws StatusException {
-			return validator.getValidatedField(preference.getGlobalPreference().get());
-		}
-		
-		public String getEffectiveValue(Optional<IProject> project) {
-			return preference.getEffectiveValue(project);
+		public PreferenceHelper<String> getGlobalPreference() {
+			return preference.getGlobalPreference();
 		}
 		
 		public IValidator<String, TYPE> getValidator() {
@@ -84,16 +81,27 @@ public abstract class CorePreferences {
 			return validator_toString;
 		}
 		
-		public IProjectPreference<String> getProjectPreference() {
-			return preference;
-		}
-		public PreferenceHelper<String> getGlobalPreference() {
-			return preference.getGlobalPreference();
+		/* ----------------- ----------------- */
+		
+		public TYPE getValue() throws StatusException {
+			return validator.getValidatedField(preference.getGlobalPreference().get());
 		}
 		
-		public Supplier<String> getRawPreference(Optional<IProject> project) {
+		/* FIXME: rename */
+		public TYPE getValue2(IProject project) throws StatusException {
+			return validator.getValidatedField(preference.getEffectiveValue(optional(project)));
+		}
+		
+		public final String getRawValue(IProject project) {
+			return getRawValue(optional(project));
+		}
+		public String getRawValue(Optional<IProject> project) {
+			return preference.getEffectiveValue(project);
+		}
+		
+		public Supplier<String> getRawValueSupplier(Optional<IProject> project) {
 			if(project.isPresent()) {
-				return preference.getProperty(project);
+				return preference.getEffectiveValueProperty(project);
 			} else {
 				return preference.getGlobalPreference();
 			}

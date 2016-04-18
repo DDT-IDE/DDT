@@ -19,11 +19,9 @@ import org.eclipse.core.runtime.CoreException;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
-import melnorme.lang.tooling.ops.util.PathValidator;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.ExceptionAdapter;
-import mmrnmhrm.core.build.DubLocationValidator;
 
 /**
  * Manages launching D tools.
@@ -42,11 +40,6 @@ public class DeeToolManager extends ToolManager {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	@Override
-	public PathValidator getSDKToolPathValidator() {
-		return new DubLocationValidator();
-	}
 	
 	public <T> Future<T> submitTask(Callable<T> task) {
 		return dubProcessAgent.submit(task);

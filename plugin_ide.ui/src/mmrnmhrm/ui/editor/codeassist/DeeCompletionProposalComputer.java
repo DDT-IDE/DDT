@@ -10,8 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.codeassist;
 
-import java.util.Optional;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContextInformation;
@@ -43,7 +41,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		Location editoInputFile = context.getEditorInputLocation();
 		
 		IProject project = context.getProject();
-		String dubPath = LangCore.preferences().SDK_LOCATION.getEffectiveValue(Optional.of(project)).toString();
+		String dubPath = LangCore.preferences().SDK_LOCATION.getValue2(project).toString();
 		
 		int timeoutMillis = pm.getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
