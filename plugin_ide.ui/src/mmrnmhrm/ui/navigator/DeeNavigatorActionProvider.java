@@ -97,7 +97,8 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 				"Format DUB package (dfmt)", 
 				project, 
 				list(), 
-				new StartOperationOptions(ProcessStartKind.BUILD, true, true)
+				new StartOperationOptions(ProcessStartKind.BUILD, true, true),
+				true
 			);
 		}
 		

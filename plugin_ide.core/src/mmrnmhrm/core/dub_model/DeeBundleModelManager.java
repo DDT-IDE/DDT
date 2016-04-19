@@ -83,7 +83,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	}
 	
 	@Override
-	protected void bundleProjectAdded(IProject project) {
+	protected void handleBundleProjectAdded(IProject project) {
 		handleBundleManifestChanged(project);
 	}
 	
