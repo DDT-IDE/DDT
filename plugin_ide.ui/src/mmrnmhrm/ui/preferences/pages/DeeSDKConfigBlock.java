@@ -50,7 +50,7 @@ public class DeeSDKConfigBlock extends LangSDKConfigBlock {
 			super("dfmt:", 3);
 			
 			ButtonTextField toolLocationField = new FileTextField("Path:");
-			bindToDerivedPreference(toolLocationField, DeeToolPreferences.DFMT_PATH);
+			bindFieldToDerivedPreference(toolLocationField, DeeToolPreferences.DFMT_PATH);
 			addSubComponent(toolLocationField);
 			
 			CheckBoxField formatOnSaveField = new CheckBoxField(
