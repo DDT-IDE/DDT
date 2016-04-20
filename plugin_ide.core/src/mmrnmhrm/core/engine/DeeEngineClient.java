@@ -14,7 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.engine.DToolServer;
@@ -180,7 +179,7 @@ public class DeeEngineClient extends SourceModelManager {
 		
 		@Override
 		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
-				throws CommonException, CoreException, OperationCancellation {
+				throws CommonException, OperationCancellation {
 			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeEngineClient.compilerPathOverride, 
 				effectiveDubPath);
 		}
@@ -198,7 +197,7 @@ public class DeeEngineClient extends SourceModelManager {
 		
 		@Override
 		protected FindDefinitionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
-				throws CommonException, CoreException, OperationCancellation {
+				throws CommonException, OperationCancellation {
 			return dtoolServer.doFindDefinition(location.toPath(), offset, effectiveDubPath);
 		}
 	}
@@ -214,7 +213,7 @@ public class DeeEngineClient extends SourceModelManager {
 		
 		@Override
 		protected String doRunOperationWithWorkingCopy(IProgressMonitor pm) 
-				throws CommonException, CoreException, OperationCancellation {
+				throws CommonException, OperationCancellation {
 			return dtoolServer.getDDocHTMLView(location.toPath(), offset, effectiveDubPath);
 		}
 	}
