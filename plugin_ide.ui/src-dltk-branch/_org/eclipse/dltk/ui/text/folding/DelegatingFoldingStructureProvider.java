@@ -21,13 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.utilbox.fields.IFieldValueListener;
-import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
-import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -46,6 +39,12 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import _org.eclipse.dltk.ui.DLTKUIPlugin;
 import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
+import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.ui.editor.EditorUtils;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
+import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
+import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
 
 /**
  * This implementation of {@link IFoldingStructureProvider} delegates the actual
@@ -503,17 +502,17 @@ public class DelegatingFoldingStructureProvider implements
 		if(fEditor != null) {
 			initialize();
 			
-			elementListener = new IFieldValueListener() {
+			elementListener = new FieldChangeListener() {
 				@Override
 				public void fieldValueChanged() {
 					update(createContext(false, fEditor.getSourceStructure()));
 				}
 			};
-			editor.getStructureField().addListener(elementListener);
+			editor.getStructureField().addChangeListener(elementListener);
 		}
 	}
 	
-	private IFieldValueListener elementListener;
+	private FieldChangeListener elementListener;
 	
 
 	/**
@@ -529,7 +528,7 @@ public class DelegatingFoldingStructureProvider implements
 	 */
 	protected void handleProjectionDisabled() {
 		if (elementListener != null) {
-			editor.getStructureField().removeListener(elementListener);
+			editor.getStructureField().removeChangeListener(elementListener);
 			elementListener = null;
 		}
 	}
