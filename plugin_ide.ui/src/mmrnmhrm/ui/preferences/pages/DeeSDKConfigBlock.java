@@ -25,7 +25,7 @@ public class DeeSDKConfigBlock extends LangSDKConfigBlock {
 	public DeeSDKConfigBlock(PreferencesPageContext prefContext) {
 		super(prefContext);
 		
-		addSubComponent(new DeeFmtLocationGroup());
+		addChildWidget(new DeeFmtLocationGroup());
 	}
 	
 	@Override
@@ -51,12 +51,12 @@ public class DeeSDKConfigBlock extends LangSDKConfigBlock {
 			
 			ButtonTextField toolLocationField = new FileTextField("Path:");
 			bindFieldToDerivedPreference(toolLocationField, DeeToolPreferences.DFMT_PATH);
-			addSubComponent(toolLocationField);
+			addChildWidget(toolLocationField);
 			
 			CheckBoxField formatOnSaveField = new CheckBoxField(
 					"Format automatically on editor save.");
 			prefContext.bindToPreference(formatOnSaveField, DeeToolPreferences.FORMAT_ON_SAVE);
-			addSubComponent(formatOnSaveField);
+			addChildWidget(formatOnSaveField);
 		}
 		
 	}

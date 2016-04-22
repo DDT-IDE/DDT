@@ -528,7 +528,7 @@ public class DelegatingFoldingStructureProvider implements
 	 */
 	protected void handleProjectionDisabled() {
 		if (elementListener != null) {
-			editor.getStructureField().removeChangeListener(elementListener);
+			editor.getStructureField().removeListener(elementListener);
 			elementListener = null;
 		}
 	}
