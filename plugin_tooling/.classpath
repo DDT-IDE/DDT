@@ -7,7 +7,6 @@
 	<classpathentry kind="src" path="src-lang"/>
 	<classpathentry kind="src" path="src-lang-engine"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="src-test"/>
 	<classpathentry kind="src" path="src-tests/"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
