@@ -40,7 +40,6 @@ import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.core.utils.operation.CoreOperationRunnable;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter.IRunnableWithJob;
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
@@ -156,8 +155,8 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 			this.workspaceModelManager = DeeBundleModelManager.this;
 		}
 		
-		protected void logInternalError(CoreException ce) {
-			LangCore.logInternalError(ce);
+		protected void logInternalError(Throwable t) {
+			LangCore.logInternalError(t);
 		}
 		
 	}
@@ -242,15 +241,14 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	public void runUnderEclipseJob(IProgressMonitor monitor) {
 		assertNotNull(monitor);
 		try {
-			new CoreOperationRunnable() {
-				@Override
-				public void doRun(IProgressMonitor pm) throws CommonException, CoreException, OperationCancellation {
-					resolveProjectOperation(pm);
-				}
-			}.coreAdaptedRun(monitor);
+			try {
+				resolveProjectOperation(monitor);
+			} catch(CoreException e) {
+				throw LangCore.createCommonException(e);
+			}
 		} catch(OperationCancellation ce) {
 			return;
-		} catch(CoreException ce) {
+		} catch(CommonException ce) {
 			try {
 				EclipseUtils.getWorkspace().run(new IWorkspaceRunnable() {
 					@Override
@@ -272,7 +270,8 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		return LangCore.getToolManager();
 	}
 	
-	protected Void resolveProjectOperation(IProgressMonitor pm) throws CoreException, CommonException {
+	protected Void resolveProjectOperation(IProgressMonitor pm) 
+			throws CoreException, CommonException, OperationCancellation {
 		IPath projectLocation = project.getLocation();
 		if(projectLocation == null) {
 			return null; // Project no longer exists, or not stored in the local filesystem.
@@ -318,7 +317,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		return null;
 	}
 	
-	protected void setProjectDubError(IProject project, CoreException ce) throws CoreException {
+	protected void setProjectDubError(IProject project, CommonException ce) throws CoreException {
 		
 		DubBundleException dubError = new DubBundleException(ce.getMessage(), ce.getCause());
 		
