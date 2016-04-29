@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICoreOperation;
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -69,11 +69,11 @@ public class DeeBuildManager extends BuildManager {
 	
 	/* FIXME: review removed used of RunInDubAgentWrapper */
 	
-	protected static class RunInDubAgentWrapper implements ICoreOperation {
+	protected static class RunInDubAgentWrapper implements ICommonOperation {
 		
-		protected final ICoreOperation coreOp;
+		protected final ICommonOperation coreOp;
 		
-		public RunInDubAgentWrapper(ICoreOperation toolOp) {
+		public RunInDubAgentWrapper(ICommonOperation toolOp) {
 			this.coreOp = toolOp;
 		}
 		

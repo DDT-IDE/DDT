@@ -93,7 +93,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		}
 		
 		@Override
-		protected void doOperation() throws CoreException, CommonException, OperationCancellation {
+		protected void doOperation() throws CommonException, OperationCancellation {
 			if(Display.getCurrent() == null) {
 				// Perform computation directly in this thread, cancellation won't be possible.
 				runBackgroundComputation(new NullProgressMonitor());
@@ -104,14 +104,14 @@ public class DeeDocTextHover extends BrowserControlHover
 		
 		@Override
 		protected String doBackgroundValueComputation(IProgressMonitor monitor)
-				throws CoreException, CommonException, OperationCancellation {
+				throws CommonException, OperationCancellation {
 			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 			return DeeEngineClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
 		}
 		
 		@Override
-		protected void handleComputationResult() throws CoreException {
+		protected void handleComputationResult() {
 			// Nothing else to do
 		}
 		

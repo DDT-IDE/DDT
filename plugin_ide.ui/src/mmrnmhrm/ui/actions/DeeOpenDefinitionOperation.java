@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -25,6 +24,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import dtool.engine.operations.FindDefinitionResult;
 import dtool.engine.operations.FindDefinitionResult.FindDefinitionResultEntry;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
@@ -63,7 +63,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	
 	@Override
 	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
-			throws CoreException, CommonException, OperationCancellation {
+			throws CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(associatedProject).toString();
 		return DeeEngineClient.getDefault().
@@ -71,12 +71,12 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CoreException {
+	protected void handleComputationResult() throws CommonException {
 		assertNotNull(result);
 		handleOpenDefinitionResult(result);
 	}
 	
-	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CoreException {
+	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CommonException {
 		
 		List<FindDefinitionResultEntry> results = openDefResult.results;
 		
@@ -100,15 +100,15 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		final SourceRange sourceRange = fdResultEntry.sourceRange;
 		if(sourceRange == null) {
 			String msg = "Symbol " + fdResultEntry.extendedName + " has no source range info!";
-			throw LangCore.createCoreException(msg, null);
+			throw new CommonException(msg);
 		}
 		
 		Location newEditorFileLoc = fdResultEntry.modulePath;
 		if(newEditorFileLoc == null) {
-			throw LangCore.createCoreException("no file path provided", null);
+			throw new CommonException("no file path provided");
 		}
 		if(!newEditorFileLoc.toFile().exists()) {
-			throw LangCore.createCoreException("File does not exist.", null);
+			throw new CommonException("File does not exist.");
 		}
 		
 		IEditorInput newInput;
@@ -118,8 +118,9 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 			newInput = EditorUtils.getBestEditorInputForLoc(newEditorFileLoc);
 		}
 		
+		EclipseUtils.run(() ->
 		EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, 
-			openNewEditorMode, sourceRange);
+			openNewEditorMode, sourceRange));
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {

@@ -15,7 +15,6 @@ import static melnorme.utilbox.core.CoreUtil.list;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IViewPart;
 
@@ -102,7 +101,7 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 		}
 		
 		@Override
-		protected ProcessBuilder createProcessBuilder() throws CoreException, CommonException {
+		protected ProcessBuilder createProcessBuilder() throws CommonException {
 			Path fmtPath = DeeToolPreferences.DFMT_PATH.getDerivedValue();
 			
 			return getToolManager().createToolProcessBuilder(project, fmtPath, 
