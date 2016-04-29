@@ -78,11 +78,16 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public void execute(IProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
-			LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
-				coreOp.execute(pm);
-				return null;
-			});
+		public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+			/* FIXME: review */
+			try {
+				LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
+					coreOp.execute(pm);
+					return null;
+				});
+			} catch(CoreException e) {
+				throw LangCore.createCommonException(e);
+			}
 		}
 		
 	}
