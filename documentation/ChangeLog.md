@@ -10,10 +10,12 @@ It's now possible to specify a command other than the default one (the $$SDK too
  * Added support for modifying the environment variables of a Build Target's build command.  
   
  * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
+ * Added signing to releases.
+ * Fixed: Pressing Tab key does not indent according to Editor indentation preferences.
+
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`). #TODO doc
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
- * Added signing to releases.
 
 
 ### 0.14.1
