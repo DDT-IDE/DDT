@@ -13,6 +13,7 @@ package melnorme.lang.ide.ui.operations;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.PlatformUI;
 
+import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.RunToolOperationOnResource;
 import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
