@@ -19,13 +19,14 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IViewPart;
 
 import melnorme.lang.ide.core.DeeToolPreferences;
+import melnorme.lang.ide.core.operations.RunToolOperationOnResource;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.ui.launch.LangLaunchShortcut;
 import melnorme.lang.ide.ui.navigator.BuildTargetsActionGroup;
 import melnorme.lang.ide.ui.navigator.LangNavigatorActionProvider;
-import melnorme.lang.ide.ui.operations.RunToolOperation.RunSDKToolOperation;
 import melnorme.lang.ide.ui.operations.ToolSourceModifyingOperation;
+import melnorme.lang.ide.ui.operations.RunToolUIOperation.RunSDKUIToolOperation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.ui.DeeUIMessages;
 import mmrnmhrm.ui.launch.DeeLaunchShortcut;
@@ -67,21 +68,21 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 			return DeeUIMessages.DubActionMenu;
 		}
 		
-		public class AddDubProjectToLocalPath extends RunSDKToolOperation {
+		public class AddDubProjectToLocalPath extends RunSDKUIToolOperation {
 			public AddDubProjectToLocalPath(IProject project) {
 				super(DeeUIMessages.DubAction_AddLocalPath, project,
 					list("add-local", project.getLocation().toFile().toString()));
 			}
 		}
 		
-		public class RemoveDubProjectFromLocalPath extends RunSDKToolOperation {
+		public class RemoveDubProjectFromLocalPath extends RunSDKUIToolOperation {
 			public RemoveDubProjectFromLocalPath(IProject project) {
 				super(DeeUIMessages.DubAction_RemoveLocalPath, project, 
 					list("remove-local", project.getLocation().toFile().toString()));
 			}
 		}
 		
-		public class DubList extends RunSDKToolOperation {
+		public class DubList extends RunSDKUIToolOperation {
 			public DubList(IProject project) {
 				super(DeeUIMessages.DubAction_RunDubList, project, 
 					list("list"));
@@ -92,20 +93,21 @@ public class DeeNavigatorActionProvider extends LangNavigatorActionProvider {
 	
 	public static class FormatBundleOperation extends ToolSourceModifyingOperation {
 		public FormatBundleOperation(IProject project) {
-			super(
-				"Format DUB package (dfmt)", 
-				project, 
-				list(), 
-				new StartOperationOptions(ProcessStartKind.BUILD, true, true)
+			super("Format DUB package (dfmt)", 
+				new RunToolOperationOnResource(
+					project, 
+					list(), 
+					new StartOperationOptions(ProcessStartKind.BUILD, true, true)
+				) {
+					@Override
+					protected ProcessBuilder createProcessBuilder() throws CommonException {
+						Path fmtPath = DeeToolPreferences.DFMT_PATH.getDerivedValue();
+						
+						return getToolManager().createToolProcessBuilder(project, fmtPath, 
+							commands.toArrayList().addElements("--inplace", ".").toArray(String.class));
+					}
+				}
 			);
-		}
-		
-		@Override
-		protected ProcessBuilder createProcessBuilder() throws CommonException {
-			Path fmtPath = DeeToolPreferences.DFMT_PATH.getDerivedValue();
-			
-			return getToolManager().createToolProcessBuilder(project, fmtPath, 
-				commands.toArrayList().addElements("--inplace", ".").toArray(String.class));
 		}
 		
 	}
