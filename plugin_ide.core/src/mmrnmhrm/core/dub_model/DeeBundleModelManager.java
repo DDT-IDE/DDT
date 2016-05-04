@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.dub_model;
 
-import static melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind.ENGINE_TOOLS2;
+import static melnorme.lang.ide.core.operations.ILangOperationsListener_Default.ProcessStartKind.ENGINE_TOOLS;
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
@@ -281,7 +281,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			
 		String dubPath = getToolManager().getSDKToolPath(project).toString();
 		
-		IOperationMonitor opMonitor = getToolManager().startNewOperation(ENGINE_TOOLS2, true, false);
+		IOperationMonitor opMonitor = getToolManager().startNewOperation(ENGINE_TOOLS, true, false);
 		opMonitor.writeInfoMessage(
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
 		
