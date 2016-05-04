@@ -50,17 +50,16 @@ In a project's context menu, there is DUB submenu with a few DUB commands, in pa
 
 This may be necessary since D projects will not be visible as dependencies to other DUB packages unless they have been placed on the local packages path list.
 
-##### Project Building
 
-D projects are built using DUB. The output of this tool will be displayed in a console. Additionally, error markers resulting from the build will be collected and displayed in the the D editor and the Problems view.
+##### Building:
+A project has a set of Build Targets, each being a command invocation that builds the source code into one or more artifacts, and reports back possible compilation errors to the IDE. Build Targets can be configured directly from the Project Explorer. 
 
-D projects have Build Targets derived from DUB configurations. These can be viewed and configured in the Project Explorer:
+Build Targets can be enabled for a regular project build, or for auto-check. Auto-check is invoked when an editor is saved and no syntax errors are present in the source code. Normally it does not produce any artifacts, it just checks for compilation errors. **Note that auto-check is a different setting than the Eclipse workspace "Project / Build Automatically" option**. LANG_IDE_NAME ignores the later option by default. Auto-check is also not invoked if a file is saved automatically due to a regular build being requested. 
 
-<div align="center">
-<a href="screenshots/UserGuide_BuildTargets.png?raw=true"><img src="screenshots/UserGuide_BuildTargets.png" /><a/> 
-</div>
+From the context menu of a Build Target, you can also directly create a Run or Debug launch configuration for one the generated executables. 
 
-Each target can be enabled or disabled individually when performing Eclipse project builds. 
+D projects are built using DUB, and the Build Targets are derived from DUB configurations.
+
 
 ### Editor and Navigation
 
@@ -82,6 +81,18 @@ Content Assist can also present Code Templates. These are predefined parameteriz
 ##### Text Hover:
 Text hover shows a text popup over the reference or definition under the mouse cursor. The hover will display the signature of the definition, as well as DDoc, if available. DDoc will be rendered in a graphical way, similar to a standard HTML presentation.
 
+### Editor and Navigation
+
+##### Editor newline auto-indentation:
+The editor will auto-indent new lines after an Enter is pressed. Pressing Backspace with the cursor after the indent characters in the start of the line will delete the indent and preceding newline, thus joining the rest of the line with the previous line. Pressing Delete before a newline will have an identical effect.
+This is unlike most source editors - if instead you want to just remove one level of indent (or delete the preceding Tab), press Shift-Tab. 
+
+##### Content Assist / Open Definition:
+Content Assist (also know as Code Completion, Auto Complete) is invoked with `Ctrl-Space`. 
+
+The Open Definition functionality is invoked by pressing F3 in the source editor. 
+Open Definition is also available in the editor context menu and by means of editor *hyper-linking* 
+(hold Ctrl and click on a reference with the mouse cursor). 
 
 ### Launch and Debug:
 To run a D project that builds to an executable, you will need to create a launch configuration. Locate the main menu, open 'Run' / 'Run Configurations...'. Then double click 'D Application" to create a new D launch, and configure it accordingly. You can run these launches from the 'Run Configurations...', or for quicker access, from the Launch button in the Eclipse toolbar.
