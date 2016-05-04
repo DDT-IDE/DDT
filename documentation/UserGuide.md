@@ -54,7 +54,7 @@ This may be necessary since D projects will not be visible as dependencies to ot
 ##### Building:
 A project has a set of Build Targets, each being a command invocation that builds the source code into one or more artifacts, and reports back possible compilation errors to the IDE. Build Targets can be configured directly from the Project Explorer. 
 
-Build Targets can be enabled for a regular project build, or for auto-check. Auto-check is invoked when an editor is saved and no syntax errors are present in the source code. Normally it does not produce any artifacts, it just checks for compilation errors. **Note that auto-check is a different setting than the Eclipse workspace "Project / Build Automatically" option**. LANG_IDE_NAME ignores the later option by default. Auto-check is also not invoked if a file is saved automatically due to a regular build being requested. 
+Build Targets can be enabled for a regular project build, or for auto-check. Auto-check is invoked when an editor is saved and no syntax errors are present in the source code. Normally it does not produce any artifacts, it just checks for compilation errors. **Note that auto-check is a different setting than the Eclipse workspace "Project / Build Automatically" option**. DDT ignores the later option by default. Auto-check is also not invoked if a file is saved automatically due to a regular build being requested. 
 
 From the context menu of a Build Target, you can also directly create a Run or Debug launch configuration for one the generated executables. 
 

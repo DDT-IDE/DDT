@@ -105,7 +105,7 @@ public class DeeBuildManager extends BuildManager {
 			ArrayList2<String> buildArgs = new ArrayList2<>();
 			
 			String buildConfigName = bt.getBuildConfigName();
-			String buildTypeName = bt.getBuildTypeName();
+			String dubBuildType = bt.getBuildTypeName();
 			
 			buildArgs.add("build");
 			
@@ -113,8 +113,8 @@ public class DeeBuildManager extends BuildManager {
 				buildArgs.addElements("-c" , buildConfigName);
 			}
 			
-			if(!buildTypeName.equals(DeeBuildManager.BuildType_Default)) {
-				buildArgs.addElements("-b" , buildTypeName);
+			if(!dubBuildType.isEmpty()) {
+				buildArgs.addElements("-b" , dubBuildType);
 			}
 			
 			return StringUtil.collToString(buildArgs, " ");

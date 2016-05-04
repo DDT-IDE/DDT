@@ -2,10 +2,9 @@
 
 ### (NextVersion)
  * Added customization of the build command for Build Targets:
-It's now possible to specify a command other than the default one (the $$SDK tool). 
-   * Note however that the $$IDE still expects the output of the command (the error messages) to be in the same format as the default tool.
- * Added support for invoking a specific Build Target when a $IDE editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
-   * The default is `` for $$IDE
+It's now possible to specify a command other than the default one (the DUB tool). 
+   * Note however that DDT still expects the output of the command (the error messages) to be in the same format as the default tool.
+ * Added support for invoking a specific Build Target when a D editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
    * Added [Building](documentation/UserGuide.md#building) section to documentation.
    * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice it will likely require the compiler to support incremental compilation (or be super fast otherwise).
  * Added support for modifying the environment variables of a Build Target's build command.  
@@ -14,7 +13,7 @@ It's now possible to specify a command other than the default one (the $$SDK too
  * Added signing to releases.
  * Fixed: Pressing Tab key does not indent according to Editor indentation preferences.
 
- * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`). #TODO doc
+ * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
 
