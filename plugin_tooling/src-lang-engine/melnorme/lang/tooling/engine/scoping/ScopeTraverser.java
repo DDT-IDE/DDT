@@ -50,7 +50,7 @@ public class ScopeTraverser {
 			
 			// Check if we have passed the reference offset
 			if(isSequentialLookup && node instanceof IASTNode) {
-				/* FIXME: make getStartPos available in ILanguageElement */
+				/* TODO: DTool: make getStartPos available in ILanguageElement */
 				IASTNode astNode = (IASTNode) node;
 				if(refOffset < astNode.getStartPos()) {
 					return;

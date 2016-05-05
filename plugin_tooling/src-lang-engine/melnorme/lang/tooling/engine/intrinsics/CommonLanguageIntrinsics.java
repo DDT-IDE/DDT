@@ -12,6 +12,8 @@ package melnorme.lang.tooling.engine.intrinsics;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
+
+import dtool.ast.definitions.EArcheType;
 import melnorme.lang.tooling.ast_actual.ElementDoc;
 import melnorme.lang.tooling.context.ISemanticContext;
 import melnorme.lang.tooling.engine.PickedElement;
@@ -22,7 +24,6 @@ import melnorme.lang.tooling.engine.scoping.NamedElementsScope;
 import melnorme.lang.tooling.symbols.AbstractNamedElement;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import dtool.ast.definitions.EArcheType;
 
 public interface CommonLanguageIntrinsics {
 	
@@ -124,8 +125,8 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetElementSemanticReady() {
-			/* FIXME: type.isSemanticReady() */
-//			 assertTrue(type.isSemanticReady()); 
+			/* TODO: enable assertTrue(type.isSemanticReady()) */
+			 //assertTrue(type.isSemanticReady()); 
 		}
 		
 		@Override
@@ -151,7 +152,7 @@ public interface CommonLanguageIntrinsics {
 		
 		@Override
 		protected void doSetElementSemanticReady() {
-			/* FIXME: type.isSemanticReady() */
+			/* TODO: enable assertTrue(type.isSemanticReady()) */
 //			 assertTrue(typeRef.isSemanticReady());
 		}
 		

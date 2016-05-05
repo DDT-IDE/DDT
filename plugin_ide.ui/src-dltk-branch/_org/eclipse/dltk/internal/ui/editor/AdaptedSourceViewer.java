@@ -10,11 +10,6 @@
  *     xored software, Inc. - fix tab handling (Bug# 200024) (Alex Panchenko) 
  *******************************************************************************/package _org.eclipse.dltk.internal.ui.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
-
 import org.eclipse.core.filebuffers.IPersistableAnnotationModel;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -34,19 +29,19 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
-/* FIXME: DLTK: review this class. */
+import melnorme.lang.ide.ui.editor.LangSourceViewer;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+
+/* TODO: DLTK: review this class. */
 public class AdaptedSourceViewer extends LangSourceViewer implements ICompletionListener {
 	
 	protected static interface ITextConverter {
 		void customizeDocumentCommand(IDocument document, DocumentCommand command);
 	}
 	
-	private List<AdaptedSourceViewer.ITextConverter> fTextConverters;
-	
-	protected boolean fIgnoreTextConverters = false;
 	protected boolean fInCompletionSession;
 	
-	protected final ScriptEditor editor;
+	protected final AbstractLangStructureEditor editor;
 	
 	public AdaptedSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
 			boolean showAnnotationsOverview, int styles, ScriptEditor editor) {
@@ -88,69 +83,6 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 	}
 	
 	@Override
-	public void doOperation(int operation) {
-
-		if (getTextWidget() == null)
-			return;
-
-		switch (operation) {
-//		case CONTENTASSIST_PROPOSALS:
-//			fContentAssistant.showPossibleCompletions();
-////			editor.setStatusLineErrorMessage(msg);
-//			return;
-//		case QUICK_ASSIST:
-//			/*
-//			 * XXX: We can get rid of this once the SourceViewer has a way
-//			 * to update the status line
-//			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=133787
-//			 */
-//			fQuickAssistAssistant.showPossibleQuickAssists();
-//			editor.setStatusLineErrorMessage(msg);
-//			return;
-		case UNDO:
-			fIgnoreTextConverters = true;
-			super.doOperation(operation);
-			fIgnoreTextConverters = false;
-			return;
-		case REDO:
-			fIgnoreTextConverters = true;
-			super.doOperation(operation);
-			fIgnoreTextConverters = false;
-			return;
-		}
-
-		super.doOperation(operation);
-	}
-
-	public void addTextConverter(ITextConverter textConverter) {
-		if (fTextConverters == null) {
-			fTextConverters = new ArrayList<ITextConverter>(1);
-			fTextConverters.add(textConverter);
-		} else if (!fTextConverters.contains(textConverter))
-			fTextConverters.add(textConverter);
-	}
-
-	public void removeTextConverter(ITextConverter textConverter) {
-		if (fTextConverters != null) {
-			fTextConverters.remove(textConverter);
-			if (fTextConverters.size() == 0)
-				fTextConverters = null;
-		}
-	}
-
-	/*
-	 * @see TextViewer#customizeDocumentCommand(DocumentCommand)
-	 */
-	@Override
-	protected void customizeDocumentCommand(DocumentCommand command) {
-		super.customizeDocumentCommand(command);
-		if (!fIgnoreTextConverters && fTextConverters != null) {
-			for (ITextConverter c : fTextConverters)
-				c.customizeDocumentCommand(getDocument(), command);
-		}
-	}
-
-	@Override
 	public boolean requestWidgetToken(IWidgetTokenKeeper requester) {
 		if (PlatformUI.getWorkbench().getHelpSystem().isContextHelpDisplayed())
 			return false;
@@ -160,8 +92,7 @@ public class AdaptedSourceViewer extends LangSourceViewer implements ICompletion
 	@Override
 	public boolean requestWidgetToken(IWidgetTokenKeeper requester,
 			int priority) {
-		if (PlatformUI.getWorkbench().getHelpSystem()
-				.isContextHelpDisplayed())
+		if (PlatformUI.getWorkbench().getHelpSystem().isContextHelpDisplayed())
 			return false;
 		return super.requestWidgetToken(requester, priority);
 	}

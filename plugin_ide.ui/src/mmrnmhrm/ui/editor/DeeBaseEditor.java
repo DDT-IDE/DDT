@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import _org.eclipse.dltk.internal.ui.editor.BracketInserter2;
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 
-/* FIXME: to do bracket inserter. */
+/* TODO: bracket inserter. */
 public abstract class DeeBaseEditor extends ScriptEditor {
 	
 	protected BracketInserter2 fBracketInserter = new DeeBracketInserter(this);

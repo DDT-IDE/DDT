@@ -160,7 +160,7 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 				new StructureElement("bar", sr("bar", 3), sr("bar;","bar"), VARIABLE, attrib(null), "int", null)
 			)
 		));
-		/*FIXME: attribute of fragmentDefUnits*/
+		/* TODO: DTool: attribute of fragmentDefUnits*/
 		
 		// Test enum.
 		source = "enum Foo : int { ONE, TWO }";
