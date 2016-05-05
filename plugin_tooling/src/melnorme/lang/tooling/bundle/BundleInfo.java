@@ -27,6 +27,7 @@ public class BundleInfo extends AbstractBundleInfo {
 	protected final DubBundleDescription bundleDesc;
 	
 	public BundleInfo(CompilerInstall compilerInstall, DubBundleDescription bundleDesc) {
+		super(bundleDesc.getMainBundle().name);
 		this.compilerInstall = assertNotNull(compilerInstall);
 		this.bundleDesc = assertNotNull(bundleDesc);
 	}

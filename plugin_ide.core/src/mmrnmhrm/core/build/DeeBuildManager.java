@@ -51,12 +51,12 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
-	protected void bundleProjectAdded(IProject project, BundleInfo bundleInfo) {
-		if(bundleInfo.getBundleDesc().isResolved()) {
+	protected void bundleProjectAddedOrModified(IProject project, BundleInfo newBundleInfo) {
+		if(newBundleInfo.getBundleDesc().isResolved()) {
 			// We ignore resolved description, because only unresolved ones have configuration info
 			return;
 		}
-		super.bundleProjectAdded(project, bundleInfo);
+		super.bundleProjectAddedOrModified(project, newBundleInfo);
 	}
 	
 	@Override
