@@ -134,7 +134,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		return new BundleInfo(compilerInstall, dubBundleDescription);
 	}
 	
-	public void syncPendingUpdates() {
+	public void syncPendingUpdates() throws InterruptedException {
 		modelAgent.waitForPendingTasks();
 	}
 	

@@ -36,7 +36,7 @@ public class DeeToolManager extends ToolManager {
 	
 	@Override
 	public void shutdownNow() {
-		dubProcessAgent.shutdownNow();
+		dubProcessAgent.shutdownNowAndCancelAll();
 	}
 	
 	/* -----------------  ----------------- */

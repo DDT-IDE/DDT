@@ -11,6 +11,7 @@
 package mmrnmhrm.core.dub_model;
 
 
+import static melnorme.utilbox.core.Assert.AssertNamespace.assertFail;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -135,7 +136,11 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static void _awaitModelUpdates_() {
-		LangCore.getBundleModelManager().syncPendingUpdates();
+		try {
+			LangCore.getBundleModelManager().syncPendingUpdates();
+		} catch(InterruptedException e) {
+			assertFail();
+		}
 	}
 	
 	protected static final DeeBundleModel model = getModelManager().getModel();
@@ -181,7 +186,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 			DubBundleChecker expMainBundle) throws CoreException {
 		checkUnresolvedBundle(project, expMainBundle, unresolvedDubBundle);
 		
-		LangCore.getBundleModelManager().syncPendingUpdates();
+		_awaitModelUpdates_();
 		
 		DubBundleDescription dubBundle = getExistingDubBundleInfo(project);
 		if(unresolvedDubBundle.hasErrors()) {

@@ -73,7 +73,7 @@ public class SemanticManager {
 	}
 	
 	public void shutdown() {
-		dubProcessAgent.shutdownNow();
+		dubProcessAgent.shutdownNowAndCancelAll();
 	}
 	
 	public ModuleParseCache getParseCache() {
