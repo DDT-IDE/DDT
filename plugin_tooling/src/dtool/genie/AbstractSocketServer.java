@@ -20,9 +20,9 @@ import java.net.SocketException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
-import melnorme.utilbox.concurrency.SafeRunnable;
-import melnorme.utilbox.core.CommonException;
 import dtool.genie.GenieServer.GenieConnectionHandler;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.SafeRunnable;
 
 /** 
  * Helper for Genie Server, manages a basic TCP socket server.

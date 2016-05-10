@@ -15,7 +15,6 @@ import org.eclipse.ui.PlatformUI;
 
 import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.RunToolOperationOnResource;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.StartOperationOptions;
 import melnorme.lang.ide.ui.utils.operations.UIOperation;
 import melnorme.utilbox.collections.Indexable;
