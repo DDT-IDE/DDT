@@ -12,11 +12,11 @@ package dtool.dub;
 
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
-import java.util.concurrent.ExecutionException;
 
 import dtool.dub.DubBundle.DubBundleException;
 import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.misc.StringUtil;
@@ -100,7 +100,7 @@ public class DubHelper {
 		
 	}
 	
-	public static class RunDubDescribeCallable implements CallableX<DubBundleDescription, Exception> {
+	public static class RunDubDescribeCallable implements CallableX<DubBundleDescription, CommonException> {
 		
 		protected final BundlePath bundlePath;
 		protected final String dubPath;
@@ -115,9 +115,16 @@ public class DubHelper {
 		}
 		
 		@Override
-		public DubBundleDescription call() throws IOException, InterruptedException {
+		public DubBundleDescription call() throws CommonException {
 			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
-			return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
+			try {
+				return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
+			} catch(IOException e) {
+				throw new CommonException("Error running `dub describe`:", e.getCause());
+			} catch(InterruptedException e) {
+				/* FIXME: throw OperationCancelation, use CommonOperation */
+				throw new CommonException("Error running `dub describe`, operation interrupted.");
+			}
 		}
 		
 		public FileTime getStartTimeStamp() {
@@ -126,11 +133,9 @@ public class DubHelper {
 		
 		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws CommonException {
 			try {
-				return processAgent.submit(this).get();
-			} catch (InterruptedException e) {
+				return processAgent.submitX(this).getResult();
+			} catch (OperationCancellation e) {
 				throw new CommonException("Error running `dub describe`, operation interrupted.");
-			} catch (ExecutionException e) {
-				throw new CommonException("Error running `dub describe`:", e.getCause());
 			}
 		}
 		

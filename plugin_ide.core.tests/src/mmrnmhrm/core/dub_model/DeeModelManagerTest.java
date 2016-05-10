@@ -55,7 +55,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 		
 		// Test project with dub.json, but no D nature
 		LatchRunnable latchRunnable = new LatchRunnable();
-		getModelAgent().submit(latchRunnable);
+		getModelAgent().submitR(latchRunnable);
 		taskCount = getModelAgent().getSubmittedTaskCount();
 		project = createAndOpenProject(DUB_TEST, true).getProject();
 		writeDubJson(project, jsObject(jsEntry("name", "xptobundle")));

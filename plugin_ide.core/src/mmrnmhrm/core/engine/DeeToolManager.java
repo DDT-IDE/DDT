@@ -10,18 +10,15 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import org.eclipse.core.runtime.CoreException;
-
-import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.utilbox.concurrency.FutureX;
+import melnorme.utilbox.concurrency.ICommonExecutor.CommonFuture;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.ExceptionAdapter;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
  * Manages launching D tools.
@@ -41,28 +38,14 @@ public class DeeToolManager extends ToolManager {
 	
 	/* -----------------  ----------------- */
 	
-	public <T> Future<T> submitTask(Callable<T> task) {
-		return dubProcessAgent.submit(task);
+	public <R, X extends Exception> FutureX<R, X> submitTask2(CallableX<R, X> task) {
+		return dubProcessAgent.submitX(task);
 	}
 	
-	public <T> T submitTaskAndAwaitResult(Callable<T> task) throws CoreException, OperationCancellation {
-		Future<T> future = dubProcessAgent.submit(task);
-		try {
-			return future.get();
-		} catch (InterruptedException e) {
-			future.cancel(true);
-			LangCore.logError("Unexpected interruption", e);
-			throw new OperationCancellation();
-		} catch (ExecutionException e) {
-			Throwable cause = e.getCause();
-			if(cause instanceof OperationCancellation) {
-				throw (OperationCancellation) cause;
-			}
-			if(cause instanceof CoreException) {
-				throw (CoreException) cause;
-			}
-			throw ExceptionAdapter.unchecked(cause); // Should not happen
-		}
+	public <R> R submitTaskAndAwaitResult(OperationCallable<R> task) 
+			throws CommonException, OperationCancellation {
+		CommonFuture<R> future = dubProcessAgent.submitOp(task);
+		return future.getResult().get();
 	}
 	
 }

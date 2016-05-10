@@ -97,7 +97,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		BundleInfo unresolvedProjectInfo = createNewInfo(project);
 		getModel().setBundleInfo(project, unresolvedProjectInfo); 
 		
-		modelAgent.submit(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
+		modelAgent.submitR(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
 	
 	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
