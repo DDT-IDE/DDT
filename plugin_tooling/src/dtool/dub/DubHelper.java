@@ -18,7 +18,7 @@ import melnorme.lang.tooling.BundlePath;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.CallableX;
+import melnorme.utilbox.core.fntypes.OperationCallable;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -100,7 +100,7 @@ public class DubHelper {
 		
 	}
 	
-	public static class RunDubDescribeCallable implements CallableX<DubBundleDescription, CommonException> {
+	public static class RunDubDescribeCallable implements OperationCallable<DubBundleDescription> {
 		
 		protected final BundlePath bundlePath;
 		protected final String dubPath;
@@ -115,15 +115,14 @@ public class DubHelper {
 		}
 		
 		@Override
-		public DubBundleDescription call() throws CommonException {
+		public DubBundleDescription call() throws CommonException, OperationCancellation {
 			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
 			try {
 				return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
 			} catch(IOException e) {
 				throw new CommonException("Error running `dub describe`:", e.getCause());
 			} catch(InterruptedException e) {
-				/* FIXME: throw OperationCancelation, use CommonOperation */
-				throw new CommonException("Error running `dub describe`, operation interrupted.");
+				throw new OperationCancellation();
 			}
 		}
 		
@@ -133,7 +132,7 @@ public class DubHelper {
 		
 		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws CommonException {
 			try {
-				return processAgent.submitX(this).getResult();
+				return processAgent.submitOp(this).getResult().get();
 			} catch (OperationCancellation e) {
 				throw new CommonException("Error running `dub describe`, operation interrupted.");
 			}
