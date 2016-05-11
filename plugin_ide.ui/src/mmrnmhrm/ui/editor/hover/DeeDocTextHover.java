@@ -14,8 +14,6 @@ import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
@@ -28,6 +26,8 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.ops.IOperationMonitor.NullOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.core.engine.DeeEngineClient;
@@ -96,14 +96,14 @@ public class DeeDocTextHover extends BrowserControlHover
 		protected void doOperation() throws CommonException, OperationCancellation {
 			if(Display.getCurrent() == null) {
 				// Perform computation directly in this thread, cancellation won't be possible.
-				runBackgroundComputation(new NullProgressMonitor());
+				runBackgroundComputation(new NullOperationMonitor());
 				return;
 			}
 			super.doOperation();
 		}
 		
 		@Override
-		protected String doBackgroundValueComputation(IProgressMonitor monitor)
+		protected String doBackgroundValueComputation(IOperationMonitor monitor)
 				throws CommonException, OperationCancellation {
 			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 			return DeeEngineClient.getDefault().

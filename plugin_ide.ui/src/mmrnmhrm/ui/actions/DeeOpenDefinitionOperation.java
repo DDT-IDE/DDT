@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -30,6 +29,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -62,7 +62,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	}
 	
 	@Override
-	protected FindDefinitionResult doBackgroundValueComputation(IProgressMonitor monitor)
+	protected FindDefinitionResult doBackgroundValueComputation(IOperationMonitor monitor)
 			throws CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(associatedProject).toString();

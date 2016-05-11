@@ -16,6 +16,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
@@ -45,7 +46,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		
 		int timeoutMillis = pm.getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
-			.runEngineOperation(pm)
+			.runEngineOperation(EclipseUtils.om(pm))
 			.convertToCompletionResult();
 	}
 	

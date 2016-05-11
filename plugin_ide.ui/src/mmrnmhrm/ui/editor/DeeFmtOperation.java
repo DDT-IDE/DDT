@@ -13,7 +13,6 @@ package mmrnmhrm.ui.editor;
 import java.nio.file.Path;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.DeeToolPreferences;
@@ -22,6 +21,7 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ToolingMessages;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -39,7 +39,7 @@ public class DeeFmtOperation extends AbstractEditorOperation2<String> {
 	}
 	
 	@Override
-	protected String doBackgroundValueComputation(IProgressMonitor monitor)
+	protected String doBackgroundValueComputation(IOperationMonitor monitor)
 			throws CommonException, OperationCancellation {
 		
 		IProject project = EditorUtils.getAssociatedProject(editorInput);

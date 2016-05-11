@@ -25,6 +25,7 @@ import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserError.ErrorSourceRangeComparator;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
@@ -92,7 +93,7 @@ public class DeeParser
 	}
 	
 	protected DeeParser(DeeLexer deeLexer, ICancelMonitor cancelMonitor) {
-		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : ICancelMonitor.NULL_MONITOR;
+		this.cancelMonitor = (cancelMonitor != null) ? cancelMonitor : new NullCancelMonitor();
 		
 		this.source = deeLexer.getSource();
 		DeeLexElementProducer deeLexElementProducer = new DeeLexElementProducer();

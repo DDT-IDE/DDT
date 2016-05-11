@@ -15,11 +15,9 @@ import java.nio.file.Path;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ICommonOperation;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -28,6 +26,8 @@ import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperati
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.data.Severity;
+import melnorme.lang.tooling.ops.ICommonOperation;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
@@ -78,9 +78,9 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		public void execute(IProgressMonitor pm) throws CommonException, OperationCancellation {
+		public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
 			LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
-				coreOp.execute(pm);
+				coreOp.execute(om);
 				return null;
 			});
 		}
@@ -129,7 +129,7 @@ public class DeeBuildManager extends BuildManager {
 		}
 		
 		@Override
-		protected void processBuildOutput(ExternalProcessResult processResult, IProgressMonitor pm) 
+		protected void processBuildOutput(ExternalProcessResult processResult, IOperationMonitor om) 
 				throws CommonException {
 			new DubBuildOutputParser<CommonException>() {
 				@Override

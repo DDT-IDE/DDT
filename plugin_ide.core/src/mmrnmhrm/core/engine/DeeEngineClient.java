@@ -14,8 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
 import java.io.IOException;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 import dtool.engine.DToolServer;
 import dtool.engine.ModuleParseCache;
 import dtool.engine.ModuleParseCache.CachedModuleEntry;
@@ -27,6 +25,7 @@ import dtool.parser.structure.DeeStructureCreator;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineOperation;
 import melnorme.lang.ide.core.engine.SourceModelManager;
+import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -178,7 +177,7 @@ public class DeeEngineClient extends SourceModelManager {
 		}
 		
 		@Override
-		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
+		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IOperationMonitor om) 
 				throws CommonException, OperationCancellation {
 			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeEngineClient.compilerPathOverride, 
 				effectiveDubPath);
@@ -196,7 +195,7 @@ public class DeeEngineClient extends SourceModelManager {
 		}
 		
 		@Override
-		protected FindDefinitionResult doRunOperationWithWorkingCopy(IProgressMonitor pm) 
+		protected FindDefinitionResult doRunOperationWithWorkingCopy(IOperationMonitor om) 
 				throws CommonException, OperationCancellation {
 			return dtoolServer.doFindDefinition(location.toPath(), offset, effectiveDubPath);
 		}
@@ -212,7 +211,7 @@ public class DeeEngineClient extends SourceModelManager {
 		}
 		
 		@Override
-		protected String doRunOperationWithWorkingCopy(IProgressMonitor pm) 
+		protected String doRunOperationWithWorkingCopy(IOperationMonitor om) 
 				throws CommonException, OperationCancellation {
 			return dtoolServer.getDDocHTMLView(location.toPath(), offset, effectiveDubPath);
 		}
