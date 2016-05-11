@@ -34,7 +34,7 @@ import dtool.dub.DubManifestParser;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IOperationMonitor;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
@@ -281,7 +281,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			
 		String dubPath = getToolManager().getSDKToolPath(project).toString();
 		
-		IOperationMonitor opMonitor = getToolManager().startNewOperation(ENGINE_TOOLS, true, false);
+		IToolOperationMonitor opMonitor = getToolManager().startNewOperation(ENGINE_TOOLS, true, false);
 		opMonitor.writeInfoMessage(
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
 		
