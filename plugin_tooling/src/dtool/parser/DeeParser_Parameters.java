@@ -168,7 +168,7 @@ public abstract class DeeParser_Parameters extends DeeParser_RefOrExp {
 		}
 		
 		public final NodeVector<ITemplateParameter> toTemplateParameters() throws OperationCancellation {
-			assertTrue(isAmbiguous());
+			assertTrue(mode != TplOrFnMode.FN);
 			setMode(TplOrFnMode.TPL);
 			return getAsTemplateParameters();
 		}

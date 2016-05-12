@@ -3,8 +3,8 @@ auto foo = 2;
 #STRUCTURE_EXPECTED:
 DeclarationAttrib(AttribBasic DefAutoVariable(DefSymbol Integer) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)  #@ATTRIBS_AUTODecl fooB = #@EXP_ASSIGN__LITE;
-#STRUCTURE_EXPECTED: DeclarationAttrib(#@ATTRIBS_AUTODecl DefAutoVariable(DefSymbol #@EXP_ASSIGN__LITE) )
+#PARSE(DECLARATION)  #@ATTRIBS_AUTODecl fooID (#@TPL_PARAMS__SAMPLE) = #@EXP_ASSIGN__LITE;
+#STRUCTURE_EXPECTED: DeclarationAttrib(#@ATTRIBS_AUTODecl DefAutoVariable(DefSymbol #@TPL_PARAMS__SAMPLE #@EXP_ASSIGN__LITE) )
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ Test composite attribs dont make auto decl
 #PARSE(DECLARATION)  #@COMPLEX_ATTRIBS foo #@NO_DEFID #@SEMICOLON_BREAK = #@EXP_ASSIGN__LITE; 
 #STRUCTURE_EXPECTED: DeclarationAttrib(#@COMPLEX_ATTRIBS IncompleteDeclarator(RefIdentifier) )

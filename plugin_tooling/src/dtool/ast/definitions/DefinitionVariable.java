@@ -38,19 +38,23 @@ public class DefinitionVariable extends CommonDefinition
 	public static final ArrayView<DefVarFragment> NO_FRAGMENTS = ArrayView.create(new DefVarFragment[0]);
 	
 	public final Reference type; // Can be null
+	public final NodeVector<ITemplateParameter> tplParams;
 	public final Reference cstyleSuffix;
 	public final IInitializer initializer;
 	protected final NodeVector<DefVarFragment> fragments;
 	
-	public DefinitionVariable(Token[] comments, DefSymbol defName, Reference type, Reference cstyleSuffix,
+	public DefinitionVariable(Token[] comments, DefSymbol defName, Reference type, 
+			NodeVector<ITemplateParameter> tplParams, Reference cstyleSuffix,
 		IInitializer initializer, NodeVector<DefVarFragment> fragments)
 	{
 		super(comments, defName);
 		this.type = parentize(type);
+		this.tplParams = parentize(tplParams);
 		this.cstyleSuffix = parentize(cstyleSuffix);
 		this.initializer = parentize(initializer);
 		this.fragments = parentize(fragments);
 		assertTrue(fragments == null || fragments.size() > 0);
+		assertTrue(cstyleSuffix == null || tplParams == null);
 	}
 	
 	@Override
@@ -62,6 +66,7 @@ public class DefinitionVariable extends CommonDefinition
 	public void visitChildren(IASTVisitor visitor) {
 		acceptVisitor(visitor, type);
 		acceptVisitor(visitor, defName);
+		acceptVisitor(visitor, tplParams);
 		acceptVisitor(visitor, cstyleSuffix);
 		acceptVisitor(visitor, initializer);
 		
@@ -70,14 +75,15 @@ public class DefinitionVariable extends CommonDefinition
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new DefinitionVariable(comments, clone(defName), clone(type), clone(cstyleSuffix), clone(initializer),
-			clone(fragments));
+		return new DefinitionVariable(comments, clone(defName), clone(type), clone(tplParams), clone(cstyleSuffix), 
+			clone(initializer), clone(fragments));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
 		cp.append(type, " ");
 		cp.append(defName);
+		cp.appendList("(", tplParams, ",", ") ");
 		cp.append(cstyleSuffix);
 		cp.append(" = ", initializer);
 		cp.appendList(", ", fragments, ", ", "");
@@ -119,9 +125,9 @@ public class DefinitionVariable extends CommonDefinition
 	
 	public static class DefinitionAutoVariable extends DefinitionVariable {
 		
-		public DefinitionAutoVariable(Token[] comments, DefSymbol defName, IInitializer initializer,
-				NodeVector<DefVarFragment> fragments) {
-			super(comments, defName, null, null, initializer, fragments);
+		public DefinitionAutoVariable(Token[] comments, DefSymbol defName, NodeVector<ITemplateParameter> tplParams, 
+				IInitializer initializer, NodeVector<DefVarFragment> fragments) {
+			super(comments, defName, null, tplParams, null, initializer, fragments);
 		}
 		
 		@Override
@@ -131,7 +137,8 @@ public class DefinitionVariable extends CommonDefinition
 		
 		@Override
 		protected CommonASTNode doCloneTree() {
-			return new DefinitionAutoVariable(comments, clone(defName), clone(initializer), clone(fragments));
+			return new DefinitionAutoVariable(comments, clone(defName), clone(tplParams), clone(initializer), 
+				clone(fragments));
 		}
 		
 	}

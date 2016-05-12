@@ -2,6 +2,15 @@
 Bar.foo foo = 2;
 #STRUCTURE_EXPECTED:
 DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case -templated
+#PARSE(DECLARATION)   Bar.foo foo(A) = 2;
+#STRUCTURE_EXPECTED:
+DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol TemplateTypeParam(DefSymbol) Integer)
+
+▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ basic case -templated - c-style suffix
+#PARSE(DECLARATION)   Bar.foo foo(A : B) #error(EXP_OPEN_PARENS)【】 #@BREAK [] = 2;
+#STRUCTURE_EXPECTED:
+DefinitionFunction(RefQualified(RefIdentifier RefIdentifier) DefSymbol TemplateTypeParam(DefSymbol RefIdentifier) )
 
 Ⓗ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
 
@@ -15,8 +24,8 @@ DefVariable(RefQualified(RefIdentifier RefIdentifier) DefSymbol Integer)
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__NoTM fooB #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__NoTM DefSymbol)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂
-#PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA = #@INITIALIZERS_TESTER #@SEMICOLON_OR_BREAK
-#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol #@INITIALIZERS_TESTER)
+#PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA (#@TPL_PARAMS__SAMPLE) = #@INITIALIZERS_TESTER #@SEMICOLON_OR_BREAK
+#STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol #@TPL_PARAMS__SAMPLE #@INITIALIZERS_TESTER)
 ▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ with fragment
 #PARSE(DECLARATION)   #@TYPEREF_NBNE__LITE fooA, fooB = #@INITIALIZERS_TESTER #@SEMICOLON_OR_BREAK
 #STRUCTURE_EXPECTED:  DefVariable(#@TYPEREF_NBNE__LITE DefSymbol DefVarFragment(DefSymbol #@INITIALIZERS_TESTER))

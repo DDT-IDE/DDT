@@ -565,10 +565,21 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 			}
 			
 			if(defId != null) {
+				NodeVector<ITemplateParameter> tplParams = null;
+				
 				if(lookAhead() == DeeTokens.OPEN_PARENS) {
-					return parseDefinitionFunction_afterIdentifier(parse, ref, defId);
+					DeeParser_RuleParameters firstParams = parseParameters(parse);
+					
+					if(firstParams.mode != TplOrFnMode.FN && lookAhead() == DeeTokens.ASSIGN) {
+						// Parse as a var declaration
+						tplParams = firstParams.isAmbiguous() ? firstParams.toTemplateParameters() : firstParams.getAsTemplateParameters();
+					} else {
+						assertTrue(defId.isMissing() == false);
+						return parse_FunctionLike(parse, false, ref, defId, firstParams).upcastTypeParam();
+					}  
+					
 				}
-				return parseDefinitionVariable_afterIdentifier(parse, ref, defId);
+				return parseDefinitionVariable_afterTplParams(parse, ref, defId, tplParams);
 			} else {
 				parse.consumeExpected(DeeTokens.IDENTIFIER);
 			}
@@ -581,8 +592,9 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	/* ----------------------------------------- */
 	
 	
-	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterIdentifier(
-		DefParseHelper parse, Reference ref, ProtoDefSymbol defId) throws OperationCancellation 
+	protected NodeResult<? extends DefinitionVariable> parseDefinitionVariable_afterTplParams(
+		DefParseHelper parse, Reference ref, ProtoDefSymbol defId, NodeVector<ITemplateParameter> tplParams) 
+				throws OperationCancellation 
 	{
 		ArrayList<DefVarFragment> fragments = null;
 		IInitializer init = null;
@@ -591,7 +603,7 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		final boolean isAutoRef = ref == null;
 		
 		parsing: {
-			if(!isAutoRef) {
+			if(!isAutoRef && tplParams == null) {
 				cstyleSuffix = parseCStyleSuffix(parse);
 				if(parse.checkRuleBroken()) break parsing;
 			}
@@ -613,10 +625,11 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		
 		if(isAutoRef) {
 			return parse.resultConclude(
-				new DefinitionAutoVariable(comments, defId.createDefId(), init, arrayView(fragments)));
+				new DefinitionAutoVariable(comments, defId.createDefId(), tplParams, init, arrayView(fragments)));
 		}
 		return parse.resultConclude(
-			new DefinitionVariable(comments, defId.createDefId(), ref, cstyleSuffix, init, arrayView(fragments)));
+			new DefinitionVariable(comments, defId.createDefId(), ref, tplParams, cstyleSuffix, 
+				init, arrayView(fragments)));
 	}
 	
 	protected DefVarFragment parseVarFragment(boolean isAutoRef) throws OperationCancellation {
@@ -808,6 +821,14 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(DefParseHelper parse,
 		boolean isConstrutor, Reference retType, ProtoDefSymbol defId) throws OperationCancellation {
 		
+		DeeParser_RuleParameters firstParams = parseParameters(parse);
+		
+		return parse_FunctionLike(parse, isConstrutor, retType, defId, firstParams);
+	}
+	
+	protected NodeResult<? extends AbstractFunctionDefinition> parse_FunctionLike(DefParseHelper parse, 
+			boolean isConstrutor, Reference retType, ProtoDefSymbol defId, DeeParser_RuleParameters firstParams)
+			throws OperationCancellation {
 		NodeVector<IFunctionParameter> fnParams = null;
 		NodeVector<ITemplateParameter> tplParams = null;
 		NodeVector<IFunctionAttribute> fnAttributes = null;
@@ -815,7 +836,6 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		IFunctionBody fnBody = null;
 		
 		parsing: {
-			DeeParser_RuleParameters firstParams = parseParameters(parse);
 			
 			if(firstParams.mode == TplOrFnMode.FN) {
 				fnParams = firstParams.getAsFunctionParameters();

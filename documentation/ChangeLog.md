@@ -16,6 +16,8 @@ It's now possible to specify a command other than the default one (the DUB tool)
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
+   
+ * Fixed: Parser not recognizing eponymous template syntax for variable declarations. (#135)
 
 
 ### 0.14.1
