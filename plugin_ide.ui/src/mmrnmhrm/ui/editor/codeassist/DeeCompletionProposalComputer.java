@@ -16,13 +16,14 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.utils.EclipseUtils;
-import melnorme.lang.ide.core.utils.operation.TimeoutProgressMonitor;
 import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
 import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -37,16 +38,16 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	
 	@Override
 	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			TimeoutProgressMonitor pm) throws CoreException, CommonException, OperationCancellation {
+			ICancelMonitor cm) throws CoreException, CommonException, OperationCancellation {
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
 		IProject project = context.getProject();
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 		
-		int timeoutMillis = pm.getTimeoutMillis();
+		int timeoutMillis = ((TimeoutCancelMonitor) cm).getTimeoutMillis();
 		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
-			.runEngineOperation(EclipseUtils.om(pm))
+			.runEngineOperation(new NullOperationMonitor(cm))
 			.convertToCompletionResult();
 	}
 	
