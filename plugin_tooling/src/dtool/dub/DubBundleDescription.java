@@ -94,6 +94,18 @@ public class DubBundleDescription {
 		return error;
 	}
 	
+	public boolean isParseError() {
+		if(getError() == null) {
+			return false;
+		}
+		
+		if(getError().getMessage().startsWith(CommonDubParser.MSG_JSON_PARSE_ERROR)) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/* ----------------- helper to create ResolvedManifest ----------------- */
 	
 	public static class DubDescribeAnalysis {

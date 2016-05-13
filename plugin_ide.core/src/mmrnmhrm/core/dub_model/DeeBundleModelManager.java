@@ -86,18 +86,25 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		handleBundleManifestChanged(project);
 	}
 	
-	@Override
-	protected BundleInfo createNewInfo(IProject project) {
-		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
-		/* XXX: Could it be a problem to run a possibly long-running operation here? */
-		return createProjectInfo(unresolvedDescription);
-	}
-	
 	protected void handleBundleManifestChanged(final IProject project) {
 		BundleInfo unresolvedProjectInfo = createNewInfo(project);
 		getModel().setBundleInfo(project, unresolvedProjectInfo); 
 		
 		modelAgent.submitR(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
+	}
+	
+	@Override
+	protected BundleInfo createNewInfo(IProject project) {
+		DubBundleDescription unresolvedDescription = readUnresolvedBundleDescription(project);
+		
+		if(unresolvedDescription.hasErrors() && unresolvedDescription.isParseError()) {
+			// Remove the parse error - we will run `dub describe` anyways, as DUB might still be able to parse it.
+			unresolvedDescription = new DubBundleDescription(unresolvedDescription.getMainBundle(), 
+				(DubBundleException) null);
+		}
+		
+		/* XXX: Could it be a problem to run a possibly long-running operation here? */
+		return createProjectInfo(unresolvedDescription);
 	}
 	
 	protected DubBundleDescription readUnresolvedBundleDescription(final IProject project) {
@@ -184,35 +191,34 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	
 	@Override
 	public void run() {
-		try {
-			ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
+		
+		if(unresolvedDescription.hasErrors() && !unresolvedDescription.isParseError()) {
 				
-				@Override
-				public void run(IProgressMonitor monitor) throws CoreException {
-					if(project.exists() == false) {
-						return;
-					}
-					deleteDubMarkers(project);
+			try {
+				ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 					
-					if(unresolvedDescription.hasErrors() == true) {
-						DubBundleException error = unresolvedDescription.getError();
-						setDubErrorMarker(project, error);
-						return; // only run dub describe if unresolved description had no errors
+					@Override
+					public void run(IProgressMonitor monitor) throws CoreException {
+						if(project.exists() == false) {
+							return;
+						}
+						deleteDubMarkers(project);
+						
+						setDubErrorMarker(project, unresolvedDescription.getError());
 					}
-					
-				}
-			}, project, 0, null);
-		} catch (CoreException ce) {
-			logInternalError(ce);
+				}, project, 0, null);
+			
+				// don't run `dub describe` if there was critical errors, just let the markers be updated
+				return;
+			} catch (CoreException ce) {
+				logInternalError(ce);
+			}
 		}
 		
-		// only run dub describe if unresolved description had no errors
-		if(unresolvedDescription.hasErrors() == false) {
-			try {
-				EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
-			} catch (InterruptedException e) {
-				return;
-			}
+		try {
+			EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
+		} catch (InterruptedException e) {
+			return;
 		}
 	}
 	
@@ -308,6 +314,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 					return;
 				}
 				assertTrue(!bundleDesc.hasErrors());
+				//deleteDubMarkers(project);
 				
 				workspaceModelManager.updateProjectInfo(project, unresolvedProjectInfo, bundleDesc);
 				project.refreshLocal(1, monitor);
