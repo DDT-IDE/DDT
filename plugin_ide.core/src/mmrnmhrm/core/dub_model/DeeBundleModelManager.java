@@ -192,8 +192,6 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	@Override
 	public void run() {
 		
-		if(unresolvedDescription.hasErrors() && !unresolvedDescription.isParseError()) {
-				
 			try {
 				ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 					
@@ -204,16 +202,20 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 						}
 						deleteDubMarkers(project);
 						
-						setDubErrorMarker(project, unresolvedDescription.getError());
+						if(unresolvedDescription.hasErrors()) {
+							setDubErrorMarker(project, unresolvedDescription.getError());
+						}
 					}
 				}, project, 0, null);
-			
-				// don't run `dub describe` if there was critical errors, just let the markers be updated
-				return;
+				
 			} catch (CoreException ce) {
 				logInternalError(ce);
 			}
-		}
+			
+			if(unresolvedDescription.hasErrors()) {
+				// don't run `dub describe` if there was critical errors, just let the markers be updated
+				return;
+			}
 		
 		try {
 			EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
@@ -314,7 +316,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 					return;
 				}
 				assertTrue(!bundleDesc.hasErrors());
-				//deleteDubMarkers(project);
+				deleteDubMarkers(project);
 				
 				workspaceModelManager.updateProjectInfo(project, unresolvedProjectInfo, bundleDesc);
 				project.refreshLocal(1, monitor);
