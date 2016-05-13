@@ -30,7 +30,7 @@ import dtool.tests.CommonDToolTest;
 import melnorme.utilbox.concurrency.LatchRunnable;
 import melnorme.utilbox.misc.Location;
 
-public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
+public class DeeBundleModelManagerTest extends AbstractDeeModelManagerTest {
 	
 	public static final String DUB_TEST = "DubTest";
 	public static final String DUB_LIB = "DubLib";
@@ -154,7 +154,7 @@ public class DeeModelManagerTest extends AbstractDeeModelManagerTest {
 			readStringFromFile(DUB_TEST_BUNDLES.resolve_fromValid("ErrorBundle_MissingDep/dub.json")),
 			
 			project,
-			main(location, ERROR_DUB_RETURNED_NON_ZERO, "ErrorBundle_MissingDep", DEFAULT_VERSION, srcFolders("src"), 
+			main(location, ERROR_DUB_RETURNED_NON_ZERO, "error_bundle_missing_dep", DEFAULT_VERSION, srcFolders("src"), 
 				rawDeps("foo_lib", "NonExistantDep"), 
 				FOO_LIB_BUNDLE,
 				bundle("" , "NonExistantDep")

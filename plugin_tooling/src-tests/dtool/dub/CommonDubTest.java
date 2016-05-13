@@ -56,7 +56,7 @@ public class CommonDubTest extends CommonDToolTest {
 	public static final DubBundleChecker[] IGNORE_DEPS = new DubBundleChecker[0];
 	public static final String[] IGNORE_RAW_DEPS = new String[0];
 	
-	public static final String ERROR_DUB_RETURNED_NON_ZERO = "dub returned non-zero";
+	public static final String ERROR_DUB_RETURNED_NON_ZERO = "DUB describe error";
 	
 	public static class DubBundleChecker extends CommonChecker {
 		
