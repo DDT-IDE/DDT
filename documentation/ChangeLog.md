@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 1.0.0
  * Added customization of the build command for Build Targets:
 It's now possible to specify a command other than the default one (the DUB tool). 
    * Note however that DDT still expects the output of the command (the error messages) to be in the same format as the default tool.
