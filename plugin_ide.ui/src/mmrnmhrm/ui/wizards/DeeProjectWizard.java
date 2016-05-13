@@ -104,10 +104,11 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 		if(!bundlePath.hasBundleManifest()) {
 			projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_NAME_JSON), 
 				dubManifestContents, false, pm);
+			
+			IFile mainModule = getProject().getFolder("src").getFile("app.d");
+			projectCreator.createFile(mainModule, HelloWorld_ModuleContents, true, pm);
 		}
 		
-		IFile mainModule = getProject().getFolder("src").getFile("app.d");
-		projectCreator.createFile(mainModule, HelloWorld_ModuleContents, true, pm);
 	}
 	
 	@Override
