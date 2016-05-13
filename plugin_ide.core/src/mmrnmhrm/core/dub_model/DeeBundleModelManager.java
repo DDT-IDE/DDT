@@ -304,7 +304,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		final DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(bundlePath, processHelper);
 		if(bundleDesc.hasErrors()) {
-			throw LangCore.createCoreException("Error resolving bundle: ", bundleDesc.getError());
+			throw new CommonException("DUB describe error: ", bundleDesc.getError());
 		}
 		
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {

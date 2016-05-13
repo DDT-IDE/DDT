@@ -17,6 +17,7 @@ It's now possible to specify a command other than the default one (the DUB tool)
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
  * Improvement: `dub describe` is now still invoked even if the JSON manifest has parse errors, as DUB might still be able to parse non-standard syntax (for example, trailing comma in array or object entry list). 
+ * Improved error messages for `dub describe` operation.
    
  * Fixed: Parser not recognizing eponymous template syntax for variable declarations. (#135)
  * Fixed: New Project Wizard: don't create `src/app.d` file if project location already contains a DUB manifest. 

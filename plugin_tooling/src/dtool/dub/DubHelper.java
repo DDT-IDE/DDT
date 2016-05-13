@@ -43,13 +43,8 @@ public class DubHelper {
 		return "dub";
 	}
 	
-	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath) 
-			throws IOException, InterruptedException {
-		return runDubDescribe(bundlePath, dubPath, false);
-	}
-	
 	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath, boolean allowDepDownload) 
-			throws IOException, InterruptedException 
+			throws CommonException, OperationCancellation  
 	{
 		dubPath = getDubPath(dubPath);
 		
@@ -59,7 +54,14 @@ public class DubHelper {
 		
 		pb.directory(bundlePath.getLocation().toFile());
 		
-		ExternalProcessResult processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult();
+		ExternalProcessResult processResult;
+		try {
+			processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult();
+		} catch(IOException e) {
+			throw new CommonException("Error reading `dub describe` output:", e);
+		} catch(InterruptedException e) {
+			throw new OperationCancellation();
+		}
 		
 		return parseDubDescribe(bundlePath, processResult);
 	}
@@ -86,7 +88,7 @@ public class DubHelper {
 		protected final ExternalProcessResult processResult;
 		
 		public DubDescribeFailure(ExternalProcessResult processResult) {
-			super("dub returned non-zero status: " + processResult.exitValue);
+			super(StringUtil.substringUntilMatch(processResult.getStdErrBytes().toString(), "\n"));
 			this.processResult = processResult;
 		}
 		
@@ -117,13 +119,7 @@ public class DubHelper {
 		@Override
 		public DubBundleDescription call() throws CommonException, OperationCancellation {
 			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
-			try {
-				return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
-			} catch(IOException e) {
-				throw new CommonException("Error running `dub describe`:", e.getCause());
-			} catch(InterruptedException e) {
-				throw new OperationCancellation();
-			}
+			return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
 		}
 		
 		public FileTime getStartTimeStamp() {
