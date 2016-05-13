@@ -1,5 +1,5 @@
 {
-	"name": "ErrorBundle_MissingDep",
+	"name": "error_bundle_missing_dep",
 	"dependencies": {
 		"foo_lib": "~master",
 		"NonExistantDep": "~master"

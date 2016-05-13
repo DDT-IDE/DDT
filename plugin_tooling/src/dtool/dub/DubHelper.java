@@ -88,7 +88,7 @@ public class DubHelper {
 		protected final ExternalProcessResult processResult;
 		
 		public DubDescribeFailure(ExternalProcessResult processResult) {
-			super(StringUtil.substringUntilMatch(processResult.getStdErrBytes().toString(), "\n"));
+			super(processResult.getStdErrBytes().toString());
 			this.processResult = processResult;
 		}
 		
