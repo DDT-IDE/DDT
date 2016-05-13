@@ -13,6 +13,8 @@ package dtool.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
+import java.util.HashSet;
+
 import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.context.BundleModules;
 import melnorme.utilbox.collections.Indexable;
@@ -72,20 +74,36 @@ public class BundleResolution extends AbstractBundleResolution {
 	
 	/* -----------------  ----------------- */
 	
-	protected static boolean CHECK_STD_LIB_STALENESS = true;
-	
 	@Override
 	public boolean checkIsStale() {
+		HashSet<BundleKey> verifiedBundles = new HashSet<>();
+		return checkIsStale(true, verifiedBundles);
+	}
+	
+	public boolean checkIsStale(boolean checkStdLib, HashSet<BundleKey> verifiedBundles) {
+		
 		if(checkIsModuleListStale() || checkIsModuleContentsStale()) {
 			return true;
 		}
 		
-		if(CHECK_STD_LIB_STALENESS && stdLibResolution.checkIsStale()) {
-			return true;
+		if(checkStdLib) {
+			if(stdLibResolution.checkIsStale()) {
+				return true;
+			}
 		}
 		
+		// Mark this bundle as having the staleness verified, 
+		// this an optimization to avoid exponential growth of duplicate bundle checks for projects
+		// with complex dependency trees (ie, vibe for example).
+		verifiedBundles.add(getBundleKey());
+		
 		for (BundleResolution bundleRes : depResolutions) {
-			if(bundleRes.checkIsStale()) {
+			
+			if(verifiedBundles.contains(bundleRes.getBundleKey())) {
+				continue;
+			}
+			
+			if(bundleRes.checkIsStale(false, verifiedBundles)) {
 				return true;
 			}
 		}

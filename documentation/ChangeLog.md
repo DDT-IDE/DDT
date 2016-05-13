@@ -21,7 +21,8 @@ It's now possible to specify a command other than the default one (the DUB tool)
    
  * Fixed: Parser not recognizing eponymous template syntax for variable declarations. (#135)
  * Fixed: New Project Wizard: creates `src/app.d` file if project location already contains a DUB manifest.
- * Fixed: Now correctly setup text color and background color for documentation hover. (fixes #129) 
+ * Fixed: Now correctly setup text color and background color for documentation hover. (fixes #129)
+ * Fixed: Exponential performance issue invoking semantic operations on projects with complex, *dense* dependencies trees (such as vibe.d). 
 
 
 ### 0.14.1
