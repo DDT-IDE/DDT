@@ -31,7 +31,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
-import dtool.dub.DubHelper.RunDubDescribeCallable;
+import dtool.dub.DubDescribeRunner.RunDubDescribeCallable;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;

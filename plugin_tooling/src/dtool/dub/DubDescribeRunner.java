@@ -26,7 +26,7 @@ import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 /**
  * Helper code to run DUB commands.
  */
-public class DubHelper {
+public class DubDescribeRunner {
 	
 	public static final String DUB_PATH_OVERRIDE = System.getProperty("DTool.DubPath");
 	
@@ -36,24 +36,37 @@ public class DubHelper {
 		}
 	}
 	
-	public static String getDubPath(String dubPath) {
-		if(dubPath != null && !dubPath.isEmpty()) {
-			return dubPath;
-		}
-		return "dub";
+	
+	/* -----------------  ----------------- */
+	
+	protected final BundlePath bundlePath;
+	protected final String dubPath;
+	protected final boolean allowDepDownload;
+	
+	public DubDescribeRunner(BundlePath bundlePath, String dubPath, boolean allowDepDownload) {
+		this.bundlePath = bundlePath;
+		this.dubPath = dubPath;
+		this.allowDepDownload = allowDepDownload;
 	}
 	
-	public static DubBundleDescription runDubDescribe(BundlePath bundlePath, String dubPath, boolean allowDepDownload) 
-			throws CommonException, OperationCancellation  
-	{
-		dubPath = getDubPath(dubPath);
-		
+	public DubBundleDescription runDubDescribe() throws CommonException, OperationCancellation {
+		return runDescribeOperation();
+	}
+	
+	public DubBundleDescription runDescribeOperation() throws CommonException, OperationCancellation {
 		ProcessBuilder pb = allowDepDownload ? 
 				new ProcessBuilder(dubPath, "describe") : 
 				new ProcessBuilder(dubPath, "describe", "--nodeps");
 		
 		pb.directory(bundlePath.getLocation().toFile());
 		
+		ExternalProcessResult processResult = runProcessAndAwaitResult(pb);
+		
+		return parseDubDescribe(bundlePath, processResult);
+	}
+	
+	protected ExternalProcessResult runProcessAndAwaitResult(ProcessBuilder pb) 
+			throws CommonException, OperationCancellation {
 		ExternalProcessResult processResult;
 		try {
 			processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult();
@@ -62,11 +75,10 @@ public class DubHelper {
 		} catch(InterruptedException e) {
 			throw new OperationCancellation();
 		}
-		
-		return parseDubDescribe(bundlePath, processResult);
+		return processResult;
 	}
 	
-	public static DubBundleDescription parseDubDescribe(BundlePath bundlePath, ExternalProcessResult processResult) {
+	public DubBundleDescription parseDubDescribe(BundlePath bundlePath, ExternalProcessResult processResult) {
 		String describeOutput = processResult.stdout.toString(StringUtil.UTF8);
 		
 		int exitValue = processResult.exitValue;
@@ -119,7 +131,7 @@ public class DubHelper {
 		@Override
 		public DubBundleDescription call() throws CommonException, OperationCancellation {
 			startTimeStamp = FileTime.fromMillis(System.currentTimeMillis());
-			return DubHelper.runDubDescribe(bundlePath, dubPath, allowDepDownload);
+			return new DubDescribeRunner(bundlePath, dubPath, allowDepDownload).runDubDescribe();
 		}
 		
 		public FileTime getStartTimeStamp() {

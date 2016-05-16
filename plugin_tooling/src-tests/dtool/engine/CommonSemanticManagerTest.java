@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 
 import dtool.ast.definitions.Module;
 import dtool.dub.CommonDubTest;
-import dtool.dub.DubHelper.DubDescribeFailure;
+import dtool.dub.DubDescribeRunner.DubDescribeFailure;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.compiler_installs.CompilerInstall;
 

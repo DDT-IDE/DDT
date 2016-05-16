@@ -14,7 +14,6 @@ import static melnorme.lang.ide.core.operations.ILangOperationsListener_Default.
 import static melnorme.lang.ide.core.utils.TextMessageUtils.headerBIG;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import static melnorme.utilbox.core.CoreUtil.array;
 
 import java.text.MessageFormat;
 
@@ -29,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
 import dtool.dub.DubBundleDescription;
-import dtool.dub.DubHelper;
+import dtool.dub.DubDescribeRunner;
 import dtool.dub.DubManifestParser;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.compiler_installs.SearchCompilersOnPathOperation;
@@ -113,7 +112,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation2(bundlePath);
 		if(unresolvedBundle == null) {
 			// Can happen if using SDL format, which we don't know how to parse. Provide dummy bundle
-			unresolvedBundle = new DubBundle(bundlePath, "(UNKNOW)", null, null, null, 
+			unresolvedBundle = new DubBundle(bundlePath, "(UNKNOWN)", null, null, null, 
 				null, null, null, null, null, null);
 		}
 		
@@ -294,17 +293,16 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			headerBIG(MessageFormat.format(DeeCoreMessages.RunningDubDescribe, project.getName())));
 		
 		// TODO: add --skip-registry to dub command
-		ProcessBuilder pb = getToolManager().createSimpleProcessBuilder(project, array(dubPath, "describe"));
-		IRunProcessTask dubDescribeTask = getProcessManager().newRunProcessTask(opMonitor, pb, pm);
 		
-		ExternalProcessResult processHelper;
-		try {
-			processHelper = getProcessManager().submitTaskAndAwaitResult(dubDescribeTask);
-		} catch (OperationCancellation e) {
-			throw LangCore.createCoreException("Error, `describe` cancelled.", null);
-		}
+		final DubBundleDescription bundleDesc = new DubDescribeRunner(bundlePath, dubPath, true) { 
+			@Override
+			protected ExternalProcessResult runProcessAndAwaitResult(ProcessBuilder pb) 
+					throws CommonException, OperationCancellation {
+				IRunProcessTask runProcessTask = getProcessManager().newRunProcessTask(opMonitor, pb, pm);
+				return getProcessManager().submitTaskAndAwaitResult(runProcessTask);
+			};
+		}.runDescribeOperation();
 		
-		final DubBundleDescription bundleDesc = DubHelper.parseDubDescribe(bundlePath, processHelper);
 		if(bundleDesc.hasErrors()) {
 			throw new CommonException("DUB describe error: ", bundleDesc.getError());
 		}

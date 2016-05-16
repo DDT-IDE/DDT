@@ -28,7 +28,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.VoidFunction;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
-import dtool.dub.DubHelper;
+import dtool.dub.DubDescribeRunner;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.util.NewUtils;
 
@@ -39,7 +39,7 @@ public class CommonDToolTest extends CommonToolingTest {
 	}
 	
 	public static String testsDubPath() {
-		return DubHelper.DUB_PATH_OVERRIDE == null ? "dub" : DubHelper.DUB_PATH_OVERRIDE;
+		return DubDescribeRunner.DUB_PATH_OVERRIDE == null ? "dub" : DubDescribeRunner.DUB_PATH_OVERRIDE;
 	}
 	
 	public static Path testsDubPath2() {

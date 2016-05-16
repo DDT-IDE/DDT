@@ -12,7 +12,7 @@ package mmrnmhrm.core;
 
 import org.osgi.framework.BundleContext;
 
-import dtool.dub.DubHelper;
+import dtool.dub.DubDescribeRunner;
 import melnorme.lang.ide.core.LangCorePlugin;
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 
@@ -21,7 +21,7 @@ public class DeeCorePlugin extends LangCorePlugin {
 	@Override
 	protected void doCustomStart(BundleContext context) {
 		ToolchainPreferences.SDK_PATH.getGlobalPreference().setPreferencesDefaultValue(
-			DubHelper.DUB_PATH_OVERRIDE != null ? DubHelper.DUB_PATH_OVERRIDE : "dub");
+			DubDescribeRunner.DUB_PATH_OVERRIDE != null ? DubDescribeRunner.DUB_PATH_OVERRIDE : "dub");
 	}
 	
 	@Override
