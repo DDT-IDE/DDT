@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.CoreException;
 
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
+import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -26,7 +28,6 @@ import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperati
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.data.Severity;
-import melnorme.lang.tooling.ops.ICommonOperation;
 import melnorme.lang.tooling.ops.IOperationMonitor;
 import melnorme.lang.tooling.ops.SourceLineColumnRange;
 import melnorme.lang.tooling.ops.ToolSourceMessage;
@@ -51,6 +52,11 @@ public class DeeBuildManager extends BuildManager {
 	}
 	
 	@Override
+	public DeeToolManager getToolManager() {
+		return (DeeToolManager) super.getToolManager();
+	}
+	
+	@Override
 	protected void bundleProjectAddedOrModified(IProject project, BundleInfo newBundleInfo) {
 		if(newBundleInfo.getBundleDesc().isResolved()) {
 			// We ignore resolved description, because only unresolved ones have configuration info
@@ -65,26 +71,6 @@ public class DeeBuildManager extends BuildManager {
 			new DeeBuildType(BuildType_Default),
 			new DeeBuildType(DubBuildType.UNITTEST.getBuildTypeString())
 		);
-	}
-	
-	/* FIXME: review removed used of RunInDubAgentWrapper */
-	
-	protected static class RunInDubAgentWrapper implements ICommonOperation {
-		
-		protected final ICommonOperation coreOp;
-		
-		public RunInDubAgentWrapper(ICommonOperation toolOp) {
-			this.coreOp = toolOp;
-		}
-		
-		@Override
-		public void execute(IOperationMonitor om) throws CommonException, OperationCancellation {
-			LangCore.getToolManager().submitTaskAndAwaitResult(() -> {
-				coreOp.execute(om);
-				return null;
-			});
-		}
-		
 	}
 	
 	/* -----------------  ----------------- */
@@ -126,6 +112,15 @@ public class DeeBuildManager extends BuildManager {
 		
 		public DeeBuildTargetOperation(BuildOperationParameters buildOpParams) {
 			super(buildOpParams);
+		}
+		
+		@Override
+		protected ExternalProcessResult runBuildTool(IToolOperationMonitor opMonitor, ProcessBuilder pb,
+				IOperationMonitor om) throws CommonException, OperationCancellation {
+			
+			RunToolTask newRunToolTask = getToolManager().newRunProcessTask(opMonitor, pb, om);
+			
+			return LangCore.getToolManager().submitTaskAndAwaitResult(newRunToolTask);
 		}
 		
 		@Override
