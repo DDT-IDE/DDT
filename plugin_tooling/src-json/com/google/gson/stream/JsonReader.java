@@ -487,8 +487,18 @@ public class JsonReader implements Closeable {
         return peeked = PEEKED_SINGLE_QUOTED_NAME;
       case '}':
         if (peekStack != JsonScope.NONEMPTY_OBJECT) {
+        	// BM: peekStack == JsonScope.EMPTY_OBJECT
           return peeked = PEEKED_END_OBJECT;
         } else {
+        	// BM: assert: peekStack == JsonScope.NONEMPTY_OBJECT
+        	
+        	// BM: added code to be lenient about trailing commas
+        	{
+        		if(lenient) {
+            		return peeked = PEEKED_END_OBJECT;
+        		}
+        	}
+        	
           throw syntaxError("Expected name");
         }
       default:
