@@ -61,6 +61,11 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 	
 	public static class DeeBundleModel extends LangBundleModel {
 		
+		@Override
+		public BundleInfo setBundleInfo(IProject project, BundleInfo newProjectInfo) {
+			return super.setBundleInfo(project, newProjectInfo);
+		}
+		
 	}
 	
 	/* -----------------  ----------------- */
@@ -294,7 +299,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		// TODO: add --skip-registry to dub command
 		
-		final DubBundleDescription bundleDesc = new DubDescribeRunner(bundlePath, dubPath, true) { 
+		final DubBundleDescription describedBundle = new DubDescribeRunner(bundlePath, dubPath, true) { 
 			@Override
 			protected ExternalProcessResult runProcessAndAwaitResult(ProcessBuilder pb) 
 					throws CommonException, OperationCancellation {
@@ -303,9 +308,11 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			};
 		}.runDescribeOperation();
 		
-		if(bundleDesc.hasErrors()) {
-			throw new CommonException("DUB describe error: ", bundleDesc.getError());
+		if(describedBundle.hasErrors()) {
+			throw new CommonException("DUB describe error: ", describedBundle.getError());
 		}
+		
+		DubBundleDescription bundleDesc = getEffectiveBundleDescription(describedBundle);
 		
 		ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {
 			@Override
@@ -322,6 +329,29 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		}, null, 0, pm);
 		
 		return null;
+	}
+	
+	protected DubBundleDescription getEffectiveBundleDescription(final DubBundleDescription describedBundle) {
+		// Because `dub describe` does not supply configuration info, we take the described bundle 
+		// and add to it the configuration info from the previous, parsed description.
+		
+		DubBundle mainBundle = describedBundle.getMainBundle();
+		
+		mainBundle = new DubBundle(
+			mainBundle.getBundlePath(), 
+			mainBundle.getBundleName(), 
+			mainBundle.error, 
+			mainBundle.version, 
+			mainBundle.srcFolders, 
+			mainBundle.getEffectiveSourceFolders(), 
+			mainBundle.bundleFiles, 
+			mainBundle.getDependencyRefs(), 
+			mainBundle.getTargetName(), 
+			mainBundle.getTargetPath(), 
+			unresolvedDescription.getMainBundle().getConfigurations().toArrayList() // add configs here
+		);
+		
+		return new DubBundleDescription(mainBundle, describedBundle.getBundleDependencies());
 	}
 	
 	protected void setProjectDubError(IProject project, CommonException ce) throws CoreException {
