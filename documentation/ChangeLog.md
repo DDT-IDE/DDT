@@ -3,28 +3,27 @@
 ### (NextVersion)
 
 ### 1.0.0
- * Added customization of the build command for Build Targets:
-It's now possible to specify a command other than the default one (the DUB tool). 
-   * Note however that DDT still expects the output of the command (the error messages) to be in the same format as the default tool.
- * Added support for invoking a specific Build Target when a D editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
-   * Added [Building](documentation/UserGuide.md#building) section to documentation.
-   * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice it will likely require the compiler to support incremental compilation (or be super fast otherwise).
- * Added support for modifying the environment variables of a Build Target's build command.  
-  
- * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
- * Added signing to releases.
- * Fixed: Pressing Tab key does not indent according to Editor indentation preferences.
-
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).
    * Added `Format DUB package (dfmt)` command to Project context menu.
    * Added "Format automatically on editor save." option.
- * Improvement: `dub describe` is now still invoked even if the JSON manifest has parse errors, as DUB might still be able to parse non-standard syntax (for example, trailing comma in array or object entry list). 
- * Improved error messages for `dub describe` operation.
-   
+ * **Performance improvement**: Fixed exponential performance issue invoking semantic operations on projects with complex, *dense* dependencies trees (such as `vibe.d`). 
+ * Added customization of the build command for Build Targets:
+It's now possible to specify a command other than the default one (the DUB tool). 
+   * Note however that DDT still expects the output of the command (the error messages) to be in the same format as the default tool (the D compiler format).
+ * Added support for invoking a specific Build Target when a D editor is saved. This is called "auto-check", and is intended for build commands that only check for compilation errors, but don't produce artifacts. This has the potential to be faster than a regular build. 
+   * The goal for the future is to enable invoking this command on-the-fly (as the user types), although for this to be useful in practice in non-small projects, it will likely require the compiler to support incremental compilation (or be super fast otherwise).
+   * Added [Building](documentation/UserGuide.md#building) section to documentation with more information on the above.
+ * Added support for modifying the environment variables of a Build Target's build command.  
+ * Improvement: DDT is now able to parse the non-standard JSON syntax of a trailing comma in an object entry list (ie, `{ "name" : "value", }`). 
+ * Improved error messages display for the `dub describe` operation.
+ * Added signing to releases.
+
+--
+ * Fixed "IllegalStateException: The service has been unregistered" on Mars.2 when Eclipse is closed.
+ * Fixed: Pressing Tab key does not indent according to Editor indentation preferences.
  * Fixed: Parser not recognizing eponymous template syntax for variable declarations. (#135)
  * Fixed: New Project Wizard: creates `src/app.d` file if project location already contains a DUB manifest.
  * Fixed: Now correctly setup text color and background color for documentation hover. (fixes #129)
- * Fixed: Exponential performance issue invoking semantic operations on projects with complex, *dense* dependencies trees (such as vibe.d). 
 
 
 ### 0.14.1
