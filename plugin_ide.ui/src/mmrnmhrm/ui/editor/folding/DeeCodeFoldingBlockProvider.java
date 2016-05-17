@@ -71,6 +71,8 @@ public class DeeCodeFoldingBlockProvider implements IFoldingBlockProvider {
 				@Override
 				public boolean preVisit(ASTNode node) {
 					switch (node.getNodeType()) {
+					case DECLARATION_ENUM:
+					case DEFINITION_ENUM:
 					case DEFINITION_STRUCT:
 					case DEFINITION_UNION:
 					case DEFINITION_CLASS:

@@ -16,6 +16,7 @@ It's now possible to specify a command other than the default one (the DUB tool)
  * Added support for modifying the environment variables of a Build Target's build command.  
  * Improvement: DDT is now able to parse the non-standard JSON syntax of a trailing comma in an object entry list (ie, `{ "name" : "value", }`). 
  * Improved error messages display for the `dub describe` operation.
+ * Enum declarations can now be folded in the editor, just as any other aggregate type. (#126)
  * Added signing to releases.
 
 --
