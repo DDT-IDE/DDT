@@ -3,7 +3,7 @@
   	<extensionContent id="LangIDE-introExtension" style="intro.css" name="User Guide Extension" path="overview/@">
 		<group style-id="content-group" id="org-dsource-ddt-introLink-group">
        		<link label="DDT User Guide" 
-       		url="http://org.eclipse.ui.intro/openBrowser?url=http://ddt-ide.github.io/" 
+       		url="http://org.eclipse.ui.intro/openBrowser?url=https://github.com/DDT-IDE/DDT/blob/latest/documentation/UserGuide.md#user-guide" 
        		id="org-dsource-ddt-introLink" style-id="content-link">
           		<text>The configuration and user manual for DDT (recommended read).</text>
        		</link>
