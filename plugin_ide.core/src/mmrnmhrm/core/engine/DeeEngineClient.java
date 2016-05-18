@@ -25,7 +25,7 @@ import dtool.parser.structure.DeeStructureCreator;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.engine.EngineOperation;
 import melnorme.lang.ide.core.engine.SourceModelManager;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;

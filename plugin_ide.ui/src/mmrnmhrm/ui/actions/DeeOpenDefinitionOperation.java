@@ -29,7 +29,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
