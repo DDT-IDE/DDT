@@ -12,6 +12,7 @@ package melnorme.lang.tooling.ast;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
 import melnorme.lang.tooling.ast.NodeData.CompleteNodeVisitor;
 import melnorme.lang.tooling.ast.NodeData.CreatedStatusNodeData;
 import melnorme.lang.tooling.ast.util.ASTChildrenCollector;
@@ -19,6 +20,7 @@ import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast.util.NodeElementUtil;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
 import melnorme.utilbox.collections.ArrayView;
 
 public abstract class CommonASTNode extends SourceElement implements IASTNode {

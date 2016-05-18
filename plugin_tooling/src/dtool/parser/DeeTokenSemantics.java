@@ -5,14 +5,14 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.tooling.EProtection;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.utilbox.misc.Pair;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.Token;
 import dtool.util.NewUtils;
+import melnorme.lang.tooling.EProtection;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.misc.Pair;
 
 public class DeeTokenSemantics {
 	

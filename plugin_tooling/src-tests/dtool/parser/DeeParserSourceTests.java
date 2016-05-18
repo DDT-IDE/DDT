@@ -26,15 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.ArrayUtil;
-import melnorme.utilbox.misc.Pair;
-import melnorme.utilbox.misc.StringUtil;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +42,14 @@ import dtool.sourcegen.TemplatedSourceProcessorParser.TspExpansionElement;
 import dtool.tests.CommonTemplatedSourceBasedTest;
 import dtool.tests.utils.SimpleParser;
 import dtool.util.NewUtils;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.ArrayUtil;
+import melnorme.utilbox.misc.Pair;
+import melnorme.utilbox.misc.StringUtil;
 
 @RunWith(Parameterized.class)
 public class DeeParserSourceTests extends CommonTemplatedSourceBasedTest {

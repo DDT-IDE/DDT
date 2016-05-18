@@ -17,12 +17,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertUnreachable;
 
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.StaticIfExpIs;
 import dtool.ast.declarations.StaticIfExpIs.StaticIfExpIsDefUnit;
@@ -94,6 +88,12 @@ import dtool.parser.DeeParser_Parameters.TplOrFnMode;
 import dtool.parser.common.BaseLexElement;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.util.NodeVector;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.ArrayUtil;
 
 
 public abstract class DeeParser_RefOrExp extends DeeParser_Common {

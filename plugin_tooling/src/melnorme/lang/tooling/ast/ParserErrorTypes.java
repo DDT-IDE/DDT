@@ -10,12 +10,12 @@
  *******************************************************************************/
 package melnorme.lang.tooling.ast;
 
-import melnorme.lang.tooling.LANG_SPECIFIC;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.utilbox.misc.StringUtil;
 import dtool.ast.declarations.AttribLinkage.Linkage;
 import dtool.ast.statements.StatementScope.ScopeTypes;
 import dtool.parser.DeeTokens;
+import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.misc.StringUtil;
 
 @LANG_SPECIFIC
 public enum ParserErrorTypes {

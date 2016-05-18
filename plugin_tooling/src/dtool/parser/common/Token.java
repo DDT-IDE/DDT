@@ -13,10 +13,11 @@ package dtool.parser.common;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.parser.ISourceRepresentation;
-import dtool.parser.DeeTokens;
+
 import dtool.parser.DeeLexerErrors;
+import dtool.parser.DeeTokens;
+import melnorme.lang.tooling.ast.ISourceRepresentation;
+import melnorme.lang.tooling.ast.SourceRange;
 
 public class Token implements ISourceRepresentation, IToken {
 	

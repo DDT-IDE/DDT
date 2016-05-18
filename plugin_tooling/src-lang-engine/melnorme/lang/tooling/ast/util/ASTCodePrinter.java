@@ -15,8 +15,8 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import java.util.Iterator;
 
 import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ISourceRepresentation;
 import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.parser.ISourceRepresentation;
 
 public class ASTCodePrinter {
 	

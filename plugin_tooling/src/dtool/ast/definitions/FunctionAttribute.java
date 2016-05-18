@@ -10,14 +10,14 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import dtool.ast.declarations.AttribBasic;
+import dtool.parser.DeeTokens;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ISourceRepresentation;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNode;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.parser.ISourceRepresentation;
-import dtool.ast.declarations.AttribBasic;
-import dtool.parser.DeeTokens;
 
 /** 
  * Function postfix attribute.

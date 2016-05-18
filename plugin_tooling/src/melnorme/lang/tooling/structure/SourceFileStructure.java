@@ -11,7 +11,7 @@
 package melnorme.lang.tooling.structure;
 
 import dtool.parser.DeeParserResult.ParsedModule;
-import melnorme.lang.tooling.ast.ParserError;
+import melnorme.lang.tooling.common.ParserError;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;
 

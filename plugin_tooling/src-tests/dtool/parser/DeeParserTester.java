@@ -22,17 +22,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-import melnorme.lang.tooling.ast.ASTVisitor;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.StringUtil;
-import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.declarations.DeclarationAttrib;
 import dtool.ast.declarations.DeclarationAttrib.AttribBodySyntax;
 import dtool.ast.definitions.CommonDefinition;
@@ -62,6 +51,17 @@ import dtool.parser.common.Token;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
 import dtool.tests.DToolTests;
 import dtool.util.NewUtils;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.tests.CommonTestUtils;
 
 
 public class DeeParserTester extends CommonTestUtils {

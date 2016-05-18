@@ -28,8 +28,8 @@ import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperati
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.ops.IOperationMonitor;
-import melnorme.lang.tooling.ops.SourceLineColumnRange;
-import melnorme.lang.tooling.ops.ToolSourceMessage;
+import melnorme.lang.tooling.toolchain.SourceLineColumnRange;
+import melnorme.lang.tooling.toolchain.ToolSourceMessage;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;

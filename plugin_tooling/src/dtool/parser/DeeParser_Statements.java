@@ -14,11 +14,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.core.CoreUtil;
 import dtool.ast.declarations.DeclarationMixinString;
 import dtool.ast.declarations.IDeclaration;
 import dtool.ast.declarations.IncompleteDeclarator;
@@ -67,6 +62,11 @@ import dtool.ast.statements.StatementWith;
 import dtool.ast.statements.VariableDefWithInit;
 import dtool.parser.common.IToken;
 import dtool.parser.common.LexElement;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.util.NodeVector;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CoreUtil;
 
 
 public abstract class DeeParser_Statements extends DeeParser_Definitions {

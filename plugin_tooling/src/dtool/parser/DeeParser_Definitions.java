@@ -18,15 +18,6 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.utilbox.collections.ArrayView;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.misc.ArrayUtil;
 import dtool.ast.declarations.Attribute;
 import dtool.ast.declarations.DeclBlock;
 import dtool.ast.declarations.DeclarationAliasThis;
@@ -55,12 +46,12 @@ import dtool.ast.definitions.DefinitionAliasFunctionDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl.AliasVarDeclFragment;
 import dtool.ast.definitions.DefinitionClass;
+import dtool.ast.definitions.DefinitionClass_Common;
 import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionEnum;
 import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionEnumVar;
 import dtool.ast.definitions.DefinitionEnumVar.DefinitionEnumVarFragment;
-import dtool.ast.definitions.DefinitionClass_Common;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionInterface;
 import dtool.ast.definitions.DefinitionMixinInstance;
@@ -102,6 +93,15 @@ import dtool.parser.common.LexElement;
 import dtool.parser.common.Token;
 import dtool.util.NewUtils;
 import dtool.util.SentinelArrayList;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.ast.util.NodeVector;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.collections.ArrayView;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.misc.ArrayUtil;
 
 public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 	

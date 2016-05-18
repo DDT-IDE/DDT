@@ -11,8 +11,8 @@
 package dtool.parser;
 
 import dtool.ast.definitions.DefSymbol;
-import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ParserError;
 
 public class ProtoDefSymbol {
 	

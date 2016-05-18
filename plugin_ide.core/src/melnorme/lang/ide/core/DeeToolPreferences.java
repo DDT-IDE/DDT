@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 import melnorme.lang.ide.core.operations.ToolchainPreferences;
 import melnorme.lang.ide.core.utils.prefs.DerivedValuePreference;
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 
 public interface DeeToolPreferences extends ToolchainPreferences {
 	

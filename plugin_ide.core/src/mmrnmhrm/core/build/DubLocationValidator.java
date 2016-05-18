@@ -10,7 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.build;
 
-import melnorme.lang.tooling.ops.util.LocationOrSinglePathValidator;
+import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 import mmrnmhrm.core.DeeCoreMessages;
 
 public class DubLocationValidator extends LocationOrSinglePathValidator {

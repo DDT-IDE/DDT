@@ -10,12 +10,12 @@
  *******************************************************************************/
 package dtool.ast.declarations;
 
+import dtool.parser.DeeTokens;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
+import melnorme.lang.tooling.ast.ISourceRepresentation;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
 import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.parser.ISourceRepresentation;
-import dtool.parser.DeeTokens;
 
 public class AttribBasic extends Attribute {
 	

@@ -16,19 +16,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import dtool.parser.DeeTokens;
+import dtool.parser.ProtoDefSymbol;
+import dtool.parser.common.LexElement.MissingLexElement;
 import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.ParserError;
 import melnorme.lang.tooling.ast.ParserErrorTypes;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.ast.util.NodeVector;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.ArrayUtil;
-import dtool.parser.DeeTokens;
-import dtool.parser.ProtoDefSymbol;
-import dtool.parser.common.LexElement.MissingLexElement;
 
 /**
  * Basic parsing functionality.

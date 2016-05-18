@@ -20,19 +20,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import melnorme.lang.tooling.ast.ASTVisitor;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserError.ErrorSourceRangeComparator;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.concurrency.ICancelMonitor;
-import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import dtool.ast.definitions.Module;
 import dtool.engine.modules.ModuleNamingRules;
 import dtool.parser.DeeParserResult.ParsedModule;
 import dtool.parser.common.LexElementProducer;
 import dtool.parser.common.LexElementSource;
 import dtool.parser.common.Token;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.lang.tooling.common.ParserError.ErrorSourceRangeComparator;
+import melnorme.utilbox.concurrency.ICancelMonitor;
+import melnorme.utilbox.concurrency.ICancelMonitor.NullCancelMonitor;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 /**
  * Concrete D Parser class

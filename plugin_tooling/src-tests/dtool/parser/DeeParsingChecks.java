@@ -18,21 +18,21 @@ import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.ast.ASTVisitor;
-import melnorme.lang.tooling.ast.IASTNode;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.ParserErrorTypes;
-import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
-import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.concurrency.OperationCancellation;
-import melnorme.utilbox.tests.CommonTestUtils;
 import dtool.ast.definitions.EArcheType.ArchetypeCastVisitor;
 import dtool.ast.definitions.IFunctionParameter;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.parser.DeeParser_Parameters.AmbiguousParameter;
 import dtool.parser.DeeParser_Parameters.TplOrFnMode;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.IASTNode;
+import melnorme.lang.tooling.ast.ParserErrorTypes;
+import melnorme.lang.tooling.ast.util.ASTSourceRangeChecker;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.ast_actual.ASTNodeTypes;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.tests.CommonTestUtils;
 
 /**
  * Various checks for invariants in node parsing.

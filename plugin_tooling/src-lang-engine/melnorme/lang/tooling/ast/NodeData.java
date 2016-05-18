@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import melnorme.lang.tooling.ast.util.ASTDirectChildrenVisitor;
 import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
 
 public abstract class NodeData {
 	

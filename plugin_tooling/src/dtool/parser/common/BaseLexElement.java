@@ -13,9 +13,11 @@ package dtool.parser.common;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertEquals;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.SourceRange;
+
 import dtool.parser.DeeTokens;
+import dtool.parser.common.LexElement.MissingLexElement;
+import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ParserError;
 
 
 /**

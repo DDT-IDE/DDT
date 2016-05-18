@@ -17,13 +17,13 @@ import java.nio.file.Path;
 import java.util.AbstractList;
 import java.util.List;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
 import dtool.ast.definitions.Module;
 import dtool.parser.common.LexElement;
 import dtool.parser.common.LexerResult;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 
 public class DeeParserResult extends LexerResult {
 	

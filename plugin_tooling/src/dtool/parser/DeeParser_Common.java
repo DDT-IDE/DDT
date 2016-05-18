@@ -4,15 +4,15 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
 import java.util.ArrayList;
 
-import melnorme.lang.tooling.ast.ParserError;
-import melnorme.lang.tooling.ast.util.NodeVector;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import dtool.ast.definitions.Symbol;
 import dtool.ast.references.RefIdentifier;
 import dtool.ast.references.Reference;
 import dtool.parser.common.AbstractParser;
 import dtool.parser.common.BaseLexElement;
+import melnorme.lang.tooling.ast.util.NodeVector;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.common.ParserError;
+import melnorme.utilbox.concurrency.OperationCancellation;
 
 
 public abstract class DeeParser_Common extends AbstractParser {
