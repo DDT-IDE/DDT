@@ -65,5 +65,6 @@ Export-Package: descent.core.ddoc,
  melnorme.utilbox.misc,
  melnorme.utilbox.ownership,
  melnorme.utilbox.process,
+ melnorme.utilbox.status,
  melnorme.utilbox.tests,
  melnorme.utilbox.tree

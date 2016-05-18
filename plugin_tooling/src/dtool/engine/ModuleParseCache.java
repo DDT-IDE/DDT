@@ -20,17 +20,17 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 
+import dtool.ast.definitions.Module;
+import dtool.parser.DeeParser;
+import dtool.parser.DeeParserResult.ParsedModule;
 import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.ops.util.FileModificationDetectionHelper;
+import melnorme.lang.utils.FileModificationDetectionHelper;
 import melnorme.lang.utils.ISimpleStatusLogger;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.FileUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
-import dtool.ast.definitions.Module;
-import dtool.parser.DeeParser;
-import dtool.parser.DeeParserResult.ParsedModule;
 
 /**
  * Manages a cache of parsed modules, indexed by file path

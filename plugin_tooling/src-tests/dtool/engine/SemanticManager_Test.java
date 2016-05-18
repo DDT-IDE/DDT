@@ -21,13 +21,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import melnorme.lang.tooling.BundlePath;
-import melnorme.lang.tooling.ops.util.FileCachingEntry;
-import melnorme.lang.utils.MiscFileUtils;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.FileUtil;
-import melnorme.utilbox.misc.Location;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -38,6 +31,12 @@ import dtool.dub.DubDescribeParserTest;
 import dtool.dub.ResolvedManifest;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.parser.DeeParserResult.ParsedModule;
+import melnorme.lang.tooling.BundlePath;
+import melnorme.lang.utils.FileCachingEntry;
+import melnorme.lang.utils.MiscFileUtils;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.FileUtil;
+import melnorme.utilbox.misc.Location;
 
 public class SemanticManager_Test extends CommonSemanticManagerTest {
 	

@@ -19,16 +19,6 @@ import java.nio.file.attribute.FileTime;
 import java.text.MessageFormat;
 import java.util.List;
 
-import melnorme.lang.tooling.BundlePath;
-import melnorme.lang.tooling.context.BundleModules;
-import melnorme.lang.tooling.context.ModuleSourceException;
-import melnorme.lang.tooling.ops.util.FileCachingEntry;
-import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.concurrency.ExecutorTaskAgent;
-import melnorme.utilbox.concurrency.ITaskAgent;
-import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.misc.Location;
 import dtool.dub.DubBundleDescription;
 import dtool.dub.DubBundleDescription.DubDescribeAnalysis;
 import dtool.dub.DubDescribeRunner.RunDubDescribeCallable;
@@ -37,6 +27,16 @@ import dtool.engine.StandardLibraryResolution.MissingStandardLibraryResolution;
 import dtool.engine.compiler_installs.CompilerInstall;
 import dtool.engine.modules.BundleModulesVisitor;
 import dtool.parser.DeeParserResult.ParsedModule;
+import melnorme.lang.tooling.BundlePath;
+import melnorme.lang.tooling.context.BundleModules;
+import melnorme.lang.tooling.context.ModuleSourceException;
+import melnorme.lang.utils.FileCachingEntry;
+import melnorme.lang.utils.concurrency.SynchronizedEntryMap;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.ExecutorTaskAgent;
+import melnorme.utilbox.concurrency.ITaskAgent;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 
 class BundleResolutionEntry {
 	
