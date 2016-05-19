@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Improved the default names for automatically created launch configuration.
 
 ### 1.0.0
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).
