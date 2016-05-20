@@ -76,13 +76,13 @@ public class DeeEngineClient extends SourceModelManager {
 		}
 		
 		@Override
-		protected SourceFileStructure createNewData() {
+		protected SourceFileStructure doCreateNewData() throws OperationCancellation {
 			ParsedModule parsedModule = (fileLocation == null) ? 
 					parseModuleWithNoLocation() :
 					setWorkingSourceAndParseModule(fileLocation);
 			
 			if(parsedModule == null || isCancelled()) {
-				return null;
+				throw new OperationCancellation();
 			}
 			return new DeeStructureCreator().createStructure(parsedModule, fileLocation);
 		}

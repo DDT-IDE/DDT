@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Improved the default names for automatically created launch configuration.
+ * Improved error display for Outline operation failures.
 
 ### 1.0.0
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).

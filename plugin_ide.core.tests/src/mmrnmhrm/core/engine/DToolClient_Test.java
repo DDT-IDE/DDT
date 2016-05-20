@@ -37,6 +37,7 @@ import melnorme.lang.ide.core.tests.CommonCoreTest;
 import melnorme.lang.ide.core.tests.LangCoreTestResources;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.tests.TestFixtureProject;
 
@@ -75,13 +76,13 @@ public class DToolClient_Test extends CommonCoreTest {
 		file.refreshLocal(0, null);
 	}
 	
-	protected void testUpdatesToWorkingCopy() throws CoreException, IOException {
+	protected void testUpdatesToWorkingCopy() throws CommonException, CoreException, IOException {
 		
 		RunWithTextFileBuffer test = new RunWithTextFileBuffer() {
 			
 			@Override
 			protected void doRun(IFile moduleFile, ITextFileBuffer fileBuffer) 
-					throws CoreException, IOException {
+					throws CommonException, CoreException, IOException {
 				
 				IDocument document = fileBuffer.getDocument();
 				
@@ -126,7 +127,7 @@ public class DToolClient_Test extends CommonCoreTest {
 		}
 		
 		public final void run(IFile moduleFile, IPath fullPath, LocationKind locationKind) 
-				throws CoreException, IOException {
+				throws CommonException, CoreException, IOException {
 			
 			ITextFileBufferManager fbm = FileBuffers.getTextFileBufferManager();
 			SourceModelManager sourceModelMgr = LangCore.getSourceModelManager();
@@ -167,24 +168,23 @@ public class DToolClient_Test extends CommonCoreTest {
 		}
 		
 		protected abstract void doRun(IFile moduleFile, ITextFileBuffer fileBuffer) 
-				throws CoreException, IOException;
+				throws CoreException, IOException, CommonException;
 	}
 	
 	// Note: we don't use this method to test code completion, we are testing the Working Copies of the server.
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
 	protected void doCodeCompletion(IFile file, String fileContents) 
-			throws CoreException, IOException {
+			throws CommonException {
 		Location fileLoc = ResourceUtils.getResourceLocation(file);
 		
 		SourceFileStructure currentStructure = getCurrentStructure(fileLoc);
 		assertTrue(currentStructure != null);
 		assertAreEqual(currentStructure.parsedModule.source, fileContents);
-		
 	}
 	
-	protected SourceFileStructure getCurrentStructure(Location fileLoc) {
+	protected SourceFileStructure getCurrentStructure(Location fileLoc) throws CommonException {
 		try {
-			return client.getStoredStructureInfo(new LocationKey(fileLoc)).awaitUpdatedData();
+			return client.getStoredStructureInfo(new LocationKey(fileLoc)).awaitUpdatedData().get();
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}

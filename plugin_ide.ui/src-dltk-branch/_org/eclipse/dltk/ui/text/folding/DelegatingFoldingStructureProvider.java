@@ -42,6 +42,7 @@ import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
 import melnorme.lang.ide.ui.LangUIPlugin;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.fields.FieldValueListener.FieldChangeListener;
 import mmrnmhrm.ui.editor.folding.DeeCodeFoldingBlockProvider;
 import mmrnmhrm.ui.editor.folding.DeeCommentFoldingBlockProvider;
@@ -505,7 +506,13 @@ public class DelegatingFoldingStructureProvider implements
 			elementListener = new FieldChangeListener() {
 				@Override
 				public void fieldValueChanged() {
-					update(createContext(false, fEditor.getSourceStructure()));
+					SourceFileStructure sourceStructure;
+					try {
+						sourceStructure = fEditor.getSourceStructure();
+					} catch(CommonException e) {
+						return;
+					}
+					update(createContext(false, sourceStructure));
 				}
 			};
 			editor.getStructureField().addChangeListener(elementListener);
@@ -552,7 +559,7 @@ public class DelegatingFoldingStructureProvider implements
 		}
 		
 		// don't auto collapse if reinitializing
-		SourceFileStructure structure = editor.getSourceStructure();
+		SourceFileStructure structure = editor.getSourceStructureResult().getOrNull();
 		return createContext((isReinit) ? false : true, structure);
 	}
 	
