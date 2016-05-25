@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.dsource.ddt.jvmcheck;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: github.com/DDT-IDE
-Bundle-Name: DDT Java version check
+Bundle-Name: DDT
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
