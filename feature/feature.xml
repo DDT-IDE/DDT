@@ -18,16 +18,41 @@
       %license
    </license>
 
-   <includes
-         id="org.dsource.ddt.base"
-         version="0.0.0"/>
-
    <requires>
+      <import feature="org.eclipse.platform" version="4.5.0" match="compatible"/>
       <import feature="org.eclipse.cdt.gnu.dsf" version="8.7.0" match="compatible"/>
       <import feature="org.eclipse.cdt.platform" version="8.8.0" match="compatible"/>
    </requires>
 
    <plugin
+         id="org.dsource.ddt.ide.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.ide.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.dtool"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.dsource.ddt.jvmcheck"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+    <plugin
          id="org.dsource.ddt.ide.debug"
          download-size="0"
          install-size="0"
