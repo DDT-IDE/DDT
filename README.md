@@ -1,3 +1,7 @@
+Project website: http://ddt-ide.github.io/
+
+--
+
 [![Build Status](https://travis-ci.org/DDT-IDE/DDT.svg?branch=master)](https://travis-ci.org/DDT-IDE/DDT)
 [![Gitter](https://badges.gitter.im/DDT-IDE/DDT.svg)](https://gitter.im/DDT-IDE/DDT?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
