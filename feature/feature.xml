@@ -4,7 +4,7 @@
       label="%featureName"
       version="1.0.0.qualifier"
       provider-name="%providerName"
-      plugin="org.dsource.ddt.ide.ui">
+      plugin="org.dsource.ddt.jvmcheck">
 
    <description>
       %description
