@@ -30,6 +30,10 @@ import dtool.engine.analysis.IVarDefinitionLike;
 public class DeeNamedElementLabelProvider {
 	
 	public static String getLabelForContentAssistPopup(INamedElement namedElement) {
+		return new DeeNamedElementLabelProvider().getLabel(namedElement);
+	}
+	
+	public String getLabel(INamedElement namedElement) {
 		
 		switch (namedElement.getArcheType()) {
 		case Module:
@@ -108,16 +112,30 @@ public class DeeNamedElementLabelProvider {
 		return defUnit.getName();
 	}
 
-	public static String getTypeSegment(Reference typeRef) {
+	public String getTypeSegment(Reference typeRef) {
 		return " : " + TextUI.typeRefToUIString(typeRef);
 	}
 	
-	public static String getAliasSegment(Reference target) {
+	public String getAliasSegment(Reference target) {
 		String targetToString = target == null ? "?" : target.toStringAsCode();
 		if(targetToString.isEmpty()) {
 			targetToString = "?";
 		}
 		return " -> " + targetToString;
+	}
+	
+	/* -----------------  ----------------- */
+	
+	public static class DeeNamedElementSimpleLabelProvider extends DeeNamedElementLabelProvider {
+		@Override
+		public String getTypeSegment(Reference typeRef) {
+			return "";
+		}
+		
+		@Override
+		public String getAliasSegment(Reference target) {
+			return "";
+		}
 	}
 	
 }

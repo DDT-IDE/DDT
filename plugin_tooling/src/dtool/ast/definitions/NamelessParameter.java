@@ -70,7 +70,7 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 	}
 	
 	@Override
-	public String getTypeStringRepresentation() {
+	public String toStringForFunctionSignature(boolean includeName) {
 		return getStringRepresentation(type, null, isVariadic);
 	}
 	
@@ -79,11 +79,6 @@ public class NamelessParameter extends ASTNode implements IFunctionParameter {
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsCode();
-	}
-	
-	@Override
-	public String toStringForFunctionSignature() {
-		return getStringRepresentation(type, null, isVariadic);
 	}
 	
 }

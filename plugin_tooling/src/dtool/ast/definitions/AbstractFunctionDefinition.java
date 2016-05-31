@@ -87,6 +87,27 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 		return tplParams;
 	}
 	
+	@Override
+	public String getExtendedName() {
+		return getName() + toStringParametersForSignature();
+	}
+	
+	public String toStringParametersForSignature() {
+		return toStringParametersForSignature(fnParams, true);
+	}
+	
+	protected static String toStringParametersForSignature(ArrayView<IFunctionParameter> params, boolean includeName) {
+		if(params == null) 
+			return "";
+		String strParams = "(";
+		for (int i = 0; i < params.size(); i++) {
+			if(i != 0)
+				strParams += ", ";
+			strParams += params.get(i).toStringForFunctionSignature(includeName);
+		}
+		return strParams + ")";
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

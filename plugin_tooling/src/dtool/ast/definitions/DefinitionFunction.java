@@ -10,6 +10,13 @@
  *******************************************************************************/
 package dtool.ast.definitions;
 
+import dtool.ast.declarations.IDeclaration;
+import dtool.ast.expressions.Expression;
+import dtool.ast.references.RefTemplateInstance;
+import dtool.ast.references.Reference;
+import dtool.ast.statements.IFunctionBody;
+import dtool.ast.statements.IStatement;
+import dtool.parser.common.Token;
 import melnorme.lang.tooling.ast.CommonASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -20,14 +27,6 @@ import melnorme.lang.tooling.engine.resolver.NamedElementSemantics;
 import melnorme.lang.tooling.engine.scoping.CommonScopeLookup;
 import melnorme.lang.tooling.symbols.IConcreteNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.utilbox.collections.ArrayView;
-import dtool.ast.declarations.IDeclaration;
-import dtool.ast.expressions.Expression;
-import dtool.ast.references.RefTemplateInstance;
-import dtool.ast.references.Reference;
-import dtool.ast.statements.IFunctionBody;
-import dtool.ast.statements.IStatement;
-import dtool.parser.common.Token;
 
 /**
  * A definition of a function.
@@ -83,29 +82,8 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 				public String getExtendedName() {
 					return getName() + templateRef.normalizedArgsToString() + toStringParametersForSignature();
 				}
-			}
-			,this);
-	}
-	
-	@Override
-	public String getExtendedName() {
-		return getName() + toStringParametersForSignature();
-	}
-	
-	public String toStringParametersForSignature() {
-		return toStringParametersForSignature(fnParams);
-	}
-	
-	public static String toStringParametersForSignature(ArrayView<IFunctionParameter> params) {
-		if(params == null) 
-			return "";
-		String strParams = "(";
-		for (int i = 0; i < params.size(); i++) {
-			if(i != 0)
-				strParams += ", ";
-			strParams += params.get(i).toStringForFunctionSignature();
-		}
-		return strParams + ")";
+			}, 
+			this);
 	}
 	
 	/* -----------------  ----------------- */

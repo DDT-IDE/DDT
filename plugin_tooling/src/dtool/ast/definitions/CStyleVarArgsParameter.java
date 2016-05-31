@@ -51,18 +51,13 @@ public class CStyleVarArgsParameter extends ASTNode implements IFunctionParamete
 	}
 	
 	@Override
-	public String getTypeStringRepresentation() {
+	public String toStringForFunctionSignature(boolean includeName) {
 		return toStringAsCode();
 	}
 	
 	@Override
 	public String getInitializerStringRepresentation() {
 		return null;
-	}
-	
-	@Override
-	public String toStringForFunctionSignature() {
-		return toStringAsCode();
 	}
 
 }

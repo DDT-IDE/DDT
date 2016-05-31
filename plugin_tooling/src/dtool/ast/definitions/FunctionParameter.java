@@ -77,8 +77,8 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 	}
 	
 	@Override
-	public String getTypeStringRepresentation() {
-		return getStringRepresentation(type, null, isVariadic);
+	public String toStringForFunctionSignature(boolean includeName) {
+		return getStringRepresentation(type, includeName ? getName() : null, isVariadic);
 	}
 	
 	@Override
@@ -86,11 +86,6 @@ public class FunctionParameter extends DefUnit implements IFunctionParameter, IC
 		if(defaultValue == null)
 			return null;
 		return defaultValue.toStringAsCode();
-	}
-	
-	@Override
-	public String toStringForFunctionSignature() {
-		return getStringRepresentation(type, getName(), isVariadic);
 	}
 	
 	public static String getStringRepresentation(Reference type, String name, boolean isVariadic) {
