@@ -10,16 +10,9 @@
  *******************************************************************************/
 package dtool.parser.structure;
 
-import melnorme.lang.tooling.ElementLabelInfo;
-import melnorme.lang.tooling.ast.ASTVisitor;
-import melnorme.lang.tooling.ast.util.NodeList;
-import melnorme.lang.tooling.ast_actual.ASTNode;
-import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
-import melnorme.lang.tooling.structure.SourceFileStructure;
-import melnorme.lang.tooling.structure.StructureElement;
-import melnorme.utilbox.collections.ArrayList2;
-import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.misc.Location;
+import java.util.EnumSet;
+
+import dtool.ast.declarations.DeclarationSpecialFunction;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefinitionAggregate;
 import dtool.ast.definitions.DefinitionEnum;
@@ -28,6 +21,19 @@ import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplateParameter;
 import dtool.parser.DeeParserResult.ParsedModule;
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.ElementAttributes;
+import melnorme.lang.tooling.ElementLabelInfo;
+import melnorme.lang.tooling.ast.ASTVisitor;
+import melnorme.lang.tooling.ast.util.NodeList;
+import melnorme.lang.tooling.ast_actual.ASTNode;
+import melnorme.lang.tooling.engine.scoping.INonScopedContainer;
+import melnorme.lang.tooling.structure.SourceFileStructure;
+import melnorme.lang.tooling.structure.StructureElement;
+import melnorme.lang.tooling.structure.StructureElementKind;
+import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
+import melnorme.utilbox.misc.Location;
 
 public class DeeStructureCreator extends ASTVisitor {
 	
@@ -66,9 +72,11 @@ public class DeeStructureCreator extends ASTVisitor {
 		if(node instanceof INonScopedContainer) {
 			return true;
 		}
-
 		if(node instanceof EnumBody) {
 			return true;
+		}
+		if(node instanceof DeclarationSpecialFunction) {
+			return visit_DeclarationSpecialFunction((DeclarationSpecialFunction) node);
 		}
 		
 		return false; 
@@ -110,8 +118,28 @@ public class DeeStructureCreator extends ASTVisitor {
 		return false;
 	}
 	
-	public static Indexable<StructureElement> collectChildren(DefUnit node) {
+	public static Indexable<StructureElement> collectChildren(ASTNode node) {
 		return new DeeStructureCreator().collectChildElements(node);
+	}
+	
+	
+	public boolean visit_DeclarationSpecialFunction(DeclarationSpecialFunction node) {
+		
+		EnumSet<EAttributeFlag> flagsSet = ElementAttributes.newFlagsSet();
+		ElementAttributes elementAttribs = new ElementAttributes(null, flagsSet);
+		
+		boolean hasStructuralChildren = true; 
+		
+		pushNewElement(new StructureElement(
+			node.kind.toStringAsCode(),
+			null,
+			node.getSourceRange(),
+			StructureElementKind.CONSTRUCTOR,
+			elementAttribs,
+			null,
+			hasStructuralChildren ? collectChildren(node) : null)
+		);
+		return false;
 	}
 	
 }

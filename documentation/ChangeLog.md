@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: `~this()` and `this(this)` declarations missing from outline.
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
  * Fixed: Eclipse variables not being substituted in environment-variable values.
 
