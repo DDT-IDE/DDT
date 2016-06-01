@@ -1,14 +1,15 @@
 ## release ChangeLog
 
 ### (NextVersion)
- * Changed: Show parameter types in the Outline label of fucntion elements.
+
+### 1.0.1
+ * Improved the default names for automatically created launch configurations.
+ * Added error display notification for Outline operation failures.
+ * Added parameter types for the Outline label of function elements.
  * Fixed: `~this()` and `this(this)` declarations missing from Outline.
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
- * Fixed: Eclipse variables not being substituted in environment-variable values.
+ * Fixed: Eclipse variables not being substituted in environment-variable values. (#139)
  * Fixed: foreach statement parsing does not allow type qualifier with parenthesis. (#140)
-
- * Improved the default names for automatically created launch configuration.
- * Improved error display for Outline operation failures.
 
 ### 1.0.0
  * Added support for source formatting using `dfmt` (`Ctrl+Shift+F`).
