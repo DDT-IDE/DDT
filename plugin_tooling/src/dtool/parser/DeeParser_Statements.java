@@ -498,7 +498,7 @@ public abstract class DeeParser_Statements extends DeeParser_Definitions {
 		}
 		
 		LexElement typeMod = null;
-		if(isImmutabilitySpecifier(lookAhead())) {
+		if(isImmutabilitySpecifier(lookAhead()) && lookAhead(1) != DeeTokens.OPEN_PARENS) {
 			typeMod = consumeLookAhead();
 		}
 		

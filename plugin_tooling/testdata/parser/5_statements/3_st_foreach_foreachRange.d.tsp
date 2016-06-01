@@ -3,6 +3,7 @@
 
 #@REF_OPT《 ►#?STRUCTURE_EXPECTED!【ref● 】 ● 》
 #@TYPEMODS_OPT《
+ ►#?STRUCTURE_EXPECTED!【● 】●
  ►#?STRUCTURE_EXPECTED!【shared ● 】 ●
  ►#@REF_OPT #?STRUCTURE_EXPECTED!【const● 】●
  ►#?STRUCTURE_EXPECTED!【immutable ref ● 】 ●
@@ -12,6 +13,7 @@
 #@FOREACH_VARS《
  ►#?STRUCTURE_EXPECTED!【#@FOREACH_SINGLE_VAR● ForeachVariableDef(#@FOREACH_SINGLE_VAR)】●
  ►#?STRUCTURE_EXPECTED!【#@TYPEMODS_OPT defId, #@FOREACH_SINGLE_VAR● ForeachVariableDef(?) ForeachVariableDef(#@FOREACH_SINGLE_VAR)】●
+ ►#?STRUCTURE_EXPECTED!【#@TYPEMODS_OPT const(string) #@DEFID● ForeachVariableDef(RefTypeModifier(RefIdentifier) #@DEFID)】●
  ►#?STRUCTURE_EXPECTED!【defA, defB, #@REF_OPT #@DEFID_OrNO● * ForeachVariableDef(?) ForeachVariableDef(#@DEFID_OrNO)】●
 ¤》
 

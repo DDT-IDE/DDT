@@ -5,6 +5,7 @@
  * Fixed: `~this()` and `this(this)` declarations missing from Outline.
  * Fixed: Progress dialog never showing up when "Ok" pressed in LANG_NAME project properties page.
  * Fixed: Eclipse variables not being substituted in environment-variable values.
+ * Fixed: foreach statement parsing does not allow type qualifier with parenthesis. (#140)
 
  * Improved the default names for automatically created launch configuration.
  * Improved error display for Outline operation failures.
