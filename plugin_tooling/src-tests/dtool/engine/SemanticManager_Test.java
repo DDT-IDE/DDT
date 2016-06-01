@@ -217,7 +217,9 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 			manifest = sm.super_getUpdatedManifest(bundleKey(ERROR_BUNDLE__MISSING_DEP), 
 				defaultManifestUpdateOptions());
 			assertTrue(manifest != null && manifest.bundle.hasErrors());
-			assertTrue(manifest.bundle.error.getMessage().contains("Unknown dependency: NonExistantDep"));
+			String errorMsg = manifest.bundle.error.getMessage();
+			assertTrue(errorMsg.contains("Unknown dependency: NonExistantDep") || errorMsg.contains(
+				"Non-optional dependency NonExistantDep of error_bundle_missing_dep not found in dependency tree!"));
 			
 			sm.getUpdatedResolution(ERROR_BUNDLE__MISSING_DEP);
 			throw assertFail();

@@ -24,6 +24,7 @@ import dtool.tests.CommonDToolTest;
 import dtool.tests.DToolTestResources;
 import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
+import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -138,9 +139,21 @@ public class CommonDubTest extends CommonDToolTest {
 			
 			DubBundle[] deps = bundleDescription.getBundleDependencies();
 			assertTrue(expectedDeps.length == deps.length);
-			for (int ix = 0; ix < expectedDeps.length; ix++) {
-				DubBundleChecker dubDepChecker = expectedDeps[ix];
-				dubDepChecker.check(deps[ix], true);
+			
+			ArrayList2<DubBundle> depsToCheck = new ArrayList2<>(deps);
+			ArrayList2<DubBundleChecker> expectedDepsToCheck = new ArrayList2<>(expectedDeps);
+			
+			for (DubBundle dubBundle : depsToCheck) {
+				boolean checked = false;
+				for (DubBundleChecker dubBundleChecker : expectedDepsToCheck) {
+					if(dubBundleChecker.bundleName.equals(dubBundle.getBundleName())) {
+						dubBundleChecker.check(dubBundle, true);
+						expectedDepsToCheck.remove(dubBundleChecker);
+						checked = true;
+						break;
+					}
+				}
+				assertTrue(checked);
 			}
 		}
 		
