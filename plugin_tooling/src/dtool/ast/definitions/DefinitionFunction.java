@@ -86,6 +86,10 @@ public class DefinitionFunction extends AbstractFunctionDefinition implements ID
 			this);
 	}
 	
+	public Reference getDeclaredReturnType() {
+		return retType;
+	}
+	
 	/* -----------------  ----------------- */
 	
 	@Override

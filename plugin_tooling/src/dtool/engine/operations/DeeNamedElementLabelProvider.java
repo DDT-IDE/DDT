@@ -11,8 +11,8 @@
 package dtool.engine.operations;
 
 import static melnorme.utilbox.core.CoreUtil.tryCast;
-import melnorme.lang.tooling.ast.util.ASTCodePrinter;
-import melnorme.lang.tooling.symbols.INamedElement;
+
+import dtool.ast.definitions.AbstractFunctionDefinition;
 import dtool.ast.definitions.DefUnit;
 import dtool.ast.definitions.DefVarFragment;
 import dtool.ast.definitions.DefinitionAggregate;
@@ -20,12 +20,14 @@ import dtool.ast.definitions.DefinitionAlias.DefinitionAliasFragment;
 import dtool.ast.definitions.DefinitionAliasFunctionDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl;
 import dtool.ast.definitions.DefinitionAliasVarDecl.AliasVarDeclFragment;
+import dtool.ast.definitions.DefinitionConstructor;
 import dtool.ast.definitions.DefinitionFunction;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.FunctionParameter;
 import dtool.ast.references.Reference;
 import dtool.ddoc.TextUI;
 import dtool.engine.analysis.IVarDefinitionLike;
+import melnorme.lang.tooling.symbols.INamedElement;
 
 public class DeeNamedElementLabelProvider {
 	
@@ -56,31 +58,29 @@ public class DeeNamedElementLabelProvider {
 			// TODO: add more info to label, such as var type.
 		}
 		
-		ASTCodePrinter cp = new ASTCodePrinter();
-		
 		switch (defUnit.getNodeType()) {
 		case DEFINITION_VARIABLE: {
 			DefinitionVariable elem = (DefinitionVariable) defUnit;
-			return elem.getName() + getTypeSegment(elem.type);
+			return elem.getName() + getTypeSegmentForVar(elem.type);
 		}
 		case DEFINITION_VAR_FRAGMENT: {
 			DefVarFragment elem = (DefVarFragment) defUnit;
 			Reference type = elem.getDeclaredType();
-			return elem.getName() + getTypeSegment(type);
+			return elem.getName() + getTypeSegmentForVar(type);
 		}
 		
 		case FUNCTION_PARAMETER: {
 			FunctionParameter elem = (FunctionParameter) defUnit;
-			return elem.getName() + getTypeSegment(elem.type);
+			return elem.getName() + getTypeSegmentForVar(elem.type);
 		}
 		
+		case DEFINITION_CONSTRUCTOR: {
+			DefinitionConstructor elem = (DefinitionConstructor) defUnit;
+			return getFnExtendedName(elem);
+		}
 		case DEFINITION_FUNCTION: {
-			DefinitionFunction elem = (DefinitionFunction) defUnit; 
-			cp.append(elem.getName());
-			cp.appendList("(", elem.tplParams, ",", ") ");
-			cp.append(elem.toStringParametersForSignature());
-			cp.append(getTypeSegment(elem.retType));
-			return cp.toString();
+			DefinitionFunction elem = (DefinitionFunction) defUnit;
+			return getFnExtendedName(elem) + getTypeSegmentForVar(elem.getDeclaredReturnType());
 		}
 		
 		case DEFINITION_ALIAS_FRAGMENT: {
@@ -112,8 +112,12 @@ public class DeeNamedElementLabelProvider {
 		return defUnit.getName();
 	}
 
-	public String getTypeSegment(Reference typeRef) {
+	public String getTypeSegmentForVar(Reference typeRef) {
 		return " : " + TextUI.typeRefToUIString(typeRef);
+	}
+	
+	public String getFnExtendedName(AbstractFunctionDefinition elem) {
+		return elem.getExtendedName(true, true);
 	}
 	
 	public String getAliasSegment(Reference target) {
@@ -128,8 +132,13 @@ public class DeeNamedElementLabelProvider {
 	
 	public static class DeeNamedElementSimpleLabelProvider extends DeeNamedElementLabelProvider {
 		@Override
-		public String getTypeSegment(Reference typeRef) {
+		public String getTypeSegmentForVar(Reference typeRef) {
 			return "";
+		}
+		
+		@Override
+		public String getFnExtendedName(AbstractFunctionDefinition elem) {
+			return elem.getExtendedName(true, false);
 		}
 		
 		@Override

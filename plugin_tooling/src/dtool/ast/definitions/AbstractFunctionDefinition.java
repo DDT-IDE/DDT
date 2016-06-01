@@ -11,6 +11,9 @@
 package dtool.ast.definitions;
 
 
+import dtool.ast.expressions.Expression;
+import dtool.ast.statements.IFunctionBody;
+import dtool.parser.common.Token;
 import melnorme.lang.tooling.ast.IASTNode;
 import melnorme.lang.tooling.ast.IASTVisitor;
 import melnorme.lang.tooling.ast.util.ASTCodePrinter;
@@ -21,9 +24,6 @@ import melnorme.lang.tooling.engine.scoping.ScopeTraverser;
 import melnorme.utilbox.collections.ArrayView;
 import melnorme.utilbox.core.CoreUtil;
 import melnorme.utilbox.misc.IteratorUtil;
-import dtool.ast.expressions.Expression;
-import dtool.ast.statements.IFunctionBody;
-import dtool.parser.common.Token;
 
 public abstract class AbstractFunctionDefinition extends CommonDefinition 
 	implements ICallableElement, IScopeElement, ITemplatableElement
@@ -89,7 +89,17 @@ public abstract class AbstractFunctionDefinition extends CommonDefinition
 	
 	@Override
 	public String getExtendedName() {
-		return getName() + toStringParametersForSignature();
+		return getExtendedName(false, true); // XXX: maybe includeTemplateParams should be true?
+	}
+	
+	public String getExtendedName(boolean includeTemplateParams, boolean includeParamNames) {
+		ASTCodePrinter cp = new ASTCodePrinter();
+		cp.append(getName());
+		if(includeTemplateParams) {
+			cp.appendList("(", tplParams, ",", ") ");
+		}
+		cp.append(toStringParametersForSignature(fnParams, includeParamNames));
+		return cp.toString();
 	}
 	
 	public String toStringParametersForSignature() {

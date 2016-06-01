@@ -118,8 +118,8 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		testParseStructure(
 			source, 
 			new StructureElement("foo", sr(4,3), sr(0,8), VARIABLE, att(), "int", null),
-			new StructureElement("func", sr("func()", 4), sr("string[] f","2*/}"), FUNCTION, att(), "string[]", null),
-			new StructureElement("this", sr("this()", 4), sr("this()","3*/}"), CONSTRUCTOR, att(), null, null)
+			new StructureElement("func()", sr("func()", 4), sr("string[] f","2*/}"), FUNCTION, att(), "string[]", null),
+			new StructureElement("this()", sr("this()", 4), sr("this()","3*/}"), CONSTRUCTOR, att(), null, null)
 		);
 		
 		
@@ -135,6 +135,13 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		);
 		
 		
+		source = "string[] func(int a, char) {/*2*/} this(int[] a, char b...) {/*3*/}";
+		testParseStructure(
+			source, 
+			elem("func(int, char)", sr("string[] f","2*/}"), sr("func(", 4), FUNCTION, att(), "string[]", null),
+			elem("this(int[], char...)", sr("this(","3*/}"), sr("this(", 4), CONSTRUCTOR, att(), null, null)
+		);
+		
 		source = 
 			"struct Xpto { int foo2; void func(int a){}  /*Xpto*/} \n " +
 			"class Foo { int fox;  class Inner(T) { int xxx; }  /*Foo*/} \n ";
@@ -142,7 +149,7 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 			source, 
 			new StructureElement("Xpto", sr("Xpto", 4), sr("struct Xpto","/*Xpto*/}"), STRUCT, att(), null, elems(
 				new StructureElement("foo2", sr("foo2;", 4), sr("int foo2;","foo2;"), VARIABLE, att(), "int", null),
-				new StructureElement("func", sr("func", 4), sr("void func","a){}"), FUNCTION, att(), "void", null)
+				new StructureElement("func(int)", sr("func", 4), sr("void func","a){}"), FUNCTION, att(), "void", null)
 			)),
 			new StructureElement("Foo", sr("Foo", 3), sr("class F","/*Foo*/}"), CLASS, att(), null, elems(
 				new StructureElement("fox", sr("fox;", 3), sr("int fox;","fox;"), VARIABLE, att(), "int", null),

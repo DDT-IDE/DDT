@@ -20,6 +20,7 @@ import dtool.ast.definitions.DefinitionEnum.EnumBody;
 import dtool.ast.definitions.DefinitionVariable;
 import dtool.ast.definitions.EArcheType;
 import dtool.ast.definitions.ITemplateParameter;
+import dtool.engine.operations.DeeNamedElementLabelProvider.DeeNamedElementSimpleLabelProvider;
 import dtool.parser.DeeParserResult.ParsedModule;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.ElementAttributes;
@@ -106,8 +107,9 @@ public class DeeStructureCreator extends ASTVisitor {
 				node instanceof DefinitionEnum ||
 				node instanceof DefinitionVariable; // Review this, might change in the future
 		
+		String nameLabel = new DeeNamedElementSimpleLabelProvider().getLabel(node);
 		pushNewElement(new StructureElement(
-			node.getName(),
+			nameLabel,
 			node.getNameSourceRangeOrNull(),
 			node.getSourceRange(),
 			labelInfo.kind,
