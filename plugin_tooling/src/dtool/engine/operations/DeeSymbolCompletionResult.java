@@ -111,7 +111,7 @@ public class DeeSymbolCompletionResult {
 		ElementAttributes attributes = elementLabelInfo.elementAttribs;
 		
 		return new ToolCompletionProposal(rplOffset, replaceLength, rplString, baseLabel, kind, attributes, 
-			moduleName, null, fullReplaceString, subElements, namedElem);
+			null, moduleName, null, fullReplaceString, subElements, namedElem);
 	}
 	
 	public static String getFullReplaceString(String rplString, ICallableElement callableElement, 

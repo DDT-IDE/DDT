@@ -12,10 +12,12 @@ package dtool.engine.operations;
 
 import static dtool.engine.analysis.NE_LanguageIntrinsics_SemanticsTest.PRIMITIVE_TYPES;
 import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
-import static dtool.parser.structure.DeeStructureCreator_Test.att;
+import static melnorme.lang.tooling.EProtection.PUBLIC;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
 import melnorme.lang.tooling.CompletionProposalKind;
+import melnorme.lang.tooling.EAttributeFlag;
+import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
@@ -169,6 +171,13 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
 	/* -----------------  ----------------- */
 	
+	public static ElementAttributes att(EAttributeFlag... flags) {
+		return new ElementAttributes(null, flags);
+	}
+	
+	public static ElementAttributes att(EProtection protection, EAttributeFlag... flags) {
+		return new ElementAttributes(protection, flags);
+	}
 	
 	@Test
 	public void testCompletionProposals() throws Exception { testCompletionProposals$(); }
@@ -193,13 +202,14 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		testCodeCompletionProposals(MODULE_FilePath, offset,
 			new LangCompletionResult(list(
 				proposal(offset-3, 3, "foo", "foo() : void", 
-					CompletionProposalKind.FUNCTION, att(), "_dummy2", "foo()"),
+					CompletionProposalKind.FUNCTION, att(PUBLIC), "_dummy2", "foo()"),
 				proposal(offset-3, 3, "foo", "foo(int a) : void", 
-					CompletionProposalKind.FUNCTION, att(), "_dummy2", "foo(a)", sr(4, 1)),
+					CompletionProposalKind.FUNCTION, att(PUBLIC), "_dummy2", "foo(a)", sr(4, 1)),
 				proposal(offset-3, 3, "foo", "foo(int a, string str) : void", 
-					CompletionProposalKind.FUNCTION, att(), "_dummy2", "foo(a, str)", sr(4, 1), sr(7, 3)),
+					CompletionProposalKind.FUNCTION, att(PUBLIC), "_dummy2", "foo(a, str)", sr(4, 1), sr(7, 3)),
 				proposal(offset-3, 3, "fooTemplateFn", "fooTemplateFn(T) (T param) : int", 
-					CompletionProposalKind.FUNCTION, att(), "_dummy2", "fooTemplateFn(param)", sr(14, 5))
+					CompletionProposalKind.FUNCTION, att(PUBLIC, EAttributeFlag.TEMPLATED), "_dummy2", 
+					"fooTemplateFn(param)", sr(14, 5))
 			))
 		);
 		
@@ -213,7 +223,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, 
 			String fullReplaceString, SourceRange... sourceSubElements) {
 		return new ToolCompletionProposal(replaceOffset, replaceLength, replaceString, label, kind, attributes, 
-			moduleName, null, fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
+			null, moduleName, null, fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
 			
 			@Override
 			protected boolean subclassEquals(LangToolCompletionProposal _other) {
