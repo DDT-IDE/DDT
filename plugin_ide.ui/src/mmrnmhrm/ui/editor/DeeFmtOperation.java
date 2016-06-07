@@ -12,13 +12,11 @@ package mmrnmhrm.ui.editor;
 
 import java.nio.file.Path;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.DeeToolPreferences;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -42,15 +40,13 @@ public class DeeFmtOperation extends AbstractEditorOperation2<String> {
 	protected String doBackgroundValueComputation(IOperationMonitor monitor)
 			throws CommonException, OperationCancellation {
 		
-		IProject project = EditorUtils.getAssociatedProject(editorInput);
-		
 		Path rustFmt = DeeToolPreferences.DFMT_PATH.getDerivedValue(project);
 		
 		ArrayList2<String> cmdLine = new ArrayList2<>(rustFmt.toString());
 		
 		ProcessBuilder pb = new ProcessBuilder(cmdLine);
 		// set directory, for fmt to look for the config file in folders parent chain
-		pb.directory(inputLoc.getParent().toFile());
+		pb.directory(getInputLocation().getParent().toFile());
 		
 		String input = doc.get();
 		ExternalProcessResult result = toolMgr.runEngineTool(pb, input, monitor);

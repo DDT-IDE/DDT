@@ -67,7 +67,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		IProject associatedProject = getAssociatedProject();
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(associatedProject).toString();
 		return DeeEngineClient.getDefault().
-				new FindDefinitionOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
+				new FindDefinitionOperation(getInputLocation(), offset, -1, dubPath).runEngineOperation(monitor);
 	}
 	
 	@Override
@@ -112,7 +112,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		}
 		
 		IEditorInput newInput;
-		if(areEqual(newEditorFileLoc, inputLoc)) {
+		if(areEqual(newEditorFileLoc, getInputLocation())) {
 			newInput = editor.getEditorInput();
 		} else {
 			newInput = EditorUtils.getBestEditorInputForLoc(newEditorFileLoc);

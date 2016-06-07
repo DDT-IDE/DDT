@@ -10,8 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.hover;
 
-import static melnorme.utilbox.core.CoreUtil.tryCast;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
@@ -42,8 +40,7 @@ public class DeeDocTextHover extends BrowserControlHover
 	}
 	
 	@Override
-	public String getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		ITextEditor editor = tryCast(getEditor(), ITextEditor.class);
+	public String getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
 		if(editor == null) {
 			return null;
 		}
@@ -83,7 +80,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		public String executeAndGetValidatedResult() throws CommonException {
 //			assertTrue(Display.getCurrent() != null);
 			
-			execute0();
+			execute();
 			return getResultValue();
 		}
 		
@@ -102,7 +99,7 @@ public class DeeDocTextHover extends BrowserControlHover
 				throws CommonException, OperationCancellation {
 			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 			return DeeEngineClient.getDefault().
-					new FindDDocViewOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
+					new FindDDocViewOperation(getInputLocation(), offset, -1, dubPath).runEngineOperation(monitor);
 		}
 		
 	}
