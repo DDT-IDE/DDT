@@ -13,7 +13,6 @@ package mmrnmhrm.ui.editor.hover;
 import static melnorme.utilbox.core.CoreUtil.tryCast;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
@@ -53,14 +52,10 @@ public class DeeDocTextHover extends BrowserControlHover
 		
 		String info;
 		try {
-			try {
-				GetDDocHTMLViewOperation op = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
-				info = op.executeAndGetValidatedResult();
-			} catch(CommonException e) {
-				throw LangCore.createCoreException(e);
-			}
-		} catch(CoreException ce) {
-			LangCore.logStatus(ce);
+			GetDDocHTMLViewOperation op = new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+			info = op.executeAndGetValidatedResult();
+		} catch(CommonException ce) {
+			LangCore.logStatusException(ce.toStatusException());
 			// TODO: we could add a nicer HTML formatting:
 			info = TextUI.convertoToHTML("Error: " + ce.getMessage() + " " + ce.getCause());
 		}
@@ -85,7 +80,7 @@ public class DeeDocTextHover extends BrowserControlHover
 		}
 		
 		@Override
-		public String executeAndGetValidatedResult() throws CoreException, CommonException {
+		public String executeAndGetValidatedResult() throws CommonException {
 //			assertTrue(Display.getCurrent() != null);
 			
 			execute0();
@@ -108,11 +103,6 @@ public class DeeDocTextHover extends BrowserControlHover
 			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 			return DeeEngineClient.getDefault().
 					new FindDDocViewOperation(inputLoc, offset, -1, dubPath).runEngineOperation(monitor);
-		}
-		
-		@Override
-		protected void handleComputationResult() {
-			// Nothing else to do
 		}
 		
 	}
