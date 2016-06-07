@@ -23,31 +23,11 @@ public class HTMLPrinterUtils {
 	protected HTMLPrinterUtils() {
 	}
 
-	private static String replace(String text, char c, String s) {
-
-		int previous= 0;
-		int current= text.indexOf(c, previous);
-
-		if (current == -1)
-			return text;
-
-		StringBuffer buffer= new StringBuffer();
-		while (current > -1) {
-			buffer.append(text.substring(previous, current));
-			buffer.append(s);
-			previous= current + 1;
-			current= text.indexOf(c, previous);
-		}
-		buffer.append(text.substring(previous));
-
-		return buffer.toString();
-	}
-
 	public static String convertToHTMLContent(String content) {
-		content= replace(content, '&', "&amp;"); //$NON-NLS-1$
-		content= replace(content, '"', "&quot;"); //$NON-NLS-1$
-		content= replace(content, '<', "&lt;"); //$NON-NLS-1$
-		return replace(content, '>', "&gt;"); //$NON-NLS-1$
+		content = content.replace("&", "&amp;");
+		content = content.replace("\"", "&quot;");
+		content = content.replace("<", "&lt;");
+		return content.replace(">", "&gt;");
 	}
 
 	public static String read(Reader rd) {
