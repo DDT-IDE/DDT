@@ -12,38 +12,41 @@ package mmrnmhrm.ui.editor.hover;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextHoverExtension;
-import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
+import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
+import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 /**
  * Standard documentation hover for DDoc.
  * (used in editor hovers extensions, and editor information provider (F2))
  */
-public class DeeDocTextHover extends BrowserControlHover 
-		implements ITextHoverExtension, ILangEditorTextHover<String> {
+public class DeeDocTextHover extends AbstractDocHover implements ILangEditorTextHover<String> {
 	
 	public DeeDocTextHover() {
 	}
 	
 	@Override
-	public String getHoverInfo(ITextEditor editor, ITextViewer textViewer, IRegion hoverRegion) {
-		if(editor == null) {
-			return null;
-		}
+	protected boolean requiresSavedEditor() {
+		return false;
+	}
+	
+	/* FIXME: refactor this to use common code*/
+	@Override
+	public String getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
 		
 		int offset = hoverRegion.getOffset();
 		
@@ -64,48 +67,39 @@ public class DeeDocTextHover extends BrowserControlHover
 		return null;
 	}
 	
-	public static class GetDDocHTMLViewOperation extends AbstractEditorOperation2<String> {
+	protected String getCSSStyles() {
+		return HoverUtil.getDDocPreparedCSS();
+	}
+	
+	@Override
+	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ITextEditor editor, int offset) {
+		return new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+	}
+	
+	public static class GetDDocHTMLViewOperation extends CalculateValueUIOperation<String> {
 		
 		protected final int offset;
 		protected final IProject project;
+		protected final SourceOpContext opContext;
 		
 		public GetDDocHTMLViewOperation(String operationName, ITextEditor editor, int offset) {
-			super(operationName, editor);
+			super(operationName, true);
 			this.offset = offset;
 			
+			this.opContext = AbstractEditorOperation2.getSourceContext(editor, new SourceRange(offset, 0));
 			this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
-		}
-		
-		@Override
-		public String executeAndGetValidatedResult() throws CommonException {
-//			assertTrue(Display.getCurrent() != null);
-			
-			execute();
-			return getResultValue();
-		}
-		
-		@Override
-		protected void doOperation() throws CommonException, OperationCancellation {
-			if(Display.getCurrent() == null) {
-				// Perform computation directly in this thread, cancellation won't be possible.
-				runBackgroundComputation(new NullOperationMonitor());
-				return;
-			}
-			super.doOperation();
 		}
 		
 		@Override
 		protected String doBackgroundValueComputation(IOperationMonitor monitor)
 				throws CommonException, OperationCancellation {
 			String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
+			Location fileLocation = opContext.getFileLocation();
+			
 			return DeeEngineClient.getDefault().
-					new FindDDocViewOperation(getInputLocation(), offset, -1, dubPath).runEngineOperation(monitor);
+					new FindDDocViewOperation(fileLocation, offset, -1, dubPath).runEngineOperation(monitor);
 		}
 		
-	}
-	
-	protected String getCSSStyles() {
-		return HoverUtil.getDDocPreparedCSS();
 	}
 	
 }

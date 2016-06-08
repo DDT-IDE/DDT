@@ -77,7 +77,7 @@ public class DubBundle {
 		this.targetName = targetName;
 		this.targetPath = targetPath;
 		
-		this.configurations = CollectionUtil.nullToEmpty(configurations);
+		this.configurations = Indexable.nullToEmpty(configurations);
 		
 		if(!hasErrors()) {
 			assertTrue(bundlePath != null);
