@@ -11,12 +11,11 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.actions.SourceOperationContext;
+import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
@@ -37,8 +36,8 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(SourceOperationContext context, int offset,
-			ICancelMonitor cm) throws CoreException, CommonException, OperationCancellation {
+	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
+			throws CommonException, OperationCancellation {
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
@@ -46,13 +45,13 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 		
 		int timeoutMillis = ((TimeoutCancelMonitor) cm).getTimeoutMillis();
-		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, offset, dubPath)
+		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, context.getOffset(), dubPath)
 			.runEngineOperation(new NullOperationMonitor(cm))
 			.convertToCompletionResult();
 	}
 	
 	@Override
-	public Indexable<IContextInformation> computeContextInformation(SourceOperationContext context) {
+	public Indexable<IContextInformation> computeContextInformation(EditorOperationContext context) {
 		return super.computeContextInformation(context);
 	}
 	

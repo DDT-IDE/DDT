@@ -10,19 +10,22 @@
  *******************************************************************************/
 package mmrnmhrm.ui.editor.hover;
 
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.ui.editor.AbstractLangEditor;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
 import melnorme.lang.tooling.ast.SourceRange;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -40,13 +43,18 @@ public class DeeDocTextHover extends AbstractDocHover implements ILangEditorText
 	}
 	
 	@Override
-	protected boolean requiresSavedEditor() {
+	protected boolean requiresSavedBuffer() {
 		return false;
 	}
 	
 	/* FIXME: refactor this to use common code*/
 	@Override
-	public String getHoverInfo(AbstractLangEditor editor, IRegion hoverRegion) {
+	public String getHoverInfo(ISourceBuffer sourceBuffer, IRegion hoverRegion, Optional<ITextEditor> _editor,
+			ITextViewer textViewer, boolean allowedToSaveBuffer) {
+		if(!_editor.isPresent()) {
+			return null; /* FIXME: */
+		}
+		ITextEditor editor = _editor.get();
 		
 		int offset = hoverRegion.getOffset();
 		
@@ -72,9 +80,14 @@ public class DeeDocTextHover extends AbstractDocHover implements ILangEditorText
 	}
 	
 	@Override
-	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ITextEditor editor, int offset) {
-		return new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ISourceBuffer sourceBuffer, int offset) {
+		return null;
 	}
+	
+//	@Override
+//	protected CalculateValueUIOperation<String> getOpenDocumentationOperation(ITextEditor editor, int offset) {
+//		return new GetDDocHTMLViewOperation("Get DDoc", editor, offset);
+//	}
 	
 	public static class GetDDocHTMLViewOperation extends CalculateValueUIOperation<String> {
 		
