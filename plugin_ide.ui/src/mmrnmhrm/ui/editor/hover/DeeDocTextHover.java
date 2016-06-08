@@ -19,10 +19,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import dtool.ddoc.TextUI;
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.ui.editor.EditorSourceBuffer;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
-import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.ide.ui.utils.operations.CalculateValueUIOperation;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
@@ -99,7 +99,7 @@ public class DeeDocTextHover extends AbstractDocHover implements ILangEditorText
 			super(operationName, true);
 			this.offset = offset;
 			
-			this.opContext = AbstractEditorOperation2.getSourceContext(editor, new SourceRange(offset, 0));
+			this.opContext = EditorSourceBuffer.getSourceOpContext(editor, new SourceRange(offset, 0));
 			this.project = EditorUtils.getAssociatedProject(editor.getEditorInput());
 		}
 		
