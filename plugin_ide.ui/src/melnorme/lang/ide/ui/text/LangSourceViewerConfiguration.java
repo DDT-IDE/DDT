@@ -20,8 +20,7 @@ import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 @LANG_SPECIFIC
 public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore,   
-			AbstractLangStructureEditor editor) {
+	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, AbstractLangStructureEditor editor) {
 		super(preferenceStore, editor);
 	}
 	

@@ -11,10 +11,12 @@
 package mmrnmhrm.ui.editor.codeassist;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
@@ -41,7 +43,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 		
 		Location editoInputFile = context.getEditorInputLocation();
 		
-		IProject project = context.getProject();
+		IProject project = ResourceUtils.getProject(context.getContext().getOptionalFileLocation());
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 		
 		int timeoutMillis = ((TimeoutCancelMonitor) cm).getTimeoutMillis();
@@ -58,10 +60,9 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	/* -----------------  ----------------- */
 	
 	@Override
-	public DeeContentAssistProposal adaptToolProposal(ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(EditorOperationContext context, ToolCompletionProposal proposal) {
 		Image image = getImage(proposal);
-		
-		return new DeeContentAssistProposal(proposal, image);
+		return new DeeContentAssistProposal(context.getSourceBuffer(), proposal, image);
 	}
 	
 }

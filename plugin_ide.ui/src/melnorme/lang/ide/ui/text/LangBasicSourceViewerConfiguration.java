@@ -22,9 +22,9 @@ import melnorme.lang.ide.ui.text.coloring.TokenRegistry;
 import mmrnmhrm.ui.text.DeeCodeScanner;
 import mmrnmhrm.ui.text.DeeColorPreferences;
 
-public abstract class LangCommonSourceViewerConfiguration extends AbstractSimpleLangSourceViewerConfiguration {
+public abstract class LangBasicSourceViewerConfiguration extends AbstractLangBasicSourceViewerConfiguration {
 	
-	public LangCommonSourceViewerConfiguration(IPreferenceStore preferenceStore) {
+	public LangBasicSourceViewerConfiguration(IPreferenceStore preferenceStore) {
 		super(preferenceStore);
 	}
 	

@@ -19,14 +19,15 @@ import dtool.ddoc.TextUI;
 import melnorme.lang.ide.ui.text.AbstractSimpleLangSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.DocumentationHoverCreator;
 import melnorme.lang.tooling.ToolCompletionProposal;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.symbols.INamedElement;
 
 public class DeeContentAssistProposal extends AbstractScriptCompletionProposal {
 	
 	public final INamedElement namedElement; 
 	
-	public DeeContentAssistProposal(ToolCompletionProposal proposal, Image image) {
-		super(proposal, image, null);
+	public DeeContentAssistProposal(ISourceBuffer sourceBuffer, ToolCompletionProposal proposal, Image image) {
+		super(sourceBuffer, proposal, image, null);
 		this.namedElement = proposal.getExtraData();
 	}
 	
