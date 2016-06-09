@@ -15,13 +15,15 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
 import melnorme.lang.ide.ui.text.completion.LangContentAssistProcessor.ContentAssistCategoriesBuilder;
 import melnorme.lang.tooling.LANG_SPECIFIC;
+import melnorme.lang.tooling.common.ISourceBuffer;
 import mmrnmhrm.ui.editor.codeassist.DeeCompletionProposalComputer;
 
 @LANG_SPECIFIC
 public class LangSourceViewerConfiguration extends AbstractLangSourceViewerConfiguration {
 	
-	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, AbstractLangStructureEditor editor) {
-		super(preferenceStore, editor);
+	public LangSourceViewerConfiguration(IPreferenceStore preferenceStore, ISourceBuffer sourceBuffer, 
+			AbstractLangStructureEditor editor) {
+		super(preferenceStore, sourceBuffer, editor);
 	}
 	
 	@Override

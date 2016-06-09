@@ -12,18 +12,16 @@ package mmrnmhrm.ui.editor.codeassist;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.editor.actions.EditorOperationContext;
+import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
 import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
-import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -38,7 +36,7 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(EditorOperationContext context, ICancelMonitor cm) 
+	protected LangCompletionResult doComputeProposals(CompletionContext context, ICancelMonitor cm) 
 			throws CommonException, OperationCancellation {
 		
 		Location editoInputFile = context.getEditorInputLocation();
@@ -52,15 +50,10 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 			.convertToCompletionResult();
 	}
 	
-	@Override
-	public Indexable<IContextInformation> computeContextInformation(EditorOperationContext context) {
-		return super.computeContextInformation(context);
-	}
-	
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ICompletionProposal adaptToolProposal(EditorOperationContext context, ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(CompletionContext context, ToolCompletionProposal proposal) {
 		Image image = getImage(proposal);
 		return new DeeContentAssistProposal(context.getSourceBuffer(), proposal, image);
 	}

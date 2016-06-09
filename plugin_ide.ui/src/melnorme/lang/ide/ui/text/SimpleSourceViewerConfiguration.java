@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2014 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,22 +11,20 @@
 package melnorme.lang.ide.ui.text;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextHover;
-import org.eclipse.jface.text.formatter.IContentFormatter;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 
-import melnorme.lang.ide.ui.editor.LangSourceViewer;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 
 @LANG_SPECIFIC
-public class SimpleSourceViewerConfiguration extends LangSourceViewerConfiguration {
+public class SimpleSourceViewerConfiguration extends LangBasicSourceViewerConfiguration {
 	
 	public SimpleSourceViewerConfiguration(IPreferenceStore preferenceStore) {
-		super(preferenceStore, null);
+		super(preferenceStore);
 	}
 	
 	@Override
@@ -45,27 +43,17 @@ public class SimpleSourceViewerConfiguration extends LangSourceViewerConfigurati
 	}
 	
 	@Override
-	public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
-		return null;
-	}
-	
-	@Override
-	public IInformationControlCreator getInformationControlCreator(ISourceViewer sourceViewer) {
-		return null;
-	}
-	
-	@Override
 	public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
 		return null;
 	}
 	
 	@Override
-	public void installOutlinePresenter(LangSourceViewer sourceViewer) {
-		return;
+	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+		return null;
 	}
 	
 	@Override
-	public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+	public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 		return null;
 	}
 	
