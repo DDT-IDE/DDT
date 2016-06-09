@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bruno Medeiros and other Contributors.
+ * Copyright (c) 2016 Bruno Medeiros and other Contributors.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,17 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.ui.editor;
+package melnorme.lang.tooling.common.ops;
 
-import melnorme.lang.ide.ui.editor.text.LangPairMatcher;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 
-public class DeeEditor extends DeeBaseEditor {
+public interface CommonResultOperation<RESULT> {
 	
-	@Override
-	protected LangPairMatcher init_createBracketMatcher() {
-		return new LangPairMatcher("{}[]()".toCharArray());
-	}
+	public abstract RESULT executeOp(IOperationMonitor om) throws CommonException, OperationCancellation;
+	
+	/* -----------------  ----------------- */
+	
+	public static CommonOperation NULL_COMMON_OPERATION = (pm) -> { };
 	
 }

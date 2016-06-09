@@ -23,7 +23,7 @@ import melnorme.lang.ide.ui.editor.hover.AbstractDocHover;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonOperation;
+import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
@@ -73,8 +73,8 @@ public class DeeDocTextHover extends AbstractDocHover implements ILangEditorText
 		
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		CommonOperation<ToolOpResult<String>> findDocOperation = new CommonOperation<ToolOpResult<String>>() {
-
+		CommonResultOperation<ToolOpResult<String>> findDocOperation = new CommonResultOperation<ToolOpResult<String>>() {
+			
 			@Override
 			public ToolOpResult<String> executeOp(IOperationMonitor om)
 					throws CommonException, OperationCancellation {

@@ -12,16 +12,16 @@ package melnorme.lang.ide.ui.utils.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
-import melnorme.lang.tooling.common.ops.ICommonOperation;
+import melnorme.lang.tooling.common.ops.CommonOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 
 public class UIOperation extends AbstractUIOperation {
 	
-	protected final ICommonOperation backgroundOp;
+	protected final CommonOperation backgroundOp;
 	
-	public UIOperation(String operationName, ICommonOperation backgroundOp) {
+	public UIOperation(String operationName, CommonOperation backgroundOp) {
 		super(operationName);
 		this.backgroundOp = assertNotNull(backgroundOp);
 	}

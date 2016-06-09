@@ -60,8 +60,7 @@ public class EditorSettings_Actual {
 	
 	public static SourceViewerConfiguration createTemplateEditorSourceViewerConfiguration(
 			IPreferenceStore store, final IContentAssistProcessor templateCAP) {
-		ColorManager2 colorManager = LangUIPlugin.getInstance().getColorManager();
-		return new SimpleSourceViewerConfiguration(store, colorManager) {
+		return new SimpleSourceViewerConfiguration(store) {
 			@Override
 			public ContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 				return setupSimpleContentAssistant(templateCAP, array(
