@@ -18,10 +18,10 @@ import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
-import melnorme.lang.tooling.common.ops.CommonResultOperation;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.lang.tooling.toolchain.ops.ToolOpResult;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -56,15 +56,16 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	protected OpenDocumentationOperation getOpenDocumentationOperation(ISourceBuffer sourceBuffer, int offset) {
+	protected ResultOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
+			int offset) {
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		CommonResultOperation<ToolOpResult<String>> findDocOperation = new CommonResultOperation<ToolOpResult<String>>() {
+		ResultOperation<ToolResponse<String>> findDocOperation = new ResultOperation<ToolResponse<String>>() {
 			
 			@Override
-			public ToolOpResult<String> executeOp(IOperationMonitor om)
+			public ToolResponse<String> executeOp(IOperationMonitor om)
 					throws CommonException, OperationCancellation {
-				return new ToolOpResult<String>(doGetDoc(om));
+				return new ToolResponse<>(doGetDoc(om));
 			}
 			
 			protected String doGetDoc(IOperationMonitor monitor) throws CommonException, OperationCancellation {
@@ -78,7 +79,7 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 			}
 		};
 		
-		return new OpenDocumentationOperation("Get DDoc", findDocOperation);
+		return findDocOperation;
 	}
 	
 }

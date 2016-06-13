@@ -173,7 +173,9 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
 			throws CoreException, CommonException {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
-		FindDefinitionResult opResult = new DeeOpenDefinitionOperation(srcEditor).executeAndGetValidatedResult();
+		DeeOpenDefinitionOperation op = new DeeOpenDefinitionOperation(srcEditor);
+		op.execute();
+		FindDefinitionResult opResult = op.getResultValue();
 		
 		if(errorMessageContains != null) {
 			assertTrue(opResult.errorMessage.contains(errorMessageContains));

@@ -27,6 +27,7 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.ui.EditorSettings_Actual;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.editor.EditorUtils.OpenNewEditorMode;
+import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
@@ -34,6 +35,7 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
+import melnorme.utilbox.status.Severity;
 import mmrnmhrm.core.engine.DeeEngineClient;
 
 public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDefinitionResult> {
@@ -81,19 +83,19 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		List<FindDefinitionResultEntry> results = openDefResult.results;
 		
 		if(openDefResult.errorMessage != null) {
-			dialogError(openDefResult.errorMessage);
+			statusDialog(Severity.ERROR, openDefResult.errorMessage);
 			return;
 		}
 		
 		if(results.size() > 1) {
-			dialogInfo("Multiple definitions found: \n" 
+			statusDialog(Severity.INFO, "Multiple definitions found: \n" 
 					+ namedResultsToString(results, "\n") + "\nOpening the first one.");
 		}
 		
 		FindDefinitionResultEntry fdResultEntry = results.get(0);
 		
 		if(fdResultEntry == null || fdResultEntry.isLanguageIntrinsic()) {
-			dialogInfo("Cannot open definition, "
+			statusDialog(Severity.INFO, "Cannot open definition, "
 					+ "symbol \"" +fdResultEntry.extendedName + "\" is a language intrinsic.");
 			return;
 		}
@@ -121,6 +123,10 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 		EclipseUtils.run(() ->
 		EditorUtils.openTextEditorAndSetSelection(editor, EditorSettings_Actual.EDITOR_ID, newInput, 
 			openNewEditorMode, sourceRange));
+	}
+	
+	protected void statusDialog(Severity severity, String message) {
+		UIOperationsStatusHandler.displayStatusMessage(operationName, severity, message);
 	}
 	
 	public static String namedResultsToString(Iterable<? extends FindDefinitionResultEntry> nodes, String sep) {
