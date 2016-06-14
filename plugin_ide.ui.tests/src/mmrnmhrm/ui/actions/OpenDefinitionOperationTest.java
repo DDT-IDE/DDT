@@ -35,6 +35,7 @@ import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.ide.ui.utils.UIOperationErrorHandlerImpl;
 import melnorme.lang.ide.ui.utils.UIOperationsStatusHandler;
 import melnorme.lang.ide.ui.utils.WorkbenchUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import mmrnmhrm.tests.IOutsideBuildpathTestResources;
 import mmrnmhrm.tests.ITestResourcesConstants;
@@ -171,7 +172,7 @@ public class OpenDefinitionOperationTest extends CommonDeeUITest {
 	}
 	
 	protected void doTest(int offset, String errorMessageContains, IProject project, String editorFile) 
-			throws CoreException, CommonException {
+			throws CoreException, CommonException, OperationCancellation {
 		EditorUtils.setEditorSelection(srcEditor, offset, 0);
 		DeeOpenDefinitionOperation op = new DeeOpenDefinitionOperation(srcEditor);
 		op.execute();
