@@ -22,9 +22,4 @@ public class DeeDocTextHover extends AbstractDocHover implements ILangEditorText
 	public DeeDocTextHover() {
 	}
 	
-	@Override
-	protected boolean requiresSavedBuffer() {
-		return false;
-	}
-	
 }

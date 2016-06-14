@@ -20,24 +20,25 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
+import melnorme.utilbox.status.IStatusMessage;
+import melnorme.utilbox.status.Severity;
 
-public class DeeFmtOperation extends AbstractEditorOperation2<String> {
+public class DeeFmtOperation extends AbstractEditorOperation2<ToolResponse<String>> {
 	
 	protected final ToolManager toolMgr = LangCore.getToolManager();
-	
-	protected boolean fmtFailureAsHardFailure = true;
 	
 	public DeeFmtOperation(ITextEditor editor) {
 		super("Format", editor);
 	}
 	
 	@Override
-	protected String doBackgroundValueComputation(IOperationMonitor monitor)
+	protected ToolResponse<String> doBackgroundValueComputation(IOperationMonitor monitor)
 			throws CommonException, OperationCancellation {
 		
 		Path rustFmt = DeeToolPreferences.DFMT_PATH.getDerivedValue(project);
@@ -56,28 +57,18 @@ public class DeeFmtOperation extends AbstractEditorOperation2<String> {
 			String stdErr = result.getStdErrBytes().toUtf8String();
 			String firstStderrLine = StringUtil.splitString(stdErr, '\n')[0].trim();
 			
-			statusErrorMessage = ToolingMessages.PROCESS_CompletedWithNonZeroValue("dfmt", exitValue) + "\n" +
+			String errorMessage = ToolingMessages.PROCESS_CompletedWithNonZeroValue("dfmt", exitValue) + "\n" +
 					firstStderrLine;
-			return null;
+			return new ToolResponse<>(null, new IStatusMessage.StatusMessage(Severity.ERROR, errorMessage));
 		}
 		
 		// formatted file is in stdout
-		return result.getStdOutBytes().toUtf8String();
+		return new ToolResponse<>(result.getStdOutBytes().toUtf8String());
 	}
 	
 	@Override
-	protected void handleStatusErrorMessage(String statusErrorMessage) throws CommonException {
-		if(fmtFailureAsHardFailure) {
-			throw new CommonException(statusErrorMessage);
-		} else {
-			super.handleStatusErrorMessage(statusErrorMessage);
-		}
-	}
-	
-	@Override
-	protected void handleComputationResult() throws CommonException {
-		super.handleComputationResult();
-		
+	protected void handleComputationResult(ToolResponse<String> result) throws CommonException {
+		// TODO Auto-generated method stub
 		if(result != null) {
 			setEditorTextPreservingCarret(result);
 		}
