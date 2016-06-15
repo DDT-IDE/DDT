@@ -25,7 +25,6 @@ import melnorme.lang.ide.ui.editor.text.EditorPrefConstants_Common;
 import melnorme.lang.ide.ui.text.SimpleSourceViewerConfiguration;
 import melnorme.lang.ide.ui.text.coloring.StylingPreferences;
 import melnorme.lang.ide.ui.text.coloring.ThemedTextStylingPreference;
-import melnorme.util.swt.jface.text.ColorManager2;
 import mmrnmhrm.ui.editor.DeeEditor;
 import mmrnmhrm.ui.editor.DeeEditorContextMenuContributor;
 import mmrnmhrm.ui.text.DeeColorPreferences;

@@ -39,7 +39,7 @@ public abstract class EngineOperation<RET> {
 			String opName) {
 		this.sourceModelMgr = sourceModelMgr;
 		
-		this.location = location;
+		this.location = assertNotNull(location);
 		this.offset = offset;
 		this.timeoutMillis = timeoutMillis;
 		this.opName = assertNotNull(opName);

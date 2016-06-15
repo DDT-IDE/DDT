@@ -15,11 +15,11 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
+import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.common.ops.ResultOperation;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -56,16 +56,15 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	protected ResultOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
+	protected ComputeValueUIOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
 			int offset) {
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		ResultOperation<ToolResponse<String>> findDocOperation = new ResultOperation<ToolResponse<String>>() {
+		ComputeValueUIOperation<ToolResponse<String>> findDocOp = new ComputeValueUIOperation<ToolResponse<String>>() {
 			
 			@Override
-			public ToolResponse<String> executeOp(IOperationMonitor om)
-					throws CommonException, OperationCancellation {
-				return new ToolResponse<>(doGetDoc(om));
+			public ToolResponse<String> call() throws CommonException, OperationCancellation {
+				return new ToolResponse<>(invokeInBackground(this::doGetDoc));
 			}
 			
 			protected String doGetDoc(IOperationMonitor monitor) throws CommonException, OperationCancellation {
@@ -79,7 +78,7 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 			}
 		};
 		
-		return findDocOperation;
+		return findDocOp;
 	}
 	
 }

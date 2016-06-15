@@ -10,7 +10,6 @@
  *******************************************************************************/
 package mmrnmhrm.ui.actions;
 
-import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.CoreUtil.areEqual;
 
 import java.util.List;
@@ -73,12 +72,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 	}
 	
 	@Override
-	protected void handleComputationResult() throws CommonException {
-		assertNotNull(result);
-		handleOpenDefinitionResult(result);
-	}
-	
-	public void handleOpenDefinitionResult(FindDefinitionResult openDefResult) throws CommonException {
+	protected void handleComputationResult(FindDefinitionResult openDefResult) throws CommonException {
 		
 		List<FindDefinitionResultEntry> results = openDefResult.results;
 		

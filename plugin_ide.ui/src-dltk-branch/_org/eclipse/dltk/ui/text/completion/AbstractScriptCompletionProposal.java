@@ -15,16 +15,16 @@ import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposal;
 import melnorme.lang.tooling.ToolCompletionProposal;
-import melnorme.lang.tooling.common.ISourceBuffer;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 
 /* TODO: DLTK review this code*/
 public abstract class AbstractScriptCompletionProposal extends LangCompletionProposal {
 
-	public AbstractScriptCompletionProposal(ISourceBuffer sourceBuffer, ToolCompletionProposal proposal, 
+	public AbstractScriptCompletionProposal(SourceOpContext sourceContext, ToolCompletionProposal proposal, 
 			Image image, IContextInformation contextInformation) {
-		super(sourceBuffer, proposal, image, contextInformation);
+		super(sourceContext, proposal, image, contextInformation);
 	}
 
 	/* --------------------------------- */

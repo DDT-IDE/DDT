@@ -16,11 +16,11 @@ import org.eclipse.swt.graphics.Image;
 
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
-import melnorme.lang.ide.ui.text.completion.CompletionContext;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
 import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
@@ -36,16 +36,16 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(CompletionContext context, ICancelMonitor cm) 
+	protected LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
 			throws CommonException, OperationCancellation {
 		
-		Location editoInputFile = context.getEditorInputLocation();
+		Location editoInputFile = sourceContext.getFileLocation();
 		
-		IProject project = ResourceUtils.getProject(context.getContext().getOptionalFileLocation());
+		IProject project = ResourceUtils.getProject(editoInputFile);
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 		
 		int timeoutMillis = ((TimeoutCancelMonitor) cm).getTimeoutMillis();
-		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, context.getOffset(), dubPath)
+		return dtoolclient.new CodeCompletionOperation(editoInputFile, timeoutMillis, sourceContext.getOffset(), dubPath)
 			.runEngineOperation(new NullOperationMonitor(cm))
 			.convertToCompletionResult();
 	}
@@ -53,9 +53,9 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	/* -----------------  ----------------- */
 	
 	@Override
-	protected ICompletionProposal adaptToolProposal(CompletionContext context, ToolCompletionProposal proposal) {
+	protected ICompletionProposal adaptToolProposal(SourceOpContext sourceOpContext, ToolCompletionProposal proposal) {
 		Image image = getImage(proposal);
-		return new DeeContentAssistProposal(context.getSourceBuffer(), proposal, image);
+		return new DeeContentAssistProposal(sourceOpContext, proposal, image);
 	}
 	
 }

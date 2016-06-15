@@ -17,7 +17,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import melnorme.lang.ide.core.DeeToolPreferences;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ToolManager;
-import melnorme.lang.ide.ui.utils.operations.AbstractEditorOperation2;
+import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.lang.tooling.toolchain.ops.ToolResponse;
@@ -26,10 +26,9 @@ import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.IStatusMessage;
-import melnorme.utilbox.status.Severity;
+import melnorme.utilbox.status.StatusMessage;
 
-public class DeeFmtOperation extends AbstractEditorOperation2<ToolResponse<String>> {
+public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 	
 	protected final ToolManager toolMgr = LangCore.getToolManager();
 	
@@ -59,7 +58,7 @@ public class DeeFmtOperation extends AbstractEditorOperation2<ToolResponse<Strin
 			
 			String errorMessage = ToolingMessages.PROCESS_CompletedWithNonZeroValue("dfmt", exitValue) + "\n" +
 					firstStderrLine;
-			return new ToolResponse<>(null, new IStatusMessage.StatusMessage(Severity.ERROR, errorMessage));
+			return new ToolResponse<>(null, new StatusMessage(errorMessage));
 		}
 		
 		// formatted file is in stdout
@@ -67,10 +66,9 @@ public class DeeFmtOperation extends AbstractEditorOperation2<ToolResponse<Strin
 	}
 	
 	@Override
-	protected void handleComputationResult(ToolResponse<String> result) throws CommonException {
-		// TODO Auto-generated method stub
-		if(result != null) {
-			setEditorTextPreservingCarret(result);
+	protected void handleResultData(String resultData) throws CommonException {
+		if(resultData != null) {
+			setEditorTextPreservingCarret(resultData);
 		}
 	}
 	
