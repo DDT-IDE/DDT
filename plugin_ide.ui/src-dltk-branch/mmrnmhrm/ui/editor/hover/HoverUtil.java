@@ -40,7 +40,7 @@ public class HoverUtil {
 		
 		if (info != null && info.length() > 0) {
 			StringBuffer buffer= new StringBuffer();
-			HTMLPrinter.insertPageProlog(buffer, 0, cssStyle);
+			HTMLPrinter.insertPageProlog(buffer, cssStyle);
 			buffer.append(info);
 			HTMLPrinter.addPageEpilog(buffer);
 			info= buffer.toString();
