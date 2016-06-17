@@ -15,8 +15,8 @@ import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.information.IInformationProviderExtension2;
 import org.eclipse.ui.editors.text.EditorsUI;
 
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover;
-import melnorme.lang.ide.ui.editor.hover.BrowserControlHover.BrowserControlCreator;
+import melnorme.lang.ide.ui.editor.hover.BrowserControlCreator;
+
 
 public class DocumentationHoverCreator implements ITextHoverExtension, IInformationProviderExtension2 {
 	
@@ -31,7 +31,7 @@ public class DocumentationHoverCreator implements ITextHoverExtension, IInformat
 	}
 	
 	public IInformationControlCreator getHoverControlCreator(String enrichmentStatusInfo) {
-		return new BrowserControlHover.EnrichableBrowserControlCreator(
+		return new BrowserControlCreator.EnrichableBrowserControlCreator(
 			getInformationPresenterControlCreator(), enrichmentStatusInfo);
 	}
 	

@@ -20,13 +20,12 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.ui.editor.actions.AbstractEditorToolOperation;
 import melnorme.lang.tooling.ToolingMessages;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
-import melnorme.utilbox.status.StatusMessage;
 
 public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 	
@@ -37,8 +36,8 @@ public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 	}
 	
 	@Override
-	protected ToolResponse<String> doBackgroundValueComputation(IOperationMonitor monitor)
-			throws CommonException, OperationCancellation {
+	protected String doBackgroundToolResultComputation(IOperationMonitor om)
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
 		Path rustFmt = DeeToolPreferences.DFMT_PATH.getDerivedValue(project);
 		
@@ -49,7 +48,7 @@ public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 		pb.directory(getInputLocation().getParent().toFile());
 		
 		String input = doc.get();
-		ExternalProcessResult result = toolMgr.runEngineTool(pb, input, monitor);
+		ExternalProcessResult result = toolMgr.runEngineTool(pb, input, om);
 		int exitValue = result.exitValue;
 		
 		if(exitValue != 0) {
@@ -58,11 +57,11 @@ public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 			
 			String errorMessage = ToolingMessages.PROCESS_CompletedWithNonZeroValue("dfmt", exitValue) + "\n" +
 					firstStderrLine;
-			return new ToolResponse<>(null, new StatusMessage(errorMessage));
+			throw new OperationSoftFailure(errorMessage);
 		}
 		
 		// formatted file is in stdout
-		return new ToolResponse<>(result.getStdOutBytes().toUtf8String());
+		return result.getStdOutBytes().toUtf8String();
 	}
 	
 	@Override

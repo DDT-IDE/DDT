@@ -15,13 +15,13 @@ import org.eclipse.core.resources.IProject;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.editor.hover.AbstractDocDisplayInfoSupplier;
-import melnorme.lang.ide.ui.utils.operations.ComputeValueUIOperation;
 import melnorme.lang.tooling.LANG_SPECIFIC;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.common.ISourceBuffer;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
+import melnorme.lang.tooling.toolchain.ops.AbstractToolOperation;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
-import melnorme.lang.tooling.toolchain.ops.ToolResponse;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
@@ -36,8 +36,8 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	public String get() {
-		String info = super.get();
+	public String doGetDocumentation(IOperationMonitor om) {
+		String info = super.doGetDocumentation(om);
 		
 		if(info != null) {
 			return HoverUtil.getCompleteHoverInfo(info, getCSSStyles());
@@ -56,25 +56,21 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 	}
 	
 	@Override
-	protected ComputeValueUIOperation<ToolResponse<String>> getOpenDocumentationOperation2(ISourceBuffer sourceBuffer,
-			int offset) {
+	protected AbstractToolOperation<String> getFindDocOperation(ISourceBuffer sourceBuffer, int offset) {
 		SourceOpContext opContext = sourceBuffer.getSourceOpContext(new SourceRange(offset, 0));
 		
-		ComputeValueUIOperation<ToolResponse<String>> findDocOp = new ComputeValueUIOperation<ToolResponse<String>>() {
+		AbstractToolOperation<String> findDocOp = new AbstractToolOperation<String>() {
 			
 			@Override
-			public ToolResponse<String> call() throws CommonException, OperationCancellation {
-				return new ToolResponse<>(invokeInBackground(this::doGetDoc));
-			}
-			
-			protected String doGetDoc(IOperationMonitor monitor) throws CommonException, OperationCancellation {
+			public String executeToolOperation(IOperationMonitor om)
+					throws CommonException, OperationCancellation, OperationSoftFailure {
 				IProject project = ResourceUtils.getProject(sourceBuffer.getLocation_opt());
 				String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 				Location fileLocation = opContext.getFileLocation();
 				
 				int offset = opContext.getOffset();
 				return DeeEngineClient.getDefault().
-						new FindDDocViewOperation(fileLocation, offset, -1, dubPath).runEngineOperation(monitor);
+						new FindDDocViewOperation(fileLocation, offset, -1, dubPath).runEngineOperation(om);
 			}
 		};
 		
