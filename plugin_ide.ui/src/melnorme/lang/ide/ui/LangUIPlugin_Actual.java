@@ -8,7 +8,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
-import melnorme.lang.ide.ui.utils.operations.BasicUIOperation;
 import melnorme.lang.ide.ui.views.StructureElementLabelProvider;
 import mmrnmhrm.core.text.DeeAutoEditStrategy;
 import mmrnmhrm.ui.DeeImages;
@@ -57,7 +56,7 @@ public final class LangUIPlugin_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	public static BasicUIOperation getFormatOperation(ITextEditor editor) {
+	public static DeeFmtOperation getFormatOperation(ITextEditor editor) {
 		return new DeeFmtOperation(editor);
 	}
 	
