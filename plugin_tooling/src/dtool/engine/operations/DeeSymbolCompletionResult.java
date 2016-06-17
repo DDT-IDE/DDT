@@ -12,20 +12,21 @@ package dtool.engine.operations;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
+
+import dtool.ast.definitions.ICallableElement;
+import dtool.ast.definitions.IFunctionParameter;
+import dtool.parser.structure.DeeLabelInfoProvider;
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ElementLabelInfo;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
 import melnorme.lang.tooling.completion.CompletionLocationInfo;
-import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.engine.OverloadedNamedElement;
 import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Collection2;
-import dtool.ast.definitions.ICallableElement;
-import dtool.ast.definitions.IFunctionParameter;
-import dtool.parser.structure.DeeLabelInfoProvider;
 
 public class DeeSymbolCompletionResult {
 	
@@ -65,9 +66,9 @@ public class DeeSymbolCompletionResult {
 		return results;
 	}
 	
-	public LangCompletionResult convertToCompletionResult() {
+	public ArrayList2<ToolCompletionProposal> convertToCompletionResult() throws OperationSoftFailure {
 		if(isFailure()) {
-			return new LangCompletionResult(resultCode.getMessage());
+			throw new OperationSoftFailure(resultCode.getMessage());
 		}
 		
 		ArrayList2<ToolCompletionProposal> proposals = new ArrayList2<>();
@@ -84,7 +85,7 @@ public class DeeSymbolCompletionResult {
 			}
 		}
 		
-		return new LangCompletionResult(proposals);
+		return proposals;
 	}
 	
 	public static ToolCompletionProposal createProposal(CompletionLocationInfo invocationInfo, int replaceLength, 

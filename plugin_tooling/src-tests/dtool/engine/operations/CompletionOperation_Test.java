@@ -15,21 +15,21 @@ import static dtool.engine.analysis.NamedElement_CommonTest.COMMON_PROPERTIES;
 import static melnorme.lang.tooling.EProtection.PUBLIC;
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static melnorme.utilbox.misc.ArrayUtil.concat;
+
+import org.junit.Test;
+
+import dtool.engine.operations.DeeSymbolCompletionResult.ECompletionResultStatus;
+import dtool.engine.tests.DefUnitResultsChecker;
 import melnorme.lang.tooling.CompletionProposalKind;
 import melnorme.lang.tooling.EAttributeFlag;
 import melnorme.lang.tooling.EProtection;
 import melnorme.lang.tooling.ElementAttributes;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.ast.SourceRange;
-import melnorme.lang.tooling.completion.LangCompletionResult;
 import melnorme.lang.tooling.completion.LangToolCompletionProposal;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.misc.Location;
-
-import org.junit.Test;
-
-import dtool.engine.operations.DeeSymbolCompletionResult.ECompletionResultStatus;
-import dtool.engine.tests.DefUnitResultsChecker;
 
 public class CompletionOperation_Test extends CommonDToolOperation_Test {
 	
@@ -192,15 +192,15 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		
 		offset = MODULE_Contents.indexOf("/*N*/");
 		testCodeCompletionProposals(MODULE_FilePath, offset,
-			new LangCompletionResult(list(
+			list(
 				proposal(offset-4, 4, "void", "void", 
 					CompletionProposalKind.NATIVE, att(), null, "void")
-			))
+			)
 		);
 		
 		offset = MODULE_Contents.indexOf("/*CC_1*/");
 		testCodeCompletionProposals(MODULE_FilePath, offset,
-			new LangCompletionResult(list(
+			list(
 				proposal(offset-3, 3, "foo", "foo() : void", 
 					CompletionProposalKind.FUNCTION, att(PUBLIC), "_dummy2", "foo()"),
 				proposal(offset-3, 3, "foo", "foo(int a) : void", 
@@ -210,7 +210,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 				proposal(offset-3, 3, "fooTemplateFn", "fooTemplateFn(T) (T param) : int", 
 					CompletionProposalKind.FUNCTION, att(PUBLIC, EAttributeFlag.TEMPLATED), "_dummy2", 
 					"fooTemplateFn(param)", sr(14, 5))
-			))
+			)
 		);
 		
 	}
@@ -232,12 +232,13 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 		};
 	}
 	
-	protected void testCodeCompletionProposals(Location modulePath, int offset, LangCompletionResult expectedResult) 
+	protected void testCodeCompletionProposals(Location modulePath, int offset, 
+			Indexable<ToolCompletionProposal> expectedResult) 
 			throws Exception {
 		DeeSymbolCompletionResult opResult = doOperation(modulePath, offset);
 		
-		LangCompletionResult langResult = opResult.convertToCompletionResult();
-		assertAreEqual(expectedResult.getValidatedProposals(), langResult.getValidatedProposals());
+		ArrayList2<ToolCompletionProposal> langResult = opResult.convertToCompletionResult();
+		assertAreEqual(expectedResult, langResult);
 	}
 	
 }

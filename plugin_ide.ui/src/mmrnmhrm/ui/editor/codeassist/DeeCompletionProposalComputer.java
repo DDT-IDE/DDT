@@ -19,9 +19,10 @@ import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.ui.text.completion.LangCompletionProposalComputer;
 import melnorme.lang.tooling.ToolCompletionProposal;
 import melnorme.lang.tooling.common.ops.IOperationMonitor.NullOperationMonitor;
-import melnorme.lang.tooling.completion.LangCompletionResult;
+import melnorme.lang.tooling.toolchain.ops.OperationSoftFailure;
 import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.lang.utils.concurrency.TimeoutCancelMonitor;
+import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -36,8 +37,8 @@ public class DeeCompletionProposalComputer extends LangCompletionProposalCompute
 	}
 	
 	@Override
-	protected LangCompletionResult doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
-			throws CommonException, OperationCancellation {
+	protected Indexable<ToolCompletionProposal> doComputeProposals(SourceOpContext sourceContext, ICancelMonitor cm)
+			throws CommonException, OperationCancellation, OperationSoftFailure {
 		
 		Location editoInputFile = sourceContext.getFileLocation();
 		
