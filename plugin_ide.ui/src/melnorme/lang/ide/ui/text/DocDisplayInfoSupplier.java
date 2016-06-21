@@ -64,7 +64,7 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 			@Override
 			public String executeToolOperation(IOperationMonitor om)
 					throws CommonException, OperationCancellation, OperationSoftFailure {
-				IProject project = ResourceUtils.getProject(sourceBuffer.getLocation_opt());
+				IProject project = ResourceUtils.getProjectFromMemberLocation(sourceBuffer.getLocation_opt());
 				String dubPath = LangCore.settings().SDK_LOCATION.getValue(project).toString();
 				Location fileLocation = opContext.getFileLocation();
 				

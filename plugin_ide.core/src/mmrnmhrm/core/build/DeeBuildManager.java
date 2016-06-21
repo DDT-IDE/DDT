@@ -34,6 +34,7 @@ import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
@@ -183,7 +184,13 @@ public class DeeBuildManager extends BuildManager {
 			SourceLineColumnRange sourceLinePos = new SourceLineColumnRange(line, column, endLine, endColumn);
 			ToolSourceMessage toolMessage = new ToolSourceMessage(filePath, sourceLinePos, Severity.ERROR, errorMsg);
 			
-			new ToolMarkersHelper(true).addErrorMarkers(toolMessage, ResourceUtils.getProjectLocation(project));
+			Location projectLocation;
+			try {
+				projectLocation = ResourceUtils.getProjectLocation2(project);
+			} catch(CommonException e) {
+				throw LangCore.createCoreException(e);
+			}
+			new ToolMarkersHelper(true).addErrorMarkers(toolMessage, projectLocation);
 		}
 		
 	}

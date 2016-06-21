@@ -27,6 +27,7 @@ import melnorme.lang.ide.ui.dialogs.LangNewProjectWizard;
 import melnorme.lang.ide.ui.dialogs.LangProjectWizardFirstPage;
 import melnorme.lang.ide.ui.dialogs.WizardMessages;
 import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
 
 /**
  * D New Project Wizard.
@@ -96,11 +97,11 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 	
 	@Override
 	protected void configureCreatedProject(ProjectCreator_ForWizard projectCreator, IProgressMonitor pm)
-			throws CoreException {
+			throws CoreException, CommonException {
 		String bundleName = getProject().getName().toLowerCase();
 		String dubManifestContents = HelloWorld_DubJsonTemplate.replace("%BUNDLE_NAME%", bundleName);
 		
-		BundlePath bundlePath = new BundlePath(ResourceUtils.getProjectLocation(getProject()));
+		BundlePath bundlePath = new BundlePath(ResourceUtils.getProjectLocation2(getProject()));
 		if(!bundlePath.hasBundleManifest()) {
 			projectCreator.createFile(getProject().getFile(BundlePath.DUB_MANIFEST_NAME_JSON), 
 				dubManifestContents, false, pm);
