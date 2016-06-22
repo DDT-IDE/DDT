@@ -127,18 +127,22 @@ public abstract class ScriptEditor extends AbstractLangStructureEditor {
 		return getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_FOLDING_ENABLED);
 	}
 	
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class required) {
-		if (required == IFoldingStructureProvider.class)
-			return fProjectionModelUpdater;
-		if (required == IFoldingStructureProviderExtension.class)
-			return fProjectionModelUpdater;
-
+	public <T> T getAdapter(Class<T> required) {
+		if (required == IFoldingStructureProvider.class) {
+			IFoldingStructureProvider projectionModelUpdater = this.fProjectionModelUpdater;
+			return (T) projectionModelUpdater;
+		}
+		if (required == IFoldingStructureProviderExtension.class) {
+			IFoldingStructureProviderExtension projectionModelUpdater = this.fProjectionModelUpdater; 
+			return (T) projectionModelUpdater;
+		}
 		if (fProjectionSupport != null) {
 			Object adapter = fProjectionSupport.getAdapter(getSourceViewer(), required);
 			if (adapter != null)
-				return adapter;
+				return (T) adapter;
 		}
 
 		return super.getAdapter(required);
