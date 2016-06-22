@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Updated minimum CDT to version `9.0`.
  * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
 
 ### 1.0.1
