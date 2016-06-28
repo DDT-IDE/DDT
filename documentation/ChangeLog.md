@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Fixed: NPE when invoking Content Assist inside a comment, string or character.
  * Updated minimum CDT to version `9.0`.
  * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
 
