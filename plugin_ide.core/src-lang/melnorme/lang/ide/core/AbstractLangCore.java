@@ -15,9 +15,9 @@ import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.project_model.BundleModelManager;
 import melnorme.lang.ide.core.project_model.LangBundleModel;
+import melnorme.utilbox.misc.ILogHandler;
 
-/* FIXME: make lang code*/
-public abstract class LangCore_Base {
+public abstract class AbstractLangCore {
 	
 	public static LangCore instance;
 	
@@ -25,20 +25,47 @@ public abstract class LangCore_Base {
 		return instance;
 	}
 	
-	public LangCore_Base() {
-		super();
+	/* ----------------- Owned singletons: ----------------- */
+	protected final ILogHandler logHandler;
+	protected final CoreSettings coreSettings;
+	protected final ToolManager toolManager;
+	protected final BundleModelManager<? extends LangBundleModel> bundleManager;
+	protected final BuildManager buildManager;
+	protected final SourceModelManager sourceModelManager;
+	
+	public AbstractLangCore(ILogHandler logHandler) {
 		instance = (LangCore) this;
+		
+		this.logHandler = logHandler;
+		
+		coreSettings = createCoreSettings();
+		toolManager = createToolManager();
+		bundleManager = LangCore_Actual.createBundleModelManager();
+		buildManager = createBuildManager();
+		sourceModelManager = LangCore_Actual.createSourceModelManager();
+	}
+	
+	protected void shutdown() {
+		buildManager.dispose();
+		bundleManager.shutdownManager();
+		sourceModelManager.dispose();
+		toolManager.shutdownNow();
+	}
+	
+	/* -----------------  ----------------- */ 
+	
+	public static ILogHandler logHandler() {
+		return instance.logHandler;
 	}
 	
 	protected abstract CoreSettings createCoreSettings();
-	
-	/* -----------------  ----------------- */ 
 	
 	public static CoreSettings settings() {
 		return instance.coreSettings;
 	}
 	
-	
+	protected abstract ToolManager createToolManager();
+
 	public static ToolManager getToolManager() {
 		return instance.toolManager;
 	}
@@ -50,11 +77,21 @@ public abstract class LangCore_Base {
 		return getBundleModelManager().getModel();
 	}
 	
+	protected abstract BuildManager createBuildManager();
+	
 	public static BuildManager getBuildManager() {
 		return instance.buildManager;
 	}
+	
 	public static SourceModelManager getSourceModelManager() {
 		return instance.sourceModelManager;
 	}
-
+	
+	/* -----------------  ----------------- */
+	
+	/** Start core agents, and do other initizaliation after UI is started. */
+	public void startAgentsAfterUIStart() {
+		bundleManager.startManager();
+	}
+	
 }

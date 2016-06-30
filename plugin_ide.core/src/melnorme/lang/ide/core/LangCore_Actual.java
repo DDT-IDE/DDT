@@ -11,13 +11,14 @@
 package melnorme.lang.ide.core;
 
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.utilbox.misc.ILogHandler;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.build.DubLocationValidator;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
 
-public class LangCore_Actual extends LangCore_Base {
+public class LangCore_Actual extends AbstractLangCore {
 	
 	public static final String PLUGIN_ID = "org.dsource.ddt.ide.core";
 	public static final String NATURE_ID = PLUGIN_ID +".nature";
@@ -33,22 +34,10 @@ public class LangCore_Actual extends LangCore_Base {
 	public static final String VAR_NAME_SdkToolPath = "DUB_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the DUB tool";
 	
-	/* ----------------- Owned singletons: ----------------- */
+	/* -----------------  ----------------- */
 	
-	protected final CoreSettings coreSettings;
-	protected final DeeToolManager toolManager;
-	protected final DeeBundleModelManager bundleManager;
-	protected final BuildManager buildManager;
-	protected final DeeEngineClient sourceModelManager;
-	
-	public LangCore_Actual() {
-		super();
-		
-		coreSettings = createCoreSettings();
-		toolManager = createToolManager();
-		bundleManager = createBundleModelManager();
-		buildManager = new DeeBuildManager(deeBundleModelManager().getModel(), toolManager);
-		sourceModelManager = createSourceModelManager();
+	public LangCore_Actual(ILogHandler logHandler) {
+		super(logHandler);
 	}
 	
 	@Override
@@ -61,27 +50,31 @@ public class LangCore_Actual extends LangCore_Base {
 		};
 	}
 	
-	/* -----------------  ----------------- */
-	
+	@Override
 	protected DeeToolManager createToolManager() {
-		return new DeeToolManager();
+		return new DeeToolManager(coreSettings);
 	}
 	public static DeeToolManager deeToolManager() {
-		return instance.toolManager;
+		return (DeeToolManager) instance.toolManager;
 	}
 	
 	public static DeeBundleModelManager createBundleModelManager() {
 		return new DeeBundleModelManager();
 	}
 	public static DeeBundleModelManager deeBundleModelManager() {
-		return instance.bundleManager;
+		return (DeeBundleModelManager) instance.bundleManager;
+	}
+	
+	@Override
+	protected BuildManager createBuildManager() {
+		return new DeeBuildManager(deeBundleModelManager().getModel(), deeToolManager());
 	}
 	
 	public static DeeEngineClient createSourceModelManager() {
 		return new DeeEngineClient();
 	}
 	public static DeeEngineClient deeSourceModelManager() {
-		return instance.sourceModelManager;
+		return (DeeEngineClient) instance.sourceModelManager;
 	}
 	
 }

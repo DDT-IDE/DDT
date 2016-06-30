@@ -10,6 +10,7 @@
  *******************************************************************************/
 package mmrnmhrm.core.engine;
 
+import melnorme.lang.ide.core.CoreSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
 import melnorme.utilbox.concurrency.FutureX;
@@ -28,7 +29,8 @@ public class DeeToolManager extends ToolManager {
 	
 	protected final ITaskAgent dubProcessAgent = CoreExecutors.newExecutorTaskAgent("DDT.DubProcessAgent");
 	
-	public DeeToolManager() {
+	public DeeToolManager(CoreSettings settings) {
+		super(settings);
 	}
 	
 	@Override
