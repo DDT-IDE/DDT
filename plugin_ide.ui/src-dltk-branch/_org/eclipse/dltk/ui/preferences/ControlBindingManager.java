@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -22,6 +20,7 @@ import org.eclipse.swt.widgets.Text;
 import _org.eclipse.dltk.internal.ui.dialogs.StatusUtil;
 import _org.eclipse.dltk.ui.dialogs.StatusInfo;
 import _org.eclipse.dltk.ui.util.IStatusChangeListener;
+import melnorme.lang.ide.core.LangCore;
 
 /**
  */
@@ -165,7 +164,7 @@ public class ControlBindingManager<KEY> {
 			if (textControls.containsKey(key)) {
 				final RuntimeException error = new IllegalArgumentException(
 						"Duplicate control " + key); //$NON-NLS-1$
-				LangUIPlugin.logInternalError(error);
+				LangCore.logInternalError(error);
 			}
 
 			textControls.put(text, key);

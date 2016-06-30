@@ -14,10 +14,6 @@ package _org.eclipse.dltk.ui.text.folding;
 import java.util.ArrayList;
 import java.util.List;
 
-import melnorme.lang.ide.core.TextSettings_Actual;
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -30,6 +26,9 @@ import org.eclipse.jface.text.TextUtilities;
 
 import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 
 /**
  * Abstract implementation of {@link IFoldingBlockProvider} to fold
@@ -196,7 +195,7 @@ public abstract class PartitioningFoldingBlockProvider {
 			reportRegions(document, regions, kind, collapse);
 			removeDocumentStuff(document);
 		} catch (BadLocationException e) {
-			LangUIPlugin.logInternalError(e);
+			LangCore.logInternalError(e);
 		}
 	}
 

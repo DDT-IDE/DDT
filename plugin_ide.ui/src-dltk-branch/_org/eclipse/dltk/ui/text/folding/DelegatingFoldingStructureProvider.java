@@ -37,9 +37,8 @@ import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import _org.eclipse.dltk.internal.ui.editor.ScriptEditor;
-import _org.eclipse.dltk.ui.DLTKUIPlugin;
 import _org.eclipse.jdt.internal.ui.text.DocumentCharacterIterator;
-import melnorme.lang.ide.ui.LangUIPlugin;
+import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.ui.editor.EditorUtils;
 import melnorme.lang.tooling.structure.SourceFileStructure;
 import melnorme.utilbox.core.CommonException;
@@ -705,7 +704,7 @@ public class DelegatingFoldingStructureProvider implements
 		} catch (AbortFoldingException e) {
 			return false;
 		} catch (RuntimeException e) {
-			DLTKUIPlugin.logError("Error in FoldingBlockProvider", e);
+			LangCore.logError("Error in FoldingBlockProvider", e);
 			blockProviders = null;
 			return false;
 		}
@@ -1007,7 +1006,7 @@ public class DelegatingFoldingStructureProvider implements
 						new ScriptProjectionAnnotation(ctx.allowCollapsing()
 								&& collapse, kind, element), position);
 			} catch (StringIndexOutOfBoundsException e) {
-				LangUIPlugin.logInternalError(e);
+				LangCore.logInternalError(e);
 			}
 		}
 	}

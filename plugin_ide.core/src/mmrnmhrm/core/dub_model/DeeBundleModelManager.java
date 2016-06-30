@@ -256,7 +256,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			try {
 				resolveProjectOperation(monitor);
 			} catch(CoreException e) {
-				throw LangCore.createCommonException(e);
+				throw EclipseUtils.createCommonException(e);
 			}
 		} catch(OperationCancellation ce) {
 			return;

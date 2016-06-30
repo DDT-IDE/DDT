@@ -14,8 +14,6 @@ package _org.eclipse.dltk.internal.ui.editor;
 
 import java.util.Stack;
 
-import melnorme.lang.ide.ui.LangUIPlugin;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.DocumentEvent;
@@ -39,6 +37,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
+
+import melnorme.lang.ide.core.LangCore;
 
 public abstract class BracketInserter2 implements VerifyKeyListener,
 		ILinkedModeListener {
@@ -151,7 +151,7 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 											level.fSecondPosition.offset,
 											level.fSecondPosition.length, ""); //$NON-NLS-1$
 								} catch (BadLocationException e) {
-									LangUIPlugin.logError("position error", e);
+									LangCore.logError("position error", e);
 								}
 							}
 
@@ -160,7 +160,7 @@ public abstract class BracketInserter2 implements VerifyKeyListener,
 								try {
 									document.removePositionCategory(CATEGORY);
 								} catch (BadPositionCategoryException e) {
-									LangUIPlugin.logError("position error", e);
+									LangCore.logError("position error", e);
 								}
 							}
 						}

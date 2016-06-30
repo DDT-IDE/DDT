@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import dtool.dub.DubBuildOutputParser;
+import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
 import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
@@ -25,6 +26,7 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation;
 import melnorme.lang.ide.core.operations.build.BuildTargetOperation.BuildOperationParameters;
+import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.lang.tooling.common.SourceLineColumnRange;
@@ -133,7 +135,7 @@ public class DeeBuildManager extends BuildManager {
 					try {
 						addDubFailureMarker(dubErrorLine);
 					} catch(CoreException e) {
-						throw LangCore.createCommonException(e);
+						throw EclipseUtils.createCommonException(e);
 					}
 				};
 				
@@ -150,7 +152,7 @@ public class DeeBuildManager extends BuildManager {
 						addCompilerErrorMarker(filePath, startPosStr, errorMsg);
 					} catch (CoreException e) {
 						// log, but otherwise ignore & continue
-						LangCore.logStatus(e);
+						EclipseCore.logStatus(e);
 					}
 				}
 			}.handleResult(processResult);
@@ -188,7 +190,7 @@ public class DeeBuildManager extends BuildManager {
 			try {
 				projectLocation = ResourceUtils.getProjectLocation2(project);
 			} catch(CommonException e) {
-				throw LangCore.createCoreException(e);
+				throw EclipseCore.createCoreException(e);
 			}
 			new ToolMarkersHelper(true).addErrorMarkers(toolMessage, projectLocation);
 		}
