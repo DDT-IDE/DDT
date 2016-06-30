@@ -132,7 +132,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	}
 	
 	protected static DeeBundleModelManager getBundleModelManager() {
-		return LangCore.getBundleModelManager();
+		return LangCore.deeBundleModelManager();
 	}
 	
 	protected static ITaskAgent getModelAgent() {

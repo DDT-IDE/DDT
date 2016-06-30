@@ -26,7 +26,7 @@ public class DeeProjectWizardTest extends LangProjectWizardTest {
 	@Override
 	@After
 	public void tearDown() throws Exception {
-		LangCore.getBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
+		LangCore.deeBundleModelManager().syncPendingUpdates(); // ensure DUB process finished
 		super.tearDown();
 	}
 	

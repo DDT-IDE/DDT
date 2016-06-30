@@ -82,7 +82,7 @@ public class DeeProjectWizard extends LangNewProjectWizard {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					LangCore.getBundleModelManager().syncPendingUpdates();
+					LangCore.deeBundleModelManager().syncPendingUpdates();
 				}
 			};
 			try {

@@ -14,11 +14,10 @@ import melnorme.lang.ide.core.operations.build.BuildManager;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.build.DubLocationValidator;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
-import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.engine.DeeEngineClient;
 import mmrnmhrm.core.engine.DeeToolManager;
 
-public class LangCore_Actual {
+public class LangCore_Actual extends LangCore_Base {
 	
 	public static final String PLUGIN_ID = "org.dsource.ddt.ide.core";
 	public static final String NATURE_ID = PLUGIN_ID +".nature";
@@ -34,8 +33,6 @@ public class LangCore_Actual {
 	public static final String VAR_NAME_SdkToolPath = "DUB_TOOL_PATH";
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the DUB tool";
 	
-	public static LangCore instance;
-	
 	/* ----------------- Owned singletons: ----------------- */
 	
 	protected final CoreSettings coreSettings;
@@ -45,15 +42,16 @@ public class LangCore_Actual {
 	protected final DeeEngineClient sourceModelManager;
 	
 	public LangCore_Actual() {
-		instance = (LangCore) this;
+		super();
 		
 		coreSettings = createCoreSettings();
-		toolManager = new DeeToolManager();
+		toolManager = createToolManager();
 		bundleManager = createBundleModelManager();
-		buildManager = new DeeBuildManager(bundleManager.getModel(), toolManager);
+		buildManager = new DeeBuildManager(deeBundleModelManager().getModel(), toolManager);
 		sourceModelManager = createSourceModelManager();
 	}
 	
+	@Override
 	protected CoreSettings createCoreSettings() {
 		return new CoreSettings() {
 			@Override
@@ -65,36 +63,24 @@ public class LangCore_Actual {
 	
 	/* -----------------  ----------------- */
 	
-	public static DeeEngineClient createSourceModelManager() {
-		return new DeeEngineClient();
+	protected DeeToolManager createToolManager() {
+		return new DeeToolManager();
+	}
+	public static DeeToolManager deeToolManager() {
+		return instance.toolManager;
 	}
 	
 	public static DeeBundleModelManager createBundleModelManager() {
 		return new DeeBundleModelManager();
 	}
-	
-	/* -----------------  ----------------- */ 
-	
-	public static CoreSettings settings() {
-		return instance.coreSettings;
-	}
-	
-	
-	public static DeeToolManager getToolManager() {
-		return instance.toolManager;
-	}
-	
-	public static DeeBundleModelManager getBundleModelManager() {
+	public static DeeBundleModelManager deeBundleModelManager() {
 		return instance.bundleManager;
 	}
-	public static DeeBundleModel getBundleModel() {
-		return getBundleModelManager().getModel();
-	}
 	
-	public static BuildManager getBuildManager() {
-		return instance.buildManager;
+	public static DeeEngineClient createSourceModelManager() {
+		return new DeeEngineClient();
 	}
-	public static DeeEngineClient getSourceModelManager() {
+	public static DeeEngineClient deeSourceModelManager() {
 		return instance.sourceModelManager;
 	}
 	

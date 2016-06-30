@@ -37,7 +37,7 @@ import melnorme.utilbox.misc.Location;
 public class DeeEngineClient extends SourceModelManager {
 	
 	public static DeeEngineClient getDefault() {
-		return LangCore.getSourceModelManager();
+		return LangCore.deeSourceModelManager();
 	}
 	
 	protected final DToolServer dtoolServer;

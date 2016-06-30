@@ -123,7 +123,7 @@ public class DeeBuildManager extends BuildManager {
 			
 			RunToolTask newRunToolTask = getToolManager().newRunProcessTask(opMonitor, pb, om);
 			
-			return LangCore.getToolManager().submitTaskAndAwaitResult(newRunToolTask);
+			return LangCore.deeToolManager().submitTaskAndAwaitResult(newRunToolTask);
 		}
 		
 		@Override
