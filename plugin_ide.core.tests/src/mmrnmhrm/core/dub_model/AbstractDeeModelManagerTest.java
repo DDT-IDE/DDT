@@ -131,23 +131,23 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 		return BundlePath.create(project.getLocation().toFile().toPath());
 	}
 	
+	protected static DeeBundleModelManager getBundleModelManager() {
+		return LangCore.getBundleModelManager();
+	}
+	
 	protected static ITaskAgent getModelAgent() {
-		return LangCore.getBundleModelManager().internal_getModelAgent();
+		return getBundleModelManager().internal_getModelAgent();
 	}
 	
 	protected static void _awaitModelUpdates_() {
 		try {
-			LangCore.getBundleModelManager().syncPendingUpdates();
+			getBundleModelManager().syncPendingUpdates();
 		} catch(InterruptedException e) {
 			assertFail();
 		}
 	}
 	
-	protected static final DeeBundleModel model = getModelManager().getModel();
-	
-	protected static DeeBundleModelManager getModelManager() {
-		return LangCore.getBundleModelManager();
-	}
+	protected static final DeeBundleModel model = getBundleModelManager().getModel();
 	
 	protected static DubBundleDescription getExistingDubBundleInfo(IProject project) {
 		return assertNotNull(model.getBundleInfo(project)).getBundleDesc();

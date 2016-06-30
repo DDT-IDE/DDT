@@ -52,7 +52,7 @@ public class DeeBundleModelTest extends AbstractDeeModelManagerTest {
 		
 		DubBundleDescription bundleDesc = new DubBundleDescription(mainBundle, bundleDeps);
 		
-		getModelManager().updateProjectInfo(project, getModelManager().getProjectInfo(project), bundleDesc);
+		getBundleModelManager().updateProjectInfo(project, getBundleModelManager().getProjectInfo(project), bundleDesc);
 		
 		DependenciesContainer dubContainer = getDubContainer(project);
 		assertTrue(dubContainer.getChildren().length == 1);
