@@ -22,7 +22,6 @@ import java.util.concurrent.Semaphore;
 
 import dtool.genie.GenieServer.GenieConnectionHandler;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.SafeRunnable;
 
 /** 
  * Helper for Genie Server, manages a basic TCP socket server.
@@ -101,6 +100,23 @@ public abstract class AbstractSocketServer {
 	
 	protected abstract GenieConnectionHandler createConnectionHandlerRunnable(Socket clientSocket);
 	
+	public abstract class SafeRunnable implements Runnable {
+		
+		@Override
+		public final void run() {
+			try { 
+				safeRun();
+			} catch(RuntimeException e) {
+				handleUncaughtException(e);
+			} 
+		}
+		
+		protected abstract void safeRun();
+		
+		protected abstract void handleUncaughtException(RuntimeException e);
+		
+	}
+	
 	public abstract class ConnectionHandlerRunnable extends SafeRunnable {
 		
 		protected final Socket clientSocket;
@@ -110,7 +126,7 @@ public abstract class AbstractSocketServer {
 		}
 		
 		@Override
-		protected void handleUncaughtException(Throwable e) {
+		protected void handleUncaughtException(RuntimeException e) {
 			handleInternalError(e);
 			assertFail();
 		}
