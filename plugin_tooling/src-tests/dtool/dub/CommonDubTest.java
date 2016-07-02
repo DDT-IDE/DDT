@@ -123,7 +123,9 @@ public class CommonDubTest extends CommonDToolTest {
 		}
 		
 		public void checkBundleDescription(DubBundleDescription bundleDescription, boolean isResolved) {
-			assertTrue(bundleDescription.isResolved() == isResolved);
+			if(bundleDescription.isResolved() != isResolved) {
+				assertFail(StringUtil.asString(bundleDescription.getError()));
+			}
 			
 			if(!isResolved) {
 				check(bundleDescription.getMainBundle(), isResolved);
