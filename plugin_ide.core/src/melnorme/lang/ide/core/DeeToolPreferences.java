@@ -18,7 +18,7 @@ import melnorme.lang.utils.validators.LocationOrSinglePathValidator;
 
 public interface DeeToolPreferences extends ToolchainPreferences {
 	
-	public static final DerivedValuePreference<Path> DFMT_PATH = new DerivedValuePreference<>(LangCore.PLUGIN_ID, 
+	public static final DerivedValuePreference<Path> DFMT_PATH = new DerivedValuePreference<>( 
 			"dfmt_path", "", ToolchainPreferences.USE_PROJECT_SETTINGS,
 		new LocationOrSinglePathValidator("dfmt:"));
 	
