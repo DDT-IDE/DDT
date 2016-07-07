@@ -1,8 +1,10 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 1.0.2
+ * Updated minimum CDT to version `9.0` (Eclipse Neon).
  * Fixed: NPE when invoking Content Assist inside a comment, string or character.
- * Updated minimum CDT to version `9.0`.
  * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
  * Fixed: `invariant` declaration without parenthesis is not recognized as valid syntax. (#144)
 
