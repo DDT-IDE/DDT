@@ -19,9 +19,11 @@ import dtool.ast.statements.BlockStatement;
 
 public class DeclarationInvariant extends ASTNode implements IDeclaration {
 	
+	public final boolean hasParenthesis;
 	public final BlockStatement body;
 	
-	public DeclarationInvariant(BlockStatement body) {
+	public DeclarationInvariant(boolean hasParenthesis, BlockStatement body) {
+		this.hasParenthesis = hasParenthesis;
 		this.body = parentize(body);
 	}
 	
@@ -37,12 +39,13 @@ public class DeclarationInvariant extends ASTNode implements IDeclaration {
 	
 	@Override
 	protected CommonASTNode doCloneTree() {
-		return new DeclarationInvariant(clone(body));
+		return new DeclarationInvariant(hasParenthesis, clone(body));
 	}
 	
 	@Override
 	public void toStringAsCode(ASTCodePrinter cp) {
-		cp.append("invariant() ");
+		cp.append("invariant");
+		cp.append(hasParenthesis ? "() " : " ");
 		cp.append(body);
 	}
 	

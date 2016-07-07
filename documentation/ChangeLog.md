@@ -4,6 +4,7 @@
  * Fixed: NPE when invoking Content Assist inside a comment, string or character.
  * Updated minimum CDT to version `9.0`.
  * Fixed: Eclipse variables not being substituted in environment-variables settings of launch configurations.
+ * Fixed: `invariant` declaration without parenthesis is not recognized as valid syntax. (#144)
 
 ### 1.0.1
  * Improved the default names for automatically created launch configurations.

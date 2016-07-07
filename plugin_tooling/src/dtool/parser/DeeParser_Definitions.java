@@ -1528,13 +1528,16 @@ public abstract class DeeParser_Definitions extends DeeParser_Declarations {
 		ParseHelper parse = new ParseHelper();
 		
 		BlockStatement body = null;
+		boolean hasParenthesis = false;
 		parsing: {
-			if(parse.consumeRequired(DeeTokens.OPEN_PARENS).ruleBroken) break parsing;
-			if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
+			if(tryConsume(DeeTokens.OPEN_PARENS)) {
+				hasParenthesis = true;
+				if(parse.consumeRequired(DeeTokens.CLOSE_PARENS).ruleBroken) break parsing;
+			}
 			body = parse.checkResult(parseBlockStatement_toMissing(false));
 		}
 		
-		return parse.resultConclude(new DeclarationInvariant(body));
+		return parse.resultConclude(new DeclarationInvariant(hasParenthesis, body));
 	}
 	
 	public NodeResult<DeclarationUnitTest> parseDeclarationUnitTest_start() throws OperationCancellation {
