@@ -13,12 +13,10 @@ package mmrnmhrm.core.engine;
 import melnorme.lang.ide.core.CoreSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
-import melnorme.utilbox.concurrency.FutureX;
 import melnorme.utilbox.concurrency.ICommonExecutor.CommonFuture;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.core.fntypes.CallableX;
 import melnorme.utilbox.core.fntypes.OperationCallable;
 
 /**
@@ -39,10 +37,6 @@ public class DeeToolManager extends ToolManager {
 	}
 	
 	/* -----------------  ----------------- */
-	
-	public <R, X extends Exception> FutureX<R, X> submitTask2(CallableX<R, X> task) {
-		return dubProcessAgent.submitX(task);
-	}
 	
 	public <R> R submitTaskAndAwaitResult(OperationCallable<R> task) 
 			throws CommonException, OperationCancellation {
