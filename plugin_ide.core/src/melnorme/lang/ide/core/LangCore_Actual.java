@@ -10,9 +10,7 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
-import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
-import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.utilbox.misc.ILogHandler;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.build.DubLocationValidator;
