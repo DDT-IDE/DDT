@@ -10,12 +10,15 @@
  *******************************************************************************/
 package melnorme.lang.ide.core;
 
+import melnorme.lang.ide.core.engine.LanguageServerHandler;
 import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.utilbox.misc.ILogHandler;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.build.DubLocationValidator;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
 import mmrnmhrm.core.engine.DeeEngineClient;
+import mmrnmhrm.core.engine.DeeLanguageServerHandler;
 import mmrnmhrm.core.engine.DeeToolManager;
 
 public class LangCore_Actual extends AbstractLangCore {
@@ -35,6 +38,8 @@ public class LangCore_Actual extends AbstractLangCore {
 	public static final String VAR_NAME_SdkToolPath_DESCRIPTION = "The path of the DUB tool";
 	
 	/* -----------------  ----------------- */
+	
+	public static final String LANGUAGE_SERVER_Name = "DCD/Dtool"; // Not used ATM
 	
 	public LangCore_Actual(ILogHandler logHandler) {
 		super(logHandler);
@@ -56,6 +61,11 @@ public class LangCore_Actual extends AbstractLangCore {
 	}
 	public static DeeToolManager deeToolManager() {
 		return (DeeToolManager) instance.toolManager;
+	}
+	
+	@Override
+	public DeeLanguageServerHandler createLanguageServerHandler() {
+		return new DeeLanguageServerHandler();
 	}
 	
 	public static DeeBundleModelManager createBundleModelManager() {

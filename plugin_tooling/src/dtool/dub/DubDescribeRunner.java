@@ -140,7 +140,7 @@ public class DubDescribeRunner {
 		
 		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws CommonException {
 			try {
-				return processAgent.submitOp(this).getResult().get();
+				return processAgent.submitOp(this).awaitResult2().get();
 			} catch (OperationCancellation e) {
 				throw new CommonException("Error running `dub describe`, operation interrupted.");
 			}

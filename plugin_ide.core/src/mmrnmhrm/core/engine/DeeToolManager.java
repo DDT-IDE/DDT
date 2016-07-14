@@ -13,11 +13,12 @@ package mmrnmhrm.core.engine;
 import melnorme.lang.ide.core.CoreSettings;
 import melnorme.lang.ide.core.operations.ToolManager;
 import melnorme.lang.ide.core.utils.CoreExecutors;
-import melnorme.utilbox.concurrency.ICommonExecutor.CommonFuture;
+import melnorme.utilbox.concurrency.Future2;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.OperationResult;
 
 /**
  * Manages launching D tools.
@@ -40,8 +41,8 @@ public class DeeToolManager extends ToolManager {
 	
 	public <R> R submitTaskAndAwaitResult(OperationCallable<R> task) 
 			throws CommonException, OperationCancellation {
-		CommonFuture<R> future = dubProcessAgent.submitOp(task);
-		return future.getResult().get();
+		Future2<OperationResult<R>> future = dubProcessAgent.submitOp(task);
+		return future.awaitResult2().get();
 	}
 	
 }
