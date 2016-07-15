@@ -39,9 +39,12 @@ public class DeeToolManager extends ToolManager {
 	
 	/* -----------------  ----------------- */
 	
+	/* FIXME: review, make CancellableTask */
 	public <R> R submitTaskAndAwaitResult(OperationCallable<R> task) 
 			throws CommonException, OperationCancellation {
-		Future2<OperationResult<R>> future = dubProcessAgent.submitOp(task);
+		// TODO: to allow task to be cancelled by the future (if shutting down for example)
+		// it needs to be a ICancellableTask
+		Future2<OperationResult<R>> future = dubProcessAgent.submitBasicCallable(task::callToResult);
 		return future.awaitResult2().get();
 	}
 	

@@ -44,6 +44,7 @@ import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter.IRunnableW
 import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.BundleInfo;
+import melnorme.utilbox.concurrency.CancellableTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -94,7 +95,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		BundleInfo unresolvedProjectInfo = createNewInfo(project);
 		getModel().setBundleInfo(project, unresolvedProjectInfo); 
 		
-		modelAgent.submitR(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
+		modelAgent.submitTask(new ProjectModelDubDescribeTask(this, project, unresolvedProjectInfo));
 	}
 	
 	@Override
@@ -158,7 +159,7 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		return project.findMarkers(DUB_PROBLEM_ID, true, IResource.DEPTH_ONE);
 	}
 	
-	protected abstract class WorkspaceModelManagerTask implements Runnable {
+	protected abstract class WorkspaceModelManagerTask extends CancellableTask{
 		
 		protected final DeeBundleModelManager workspaceModelManager;
 		
@@ -194,7 +195,7 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 	}
 	
 	@Override
-	public void run() {
+	protected void doRun() {
 		
 			try {
 				ResourceUtils.getWorkspace().run(new IWorkspaceRunnable() {

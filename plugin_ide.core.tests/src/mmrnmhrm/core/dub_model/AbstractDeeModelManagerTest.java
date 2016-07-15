@@ -160,7 +160,7 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	
 	protected static LatchRunnable writeDubJsonWithModelLatch(IProject project, String contents) throws CoreException {
 		LatchRunnable latchRunnable = new LatchRunnable();
-		getModelAgent().submitR(latchRunnable);
+		getModelAgent().submitBasicRunnable(latchRunnable);
 		writeDubJson(project, contents);
 		return latchRunnable;
 	}

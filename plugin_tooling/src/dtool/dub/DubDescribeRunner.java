@@ -69,7 +69,7 @@ public class DubDescribeRunner {
 			throws CommonException, OperationCancellation {
 		ExternalProcessResult processResult;
 		try {
-			processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult();
+			processResult = new ExternalProcessHelper(pb).awaitTerminationAndResult(true);
 		} catch(IOException e) {
 			throw new CommonException("Error reading `dub describe` output:", e);
 		} catch(InterruptedException e) {
@@ -140,7 +140,9 @@ public class DubDescribeRunner {
 		
 		public DubBundleDescription submitAndGet(ITaskAgent processAgent) throws CommonException {
 			try {
-				return processAgent.submitOp(this).awaitResult2().get();
+				// TODO: convert RunDubDescribeCallable to CancellableTask
+//				return processAgent.submitTask(this).awaitResult2().get();
+				return processAgent.submitBasicCallable(this::callToResult).awaitResult2().get();
 			} catch (OperationCancellation e) {
 				throw new CommonException("Error running `dub describe`, operation interrupted.");
 			}

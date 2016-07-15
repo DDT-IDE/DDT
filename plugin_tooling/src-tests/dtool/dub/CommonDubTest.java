@@ -25,6 +25,7 @@ import dtool.tests.DToolTestResources;
 import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
+import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -203,7 +204,7 @@ public class CommonDubTest extends CommonDToolTest {
 	
 	protected String runDubDescribe(BundlePath workingDir) throws Exception {
 		ExternalProcessResult processResult = startDubProcess(workingDir, false, "describe")
-				.awaitTerminationAndResult(2000);
+				.awaitTerminationAndResult(2000, true);
 		
 		return processResult.getStdOutBytes().toString(StringUtil.UTF8);
 	}
@@ -238,15 +239,15 @@ public class CommonDubTest extends CommonDToolTest {
 		try {
 			ExternalProcessHelper processHelper = doRunDubCommand(timeout, arguments);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
-		} catch (TimeoutException | InterruptedException | IOException e) {
+		} catch (TimeoutException | InterruptedException | OperationCancellation | IOException e) {
 			throw assertFail();
 		}
 	}
 	
 	public static ExternalProcessHelper doRunDubCommand(int timeout, String... arguments)
-			throws IOException, InterruptedException, TimeoutException {
+			throws IOException, InterruptedException, TimeoutException, OperationCancellation {
 		ExternalProcessHelper processHelper = startDubProcess(null, true, arguments);
-		ExternalProcessResult result = processHelper.awaitTerminationAndResult(timeout);
+		ExternalProcessResult result = processHelper.awaitTerminationAndResult(timeout, true);
 		System.out.println(result.getStdOutBytes().toString(StringUtil.UTF8));
 		System.err.println(result.getStdErrBytes().toString(StringUtil.UTF8));
 		return processHelper;
@@ -256,7 +257,7 @@ public class CommonDubTest extends CommonDToolTest {
 		System.out.println(":::: -------- `dub list`");
 		try {
 			CommonDubTest.doRunDubCommand(3000, "list");
-		} catch(IOException | InterruptedException e) {
+		} catch(IOException | InterruptedException | OperationCancellation e) {
 			throw melnorme.utilbox.core.ExceptionAdapter.unchecked(e);
 		} catch(TimeoutException e) {
 			assertFail(e.toString());
