@@ -44,8 +44,8 @@ import mmrnmhrm.tests.TestFixtureProject;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
+	protected static final DeeLanguageEngine client = LangCore.deeLanguageEngine();
 	protected static final DeeSourceModelManager sourceModelManager = LangCore.deeSourceModelManager();
-	protected static final DeeEngineClient client = DeeEngineClient.getDefault();
 	
 	protected TestFixtureProject testsProject;
 	

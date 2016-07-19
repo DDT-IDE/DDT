@@ -26,10 +26,15 @@ import melnorme.utilbox.misc.Location;
 
 public class DeeSourceModelManager extends SourceModelManager {
 	
-	protected final DeeEngineClient languageEngine = DeeEngineClient.getDefault();
+	protected final DeeLanguageEngine languageEngine;
 	
 	public DeeSourceModelManager() {
+		this(DeeLanguageEngine.getDefault());
+	}
+	
+	public DeeSourceModelManager(DeeLanguageEngine languageEngine) {
 		super();
+		this.languageEngine = assertNotNull(languageEngine);
 	}
 	
 	public SemanticManager getServerSemanticManager() {

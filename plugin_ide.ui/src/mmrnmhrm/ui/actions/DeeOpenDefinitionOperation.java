@@ -35,7 +35,7 @@ import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
 import melnorme.utilbox.status.Severity;
-import mmrnmhrm.core.engine.DeeEngineClient;
+import mmrnmhrm.core.engine.DeeLanguageEngine;
 
 public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDefinitionResult> {
 	
@@ -67,7 +67,7 @@ public class DeeOpenDefinitionOperation extends AbstractEditorOperation2<FindDef
 			throws CommonException, OperationCancellation {
 		IProject associatedProject = getAssociatedProject();
 		String dubPath = LangCore.settings().SDK_LOCATION.getValue(associatedProject).toString();
-		return DeeEngineClient.getDefault().
+		return DeeLanguageEngine.getDefault().
 				new FindDefinitionOperation(getInputLocation(), offset, -1, dubPath).runEngineOperation(monitor);
 	}
 	

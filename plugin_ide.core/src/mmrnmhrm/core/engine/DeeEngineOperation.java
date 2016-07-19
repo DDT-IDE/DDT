@@ -27,14 +27,14 @@ import melnorme.utilbox.misc.Location;
 
 public abstract class DeeEngineOperation<RET> {
 	
-	protected final DeeEngineClient languageEngine;
+	protected final DeeLanguageEngine languageEngine;
 	
 	protected final Location location;
 	protected final int offset;
 	protected final int timeoutMillis;
 	protected final String opName;
 	
-	public DeeEngineOperation(DeeEngineClient languageEngine, Location location, int offset, int timeoutMillis, 
+	public DeeEngineOperation(DeeLanguageEngine languageEngine, Location location, int offset, int timeoutMillis, 
 			String opName) {
 		this.languageEngine = languageEngine;
 		

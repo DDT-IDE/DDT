@@ -15,8 +15,9 @@ import melnorme.utilbox.misc.ILogHandler;
 import mmrnmhrm.core.build.DeeBuildManager;
 import mmrnmhrm.core.build.DubLocationValidator;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager;
-import mmrnmhrm.core.engine.DeeSourceModelManager;
+import mmrnmhrm.core.engine.DeeLanguageEngine;
 import mmrnmhrm.core.engine.DeeLanguageServerHandler;
+import mmrnmhrm.core.engine.DeeSourceModelManager;
 import mmrnmhrm.core.engine.DeeToolManager;
 
 public class LangCore_Actual extends AbstractLangCore {
@@ -65,6 +66,12 @@ public class LangCore_Actual extends AbstractLangCore {
 	public DeeLanguageServerHandler createLanguageServerHandler() {
 		return new DeeLanguageServerHandler();
 	}
+	public static DeeLanguageServerHandler deeLanguageEngineManager() {
+		return (DeeLanguageServerHandler) instance.languageServerHandler;
+	}
+	public static DeeLanguageEngine deeLanguageEngine() {
+		return deeLanguageEngineManager().getLanguageEngine();
+	}
 	
 	public static DeeBundleModelManager createBundleModelManager() {
 		return new DeeBundleModelManager();
@@ -79,7 +86,7 @@ public class LangCore_Actual extends AbstractLangCore {
 	}
 	
 	public static DeeSourceModelManager createSourceModelManager() {
-		return new DeeSourceModelManager();
+		return new DeeSourceModelManager(deeLanguageEngine());
 	}
 	public static DeeSourceModelManager deeSourceModelManager() {
 		return (DeeSourceModelManager) instance.sourceModelManager;

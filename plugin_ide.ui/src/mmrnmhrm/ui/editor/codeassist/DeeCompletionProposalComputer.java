@@ -27,11 +27,11 @@ import melnorme.utilbox.concurrency.ICancelMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine.DeeEngineClient;
+import mmrnmhrm.core.engine.DeeLanguageEngine;
 
 public class DeeCompletionProposalComputer extends LangCompletionProposalComputer {
 	
-	protected DeeEngineClient dtoolclient = DeeEngineClient.getDefault();
+	protected DeeLanguageEngine dtoolclient = DeeLanguageEngine.getDefault();
 	
 	public DeeCompletionProposalComputer() {
 	}

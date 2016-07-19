@@ -16,7 +16,6 @@ import dtool.engine.SemanticManager;
 import dtool.engine.operations.DeeSymbolCompletionResult;
 import dtool.engine.operations.FindDefinitionResult;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.engine.LanguageServerInstance;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
@@ -24,20 +23,16 @@ import melnorme.utilbox.misc.Location;
 
 /**
  * Handle communication with DToolServer.
- * TODO: integrate with {@link LanguageServerInstance}
  */
-public class DeeEngineClient {
+public class DeeLanguageEngine {
 	
-	// TODO: move this to LangCore
-	protected static DeeEngineClient instance = new DeeEngineClient();
-	
-	public static DeeEngineClient getDefault() {
-		return instance;
+	public static DeeLanguageEngine getDefault() {
+		return LangCore.deeLanguageEngine();
 	}
 	
 	protected final DToolServer dtoolServer;
 	
-	public DeeEngineClient() {
+	public DeeLanguageEngine() {
 		super();
 		
 		dtoolServer = new DToolServer() {
@@ -69,14 +64,14 @@ public class DeeEngineClient {
 		protected final String effectiveDubPath;
 		
 		public CodeCompletionOperation(Location location, int timeoutMillis, int offset, String effectiveDubPath) {
-			super(DeeEngineClient.this, location, offset, timeoutMillis, "Code Completion");
+			super(DeeLanguageEngine.this, location, offset, timeoutMillis, "Code Completion");
 			this.effectiveDubPath = effectiveDubPath;
 		}
 		
 		@Override
 		protected DeeSymbolCompletionResult doRunOperationWithWorkingCopy(IOperationMonitor om) 
 				throws CommonException, OperationCancellation {
-			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeEngineClient.compilerPathOverride, 
+			return dtoolServer.doCodeCompletion(location.toPath(), offset, DeeLanguageEngine.compilerPathOverride, 
 				effectiveDubPath);
 		}
 		
@@ -87,7 +82,7 @@ public class DeeEngineClient {
 		protected final String effectiveDubPath;
 		
 		public FindDefinitionOperation(Location location, int offset, int timeoutMillis, String effectiveDubPath) {
-			super(DeeEngineClient.this, location, offset, timeoutMillis, "Find Definition");
+			super(DeeLanguageEngine.this, location, offset, timeoutMillis, "Find Definition");
 			this.effectiveDubPath = effectiveDubPath;
 		}
 		
@@ -103,7 +98,7 @@ public class DeeEngineClient {
 		protected final String effectiveDubPath;
 		
 		public FindDDocViewOperation(Location location, int offset, int timeoutMillis, String effectiveDubPath) {
-			super(DeeEngineClient.this, location, offset, timeoutMillis, "Resolve DDoc");
+			super(DeeLanguageEngine.this, location, offset, timeoutMillis, "Resolve DDoc");
 			this.effectiveDubPath = effectiveDubPath;
 		}
 		

@@ -25,7 +25,7 @@ import melnorme.lang.tooling.toolchain.ops.SourceOpContext;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
-import mmrnmhrm.core.engine.DeeEngineClient;
+import mmrnmhrm.core.engine.DeeLanguageEngine;
 import mmrnmhrm.ui.editor.hover.HoverUtil;
 
 @LANG_SPECIFIC
@@ -69,7 +69,7 @@ public class DocDisplayInfoSupplier extends AbstractDocDisplayInfoSupplier {
 				Location fileLocation = opContext.getFileLocation();
 				
 				int offset = opContext.getOffset();
-				return DeeEngineClient.getDefault().
+				return DeeLanguageEngine.getDefault().
 						new FindDDocViewOperation(fileLocation, offset, -1, dubPath).runEngineOperation(om);
 			}
 		};

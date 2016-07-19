@@ -12,13 +12,16 @@ package mmrnmhrm.core.engine;
 
 import melnorme.lang.ide.core.engine.ILanguageServerHandler;
 
-/**
- * TODO: integrate with DeeEngineClient
- */
 public class DeeLanguageServerHandler implements ILanguageServerHandler  {
+	
+	protected final DeeLanguageEngine languageEngine = new DeeLanguageEngine();
 	
 	@Override
 	public void dispose() {
+	}
+	
+	public DeeLanguageEngine getLanguageEngine() {
+		return languageEngine;
 	}
 	
 }
