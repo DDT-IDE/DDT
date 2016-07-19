@@ -44,6 +44,7 @@ import mmrnmhrm.tests.TestFixtureProject;
 
 public class DToolClient_Test extends CommonCoreTest {
 	
+	protected static final DeeSourceModelManager sourceModelManager = LangCore.deeSourceModelManager();
 	protected static final DeeEngineClient client = DeeEngineClient.getDefault();
 	
 	protected TestFixtureProject testsProject;
@@ -90,29 +91,29 @@ public class DToolClient_Test extends CommonCoreTest {
 				updateFileContents(moduleFile, originalFileContents);
 				fileBuffer.revert(null);
 				
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 				
 				document.set("module wc_change1;");
 				assertEquals(readFileContents(moduleFile), originalFileContents);
 				
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 				
 				document.set("module wc_change2;");
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 				
 				fileBuffer.revert(null);
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 				
 				// Test commit 
 				
 				document.set("module wc_commitWC_Test;");
 				fileBuffer.commit(null, true);
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 				
 				document.set("module wc_commitWC_Test2;");
 				fileBuffer.commit(null, true);
 				fileBuffer.revert(null);
-				doCodeCompletion(moduleFile, document.get());
+				testFileContents(moduleFile, document.get());
 			};
 		};
 		IFile moduleFile = testsProject.getFile("source/basic_foo.d");
@@ -173,18 +174,15 @@ public class DToolClient_Test extends CommonCoreTest {
 	
 	// Note: we don't use this method to test code completion, we are testing the Working Copies of the server.
 	// Code completion is just being used as a convenient way to check the source contents of the server's WCs.
-	protected void doCodeCompletion(IFile file, String fileContents) 
+	protected void testFileContents(IFile file, String fileContents) 
 			throws CommonException {
 		Location fileLoc = ResourceUtils.getResourceLocation(file);
 		
-		SourceFileStructure currentStructure = getCurrentStructure(fileLoc);
-		assertTrue(currentStructure != null);
-		assertAreEqual(currentStructure.parsedModule.source, fileContents);
-	}
-	
-	protected SourceFileStructure getCurrentStructure(Location fileLoc) throws CommonException {
 		try {
-			return client.getStoredStructureInfo(new LocationKey(fileLoc)).awaitUpdatedData().get();
+			SourceFileStructure currentStructure 
+				= sourceModelManager.getStoredStructureInfo(new LocationKey(fileLoc)).awaitUpdatedData().get();
+			assertTrue(currentStructure != null);
+			assertAreEqual(currentStructure.parsedModule.source, fileContents);
 		} catch(InterruptedException e) {
 			throw assertFail();
 		}

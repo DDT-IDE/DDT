@@ -11,17 +11,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
-import melnorme.lang.tooling.symbols.INamedElement;
-import melnorme.util.swt.SWTTestUtils;
-import melnorme.utilbox.misc.Location;
-import melnorme.utilbox.misc.MiscUtil;
-import melnorme.utilbox.misc.ReflectionUtils;
-import mmrnmhrm.core.engine.CoreResolverSourceTests;
-import mmrnmhrm.core.engine.DeeEngineClient;
-import mmrnmhrm.ui.CommonDeeUITest;
-import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -33,6 +22,16 @@ import dtool.engine.operations.DeeNamedElementLabelProvider;
 import dtool.engine.util.NamedElementUtil;
 import dtool.sourcegen.AnnotatedSource;
 import dtool.sourcegen.AnnotatedSource.MetadataEntry;
+import melnorme.lang.ide.ui.editor.structure.AbstractLangStructureEditor;
+import melnorme.lang.tooling.symbols.INamedElement;
+import melnorme.util.swt.SWTTestUtils;
+import melnorme.utilbox.misc.Location;
+import melnorme.utilbox.misc.MiscUtil;
+import melnorme.utilbox.misc.ReflectionUtils;
+import mmrnmhrm.core.engine.CoreResolverSourceTests;
+import mmrnmhrm.core.engine.DeeEngineClient;
+import mmrnmhrm.ui.CommonDeeUITest;
+import mmrnmhrm.ui.editor.codeassist.DeeContentAssistProposal;
 
 public class ContentAssistUISourceTests extends CoreResolverSourceTests {
 	

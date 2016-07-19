@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package melnorme.lang.ide.core.engine;
+package mmrnmhrm.core.engine;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertNotNull;
 
@@ -18,27 +18,25 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import melnorme.lang.ide.core.engine.SourceModelManager.StructureInfo;
 import melnorme.lang.ide.core.utils.CoreExecutors;
-import melnorme.lang.tooling.LocationKey;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 
-public abstract class EngineOperation<RET> {
+public abstract class DeeEngineOperation<RET> {
 	
-	protected final SourceModelManager sourceModelMgr;
+	protected final DeeEngineClient languageEngine;
 	
 	protected final Location location;
 	protected final int offset;
 	protected final int timeoutMillis;
 	protected final String opName;
 	
-	public EngineOperation(SourceModelManager sourceModelMgr, Location location, int offset, int timeoutMillis, 
+	public DeeEngineOperation(DeeEngineClient languageEngine, Location location, int offset, int timeoutMillis, 
 			String opName) {
-		this.sourceModelMgr = sourceModelMgr;
+		this.languageEngine = languageEngine;
 		
 		this.location = assertNotNull(location);
 		this.offset = offset;
@@ -92,10 +90,8 @@ public abstract class EngineOperation<RET> {
 	
 	protected RET doRunEngineOperation(final IOperationMonitor om) 
 			throws CommonException, OperationCancellation {
-		StructureInfo structureInfo = sourceModelMgr.getStoredStructureInfo(new LocationKey(location));
-		if(structureInfo != null) {
-			structureInfo.awaitUpdatedData(om);
-		}
+		// TODO: ensure working copy at location is updated.
+
 		
 		return doRunOperationWithWorkingCopy(om);
 	}
