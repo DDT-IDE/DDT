@@ -127,7 +127,7 @@ public class DeeParser
 	
 	@Override
 	protected void nodeConcluded(ASTNode node) throws OperationCancellation {
-		if(cancelMonitor.isCanceled()) {
+		if(cancelMonitor.isCancelled()) {
 			throw new OperationCancellation();
 		}
 		super.nodeConcluded(node);
