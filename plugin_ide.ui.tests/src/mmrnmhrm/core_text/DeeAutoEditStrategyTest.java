@@ -13,11 +13,11 @@ package mmrnmhrm.core_text;
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
-import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
-import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import mmrnmhrm.core.text.DeeAutoEditStrategy;
 
 public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {

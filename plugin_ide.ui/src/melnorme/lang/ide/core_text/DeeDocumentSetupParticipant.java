@@ -8,7 +8,9 @@
  * Contributors:
 
  *******************************************************************************/
-package LANG_PROJECT_ID.ide.core_text;
+package melnorme.lang.ide.core_text;
+
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 
 public class DeeDocumentSetupParticipant extends LangDocumentPartitionerSetup {
 	

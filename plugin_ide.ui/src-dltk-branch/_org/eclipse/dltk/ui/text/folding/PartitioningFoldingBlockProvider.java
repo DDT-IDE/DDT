@@ -24,11 +24,11 @@ import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 
-import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import _org.eclipse.dltk.ui.PreferenceConstants;
 import _org.eclipse.dltk.ui.text.folding.DelegatingFoldingStructureProvider.FoldingContent;
 import melnorme.lang.ide.core.LangCore;
 import melnorme.lang.ide.core.TextSettings_Actual;
+import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 
 /**
  * Abstract implementation of {@link IFoldingBlockProvider} to fold
