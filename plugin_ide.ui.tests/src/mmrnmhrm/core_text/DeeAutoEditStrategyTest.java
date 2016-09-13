@@ -16,7 +16,7 @@ import org.junit.Test;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
-import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
+import melnorme.lang.ide.core_text.LangAutoEditStrategyTest;
 import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import mmrnmhrm.core.text.DeeAutoEditStrategy;
 

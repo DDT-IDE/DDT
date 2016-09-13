@@ -1,10 +1,10 @@
-package mmrnmhrm.core.text;
-
-import melnorme.lang.ide.core.text.PatternRule_Fixed;
+package LANG_PROJECT_ID.ide.core_text;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
+
+import melnorme.lang.ide.core_text.PatternRule_Fixed;
 
 public class NestedDelimiterRule extends PatternRule_Fixed {
 	

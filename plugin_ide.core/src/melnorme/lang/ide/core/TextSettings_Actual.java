@@ -1,10 +1,8 @@
 package melnorme.lang.ide.core;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.text.DeePartitionScanner;
 
 
 public class TextSettings_Actual {
@@ -31,10 +29,6 @@ public class TextSettings_Actual {
 			}
 			return toString();
 		}
-	}
-	
-	public static IPartitionTokenScanner createPartitionScanner() {
-		return new DeePartitionScanner();
 	}
 	
 	/* ----------------- Common code ----------------- */

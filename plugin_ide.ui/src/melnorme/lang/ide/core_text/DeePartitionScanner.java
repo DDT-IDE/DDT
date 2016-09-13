@@ -8,14 +8,14 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.text;
+package melnorme.lang.ide.core_text;
 
 import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.PatternRule;
 import org.eclipse.jface.text.rules.Token;
 
+import LANG_PROJECT_ID.ide.core_text.NestedDelimiterRule;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.core.text.LangPartitionScanner;
 import melnorme.utilbox.collections.ArrayList2;
 
 public class DeePartitionScanner extends LangPartitionScanner {

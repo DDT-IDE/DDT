@@ -2,11 +2,13 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
 import melnorme.lang.ide.core_text.DeeDocumentSetupParticipant;
+import melnorme.lang.ide.core_text.DeePartitionScanner;
 import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;
@@ -35,8 +37,14 @@ public final class LangUIPlugin_Actual {
 	
 	protected static final Class<?> PLUGIN_IMAGES_CLASS = DeeImages.class;
 	
+	/* ----------------- text ----------------- */
+	
 	protected static void initTextHovers_afterProblemHover(List<Class<? extends ILangEditorTextHover<?>>> textHoverSpecifications) {
 		textHoverSpecifications.add(DeeDocTextHover.class);
+	}
+	
+	public static IPartitionTokenScanner createPartitionScanner() {
+		return new DeePartitionScanner();
 	}
 	
 	public static DeeAutoEditStrategy createAutoEditStrategy(String contentType, 
