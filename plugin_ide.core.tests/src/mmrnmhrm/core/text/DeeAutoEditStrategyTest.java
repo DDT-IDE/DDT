@@ -23,8 +23,9 @@ public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			autoEditStrategy = new DeeAutoEditStrategy(LangPartitionTypes.DEE_CODE.getId(), null, 
-				new Mock_LangAutoEditsPreferencesAccess());
+			lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
+			autoEditStrategy = new DeeAutoEditStrategy(LangPartitionTypes.DEE_CODE.getId(), 
+				new Mock_LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
 		}
 		return autoEditStrategy;
 	}
