@@ -8,22 +8,24 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.text;
+package mmrnmhrm.core_text;
 
 import org.eclipse.jface.text.Document;
 import org.junit.Test;
 
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.TextSettings_Actual.LangPartitionTypes;
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategy;
 import melnorme.lang.ide.core.text.format.LangAutoEditStrategyTest;
+import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider.KeyCommand;
+import mmrnmhrm.core.text.DeeAutoEditStrategy;
 
 public class DeeAutoEditStrategyTest extends LangAutoEditStrategyTest {
 	
 	@Override
 	protected LangAutoEditStrategy getAutoEditStrategy() {
 		if(autoEditStrategy == null) {
-			lastKeyInfoProvider = new InstrumentedLastKeyInfoProvider();
+			lastKeyInfoProvider.lastPressedKey = KeyCommand.OTHER;
 			autoEditStrategy = new DeeAutoEditStrategy(LangPartitionTypes.DEE_CODE.getId(), 
 				new Mock_LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
 		}

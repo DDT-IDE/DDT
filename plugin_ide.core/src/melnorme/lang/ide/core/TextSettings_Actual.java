@@ -3,9 +3,7 @@ package melnorme.lang.ide.core;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
-import melnorme.lang.ide.core.text.LangDocumentPartitionerSetup;
 import melnorme.utilbox.misc.ArrayUtil;
-import mmrnmhrm.core.text.DeeDocumentSetupParticipant;
 import mmrnmhrm.core.text.DeePartitionScanner;
 
 
@@ -37,10 +35,6 @@ public class TextSettings_Actual {
 	
 	public static IPartitionTokenScanner createPartitionScanner() {
 		return new DeePartitionScanner();
-	}
-	
-	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
-		return new DeeDocumentSetupParticipant();
 	}
 	
 	/* ----------------- Common code ----------------- */

@@ -8,7 +8,7 @@
  * Contributors:
  *     Bruno Medeiros - initial API and implementation
  *******************************************************************************/
-package mmrnmhrm.core.text;
+package mmrnmhrm.core_text;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 
@@ -16,11 +16,11 @@ import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.Position;
 import org.junit.Test;
 
-import melnorme.lang.ide.core.text.LangPartitionScannerTest;
 import melnorme.utilbox.core.DevelopmentCodeMarkers;
+import mmrnmhrm.core.text.DeePartitions;
 
 // BM: a lot more could done in terms of test, this is just basic example
-public class DeePartitionScannerTest extends LangPartitionScannerTest implements DeePartitions {
+public class DeePartitionScannerTest extends LANG_PROJECT_ID.ide.core_text.LangPartitionScannerTest implements DeePartitions {
 	
 	public void testBasic() throws Exception {
 		testPartitions("foo = \"asdf\"; ", array(DEE_STRING));

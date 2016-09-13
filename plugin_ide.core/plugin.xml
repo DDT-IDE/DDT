@@ -44,16 +44,6 @@
 		</content-type>
 	</extension>
 	
-	<extension point="org.eclipse.core.filebuffers.documentSetup"
-		id="DeeDocumentSetupParticipant"
-		name="D Document Setup Participant">
-		<participant
-			class="mmrnmhrm.core.text.DeeDocumentSetupParticipant"
-			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
-		</participant>
-	</extension>
-	
-	
 	<!-- ============ BUILDER/PROBLEMS ============= -->
 	
 	<extension point="org.eclipse.core.resources.builders"

@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import LANG_PROJECT_ID.ide.core_text.DeeDocumentSetupParticipant;
+import LANG_PROJECT_ID.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
@@ -40,6 +42,10 @@ public final class LangUIPlugin_Actual {
 	public static DeeAutoEditStrategy createAutoEditStrategy(String contentType, 
 		ILastKeyInfoProvider lastKeyInfoProvider) {
 		return new DeeAutoEditStrategy(contentType, new LangAutoEditsPreferencesAccess(), lastKeyInfoProvider);
+	}
+	
+	public static LangDocumentPartitionerSetup createDocumentSetupHelper() {
+		return new DeeDocumentSetupParticipant();
 	}
 	
 	public static StructureElementLabelProvider getStructureElementLabelProvider() {
