@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.junit.BeforeClass;
 
 import dtool.dub.CommonDubTest;
 import dtool.dub.CommonDubTest.DubBundleChecker;
@@ -37,6 +38,7 @@ import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.LatchRunnable;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.Location;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
@@ -101,11 +103,8 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 	
 	protected static final Location ECLIPSE_WORKSPACE_PATH = ResourceUtils.getWorkspaceLocation();
 	
-	static {
-		initDubRepositoriesPath();
-	}
-	
-	private static void initDubRepositoriesPath() {
+	@BeforeClass
+	public static void initDubRepositoriesPath() throws CommonException {
 		DubDescribeParserTest.initDubRepositoriesPath();
 		DubDescribeParserTest.dubAddPath(ECLIPSE_WORKSPACE_PATH);
 		
@@ -113,8 +112,16 @@ public abstract class AbstractDeeModelManagerTest extends JsHelpers {
 			@Override
 			public void run() {
 	    		System.out.println("BaseDubModelManagerTest shutdown hook.");
-	    		DubDescribeParserTest.dubRemovePath(ECLIPSE_WORKSPACE_PATH);
-				DubDescribeParserTest.cleanupDubRepositoriesPath();
+	    		try {
+					DubDescribeParserTest.dubRemovePath(ECLIPSE_WORKSPACE_PATH);
+				} catch(CommonException e) {
+					// Ignore
+				}
+				try {
+					DubDescribeParserTest.cleanupDubRepositoriesPath();
+				} catch(CommonException e) {
+					// Ignore
+				}
 			}
 		});
 		_awaitModelUpdates_();

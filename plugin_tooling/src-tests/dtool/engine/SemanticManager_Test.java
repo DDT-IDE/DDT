@@ -41,7 +41,7 @@ import melnorme.utilbox.misc.Location;
 public class SemanticManager_Test extends CommonSemanticManagerTest {
 	
 	@BeforeClass
-	public static void initDubRepositoriesPath() {
+	public static void initDubRepositoriesPath() throws CommonException {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
 		CommonSemanticsTest.removeSemanticsBundlesDubPath();
 		
@@ -49,7 +49,7 @@ public class SemanticManager_Test extends CommonSemanticManagerTest {
 	}
 	
 	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
+	public static void cleanupDubRepositoriesPath() throws CommonException {
 		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES);
 	}
 	

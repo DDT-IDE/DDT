@@ -26,6 +26,7 @@ import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.DependencyRef;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.ArrayUtil;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.StringUtil;
@@ -221,26 +222,29 @@ public class CommonDubTest extends CommonDToolTest {
 		return new ExternalProcessHelper(pb);
 	}
 	
-	public static void dubAddPath(Location packageRootDir) {
+	public static void dubAddPath(Location packageRootDir) throws CommonException {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Adding DUB package root path: " + packageRootDirStr);
 		String[] arguments = array("add-path", packageRootDirStr);
 		runDubCommand(3000, arguments);
 	}
 	
-	public static void dubRemovePath(Location packageRootDir) {
+	public static void dubRemovePath(Location packageRootDir) throws CommonException {
 		String packageRootDirStr = packageRootDir.toString();
 		System.out.println(":::: Removing DUB package root path: " + packageRootDirStr);
 		String[] arguments = array("remove-path", packageRootDirStr);
 		runDubCommand(3000, arguments);
 	}
 	
-	public static void runDubCommand(int timeout, String... arguments) {
+	public static void runDubCommand(int timeout, String... arguments) throws CommonException {
 		try {
 			ExternalProcessHelper processHelper = doRunDubCommand(timeout, arguments);
 			assertTrue(processHelper.getProcess().exitValue() == 0);
-		} catch (TimeoutException | InterruptedException | OperationCancellation | IOException e) {
-			throw assertFail();
+			if(processHelper.getProcess().exitValue() != 0) {
+				throw new CommonException("Exit value not zero");
+			}
+		} catch (TimeoutException | InterruptedException | OperationCancellation | IOException | CommonException e) {
+			throw new CommonException("Failed to run DUB command: " + StringUtil.collToString(arguments, " "));
 		}
 	}
 	

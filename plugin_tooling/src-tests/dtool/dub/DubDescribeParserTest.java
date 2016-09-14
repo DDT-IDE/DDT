@@ -25,6 +25,7 @@ import org.junit.Test;
 import dtool.dub.DubBundle.BundleFile;
 import dtool.tests.DToolTestResources;
 import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.CollectionUtil;
 import melnorme.utilbox.misc.MiscUtil;
 
@@ -37,11 +38,11 @@ public class DubDescribeParserTest extends CommonDubTest {
 			bundle(DUB_TEST_BUNDLES.resolve_fromValid("foo_lib"), null, "foo_lib", "~master", paths("src", "src2"));
 	
 	@BeforeClass
-	public static void initDubRepositoriesPath() {
+	public static void initDubRepositoriesPath() throws CommonException {
 		dubAddPath(DUB_TEST_BUNDLES);
 	}
 	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
+	public static void cleanupDubRepositoriesPath() throws CommonException {
 		dubRemovePath(DUB_TEST_BUNDLES);
 	}
 	

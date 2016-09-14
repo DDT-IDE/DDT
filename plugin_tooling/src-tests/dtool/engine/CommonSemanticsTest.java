@@ -17,6 +17,7 @@ import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import org.junit.BeforeClass;
 
 import melnorme.lang.tooling.BundlePath;
+import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.tests.TestsWorkingDir;
 import dtool.dub.CommonDubTest;
@@ -43,7 +44,12 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				removeSemanticsBundlesDubPath();
+				try {
+					removeSemanticsBundlesDubPath();
+				} catch(CommonException e) {
+					// Ignore, just print
+					System.err.println(e);
+				}
 			}
 		});
 	}
@@ -51,7 +57,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 	public static boolean isSemanticsBundlesInDubPath = false;
 	
 	@BeforeClass
-	public static synchronized void initSemanticsBundlesDubPath() {
+	public static synchronized void initSemanticsBundlesDubPath() throws CommonException {
 		if(isSemanticsBundlesInDubPath == false) {
 			if(!DToolTests.TESTS_LITE_MODE) {
 				// workaround to cleanup state of abruptly-terminated tests
@@ -65,7 +71,7 @@ public class CommonSemanticsTest extends CommonDToolTest {
 		}
 	}
 	
-	public static synchronized void removeSemanticsBundlesDubPath() {
+	public static synchronized void removeSemanticsBundlesDubPath() throws CommonException {
 		if(isSemanticsBundlesInDubPath) {
 			CommonDubTest.dubRemovePath(SEMANTICS_TEST_BUNDLES);
 			isSemanticsBundlesInDubPath = false;

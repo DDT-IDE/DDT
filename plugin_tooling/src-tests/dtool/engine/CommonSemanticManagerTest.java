@@ -54,7 +54,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	public final BundlePath COMPLEX_BUNDLE = bundlePath(getDubRepositoryDir(), "complex_bundle");
 	
 	@BeforeClass
-	public static void initDubRepositoriesPath() {
+	public static void initDubRepositoriesPath() throws CommonException {
 		CommonDubTest.dubRemovePath(SMTEST_WORKING_DIR_BUNDLES); // cleanup stale entries
 		
 		CommonDubTest.dubAddPath(BUNDLEMODEL_TEST_BUNDLES);
@@ -62,7 +62,7 @@ public class CommonSemanticManagerTest extends CommonSemanticsTest {
 	}
 	
 	@AfterClass
-	public static void cleanupDubRepositoriesPath() {
+	public static void cleanupDubRepositoriesPath() throws CommonException {
 		CommonDubTest.dubRemovePath(BUNDLEMODEL_TEST_BUNDLES);
 	}
 	
