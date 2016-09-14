@@ -20,5 +20,5 @@ install:
  - which ldc2
 
 script:
-  - export MAVEN_OPTS="-Xmx100m"
-  - mvn clean verify -e
+  - export MAVEN_OPTS="-Xmx2g"
+  - mvn clean verify
