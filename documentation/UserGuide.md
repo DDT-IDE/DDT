@@ -102,9 +102,6 @@ Alternatively, to automatically create and run a launch configuration (if a matc
 Whenever a launch is requested, a build will be performed beforehand. This behavior can be configured under general Eclipse settings, or in the launch configuration.
 
 ##### Debugging
-a
-sdafsdf
-
 
 | **Windows note:** _Using Cygwin GDB doesn't work very well, if at all. The recommended way to debug in Windows is to use the GDB of [mingw-w64](http://mingw-w64.org/), or the one of [TDM-GCC](http://tdm-gcc.tdragon.net/)._ |
 |----|
