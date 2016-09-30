@@ -2,13 +2,13 @@ package melnorme.lang.ide.ui;
 
 import java.util.List;
 
+import org.dsource.ddt.ide.core_text.DeeDocumentSetupParticipant;
+import org.dsource.ddt.ide.core_text.DeePartitionScanner;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import melnorme.lang.ide.core.LangCore_Actual;
 import melnorme.lang.ide.core.text.format.ILastKeyInfoProvider;
-import melnorme.lang.ide.core_text.DeeDocumentSetupParticipant;
-import melnorme.lang.ide.core_text.DeePartitionScanner;
 import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 import melnorme.lang.ide.ui.editor.hover.ILangEditorTextHover;
 import melnorme.lang.ide.ui.editor.text.LangAutoEditsPreferencesAccess;

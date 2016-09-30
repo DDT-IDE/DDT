@@ -6,7 +6,7 @@
 		id="DeeDocumentSetupParticipant"
 		name="D Document Setup Participant">
 		<participant
-			class="melnorme.lang.ide.core_text.DeeDocumentSetupParticipant"
+			class="org.dsource.ddt.ide.core_text.DeeDocumentSetupParticipant"
 			contentTypeId="org.dsource.ddt.ide.core.content.dsource">
 		</participant>
 	</extension>

@@ -1,4 +1,4 @@
-package LANG_PROJECT_ID.ide.core_text;
+package org.dsource.ddt.ide.core_text;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;

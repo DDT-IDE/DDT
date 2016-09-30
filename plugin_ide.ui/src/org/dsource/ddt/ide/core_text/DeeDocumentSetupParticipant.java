@@ -8,7 +8,7 @@
  * Contributors:
 
  *******************************************************************************/
-package melnorme.lang.ide.core_text;
+package org.dsource.ddt.ide.core_text;
 
 import melnorme.lang.ide.core_text.LangDocumentPartitionerSetup;
 
