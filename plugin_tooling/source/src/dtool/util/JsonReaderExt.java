@@ -19,12 +19,12 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonReader_Mod;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
 
 /** Utility extensions to JsonReader */
-public class JsonReaderExt extends JsonReader {
+public class JsonReaderExt extends JsonReader_Mod {
 	
 	public static JsonReaderExt create(Reader in) {
 		return new JsonReaderExt(in);

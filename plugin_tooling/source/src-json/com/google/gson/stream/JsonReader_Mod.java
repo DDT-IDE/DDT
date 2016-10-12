@@ -185,7 +185,7 @@ import java.io.Reader;
  * @author Jesse Wilson
  * @since 1.6
  */
-public class JsonReader implements Closeable {
+public class JsonReader_Mod implements Closeable {
   /** The only non-execute prefix this parser permits */
   private static final char[] NON_EXECUTE_PREFIX = ")]}'\n".toCharArray();
   private static final long MIN_INCOMPLETE_INTEGER = Long.MIN_VALUE / 10;
@@ -273,7 +273,7 @@ public class JsonReader implements Closeable {
   /**
    * Creates a new instance that reads a JSON-encoded stream from {@code in}.
    */
-  public JsonReader(Reader in) {
+  public JsonReader_Mod(Reader in) {
     if (in == null) {
       throw new NullPointerException("in == null");
     }

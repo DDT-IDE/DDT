@@ -1,6 +1,6 @@
-This source folder has code taken from google-gson:
-http://code.google.com/p/google-gson/
+JsonReader_Mod is a clone from google GSON, 
+to allow trailing commas in the last key/value entry of object 
 
-Some of the code has been modified. See details in header files.
+Search for "BM:" to see the modifications.
 
 All code under this source folder is licensed under Apache License 2.0
