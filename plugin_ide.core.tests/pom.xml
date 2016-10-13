@@ -16,6 +16,24 @@
 	
 	<build>
 		<plugins>
+			
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<dependency-resolution>
+						<extraRequirements>
+							<requirement>
+								<type>eclipse-plugin</type>
+								<id>org.dsource.ddt.tooling.tests</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+						</extraRequirements>
+					</dependency-resolution>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-surefire-plugin</artifactId>
@@ -25,10 +43,18 @@
 						<DTool.TestResourcesDir>${dtool.testdataDir}</DTool.TestResourcesDir>
 						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
 					</systemProperties>
-					<useUIHarness>false</useUIHarness>
+					<useUIHarness>true</useUIHarness>
+					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.dsource.ddt.tooling.tests</artifactId>
+							<version>0.0.0</version>
+						</dependency>
+					</dependencies>
 					<showEclipseLog>true</showEclipseLog>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 

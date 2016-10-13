@@ -25,6 +25,11 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-plugin</type>
+								<id>org.dsource.ddt.tooling.tests</id>
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>
 								<id>org.dsource.ddt.ide.core.tests</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
@@ -43,6 +48,11 @@
 					</systemProperties>
 					<useUIHarness>true</useUIHarness>
 					<dependencies>
+						<dependency>
+							<type>eclipse-plugin</type>
+							<artifactId>org.dsource.ddt.tooling.tests</artifactId>
+							<version>0.0.0</version>
+						</dependency>
 						<dependency>
 							<type>eclipse-plugin</type>
 							<artifactId>org.dsource.ddt.ide.core.tests</artifactId>
