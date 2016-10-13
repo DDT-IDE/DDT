@@ -20,7 +20,7 @@
 
 		<qualifier_default_prefix>v</qualifier_default_prefix>
 			
-		<dtool.testdataDir>${parentBaseDir}/plugin_tooling/testdata</dtool.testdataDir>
+		<dtool.testdataDir>${parentBaseDir}/plugin_tooling.tests/testdata</dtool.testdataDir>
 	</properties>
 
 	<modules>

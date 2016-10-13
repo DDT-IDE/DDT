@@ -10,8 +10,8 @@
 		<version>1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.dsource.ddt.tooling.tests</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<artifactId>org.dsource.ddt.dtool.tests</artifactId>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>eclipse-test-plugin</packaging>
 	
 	<properties>

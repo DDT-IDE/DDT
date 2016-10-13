@@ -26,7 +26,7 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-plugin</type>
-								<id>org.dsource.ddt.tooling.tests</id>
+								<id>org.dsource.ddt.dtool.tests</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>
@@ -47,7 +47,7 @@
 					<dependencies>
 						<dependency>
 							<type>eclipse-plugin</type>
-							<artifactId>org.dsource.ddt.tooling.tests</artifactId>
+							<artifactId>org.dsource.ddt.dtool.tests</artifactId>
 							<version>0.0.0</version>
 						</dependency>
 					</dependencies>
