@@ -43,7 +43,7 @@
 						<DTool.TestResourcesDir>${dtool.testdataDir}</DTool.TestResourcesDir>
 						<DTool.DubPath>${DTool.DubPath}</DTool.DubPath>
 					</systemProperties>
-					<useUIHarness>true</useUIHarness>
+					<useUIHarness>false</useUIHarness>
 					<dependencies>
 						<dependency>
 							<type>eclipse-plugin</type>
