@@ -57,4 +57,20 @@ public class DeeFoldingPreferencePage extends AbstractPreferencesBlockPrefPage {
 		};
 	}
 	
+	public DefaultFoldingPreferenceConfigurationBlock getPreferencesBlock() {
+		return (DefaultFoldingPreferenceConfigurationBlock) preferencesBlock;
+	}
+	
+	@Override
+	public boolean performOk() {
+		getPreferencesBlock().performOk();
+		return super.performOk();
+	}
+	
+	@Override
+	public void performDefaults() {
+		getPreferencesBlock().performDefaults();
+		super.performDefaults();
+	}
+	
 }
