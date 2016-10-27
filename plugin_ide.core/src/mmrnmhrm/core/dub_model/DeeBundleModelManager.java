@@ -41,14 +41,12 @@ import melnorme.lang.ide.core.utils.EclipseUtils;
 import melnorme.lang.ide.core.utils.ResourceUtils;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter;
 import melnorme.lang.ide.core.utils.operation.EclipseAsynchJobAdapter.IRunnableWithJob;
-import melnorme.lang.ide.core.utils.process.IRunProcessTask;
 import melnorme.lang.tooling.BundlePath;
 import melnorme.lang.tooling.bundle.BundleInfo;
 import melnorme.utilbox.concurrency.CancellableTask;
 import melnorme.utilbox.concurrency.ITaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
-import melnorme.utilbox.process.ExternalProcessHelper.ExternalProcessResult;
 import mmrnmhrm.core.DeeCoreMessages;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.DeeBundleModel;
 import mmrnmhrm.core.dub_model.DeeBundleModelManager.WorkspaceModelManagerTask;
@@ -300,14 +298,8 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 		
 		// TODO: add --skip-registry to dub command
 		
-		final DubBundleDescription describedBundle = new DubDescribeRunner(bundlePath, dubPath, true) { 
-			@Override
-			protected ExternalProcessResult runProcessAndAwaitResult(ProcessBuilder pb) 
-					throws CommonException, OperationCancellation {
-				IRunProcessTask runProcessTask = getProcessManager().newRunProcessTask(opMonitor, pb, pm);
-				return getProcessManager().submitTaskAndAwaitResult(runProcessTask);
-			};
-		}.runDescribeOperation();
+		final DubBundleDescription describedBundle = new DubDescribeRunner(bundlePath, dubPath, true)
+			.runDescribeOperation();
 		
 		if(describedBundle.hasErrors()) {
 			throw new CommonException("DUB describe error: ", describedBundle.getError());

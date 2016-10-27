@@ -19,8 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import dtool.dub.DubBuildOutputParser;
 import melnorme.lang.ide.core.EclipseCore;
 import melnorme.lang.ide.core.LangCore;
-import melnorme.lang.ide.core.operations.ILangOperationsListener_Default.IToolOperationMonitor;
-import melnorme.lang.ide.core.operations.ToolManager.RunToolTask;
 import melnorme.lang.ide.core.operations.ToolMarkersHelper;
 import melnorme.lang.ide.core.operations.build.BuildManager;
 import melnorme.lang.ide.core.operations.build.BuildTarget;
@@ -34,7 +32,6 @@ import melnorme.lang.tooling.common.ToolSourceMessage;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.collections.ArrayList2;
 import melnorme.utilbox.collections.Indexable;
-import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
 import melnorme.utilbox.misc.Location;
 import melnorme.utilbox.misc.PathUtil;
@@ -115,15 +112,6 @@ public class DeeBuildManager extends BuildManager {
 		
 		public DeeBuildTargetOperation(BuildOperationParameters buildOpParams) {
 			super(buildOpParams);
-		}
-		
-		@Override
-		protected ExternalProcessResult runBuildTool(IToolOperationMonitor opMonitor, ProcessBuilder pb,
-				IOperationMonitor om) throws CommonException, OperationCancellation {
-			
-			RunToolTask newRunToolTask = getToolManager().newRunProcessTask(opMonitor, pb, om);
-			
-			return LangCore.deeToolManager().submitTaskAndAwaitResult(newRunToolTask);
 		}
 		
 		@Override
