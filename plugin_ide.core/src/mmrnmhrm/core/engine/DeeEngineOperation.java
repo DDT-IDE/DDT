@@ -17,12 +17,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
 import melnorme.lang.ide.core.utils.CoreExecutors;
+import melnorme.lang.ide.core.utils.operation.EclipseJobExecutor;
 import melnorme.lang.tooling.common.ops.IOperationMonitor;
 import melnorme.utilbox.concurrency.ExecutorTaskAgent;
 import melnorme.utilbox.concurrency.OperationCancellation;
 import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.core.fntypes.OperationCallable;
+import melnorme.utilbox.core.fntypes.OperationResult;
 import melnorme.utilbox.misc.Location;
 
 public abstract class DeeEngineOperation<RET> {
@@ -66,7 +70,11 @@ public abstract class DeeEngineOperation<RET> {
 		Future<RET> future = completionExecutor.submit(new Callable<RET>() {
 			@Override
 			public RET call() throws CommonException, OperationCancellation {
-				return doRunEngineOperation(om);
+				OperationCallable<RET> opCallable = () -> doRunEngineOperation(om);
+				Function<IOperationMonitor, OperationResult<RET>> op = (_om) -> {
+					return OperationResult.callToOpResult(opCallable);
+				};
+				return new EclipseJobExecutor().startOpFunction("Engine analysis", true, op).awaitResult2().get();
 			}
 		});
 		
