@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.dsource.ddt.dtool.tests;singleton:=true
-Bundle-Version: 1.0.2.qualifier
-Fragment-Host: org.dsource.ddt.dtool;bundle-version="1.0.2"
+Bundle-Version: 1.0.3.qualifier
+Fragment-Host: org.dsource.ddt.dtool
 Bundle-Vendor: %pluginProvider
 Bundle-Name: %pluginNameTests
 Bundle-Localization: plugin

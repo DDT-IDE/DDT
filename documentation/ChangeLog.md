@@ -1,6 +1,8 @@
 ## release ChangeLog
 
 ### (NextVersion)
+
+### 1.0.3
  * Fixed: recurring timeouts invoking Content Assist and other engine operations with large projects like GTKD. (#143)
    * Now the timeout will still occur the first time Content Assist is invoked in a session, but the background engine analysis operation will not be cancelled: it will continue in the background, allowing the analysis to complete and future invocations to not timeout.
  * Fixed: Code Folding preferences are never saved. (#149)
