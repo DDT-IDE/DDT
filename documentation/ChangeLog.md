@@ -4,7 +4,7 @@
 
 ### 1.0.3
  * Fixed: recurring timeouts invoking Content Assist and other engine operations with large projects like GTKD. (#143)
-   * Now the timeout will still occur the first time Content Assist is invoked in a session, but the background engine analysis operation will not be cancelled: it will continue in the background, allowing the analysis to complete and future invocations to not timeout.
+   * Now the timeout will still occur the first time Content Assist or Open Definition is invoked in an Eclispe session, but the background engine analysis operation will not be cancelled by the timeout: it will continue in the background, allowing the analysis to complete and caching analsys for future invocations, which should then not timeout.
  * Fixed: Code Folding preferences are never saved. (#149)
  * Fixed stale validation message for location field in New Project Wizard.
  * Fixed stale validation message for Build Command field in Build Targets property page and Launch Configurations dialog.
