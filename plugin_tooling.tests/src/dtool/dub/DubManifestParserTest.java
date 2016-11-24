@@ -86,9 +86,9 @@ public class DubManifestParserTest extends CommonDubTest {
 		DubBundle dubBundle = parseDubBundle(BUILD_CONFIGS.location);
 		
 		assertAreEqual(dubBundle.getConfigurations(), 
-			new ArrayList2<DubConfiguration>(
-					new DubConfiguration("metro-app", "executable", null, null),
-					new DubConfiguration("glut-app", "library", "foo_glut_app", "bin/lib")
+			ArrayList2.create(
+				new DubConfiguration("metro-app", "executable", null, null),
+				new DubConfiguration("glut-app", "library", "foo_glut_app", "bin/lib")
 		));
 		
 		assertEquals(new DubConfiguration("m", "executable", null, null).getEffectiveTargetFullPath(dubBundle), 

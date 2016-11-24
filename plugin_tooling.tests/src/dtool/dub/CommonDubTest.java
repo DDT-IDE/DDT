@@ -144,8 +144,8 @@ public class CommonDubTest extends CommonDToolTest {
 			DubBundle[] deps = bundleDescription.getBundleDependencies();
 			assertTrue(expectedDeps.length == deps.length);
 			
-			ArrayList2<DubBundle> depsToCheck = new ArrayList2<>(deps);
-			ArrayList2<DubBundleChecker> expectedDepsToCheck = new ArrayList2<>(expectedDeps);
+			ArrayList2<DubBundle> depsToCheck = ArrayList2.create(deps);
+			ArrayList2<DubBundleChecker> expectedDepsToCheck = ArrayList2.create(expectedDeps);
 			
 			for (DubBundle dubBundle : depsToCheck) {
 				boolean checked = false;

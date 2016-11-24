@@ -30,7 +30,7 @@ public class CompilerInstall {
 	
 	
 	public CompilerInstall(Location compilerPath, ECompilerType compilerType, Location... librarySourceFolders) {
-		this(compilerPath, compilerType, new ArrayList2<>(librarySourceFolders));
+		this(compilerPath, compilerType, ArrayList2.create(librarySourceFolders));
 	}
 	
 	public CompilerInstall(Location compilerPath, ECompilerType compilerType, List<Location> librarySourceFolders) {

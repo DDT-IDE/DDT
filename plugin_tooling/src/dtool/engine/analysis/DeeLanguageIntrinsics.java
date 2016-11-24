@@ -110,7 +110,7 @@ public class DeeLanguageIntrinsics implements CommonLanguageIntrinsics {
 	}
 	
 	public ArrayList2<IntrinsicNamedElement> createCommonProperties(INamedElement type) {
-		return new ArrayList2<IntrinsicNamedElement>( 
+		return ArrayList2.create( 
 			new IntrinsicProperty("init", type, parseDDoc("initializer")),
 			new IntrinsicProperty("sizeof", int_type, 
 				parseDDoc("size in bytes (equivalent to C's $(D sizeof(type)))")),

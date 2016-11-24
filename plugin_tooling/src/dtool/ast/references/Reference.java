@@ -47,7 +47,7 @@ public abstract class Reference extends Resolvable implements IReference {
 			OverloadedNamedElement overloadedNamedElement = (OverloadedNamedElement) result;
 			return overloadedNamedElement.getOverloadedElements();
 		} else {
-			return new ArrayList2<>(result);
+			return ArrayList2.create(result);
 		}
 	}
 	

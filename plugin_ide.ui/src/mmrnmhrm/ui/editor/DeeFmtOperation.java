@@ -41,7 +41,7 @@ public class DeeFmtOperation extends AbstractEditorToolOperation<String> {
 		
 		Path rustFmt = DeeToolPreferences.DFMT_PATH.getDerivedValue(project);
 		
-		ArrayList2<String> cmdLine = new ArrayList2<>(rustFmt.toString());
+		ArrayList2<String> cmdLine = ArrayList2.create(rustFmt.toString());
 		
 		ProcessBuilder pb = new ProcessBuilder(cmdLine);
 		// set directory, for fmt to look for the config file in folders parent chain

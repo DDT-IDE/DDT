@@ -58,7 +58,7 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 	}
 	
 	protected ArrayList2<StructureElement> elems(StructureElement... expectedElements) {
-		return new ArrayList2<>(expectedElements);
+		return ArrayList2.create(expectedElements);
 	}
 	
 	
@@ -88,7 +88,7 @@ public class DeeStructureCreator_Test extends AbstractStructureParser_Test {
 		this.source = source;
 		SourceFileStructure structure = createStructureParser().parse("XXXXX NOT_APPLICABLE");
 		
-		ArrayList2<StructureElement> expectedStructure = new ArrayList2<>(expectedElements);
+		ArrayList2<StructureElement> expectedStructure = ArrayList2.create(expectedElements);
 		SourceFileStructure expected = new SourceFileStructure(structure.getLocation(), expectedStructure, 
 			(Indexable<ParserError>) null);
 		

@@ -56,7 +56,7 @@ public final class TestsSimpleModuleResolver extends AbstractSemanticContext {
 	}
 	
 	protected static BundleModules createBundles(Location sourceFolder) {
-		BundleModules bundleModules = new BundleModulesVisitor(new ArrayList2<>(sourceFolder)) {
+		BundleModules bundleModules = new BundleModulesVisitor(ArrayList2.create(sourceFolder)) {
 			@Override
 			protected FileVisitResult handleFileVisitException(Path file, IOException exc) {
 				throw assertFail();

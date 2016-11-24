@@ -84,7 +84,7 @@ public class DeclarationAttrib extends ASTNode implements INonScopedContainer, I
 			return ((NodeList<?>) body).nodes.upcastTypeParameter();
 		}
 		// TODO save body node collection
-		return new ArrayList2<>(body);
+		return ArrayList2.create(body);
 	}
 	
 	/** 

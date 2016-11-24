@@ -223,7 +223,7 @@ public class CompletionOperation_Test extends CommonDToolOperation_Test {
 			CompletionProposalKind kind, ElementAttributes attributes, String moduleName, 
 			String fullReplaceString, SourceRange... sourceSubElements) {
 		return new ToolCompletionProposal(replaceOffset, replaceLength, replaceString, label, kind, attributes, 
-			null, moduleName, null, fullReplaceString, new ArrayList2<>(sourceSubElements), null) {
+			null, moduleName, null, fullReplaceString, ArrayList2.create(sourceSubElements), null) {
 			
 			@Override
 			protected boolean subclassEquals(LangToolCompletionProposal _other) {
