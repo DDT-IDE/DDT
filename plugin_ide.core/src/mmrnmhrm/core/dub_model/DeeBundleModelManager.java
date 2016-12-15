@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 
 import dtool.dub.DubBundle;
 import dtool.dub.DubBundle.DubBundleException;
@@ -116,8 +117,11 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		DubBundle unresolvedBundle = DubManifestParser.parseDubBundleFromLocation2(bundlePath);
 		if(unresolvedBundle == null) {
 			// Can happen if using SDL format, which we don't know how to parse. Provide dummy bundle
-			unresolvedBundle = new DubBundle(bundlePath, "(UNKNOWN)", null, null, null, 
-				null, null, null, null, null, null);
+			String message = "Cannot read bundle (is SDL format instead of JSON?";
+			unresolvedBundle = new DubBundle(
+				bundlePath, "(UNKNOWN)", new DubBundleException(message), null, null, 
+				null, null, null, null, null, null
+			);
 		}
 		
 		return new DubBundleDescription(unresolvedBundle);
@@ -144,6 +148,10 @@ public class DeeBundleModelManager extends BundleModelManager<DeeBundleModel> {
 		return new BundleInfo(compilerInstall, dubBundleDescription);
 	}
 	
+	/**
+	 * Await for all pending resolutions to complete.
+	 * Of use mainly for test code.
+	 */
 	public void syncPendingUpdates() throws InterruptedException {
 		modelAgent.waitForPendingTasks();
 	}
@@ -221,7 +229,12 @@ class ProjectModelDubDescribeTask extends ProjectUpdateBuildpathTask implements 
 			}
 		
 		try {
-			EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
+			//
+			Job job = EclipseAsynchJobAdapter.runUnderAsynchJob(getNameForJob(), this);
+			// Note: we await the job to finish, so that the describe task is synchronous to the bundle resolution
+			// this is so that DeeBundleModelManager.syncPendingUpdates() works.
+			// Ideally this would be written in a more elegant way, with Future's etc.
+			job.join();
 		} catch (InterruptedException e) {
 			return;
 		}

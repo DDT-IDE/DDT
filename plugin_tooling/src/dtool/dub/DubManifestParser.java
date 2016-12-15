@@ -114,10 +114,12 @@ public class DubManifestParser extends CommonDubParser {
 			effectiveSourceFolders = null;
 		}
 		
-		return new DubBundle(bundlePath, bundleName, dubError, version, 
+		return new DubBundle(
+			bundlePath, bundleName, dubError, version, 
 			sourceFolders, effectiveSourceFolders, 
 			bundleFiles,
-			dependencies, targetName, targetPath, configurations);
+			dependencies, targetName, targetPath, configurations
+		);
 	}
 	
 	protected Path[] createPaths(String[] paths) {

@@ -13,16 +13,24 @@ package mmrnmhrm.tests;
 
 import static melnorme.utilbox.core.Assert.AssertNamespace.assertTrue;
 import static mmrnmhrm.tests.ITestResourcesConstants.TR_SAMPLE_SRC1;
-import melnorme.lang.ide.core.LangNature;
-import melnorme.lang.ide.core.tests.CommonCoreTest;
-import melnorme.lang.ide.core.tests.LangCoreTestResources;
-import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
+import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.LangNature;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.tests.CommonCoreTest;
+import melnorme.lang.ide.core.tests.LangCoreTestResources;
+import melnorme.lang.ide.core.utils.ResourceUtils;
+import melnorme.utilbox.concurrency.OperationCancellation;
+import melnorme.utilbox.core.CommonException;
+import melnorme.utilbox.misc.Location;
+import mmrnmhrm.core.CommonDeeWorkspaceTestNew;
+
 public class SampleDeeProject implements AutoCloseable {
 	
+	protected final BuildManager buildManager = LangCore.getBuildManager();
 	public final IProject project;
 	
 	public SampleDeeProject(String name) throws CoreException {
@@ -42,12 +50,21 @@ public class SampleDeeProject implements AutoCloseable {
 		return project;
 	}
 	
-	public void cleanUp() throws CoreException {
-		project.delete(true, null);
+	public Location getLocation() throws CommonException {
+		return ResourceUtils.getProjectLocation2(getProject());
 	}
 	
+	public void cleanUp() throws CoreException, CommonException {
+		try {
+			buildManager.getBuildOperation(getLocation()).asFuture().awaitResult2();
+		} catch(OperationCancellation e) {
+			// ok
+		}
+		project.delete(true, null);
+	}
+
 	@Override
-	public void close() throws CoreException {
+	public void close() throws CoreException, CommonException {
 		cleanUp();
 	}
 	

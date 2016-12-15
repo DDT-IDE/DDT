@@ -18,10 +18,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 
 import melnorme.lang.ide.core.LangCore;
+import melnorme.lang.ide.core.operations.build.BuildManager;
+import melnorme.lang.ide.core.project_model.LangBundleModel;
 import melnorme.lang.ide.core.tests.CommonCoreTest;
 import mmrnmhrm.tests.SampleDeeProject;
 
+// TODO: need to review since now building is asynch, 
+// and goes one behind the Eclipse workspace build
 public class DubProjectBuilderTest extends CommonCoreTest {
+	
+	protected BuildManager buildManager = LangCore.getBuildManager();
+	protected LangBundleModel bundleModel = LangCore.getBundleModel();
 	
 	protected static SampleDeeProject sampleProj;
 	
@@ -32,8 +39,8 @@ public class DubProjectBuilderTest extends CommonCoreTest {
 			sampleProj = sampleProj_;
 			IProject project = sampleProj.getProject();
 			
-			assertTrue(LangCore.getBundleModel().getBundleInfo(project) != null);
-			assertTrue(LangCore.getBuildManager().getBuildInfo(project) != null);
+			assertTrue(bundleModel.getBundleInfo(project) != null);
+			assertTrue(buildManager.getBuildInfo(project) != null);
 			testBuilder();
 			
 			// Await buildpath update, to prevent logging of error.

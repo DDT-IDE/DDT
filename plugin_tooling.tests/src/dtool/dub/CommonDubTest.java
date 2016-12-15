@@ -124,18 +124,18 @@ public class CommonDubTest extends CommonDToolTest {
 			}
 		}
 		
-		public void checkBundleDescription(DubBundleDescription bundleDescription, boolean isResolved) {
-			if(bundleDescription.isResolved() != isResolved) {
+		public void checkBundleDescription(DubBundleDescription bundleDescription, boolean expectedIsResolved) {
+			if(bundleDescription.isResolved() != expectedIsResolved) {
 				assertFail(StringUtil.asString(bundleDescription.getError()));
 			}
 			
-			if(!isResolved) {
-				check(bundleDescription.getMainBundle(), isResolved);
+			if(!expectedIsResolved) {
+				check(bundleDescription.getMainBundle(), expectedIsResolved);
 				assertTrue(bundleDescription.hasErrors() ||
 					bundleDescription.getBundleDependencies().length == 0);
 				return;
 			} else {
-				checkAllExceptDepRefs(bundleDescription.getMainBundle(), isResolved);
+				checkAllExceptDepRefs(bundleDescription.getMainBundle(), expectedIsResolved);
 			}
 			
 			if(expectedDeps == IGNORE_DEPS) 
