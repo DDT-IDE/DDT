@@ -19,9 +19,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.google.gson.stream.JsonReader_Mod;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.MalformedJsonException;
+
+import dtool.com.google.gson.stream.JsonReader_Mod;
 
 /** Utility extensions to JsonReader */
 public class JsonReaderExt extends JsonReader_Mod {

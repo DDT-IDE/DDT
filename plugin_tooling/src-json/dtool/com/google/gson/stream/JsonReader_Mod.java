@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package com.google.gson.stream;
+package dtool.com.google.gson.stream;
 
 import java.io.Closeable;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
+
+//import com.google.gson.stream.JsonScope;
+import com.google.gson.stream.JsonToken;
+import com.google.gson.stream.MalformedJsonException;
 
 /**
  * Reads a JSON (<a href="http://www.ietf.org/rfc/rfc4627.txt">RFC 4627</a>)
