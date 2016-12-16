@@ -1,6 +1,7 @@
 ## release ChangeLog
 
 ### (NextVersion)
+ * Invoking a build operation for a project now immediately cancels the pending build operation for that project, if any.
 
 ### 1.0.3
  * Fixed: recurring timeouts invoking Content Assist and other engine operations with large projects like GTKD. (#143)
