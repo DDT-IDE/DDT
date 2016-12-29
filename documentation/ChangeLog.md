@@ -2,6 +2,7 @@
 
 ### (NextVersion)
  * Invoking a build operation for a project now immediately cancels the pending build operation for that project, if any.
+ * Fixed: Build Target's append environment variables might not replace variables correctly in Windows, due to case issues.
 
 ### 1.0.3
  * Fixed: recurring timeouts invoking Content Assist and other engine operations with large projects like GTKD. (#143)
